@@ -7,7 +7,7 @@ import "./registerServiceWorker";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
 
-Vue.use(BootstrapVue);
+Vue.use(BootstrapVue, { prefix: "b" });
 
 Vue.config.productionTip = false;
 

@@ -10,6 +10,7 @@
                     <b-nav-item v-on:click="goTo('/add')">Add</b-nav-item>
                     <b-nav-item v-on:click="goTo('/search')">Search</b-nav-item>
                     <b-nav-item v-on:click="goTo('/editItem')">Items</b-nav-item>
+                    <b-nav-item v-on:click="goTo('/editComponent')">Components</b-nav-item>
                 </b-navbar-nav>
                 <!-- Right aligned nav items -->
                 <b-navbar-nav class="ml-auto">

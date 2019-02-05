@@ -1,8 +1,11 @@
 package com.noovitec.mpb.entity;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,4 +27,8 @@ public class Component {
     private String description;
     private String picture;
     private String assumedPrice;
+//    @ManyToOne(fetch=FetchType.EAGER)
+//    @JoinColumn(name="itemId", nullable=false, insertable=false, updatable=false)
+//    private Item item;
+    private Long itemId;
 }

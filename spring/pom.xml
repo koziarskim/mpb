@@ -10,9 +10,9 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.noovitec.mpb</groupId>
-	<artifactId>spring</artifactId>
+	<artifactId>spring2</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>spring</name>
+	<name>spring2</name>
 	<description>Marketplace Brands</description>
 	<packaging>war</packaging>
 
@@ -53,7 +53,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>spring</finalName>
+		<finalName>spring2</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>

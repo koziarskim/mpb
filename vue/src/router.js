@@ -6,6 +6,7 @@ import AddCustomer from "./components/AddCustomer.vue";
 import SearchCustomers from "./components/SearchCustomers.vue";
 import Customer from "./components/Customer.vue";
 import EditItem from "./components/EditItem.vue";
+import EditComponent from "./components/EditComponent.vue";
 
 Vue.use(Router);
 
@@ -60,6 +61,11 @@ export default new Router({
       path: "/editItem",
       name: "editItem",
       component: EditItem
+    },
+    {
+      path: "/editComponent",
+      name: "editComponent",
+      component: EditComponent
     }
   ]
 });
