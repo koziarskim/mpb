@@ -9,6 +9,7 @@
                     <b-nav-item v-on:click="goTo('/customers')">Customers</b-nav-item>
                     <b-nav-item v-on:click="goTo('/add')">Add</b-nav-item>
                     <b-nav-item v-on:click="goTo('/search')">Search</b-nav-item>
+                    <b-nav-item v-on:click="goTo('/editItem')">Items</b-nav-item>
                 </b-navbar-nav>
                 <!-- Right aligned nav items -->
                 <b-navbar-nav class="ml-auto">
@@ -23,7 +24,9 @@
                 </b-navbar-nav>
             </b-collapse>
         </b-navbar>
-        <router-view />
+        <div class="center">
+            <router-view />
+        </div>
     </div>
 </template>
 
@@ -97,5 +100,15 @@ export default {
       color: #42b983;
     }
   }
+}
+.center {
+  margin: auto;
+  width: 75%;
+  padding: 10px;
+}
+// Overwrides BV
+.row{
+    padding: 4px;
+    text-align: left;
 }
 </style>

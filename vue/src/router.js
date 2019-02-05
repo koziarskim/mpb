@@ -5,6 +5,7 @@ import CustomersList from "./components/CustomersList.vue";
 import AddCustomer from "./components/AddCustomer.vue";
 import SearchCustomers from "./components/SearchCustomers.vue";
 import Customer from "./components/Customer.vue";
+import EditItem from "./components/EditItem.vue";
 
 Vue.use(Router);
 
@@ -54,6 +55,11 @@ export default new Router({
       path: "/search",
       name: "search",
       component: SearchCustomers
+    },
+    {
+      path: "/editItem",
+      name: "editItem",
+      component: EditItem
     }
   ]
 });

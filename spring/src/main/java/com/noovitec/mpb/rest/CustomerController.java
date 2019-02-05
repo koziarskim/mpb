@@ -21,7 +21,7 @@ import com.noovitec.mpb.entity.Customer;
 import com.noovitec.mpb.repo.CustomerRepository;
 
 
-@CrossOrigin //Allow all.
+@CrossOrigin
 @RestController
 @RequestMapping("/api")
 public class CustomerController {

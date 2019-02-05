@@ -22,5 +22,6 @@ public class Component {
     private String stockNumber;
     private String vendorStockNumber;
     private String description;
-    private String picture; 
+    private String picture;
+    private String assumedPrice;
 }
