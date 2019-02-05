@@ -15,7 +15,7 @@
                     <b-nav-item-dropdown right>
                         <!-- Using button-content slot -->
                         <template slot="button-content">
-                        <em>{{user}}</em>
+                        <em>{{userName}}</em>
                         </template>
                         <b-dropdown-item v-on:click="goTo('/')">Profile</b-dropdown-item>
                         <b-dropdown-item href="#">Signout</b-dropdown-item>
@@ -30,25 +30,36 @@
 <script>
 import http from "./http-common";
 import router from "./router";
+import store from "./store.js";
+
 export default {
   name: "app",
   data() {
     return {
-      user: "Marcin Koziarski",
       customers: []
     };
   },
+  computed: {
+    userName: function() {
+      return this.$store.getters.getUserName;
+    }
+  },
   methods: {
+    changeUserName: function(user_name) {
+      this.$store.dispatch("changeUserName", user_name);
+    },
     /* eslint-disable no-console */
-    goTo(view){
-        router.push(view)
+    goTo(view) {
+      router.push(view);
     },
     retrieveCustomers() {
       http
         .get("/customers")
         .then(response => {
           if (response.data.length > 0) {
-            this.user = response.data[0].name;
+            this.changeUserName(response.data[0].name);
+          } else {
+            this.changeUserName("Admin");
           }
           console.log(response.data);
         })
@@ -60,6 +71,9 @@ export default {
       this.retrieveCustomers();
     }
     /* eslint-enable no-console */
+  },
+  updated() {
+    this.retrieveCustomers();
   },
   mounted() {
     this.retrieveCustomers();

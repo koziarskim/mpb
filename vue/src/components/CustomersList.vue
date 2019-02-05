@@ -1,26 +1,29 @@
 <template>
-    <div class="list row">
-        <div class="col-md-6">
-            <h4>Customers List</h4>
-            <ul>
-                <li v-for="(customer, index) in customers" :key="index">
-                    <router-link :to="{
-                            name: 'customer-details',
-                            params: { customer: customer, id: customer.id }
-                        }">
-                            {{customer.name}}
-                    </router-link>
-                </li>
-            </ul>
-        </div>
-        <div class="col-md-6">
-            <router-view @refreshData="refreshList"></router-view>
+    <div>
+        <div class="list row">
+            <div class="col-md-6">
+                <h4>Customers List</h4>
+                <ul>
+                    <li v-for="(customer, index) in customers" :key="index">
+                        <router-link :to="{
+                                name: 'customer-details',
+                                params: { customer: customer, id: customer.id }
+                            }">
+                                {{customer.name}}
+                        </router-link>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <router-view @refreshData="refreshList"></router-view>
+            </div>
         </div>
     </div>
 </template>
 
 <script>
 import http from "../http-common";
+import { mapState } from "vuex";
 
 export default {
   name: "customers-list",
