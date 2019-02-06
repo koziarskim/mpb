@@ -40,14 +40,14 @@
                     <label>Comp:</label>
                 </b-col>
                 <b-col cols=10>
-                    <b-select option-value="id" option-text="label" :list="avaliable_components" v-model="component" placeholder="Select component"></b-select>
+                    <b-select option-value="id" option-text="name" :list="avaliable_components" v-model="component" placeholder="Select component"></b-select>
                 </b-col>
             </b-row>
             <b-row>
                 <b-col cols=2></b-col>
                 <b-col cols=10>
                         <div style="border-bottom: 1px solid #ced4da" v-for="it in components" v-bind:key="it.id" class="d-flex justify-content-between align-items-center">
-                            {{it.label+", "+it.desc}}
+                            <label>{{it.stockNumber+": "+it.name+": "+(it.description?it.description:"")}}</label>
                             <b-button size="sm" type="reset" variant="danger" @click="removeComponent(it.id)">x</b-button>
                         </div>                
                 </b-col>
@@ -68,11 +68,11 @@ export default {
       component: {},
       components: [],
       avaliable_components: [
-        { id: "1", label: "aa-1", desc: "Walmart cub" },
-        { id: "2", label: "ab-2", desc: "desc" },
-        { id: "3", label: "bc-3", desc: "desc" },
-        { id: "4", label: "cd-4", desc: "desc" },
-        { id: "5", label: "de-5", desc: "desc" }
+        { id: "1", name: "aa-1", desc: "Walmart cub" },
+        { id: "2", name: "ab-2", desc: "desc" },
+        { id: "3", name: "bc-3", desc: "desc" },
+        { id: "4", name: "cd-4", desc: "desc" },
+        { id: "5", name: "de-5", desc: "desc" }
       ]
     };
   },
@@ -89,6 +89,17 @@ export default {
     }
   },
   methods: {
+    getComponentsData() {
+      http
+        .get("/components")
+        .then(response => {
+          this.avaliable_components = response.data;
+          console.log("Success getting component data");
+        })
+        .catch(e => {
+          console.log("API error: "+e);
+        });
+    },
     save() {
       http
         .post("/items", this.item)
@@ -113,6 +124,9 @@ export default {
         }
       }
     }
+  },
+  mounted() {
+     this.getComponentsData();
   }
 };
 </script>
