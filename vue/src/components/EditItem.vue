@@ -27,6 +27,14 @@
             </b-row>
             <b-row>
                 <b-col cols=2>
+                    <label>Stock#:</label>
+                </b-col>
+                <b-col cols=10>
+                    <b-form-input type="text" v-model="item.description" placeholder="Enter short description"></b-form-input>
+                </b-col>
+            </b-row>
+            <b-row>
+                <b-col cols=2>
                     <label>Price:</label>
                 </b-col>
                 <b-col cols=10>
