@@ -3,8 +3,8 @@
         <div style="border: 0px" class="d-flex justify-content-between align-items-center">
             <h2>New Item</h2>
             <div>
-                <b-button type="submit" variant="primary" @click="save">Submit</b-button>
-                <b-button type="reset" variant="danger" @click="cancel">Reset</b-button>
+                <b-button type="submit" variant="primary" @click="saveItem">Submit</b-button>
+                <b-button type="reset" variant="danger" @click="cancelItem">Reset</b-button>
             </div>
         </div>
         <b-row>
@@ -59,6 +59,7 @@
 
 <script>
 import http from "../http-common";
+import router from "../router";
 
 export default {
   name: "edit-component",
@@ -100,17 +101,18 @@ export default {
           console.log("API error: "+e);
         });
     },
-    save() {
+    saveItem() {
       http
         .post("/items", this.item)
         .then(response => {
           console.log("Success post");
+          router.push("./ItemList")
         })
         .catch(e => {
           console.log("Error post");
         });
     },
-    cancel() {
+    cancelItem() {
       this.item = {};
       this.components = [];
       this.component = {};

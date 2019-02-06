@@ -5,13 +5,9 @@
             <b-navbar-brand href="#" v-on:click="goTo('/home')">Home</b-navbar-brand>
             <b-collapse is-nav id="nav_collapse">
                 <b-navbar-nav>
-                    <b-nav-item v-on:click="goTo('/about')">About</b-nav-item>
-                    <b-nav-item v-on:click="goTo('/customers')">Customers</b-nav-item>
-                    <b-nav-item v-on:click="goTo('/add')">Add</b-nav-item>
-                    <b-nav-item v-on:click="goTo('/search')">Search</b-nav-item>
-                    <b-nav-item v-on:click="goTo('/itemList')">Items</b-nav-item>
-                    <b-nav-item v-on:click="goTo('/editItem')">Item</b-nav-item>
-                    <b-nav-item v-on:click="goTo('/editComponent')">Component</b-nav-item>
+                    <b-nav-item v-on:click="goTo('/componentList')">Component</b-nav-item>
+                    <b-nav-item v-on:click="goTo('/itemList')">Item</b-nav-item>
+                    <b-nav-item v-on:click="goTo('/purchaseList')">Purchase</b-nav-item>
                 </b-navbar-nav>
                 <!-- Right aligned nav items -->
                 <b-navbar-nav class="ml-auto">

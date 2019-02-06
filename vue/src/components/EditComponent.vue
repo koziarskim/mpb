@@ -28,10 +28,10 @@
         <b-row>
             <b-col cols=5></b-col>
             <b-col cols=1>      
-                <b-button type="submit" variant="primary" @click="save">Submit</b-button>
+                <b-button type="submit" variant="primary" @click="saveComponent">Submit</b-button>
             </b-col>
             <b-col cols=1>
-                <b-button type="reset" variant="danger" @click="cancel">Reset</b-button>
+                <b-button type="reset" variant="danger" @click="cancelComponent">Reset</b-button>
             </b-col>
         </b-row>
     </b-container>
@@ -39,6 +39,7 @@
 
 <script>
 import http from "../http-common";
+import router from "../router";
 
 export default {
   name: "add-component",
@@ -48,18 +49,18 @@ export default {
     };
   },
   methods: {
-    save() {
+    saveComponent() {
         this.component.itemId = 6;
       http
         .post("/components", this.component)
         .then(response => {
-          console.log("Success post");
+            router.push("./ComponentList")
         })
         .catch(e => {
           console.log("Error post");
         });
     },
-    cancel() {
+    cancelComponent() {
       this.component = {};
     }
   }

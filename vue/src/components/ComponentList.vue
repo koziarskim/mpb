@@ -1,22 +1,22 @@
 <template>
     <b-container fluid>
         <div class="d-flex justify-content-between align-items-center">
-            <h2>Item List</h2>
+            <h2>Component List</h2>
             <div>
-                <b-button type="submit" variant="primary" @click="createNewItem">New Item</b-button>
+                <b-button type="submit" variant="primary" @click="createNewComponent">New Item</b-button>
             </div>
         </div>
-        <div v-if="items.length==0">Not found any components...</div>
-        <b-table v-if="items.length>0"
+        <div v-if="components.length==0">Not found any components...</div>
+        <b-table v-if="components.length>0"
                 :sort-by.sync="sortBy"
                 :sort-desc.sync="sortDesc"
-                :items="items"
+                :items="components"
                 :fields="fields">
                 <template slot="stockNumber" slot-scope="row">
                     <b-button size="sm" variant="link">{{row.item.stockNumber}}</b-button>
                 </template>
                 <template slot="action" slot-scope="row">
-                    <b-button size="sm" @click.stop="deleteItem(row.item.id)">x</b-button>
+                    <b-button size="sm" @click.stop="deleteComponent(row.item.id)">x</b-button>
                 </template>
         </b-table>
     </b-container>
@@ -38,35 +38,32 @@ export default {
         { key: 'assumedPrice', sortable: false },
         { key: 'action', sortable: false}
       ],
-      items: []
+      components: []
     };
   },
   methods: {
     getComponentsData() {
       http
-        .get("/items")
+        .get("/components")
         .then(response => {
-          this.items = response.data;
+          this.components = response.data;
           console.log("Success getting component data");
         })
         .catch(e => {
           console.log("API error: "+e);
         });
     },
-    deleteItem(item_id) {
-        console.log("Deleting...")
+    deleteComponent(item_id) {
       http
-        .delete("/items/"+item_id)
+        .delete("/components/"+item_id)
         .then(response => {
-          console.log("Success post");
           this.getComponentsData();
         })
         .catch(e => {
-          console.log("Error post");
         });
     },
-    createNewItem(){
-        router.push('/editItem');
+    createNewComponent(){
+        router.push('/editComponent');
     }
   },
   mounted() {

@@ -1,13 +1,11 @@
 import Vue from "vue";
 import Router from "vue-router";
-import Home from "./views/Home.vue";
-import CustomersList from "./components/CustomersList.vue";
-import AddCustomer from "./components/AddCustomer.vue";
-import SearchCustomers from "./components/SearchCustomers.vue";
-import Customer from "./components/Customer.vue";
+import Home from "./components/Home.vue";
 import EditItem from "./components/EditItem.vue";
 import EditComponent from "./components/EditComponent.vue";
 import ItemList from "./components/ItemList";
+import ComponentList from "./components/ComponentList";
+import PurchaseList from "./components/PurchaseList";
 
 Vue.use(Router);
 
@@ -26,42 +24,19 @@ export default new Router({
       component: Home
     },
     {
-      path: "/about",
-      name: "about",
-      // route level code-splitting
-      // this generates a separate chunk (about.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () =>
-        import(/* webpackChunkName: "about" */ "./views/About.vue")
+      path: "/itemList",
+      name: "itemList",
+      component: ItemList
     },
     {
-      path: "/customers",
-      name: "customers",
-      alias: "/customer",
-      component: CustomersList,
-      children: [
-        {
-          path: "/customer/:id",
-          name: "customer-details",
-          component: Customer,
-          props: true
-        }
-      ]
+      path: "/componentList",
+      name: "componentList",
+      component: ComponentList
     },
     {
-      path: "/add",
-      name: "add",
-      component: AddCustomer
-    },
-    {
-      path: "/search",
-      name: "search",
-      component: SearchCustomers
-    },
-    {
-      path: "/editItem",
-      name: "editItem",
-      component: EditItem
+      path: "/purchaseList",
+      name: "purchaseList",
+      component: PurchaseList
     },
     {
       path: "/editComponent",
@@ -69,9 +44,9 @@ export default new Router({
       component: EditComponent
     },
     {
-      path: "/itemList",
-      name: "itemList",
-      component: ItemList
+      path: "/editItem",
+      name: "editItem",
+      component: EditItem
     }
   ]
 });
