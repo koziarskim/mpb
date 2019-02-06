@@ -59,6 +59,7 @@ class ComponentController {
         	existing_component.get().setDescription(component.getDescription());
         	existing_component.get().setPicture(component.getPicture());
         	existing_component.get().setSupplier(component.getSupplier());
+        	existing_component.get().setAssumedPrice(component.getAssumedPrice());
         }
         
         Component result = componentRepository.save(existing_component.get());
