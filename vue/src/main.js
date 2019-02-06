@@ -6,9 +6,10 @@ import store from "./store";
 import "./registerServiceWorker";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
+import { ModelSelect } from "vue-search-select";
 
 Vue.use(BootstrapVue, { prefix: "b" });
-
+Vue.component("b-select", ModelSelect);
 Vue.config.productionTip = false;
 
 new Vue({
