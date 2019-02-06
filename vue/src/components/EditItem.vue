@@ -26,6 +26,14 @@
             </b-col>
         </b-row>
         <b-row>
+            <b-col cols=1>
+                <label>Comp:</label>
+            </b-col>
+            <b-col cols=6>
+                <b-select :options="components" v-model="component" placeholder="Select component"></b-select>
+            </b-col>
+        </b-row>
+        <b-row>
             <b-col cols=5></b-col>
             <b-col cols=1>      
                 <b-button type="submit" variant="primary" @click="save">Submit</b-button>
@@ -34,6 +42,7 @@
                 <b-button type="reset" variant="danger" @click="cancel">Reset</b-button>
             </b-col>
         </b-row>
+        <div>{{component}}</div>
     </b-container>
 </template>
 
@@ -45,6 +54,14 @@ export default {
   data() {
     return {
       item: {},
+      component: {},
+      components: [
+          { value: '1', text: 'aa' + ' - ' + '1' },
+          { value: '2', text: 'ab' + ' - ' + '2' },
+          { value: '3', text: 'bc' + ' - ' + '3' },
+          { value: '4', text: 'cd' + ' - ' + '4' },
+          { value: '5', text: 'de' + ' - ' + '5' }
+        ]
     };
   },
   methods: {
