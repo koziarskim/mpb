@@ -21,6 +21,7 @@ import org.hibernate.annotations.FetchMode;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.AllArgsConstructor;
@@ -41,9 +42,9 @@ public class Item {
 	private String description;
 	private String assumedPrice;
 	@Transient
-	private String[] componentList;
-//	@ManyToMany(mappedBy="items", fetch=FetchType.EAGER)
-    @ManyToMany(cascade=CascadeType.ALL)
+	private String[] componentIds;
+	@JsonIgnoreProperties("items")
+    @ManyToMany(cascade=CascadeType.MERGE)
     @JoinTable(name="item_component",
     	uniqueConstraints=@UniqueConstraint(columnNames= {"item_id", "component_id"}),
     	joinColumns={@JoinColumn(name="item_id", referencedColumnName="id")}, 

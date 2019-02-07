@@ -15,6 +15,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.UniqueConstraint;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.AllArgsConstructor;
@@ -38,10 +39,11 @@ public class Component {
 	private String description;
 	private String picture;
 	private String assumedPrice;
-//    @ManyToMany(mappedBy="components")
-//    @JoinTable(name="item_component",
-//    	uniqueConstraints=@UniqueConstraint(columnNames= {"item_id", "component_id"}),
-//    	joinColumns={@JoinColumn(name="component_id", referencedColumnName="id")}, 
-//    	inverseJoinColumns={@JoinColumn(name="item_id", referencedColumnName="id")})
-//	private Collection<Item> items;
+	@JsonIgnoreProperties("components")
+    @ManyToMany(cascade=CascadeType.MERGE)
+    @JoinTable(name="item_component",
+    	uniqueConstraints=@UniqueConstraint(columnNames= {"item_id", "component_id"}),
+    	joinColumns={@JoinColumn(name="component_id", referencedColumnName="id")}, 
+    	inverseJoinColumns={@JoinColumn(name="item_id", referencedColumnName="id")})
+	private Collection<Item> items;
 }
