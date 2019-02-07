@@ -3,7 +3,7 @@
         <div class="d-flex justify-content-between align-items-center">
             <h2>Component List</h2>
             <div>
-                <b-button type="submit" variant="primary" @click="createNewComponent">New Item</b-button>
+                <b-button type="submit" variant="primary" @click="goToComponent('')">New Item</b-button>
             </div>
         </div>
         <div v-if="components.length==0">Not found any components...</div>
@@ -13,7 +13,7 @@
                 :items="components"
                 :fields="fields">
                 <template slot="stockNumber" slot-scope="row">
-                    <b-button size="sm" variant="link">{{row.item.stockNumber}}</b-button>
+                    <b-button size="sm" @click.stop=goToComponent(row.item.id) variant="link">{{row.item.stockNumber}}</b-button>
                 </template>
                 <template slot="action" slot-scope="row">
                     <b-button size="sm" @click.stop="deleteComponent(row.item.id)">x</b-button>
@@ -86,8 +86,8 @@ export default {
             this.showAlert(e)
         });
     },
-    createNewComponent(){
-        router.push('/editComponent');
+    goToComponent(component_id){
+        router.push('/editComponent/'+component_id);
     },
   },
   mounted() {

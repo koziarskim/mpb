@@ -39,7 +39,7 @@ export default new Router({
       component: PurchaseList
     },
     {
-      path: "/editComponent",
+      path: "/editComponent/:component_id?",
       name: "editComponent",
       component: EditComponent
     },

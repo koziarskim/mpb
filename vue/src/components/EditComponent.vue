@@ -57,11 +57,22 @@ export default {
     };
   },
   methods: {
+    getComponentData(component_id) {
+      http
+        .get("/components/"+component_id)
+        .then(response => {
+          this.component = response.data;
+          console.log("Success getting component data");
+        })
+        .catch(e => {
+          console.log("API error: " + e);
+        });
+    },
     saveComponent() {
       http
         .post("/components", this.component)
         .then(response => {
-            router.push("./ComponentList")
+            router.push("/ComponentList")
         })
         .catch(e => {
           console.log("Error post");
@@ -69,6 +80,12 @@ export default {
     },
     cancelComponent() {
       this.component = {};
+    }
+  },
+  mounted(){
+    var component_id = this.$route.params.component_id;
+    if(component_id){
+        this.getComponentData(component_id);
     }
   }
 };
