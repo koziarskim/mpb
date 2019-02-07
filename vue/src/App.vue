@@ -37,7 +37,6 @@ export default {
   name: "app",
   data() {
     return {
-      customers: []
     };
   },
   computed: {
@@ -53,31 +52,7 @@ export default {
     goTo(view) {
       router.push(view);
     },
-    retrieveCustomers() {
-      http
-        .get("/customers")
-        .then(response => {
-          if (response.data.length > 0) {
-            this.changeUserName(response.data[0].name);
-          } else {
-            this.changeUserName("Admin");
-          }
-          console.log(response.data);
-        })
-        .catch(e => {
-          console.log(e);
-        });
-    },
-    refreshList() {
-      this.retrieveCustomers();
-    }
     /* eslint-enable no-console */
-  },
-  updated() {
-    this.retrieveCustomers();
-  },
-  mounted() {
-    this.retrieveCustomers();
   }
 };
 </script>

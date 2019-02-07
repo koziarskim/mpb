@@ -54,7 +54,7 @@
             <b-row>
                 <b-col cols=2></b-col>
                 <b-col cols=10>
-                        <div style="border-bottom: 1px solid #ced4da" v-for="it in components" v-bind:key="it.id" class="d-flex justify-content-between align-items-center">
+                        <div style="border-bottom: 1px solid #ced4da" v-for="it in item.components" v-bind:key="it.id" class="d-flex justify-content-between align-items-center">
                             <label>{{it.stockNumber+": "+it.name+": "+(it.description?it.description:"")}}</label>
                             <b-button size="sm" type="reset" variant="danger" @click="removeComponent(it.id)">x</b-button>
                         </div>                
@@ -73,9 +73,10 @@ export default {
   name: "edit-component",
   data() {
     return {
-      item: {},
+      item: {
+          components: []
+      },
       component: {},
-      components: [],
       avaliable_components: [
         { id: "1", name: "aa-1", desc: "Walmart cub" },
         { id: "2", name: "ab-2", desc: "desc" },
@@ -88,17 +89,18 @@ export default {
   watch: {
     component: function(new_value, old_value) {
       if (new_value.id) {
-        var found = this.components.some(function(element) {
+        var found = this.item.components.some(function(element) {
           return element.id === new_value.id;
         });
         if (!found) {
-          this.components.push(new_value);
+          this.item.components.push(new_value);
         }
       }
     }
   },
   methods: {
     getComponentsData() {
+        
       http
         .get("/components")
         .then(response => {
@@ -123,14 +125,14 @@ export default {
     },
     cancelItem() {
       this.item = {};
-      this.components = [];
+    //   this.components = [];
       this.component = {};
     },
     removeComponent(comp_id) {
       console.log("remove comp");
       for (var i = 0; i < this.components.length; i++) {
-        if (this.components[i].id == comp_id) {
-          this.components.splice(i, 1);
+        if (this.item.components[i].id == comp_id) {
+          this.item.components.splice(i, 1);
           break;
         }
       }

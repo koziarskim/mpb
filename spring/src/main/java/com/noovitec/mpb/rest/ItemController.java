@@ -49,10 +49,6 @@ class ItemController {
 
 	@GetMapping("/items")
 	Collection<Item> getAll() {
-//		Collection<Item> items = itemRepo.findAll();
-//		Item item = items.iterator().next();
-//		Component comp = item.getComponents().iterator().next();
-//		Long id = comp.getId();
 		return itemRepo.findAll();
 	}
 
@@ -66,20 +62,7 @@ class ItemController {
 	@PostMapping("/items")
 	ResponseEntity<Item> post(@Valid @RequestBody Item item) throws URISyntaxException {
 		Item result = itemRepo.save(item);
-		Collection<Component> allComp = componentRepo.findAll();
-		Component component = allComp.iterator().next();
-//		Component compNew = new Component();
-		Long id = component.getId();
-		if(component!=null) {
-//			component.setItem(result);
-//			componentRepo.save(component);
-			Collection<Component> components = new HashSet<Component>();
-			components.add(component);
-			result.setComponents(components);
-		}
-		itemRepo.save(item);
-//		return ResponseEntity.created(new URI("/api/items/" + result.getId())).body(result);
-		return null;
+		return ResponseEntity.created(new URI("/api/items/" + result.getId())).body(result);
 	}
 
 	@PutMapping("/items")
