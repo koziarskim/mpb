@@ -42,6 +42,9 @@
                 <b-button type="reset" variant="danger" @click="cancelComponent">Reset</b-button>
             </b-col>
         </b-row>
+        <b-alert :show="this.component.locked" dismissible variant="warning">
+                Component may be currently used by Item(s). Changes here will update Item(s) as well.
+        </b-alert>
     </b-container>
 </template>
 
