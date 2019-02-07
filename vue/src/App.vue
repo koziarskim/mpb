@@ -14,7 +14,8 @@
                     <b-nav-item-dropdown right>
                         <!-- Using button-content slot -->
                         <template slot="button-content">
-                        <em>{{userName}}</em>
+                        <!-- <em>{{userName}}</em> -->
+                        <em>Marcin Koziarski</em>
                         </template>
                         <b-dropdown-item v-on:click="goTo('/')">Profile</b-dropdown-item>
                         <b-dropdown-item href="#">Signout</b-dropdown-item>
