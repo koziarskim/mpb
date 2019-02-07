@@ -12,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -39,6 +40,8 @@ public class Component {
 	private String description;
 	private String picture;
 	private String assumedPrice;
+	@Transient
+	private Boolean locked;
 	@JsonIgnoreProperties("components")
     @ManyToMany()
     @JoinTable(name="item_component",
@@ -46,4 +49,11 @@ public class Component {
     	joinColumns={@JoinColumn(name="component_id", referencedColumnName="id")}, 
     	inverseJoinColumns={@JoinColumn(name="item_id", referencedColumnName="id")})
 	private Collection<Item> items;
+	
+	public Boolean getLocked() {
+		if(items==null || items.isEmpty()) {
+			return false;
+		}
+		return true;
+	}
 }

@@ -62,14 +62,28 @@ export default {
           console.log("API error: "+e);
         });
     },
-    deleteComponent(item_id) {
+    getItem(component_id){
+        var component;
+        var found = this.components.some(function(element) {
+           if(element.id === component_id){
+                component = element;
+           }
+        });
+        return component;
+    },
+    deleteComponent(component_id) {
+        var item = this.getItem(component_id);
+        if(item && item.locked){
+            this.showAlert("Component is locked. It may be currently used by Item(s)")
+            return;
+        }
       http
-        .delete("/components/"+item_id)
+        .delete("/components/"+component_id)
         .then(response => {
           this.getComponentsData();
         })
         .catch(e => {
-            this.showAlert(e.response.data.message)
+            this.showAlert(e)
         });
     },
     createNewComponent(){
