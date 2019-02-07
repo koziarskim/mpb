@@ -110,6 +110,7 @@ export default {
         });
     },
     saveItem() {
+        this.item.componentList=["1","2"]
       http
         .post("/items", this.item)
         .then(response => {

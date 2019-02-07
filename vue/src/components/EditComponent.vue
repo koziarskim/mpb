@@ -58,7 +58,6 @@ export default {
   },
   methods: {
     saveComponent() {
-        this.component.itemId = 6;
       http
         .post("/components", this.component)
         .then(response => {
