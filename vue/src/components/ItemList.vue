@@ -13,7 +13,7 @@
                 :items="items"
                 :fields="fields">
                 <template slot="stockNumber" slot-scope="row">
-                    <b-button size="sm" variant="link">{{row.item.stockNumber}}</b-button>
+                    <b-button size="sm" variant="link" @click.stop="updateItem(row.item.id)">{{row.item.stockNumber}}</b-button>
                 </template>
                 <template slot="action" slot-scope="row">
                     <b-button size="sm" @click.stop="deleteItem(row.item.id)">x</b-button>
@@ -67,6 +67,9 @@ export default {
     },
     createNewItem(){
         router.push('/editItem');
+    },
+    updateItem(item_id){
+        router.push('./editItem/'+item_id);
     }
   },
   mounted() {

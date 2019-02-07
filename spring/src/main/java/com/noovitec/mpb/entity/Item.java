@@ -44,7 +44,7 @@ public class Item {
 	@Transient
 	private String[] componentIds;
 	@JsonIgnoreProperties("items")
-    @ManyToMany(cascade=CascadeType.MERGE)
+    @ManyToMany()
     @JoinTable(name="item_component",
     	uniqueConstraints=@UniqueConstraint(columnNames= {"item_id", "component_id"}),
     	joinColumns={@JoinColumn(name="item_id", referencedColumnName="id")}, 

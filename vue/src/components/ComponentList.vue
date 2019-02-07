@@ -19,6 +19,9 @@
                     <b-button size="sm" @click.stop="deleteComponent(row.item.id)">x</b-button>
                 </template>
         </b-table>
+        <b-alert :show="alertSecs" dismissible variant="warning" @dismiss-count-down="(secs) => { alertSecs = secs }">
+                {{alertMessage}}
+        </b-alert>
     </b-container>
 </template>
 <script>
@@ -29,6 +32,8 @@ export default {
   name: "edit-component",
   data() {
     return {
+      alertSecs: 0,
+      alertMessage: "",
       sortBy: 'age',
       sortDesc: false,
       fields: [
@@ -42,6 +47,10 @@ export default {
     };
   },
   methods: {
+    showAlert (message) {
+      this.alertSecs = 3,
+      this.alertMessage = message
+    },
     getComponentsData() {
       http
         .get("/components")
@@ -60,11 +69,12 @@ export default {
           this.getComponentsData();
         })
         .catch(e => {
+            this.showAlert(e.response.data.message)
         });
     },
     createNewComponent(){
         router.push('/editComponent');
-    }
+    },
   },
   mounted() {
      this.getComponentsData();

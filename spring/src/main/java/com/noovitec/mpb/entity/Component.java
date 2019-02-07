@@ -40,7 +40,7 @@ public class Component {
 	private String picture;
 	private String assumedPrice;
 	@JsonIgnoreProperties("components")
-    @ManyToMany(cascade=CascadeType.MERGE)
+    @ManyToMany()
     @JoinTable(name="item_component",
     	uniqueConstraints=@UniqueConstraint(columnNames= {"item_id", "component_id"}),
     	joinColumns={@JoinColumn(name="component_id", referencedColumnName="id")}, 

@@ -74,7 +74,7 @@ export default {
   data() {
     return {
       item: {
-          components: []
+        components: []
       },
       component: {},
       avaliable_components: [
@@ -100,7 +100,6 @@ export default {
   },
   methods: {
     getComponentsData() {
-        
       http
         .get("/components")
         .then(response => {
@@ -108,16 +107,27 @@ export default {
           console.log("Success getting component data");
         })
         .catch(e => {
-          console.log("API error: "+e);
+          console.log("API error: " + e);
+        });
+    },
+    getItemData(item_id) {
+      http
+        .get("/items/"+item_id)
+        .then(response => {
+          this.item = response.data;
+          console.log("Success getting item data");
+        })
+        .catch(e => {
+          console.log("API error: " + e);
         });
     },
     saveItem() {
-        this.item.componentList=["1","2"]
+      this.item.componentList = ["1", "2"];
       http
         .post("/items", this.item)
         .then(response => {
           console.log("Success post");
-          router.push("./ItemList")
+          router.push("/ItemList");
         })
         .catch(e => {
           console.log("Error post");
@@ -125,12 +135,12 @@ export default {
     },
     cancelItem() {
       this.item = {};
-    //   this.components = [];
+      //   this.components = [];
       this.component = {};
     },
     removeComponent(comp_id) {
       console.log("remove comp");
-      for (var i = 0; i < this.components.length; i++) {
+      for (var i = 0; i < this.item.components.length; i++) {
         if (this.item.components[i].id == comp_id) {
           this.item.components.splice(i, 1);
           break;
@@ -138,8 +148,12 @@ export default {
       }
     }
   },
-  mounted() {
-     this.getComponentsData();
+  created() {
+    this.getComponentsData();
+    var item_id = this.$route.params.item_id;
+    if(item_id){
+        this.getItemData(item_id);
+    }
   }
 };
 </script>

@@ -13,6 +13,7 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Optional;
 
 @CrossOrigin
@@ -69,7 +70,13 @@ class ComponentController {
     @DeleteMapping("/components/{id}")
     public ResponseEntity<?> deleteComponent(@PathVariable Long id) {
         log.info("Request to delete component: {}", id);
-        componentRepository.deleteById(id);
-        return ResponseEntity.ok().build();
+        Component component = componentRepository.getOne(id);
+        if(component.getItems().size()>0) {
+        	return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED)
+        			.body(Collections.singletonMap("message", "Component is currently used by existing Item(s)"));
+        }else {
+	        componentRepository.deleteById(id);
+	        return ResponseEntity.ok().build();
+        }
     }
 }
