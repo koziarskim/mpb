@@ -1,45 +1,79 @@
 <template>
     <b-container fluid>
-        <h1>New Component</h1>
+        <div style="border: 0px" class="d-flex justify-content-between align-items-center">
+            <h2>New Component</h2>
+            <div>
+                <b-button type="submit" variant="primary" @click="saveComponent">Save</b-button>
+                <b-button type="reset" variant="danger" @click="cancelComponent">Clear</b-button>
+            </div>
+        </div>
         <b-row>
             <b-col cols=1>
                 <label>Name:</label>
             </b-col>
-            <b-col cols=6>
-                <b-form-input type="text" v-model="component.name" placeholder="Enter your name"></b-form-input>
+            <b-col cols=4>
+                <b-form-input type="text" v-model="component.name" placeholder="Component name"></b-form-input>
+            </b-col>
+            <b-col cols=1>
+                <label>Vendor:</label>
+            </b-col>
+            <b-col cols=4>
+                    <b-select option-value="id" option-text="name" :list="availableVendors" v-model="component.vendor" placeholder="Select Vendor"></b-select>
             </b-col>
         </b-row>
         <b-row>
-            <b-col cols=1>
-                <label>Stock#:</label>
+            <b-col cols=2>
+                <label>MPB Stock#:</label>
             </b-col>
-            <b-col cols=6>
-                <b-form-input type="text" v-model="component.stockNumber" placeholder="Enter MPB stock number"></b-form-input>
+            <b-col cols=3>
+                <b-form-input type="text" v-model="component.stockNumber" placeholder="Internal stock number"></b-form-input>
+            </b-col>
+            <b-col cols=1>
+                <label>Category:</label>
+            </b-col>
+            <b-col cols=4>
+                    <b-select option-value="id" option-text="name" :list="availableCategories" v-model="component.category" placeholder="Select Vendor"></b-select>
             </b-col>
         </b-row>
         <b-row>
-            <b-col cols=1>
-                <label>Stock#:</label>
+            <b-col cols=2>
+                <label>Supplier's Stock#:</label>
             </b-col>
-            <b-col cols=6>
-                <b-form-input type="text" v-model="component.description" placeholder="Enter short description"></b-form-input>
-            </b-col>
-        </b-row>
-        <b-row>
-            <b-col cols=1>
-                <label>Price:</label>
-            </b-col>
-            <b-col cols=6>
-                <b-form-input type="text" v-model="component.assumedPrice" placeholder="Enter assumed price"></b-form-input>
+            <b-col cols=3>
+                <b-form-input type="text" v-model="component.supplierStockNumber" placeholder="Supplier's stock number"></b-form-input>
             </b-col>
         </b-row>
         <b-row>
-            <b-col cols=5></b-col>
-            <b-col cols=1>      
-                <b-button type="submit" variant="primary" @click="saveComponent">Submit</b-button>
+            <b-col cols=2>
+                <label>Description:</label>
+            </b-col>
+            <b-col cols=5>
+                <b-form-textarea type="text" :rows=3 v-model="component.description" placeholder="Enter short description"></b-form-textarea>
+            </b-col>
+        </b-row>
+        <b-row>
+            <b-col cols=12>
+                <hr class="hr-text" data-content="Price/fees are per unit only">
+            </b-col>
+        </b-row>
+        <b-row>
+            <b-col cols=2>
+                <label>Purchase Price:</label>
+            </b-col>
+            <b-col cols=2>
+                <b-form-input type="number" v-model="component.assumedPrice" placeholder="Price"></b-form-input>
             </b-col>
             <b-col cols=1>
-                <b-button type="reset" variant="danger" @click="cancelComponent">Reset</b-button>
+                <label>Duty:</label>
+            </b-col>
+            <b-col cols=2>
+                <b-form-input type="number" v-model="component.dutyFee" placeholder="Duty"></b-form-input>
+            </b-col>
+            <b-col cols=1>
+                <label>Delivery:</label>
+            </b-col>
+            <b-col cols=2>
+                <b-form-input type="number" v-model="component.deliveryFee" placeholder="Delivery"></b-form-input>
             </b-col>
         </b-row>
         <b-alert :show="this.component.locked" dismissible variant="warning">
@@ -57,6 +91,8 @@ export default {
   data() {
     return {
       component: {},
+      availableVendors: [{id:1, name:'Walmart'},{id:2, name: 'Costco'},{id:3, name: 'Big Lots'}],
+      availableCategories: [{id: 1, name: 'Food'},{id: 2, name: 'Coca Cola'},{id:3, name: 'Butweiser'}]
     };
   },
   methods: {
