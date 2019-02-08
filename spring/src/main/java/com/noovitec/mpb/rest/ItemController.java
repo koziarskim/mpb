@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.hibernate.mapping.Set;
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.noovitec.mpb.entity.Component;
 import com.noovitec.mpb.entity.Item;
+import com.noovitec.mpb.entity.ItemComponent;
 import com.noovitec.mpb.repo.ComponentRepo;
 import com.noovitec.mpb.repo.ItemRepo;
 
@@ -60,8 +62,8 @@ class ItemController {
 	}
 
 	@PostMapping("/items")
-	ResponseEntity<Item> post(@Valid @RequestBody Item item) throws URISyntaxException {
-		Item result = itemRepo.save(item);
+	ResponseEntity<Item> post(@Valid @RequestBody Item jsonItem) throws URISyntaxException {
+		Item result = itemRepo.save(jsonItem);
 		return ResponseEntity.created(new URI("/api/items/" + result.getId())).body(result);
 	}
 

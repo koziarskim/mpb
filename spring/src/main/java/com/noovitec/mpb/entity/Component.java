@@ -2,22 +2,15 @@ package com.noovitec.mpb.entity;
 
 import java.util.Collection;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.Transient;
-import javax.persistence.UniqueConstraint;
+import javax.persistence.OneToMany;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,6 +20,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 public class Component {
 
 	@Id
@@ -40,20 +34,9 @@ public class Component {
 	private String description;
 	private String picture;
 	private String assumedPrice;
-	@Transient
-	private Boolean locked;
-	@JsonIgnoreProperties("components")
-    @ManyToMany()
-    @JoinTable(name="item_component",
-    	uniqueConstraints=@UniqueConstraint(columnNames= {"item_id", "component_id"}),
-    	joinColumns={@JoinColumn(name="component_id", referencedColumnName="id")}, 
-    	inverseJoinColumns={@JoinColumn(name="item_id", referencedColumnName="id")})
-	private Collection<Item> items;
-	
-	public Boolean getLocked() {
-		if(items==null || items.isEmpty()) {
-			return false;
-		}
-		return true;
-	}
+
+	@JsonIgnoreProperties({ "component" })
+	@OneToMany(fetch = FetchType.EAGER, orphanRemoval = true)
+	@JoinColumn(name = "item_id")
+	private Collection<ItemComponent> itemComponents;
 }

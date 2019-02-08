@@ -71,12 +71,13 @@ class ComponentController {
     public ResponseEntity<?> deleteComponent(@PathVariable Long id) {
         log.info("Request to delete component: {}", id);
         Component component = componentRepository.getOne(id);
-        if(component.getItems().size()>0) {
-        	return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED)
-        			.body(Collections.singletonMap("message", "Component is currently used by existing Item(s)"));
-        }else {
-	        componentRepository.deleteById(id);
-	        return ResponseEntity.ok().build();
-        }
+//        if(component.getItems().size()>0) {
+//        	return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED)
+//        			.body(Collections.singletonMap("message", "Component is currently used by existing Item(s)"));
+//        }else {
+//	        componentRepository.deleteById(id);
+//	        return ResponseEntity.ok().build();
+//        }
+        return null;
     }
 }

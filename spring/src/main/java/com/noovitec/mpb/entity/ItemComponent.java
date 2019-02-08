@@ -1,13 +1,11 @@
 package com.noovitec.mpb.entity;
 
-import java.util.Collection;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToOne;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -19,19 +17,20 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Item {
+public class ItemComponent {
 
 	@Id
 	@GeneratedValue
 	private Long id;
-	private String name;
-	private String stockNumber;
-	private String description;
-	private String assumedPrice;
-	
-	@JsonIgnoreProperties({"item"})
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	private Integer units;
+
+	@JsonIgnoreProperties({ "itemComponents" })
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "item_id")
-	private Collection<ItemComponent> itemComponents; 
-	
+	private Item item;
+
+	@JsonIgnoreProperties({ "itemComponents" })
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "component_id", referencedColumnName = "id")
+	private Component component;
 }

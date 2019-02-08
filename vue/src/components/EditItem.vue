@@ -54,9 +54,9 @@
             <b-row>
                 <b-col cols=2></b-col>
                 <b-col cols=10>
-                        <div style="border-bottom: 1px solid #ced4da" v-for="it in item.components" v-bind:key="it.id" class="d-flex justify-content-between align-items-center">
-                            <label>{{it.stockNumber+": "+it.name+": "+(it.description?it.description:"")}}</label>
-                            <b-button size="sm" type="reset" variant="danger" @click="removeComponent(it.id)">x</b-button>
+                        <div style="border-bottom: 1px solid #ced4da" v-for="ic in item.itemComponents" v-bind:key="ic.id" class="d-flex justify-content-between align-items-center">
+                            <label>{{ic.component.stockNumber+": "+ic.name+": "+(ic.component.description?ic.component.description:"")}}</label>
+                            <b-button size="sm" type="reset" variant="danger" @click="removeItemComponent(ic.id)">x</b-button>
                         </div>                
                 </b-col>
             </b-row>
@@ -74,7 +74,16 @@ export default {
   data() {
     return {
       item: {
-        components: []
+        itemComponents: [
+            {
+                unit: 1,
+                component: {
+                    stockNumber: "",
+                    name: "",
+                    decription: ""
+                }
+            }
+        ],
       },
       component: {},
       avaliable_components: [
@@ -87,13 +96,15 @@ export default {
     };
   },
   watch: {
-    component: function(new_value, old_value) {
-      if (new_value.id) {
-        var found = this.item.components.some(function(element) {
-          return element.id === new_value.id;
+    component: function(new_component, old_component) {
+      if (new_component.id) {
+        var found = this.item.itemComponents.some(function(ic) {
+          return ic.component.id === new_component.id;
         });
         if (!found) {
-          this.item.components.push(new_value);
+          this.item.itemComponents.push({
+              units: 2,
+              component: new_component});
         }
       }
     }
@@ -122,7 +133,6 @@ export default {
         });
     },
     saveItem() {
-      this.item.componentList = ["1", "2"];
       http
         .post("/items", this.item)
         .then(response => {
@@ -130,19 +140,18 @@ export default {
           router.push("/ItemList");
         })
         .catch(e => {
-          console.log("Error post");
+          console.log("Error post"+e);
         });
     },
     cancelItem() {
       this.item = {};
-      //   this.components = [];
       this.component = {};
     },
-    removeComponent(comp_id) {
+    removeItemComponent(ic_id) {
       console.log("remove comp");
-      for (var i = 0; i < this.item.components.length; i++) {
-        if (this.item.components[i].id == comp_id) {
-          this.item.components.splice(i, 1);
+      for (var i = 0; i < this.item.itemComponents.length; i++) {
+        if (this.item.itemComponents[i].id == ic_id) {
+          this.item.itemComponents.splice(i, 1);
           break;
         }
       }
