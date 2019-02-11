@@ -53,7 +53,7 @@ export default {
     },
     getComponentsData() {
       http
-        .get("/components")
+        .get("/component")
         .then(response => {
           this.components = response.data;
           console.log("Success getting component data");
@@ -78,7 +78,7 @@ export default {
             return;
         }
       http
-        .delete("/components/"+component_id)
+        .delete("/component/"+component_id)
         .then(response => {
           this.getComponentsData();
         })

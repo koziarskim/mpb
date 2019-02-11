@@ -119,7 +119,7 @@ export default {
   methods: {
     getComponentsData() {
       http
-        .get("/components")
+        .get("/component")
         .then(response => {
           this.avaliable_components = response.data;
           console.log("Success getting component data");
@@ -130,7 +130,7 @@ export default {
     },
     getItemData(item_id) {
       http
-        .get("/items/"+item_id)
+        .get("/item/"+item_id)
         .then(response => {
           this.item = response.data;
           console.log("Success getting item data");
@@ -141,7 +141,7 @@ export default {
     },
     saveItem() {
       http
-        .post("/items", this.item)
+        .post("/item", this.item)
         .then(response => {
           console.log("Success post");
           window.history.back();

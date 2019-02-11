@@ -109,7 +109,7 @@ export default {
   methods: {
     getComponentData(component_id) {
       http
-        .get("/components/" + component_id)
+        .get("/component/" + component_id)
         .then(response => {
           this.component = response.data;
           if (!this.component.vendor) {
@@ -145,7 +145,7 @@ export default {
     },
     saveComponent() {
       http
-        .post("/components", this.component)
+        .post("/component", this.component)
         .then(response => {
           window.history.back();
         })

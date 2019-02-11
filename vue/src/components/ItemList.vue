@@ -44,7 +44,7 @@ export default {
   methods: {
     getComponentsData() {
       http
-        .get("/items")
+        .get("/item")
         .then(response => {
           this.items = response.data;
           console.log("Success getting component data");
@@ -56,7 +56,7 @@ export default {
     deleteItem(item_id) {
         console.log("Deleting...")
       http
-        .delete("/items/"+item_id)
+        .delete("/item/"+item_id)
         .then(response => {
           console.log("Success post");
           this.getComponentsData();

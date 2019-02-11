@@ -31,25 +31,25 @@ import com.noovitec.mpb.repo.ItemRepo;
 @CrossOrigin
 @RestController
 @RequestMapping("/api")
-class ItemController {
+class ItemRest {
 
-	private final Logger log = LoggerFactory.getLogger(ItemController.class);
+	private final Logger log = LoggerFactory.getLogger(ItemRest.class);
 	private ItemRepo itemRepo;
 	@Autowired
 	private ComponentRepo componentRepo;
 	@PersistenceContext
 	private EntityManager em;
 
-	public ItemController(ItemRepo itemRepo) {
+	public ItemRest(ItemRepo itemRepo) {
 		this.itemRepo = itemRepo;
 	}
 
-	@GetMapping("/items")
+	@GetMapping("/item")
 	Collection<Item> getAll() {
 		return itemRepo.findAll();
 	}
 
-	@GetMapping("/items/{id}")
+	@GetMapping("/item/{id}")
 	ResponseEntity<?> get(@PathVariable Long id) {
 		Optional<Item> item = itemRepo.findById(id);
 		return item.map(response -> ResponseEntity.ok().body(response))
@@ -60,7 +60,7 @@ class ItemController {
 	 * Use this to create and update entity. No need to use PUT for update. If ID is
 	 * not null, it will try to update.
 	 */
-	@PostMapping("/items")
+	@PostMapping("/item")
 	ResponseEntity<Item> post(@Valid @RequestBody Item jsonItem) throws URISyntaxException {
 		for (ItemComponent ic : jsonItem.getItemComponents()) {
 			if (ic.getId() != null) {
@@ -68,10 +68,10 @@ class ItemController {
 			}
 		}
 		Item result = itemRepo.save(jsonItem);
-		return ResponseEntity.created(new URI("/api/items/" + result.getId())).body(result);
+		return ResponseEntity.created(new URI("/api/item/" + result.getId())).body(result);
 	}
 
-	@DeleteMapping("/items/{id}")
+	@DeleteMapping("/item/{id}")
 	public ResponseEntity<?> delete(@PathVariable Long id) {
 		itemRepo.deleteById(id);
 		return ResponseEntity.ok().build();

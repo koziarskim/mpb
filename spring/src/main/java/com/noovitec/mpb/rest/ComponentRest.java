@@ -19,28 +19,28 @@ import java.util.Optional;
 @CrossOrigin
 @RestController
 @RequestMapping("/api")
-class ComponentController {
+class ComponentRest {
 
-    private final Logger log = LoggerFactory.getLogger(ComponentController.class);
+    private final Logger log = LoggerFactory.getLogger(ComponentRest.class);
     private ComponentRepo componentRepository;
 
-    public ComponentController(ComponentRepo componentRepository) {
+    public ComponentRest(ComponentRepo componentRepository) {
         this.componentRepository = componentRepository;
     }
 
-    @GetMapping("/components")
-    Collection<Component> components() {
+    @GetMapping("/component")
+    Collection<Component> getAll() {
         return componentRepository.findAll();
     }
 
-    @GetMapping("/components/{id}")
+    @GetMapping("/component/{id}")
     ResponseEntity<?> getComponent(@PathVariable Long id) {
         Optional<Component> component = componentRepository.findById(id);
         return component.map(response -> ResponseEntity.ok().body(response))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @PostMapping("/components")
+    @PostMapping("/component")
     ResponseEntity<Component> createComponent(@Valid @RequestBody Component component) throws URISyntaxException {
         log.info("Request to create component: {}", component);
         Component result = componentRepository.save(component);
@@ -48,7 +48,7 @@ class ComponentController {
                 .body(result);
     }
 
-    @PutMapping("/components")
+    @PutMapping("/component")
     ResponseEntity<Component> updateComponent(@Valid @RequestBody Component component) {
         log.info("Request to update component: {}", component);
         Long id = component.getId();
@@ -67,7 +67,7 @@ class ComponentController {
         return ResponseEntity.ok().body(result);
     }
 
-    @DeleteMapping("/components/{id}")
+    @DeleteMapping("/component/{id}")
     public ResponseEntity<?> deleteComponent(@PathVariable Long id) {
         log.info("Request to delete component: {}", id);
         Component component = componentRepository.getOne(id);
