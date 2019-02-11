@@ -74,16 +74,7 @@ export default {
   data() {
     return {
       item: {
-        itemComponents: [
-            {
-                unit: 1,
-                component: {
-                    stockNumber: "",
-                    name: "",
-                    decription: ""
-                }
-            }
-        ],
+        itemComponents: [],
       },
       component: {},
       avaliable_components: [
