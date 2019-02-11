@@ -9,6 +9,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -21,7 +22,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
+//@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 public class Component {
 
 	@Id
@@ -42,4 +43,14 @@ public class Component {
 	@OneToMany(fetch = FetchType.EAGER, orphanRemoval = true)
 	@JoinColumn(name = "item_id")
 	private Collection<ItemComponent> itemComponents;
+	
+	@JsonIgnoreProperties({ "components" })
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "vendor_id")
+	private Vendor vendor;
+
+	@JsonIgnoreProperties({ "components" })
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "brand_id", referencedColumnName = "id")
+	private Brand brand;
 }

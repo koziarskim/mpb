@@ -11,18 +11,18 @@
         <b-col cols=6>
             <b-row>
                 <b-col cols=2>
-                    <label>Name:</label>
-                </b-col>
-                <b-col cols=10>
-                    <b-form-input type="text" v-model="item.name" placeholder="Enter your name"></b-form-input>
-                </b-col>
-            </b-row>
-            <b-row>
-                <b-col cols=2>
                     <label>Stock#:</label>
                 </b-col>
                 <b-col cols=10>
                     <b-form-input type="text" v-model="item.stockNumber" placeholder="Enter MPB stock number"></b-form-input>
+                </b-col>
+            </b-row>
+            <b-row>
+                <b-col cols=2>
+                    <label>Name:</label>
+                </b-col>
+                <b-col cols=10>
+                    <b-form-input type="text" v-model="item.name" placeholder="Enter your name"></b-form-input>
                 </b-col>
             </b-row>
             <b-row>
@@ -48,16 +48,19 @@
                     <label>Comp:</label>
                 </b-col>
                 <b-col cols=10>
-                    <b-select option-value="id" option-text="name" :list="avaliable_components" v-model="component" placeholder="Select component"></b-select>
+                    <b-select option-value="id" option-text="stockNumber" :list="avaliable_components" v-model="component" placeholder="Select component"></b-select>
                 </b-col>
             </b-row>
             <b-row>
                 <b-col cols=2></b-col>
                 <b-col cols=10>
-                        <div style="border-bottom: 1px solid #ced4da" v-for="ic in item.itemComponents" v-bind:key="ic.id">
-                            <input size="sm" style="border: 0px; width: 25px" min=1 max=9 v-model="ic.units" type="number"/>
-                            <label style="width: 320px">{{ic.component.name+", "+ic.component.stockNumber+", $"+ic.component.assumedPrice}}</label>
-                            <b-button size="sm" type="reset" variant="danger" @click="removeItemComponent(ic.id)">x</b-button>
+                        <div style="display: flex; border-bottom: 1px solid #ced4da" v-for="ic in item.itemComponents" v-bind:key="ic.id">
+                            <div style="width:100%">
+                                <input size="sm" style="border: 0px; width: 25px" min=1 max=9 v-model="ic.units" type="number"/>
+                                <b-button variant="link" @click="httpUtils.goTo('/editComponent/'+ic.component.id)">{{ic.component.stockNumber}}</b-button>
+                                <label>{{ic.component.name+", "+", $"+ic.component.assumedPrice}}</label>
+                            </div>
+                            <b-button size="sm" type="reset" variant="link" @click="removeItemComponent(ic.id)">(x)</b-button>
                         </div>                
                 </b-col>
             </b-row>
@@ -69,11 +72,13 @@
 <script>
 import http from "../http-common";
 import router from "../router";
+import httpUtils from "../httpUtils"
 
 export default {
   name: "edit-component",
   data() {
     return {
+        httpUtils: httpUtils,
       item: {
         itemComponents: [],
       },
@@ -139,7 +144,7 @@ export default {
         .post("/items", this.item)
         .then(response => {
           console.log("Success post");
-          router.push("/ItemList");
+          window.history.back();
         })
         .catch(e => {
           console.log("Error post"+e);

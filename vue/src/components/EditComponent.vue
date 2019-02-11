@@ -8,6 +8,20 @@
             </div>
         </div>
         <b-row>
+            <b-col cols=2>
+                <label>MPB Stock#:</label>
+            </b-col>
+            <b-col cols=3>
+                <b-form-input type="text" v-model="component.stockNumber" placeholder="Internal stock number"></b-form-input>
+            </b-col>
+            <b-col cols=1>
+                <label>Category:</label>
+            </b-col>
+            <b-col cols=4>
+                    <b-select option-value="id" option-text="name" :list="availableBrands" v-model="component.brand" placeholder="Select Brand"></b-select>
+            </b-col>
+        </b-row>
+        <b-row>
             <b-col cols=1>
                 <label>Name:</label>
             </b-col>
@@ -27,12 +41,6 @@
             </b-col>
             <b-col cols=3>
                 <b-form-input type="text" v-model="component.stockNumber" placeholder="Internal stock number"></b-form-input>
-            </b-col>
-            <b-col cols=1>
-                <label>Category:</label>
-            </b-col>
-            <b-col cols=4>
-                    <b-select option-value="id" option-text="name" :list="availableCategories" v-model="component.category" placeholder="Select Vendor"></b-select>
             </b-col>
         </b-row>
         <b-row>
@@ -90,17 +98,34 @@ export default {
   name: "add-component",
   data() {
     return {
-      component: {},
-      availableVendors: [{id:1, name:'Walmart'},{id:2, name: 'Costco'},{id:3, name: 'Big Lots'}],
-      availableCategories: [{id: 1, name: 'Food'},{id: 2, name: 'Coca Cola'},{id:3, name: 'Butweiser'}]
+      component: {
+        vendor: {},
+        brand: {}
+      },
+      availableVendors: [
+        { id: 1, name: "Walmart" },
+        { id: 2, name: "Costco" },
+        { id: 3, name: "Big Lots" }
+      ],
+      availableBrands: [
+        { id: 1, name: "Food" },
+        { id: 2, name: "Coca Cola" },
+        { id: 3, name: "Butweiser" }
+      ]
     };
   },
   methods: {
     getComponentData(component_id) {
       http
-        .get("/components/"+component_id)
+        .get("/components/" + component_id)
         .then(response => {
           this.component = response.data;
+          if (!this.component.vendor) {
+            this.component.vendor = {};
+          }
+          if (!this.component.brand) {
+            this.component.brand = {};
+          }
           console.log("Success getting component data");
         })
         .catch(e => {
@@ -111,7 +136,7 @@ export default {
       http
         .post("/components", this.component)
         .then(response => {
-            router.push("/ComponentList")
+          window.history.back();
         })
         .catch(e => {
           console.log("Error post");
@@ -121,10 +146,10 @@ export default {
       window.history.back();
     }
   },
-  mounted(){
+  mounted() {
     var component_id = this.$route.params.component_id;
-    if(component_id){
-        this.getComponentData(component_id);
+    if (component_id) {
+      this.getComponentData(component_id);
     }
   }
 };

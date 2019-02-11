@@ -1,7 +1,10 @@
 package com.noovitec.mpb.app;
 
+
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+
+import com.noovitec.mpb.entity.Vendor;
 
 @Component
 class MpbInitializer implements CommandLineRunner {
@@ -14,6 +17,7 @@ class MpbInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... strings) {
+//    	Vendor vendor = Vendor.builder().name("Wallmart").build();
 //        Stream.of("Denver JUG", "Utah JUG", "Seattle JUG",
 //                "Richmond JUG").forEach(name ->
 //                repository.save(new Group(name))
