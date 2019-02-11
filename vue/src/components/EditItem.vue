@@ -34,11 +34,11 @@
                 </b-col>
             </b-row>
             <b-row>
-                <b-col cols=2>
-                    <label>Price:</label>
+                <b-col cols=3>
+                    <label>Total Price:</label>
                 </b-col>
-                <b-col cols=10>
-                    <b-form-input type="text" v-model="item.assumedPrice" placeholder="Enter assumed price"></b-form-input>
+                <b-col cols=8>
+                    <label>{{totalPrice}}</label>
                 </b-col>
             </b-row>
         </b-col>
@@ -86,6 +86,16 @@ export default {
         { id: "5", name: "de-5", desc: "desc" }
       ]
     };
+  },
+  computed: {
+    totalPrice: function() {
+      var totalPrice = 0;
+      this.item.itemComponents.forEach(ic =>{
+          totalPrice= +totalPrice 
+          + ((+ic.component.assumedPrice + +ic.component.dutyFee + +ic.component.deliveryFee) * +ic.units);
+      });
+      return totalPrice;
+    }
   },
   watch: {
     component: function(new_component, old_component) {

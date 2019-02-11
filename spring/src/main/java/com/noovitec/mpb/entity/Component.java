@@ -35,6 +35,8 @@ public class Component {
 	private String description;
 	private String picture;
 	private BigDecimal assumedPrice;
+	private BigDecimal dutyFee;
+	private BigDecimal deliveryFee;
 
 	@JsonIgnoreProperties({ "component" })
 	@OneToMany(fetch = FetchType.EAGER, orphanRemoval = true)
