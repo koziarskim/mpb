@@ -102,16 +102,8 @@ export default {
         vendor: {},
         brand: {}
       },
-      availableVendors: [
-        { id: 1, name: "Walmart" },
-        { id: 2, name: "Costco" },
-        { id: 3, name: "Big Lots" }
-      ],
-      availableBrands: [
-        { id: 1, name: "Food" },
-        { id: 2, name: "Coca Cola" },
-        { id: 3, name: "Butweiser" }
-      ]
+      availableVendors: [],
+      availableBrands: []
     };
   },
   methods: {
@@ -126,7 +118,26 @@ export default {
           if (!this.component.brand) {
             this.component.brand = {};
           }
-          console.log("Success getting component data");
+        })
+        .catch(e => {
+          console.log("API error: " + e);
+        });
+    },
+    getAvailableVendors() {
+      http
+        .get("/vendor")
+        .then(response => {
+          this.availableVendors = response.data;
+        })
+        .catch(e => {
+          console.log("API error: " + e);
+        });
+    },
+    getAvailableBrands() {
+      http
+        .get("/brand")
+        .then(response => {
+          this.availableBrands = response.data;
         })
         .catch(e => {
           console.log("API error: " + e);
@@ -151,6 +162,8 @@ export default {
     if (component_id) {
       this.getComponentData(component_id);
     }
+    this.getAvailableVendors();
+    this.getAvailableBrands();
   }
 };
 </script>
