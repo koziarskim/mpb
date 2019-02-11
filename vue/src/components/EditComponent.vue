@@ -4,7 +4,7 @@
             <h2>New Component</h2>
             <div>
                 <b-button type="submit" variant="primary" @click="saveComponent">Save</b-button>
-                <b-button type="reset" variant="danger" @click="cancelComponent">Clear</b-button>
+                <b-button type="reset" variant="danger" @click="cancelComponent">Cancel</b-button>
             </div>
         </div>
         <b-row>
@@ -118,7 +118,7 @@ export default {
         });
     },
     cancelComponent() {
-      this.component = {};
+      window.history.back();
     }
   },
   mounted(){

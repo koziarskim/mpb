@@ -1,5 +1,6 @@
 package com.noovitec.mpb.entity;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 
 import javax.persistence.Column;
@@ -33,7 +34,7 @@ public class Component {
 	private String vendorStockNumber;
 	private String description;
 	private String picture;
-	private String assumedPrice;
+	private BigDecimal assumedPrice;
 
 	@JsonIgnoreProperties({ "component" })
 	@OneToMany(fetch = FetchType.EAGER, orphanRemoval = true)

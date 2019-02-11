@@ -4,7 +4,7 @@
             <h2>New Item</h2>
             <div>
                 <b-button type="submit" variant="primary" @click="saveItem">Submit</b-button>
-                <b-button type="reset" variant="danger" @click="cancelItem">Reset</b-button>
+                <b-button type="reset" variant="danger" @click="cancelItem">Cancel</b-button>
             </div>
         </div>
         <b-row>
@@ -54,8 +54,9 @@
             <b-row>
                 <b-col cols=2></b-col>
                 <b-col cols=10>
-                        <div style="border-bottom: 1px solid #ced4da" v-for="ic in item.itemComponents" v-bind:key="ic.id" class="d-flex justify-content-between align-items-center">
-                            <label>{{ic.component.stockNumber+": "+ic.name+": "+(ic.component.description?ic.component.description:"")}}</label>
+                        <div style="border-bottom: 1px solid #ced4da" v-for="ic in item.itemComponents" v-bind:key="ic.id">
+                            <input size="sm" style="border: 0px; width: 25px" min=1 max=9 v-model="ic.units" type="number"/>
+                            <label style="width: 320px">{{ic.component.name+", "+ic.component.stockNumber+", $"+ic.component.assumedPrice}}</label>
                             <b-button size="sm" type="reset" variant="danger" @click="removeItemComponent(ic.id)">x</b-button>
                         </div>                
                 </b-col>
@@ -94,7 +95,7 @@ export default {
         });
         if (!found) {
           this.item.itemComponents.push({
-              units: 2,
+              units: 1, //Default value
               component: new_component});
         }
       }
@@ -135,8 +136,7 @@ export default {
         });
     },
     cancelItem() {
-      this.item = {};
-      this.component = {};
+      window.history.back();
     },
     removeItemComponent(ic_id) {
       console.log("remove comp");
