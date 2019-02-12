@@ -3,13 +3,13 @@
         <div style="border: 0px" class="d-flex justify-content-between align-items-center">
             <h2>New Component</h2>
             <div>
-                <b-button type="submit" variant="primary" @click="saveComponent">Save</b-button>
+                <b-button type="submit" variant="primary" @click="saveAndUpload">Save</b-button>
                 <b-button type="reset" variant="danger" @click="cancelComponent">Cancel</b-button>
             </div>
         </div>
         <b-row>
-            <b-col cols=2>
-                <label>MPB Stock#:</label>
+            <b-col cols=1>
+                <label>MPB#:</label>
             </b-col>
             <b-col cols=3>
                 <b-form-input type="text" v-model="component.stockNumber" placeholder="Internal stock number"></b-form-input>
@@ -17,22 +17,25 @@
             <b-col cols=1>
                 <label>Category:</label>
             </b-col>
-            <b-col cols=4>
+            <b-col cols=3>
                     <b-select option-value="id" option-text="name" :list="availableBrands" v-model="component.brand" placeholder="Select Brand"></b-select>
+            </b-col>
+            <b-col cols=3>
+                <b-form-file type="file" v-model="image"/>
             </b-col>
         </b-row>
         <b-row>
             <b-col cols=1>
                 <label>Name:</label>
             </b-col>
-            <b-col cols=4>
+            <b-col cols=3>
                 <b-form-input type="text" v-model="component.name" placeholder="Component name"></b-form-input>
             </b-col>
             <b-col cols=1>
                 <label>Supplier:</label>
             </b-col>
-            <b-col cols=4>
-                    <b-select option-value="id" option-text="name" :list="availableSuppliers" v-model="component.supplier" placeholder="Select Supplier"></b-select>
+            <b-col cols=3>
+                <b-select option-value="id" option-text="name" :list="availableSuppliers" v-model="component.supplier" placeholder="Select Supplier"></b-select>
             </b-col>
         </b-row>
         <b-row>
@@ -44,9 +47,6 @@
             </b-col>
         </b-row>
         <b-row>
-            <b-col cols=2>
-                <label>Description:</label>
-            </b-col>
             <b-col cols=5>
                 <b-form-textarea type="text" :rows=3 v-model="component.description" placeholder="Enter short description"></b-form-textarea>
             </b-col>
@@ -79,20 +79,28 @@
         <b-alert :show="this.component.locked" dismissible variant="warning">
                 Component may be currently used by Item(s). Changes here will update Item(s) as well.
         </b-alert>
+            <b-col>
+                <b-img width="300px" :src="imageUrl" fluid />
+            </b-col>
     </b-container>
 </template>
 
 <script>
 import http from "../http-common";
 import router from "../router";
+import axios from "axios";
+import httpUtils from "../httpUtils";
 
 export default {
   name: "add-component",
   data() {
     return {
+      image: "",
+      imageUrl: "",
       component: {
         supplier: {},
-        brand: {}
+        brand: {},
+        attachment: {}
       },
       availableSuppliers: [],
       availableBrands: []
@@ -104,6 +112,7 @@ export default {
         .get("/component/" + component_id)
         .then(response => {
           this.component = response.data;
+          this.imageUrl = httpUtils.baseUrl+"/attachment/"+this.component.attachment.id
           if (!this.component.supplier) {
             this.component.supplier = {};
           }
@@ -143,6 +152,23 @@ export default {
         })
         .catch(e => {
           console.log("Error post");
+        });
+    },
+    saveAndUpload() {
+      let formData = new FormData();
+      formData.append("image", this.image);
+      formData.append("jsonComponent", JSON.stringify(this.component));
+      axios
+        .post(httpUtils.baseUrl+"/component/upload", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data"
+          }
+        })
+        .then(function() {
+          window.history.back();
+        })
+        .catch(function() {
+          console.log("FAILURE!!");
         });
     },
     cancelComponent() {

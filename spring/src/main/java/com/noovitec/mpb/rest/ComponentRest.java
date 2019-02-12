@@ -1,5 +1,6 @@
 package com.noovitec.mpb.rest;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collection;
@@ -10,6 +11,7 @@ import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -19,9 +21,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.noovitec.mpb.entity.Attachment;
 import com.noovitec.mpb.entity.Component;
+import com.noovitec.mpb.repo.AttachmentRepo;
 import com.noovitec.mpb.repo.ComponentRepo;
 
 @CrossOrigin
@@ -29,6 +38,11 @@ import com.noovitec.mpb.repo.ComponentRepo;
 @RequestMapping("/api")
 class ComponentRest {
 
+	@Autowired
+	ObjectMapper objectMapper;
+	@Autowired
+	AttachmentRepo attachmentRepo;
+	
 	private final Logger log = LoggerFactory.getLogger(ComponentRest.class);
 	private ComponentRepo componentRepository;
 
@@ -49,8 +63,20 @@ class ComponentRest {
 	}
 
 	@PostMapping("/component")
-	ResponseEntity<Component> createComponent(@Valid @RequestBody Component component) throws URISyntaxException {
-		log.info("Request to create component: {}", component);
+	ResponseEntity<Component> postComponent(@Valid @RequestBody Component component) throws URISyntaxException {
+		Component result = componentRepository.save(component);
+		return ResponseEntity.created(new URI("/api/component/" + result.getId())).body(result);
+	}
+
+	//This includes image upload.
+	@PostMapping("/component/upload")
+	ResponseEntity<Component> postComponentAndAttachment(@RequestParam("image") MultipartFile image, @RequestParam("jsonComponent") String jsonComponent) throws URISyntaxException, JsonParseException, JsonMappingException, IOException {
+		log.info(image.getName());
+		Attachment attachment = new Attachment();
+		attachment.setData(image.getBytes());
+		attachmentRepo.save(attachment);
+		Component component = objectMapper.readValue(jsonComponent, Component.class);
+		component.setAttachment(attachment);
 		Component result = componentRepository.save(component);
 		return ResponseEntity.created(new URI("/api/component/" + result.getId())).body(result);
 	}
