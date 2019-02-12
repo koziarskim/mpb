@@ -57,7 +57,7 @@
                         <div style="display: flex; border-bottom: 1px solid #ced4da" v-for="ic in item.itemComponents" v-bind:key="ic.id">
                             <div style="width:100%">
                                 <input size="sm" style="border: 0px; width: 25px" min=1 max=9 v-model="ic.units" type="number"/>
-                                <b-button variant="link" @click="httpUtils.goTo('/editComponent/'+ic.component.id)">{{ic.component.stockNumber}}</b-button>
+                                <b-button variant="link" @click="httpUtils.goTo('/componentEdit/'+ic.component.id)">{{ic.component.stockNumber}}</b-button>
                                 <label>{{ic.component.name+", "+", $"+ic.component.assumedPrice}}</label>
                             </div>
                             <b-button size="sm" type="reset" variant="link" @click="removeItemComponent(ic.id)">(x)</b-button>

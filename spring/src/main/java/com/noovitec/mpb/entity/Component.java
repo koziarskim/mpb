@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -52,4 +53,15 @@ public class Component {
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "brand_id", referencedColumnName = "id")
 	private Brand brand;
+	
+	//Transient not managed by DB
+	@Transient
+	private BigDecimal totalPrice;
+	
+	public BigDecimal getTotalPrice() {
+		BigDecimal totalPrice = new BigDecimal(0);
+		totalPrice = this.assumedPrice.add(this.dutyFee).add(this.deliveryFee);
+		return totalPrice;
+	}
+
 }

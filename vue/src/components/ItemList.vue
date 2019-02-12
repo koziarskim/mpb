@@ -66,10 +66,10 @@ export default {
         });
     },
     createNewItem(){
-        router.push('/editItem');
+        router.push('/itemEdit');
     },
     updateItem(item_id){
-        router.push('./editItem/'+item_id);
+        router.push('./itemEdit/'+item_id);
     }
   },
   mounted() {

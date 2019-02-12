@@ -1,8 +1,8 @@
 import Vue from "vue";
 import Router from "vue-router";
 import Home from "./components/Home.vue";
-import EditItem from "./components/EditItem.vue";
-import EditComponent from "./components/EditComponent.vue";
+import ItemEdit from "./components/ItemEdit.vue";
+import ComponentEdit from "./components/ComponentEdit.vue";
 import ItemList from "./components/ItemList";
 import ComponentList from "./components/ComponentList";
 import PurchaseList from "./components/PurchaseList";
@@ -39,14 +39,14 @@ export default new Router({
       component: PurchaseList
     },
     {
-      path: "/editComponent/:component_id?",
-      name: "editComponent",
-      component: EditComponent
+      path: "/componentEdit/:component_id?",
+      name: "componentEdit",
+      component: ComponentEdit
     },
     {
-      path: "/editItem/:item_id?",
-      name: "editItem",
-      component: EditItem
+      path: "/itemEdit/:item_id?",
+      name: "itemEdit",
+      component: ItemEdit
     }
   ]
 });

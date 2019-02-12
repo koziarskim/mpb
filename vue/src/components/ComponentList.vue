@@ -37,11 +37,11 @@ export default {
       sortBy: 'age',
       sortDesc: false,
       fields: [
-        { key: 'stockNumber', sortable: true },
-        { key: 'name', sortable: true },
-        { key: 'description', sortable: true },
-        { key: 'assumedPrice', sortable: false },
-        { key: 'action', sortable: false}
+        { key: 'stockNumber', label: 'Stock #', sortable: true },
+        { key: 'name', label: 'Name', sortable: true },
+        { key: 'description', label: 'Description', sortable: true },
+        { key: 'totalPrice', label: 'Price', sortable: false },
+        { key: 'action', label: 'Action', sortable: false}
       ],
       components: []
     };
@@ -87,7 +87,7 @@ export default {
         });
     },
     goToComponent(component_id){
-        router.push('/editComponent/'+component_id);
+        router.push('/componentEdit/'+component_id);
     },
   },
   mounted() {
