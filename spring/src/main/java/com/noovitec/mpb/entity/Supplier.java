@@ -29,8 +29,8 @@ public class Supplier {
 	private String name;
 	private String number;
 
-//	@OneToMany(fetch = FetchType.LAZY)
-//	@JoinColumn(name = "vendor_id")
-//	private Collection<Component> components;
+	@OneToMany(fetch = FetchType.LAZY)
+	@JoinColumn(name = "supplier_id")
+	private Collection<Component> components;
 
 }
