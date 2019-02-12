@@ -37,14 +37,6 @@
         </b-row>
         <b-row>
             <b-col cols=2>
-                <label>MPB Stock#:</label>
-            </b-col>
-            <b-col cols=3>
-                <b-form-input type="text" v-model="component.stockNumber" placeholder="Internal stock number"></b-form-input>
-            </b-col>
-        </b-row>
-        <b-row>
-            <b-col cols=2>
                 <label>Supplier's Stock#:</label>
             </b-col>
             <b-col cols=3>

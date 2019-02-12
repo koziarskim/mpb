@@ -1,6 +1,7 @@
 package com.noovitec.mpb.entity;
 
 import java.util.Collection;
+import java.util.HashSet;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -32,6 +33,6 @@ public class Item {
 	@JsonIgnoreProperties({"item"})
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "item_id")
-	private Collection<ItemComponent> itemComponents; 
+	private Collection<ItemComponent> itemComponents = new HashSet<ItemComponent>(); 
 	
 }

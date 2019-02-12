@@ -2,6 +2,7 @@ package com.noovitec.mpb.entity;
 
 import java.math.BigDecimal;
 import java.util.Collection;
+import java.util.HashSet;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -35,14 +36,14 @@ public class Component {
 	private String supplierStockNumber;
 	private String description;
 	private String picture;
-	private BigDecimal assumedPrice;
-	private BigDecimal dutyFee;
-	private BigDecimal deliveryFee;
+	private BigDecimal assumedPrice = BigDecimal.ZERO;
+	private BigDecimal dutyFee = BigDecimal.ZERO;
+	private BigDecimal deliveryFee = BigDecimal.ZERO;
 
 	@JsonIgnoreProperties({ "component" })
 	@OneToMany(fetch = FetchType.EAGER, orphanRemoval = true)
 	@JoinColumn(name = "component_id")
-	private Collection<ItemComponent> itemComponents;
+	private Collection<ItemComponent> itemComponents = new HashSet<ItemComponent>();
 	
 	@JsonIgnoreProperties({ "components" })
 	@ManyToOne(fetch = FetchType.EAGER)
@@ -61,7 +62,7 @@ public class Component {
 	
 	public BigDecimal getTotalPrice() {
 		BigDecimal totalPrice = new BigDecimal(0);
-//		totalPrice = this.assumedPrice.add(this.dutyFee).add(this.deliveryFee);
+		totalPrice = this.assumedPrice.add(this.dutyFee).add(this.deliveryFee);
 		return totalPrice;
 	}
 	

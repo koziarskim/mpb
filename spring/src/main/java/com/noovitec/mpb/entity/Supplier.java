@@ -1,6 +1,7 @@
 package com.noovitec.mpb.entity;
 
 import java.util.Collection;
+import java.util.HashSet;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,7 +19,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @Entity
 public class Supplier {
 
@@ -31,6 +31,6 @@ public class Supplier {
 
 	@OneToMany(fetch = FetchType.LAZY)
 	@JoinColumn(name = "supplier_id")
-	private Collection<Component> components;
+	private Collection<Component> components = new HashSet<Component>();
 
 }
