@@ -41,7 +41,7 @@ public class Component {
 
 	@JsonIgnoreProperties({ "component" })
 	@OneToMany(fetch = FetchType.EAGER, orphanRemoval = true)
-	@JoinColumn(name = "item_id")
+	@JoinColumn(name = "component_id")
 	private Collection<ItemComponent> itemComponents;
 	
 	@JsonIgnoreProperties({ "components" })
@@ -55,13 +55,21 @@ public class Component {
 	private Brand brand;
 	
 	//Transient not managed by DB
+	
 	@Transient
 	private BigDecimal totalPrice;
 	
 	public BigDecimal getTotalPrice() {
 		BigDecimal totalPrice = new BigDecimal(0);
-		totalPrice = this.assumedPrice.add(this.dutyFee).add(this.deliveryFee);
+//		totalPrice = this.assumedPrice.add(this.dutyFee).add(this.deliveryFee);
 		return totalPrice;
+	}
+	
+	@Transient
+	private Boolean locked;
+	
+	public Boolean getLocked() {
+		return (this.itemComponents==null || this.itemComponents.size()==0)?false:true;
 	}
 
 }
