@@ -56,7 +56,7 @@ class ComponentRest {
         if(existing_component.isPresent()) {
         	existing_component.get().setName(component.getName());
         	existing_component.get().setStockNumber(component.getStockNumber());
-        	existing_component.get().setVendorStockNumber(component.getVendorStockNumber());
+        	existing_component.get().setSupplierStockNumber(component.getSupplierStockNumber());
         	existing_component.get().setDescription(component.getDescription());
         	existing_component.get().setPicture(component.getPicture());
         	existing_component.get().setSupplier(component.getSupplier());

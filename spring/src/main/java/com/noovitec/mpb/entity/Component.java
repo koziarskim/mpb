@@ -30,9 +30,8 @@ public class Component {
 	@Column(name = "id")
 	private Long id;
 	private String name;
-	private String supplier;
 	private String stockNumber;
-	private String vendorStockNumber;
+	private String supplierStockNumber;
 	private String description;
 	private String picture;
 	private BigDecimal assumedPrice;
@@ -46,8 +45,8 @@ public class Component {
 	
 	@JsonIgnoreProperties({ "components" })
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "vendor_id")
-	private Vendor vendor;
+	@JoinColumn(name = "supplier_id")
+	private Supplier supplier;
 
 	@JsonIgnoreProperties({ "components" })
 	@ManyToOne(fetch = FetchType.EAGER)

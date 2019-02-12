@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @Entity
-public class Vendor {
+public class Supplier {
 
 	@Id
 	@GeneratedValue

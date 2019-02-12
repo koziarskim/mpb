@@ -7,9 +7,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.noovitec.mpb.entity.Component;
-import com.noovitec.mpb.entity.Vendor;
+import com.noovitec.mpb.entity.Supplier;
 import com.noovitec.mpb.repo.ComponentRepo;
-import com.noovitec.mpb.repo.VendorRepo;
+import com.noovitec.mpb.repo.SupplierRepo;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -21,17 +21,17 @@ import java.util.Optional;
 @CrossOrigin
 @RestController
 @RequestMapping("/api")
-class VendorRest {
+class SupplierRest {
 
-    private final Logger log = LoggerFactory.getLogger(VendorRest.class);
-    private VendorRepo vendorRepo;
+    private final Logger log = LoggerFactory.getLogger(SupplierRest.class);
+    private SupplierRepo supplierRepo;
 
-    public VendorRest(VendorRepo vendorRepo) {
-        this.vendorRepo = vendorRepo;
+    public SupplierRest(SupplierRepo supplierRepo) {
+        this.supplierRepo = supplierRepo;
     }
 
-    @GetMapping("/vendor")
-    Collection<Vendor> getAll() {
-        return vendorRepo.findAll();
+    @GetMapping("/supplier")
+    Collection<Supplier> getAll() {
+        return supplierRepo.findAll();
     }
 }

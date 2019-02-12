@@ -29,10 +29,10 @@
                 <b-form-input type="text" v-model="component.name" placeholder="Component name"></b-form-input>
             </b-col>
             <b-col cols=1>
-                <label>Vendor:</label>
+                <label>Supplier:</label>
             </b-col>
             <b-col cols=4>
-                    <b-select option-value="id" option-text="name" :list="availableVendors" v-model="component.vendor" placeholder="Select Vendor"></b-select>
+                    <b-select option-value="id" option-text="name" :list="availableSuppliers" v-model="component.supplier" placeholder="Select Supplier"></b-select>
             </b-col>
         </b-row>
         <b-row>
@@ -99,10 +99,10 @@ export default {
   data() {
     return {
       component: {
-        vendor: {},
+        supplier: {},
         brand: {}
       },
-      availableVendors: [],
+      availableSuppliers: [],
       availableBrands: []
     };
   },
@@ -112,8 +112,8 @@ export default {
         .get("/component/" + component_id)
         .then(response => {
           this.component = response.data;
-          if (!this.component.vendor) {
-            this.component.vendor = {};
+          if (!this.component.supplier) {
+            this.component.supplier = {};
           }
           if (!this.component.brand) {
             this.component.brand = {};
@@ -123,11 +123,11 @@ export default {
           console.log("API error: " + e);
         });
     },
-    getAvailableVendors() {
+    getAvailableSuppliers() {
       http
-        .get("/vendor")
+        .get("/supplier")
         .then(response => {
-          this.availableVendors = response.data;
+          this.availableSuppliers = response.data;
         })
         .catch(e => {
           console.log("API error: " + e);
@@ -162,7 +162,7 @@ export default {
     if (component_id) {
       this.getComponentData(component_id);
     }
-    this.getAvailableVendors();
+    this.getAvailableSuppliers();
     this.getAvailableBrands();
   }
 };

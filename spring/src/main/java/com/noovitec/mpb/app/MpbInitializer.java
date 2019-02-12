@@ -4,7 +4,7 @@ package com.noovitec.mpb.app;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import com.noovitec.mpb.entity.Vendor;
+import com.noovitec.mpb.entity.Supplier;
 
 @Component
 class MpbInitializer implements CommandLineRunner {
