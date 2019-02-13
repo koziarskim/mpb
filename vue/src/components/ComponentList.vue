@@ -37,11 +37,12 @@ export default {
       sortBy: 'age',
       sortDesc: false,
       fields: [
-        { key: 'number', label: 'Component #', sortable: true },
-        { key: 'name', label: 'Name', sortable: true },
-        { key: 'category.name', label: 'Category', sortable: true },
-        { key: 'supplier.name', label: 'Supplier', sortable: true },
-        { key: 'action', label: 'Action', sortable: false}
+        { key: "number", label: "Component #", sortable: true },
+        { key: "name", label: "Name", sortable: true },
+        { key: "supplierStockNumber", label: "Supplier's Stock #", sortable: true },
+        { key: "category.name", label: "Category", sortable: true },
+        { key: "supplier.name", label: "Supplier", sortable: true },
+        { key: "action", label: "Action", sortable: false}
       ],
       components: []
     };
