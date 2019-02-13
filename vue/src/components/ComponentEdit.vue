@@ -67,34 +67,54 @@
                 </b-row>
             </b-col>
         </b-row>
-
+        <b-row>
+            <b-col cols=2>
+                <label>Unit height (lbs):</label>
+                <b-form-input type="number" min=0 v-model="component.height" placeholder="Height"></b-form-input>
+            </b-col>
+            <b-col cols=2>
+                <label>Unit width (lbs):</label>
+                <b-form-input type="number" min=0 v-model="component.width" placeholder="Width"></b-form-input>
+            </b-col>
+            <b-col cols=2>
+                <label>Unit depth (lbs):</label>
+                <b-form-input type="number" min=0 v-model="component.depth" placeholder="Depth"></b-form-input>
+            </b-col>
+           <b-col cols=2>
+                <label>Unit weight (lbs):</label>
+                <b-form-input type="number" min=0 v-model="component.weight" placeholder="Weight"></b-form-input>
+            </b-col>
+            <b-col cols=2>
+                <label>Units per case:</label>
+                <b-form-input type="number" min=0 v-model="component.unitsPerCase" placeholder="Units"></b-form-input>
+            </b-col>            
+        </b-row>
 
         <b-row>
             <b-col cols=12>
-                <hr class="hr-text" data-content="Price/fees are per unit only">
+                <hr class="hr-text" data-content="Unit prices/fees are in USD ($)">
             </b-col>
         </b-row>
         <b-row>
             <b-col cols=2>
-                <label>Purchase Price:</label>
+                <label>Purchase $:</label>
+                <b-form-input type="number" min=0 v-model="component.assumedPrice" placeholder="Price"></b-form-input>
             </b-col>
             <b-col cols=2>
-                <b-form-input type="number" v-model="component.assumedPrice" placeholder="Price"></b-form-input>
-            </b-col>
-            <b-col cols=1>
-                <label>Duty:</label>
+                <label>Duty $:</label>
+                <b-form-input type="number" min=0 v-model="component.dutyFee" placeholder="Duty"></b-form-input>
             </b-col>
             <b-col cols=2>
-                <b-form-input type="number" v-model="component.dutyFee" placeholder="Duty"></b-form-input>
-            </b-col>
-            <b-col cols=1>
-                <label>Delivery:</label>
+                <label>Delivery $:</label>
+                <b-form-input type="number" min=0 v-model="component.deliveryFee" placeholder="Delivery"></b-form-input>
             </b-col>
             <b-col cols=2>
-                <b-form-input type="number" v-model="component.deliveryFee" placeholder="Delivery"></b-form-input>
+                <label>Other $:</label>
+                <b-form-input type="number" min=0 v-model="component.otherFee" placeholder="Other"></b-form-input>
             </b-col>
-            <b-col cols=2>
-                <label>Total: {{totalPrice}}</label>
+            <b-col cols=2 offset=2>
+                <label>Unit total: {{unitTotalPrice}}</label>
+                <label>Case total: {{caseTotalPrice}}</label>
             </b-col>
         </b-row>
     </b-container>
@@ -114,14 +134,23 @@ export default {
       imageUrl: "",
       supplier: {},
       category: {},
-      component: {},
+      component: {
+          assumedPrice: 0,
+          dutyFee: 0,
+          deliveryFee: 0,
+          otherFee: 0,
+          unitsPerCase: 0,
+      },
       availableSuppliers: [],
       availableCategories: []
     };
   },
   computed: {
-      totalPrice(){
-          return +this.component.assumedPrice + +this.component.dutyFee + +this.component.deliveryFee;
+      unitTotalPrice(){
+          return +this.component.assumedPrice + +this.component.dutyFee + +this.component.deliveryFee + +this.component.otherFee;
+      },
+      caseTotalPrice(){
+          return +this.unitTotalPrice * +this.component.unitsPerCase;
       }
   },
   watch: {

@@ -35,6 +35,12 @@ public class Component {
 	private BigDecimal assumedPrice = BigDecimal.ZERO;
 	private BigDecimal dutyFee = BigDecimal.ZERO;
 	private BigDecimal deliveryFee = BigDecimal.ZERO;
+	private BigDecimal otherFee = BigDecimal.ZERO;
+	private BigDecimal height = BigDecimal.ZERO;
+	private BigDecimal width = BigDecimal.ZERO;
+	private BigDecimal depth = BigDecimal.ZERO;
+	private BigDecimal weight = BigDecimal.ZERO;
+	private BigDecimal unitsPerCase = BigDecimal.ZERO;
 
 	@JsonIgnoreProperties({ "component" })
 	@OneToMany(fetch = FetchType.EAGER, orphanRemoval = true)
@@ -62,7 +68,7 @@ public class Component {
 
 	public BigDecimal getTotalPrice() {
 		BigDecimal totalPrice = new BigDecimal(0);
-		totalPrice = this.assumedPrice.add(this.dutyFee).add(this.deliveryFee);
+		totalPrice = this.assumedPrice.add(this.dutyFee).add(this.deliveryFee).add(this.otherFee);
 		return totalPrice;
 	}
 

@@ -34,7 +34,7 @@ export default {
       fields: [
         { key: 'number', sortable: true, label: 'Item #'},
         { key: 'name', sortable: true, label: 'Name'},
-        { key: 'brand', sortable: true, label: 'Brand'},
+        { key: 'brand.name', sortable: true, label: 'Brand'},
         { key: 'action', sortable: false}
       ],
       items: []
