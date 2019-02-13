@@ -14,7 +14,7 @@
                     <label>Brand:</label>
                 </b-col>
                 <b-col cols=6>
-                        <b-select option-value="id" option-text="name" :list="availableBrands" v-model="item.brand" placeholder="Select Brand"></b-select>
+                        <b-select option-value="id" option-text="name" :list="availableBrands" v-model="brand" placeholder="Select Brand"></b-select>
                 </b-col>
             </b-row>
             <b-row>
@@ -77,16 +77,16 @@
 <script>
 import http from "../http-common";
 import router from "../router";
-import httpUtils from "../httpUtils"
+import httpUtils from "../httpUtils";
 
 export default {
   name: "edit-component",
   data() {
     return {
-        httpUtils: httpUtils,
+      httpUtils: httpUtils,
+      brand: {},
       item: {
-        itemComponents: [],
-        brand: {}
+        itemComponents: []
       },
       component: {},
       availableBrands: [],
@@ -96,9 +96,13 @@ export default {
   computed: {
     totalPrice: function() {
       var totalPrice = 0;
-      this.item.itemComponents.forEach(ic =>{
-          totalPrice= +totalPrice 
-          + ((+ic.component.assumedPrice + +ic.component.dutyFee + +ic.component.deliveryFee) * +ic.units);
+      this.item.itemComponents.forEach(ic => {
+        totalPrice =
+          +totalPrice +
+          (+ic.component.assumedPrice +
+            +ic.component.dutyFee +
+            +ic.component.deliveryFee) *
+            +ic.units;
       });
       return totalPrice;
     }
@@ -111,10 +115,14 @@ export default {
         });
         if (!found) {
           this.item.itemComponents.push({
-              units: 1, //Default value
-              component: new_component});
+            units: 1, //Default value
+            component: new_component
+          });
         }
       }
+    },
+    brand: function(newValue, oldValue) {
+      this.item.brand = newValue;
     }
   },
   methods: {
@@ -123,7 +131,6 @@ export default {
         .get("/component")
         .then(response => {
           this.availableComponents = response.data;
-          console.log("Success getting component data");
         })
         .catch(e => {
           console.log("API error: " + e);
@@ -131,10 +138,12 @@ export default {
     },
     getItemData(item_id) {
       http
-        .get("/item/"+item_id)
+        .get("/item/" + item_id)
         .then(response => {
           this.item = response.data;
-          console.log("Success getting item data");
+          if (response.data.brand) {
+            this.brand = response.data.brand;
+          }
         })
         .catch(e => {
           console.log("API error: " + e);
@@ -158,7 +167,7 @@ export default {
           window.history.back();
         })
         .catch(e => {
-          console.log("Error post"+e);
+          console.log("Error post" + e);
         });
     },
     cancelItem() {
@@ -177,8 +186,8 @@ export default {
   mounted() {
     this.getComponentsData();
     var item_id = this.$route.params.item_id;
-    if(item_id){
-        this.getItemData(item_id);
+    if (item_id) {
+      this.getItemData(item_id);
     }
     this.getAvailableBrands();
   }

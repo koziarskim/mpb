@@ -17,13 +17,13 @@
                         <label>Category:</label>
                     </b-col>
                     <b-col cols=4>
-                            <b-select option-value="id" option-text="name" :list="availableCategories" v-model="component.category" placeholder="Select Category"></b-select>
+                            <b-select option-value="id" option-text="name" :list="availableCategories" v-model="category" placeholder="Select Category"></b-select>
                     </b-col>
                     <b-col cols=2>
                         <label>Supplier:</label>
                     </b-col>
                     <b-col cols=4>
-                        <b-select option-value="id" option-text="name" :list="availableSuppliers" v-model="component.supplier" placeholder="Select Supplier"></b-select>
+                        <b-select option-value="id" option-text="name" :list="availableSuppliers" v-model="supplier" placeholder="Select Supplier"></b-select>
                     </b-col>
                 </b-row>
                 <b-row>
@@ -112,11 +112,9 @@ export default {
     return {
       image: "",
       imageUrl: "",
-      component: {
-        supplier: {},
-        category: {},
-        attachment: {}
-      },
+      supplier: {},
+      category: {},
+      component: {},
       availableSuppliers: [],
       availableCategories: []
     };
@@ -126,19 +124,28 @@ export default {
           return +this.component.assumedPrice + +this.component.dutyFee + +this.component.deliveryFee;
       }
   },
+  watch: {
+    supplier: function(newValue, oldValue) {
+        this.component.supplier=newValue;
+    },
+    category: function(newValue, oldValue) {
+        this.component.category=newValue;
+    }
+  },
   methods: {
     getComponentData(component_id) {
       http
         .get("/component/" + component_id)
         .then(response => {
           this.component = response.data;
-          this.imageUrl =
-            httpUtils.baseUrl + "/attachment/" + this.component.attachment.id;
-          if (!this.component.supplier) {
-            this.component.supplier = {};
+          if(response.data.attachment){
+            this.imageUrl = httpUtils.baseUrl + "/attachment/" + response.data.attachment.id;
           }
-          if (!this.component.category) {
-            this.component.category = {};
+          if (response.data.supplier) {
+            this.supplier = response.data.supplier;
+          }
+          if (response.data.category) {
+            this.category = response.data.category;
           }
         })
         .catch(e => {
