@@ -70,13 +70,14 @@ class ComponentRest {
 
 	//This includes image upload.
 	@PostMapping("/component/upload")
-	ResponseEntity<Component> postComponentAndAttachment(@RequestParam("image") MultipartFile image, @RequestParam("jsonComponent") String jsonComponent) throws URISyntaxException, JsonParseException, JsonMappingException, IOException {
-		log.info(image.getName());
-		Attachment attachment = new Attachment();
-		attachment.setData(image.getBytes());
-		attachmentRepo.save(attachment);
+	ResponseEntity<Component> postComponentAndAttachment(@RequestParam(value="image", required=false) MultipartFile image, @RequestParam("jsonComponent") String jsonComponent) throws URISyntaxException, JsonParseException, JsonMappingException, IOException {
 		Component component = objectMapper.readValue(jsonComponent, Component.class);
-		component.setAttachment(attachment);
+		if(image!=null) {
+			Attachment attachment = new Attachment();
+			attachment.setData(image.getBytes());
+			attachmentRepo.save(attachment);
+			component.setAttachment(attachment);
+		}
 		Component result = componentRepository.save(component);
 		return ResponseEntity.created(new URI("/api/component/" + result.getId())).body(result);
 	}

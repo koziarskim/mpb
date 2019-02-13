@@ -2,7 +2,7 @@
     <b-container fluid>
         <div style="border: 0px" class="d-flex justify-content-between align-items-center">
             <h2>New Component</h2>
-            <b-alert style="width:58%":show="this.component.locked" dismissible variant="warning">
+            <b-alert style="width:58%" :show="this.component.locked" dismissible variant="warning">
                 Component is locked. Changes here will update Item(s) as well.
             </b-alert>
             <div>
@@ -93,6 +93,9 @@
             <b-col cols=2>
                 <b-form-input type="number" v-model="component.deliveryFee" placeholder="Delivery"></b-form-input>
             </b-col>
+            <b-col cols=2>
+                <label>Total: {{totalPrice}}</label>
+            </b-col>
         </b-row>
     </b-container>
 </template>
@@ -117,6 +120,11 @@ export default {
       availableSuppliers: [],
       availableBrands: []
     };
+  },
+  computed: {
+      totalPrice(){
+          return +this.component.assumedPrice + +this.component.dutyFee + +this.component.deliveryFee;
+      }
   },
   methods: {
     getComponentData(component_id) {
