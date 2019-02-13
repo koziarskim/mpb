@@ -14,30 +14,30 @@
             <b-col cols=8>
                 <b-row>
                     <b-col cols=2>
-                        <label>MPB#:</label>
-                    </b-col>
-                    <b-col cols=4>
-                        <b-form-input type="text" v-model="component.stockNumber" placeholder="Internal stock number"></b-form-input>
-                    </b-col>
-                    <b-col cols=2>
                         <label>Category:</label>
                     </b-col>
                     <b-col cols=4>
                             <b-select option-value="id" option-text="name" :list="availableCategories" v-model="component.category" placeholder="Select Category"></b-select>
-                    </b-col>
-                </b-row>
-                <b-row>
-                    <b-col cols=2>
-                        <label>Name:</label>
-                    </b-col>
-                    <b-col cols=4>
-                        <b-form-input type="text" v-model="component.name" placeholder="Component name"></b-form-input>
                     </b-col>
                     <b-col cols=2>
                         <label>Supplier:</label>
                     </b-col>
                     <b-col cols=4>
                         <b-select option-value="id" option-text="name" :list="availableSuppliers" v-model="component.supplier" placeholder="Select Supplier"></b-select>
+                    </b-col>
+                </b-row>
+                <b-row>
+                    <b-col cols=2>
+                        <label>Component#:</label>
+                    </b-col>
+                    <b-col cols=4>
+                        <b-form-input type="text" v-model="component.number" placeholder="Component number"></b-form-input>
+                    </b-col>
+                    <b-col cols=2>
+                        <label>Name:</label>
+                    </b-col>
+                    <b-col cols=4>
+                        <b-form-input type="text" v-model="component.name" placeholder="Component name"></b-form-input>
                     </b-col>
                 </b-row>
                 <b-row>

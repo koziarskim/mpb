@@ -12,8 +12,8 @@
                 :sort-desc.sync="sortDesc"
                 :items="components"
                 :fields="fields">
-                <template slot="stockNumber" slot-scope="row">
-                    <b-button size="sm" @click.stop=goToComponent(row.item.id) variant="link">{{row.item.stockNumber}}</b-button>
+                <template slot="number" slot-scope="row">
+                    <b-button size="sm" @click.stop=goToComponent(row.item.id) variant="link">{{row.item.number}}</b-button>
                 </template>
                 <template slot="action" slot-scope="row">
                     <b-button size="sm" @click.stop="deleteComponent(row.item.id)">x</b-button>
@@ -37,10 +37,10 @@ export default {
       sortBy: 'age',
       sortDesc: false,
       fields: [
-        { key: 'stockNumber', label: 'Stock #', sortable: true },
+        { key: 'number', label: 'Component #', sortable: true },
         { key: 'name', label: 'Name', sortable: true },
-        { key: 'description', label: 'Description', sortable: true },
-        { key: 'totalPrice', label: 'Price', sortable: false },
+        { key: 'category.name', label: 'Category', sortable: true },
+        { key: 'supplier.name', label: 'Supplier', sortable: true },
         { key: 'action', label: 'Action', sortable: false}
       ],
       components: []

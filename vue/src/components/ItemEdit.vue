@@ -11,33 +11,38 @@
         <b-col cols=6>
             <b-row>
                 <b-col cols=2>
-                    <label>Stock#:</label>
+                    <label>Brand:</label>
                 </b-col>
-                <b-col cols=10>
-                    <b-form-input type="text" v-model="item.stockNumber" placeholder="Enter MPB stock number"></b-form-input>
+                <b-col cols=6>
+                        <b-select option-value="id" option-text="name" :list="availableBrands" v-model="item.brand" placeholder="Select Brand"></b-select>
+                </b-col>
+            </b-row>
+            <b-row>
+                <b-col cols=2>
+                    <label>Item#:</label>
+                </b-col>
+                <b-col cols=6>
+                    <b-form-input type="text" v-model="item.number" placeholder="Enter item number"></b-form-input>
                 </b-col>
             </b-row>
             <b-row>
                 <b-col cols=2>
                     <label>Name:</label>
                 </b-col>
-                <b-col cols=10>
+                <b-col cols=6>
                     <b-form-input type="text" v-model="item.name" placeholder="Enter your name"></b-form-input>
                 </b-col>
             </b-row>
             <b-row>
-                <b-col cols=2>
-                    <label>Stock#:</label>
-                </b-col>
-                <b-col cols=10>
-                    <b-form-input type="text" v-model="item.description" placeholder="Enter short description"></b-form-input>
-                </b-col>
+                <b-col cols=12>
+                    <b-form-textarea type="text" :rows=3 v-model="item.description" placeholder="Enter short description"></b-form-textarea>
+                </b-col>                
             </b-row>
             <b-row>
                 <b-col cols=3>
                     <label>Total Price:</label>
                 </b-col>
-                <b-col cols=8>
+                <b-col cols=3>
                     <label>{{totalPrice}}</label>
                 </b-col>
             </b-row>
@@ -48,7 +53,7 @@
                     <label>Comp:</label>
                 </b-col>
                 <b-col cols=10>
-                    <b-select option-value="id" option-text="stockNumber" :list="avaliable_components" v-model="component" placeholder="Select component"></b-select>
+                    <b-select option-value="id" option-text="label" :list="availableComponents" v-model="component" placeholder="Select component"></b-select>
                 </b-col>
             </b-row>
             <b-row>
@@ -57,8 +62,8 @@
                         <div style="display: flex; border-bottom: 1px solid #ced4da" v-for="ic in item.itemComponents" v-bind:key="ic.id">
                             <div style="width:100%">
                                 <input size="sm" style="border: 0px; width: 25px" min=1 max=9 v-model="ic.units" type="number"/>
-                                <b-button variant="link" @click="httpUtils.goTo('/componentEdit/'+ic.component.id)">{{ic.component.stockNumber}}</b-button>
-                                <label>{{ic.component.name+", "+", $"+ic.component.assumedPrice}}</label>
+                                <b-button variant="link" @click="httpUtils.goTo('/componentEdit/'+ic.component.id)">{{ic.component.number}}</b-button>
+                                <label>{{" | "+ic.component.name+" | "+ic.component.category.name+" | $"+ic.component.totalPrice}}</label>
                             </div>
                             <b-button size="sm" type="reset" variant="link" @click="removeItemComponent(ic.id)">(x)</b-button>
                         </div>                
@@ -81,15 +86,11 @@ export default {
         httpUtils: httpUtils,
       item: {
         itemComponents: [],
+        brand: {}
       },
       component: {},
-      avaliable_components: [
-        { id: "1", name: "aa-1", desc: "Walmart cub" },
-        { id: "2", name: "ab-2", desc: "desc" },
-        { id: "3", name: "bc-3", desc: "desc" },
-        { id: "4", name: "cd-4", desc: "desc" },
-        { id: "5", name: "de-5", desc: "desc" }
-      ]
+      availableBrands: [],
+      availableComponents: []
     };
   },
   computed: {
@@ -121,7 +122,7 @@ export default {
       http
         .get("/component")
         .then(response => {
-          this.avaliable_components = response.data;
+          this.availableComponents = response.data;
           console.log("Success getting component data");
         })
         .catch(e => {
@@ -134,6 +135,16 @@ export default {
         .then(response => {
           this.item = response.data;
           console.log("Success getting item data");
+        })
+        .catch(e => {
+          console.log("API error: " + e);
+        });
+    },
+    getAvailableBrands() {
+      http
+        .get("/brand")
+        .then(response => {
+          this.availableBrands = response.data;
         })
         .catch(e => {
           console.log("API error: " + e);
@@ -163,12 +174,13 @@ export default {
       }
     }
   },
-  created() {
+  mounted() {
     this.getComponentsData();
     var item_id = this.$route.params.item_id;
     if(item_id){
         this.getItemData(item_id);
     }
+    this.getAvailableBrands();
   }
 };
 </script>

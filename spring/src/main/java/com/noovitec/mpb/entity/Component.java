@@ -29,7 +29,7 @@ public class Component {
 	@GeneratedValue
 	private Long id;
 	private String name;
-	private String stockNumber;
+	private String number;
 	private String supplierStockNumber;
 	private String description;
 	private BigDecimal assumedPrice = BigDecimal.ZERO;
@@ -71,6 +71,13 @@ public class Component {
 
 	public Boolean getLocked() {
 		return (this.itemComponents == null || this.itemComponents.size() == 0) ? false : true;
+	}
+	
+	@Transient
+	private String label;
+	
+	public String getLabel() {
+		return this.getNumber() +" | "+this.getName()+" | "+this.getCategory().getName();
 	}
 
 }

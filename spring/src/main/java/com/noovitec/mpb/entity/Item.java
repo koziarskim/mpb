@@ -1,5 +1,6 @@
 package com.noovitec.mpb.entity;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -11,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -28,9 +30,8 @@ public class Item {
 	@GeneratedValue
 	private Long id;
 	private String name;
-	private String stockNumber;
+	private String number;
 	private String description;
-	private String assumedPrice;
 	
 	@JsonIgnoreProperties({"item"})
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
@@ -41,5 +42,18 @@ public class Item {
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "brand_id", referencedColumnName = "id")
 	private Brand brand;
+	
+	//Transient not managed by DB
+	@Transient
+	private BigDecimal totalPrice;
+
+	public BigDecimal getTotalPrice() {
+		BigDecimal totalPrice = new BigDecimal(0);
+		for(ItemComponent ic : this.itemComponents) {
+			totalPrice.add(ic.getComponent().getTotalPrice()
+					.multiply(BigDecimal.valueOf(ic.getUnits())));
+		}
+		return totalPrice;
+	}
 
 }
