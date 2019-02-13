@@ -37,6 +37,11 @@
                     </b-row>
                     <b-row>
                         <b-col cols=12>
+                            <b-form-textarea type="text" :rows=3 v-model="item.description" placeholder="Enter short description"></b-form-textarea>
+                        </b-col>                
+                    </b-row>
+                    <b-row>
+                        <b-col cols=12>
                             <label>Total Price: {{totalPrice}}</label>
                         </b-col>
                     </b-row>
@@ -55,13 +60,13 @@
                 </b-col>
             </b-row>
             <b-row>
-                <b-col cols=10>
-                    <b-form-textarea type="text" :rows=3 v-model="item.description" placeholder="Enter short description"></b-form-textarea>
-                </b-col>                
+                <b-col cols=12>
+                    <hr class="hr-text" data-content="Unit prices/fees are in USD ($)">
+                </b-col>
             </b-row>
         </b-col>
         <!-- Column 2 -->
-        <b-col cols=4>
+        <b-col cols=4 style="border-left: 1px solid #dededf;">
             <b-row>
                 <b-col cols=12>
                     <b-select option-value="id" option-text="number" :list="availableComponents" v-model="component" placeholder="Select component"></b-select>

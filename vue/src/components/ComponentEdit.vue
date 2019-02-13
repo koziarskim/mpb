@@ -2,9 +2,9 @@
     <b-container fluid>
         <div style="border: 0px" class="d-flex justify-content-between align-items-center">
             <h2>New Component</h2>
-            <b-alert style="width:58%" :show="this.component.locked" dismissible variant="warning">
+            <div style="color: red;" v-bind:style="{visibility: component.locked?'visible':'hidden'}">
                 Component is locked. Changes here will update Item(s) as well.
-            </b-alert>
+            </div>
             <div>
                 <b-button type="submit" variant="primary" @click="saveAndUpload">Save</b-button>
                 <b-button type="reset" variant="danger" @click="cancelComponent">Cancel</b-button>
@@ -49,12 +49,34 @@
                     </b-col>
                 </b-row>
                 <b-row>
-                    <b-col cols=12>
+                    <b-col cols=8>
                         <b-form-textarea type="text" :rows=3 v-model="component.description" placeholder="Enter short description"></b-form-textarea>
+                    </b-col>
+                    <b-col cols=3>
+                        <label>Units per case:</label>
+                        <b-form-input type="number" min=0 v-model="component.unitsPerCase" placeholder="Units"></b-form-input>
+                    </b-col>                      
+                </b-row>
+                <b-row>
+                    <b-col cols=3>
+                        <label>Unit height (lbs):</label>
+                        <b-form-input type="number" min=0 v-model="component.height" placeholder="Height"></b-form-input>
+                    </b-col>
+                    <b-col cols=3>
+                        <label>Unit width (lbs):</label>
+                        <b-form-input type="number" min=0 v-model="component.width" placeholder="Width"></b-form-input>
+                    </b-col>
+                    <b-col cols=3>
+                        <label>Unit depth (lbs):</label>
+                        <b-form-input type="number" min=0 v-model="component.depth" placeholder="Depth"></b-form-input>
+                    </b-col>
+                    <b-col cols=3>
+                        <label>Unit weight (lbs):</label>
+                        <b-form-input type="number" min=0 v-model="component.weight" placeholder="Weight"></b-form-input>
                     </b-col>
                 </b-row>
             </b-col>
-            <b-col cols=4>
+            <b-col cols=4 style="border-left: 1px solid #dededf;">
                 <b-row>
                     <b-col cols=12>
                         <b-form-file type="file" v-model="image"/>
@@ -67,34 +89,7 @@
                 </b-row>
             </b-col>
         </b-row>
-        <b-row>
-            <b-col cols=2>
-                <label>Unit height (lbs):</label>
-                <b-form-input type="number" min=0 v-model="component.height" placeholder="Height"></b-form-input>
-            </b-col>
-            <b-col cols=2>
-                <label>Unit width (lbs):</label>
-                <b-form-input type="number" min=0 v-model="component.width" placeholder="Width"></b-form-input>
-            </b-col>
-            <b-col cols=2>
-                <label>Unit depth (lbs):</label>
-                <b-form-input type="number" min=0 v-model="component.depth" placeholder="Depth"></b-form-input>
-            </b-col>
-           <b-col cols=2>
-                <label>Unit weight (lbs):</label>
-                <b-form-input type="number" min=0 v-model="component.weight" placeholder="Weight"></b-form-input>
-            </b-col>
-            <b-col cols=2>
-                <label>Units per case:</label>
-                <b-form-input type="number" min=0 v-model="component.unitsPerCase" placeholder="Units"></b-form-input>
-            </b-col>            
-        </b-row>
-
-        <b-row>
-            <b-col cols=12>
-                <hr class="hr-text" data-content="Unit prices/fees are in USD ($)">
-            </b-col>
-        </b-row>
+        <hr class="hr-text" data-content="Unit prices/fees are in USD ($)">
         <b-row>
             <b-col cols=2>
                 <label>Purchase $:</label>
