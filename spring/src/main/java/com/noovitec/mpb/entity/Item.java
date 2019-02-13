@@ -43,6 +43,10 @@ public class Item {
 	@JoinColumn(name = "brand_id", referencedColumnName = "id")
 	private Brand brand;
 	
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "attachment_id", referencedColumnName = "id")
+	private Attachment attachment;
+
 	//Transient not managed by DB
 	@Transient
 	private BigDecimal totalPrice;

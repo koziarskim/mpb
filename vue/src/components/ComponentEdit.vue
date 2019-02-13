@@ -201,16 +201,6 @@ export default {
           console.log("API error: " + e);
         });
     },
-    saveComponent() {
-      http
-        .post("/component", this.component)
-        .then(response => {
-          window.history.back();
-        })
-        .catch(e => {
-          console.log("Error post");
-        });
-    },
     saveAndUpload() {
       let formData = new FormData();
       formData.append("image", this.image);

@@ -26,7 +26,7 @@ public class ItemComponent {
 
 	@JsonIgnoreProperties({ "itemComponents" })
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "item_id")
+	@JoinColumn(name = "item_id", referencedColumnName = "id")
 	private Item item;
 
 	@JsonIgnoreProperties({ "itemComponents" })
