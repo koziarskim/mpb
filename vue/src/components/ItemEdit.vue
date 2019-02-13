@@ -53,7 +53,7 @@
                     <label>Comp:</label>
                 </b-col>
                 <b-col cols=10>
-                    <b-select option-value="id" option-text="label" :list="availableComponents" v-model="component" placeholder="Select component"></b-select>
+                    <b-select option-value="id" option-text="number" :list="availableComponents" v-model="component" placeholder="Select component"></b-select>
                 </b-col>
             </b-row>
             <b-row>
