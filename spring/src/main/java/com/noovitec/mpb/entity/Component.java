@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.HashSet;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -49,8 +48,8 @@ public class Component {
 
 	@JsonIgnoreProperties({ "components" })
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "brand_id", referencedColumnName = "id")
-	private Brand brand;
+	@JoinColumn(name = "category_id", referencedColumnName = "id")
+	private Category category;
 
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "attachment_id", referencedColumnName = "id")

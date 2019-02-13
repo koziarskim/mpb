@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Brand {
+public class Category {
 
 	@Id
 	@GeneratedValue
@@ -27,7 +27,7 @@ public class Brand {
 	private String name;
 
 	@OneToMany(fetch = FetchType.LAZY)
-	@JoinColumn(name = "brand_id")
-	private Collection<Item> items;
+	@JoinColumn(name = "category_id")
+	private Collection<Component> components;
 
 }

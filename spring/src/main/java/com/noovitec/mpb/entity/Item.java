@@ -5,9 +5,11 @@ import java.util.HashSet;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -35,4 +37,9 @@ public class Item {
 	@JoinColumn(name = "item_id")
 	private Collection<ItemComponent> itemComponents = new HashSet<ItemComponent>(); 
 	
+	@JsonIgnoreProperties({ "items" })
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "brand_id", referencedColumnName = "id")
+	private Brand brand;
+
 }

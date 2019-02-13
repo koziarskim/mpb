@@ -20,10 +20,10 @@
                         <b-form-input type="text" v-model="component.stockNumber" placeholder="Internal stock number"></b-form-input>
                     </b-col>
                     <b-col cols=2>
-                        <label>Brand:</label>
+                        <label>Category:</label>
                     </b-col>
                     <b-col cols=4>
-                            <b-select option-value="id" option-text="name" :list="availableBrands" v-model="component.brand" placeholder="Select Brand"></b-select>
+                            <b-select option-value="id" option-text="name" :list="availableCategories" v-model="component.category" placeholder="Select Category"></b-select>
                     </b-col>
                 </b-row>
                 <b-row>
@@ -114,11 +114,11 @@ export default {
       imageUrl: "",
       component: {
         supplier: {},
-        brand: {},
+        category: {},
         attachment: {}
       },
       availableSuppliers: [],
-      availableBrands: []
+      availableCategories: []
     };
   },
   computed: {
@@ -137,8 +137,8 @@ export default {
           if (!this.component.supplier) {
             this.component.supplier = {};
           }
-          if (!this.component.brand) {
-            this.component.brand = {};
+          if (!this.component.category) {
+            this.component.category = {};
           }
         })
         .catch(e => {
@@ -155,11 +155,11 @@ export default {
           console.log("API error: " + e);
         });
     },
-    getAvailableBrands() {
+    getAvailableCategories() {
       http
-        .get("/brand")
+        .get("/category")
         .then(response => {
-          this.availableBrands = response.data;
+          this.availableCategories = response.data;
         })
         .catch(e => {
           console.log("API error: " + e);
@@ -202,7 +202,7 @@ export default {
       this.getComponentData(component_id);
     }
     this.getAvailableSuppliers();
-    this.getAvailableBrands();
+    this.getAvailableCategories();
   }
 };
 </script>
