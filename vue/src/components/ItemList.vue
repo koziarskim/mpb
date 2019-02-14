@@ -46,18 +46,15 @@ export default {
         .get("/item")
         .then(response => {
           this.items = response.data;
-          console.log("Success getting component data");
         })
         .catch(e => {
           console.log("API error: "+e);
         });
     },
     deleteItem(item_id) {
-        console.log("Deleting...")
       http
         .delete("/item/"+item_id)
         .then(response => {
-          console.log("Success post");
           this.getComponentsData();
         })
         .catch(e => {
@@ -65,7 +62,14 @@ export default {
         });
     },
     createNewItem(){
-        router.push('/itemEdit');
+        http
+        .post("/item")
+        .then(response => {
+            router.push('/itemEdit/'+response.data.id);
+        })
+        .catch(e =>{
+            console.log("Error post" + e)
+        })
     },
     updateItem(item_id){
         router.push('./itemEdit/'+item_id);

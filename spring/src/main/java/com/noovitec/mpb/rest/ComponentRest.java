@@ -84,9 +84,12 @@ class ComponentRest {
 //	POST methods.
 	
 	@PostMapping("/component")
-	ResponseEntity<Component> postComponent(@Valid @RequestBody Component component) throws URISyntaxException {
+	ResponseEntity<Component> postComponent(@RequestBody(required=false) Component component) throws URISyntaxException {
+		if(component==null) {
+			component = new Component();
+		}
 		Component result = componentRepo.save(component);
-		return ResponseEntity.created(new URI("/api/component/" + result.getId())).body(result);
+		return ResponseEntity.ok().body(result);
 	}
 
 	//This includes image upload.

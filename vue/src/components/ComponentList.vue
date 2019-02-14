@@ -84,11 +84,22 @@ export default {
           this.getComponentsData();
         })
         .catch(e => {
-            this.showAlert(e)
+            console.log("API Error: "+e);
         });
     },
     goToComponent(component_id){
-        router.push('/componentEdit/'+component_id);
+        if(!component_id){
+            http
+            .post("/component")
+            .then(response =>{
+                router.push('/componentEdit/'+response.data.id);
+            })
+            .catch(e =>{
+                console.log("API Error: "+e);
+            })
+        }else{
+            router.push('/componentEdit/'+component_id);
+        }
     },
   },
   mounted() {

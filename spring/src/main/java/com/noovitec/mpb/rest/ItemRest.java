@@ -84,14 +84,17 @@ class ItemRest {
 	 * not null, it will try to update.
 	 */
 	@PostMapping("/item")
-	ResponseEntity<Item> post(@Valid @RequestBody Item jsonItem) throws URISyntaxException {
+	ResponseEntity<Item> post(@RequestBody(required=false) Item jsonItem) throws URISyntaxException {
+		if(jsonItem==null) {
+			jsonItem = new Item();
+		}
 		for (ItemComponent ic : jsonItem.getItemComponents()) {
 			if (ic.getId() != null) {
 				ic.setItem(jsonItem);
 			}
 		}
 		Item result = itemRepo.save(jsonItem);
-		return ResponseEntity.created(new URI("/api/item/" + result.getId())).body(result);
+		return ResponseEntity.ok().body(result);
 	}
 	//This includes image upload.
 	@PostMapping("/item/upload")
