@@ -3,7 +3,7 @@
         <div class="d-flex justify-content-between align-items-center">
             <h2>Component List</h2>
             <div>
-                <b-button type="submit" variant="primary" @click="goToComponent('')">New Item</b-button>
+                <b-button type="submit" variant="primary" @click="goToComponent('')">New Component</b-button>
             </div>
         </div>
         <div v-if="components.length==0">Not found any components...</div>

@@ -83,7 +83,7 @@ public class Component {
 	private String label;
 	
 	public String getLabel() {
-		return this.getNumber() +" | "+this.getName()+" | "+this.getCategory().getName();
+		return this.getNumber() +" - "+this.getName();
 	}
 
 }

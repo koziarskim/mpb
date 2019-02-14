@@ -3,7 +3,7 @@
         <div style="border: 0px" class="d-flex justify-content-between align-items-center">
             <h2>New Item</h2>
             <div>
-                <b-button type="submit" variant="primary" @click="saveAndUpload">Submit</b-button>
+                <b-button type="submit" variant="primary" @click="saveAndUpload">Save</b-button>
                 <b-button type="reset" variant="danger" @click="cancelItem">Cancel</b-button>
             </div>
         </div>
@@ -64,7 +64,7 @@
         <b-col cols=4 style="border-left: 1px solid #dededf;">
             <b-row>
                 <b-col cols=12>
-                    <b-select option-value="id" option-text="number" :list="availableComponents" v-model="component" placeholder="Select component"></b-select>
+                    <b-select option-value="id" option-text="label" :list="availableComponents" v-model="component" placeholder="Select component"></b-select>
                 </b-col>
             </b-row>
             <b-row>
@@ -72,7 +72,7 @@
                         <div style="display: flex; border-bottom: 1px solid #ced4da" v-for="ic in item.itemComponents" v-bind:key="ic.id">
                             <div style="width:100%">
                                 <input size="sm" style="border: 0px; width: 25px" min=1 max=9 v-model="ic.units" type="number"/>
-                                <b-button variant="link" @click="httpUtils.goTo('/componentEdit/'+ic.component.id)">{{ic.component.number}}</b-button>
+                                <b-button variant="link" @click="goTo('/componentEdit/'+ic.component.id)">{{ic.component.number}}</b-button>
                                 <label>{{" | "+ic.component.name+" | $"+ic.component.totalPrice}}</label>
                             </div>
                             <b-button size="sm" type="reset" variant="link" @click="removeItemComponent(ic.id)">(x)</b-button>
@@ -232,7 +232,7 @@ export default {
           console.log("API error: " + e);
         });
     },
-    saveAndUpload() {
+    saveAndUpload(redirect) {
       let formData = new FormData();
       formData.append("image", this.image);
       formData.append("jsonItem", JSON.stringify(this.item));
@@ -243,7 +243,9 @@ export default {
           }
         })
         .then(function() {
-          window.history.back();
+            if(redirect){
+                window.history.back();
+            }
         })
         .catch(function() {
           console.log("FAILURE!!");
@@ -251,6 +253,10 @@ export default {
     },
     cancelItem() {
       window.history.back();
+    },
+    goTo(view){
+        this.saveAndUpload(false)
+        httpUtils.goTo(view);
     },
     removeItemComponent(ic_id) {
       console.log("remove comp");
