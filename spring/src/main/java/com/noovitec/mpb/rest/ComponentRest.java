@@ -5,6 +5,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.validation.Valid;
@@ -29,8 +32,10 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.noovitec.mpb.entity.Attachment;
+import com.noovitec.mpb.entity.Category;
 import com.noovitec.mpb.entity.Component;
 import com.noovitec.mpb.repo.AttachmentRepo;
+import com.noovitec.mpb.repo.CategoryRepo;
 import com.noovitec.mpb.repo.ComponentRepo;
 
 @CrossOrigin
@@ -42,29 +47,45 @@ class ComponentRest {
 	ObjectMapper objectMapper;
 	@Autowired
 	AttachmentRepo attachmentRepo;
+	@Autowired
+	CategoryRepo categoryRepo;
 	
 	private final Logger log = LoggerFactory.getLogger(ComponentRest.class);
-	private ComponentRepo componentRepository;
+	private ComponentRepo componentRepo;
 
-	public ComponentRest(ComponentRepo componentRepository) {
-		this.componentRepository = componentRepository;
+	public ComponentRest(ComponentRepo componentRepo) {
+		this.componentRepo = componentRepo;
 	}
+	
+//	GET methods.
 
 	@GetMapping("/component")
 	Collection<Component> getAll() {
-		return componentRepository.findAll();
+		return componentRepo.findAll();
 	}
 
 	@GetMapping("/component/{id}")
 	ResponseEntity<?> getComponent(@PathVariable Long id) {
-		Optional<Component> component = componentRepository.findById(id);
+		Optional<Component> component = componentRepo.findById(id);
 		return component.map(response -> ResponseEntity.ok().body(response))
 				.orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
 	}
-
+	
+	@GetMapping("/component/number/category/{category_id}")
+	ResponseEntity<?> getAvailableNumberByCategory(@PathVariable Long category_id) {
+		Category category = categoryRepo.findById(category_id).get();
+		String prefix = String.valueOf(category.getPrefix());
+		Component component = componentRepo.getLastCategory();
+		Long component_id = (component==null?0L:component.getId())+1;
+		int number = Integer.valueOf(prefix+component_id.toString());
+		return ResponseEntity.ok().body(Collections.singletonMap("number", number));
+	}
+	
+//	POST methods.
+	
 	@PostMapping("/component")
 	ResponseEntity<Component> postComponent(@Valid @RequestBody Component component) throws URISyntaxException {
-		Component result = componentRepository.save(component);
+		Component result = componentRepo.save(component);
 		return ResponseEntity.created(new URI("/api/component/" + result.getId())).body(result);
 	}
 
@@ -78,18 +99,20 @@ class ComponentRest {
 			attachmentRepo.save(attachment);
 			component.setAttachment(attachment);
 		}
-		Component result = componentRepository.save(component);
+		Component result = componentRepo.save(component);
 		return ResponseEntity.created(new URI("/api/component/" + result.getId())).body(result);
 	}
 
+//	DELETE methods.
+	
 	@DeleteMapping("/component/{id}")
 	public ResponseEntity<?> deleteComponent(@PathVariable Long id) {
-		Component component = componentRepository.getOne(id);
+		Component component = componentRepo.getOne(id);
 		if (component.getLocked()) {
 			return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED)
 					.body(Collections.singletonMap("message", "Component is currently locked"));
 		}
-		componentRepository.deleteById(id);
+		componentRepo.deleteById(id);
 		return ResponseEntity.ok().build();
 	}
 }

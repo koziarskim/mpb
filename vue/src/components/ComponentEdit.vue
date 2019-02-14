@@ -135,6 +135,7 @@ export default {
           deliveryFee: 0,
           otherFee: 0,
           unitsPerCase: 0,
+          number: 0,
       },
       availableSuppliers: [],
       availableCategories: []
@@ -154,6 +155,7 @@ export default {
     },
     category: function(newValue, oldValue) {
         this.component.category=newValue;
+        this.setCategoryNumber(this.category.id);
     }
   },
   methods: {
@@ -191,6 +193,16 @@ export default {
         .get("/category")
         .then(response => {
           this.availableCategories = response.data;
+        })
+        .catch(e => {
+          console.log("API error: " + e);
+        });
+    },
+    setCategoryNumber(category_id) {
+      http
+        .get("/component/number/category/"+category_id)
+        .then(response => {
+          this.component.number = response.data.number;
         })
         .catch(e => {
           console.log("API error: " + e);

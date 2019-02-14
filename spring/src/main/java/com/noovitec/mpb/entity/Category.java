@@ -25,6 +25,7 @@ public class Category {
 	@Column(name = "id")
 	private Long id;
 	private String name;
+	private int prefix;
 
 	@OneToMany(fetch = FetchType.LAZY)
 	@JoinColumn(name = "category_id")

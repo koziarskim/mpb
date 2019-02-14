@@ -7,9 +7,9 @@ insert into brand (id, name) values (2, 'Coa Cola');
 insert into brand (id, name) values (3, 'Butweiser');
 insert into brand (id, name) values (4, 'Light');
 
-insert into category (id, name) values (1, 'Drink (non-alc)');
-insert into category (id, name) values (2, 'Drink (alcoholic)');
-insert into category (id, name) values (3, 'Mug');
-insert into category (id, name) values (4, 'Mac & Cheese');
-insert into category (id, name) values (5, 'Busckets');
-insert into category (id, name) values (6, 'Condiment');
+insert into category (id, name, prefix) values (1, 'Drink (non-alc)', 100);
+insert into category (id, name, prefix) values (2, 'Drink (alcoholic)', 200);
+insert into category (id, name, prefix) values (3, 'Mug', 300);
+insert into category (id, name, prefix) values (4, 'Mac & Cheese', 400);
+insert into category (id, name, prefix) values (5, 'Busckets', 500);
+insert into category (id, name, prefix) values (6, 'Condiment', 600);
