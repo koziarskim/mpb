@@ -148,7 +148,8 @@ export default {
       httpUtils: httpUtils,
       brand: {},
       item: {
-        itemComponents: []
+        itemComponents: [],
+        number: 0,
       },
       component: {},
       availableBrands: [],
@@ -180,6 +181,7 @@ export default {
     },
     brand: function(newValue, oldValue) {
       this.item.brand = newValue;
+      this.setItemNumber(this.item.brand.id);
     }
   },
   methods: {
@@ -215,6 +217,16 @@ export default {
         .get("/brand")
         .then(response => {
           this.availableBrands = response.data;
+        })
+        .catch(e => {
+          console.log("API error: " + e);
+        });
+    },
+    setItemNumber(brand_id) {
+      http
+        .get("/item/number/brand/"+brand_id)
+        .then(response => {
+          this.item.number = response.data.number;
         })
         .catch(e => {
           console.log("API error: " + e);

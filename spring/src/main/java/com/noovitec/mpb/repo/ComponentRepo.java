@@ -9,5 +9,5 @@ public interface ComponentRepo extends JpaRepository<Component, Long> {
 	Component findByName(String name);
 
 	@Query(value="select c.* from Component c order by c.id desc limit 1", nativeQuery=true)
-	Component getLastCategory();
+	Component getLast();
 }

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Optional;
 
 import javax.validation.Valid;
@@ -28,10 +29,13 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.noovitec.mpb.entity.Attachment;
+import com.noovitec.mpb.entity.Brand;
+import com.noovitec.mpb.entity.Category;
 import com.noovitec.mpb.entity.Component;
 import com.noovitec.mpb.entity.Item;
 import com.noovitec.mpb.entity.ItemComponent;
 import com.noovitec.mpb.repo.AttachmentRepo;
+import com.noovitec.mpb.repo.BrandRepo;
 import com.noovitec.mpb.repo.ItemRepo;
 
 @CrossOrigin
@@ -43,6 +47,8 @@ class ItemRest {
 	ObjectMapper objectMapper;
 	@Autowired
 	AttachmentRepo attachmentRepo;
+	@Autowired
+	BrandRepo brandRepo;
 
 	private final Logger log = LoggerFactory.getLogger(ItemRest.class);
 	private ItemRepo itemRepo;
@@ -61,6 +67,16 @@ class ItemRest {
 		Optional<Item> item = itemRepo.findById(id);
 		return item.map(response -> ResponseEntity.ok().body(response))
 				.orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+	}
+	
+	@GetMapping("/item/number/brand/{brand_id}")
+	ResponseEntity<?> getAvailableNumberByCategory(@PathVariable Long brand_id) {
+		Brand brand = brandRepo.findById(brand_id).get();
+		String prefix = String.valueOf(brand.getPrefix());
+		Item item = itemRepo.getLast();
+		Long item_id = (item==null?0L:item.getId())+1;
+		int number = Integer.valueOf(prefix+item_id.toString());
+		return ResponseEntity.ok().body(Collections.singletonMap("number", number));
 	}
 
 	/*

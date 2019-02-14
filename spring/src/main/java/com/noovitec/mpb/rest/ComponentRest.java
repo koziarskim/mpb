@@ -75,7 +75,7 @@ class ComponentRest {
 	ResponseEntity<?> getAvailableNumberByCategory(@PathVariable Long category_id) {
 		Category category = categoryRepo.findById(category_id).get();
 		String prefix = String.valueOf(category.getPrefix());
-		Component component = componentRepo.getLastCategory();
+		Component component = componentRepo.getLast();
 		Long component_id = (component==null?0L:component.getId())+1;
 		int number = Integer.valueOf(prefix+component_id.toString());
 		return ResponseEntity.ok().body(Collections.singletonMap("number", number));
