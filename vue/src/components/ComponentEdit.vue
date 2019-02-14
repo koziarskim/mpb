@@ -59,15 +59,15 @@
                 </b-row>
                 <b-row>
                     <b-col cols=3>
-                        <label>Unit height (lbs):</label>
+                        <label>Unit height (in):</label>
                         <b-form-input type="number" min=0 v-model="component.height" placeholder="Height"></b-form-input>
                     </b-col>
                     <b-col cols=3>
-                        <label>Unit width (lbs):</label>
+                        <label>Unit width (in):</label>
                         <b-form-input type="number" min=0 v-model="component.width" placeholder="Width"></b-form-input>
                     </b-col>
                     <b-col cols=3>
-                        <label>Unit depth (lbs):</label>
+                        <label>Unit depth (in):</label>
                         <b-form-input type="number" min=0 v-model="component.depth" placeholder="Depth"></b-form-input>
                     </b-col>
                     <b-col cols=3>

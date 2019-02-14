@@ -82,6 +82,8 @@ export default {
   padding: 10px;
 }
 .hr-text {
+    margin-top: 0;
+    margin-bottom: 0;
   line-height: 1em;
   position: relative;
   outline: 0;

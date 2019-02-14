@@ -59,11 +59,6 @@
                     </b-row>
                 </b-col>
             </b-row>
-            <b-row>
-                <b-col cols=12>
-                    <hr class="hr-text" data-content="Unit prices/fees are in USD ($)">
-                </b-col>
-            </b-row>
         </b-col>
         <!-- Column 2 -->
         <b-col cols=4 style="border-left: 1px solid #dededf;">
@@ -85,6 +80,55 @@
                 </b-col>
             </b-row>
         </b-col>
+        </b-row>
+        <hr class="hr-text" data-content="Unit and case dimensions">
+        <b-row>
+            <b-col cols=2>
+                <label>Unit UPS#:</label>
+                 <b-form-input type="number" min=0 v-model="item.upc"></b-form-input>
+            </b-col>
+            <b-col cols=2>
+                <label>Unit height (in):</label>
+                <b-form-input type="number" min=0 v-model="item.height"></b-form-input>
+            </b-col>
+            <b-col cols=2>
+                <label>Unit width (in):</label>
+                <b-form-input type="number" min=0 v-model="item.width"></b-form-input>
+            </b-col>
+            <b-col cols=2>
+                <label>Unit depth (in):</label>
+                <b-form-input type="number" min=0 v-model="item.depth"></b-form-input>
+            </b-col>
+            <b-col cols=2>
+                <label>Unit weight (lbs):</label>
+                <b-form-input type="number" min=0 v-model="item.weight"></b-form-input>
+            </b-col>
+        </b-row>
+        <b-row>
+            <b-col cols=2>
+                <label>Units per case:</label>
+                 <b-form-input type="number" min=0 v-model="item.unitsPerCase"></b-form-input>
+            </b-col>
+            <b-col cols=2>
+                <label>Case UPC#:</label>
+                <b-form-input type="number" min=0 v-model="item.caseUpc"></b-form-input>
+            </b-col>
+            <b-col cols=2>
+                <label>Case height (in):</label>
+                <b-form-input type="number" min=0 v-model="item.caseHeight"></b-form-input>
+            </b-col>
+            <b-col cols=2>
+                <label>Case width (in):</label>
+                <b-form-input type="number" min=0 v-model="item.caseWidth"></b-form-input>
+            </b-col>
+            <b-col cols=2>
+                <label>Case depth (in):</label>
+                <b-form-input type="number" min=0 v-model="item.caseDepth"></b-form-input>
+            </b-col>
+            <b-col cols=2>
+                <label>Case weight (lbs):</label>
+                <b-form-input type="number" min=0 v-model="item.caseWeight"></b-form-input>
+            </b-col>
         </b-row>
     </b-container>
 </template>
