@@ -36,13 +36,14 @@ public class Component {
 	private BigDecimal dutyPercentage = BigDecimal.ZERO;
 	private BigDecimal deliveryCost = BigDecimal.ZERO;
 	private BigDecimal containerCost = BigDecimal.ZERO;
-	private int unitsPerContainer;
+	private int unitsPerContainer = 1;
 	private BigDecimal otherCost = BigDecimal.ZERO;
 	private BigDecimal height = BigDecimal.ZERO;
 	private BigDecimal width = BigDecimal.ZERO;
 	private BigDecimal depth = BigDecimal.ZERO;
 	private BigDecimal weight = BigDecimal.ZERO;
-	private int unitsPerCase;
+	private BigDecimal totalCost = BigDecimal.ZERO;
+	private int unitsPerCase = 1;
 
 	@JsonIgnoreProperties({ "component" })
 	@OneToMany(fetch = FetchType.EAGER, orphanRemoval = true)
@@ -64,15 +65,6 @@ public class Component {
 	private Attachment attachment;
 
 	// Transient not managed by DB
-
-	@Transient
-	private BigDecimal totalCost;
-
-	public BigDecimal getTotalCost() {
-		BigDecimal totalCost = new BigDecimal(0);
-		totalCost = this.purchaseCost.add(this.dutyPercentage).add(this.deliveryCost).add(this.otherCost);
-		return totalCost;
-	}
 
 	@Transient
 	private Boolean locked;
