@@ -59,15 +59,15 @@ public class Item {
 
 	//Transient not managed by DB
 	@Transient
-	private BigDecimal totalPrice;
+	private BigDecimal totalCost;
 
-	public BigDecimal getTotalPrice() {
-		BigDecimal totalPrice = new BigDecimal(0);
+	public BigDecimal getTotalCost() {
+		BigDecimal totalCost = new BigDecimal(0);
 		for(ItemComponent ic : this.itemComponents) {
-			totalPrice.add(ic.getComponent().getTotalPrice()
+			totalCost.add(ic.getComponent().getTotalCost()
 					.multiply(BigDecimal.valueOf(ic.getUnits())));
 		}
-		return totalPrice;
+		return totalCost;
 	}
 
 }

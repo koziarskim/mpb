@@ -47,14 +47,18 @@
                     <b-col cols=5>
                         <b-form-input type="text" v-model="component.supplierStockNumber" placeholder="Supplier's stock number"></b-form-input>
                     </b-col>
+                    <b-col cols=3>
+                        <label>Units in case:</label>
+                        <b-form-input type="number" min=0 v-model="component.unitsPerCase" placeholder="Units"></b-form-input>
+                    </b-col>                      
                 </b-row>
                 <b-row>
                     <b-col cols=8>
                         <b-form-textarea type="text" :rows=3 v-model="component.description" placeholder="Enter short description"></b-form-textarea>
                     </b-col>
                     <b-col cols=3>
-                        <label>Units per case:</label>
-                        <b-form-input type="number" min=0 v-model="component.unitsPerCase" placeholder="Units"></b-form-input>
+                        <label>Units in container:</label>
+                        <b-form-input type="number" min=0 v-model="component.unitsPerContainer" placeholder="Units"></b-form-input>
                     </b-col>                      
                 </b-row>
                 <b-row>
@@ -92,24 +96,25 @@
         <hr class="hr-text" data-content="Unit prices/fees are in USD ($)">
         <b-row>
             <b-col cols=2>
-                <label>Purchase $:</label>
-                <b-form-input type="number" min=0 v-model="component.assumedPrice" placeholder="Price"></b-form-input>
+                <label>Unit purchase $:</label>
+                <b-form-input type="number" min=0 v-model="component.purchaseCost" placeholder="Price"></b-form-input>
             </b-col>
             <b-col cols=2>
-                <label>Duty $:</label>
-                <b-form-input type="number" min=0 v-model="component.dutyFee" placeholder="Duty"></b-form-input>
+                <label>Duty %:</label>
+                <b-form-input type="number" min=0 v-model="component.dutyPercentage" placeholder="Duty"></b-form-input>
             </b-col>
             <b-col cols=2>
-                <label>Delivery $:</label>
-                <b-form-input type="number" min=0 v-model="component.deliveryFee" placeholder="Delivery"></b-form-input>
+                <label>Container Cost $:</label>
+                <b-form-input type="number" min=0 v-model="component.containerCost" placeholder="Container"></b-form-input>
             </b-col>
             <b-col cols=2>
                 <label>Other $:</label>
-                <b-form-input type="number" min=0 v-model="component.otherFee" placeholder="Other"></b-form-input>
+                <b-form-input type="number" min=0 v-model="component.otherCost" placeholder="Other"></b-form-input>
             </b-col>
             <b-col cols=2 offset=2>
-                <label>Unit total: {{unitTotalPrice}}</label>
-                <label>Case total: {{caseTotalPrice}}</label>
+                <label>Unit total: {{unitTotalCost}}</label>
+                <label>Case total: {{caseTotalCost}}</label>
+                <label>Delivery: {{component.deliveryCost}}</label>
             </b-col>
         </b-row>
     </b-container>
@@ -130,11 +135,13 @@ export default {
       supplier: {},
       category: {},
       component: {
-          assumedPrice: 0,
-          dutyFee: 0,
-          deliveryFee: 0,
-          otherFee: 0,
+          purchaseCost: 0,
+          dutyPercentage: 0,
+          deliveryCost: 0,
+          containerCost: 0,
+          otherCost: 0,
           unitsPerCase: 0,
+          unitsPerContainer: 0,
           number: 0,
       },
       availableSuppliers: [],
@@ -142,11 +149,11 @@ export default {
     };
   },
   computed: {
-      unitTotalPrice(){
-          return +this.component.assumedPrice + +this.component.dutyFee + +this.component.deliveryFee + +this.component.otherFee;
+      unitTotalCost(){
+          return +this.component.purchaseCost + +this.component.dutyPercentage + +this.component.deliveryCost + +this.component.otherCost;
       },
-      caseTotalPrice(){
-          return +this.unitTotalPrice * +this.component.unitsPerCase;
+      caseTotalCost(){
+          return +this.unitTotalCost * +this.component.unitsPerCase;
       }
   },
   watch: {

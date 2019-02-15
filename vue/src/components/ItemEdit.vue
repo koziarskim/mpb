@@ -42,7 +42,7 @@
                     </b-row>
                     <b-row>
                         <b-col cols=12>
-                            <label>Total Price: {{totalPrice}}</label>
+                            <label>Total Cost: {{totalCost}}</label>
                         </b-col>
                     </b-row>
                 </b-col>
@@ -83,7 +83,7 @@
                             <div style="width:100%">
                                 <input size="sm" style="border: 0px; width: 25px" min=1 max=9 v-model="ic.units" type="number"/>
                                 <b-button variant="link" @click="goTo('/componentEdit/'+ic.component.id)">{{ic.component.number}}</b-button>
-                                <label>{{" | "+ic.component.name+" | $"+ic.component.totalPrice}}</label>
+                                <label>{{" | "+ic.component.name+" | $"+ic.component.totalCost}}</label>
                             </div>
                             <b-button size="sm" type="reset" variant="link" @click="removeItemComponent(ic.id)">(x)</b-button>
                         </div>                
@@ -171,12 +171,12 @@ export default {
     };
   },
   computed: {
-    totalPrice: function() {
-      var totalPrice = 0;
+    totalCost: function() {
+      var totalCost = 0;
       this.item.itemComponents.forEach(ic => {
-        totalPrice = +totalPrice + +ic.component.totalPrice * +ic.units;
+        totalCost = +totalCost + +ic.component.totalCost * +ic.units;
       });
-      return totalPrice;
+      return totalCost;
     }
   },
   watch: {

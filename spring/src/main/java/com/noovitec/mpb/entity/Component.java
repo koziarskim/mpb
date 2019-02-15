@@ -32,15 +32,17 @@ public class Component {
 	private String number;
 	private String supplierStockNumber;
 	private String description;
-	private BigDecimal assumedPrice = BigDecimal.ZERO;
-	private BigDecimal dutyFee = BigDecimal.ZERO;
-	private BigDecimal deliveryFee = BigDecimal.ZERO;
-	private BigDecimal otherFee = BigDecimal.ZERO;
+	private BigDecimal purchaseCost = BigDecimal.ZERO;
+	private BigDecimal dutyPercentage = BigDecimal.ZERO;
+	private BigDecimal deliveryCost = BigDecimal.ZERO;
+	private BigDecimal containerCost = BigDecimal.ZERO;
+	private int unitsPerContainer;
+	private BigDecimal otherCost = BigDecimal.ZERO;
 	private BigDecimal height = BigDecimal.ZERO;
 	private BigDecimal width = BigDecimal.ZERO;
 	private BigDecimal depth = BigDecimal.ZERO;
 	private BigDecimal weight = BigDecimal.ZERO;
-	private BigDecimal unitsPerCase = BigDecimal.ZERO;
+	private int unitsPerCase;
 
 	@JsonIgnoreProperties({ "component" })
 	@OneToMany(fetch = FetchType.EAGER, orphanRemoval = true)
@@ -64,12 +66,12 @@ public class Component {
 	// Transient not managed by DB
 
 	@Transient
-	private BigDecimal totalPrice;
+	private BigDecimal totalCost;
 
-	public BigDecimal getTotalPrice() {
-		BigDecimal totalPrice = new BigDecimal(0);
-		totalPrice = this.assumedPrice.add(this.dutyFee).add(this.deliveryFee).add(this.otherFee);
-		return totalPrice;
+	public BigDecimal getTotalCost() {
+		BigDecimal totalCost = new BigDecimal(0);
+		totalCost = this.purchaseCost.add(this.dutyPercentage).add(this.deliveryCost).add(this.otherCost);
+		return totalCost;
 	}
 
 	@Transient
