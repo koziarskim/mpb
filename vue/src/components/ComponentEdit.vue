@@ -7,7 +7,7 @@
             </div>
             <div>
                 <b-button type="submit" variant="primary" @click="saveAndUpload">Save</b-button>
-                <b-button type="reset" variant="danger" @click="cancelComponent">Cancel</b-button>
+                <b-button type="reset" variant="danger" @click="cancelComponent">Close</b-button>
             </div>
         </div>
         <b-row>
@@ -236,7 +236,6 @@ export default {
           }
         })
         .then(function() {
-          window.history.back();
         })
         .catch(function() {
           console.log("FAILURE!!");

@@ -4,7 +4,7 @@
             <h2>New Item</h2>
             <div>
                 <b-button type="submit" variant="primary" @click="saveAndUpload">Save</b-button>
-                <b-button type="reset" variant="danger" @click="cancelItem">Cancel</b-button>
+                <b-button type="reset" variant="danger" @click="cancelItem">Close</b-button>
             </div>
         </div>
         <b-row>
@@ -278,7 +278,7 @@ export default {
           console.log("API error: " + e);
         });
     },
-    saveAndUpload(redirect) {
+    saveAndUpload() {
       let formData = new FormData();
       formData.append("image", this.image);
       formData.append("jsonItem", JSON.stringify(this.item));
@@ -289,9 +289,6 @@ export default {
           }
         })
         .then(function() {
-          if (redirect) {
-            window.history.back();
-          }
         })
         .catch(function() {
           console.log("FAILURE!!");
@@ -301,7 +298,7 @@ export default {
       window.history.back();
     },
     goTo(view) {
-      this.saveAndUpload(false);
+      this.saveAndUpload();
       httpUtils.goTo(view);
     },
     removeItemComponent(ic_id) {
