@@ -74,7 +74,7 @@
         <b-col cols=4 style="border-left: 1px solid #dededf;">
             <b-row>
                 <b-col cols=12>
-                    <b-select option-value="id" option-text="label" :list="availableComponents" v-model="component" placeholder="Select component"></b-select>
+                    <b-select option-value="id" option-text="name" :list="availableComponents" v-model="component" placeholder="Select component"></b-select>
                 </b-col>
             </b-row>
             <b-row>
