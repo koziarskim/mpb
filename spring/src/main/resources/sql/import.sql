@@ -29,12 +29,12 @@ insert into category (id, name, prefix, type) values (9, 'Mugs', 500, 'ITM');
 insert into category (id, name, prefix, type) values (10, 'Condiment', 600, 'ITM');
 insert into category (id, name, prefix, type) values (11, 'Other', 900, 'ITM');
 
-insert into season (id, name, prefix) values (1, 'Christmass', 100);
-insert into season (id, name, prefix) values (2, 'Valentine', 200);
-insert into season (id, name, prefix) values (3, 'Easter', 300);
-insert into season (id, name, prefix) values (4, 'Summer', 400);
-insert into season (id, name, prefix) values (5, 'Mother''s Day', 500);
-insert into season (id, name, prefix) values (6, 'Father''s Day', 600);
-insert into season (id, name, prefix) values (7, 'Thanksgiving', 700);
-insert into season (id, name, prefix) values (8, 'Other', 900);
+insert into season (id, name, prefix) values (1, 'Christmass', 'C');
+insert into season (id, name, prefix) values (2, 'Valentine', 'V');
+insert into season (id, name, prefix) values (3, 'Easter', 'E');
+insert into season (id, name, prefix) values (4, 'Summer', 'S');
+insert into season (id, name, prefix) values (5, 'Mother''s Day', 'M');
+insert into season (id, name, prefix) values (6, 'Father''s Day', 'F');
+insert into season (id, name, prefix) values (7, 'Thanksgiving', 'T');
+insert into season (id, name, prefix) values (8, 'Other', 'O');
 

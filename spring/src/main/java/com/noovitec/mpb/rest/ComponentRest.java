@@ -74,10 +74,10 @@ class ComponentRest {
 	@GetMapping("/component/number/category/{category_id}")
 	ResponseEntity<?> getAvailableNumberByCategory(@PathVariable Long category_id) {
 		Category category = categoryRepo.findById(category_id).get();
-		String prefix = String.valueOf(category.getPrefix());
+		String prefix = category.getPrefix();
 		Component component = componentRepo.getLast();
 		Long component_id = (component==null?0L:component.getId())+1;
-		int number = Integer.valueOf(prefix+component_id.toString());
+		String number = prefix+component_id.toString();
 		return ResponseEntity.ok().body(Collections.singletonMap("number", number));
 	}
 	

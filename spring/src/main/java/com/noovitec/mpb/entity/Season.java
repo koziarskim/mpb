@@ -23,7 +23,7 @@ public class Season {
 	@GeneratedValue
 	private Long id;
 	private String name;
-	private int prefix;
+	private String prefix;
 
 	@OneToMany(fetch = FetchType.LAZY)
 	@JoinColumn(name = "season_id")

@@ -29,7 +29,7 @@ public class Component {
 	@GeneratedValue
 	private Long id;
 	private String name;
-	private int number;
+	private String number;
 	private String supplierStockNumber;
 	private String description;
 	private BigDecimal assumedPrice = BigDecimal.ZERO;

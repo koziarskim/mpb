@@ -26,7 +26,7 @@ public class Category {
 	@GeneratedValue
 	private Long id;
 	private String name;
-	private int prefix;
+	private String prefix;
 	private String type;
 
 //	@JsonIgnore

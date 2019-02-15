@@ -30,7 +30,7 @@ public class Item {
 	@GeneratedValue
 	private Long id;
 	private String name;
-	private int number;
+	private String number;
 	private String description;
 	
 	@JsonIgnoreProperties({"item"})

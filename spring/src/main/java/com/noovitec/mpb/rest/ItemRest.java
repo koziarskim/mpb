@@ -74,10 +74,16 @@ class ItemRest {
 	@GetMapping("/item/number/season/{season_id}")
 	ResponseEntity<?> getAvailableNumberByCategory(@PathVariable Long season_id) {
 		Season season = seasonRepo.findById(season_id).get();
-		String prefix = String.valueOf(season.getPrefix());
+		String prefix = season.getPrefix();
 		Item item = itemRepo.getLast();
 		Long item_id = (item==null?0L:item.getId())+1;
-		int number = Integer.valueOf(prefix+item_id.toString());
+		if(item_id.toString().length()==1) {
+			prefix = prefix+"00";
+		}
+		if(item_id.toString().length()==2) {
+			prefix = prefix+"0";
+		}
+		String number = prefix+item_id.toString();
 		return ResponseEntity.ok().body(Collections.singletonMap("number", number));
 	}
 
