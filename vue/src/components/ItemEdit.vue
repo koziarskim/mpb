@@ -49,12 +49,22 @@
                 <b-col cols=5>
                     <b-row>
                         <b-col cols=12>
+                            <b-select option-value="id" option-text="name" :list="availableCategories" v-model="category" placeholder="Select category"></b-select>
+                        </b-col>
+                    </b-row>
+                    <b-row>
+                        <b-col cols=12>
+                            <b-select option-value="id" option-text="name" :list="availableSeasons" v-model="season" placeholder="Select season"></b-select>
+                        </b-col>
+                    </b-row>
+                    <b-row>
+                        <b-col cols=12>
                             <b-form-file type="file" v-model="image"/>
                         </b-col>
                     </b-row>
                     <b-row>
                         <b-col>
-                            <b-img width="300px" height="300px" :src="imageUrl" fluid />
+                            <b-img width="200px" height="300px" :src="imageUrl" fluid />
                         </b-col>
                     </b-row>
                 </b-col>
@@ -143,17 +153,21 @@ export default {
   name: "edit-component",
   data() {
     return {
+      item: {
+        itemComponents: [],
+        number: 0
+      },
       image: "",
       imageUrl: "",
       httpUtils: httpUtils,
       brand: {},
-      item: {
-        itemComponents: [],
-        number: 0,
-      },
+      season: {},
+      category: {},
       component: {},
       availableBrands: [],
-      availableComponents: []
+      availableComponents: [],
+      availableCategories: [],
+      availableSeasons: []
     };
   },
   computed: {
@@ -181,7 +195,13 @@ export default {
     },
     brand: function(newValue, oldValue) {
       this.item.brand = newValue;
-      this.setItemNumber(this.item.brand.id);
+    },
+    category: function(newValue, oldValue) {
+      this.item.category = newValue;
+    },
+    season: function(newValue, oldValue) {
+      this.item.season = newValue;
+      this.setItemNumber(this.item.season.id);
     }
   },
   methods: {
@@ -207,6 +227,12 @@ export default {
           if (response.data.brand) {
             this.brand = response.data.brand;
           }
+          if (response.data.category) {
+            this.category = response.data.category;
+          }
+          if (response.data.season) {
+            this.season = response.data.season;
+          }
         })
         .catch(e => {
           console.log("API error: " + e);
@@ -222,9 +248,29 @@ export default {
           console.log("API error: " + e);
         });
     },
-    setItemNumber(brand_id) {
+    getAvailableCategories() {
       http
-        .get("/item/number/brand/"+brand_id)
+        .get("/category/type/ITM")
+        .then(response => {
+          this.availableCategories = response.data;
+        })
+        .catch(e => {
+          console.log("API error: " + e);
+        });
+    },
+    getAvailableSeasons() {
+      http
+        .get("/season")
+        .then(response => {
+          this.availableSeasons = response.data;
+        })
+        .catch(e => {
+          console.log("API error: " + e);
+        });
+    },
+    setItemNumber(season_id) {
+      http
+        .get("/item/number/season/" + season_id)
         .then(response => {
           this.item.number = response.data.number;
         })
@@ -243,9 +289,9 @@ export default {
           }
         })
         .then(function() {
-            if(redirect){
-                window.history.back();
-            }
+          if (redirect) {
+            window.history.back();
+          }
         })
         .catch(function() {
           console.log("FAILURE!!");
@@ -254,9 +300,9 @@ export default {
     cancelItem() {
       window.history.back();
     },
-    goTo(view){
-        this.saveAndUpload(false)
-        httpUtils.goTo(view);
+    goTo(view) {
+      this.saveAndUpload(false);
+      httpUtils.goTo(view);
     },
     removeItemComponent(ic_id) {
       console.log("remove comp");
@@ -275,6 +321,8 @@ export default {
       this.getItemData(item_id);
     }
     this.getAvailableBrands();
+    this.getAvailableCategories();
+    this.getAvailableSeasons();
   }
 };
 </script>

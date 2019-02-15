@@ -10,23 +10,26 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.noovitec.mpb.entity.Brand;
 import com.noovitec.mpb.entity.Category;
+import com.noovitec.mpb.entity.Season;
 import com.noovitec.mpb.repo.CategoryRepo;
+import com.noovitec.mpb.repo.SeasonRepo;
 
 @CrossOrigin
 @RestController
 @RequestMapping("/api")
-class CategoryRest {
+class SeasonRest {
 
-	private final Logger log = LoggerFactory.getLogger(CategoryRest.class);
-	private CategoryRepo categoryRepo;
+	private final Logger log = LoggerFactory.getLogger(SeasonRest.class);
+	private SeasonRepo seasonRepo;
 
-	public CategoryRest(CategoryRepo categoryRepo) {
-		this.categoryRepo = categoryRepo;
+	public SeasonRest(SeasonRepo seasonRepo) {
+		this.seasonRepo = seasonRepo;
 	}
-
-	@GetMapping("/category/type/{type}")
-	Collection<Category> getAllForComponent(@PathVariable String type) {
-		return categoryRepo.findAllByType(type);
+	
+	@GetMapping("/season")
+	Collection<Season> getAll() {
+		return seasonRepo.findAll();
 	}
 }

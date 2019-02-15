@@ -38,10 +38,20 @@ public class Item {
 	@JoinColumn(name = "item_id")
 	private Collection<ItemComponent> itemComponents = new HashSet<ItemComponent>(); 
 	
+	@JsonIgnoreProperties({ "items", "components" })
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "category_id", referencedColumnName = "id")
+	private Category category;
+
 	@JsonIgnoreProperties({ "items" })
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "brand_id", referencedColumnName = "id")
 	private Brand brand;
+
+	@JsonIgnoreProperties({ "items" })
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "season_id", referencedColumnName = "id")
+	private Season season;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "attachment_id", referencedColumnName = "id")

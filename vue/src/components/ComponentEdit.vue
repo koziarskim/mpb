@@ -190,7 +190,7 @@ export default {
     },
     getAvailableCategories() {
       http
-        .get("/category")
+        .get("/category/type/CMP")
         .then(response => {
           this.availableCategories = response.data;
         })

@@ -52,7 +52,7 @@ public class Component {
 	@JoinColumn(name = "supplier_id")
 	private Supplier supplier;
 
-	@JsonIgnoreProperties({ "components" })
+	@JsonIgnoreProperties({ "items", "components" })
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "category_id", referencedColumnName = "id")
 	private Category category;

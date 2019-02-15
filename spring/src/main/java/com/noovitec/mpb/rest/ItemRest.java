@@ -34,9 +34,11 @@ import com.noovitec.mpb.entity.Category;
 import com.noovitec.mpb.entity.Component;
 import com.noovitec.mpb.entity.Item;
 import com.noovitec.mpb.entity.ItemComponent;
+import com.noovitec.mpb.entity.Season;
 import com.noovitec.mpb.repo.AttachmentRepo;
 import com.noovitec.mpb.repo.BrandRepo;
 import com.noovitec.mpb.repo.ItemRepo;
+import com.noovitec.mpb.repo.SeasonRepo;
 
 @CrossOrigin
 @RestController
@@ -48,7 +50,7 @@ class ItemRest {
 	@Autowired
 	AttachmentRepo attachmentRepo;
 	@Autowired
-	BrandRepo brandRepo;
+	SeasonRepo seasonRepo;
 
 	private final Logger log = LoggerFactory.getLogger(ItemRest.class);
 	private ItemRepo itemRepo;
@@ -69,10 +71,10 @@ class ItemRest {
 				.orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
 	}
 	
-	@GetMapping("/item/number/brand/{brand_id}")
-	ResponseEntity<?> getAvailableNumberByCategory(@PathVariable Long brand_id) {
-		Brand brand = brandRepo.findById(brand_id).get();
-		String prefix = String.valueOf(brand.getPrefix());
+	@GetMapping("/item/number/season/{season_id}")
+	ResponseEntity<?> getAvailableNumberByCategory(@PathVariable Long season_id) {
+		Season season = seasonRepo.findById(season_id).get();
+		String prefix = String.valueOf(season.getPrefix());
 		Item item = itemRepo.getLast();
 		Long item_id = (item==null?0L:item.getId())+1;
 		int number = Integer.valueOf(prefix+item_id.toString());

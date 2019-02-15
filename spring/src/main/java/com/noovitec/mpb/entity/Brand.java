@@ -25,7 +25,6 @@ public class Brand {
 	@Column(name = "id")
 	private Long id;
 	private String name;
-	private int prefix;
 
 	@OneToMany(fetch = FetchType.LAZY)
 	@JoinColumn(name = "brand_id")
