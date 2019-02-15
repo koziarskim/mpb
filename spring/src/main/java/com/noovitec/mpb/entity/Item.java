@@ -53,6 +53,11 @@ public class Item {
 	@JoinColumn(name = "season_id", referencedColumnName = "id")
 	private Season season;
 	
+	@JsonIgnoreProperties({ "items" })
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "upc_id", referencedColumnName = "id")
+	private Upc upc;
+	
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "attachment_id", referencedColumnName = "id")
 	private Attachment attachment;

@@ -35,10 +35,12 @@ import com.noovitec.mpb.entity.Component;
 import com.noovitec.mpb.entity.Item;
 import com.noovitec.mpb.entity.ItemComponent;
 import com.noovitec.mpb.entity.Season;
+import com.noovitec.mpb.entity.Upc;
 import com.noovitec.mpb.repo.AttachmentRepo;
 import com.noovitec.mpb.repo.BrandRepo;
 import com.noovitec.mpb.repo.ItemRepo;
 import com.noovitec.mpb.repo.SeasonRepo;
+import com.noovitec.mpb.repo.UpcRepo;
 
 @CrossOrigin
 @RestController
@@ -51,6 +53,8 @@ class ItemRest {
 	AttachmentRepo attachmentRepo;
 	@Autowired
 	SeasonRepo seasonRepo;
+	@Autowired
+	UpcRepo upcRepo;
 
 	private final Logger log = LoggerFactory.getLogger(ItemRest.class);
 	private ItemRepo itemRepo;
@@ -95,6 +99,8 @@ class ItemRest {
 	ResponseEntity<Item> post(@RequestBody(required=false) Item jsonItem) throws URISyntaxException {
 		if(jsonItem==null) {
 			jsonItem = new Item();
+			Upc upc = upcRepo.getFirstAvailable();
+			jsonItem.setUpc(upc);
 		}
 		for (ItemComponent ic : jsonItem.getItemComponents()) {
 			if (ic.getId() != null) {

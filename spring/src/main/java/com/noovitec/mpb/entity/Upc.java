@@ -2,7 +2,6 @@ package com.noovitec.mpb.entity;
 
 import java.util.Collection;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -18,15 +17,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Brand {
+public class Upc {
 
 	@Id
 	@GeneratedValue
 	private Long id;
-	private String name;
+	private String code;
+	private boolean assigned;
 
 	@OneToMany(fetch = FetchType.LAZY)
-	@JoinColumn(name = "brand_id")
+	@JoinColumn(name = "upc_id")
 	private Collection<Item> items;
 
 }

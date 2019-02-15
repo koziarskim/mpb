@@ -24,7 +24,6 @@ public class Supplier {
 
 	@Id
 	@GeneratedValue
-	@Column(name = "id")
 	private Long id;
 	private String name;
 	private String number;

@@ -41,8 +41,11 @@
                         </b-col>                
                     </b-row>
                     <b-row>
-                        <b-col cols=12>
+                        <b-col cols=5>
                             <label>Total Cost: {{totalCost}}</label>
+                        </b-col>
+                        <b-col cols=7>
+                            <label>UPC#: {{item.upc.code}}</label>
                         </b-col>
                     </b-row>
                 </b-col>
@@ -93,10 +96,6 @@
         </b-row>
         <hr class="hr-text" data-content="Unit and case dimensions">
         <b-row>
-            <b-col cols=2>
-                <label>Unit UPS#:</label>
-                 <b-form-input type="number" min=0 v-model="item.upc"></b-form-input>
-            </b-col>
             <b-col cols=2>
                 <label>Unit height (in):</label>
                 <b-form-input type="number" min=0 v-model="item.height"></b-form-input>
@@ -155,7 +154,8 @@ export default {
     return {
       item: {
         itemComponents: [],
-        number: 0
+        number: 0,
+        upc: {}
       },
       image: "",
       imageUrl: "",
@@ -288,8 +288,7 @@ export default {
             "Content-Type": "multipart/form-data"
           }
         })
-        .then(function() {
-        })
+        .then(function() {})
         .catch(function() {
           console.log("FAILURE!!");
         });
