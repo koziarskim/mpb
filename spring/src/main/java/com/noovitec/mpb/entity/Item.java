@@ -32,7 +32,19 @@ public class Item {
 	private String name;
 	private String number;
 	private String description;
-	
+	private BigDecimal height = BigDecimal.ZERO;
+	private BigDecimal width = BigDecimal.ZERO;
+	private BigDecimal depth = BigDecimal.ZERO;
+	private BigDecimal weight = BigDecimal.ZERO;
+	private BigDecimal unitsPerCase = BigDecimal.ZERO;
+	private BigDecimal caseUpc = BigDecimal.ZERO;
+	private BigDecimal caseHeight = BigDecimal.ZERO;
+	private BigDecimal caseWidth = BigDecimal.ZERO;
+	private BigDecimal caseDepth = BigDecimal.ZERO;
+	private BigDecimal caseWeight = BigDecimal.ZERO;
+	private BigDecimal ti = BigDecimal.ZERO; //number of cases in single layer on pallet.
+	private BigDecimal hi = BigDecimal.ZERO; //number of layers on pallet.
+
 	@JsonIgnoreProperties({"item"})
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "item_id")

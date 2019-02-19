@@ -139,6 +139,20 @@
                 <b-form-input type="number" min=0 v-model="item.caseWeight"></b-form-input>
             </b-col>
         </b-row>
+        <b-row>
+            <b-col cols=2>
+                <label>TI (in):</label>
+                <b-form-input type="number" min=0 v-model="item.ti"></b-form-input>
+            </b-col>
+            <b-col cols=2>
+                <label>HI (in):</label>
+                <b-form-input type="number" min=0 v-model="item.hi"></b-form-input>
+            </b-col>
+            <b-col cols=2>
+                <label>Pallet height (in):</label>
+                <label>{{palletHeight}}</label>
+            </b-col>
+        </b-row>
     </b-container>
 </template>
 
@@ -177,6 +191,10 @@ export default {
         totalCost = +totalCost + +ic.component.totalCost * +ic.units;
       });
       return totalCost;
+    },
+    palletHeight: function(){
+        return +this.item.caseHeight * +this.item.ti;
+
     }
   },
   watch: {
