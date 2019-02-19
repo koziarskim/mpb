@@ -47,6 +47,9 @@
                         <b-col cols=7>
                             <label>UPC#: {{item.upc.code}}</label>
                         </b-col>
+                        <b-col>
+                            <b-img width=150px :src="barcodeUrl" fluid />
+                        </b-col>
                     </b-row>
                 </b-col>
                 <b-col cols=5>
@@ -61,13 +64,9 @@
                         </b-col>
                     </b-row>
                     <b-row>
-                        <b-col cols=12>
-                            <b-form-file type="file" v-model="image"/>
-                        </b-col>
-                    </b-row>
-                    <b-row>
                         <b-col>
-                            <b-img width="200px" height="300px" :src="imageUrl" fluid />
+                            <input type="file" @change="uploadImage" accept="image/png, image/jpeg">>
+                            <img width="200px" :src="imageUrl" fluid />
                         </b-col>
                     </b-row>
                 </b-col>
@@ -180,7 +179,6 @@ export default {
         upc: {}
       },
       image: "",
-      imageUrl: "",
       httpUtils: httpUtils,
       brand: {},
       season: {},
@@ -208,6 +206,16 @@ export default {
     },
     caseCubic: function(){
         return +this.item.caseHeight * +this.item.caseWidth * +this.item.caseDepth;
+    },
+    barcodeUrl: function(){
+        if(this.item.upc.code){
+            return httpUtils.baseUrl + "/upc/image/"+this.item.upc.code
+        }
+    },
+    imageUrl: function(){
+        if(this.item.attachment){
+            return httpUtils.baseUrl + "/attachment/" + this.item.attachment.id;
+        }
     }
   },
   watch: {
@@ -251,10 +259,6 @@ export default {
         .get("/item/" + item_id)
         .then(response => {
           this.item = response.data;
-          if (response.data.attachment) {
-            this.imageUrl =
-              httpUtils.baseUrl + "/attachment/" + response.data.attachment.id;
-          }
           if (response.data.brand) {
             this.brand = response.data.brand;
           }
@@ -309,6 +313,10 @@ export default {
           console.log("API error: " + e);
         });
     },
+    uploadImage(e){
+        this.image = e.target.files[0] || e.dataTransfer.files[0];
+        this.saveAndUpload();
+    },
     saveAndUpload() {
       let formData = new FormData();
       formData.append("image", this.image);
@@ -319,9 +327,11 @@ export default {
             "Content-Type": "multipart/form-data"
           }
         })
-        .then(function() {})
-        .catch(function() {
-          console.log("FAILURE!!");
+        .then(response => {
+            this.getItemData(this.item.id);
+        })
+        .catch(e => {
+          console.log("API error: "+e);
         });
     },
     cancelItem() {

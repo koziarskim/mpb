@@ -28,5 +28,4 @@ public class Upc {
 	@OneToMany(fetch = FetchType.LAZY)
 	@JoinColumn(name = "upc_id")
 	private Collection<Item> items;
-
 }

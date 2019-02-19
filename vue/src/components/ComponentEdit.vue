@@ -83,12 +83,8 @@
             <b-col cols=4 style="border-left: 1px solid #dededf;">
                 <b-row>
                     <b-col cols=12>
-                        <b-form-file type="file" v-model="image"/>
-                    </b-col>
-                </b-row>
-                <b-row>
-                    <b-col>
-                        <b-img width="300px" :src="imageUrl" fluid />
+                        <input type="file" @change="uploadImage" accept="image/png, image/jpeg">
+                        <img width="200px" :src="imageUrl" fluid />
                     </b-col>
                 </b-row>
             </b-col>
@@ -131,7 +127,6 @@ export default {
   data() {
     return {
       image: "",
-      imageUrl: "",
       supplier: {},
       category: {},
       component: {
@@ -158,6 +153,11 @@ export default {
       },
       deliveryCost(){
           return (+this.component.containerCost / +this.component.unitsPerContainer) * +this.component.dutyPercentage
+      },
+      imageUrl: function(){
+        if(this.component.attachment){
+            return httpUtils.baseUrl + "/attachment/" + this.component.attachment.id;
+        }
       }
   },
   watch: {
@@ -181,9 +181,6 @@ export default {
         .get("/component/" + component_id)
         .then(response => {
           this.component = response.data;
-          if(response.data.attachment){
-            this.imageUrl = httpUtils.baseUrl + "/attachment/" + response.data.attachment.id;
-          }
           if (response.data.supplier) {
             this.supplier = response.data.supplier;
           }
@@ -225,6 +222,10 @@ export default {
           console.log("API error: " + e);
         });
     },
+    uploadImage(e){
+        this.image = e.target.files[0] || e.dataTransfer.files[0];
+        this.saveAndUpload();
+    },
     saveAndUpload() {
       let formData = new FormData();
       formData.append("image", this.image);
@@ -235,10 +236,11 @@ export default {
             "Content-Type": "multipart/form-data"
           }
         })
-        .then(function() {
+        .then(response =>{
+            this.getComponentData(this.component.id);
         })
-        .catch(function() {
-          console.log("FAILURE!!");
+        .catch(e => {
+          console.log("API error: "+e);
         });
     },
     cancelComponent() {
