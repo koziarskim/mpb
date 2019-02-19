@@ -65,7 +65,7 @@
                     </b-row>
                     <b-row>
                         <b-col>
-                            <input type="file" @change="uploadImage" accept="image/png, image/jpeg">>
+                            <input type="file" @change="uploadImage" accept="image/png, image/jpeg">
                             <img width="200px" :src="imageUrl" fluid />
                         </b-col>
                     </b-row>
@@ -149,15 +149,33 @@
             </b-col>
             <b-col cols=2>
                 <label>Pallet height (in):</label>
-                <label>{{palletHeight}}</label>
+                <b-form-input readonly="true" type="number" min=0 v-model="palletHeight"></b-form-input>
             </b-col>
             <b-col cols=2>
                 <label>Item cubic (ft):</label>
-                <label>{{itemCubic}}</label>
+                <b-form-input readonly="true" type="number" min=0 v-model="itemCubic"></b-form-input>
             </b-col>
             <b-col cols=2>
                 <label>Case cubic (ft):</label>
-                <label>{{caseCubic}}</label>
+                <b-form-input readonly="true" type="number" min=0 v-model="caseCubic"></b-form-input>
+            </b-col>
+        </b-row>
+        <b-row>
+            <b-col cols=2>
+                <label>Warehouse ($):</label>
+                <b-form-input readonly="true" type="number" min=0 v-model="item.warehouseCost"></b-form-input>
+            </b-col>
+            <b-col cols=2>
+                <label>Package/mat. ($):</label>
+                <b-form-input readonly="true" type="number" min=0 v-model="item.packageCost"></b-form-input>
+            </b-col>
+            <b-col cols=2>
+                <label>Labor ($):</label>
+                <b-form-input type="number" min=0 v-model="item.laborCost"></b-form-input>
+            </b-col>
+            <b-col cols=2>
+                <label>Other ($):</label>
+                <b-form-input type="number" min=0 v-model="item.otherCost"></b-form-input>
             </b-col>
         </b-row>
     </b-container>
@@ -196,6 +214,7 @@ export default {
       this.item.itemComponents.forEach(ic => {
         totalCost = +totalCost + +ic.component.totalCost * +ic.units;
       });
+      totalCost = +totalCost + +this.item.warehouseCost + +this.item.packageCost + +this.item.laborCost + +this.item.otherCost;
       return totalCost;
     },
     palletHeight: function(){

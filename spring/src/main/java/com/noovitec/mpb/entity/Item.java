@@ -44,6 +44,12 @@ public class Item {
 	private BigDecimal caseWeight = BigDecimal.ZERO;
 	private BigDecimal ti = BigDecimal.ZERO; //number of cases in single layer on pallet.
 	private BigDecimal hi = BigDecimal.ZERO; //number of layers on pallet.
+	private BigDecimal warehouseCost = new BigDecimal(12);
+	private BigDecimal packageCost = new BigDecimal(12);
+	private BigDecimal laborCost = BigDecimal.ZERO;
+	private BigDecimal otherCost = BigDecimal.ZERO;
+
+	
 	
 	@JsonIgnoreProperties({"item"})
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
@@ -84,6 +90,7 @@ public class Item {
 			totalCost.add(ic.getComponent().getTotalCost()
 					.multiply(BigDecimal.valueOf(ic.getUnits())));
 		}
+		totalCost = totalCost.add(this.warehouseCost).add(this.packageCost).add(this.laborCost).add(this.otherCost);
 		return totalCost;
 	}
 
