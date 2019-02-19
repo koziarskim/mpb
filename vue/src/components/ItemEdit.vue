@@ -96,19 +96,19 @@
         <hr class="hr-text" data-content="Unit and case dimensions">
         <b-row>
             <b-col cols=2>
-                <label>Unit height (in):</label>
+                <label>Height (in):</label>
                 <b-form-input type="number" min=0 v-model="item.height"></b-form-input>
             </b-col>
             <b-col cols=2>
-                <label>Unit width (in):</label>
+                <label>Width (in):</label>
                 <b-form-input type="number" min=0 v-model="item.width"></b-form-input>
             </b-col>
             <b-col cols=2>
-                <label>Unit depth (in):</label>
+                <label>Depth (in):</label>
                 <b-form-input type="number" min=0 v-model="item.depth"></b-form-input>
             </b-col>
             <b-col cols=2>
-                <label>Unit weight (lbs):</label>
+                <label>Weight (lbs):</label>
                 <b-form-input type="number" min=0 v-model="item.weight"></b-form-input>
             </b-col>
         </b-row>
@@ -140,11 +140,11 @@
         </b-row>
         <b-row>
             <b-col cols=2>
-                <label>TI (in):</label>
+                <label title="Number of case on single layer/tier">TI (in):</label>
                 <b-form-input type="number" min=0 v-model="item.ti"></b-form-input>
             </b-col>
             <b-col cols=2>
-                <label>HI (in):</label>
+                <label title="Number of layers/tiers on the pallet">HI (in):</label>
                 <b-form-input type="number" min=0 v-model="item.hi"></b-form-input>
             </b-col>
             <b-col cols=2>
@@ -152,7 +152,7 @@
                 <b-form-input readonly="true" type="number" min=0 v-model="palletHeight"></b-form-input>
             </b-col>
             <b-col cols=2>
-                <label>Item cubic (ft):</label>
+                <label>Cubic (ft):</label>
                 <b-form-input readonly="true" type="number" min=0 v-model="itemCubic"></b-form-input>
             </b-col>
             <b-col cols=2>
