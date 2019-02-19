@@ -160,10 +160,6 @@
                 <label>Case cubic (ft):</label>
                 <label>{{caseCubic}}</label>
             </b-col>
-            <b-col cols=2>
-                <label>Pallet cubic (ft):</label>
-                <label>{{palletCubic}}</label>
-            </b-col>
         </b-row>
     </b-container>
 </template>
@@ -212,9 +208,6 @@ export default {
     },
     caseCubic: function(){
         return +this.item.caseHeight * +this.item.caseWidth * +this.item.caseDepth;
-    },
-    palletCubic: function(){
-        return +this.item.caseHeight * +this.item.ti;
     }
   },
   watch: {
