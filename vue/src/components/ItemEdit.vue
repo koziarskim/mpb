@@ -152,6 +152,18 @@
                 <label>Pallet height (in):</label>
                 <label>{{palletHeight}}</label>
             </b-col>
+            <b-col cols=2>
+                <label>Item cubic (ft):</label>
+                <label>{{itemCubic}}</label>
+            </b-col>
+            <b-col cols=2>
+                <label>Case cubic (ft):</label>
+                <label>{{caseCubic}}</label>
+            </b-col>
+            <b-col cols=2>
+                <label>Pallet cubic (ft):</label>
+                <label>{{palletCubic}}</label>
+            </b-col>
         </b-row>
     </b-container>
 </template>
@@ -194,7 +206,15 @@ export default {
     },
     palletHeight: function(){
         return +this.item.caseHeight * +this.item.ti;
-
+    },
+    itemCubic: function(){
+        return +this.item.height * +this.item.width * +this.item.depth;
+    },
+    caseCubic: function(){
+        return +this.item.caseHeight * +this.item.caseWidth * +this.item.caseDepth;
+    },
+    palletCubic: function(){
+        return +this.item.caseHeight * +this.item.ti;
     }
   },
   watch: {

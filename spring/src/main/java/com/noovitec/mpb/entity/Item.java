@@ -44,7 +44,7 @@ public class Item {
 	private BigDecimal caseWeight = BigDecimal.ZERO;
 	private BigDecimal ti = BigDecimal.ZERO; //number of cases in single layer on pallet.
 	private BigDecimal hi = BigDecimal.ZERO; //number of layers on pallet.
-
+	
 	@JsonIgnoreProperties({"item"})
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "item_id")
