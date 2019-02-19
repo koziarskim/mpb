@@ -108,9 +108,9 @@
                 <b-form-input type="number" min=0 v-model="component.otherCost" placeholder="Other"></b-form-input>
             </b-col>
             <b-col cols=2 offset=2>
-                <label>Unit total: {{unitTotalCost.toFixed(2)}}</label>
-                <label>Case total: {{caseTotalCost.toFixed(2)}}</label>
-                <label>Delivery: {{deliveryCost.toFixed(2)}}</label>
+                <label>Unit total: {{unitTotalCost}}</label>
+                <label>Case total: {{caseTotalCost}}</label>
+                <label>Delivery: {{deliveryCost}}</label>
             </b-col>
         </b-row>
     </b-container>
@@ -146,13 +146,13 @@ export default {
   },
   computed: {
       unitTotalCost(){
-          return +this.component.purchaseCost + +this.component.deliveryCost + +this.component.otherCost;
+          return (+this.component.purchaseCost + +this.component.deliveryCost + +this.component.otherCost).toFixed(2);
       },
       caseTotalCost(){
-          return +this.unitTotalCost * +this.component.unitsPerCase;
+          return (+this.unitTotalCost * +this.component.unitsPerCase).toFixed(2);
       },
       deliveryCost(){
-          return (+this.component.containerCost / +this.component.unitsPerContainer) * +this.component.dutyPercentage
+          return ((+this.component.containerCost / +this.component.unitsPerContainer) * +this.component.dutyPercentage).toFixed(2);
       },
       imageUrl: function(){
         if(this.component.attachment){

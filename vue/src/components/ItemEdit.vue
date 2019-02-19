@@ -202,10 +202,10 @@ export default {
         return +this.item.caseHeight * +this.item.ti;
     },
     itemCubic: function(){
-        return +this.item.height * +this.item.width * +this.item.depth;
+        return ((+this.item.height * +this.item.width * +this.item.depth) / 1728).toFixed(2);
     },
     caseCubic: function(){
-        return +this.item.caseHeight * +this.item.caseWidth * +this.item.caseDepth;
+        return ((+this.item.caseHeight * +this.item.caseWidth * +this.item.caseDepth) / 1728).toFixed(2);
     },
     barcodeUrl: function(){
         if(this.item.upc.code){
