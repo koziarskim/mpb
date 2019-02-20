@@ -24,7 +24,7 @@
                             <label>Item#:</label>
                         </b-col>
                         <b-col cols=6>
-                            <b-form-input type="text" v-model="item.number" placeholder="Enter item number"></b-form-input>
+                            <input class="form-control" type="text" v-model="item.number" placeholder="Enter item number"/>
                         </b-col>
                     </b-row>
                     <b-row>
@@ -32,7 +32,7 @@
                             <label>Name:</label>
                         </b-col>
                         <b-col cols=10>
-                            <b-form-input type="text" v-model="item.name" placeholder="Enter your name"></b-form-input>
+                            <input class="form-control" type="text" v-model="item.name" placeholder="Enter your name"/>
                         </b-col>
                     </b-row>
                     <b-row>
@@ -97,85 +97,85 @@
         <b-row>
             <b-col cols=2>
                 <label>Height (in):</label>
-                <b-form-input type="number" min=0 v-model="item.height"></b-form-input>
+                <input class="form-control" type="number" min=0 v-model="item.height"/>
             </b-col>
             <b-col cols=2>
                 <label>Width (in):</label>
-                <b-form-input type="number" min=0 v-model="item.width"></b-form-input>
+                <input class="form-control" type="number" min=0 v-model="item.width"/>
             </b-col>
             <b-col cols=2>
                 <label>Depth (in):</label>
-                <b-form-input type="number" min=0 v-model="item.depth"></b-form-input>
+                <input class="form-control" type="number" min=0 v-model="item.depth"/>
             </b-col>
             <b-col cols=2>
                 <label>Weight (lbs):</label>
-                <b-form-input type="number" min=0 v-model="item.weight"></b-form-input>
+                <input class="form-control" type="number" min=0 v-model="item.weight"/>
             </b-col>
         </b-row>
         <b-row>
             <b-col cols=2>
                 <label>Units per case:</label>
-                 <b-form-input type="number" min=0 v-model="item.unitsPerCase"></b-form-input>
+                 <input class="form-control" type="number" min=0 v-model="item.unitsPerCase"/>
             </b-col>
             <b-col cols=2>
                 <label>Case UPC#:</label>
-                <b-form-input type="number" min=0 v-model="item.caseUpc"></b-form-input>
+                <input class="form-control" type="number" min=0 v-model="item.caseUpc"/>
             </b-col>
             <b-col cols=2>
                 <label>Case height (in):</label>
-                <b-form-input type="number" min=0 v-model="item.caseHeight"></b-form-input>
+                <input class="form-control" type="number" min=0 v-model="item.caseHeight"/>
             </b-col>
             <b-col cols=2>
                 <label>Case width (in):</label>
-                <b-form-input type="number" min=0 v-model="item.caseWidth"></b-form-input>
+                <input class="form-control" type="number" min=0 v-model="item.caseWidth"/>
             </b-col>
             <b-col cols=2>
                 <label>Case depth (in):</label>
-                <b-form-input type="number" min=0 v-model="item.caseDepth"></b-form-input>
+                <input class="form-control" type="number" min=0 v-model="item.caseDepth"/>
             </b-col>
             <b-col cols=2>
                 <label>Case weight (lbs):</label>
-                <b-form-input type="number" min=0 v-model="item.caseWeight"></b-form-input>
+                <input class="form-control" type="number" min=0 v-model="item.caseWeight"/>
             </b-col>
         </b-row>
         <b-row>
             <b-col cols=2>
                 <label title="Number of case on single layer/tier">TI (in):</label>
-                <b-form-input type="number" min=0 v-model="item.ti"></b-form-input>
+                <input class="form-control" type="number" min=0 v-model="item.ti"/>
             </b-col>
             <b-col cols=2>
                 <label title="Number of layers/tiers on the pallet">HI (in):</label>
-                <b-form-input type="number" min=0 v-model="item.hi"></b-form-input>
+                <input class="form-control" type="number" min=0 v-model="item.hi"/>
             </b-col>
             <b-col cols=2>
                 <label>Pallet height (in):</label>
-                <b-form-input readonly type="number" min=0 :value="palletHeight"></b-form-input>
+                <input class="form-control" readonly type="number" min=0 :value="palletHeight"/>
             </b-col>
             <b-col cols=2>
                 <label>Cubic (ft):</label>
-                <b-form-input readonly type="number" min=0 :value="itemCubic"></b-form-input>
+                <input class="form-control" readonly type="number" min=0 :value="itemCubic"/>
             </b-col>
             <b-col cols=2>
                 <label>Case cubic (ft):</label>
-                <b-form-input readonly type="number" min=0 :value="caseCubic"></b-form-input>
+                <input class="form-control" readonly type="number" min=0 :value="caseCubic"/>
             </b-col>
         </b-row>
         <b-row>
             <b-col cols=2>
                 <label>Warehouse ($):</label>
-                <b-form-input readonly type="number" min=0 :value="item.warehouseCost"></b-form-input>
+                <input class="form-control" readonly type="number" min=0 :value="item.warehouseCost"/>
             </b-col>
             <b-col cols=2>
                 <label>Package/mat. ($):</label>
-                <b-form-input readonly type="number" min=0 :value="item.packageCost"></b-form-input>
+                <input class="form-control" readonly type="number" min=0 :value="item.packageCost"/>
             </b-col>
             <b-col cols=2>
                 <label>Labor ($):</label>
-                <b-form-input type="number" min=0 v-model="item.laborCost"></b-form-input>
+                <input class="form-control" type="number" min=0 v-model="item.laborCost"/>
             </b-col>
             <b-col cols=2>
                 <label>Other ($):</label>
-                <b-form-input type="number" min=0 v-model="item.otherCost"></b-form-input>
+                <input class="form-control" type="number" min=0 v-model="item.otherCost"/>
             </b-col>
         </b-row>
     </b-container>
