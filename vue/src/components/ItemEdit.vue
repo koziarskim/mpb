@@ -149,25 +149,25 @@
             </b-col>
             <b-col cols=2>
                 <label>Pallet height (in):</label>
-                <b-form-input readonly="true" type="number" min=0 v-model="palletHeight"></b-form-input>
+                <b-form-input readonly type="number" min=0 :value="palletHeight"></b-form-input>
             </b-col>
             <b-col cols=2>
                 <label>Cubic (ft):</label>
-                <b-form-input readonly="true" type="number" min=0 v-model="itemCubic"></b-form-input>
+                <b-form-input readonly type="number" min=0 :value="itemCubic"></b-form-input>
             </b-col>
             <b-col cols=2>
                 <label>Case cubic (ft):</label>
-                <b-form-input readonly="true" type="number" min=0 v-model="caseCubic"></b-form-input>
+                <b-form-input readonly type="number" min=0 :value="caseCubic"></b-form-input>
             </b-col>
         </b-row>
         <b-row>
             <b-col cols=2>
                 <label>Warehouse ($):</label>
-                <b-form-input readonly="true" type="number" min=0 v-model="item.warehouseCost"></b-form-input>
+                <b-form-input readonly type="number" min=0 :value="item.warehouseCost"></b-form-input>
             </b-col>
             <b-col cols=2>
                 <label>Package/mat. ($):</label>
-                <b-form-input readonly="true" type="number" min=0 v-model="item.packageCost"></b-form-input>
+                <b-form-input readonly type="number" min=0 :value="item.packageCost"></b-form-input>
             </b-col>
             <b-col cols=2>
                 <label>Labor ($):</label>
@@ -194,7 +194,13 @@ export default {
       item: {
         itemComponents: [],
         number: 0,
-        upc: {}
+        upc: {},
+        height: 0,
+        width: 0,
+        depth: 0,
+        caseHeight: 0,
+        caseWidth: 0,
+        caseDepth: 0,
       },
       image: "",
       httpUtils: httpUtils,
