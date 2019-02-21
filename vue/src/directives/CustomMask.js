@@ -1,5 +1,3 @@
-import Vue from "vue";
-
 export const CustomMask = {
   bind(el, val, vnode) {
     bind(el, val, vnode);
