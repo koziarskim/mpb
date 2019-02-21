@@ -1,23 +1,33 @@
 export const CustomMask = {
-  bind(el, val, vnode) {
-    bind(el, val, vnode);
+  bind(el, binding, vnode) {
+    bind(el, binding, vnode);
   },
   //This is used for dynamic mask change.
-  update(el, val, vnode) {
-    if (val.value.toString() == val.oldValue.toString()) return;
+  update(el, binding, vnode) {
+    if (binding.value.toString() == binding.oldValue.toString()) return;
     el.removeEventListener("input", vnode.context.customMask);
-    bind(el, val, vnode);
+    bind(el, binding, vnode);
   }
 };
-function bind(el, val, vnode) {
+function bind(el, binding, vnode) {
+  el.binding = binding;
+  el.addEventListener("blur", onBlur);
   if (vnode.data.on && vnode.data.on.input)
     el.removeEventListener("input", vnode.data.on.input);
-  let maskFunc = initMask(el, val);
+  let maskFunc = initMask(el, binding);
   el.addEventListener("input", maskFunc);
   vnode.context.customMask = maskFunc;
   if (vnode.data.on && vnode.data.on.input)
     el.addEventListener("input", vnode.data.on.input);
   el.dispatchEvent(new Event("input"));
+}
+function onBlur(event) {
+  console.log("testing blur " + event.srcElement.isValid);
+  if (!event.srcElement.binding.value.test(event.srcElement.value)) {
+    event.srcElement.classList.add("invalid");
+  } else {
+    event.srcElement.classList.remove("invalid");
+  }
 }
 function initMask(el, val) {
   let frame = [];
@@ -104,6 +114,13 @@ function get(input) {
   return position;
 }
 function set(input, pos) {
+  if (pos === -1) {
+    input.classList.add("invalid");
+    input.isValid = false;
+  } else {
+    input.classList.remove("invalid");
+    input.isValid = true;
+  }
   if (input.setSelectionRange) {
     input.setSelectionRange(pos, pos);
   } else if (input.createTextRange) {

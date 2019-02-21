@@ -64,7 +64,7 @@
                 <b-row>
                     <b-col cols=4>
                         <label>Dimension (H x W x D):</label>
-                        <input class="form-control" v-mask="/\d{0,100} x \d{0,100} x \d{0,100}/" v-model="dimension">
+                        <input class="form-control" @blur="onBlur" v-mask="/\d{1,100} x \d{1,100} x \d{1,100}/" v-model="dimension">
                     </b-col>
                 </b-row>
             </b-col>
@@ -172,6 +172,9 @@ export default {
     }
   },
   methods: {
+      onBlur(){
+          console.log("test blur 2")
+      },
     getComponentData(component_id) {
       http
         .get("/component/" + component_id)
