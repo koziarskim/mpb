@@ -32,19 +32,19 @@ public class Component {
 	private String number;
 	private String supplierStockNumber;
 	private String description;
+	private int unitsPerContainer = 1;
+	private int height = 0;
+	private int width = 0;
+	private int depth = 0;
+	private int weight = 0;
+	private int unitsPerCase = 1;
 	private BigDecimal purchaseCost = BigDecimal.ZERO;
 	private BigDecimal dutyPercentage = BigDecimal.ZERO;
 	private BigDecimal deliveryCost = BigDecimal.ZERO;
 	private BigDecimal containerCost = BigDecimal.ZERO;
-	private int unitsPerContainer = 1;
 	private BigDecimal otherCost = BigDecimal.ZERO;
-	private int height = 0;
-	private int width = 0;
-	private int depth = 0;
-	private BigDecimal weight = BigDecimal.ZERO;
 	private BigDecimal totalCost = BigDecimal.ZERO;
-	private int unitsPerCase = 1;
-
+	
 	@JsonIgnoreProperties({ "component" })
 	@OneToMany(fetch = FetchType.EAGER, orphanRemoval = true)
 	@JoinColumn(name = "component_id")

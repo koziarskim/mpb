@@ -100,7 +100,9 @@ class ItemRest {
 		if(jsonItem==null) {
 			jsonItem = new Item();
 			Upc upc = upcRepo.getFirstAvailable();
+			Upc caseUpc = upcRepo.getFirstAvailable();
 			jsonItem.setUpc(upc);
+			jsonItem.setCaseUpc(caseUpc);
 		}
 		for (ItemComponent ic : jsonItem.getItemComponents()) {
 			if (ic.getId() != null) {

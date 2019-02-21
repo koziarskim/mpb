@@ -114,10 +114,6 @@ export default {
   name: "add-component",
   data() {
     return {
-      dimension: "",
-      image: "",
-      supplier: {},
-      category: {},
       component: {
           purchaseCost: 0,
           dutyPercentage: 0,
@@ -130,6 +126,10 @@ export default {
           totalCost: 0,
           height: 0
       },
+      dimension: "",
+      image: "",
+      supplier: {},
+      category: {},
       availableSuppliers: [],
       availableCategories: []
     };

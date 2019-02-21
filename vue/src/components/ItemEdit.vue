@@ -41,11 +41,9 @@
                         </b-col>                
                     </b-row>
                     <b-row>
-                        <b-col cols=5>
-                            <label>Total Cost: {{totalCost}}</label>
-                        </b-col>
                         <b-col cols=7>
                             <label>UPC#: {{item.upc.code}}</label>
+                            <label>Case#: {{item.caseUpc.code}}</label>
                         </b-col>
                         <b-col>
                             <b-img width=150px :src="barcodeUrl" fluid />
@@ -95,21 +93,13 @@
         </b-row>
         <hr class="hr-text" data-content="Unit and case dimensions">
         <b-row>
-            <b-col cols=2>
-                <label>Height (in):</label>
-                <input class="form-control" type="number" min=0 v-model="item.height"/>
+            <b-col cols=3>
+                <label>Dimension (H x W x D):</label>
+                <input class="form-control" v-model="dimension"/>
             </b-col>
-            <b-col cols=2>
-                <label>Width (in):</label>
-                <input class="form-control" type="number" min=0 v-model="item.width"/>
-            </b-col>
-            <b-col cols=2>
-                <label>Depth (in):</label>
-                <input class="form-control" type="number" min=0 v-model="item.depth"/>
-            </b-col>
-            <b-col cols=2>
-                <label>Weight (lbs):</label>
-                <input class="form-control" type="number" min=0 v-model="item.weight"/>
+            <b-col cols=3>
+                <label>Case Dimension:</label>
+                <input class="form-control" v-model="caseDimension"/>
             </b-col>
         </b-row>
         <b-row>
@@ -118,20 +108,8 @@
                  <input class="form-control" type="number" min=0 v-model="item.unitsPerCase"/>
             </b-col>
             <b-col cols=2>
-                <label>Case UPC#:</label>
-                <input class="form-control" type="number" min=0 v-model="item.caseUpc"/>
-            </b-col>
-            <b-col cols=2>
-                <label>Case height (in):</label>
-                <input class="form-control" type="number" min=0 v-model="item.caseHeight"/>
-            </b-col>
-            <b-col cols=2>
-                <label>Case width (in):</label>
-                <input class="form-control" type="number" min=0 v-model="item.caseWidth"/>
-            </b-col>
-            <b-col cols=2>
-                <label>Case depth (in):</label>
-                <input class="form-control" type="number" min=0 v-model="item.caseDepth"/>
+                <label>Weight (lbs):</label>
+                <input class="form-control" type="number" min=0 v-model="item.weight"/>
             </b-col>
             <b-col cols=2>
                 <label>Case weight (lbs):</label>
@@ -177,6 +155,10 @@
                 <label>Other ($):</label>
                 <input class="form-control" type="number" min=0 v-model="item.otherCost"/>
             </b-col>
+            <b-col cols=2>
+                <label>Total Cost:</label>
+                <input class="form-control" readonly type="number" :value="totalCost"/>
+            </b-col>
         </b-row>
     </b-container>
 </template>
@@ -195,6 +177,7 @@ export default {
         itemComponents: [],
         number: 0,
         upc: {},
+        caseUpc: {},
         height: 0,
         width: 0,
         depth: 0,
@@ -202,6 +185,8 @@ export default {
         caseWidth: 0,
         caseDepth: 0,
       },
+      dimension: 0,
+      caseDimension: 0,
       image: "",
       httpUtils: httpUtils,
       brand: {},
@@ -266,6 +251,18 @@ export default {
     season: function(newValue, oldValue) {
       this.item.season = newValue;
       this.setItemNumber(this.item.season.id);
+    },
+    dimension: function(newValue, oldValue){
+        var dimension = newValue.replace(/\s+/g, '').split("x");
+        this.item.height = dimension[0];
+        this.item.width = dimension[1];
+        this.item.depth = dimension[2];
+    },
+    caseDimension: function(newValue, oldValue){
+        var dimension = newValue.replace(/\s+/g, '').split("x");
+        this.item.caseHeight = dimension[0];
+        this.item.caseWidth = dimension[1];
+        this.item.caseDepth = dimension[2];
     }
   },
   methods: {
@@ -284,6 +281,8 @@ export default {
         .get("/item/" + item_id)
         .then(response => {
           this.item = response.data;
+          this.dimension = response.data.height+" x "+response.data.width+" x "+response.data.depth;
+          this.caseDimension = response.data.caseHeight+" x "+response.data.caseWidth+" x "+response.data.caseDepth;
           if (response.data.brand) {
             this.brand = response.data.brand;
           }

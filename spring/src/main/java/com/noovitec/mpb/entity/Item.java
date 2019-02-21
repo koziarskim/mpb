@@ -32,18 +32,17 @@ public class Item {
 	private String name;
 	private String number;
 	private String description;
-	private BigDecimal height = BigDecimal.ZERO;
-	private BigDecimal width = BigDecimal.ZERO;
-	private BigDecimal depth = BigDecimal.ZERO;
-	private BigDecimal weight = BigDecimal.ZERO;
-	private BigDecimal unitsPerCase = BigDecimal.ZERO;
-	private BigDecimal caseUpc = BigDecimal.ZERO;
-	private BigDecimal caseHeight = BigDecimal.ZERO;
-	private BigDecimal caseWidth = BigDecimal.ZERO;
-	private BigDecimal caseDepth = BigDecimal.ZERO;
-	private BigDecimal caseWeight = BigDecimal.ZERO;
-	private BigDecimal ti = BigDecimal.ZERO; //number of cases in single layer on pallet.
-	private BigDecimal hi = BigDecimal.ZERO; //number of layers on pallet.
+	private int height = 0;
+	private int width = 0;
+	private int depth = 0;
+	private int weight = 0;
+	private int unitsPerCase = 0;
+	private int caseHeight = 0;
+	private int caseWidth = 0;
+	private int caseDepth = 0;
+	private int caseWeight = 0;
+	private int ti = 0; //number of cases in single layer on pallet.
+	private int hi = 0; //number of layers on pallet.
 	private BigDecimal warehouseCost = new BigDecimal(12);
 	private BigDecimal packageCost = new BigDecimal(12);
 	private BigDecimal laborCost = BigDecimal.ZERO;
@@ -76,6 +75,11 @@ public class Item {
 	@JoinColumn(name = "upc_id", referencedColumnName = "id")
 	private Upc upc;
 	
+	@JsonIgnoreProperties({ "items" })
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "case_upc_id", referencedColumnName = "id")
+	private Upc caseUpc;
+
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "attachment_id", referencedColumnName = "id")
 	private Attachment attachment;
