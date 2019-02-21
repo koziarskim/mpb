@@ -38,9 +38,9 @@ public class Component {
 	private BigDecimal containerCost = BigDecimal.ZERO;
 	private int unitsPerContainer = 1;
 	private BigDecimal otherCost = BigDecimal.ZERO;
-	private BigDecimal height = BigDecimal.ZERO;
-	private BigDecimal width = BigDecimal.ZERO;
-	private BigDecimal depth = BigDecimal.ZERO;
+	private int height = 0;
+	private int width = 0;
+	private int depth = 0;
 	private BigDecimal weight = BigDecimal.ZERO;
 	private BigDecimal totalCost = BigDecimal.ZERO;
 	private int unitsPerCase = 1;

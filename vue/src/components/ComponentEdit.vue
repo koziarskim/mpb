@@ -31,7 +31,7 @@
                         <label>Component#:</label>
                     </b-col>
                     <b-col cols=4>
-                        <input class="form-control" type="text" v-model="component.number" placeholder="Component number"/>>
+                        <input class="form-control" type="text" v-model="component.number" placeholder="Component number"/>
                     </b-col>
                     <b-col cols=2>
                         <label>Name:</label>
@@ -62,21 +62,9 @@
                     </b-col>                      
                 </b-row>
                 <b-row>
-                    <b-col cols=3>
-                        <label>Height (in):</label>
-                        <input class="form-control" type="number" min=0 v-model="component.height" placeholder="Height"/>
-                    </b-col>
-                    <b-col cols=3>
-                        <label>Width (in):</label>
-                        <input class="form-control" type="number" min=0 v-model="component.width" placeholder="Width"/>
-                    </b-col>
-                    <b-col cols=3>
-                        <label>Depth (in):</label>
-                        <input class="form-control" type="number" min=0 v-model="component.depth" placeholder="Depth"/>
-                    </b-col>
-                    <b-col cols=3>
-                        <label>Weight (lbs):</label>
-                        <input class="form-control" type="number" min=0 v-model="component.weight" placeholder="Weight"/>
+                    <b-col cols=4>
+                        <label>Dimension (H x W x D):</label>
+                        <input class="form-control" v-mask="/\d{0,100} x \d{0,100} x \d{0,100}/" v-model="dimension">
                     </b-col>
                 </b-row>
             </b-col>
@@ -126,6 +114,7 @@ export default {
   name: "add-component",
   data() {
     return {
+      dimension: "",
       image: "",
       supplier: {},
       category: {},
@@ -138,7 +127,8 @@ export default {
           unitsPerCase: 1,
           unitsPerContainer: 1,
           number: 0,
-          totalCost: 0
+          totalCost: 0,
+          height: 0
       },
       availableSuppliers: [],
       availableCategories: []
@@ -173,6 +163,12 @@ export default {
     },
     unitTotalCost: function(newValue, oldValue){
         this.component.totalCost = newValue;
+    },
+    dimension: function(newValue, oldValue){
+        var dimension = newValue.replace(/\s+/g, '').split("x");
+        this.component.height = dimension[0];
+        this.component.width = dimension[1];
+        this.component.depth = dimension[2];
     }
   },
   methods: {
@@ -181,6 +177,7 @@ export default {
         .get("/component/" + component_id)
         .then(response => {
           this.component = response.data;
+          this.dimension = response.data.height+" x "+response.data.width+" x "+response.data.depth;
           if (response.data.supplier) {
             this.supplier = response.data.supplier;
           }
@@ -254,7 +251,7 @@ export default {
     }
     this.getAvailableSuppliers();
     this.getAvailableCategories();
-  }
+  },
 };
 </script>
 

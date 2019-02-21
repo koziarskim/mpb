@@ -121,4 +121,7 @@ export default {
     padding: 4px;
     text-align: left;
 }
+.invalid{
+    border-color: red !important;
+}
 </style>
