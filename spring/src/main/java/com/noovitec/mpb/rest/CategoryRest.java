@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.noovitec.mpb.entity.Category;
+import com.noovitec.mpb.entity.Component;
 import com.noovitec.mpb.repo.CategoryRepo;
 
 @CrossOrigin
@@ -25,6 +26,11 @@ class CategoryRest {
 		this.categoryRepo = categoryRepo;
 	}
 
+	@GetMapping("/category")
+	Collection<Category> getAll() {
+		return categoryRepo.findAll();
+	}
+	
 	@GetMapping("/category/type/{type}")
 	Collection<Category> getAllForComponent(@PathVariable String type) {
 		return categoryRepo.findAllByType(type);

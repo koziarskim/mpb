@@ -1,7 +1,7 @@
 <template>
     <b-container fluid>
         <div style="border: 0px" class="d-flex justify-content-between align-items-center">
-            <h2>New Item</h2>
+            <h4>New Item</h4>
             <div>
                 <b-button type="submit" variant="primary" @click="saveAndUpload">Save</b-button>
                 <b-button type="reset" variant="danger" @click="cancelItem">Close</b-button>
@@ -10,155 +10,137 @@
         <b-row>
         <b-col cols=8>
             <b-row>
-                <b-col cols=7>
-                    <b-row>
-                        <b-col cols=2>
-                            <label>Brand:</label>
-                        </b-col>
-                        <b-col cols=10>
-                                <b-select option-value="id" option-text="name" :list="availableBrands" v-model="brand" placeholder="Select Brand"></b-select>
-                        </b-col>
-                    </b-row>
-                    <b-row>
-                        <b-col cols=2>
-                            <label>Item#:</label>
-                        </b-col>
-                        <b-col cols=6>
-                            <input class="form-control" type="text" v-model="item.number" placeholder="Enter item number"/>
-                        </b-col>
-                    </b-row>
-                    <b-row>
-                        <b-col cols=2>
-                            <label>Name:</label>
-                        </b-col>
-                        <b-col cols=10>
-                            <input class="form-control" type="text" v-model="item.name" placeholder="Enter your name"/>
-                        </b-col>
-                    </b-row>
-                    <b-row>
-                        <b-col cols=12>
-                            <b-form-textarea type="text" :rows=3 v-model="item.description" placeholder="Enter short description"></b-form-textarea>
-                        </b-col>                
-                    </b-row>
-                    <b-row>
-                        <b-col cols=7>
-                            <label>UPC#: {{item.upc.code}}</label>
-                            <label>Case#: {{item.caseUpc.code}}</label>
-                        </b-col>
-                        <b-col>
-                            <b-img width=150px :src="barcodeUrl" fluid />
-                        </b-col>
-                    </b-row>
+                <b-col cols=4>
+                    <label class="top-label">Season:</label>
+                    <b-select option-value="id" option-text="name" :list="availableSeasons" v-model="season" placeholder="Select season"></b-select>
                 </b-col>
-                <b-col cols=5>
-                    <b-row>
-                        <b-col cols=12>
-                            <b-select option-value="id" option-text="name" :list="availableCategories" v-model="category" placeholder="Select category"></b-select>
-                        </b-col>
-                    </b-row>
-                    <b-row>
-                        <b-col cols=12>
-                            <b-select option-value="id" option-text="name" :list="availableSeasons" v-model="season" placeholder="Select season"></b-select>
-                        </b-col>
-                    </b-row>
-                    <b-row>
-                        <b-col>
-                            <input type="file" @change="uploadImage" accept="image/png, image/jpeg">
-                            <img width="200px" :src="imageUrl" fluid />
-                        </b-col>
-                    </b-row>
+                <b-col cols=4>
+                    <label class="top-label">Item#:</label>
+                    <input class="form-control" readOnly type="text" :value="item.number" placeholder="Item number"/>
+                </b-col>
+                <b-col cols=4>
+                    <label class="top-label">Name:</label>
+                    <input class="form-control" type="text" v-model="item.name" placeholder="Item name"/>
                 </b-col>
             </b-row>
+            <b-row>
+                <b-col cols=4>
+                    <label class="top-label">Category:</label>
+                    <b-select option-value="id" option-text="name" :list="availableItemCs" v-model="category" placeholder="Select category"></b-select>
+                </b-col>
+                <b-col cols=4>
+                    <label class="top-label">Brand:</label>
+                    <b-select option-value="id" option-text="name" :list="availableBrands" v-model="brand" placeholder="Select Brand"></b-select>
+                </b-col>
+                <b-col cols=4>
+                    <label class="top-label">UPC# {{item.upc.code}}:</label><br/>
+                    <img width=150px :src="barcodeUrl" fluid />
+                </b-col>
+            </b-row>
+            <b-row>
+                <b-col cols=8>
+                    <b-form-textarea type="text" :rows=3 v-model="item.description" placeholder="Enter short description"></b-form-textarea>
+                </b-col>
+                <b-col cols=4>
+                    <a href="#" v-b-popover.hover="'Click to select new image'"><img style="border: solid 1px #c1c4c7" width="150px" height="150px" :src="imageUrl" @click="openFileSelect"/></a>
+                </b-col>                
+            </b-row>
+        <hr class="hr-text" data-content="Unit dimension">
+        <b-row>
+            <b-col cols=3>
+                <label class="top-label">Dimension (H x W x D):</label>
+                <input class="form-control" v-model="dimension"/>
+            </b-col>
+            <b-col cols=2>
+                <label class="top-label">Weight (lbs):</label>
+                <input class="form-control" type="number" min=0 v-model="item.weight"/>
+            </b-col>
+            <b-col cols=2>
+                <label class="top-label">Cubic (ft):</label>
+                <input class="form-control" readonly type="number" min=0 :value="itemCubic"/>
+            </b-col>
+            <b-col cols=2>
+                <label class="top-label" v-b-popover.hover="'Number of case on single layer/tier'">TI (in):</label>
+                <input class="form-control" type="number" min=0 v-model="item.ti"/>
+            </b-col>
+            <b-col cols=2>
+                <label class="top-label" v-b-popover.hover="'Number of layers/tiers on the pallet'">HI (in):</label>
+                <input class="form-control" type="number" min=0 v-model="item.hi"/>
+            </b-col>
+        </b-row>
+        <hr class="hr-text" data-content="Case dimenstion">
+        <b-row>
+            <b-col cols=3>
+                <label class="top-label">Case Dimension:</label>
+                <input class="form-control" v-model="caseDimension"/>
+            </b-col>
+            <b-col cols=2>
+                <label class="top-label">Case weight:</label>
+                <input class="form-control" type="number" min=0 v-model="item.caseWeight"/>
+            </b-col>
+            <b-col cols=2>
+                <label class="top-label">Case cubic:</label>
+                <input class="form-control" readonly type="number" min=0 :value="caseCubic"/>
+            </b-col>
+            <b-col cols=2>
+                <label class="top-label">Units p/ case:</label>
+                 <input class="form-control" type="number" min=0 v-model="item.unitsPerCase"/>
+            </b-col>
+            <b-col cols=2>
+                <label class="top-label">Pallet height:</label>
+                <input class="form-control" readonly type="number" min=0 :value="palletHeight"/>
+            </b-col>
+        </b-row>
+        <hr class="hr-text" data-content="Prices are in USD">
+        <b-row>
+            <b-col cols=3>
+                <label class="top-label">Warehouse ($):</label>
+                <input class="form-control" readonly type="number" min=0 :value="item.warehouseCost"/>
+            </b-col>
+            <b-col cols=3>
+                <label class="top-label">Package/mat. ($):</label>
+                <input class="form-control" readonly type="number" min=0 :value="item.packageCost"/>
+            </b-col>
+            <b-col cols=3>
+                <label class="top-label">Labor ($):</label>
+                <input class="form-control" type="number" min=0 v-model="item.laborCost"/>
+            </b-col>
+            <b-col cols=3>
+                <label class="top-label">Other ($):</label>
+                <input class="form-control" type="number" min=0 v-model="item.otherCost"/>
+            </b-col>
+        </b-row>
+        <b-row>
+            <b-col cols=3>
+                <label class="top-label">Total Cost:</label>
+                <input class="form-control" readonly type="number" :value="totalCost"/>
+            </b-col>
+        </b-row>
         </b-col>
         <!-- Column 2 -->
         <b-col cols=4 style="border-left: 1px solid #dededf;">
             <b-row>
                 <b-col cols=12>
+                    <label class="top-label">Components:</label>
                     <b-select option-value="id" option-text="name" :list="availableComponents" v-model="component" placeholder="Select component"></b-select>
                 </b-col>
             </b-row>
             <b-row>
                 <b-col cols=12>
-                        <div style="display: flex; border-bottom: 1px solid #ced4da" v-for="ic in item.itemComponents" v-bind:key="ic.id">
+                    <div v-for="category in availableComponentCs" v-bind:key="category.id">
+                        <div style="color: #91c959; font-style: italic; font-weight: bold" v-if="getComponentsById(category.id).length>0">{{category.name}}</div>
+                        <div style="display: flex; border-bottom: 1px solid #ced4da" v-for="ic in getComponentsById(category.id)" v-bind:key="ic.id">
                             <div style="width:100%">
                                 <input size="sm" style="border: 0px; width: 25px" min=1 max=9 v-model="ic.units" type="number"/>
                                 <b-button variant="link" @click="goTo('/componentEdit/'+ic.component.id)">{{ic.component.number}}</b-button>
                                 <label>{{" | "+ic.component.name+" | $"+ic.component.totalCost}}</label>
                             </div>
-                            <b-button size="sm" type="reset" variant="link" @click="removeItemComponent(ic.id)">(x)</b-button>
-                        </div>                
+                            <b-button size="sm" type="reset" variant="link" @click="removeItemComponent(ic.component.id)">(x)</b-button>
+                        </div>
+                    </div>
                 </b-col>
             </b-row>
         </b-col>
-        </b-row>
-        <hr class="hr-text" data-content="Unit and case dimensions">
-        <b-row>
-            <b-col cols=3>
-                <label>Dimension (H x W x D):</label>
-                <input class="form-control" v-model="dimension"/>
-            </b-col>
-            <b-col cols=3>
-                <label>Case Dimension:</label>
-                <input class="form-control" v-model="caseDimension"/>
-            </b-col>
-        </b-row>
-        <b-row>
-            <b-col cols=2>
-                <label>Units per case:</label>
-                 <input class="form-control" type="number" min=0 v-model="item.unitsPerCase"/>
-            </b-col>
-            <b-col cols=2>
-                <label>Weight (lbs):</label>
-                <input class="form-control" type="number" min=0 v-model="item.weight"/>
-            </b-col>
-            <b-col cols=2>
-                <label>Case weight (lbs):</label>
-                <input class="form-control" type="number" min=0 v-model="item.caseWeight"/>
-            </b-col>
-        </b-row>
-        <b-row>
-            <b-col cols=2>
-                <label title="Number of case on single layer/tier">TI (in):</label>
-                <input class="form-control" type="number" min=0 v-model="item.ti"/>
-            </b-col>
-            <b-col cols=2>
-                <label title="Number of layers/tiers on the pallet">HI (in):</label>
-                <input class="form-control" type="number" min=0 v-model="item.hi"/>
-            </b-col>
-            <b-col cols=2>
-                <label>Pallet height (in):</label>
-                <input class="form-control" readonly type="number" min=0 :value="palletHeight"/>
-            </b-col>
-            <b-col cols=2>
-                <label>Cubic (ft):</label>
-                <input class="form-control" readonly type="number" min=0 :value="itemCubic"/>
-            </b-col>
-            <b-col cols=2>
-                <label>Case cubic (ft):</label>
-                <input class="form-control" readonly type="number" min=0 :value="caseCubic"/>
-            </b-col>
-        </b-row>
-        <b-row>
-            <b-col cols=2>
-                <label>Warehouse ($):</label>
-                <input class="form-control" readonly type="number" min=0 :value="item.warehouseCost"/>
-            </b-col>
-            <b-col cols=2>
-                <label>Package/mat. ($):</label>
-                <input class="form-control" readonly type="number" min=0 :value="item.packageCost"/>
-            </b-col>
-            <b-col cols=2>
-                <label>Labor ($):</label>
-                <input class="form-control" type="number" min=0 v-model="item.laborCost"/>
-            </b-col>
-            <b-col cols=2>
-                <label>Other ($):</label>
-                <input class="form-control" type="number" min=0 v-model="item.otherCost"/>
-            </b-col>
-            <b-col cols=2>
-                <label>Total Cost:</label>
-                <input class="form-control" readonly type="number" :value="totalCost"/>
-            </b-col>
         </b-row>
     </b-container>
 </template>
@@ -183,7 +165,7 @@ export default {
         depth: 0,
         caseHeight: 0,
         caseWidth: 0,
-        caseDepth: 0,
+        caseDepth: 0
       },
       dimension: 0,
       caseDimension: 0,
@@ -195,7 +177,8 @@ export default {
       component: {},
       availableBrands: [],
       availableComponents: [],
-      availableCategories: [],
+      availableItemCs: [],
+      availableComponentCs: [],
       availableSeasons: []
     };
   },
@@ -205,27 +188,44 @@ export default {
       this.item.itemComponents.forEach(ic => {
         totalCost = +totalCost + +ic.component.totalCost * +ic.units;
       });
-      totalCost = +totalCost + +this.item.warehouseCost + +this.item.packageCost + +this.item.laborCost + +this.item.otherCost;
+      totalCost =
+        +totalCost +
+        +this.item.warehouseCost +
+        +this.item.packageCost +
+        +this.item.laborCost +
+        +this.item.otherCost;
       return totalCost;
     },
-    palletHeight: function(){
-        return +this.item.caseHeight * +this.item.ti;
+    palletHeight: function() {
+      return +this.item.caseHeight * +this.item.ti;
     },
-    itemCubic: function(){
-        return ((+this.item.height * +this.item.width * +this.item.depth) / 1728).toFixed(2);
+    itemCubic: function() {
+      return (
+        +this.item.height *
+        +this.item.width *
+        +this.item.depth /
+        1728
+      ).toFixed(2);
     },
-    caseCubic: function(){
-        return ((+this.item.caseHeight * +this.item.caseWidth * +this.item.caseDepth) / 1728).toFixed(2);
+    caseCubic: function() {
+      return (
+        +this.item.caseHeight *
+        +this.item.caseWidth *
+        +this.item.caseDepth /
+        1728
+      ).toFixed(2);
     },
-    barcodeUrl: function(){
-        if(this.item.upc.code){
-            return httpUtils.baseUrl + "/upc/image/"+this.item.upc.code
-        }
+    barcodeUrl: function() {
+      if (this.item.upc.code) {
+        return httpUtils.baseUrl + "/upc/image/" + this.item.upc.code;
+      }
     },
-    imageUrl: function(){
-        if(this.item.attachment){
-            return httpUtils.baseUrl + "/attachment/" + this.item.attachment.id;
-        }
+    imageUrl: function() {
+      if (this.item.attachment) {
+        return httpUtils.baseUrl + "/attachment/" + this.item.attachment.id;
+      }else{
+          return require('@/assets/image-select.png');
+      }
     }
   },
   watch: {
@@ -252,20 +252,32 @@ export default {
       this.item.season = newValue;
       this.setItemNumber(this.item.season.id);
     },
-    dimension: function(newValue, oldValue){
-        var dimension = newValue.replace(/\s+/g, '').split("x");
-        this.item.height = dimension[0];
-        this.item.width = dimension[1];
-        this.item.depth = dimension[2];
+    dimension: function(newValue, oldValue) {
+      var dimension = newValue.replace(/\s+/g, "").split("x");
+      this.item.height = dimension[0];
+      this.item.width = dimension[1];
+      this.item.depth = dimension[2];
     },
-    caseDimension: function(newValue, oldValue){
-        var dimension = newValue.replace(/\s+/g, '').split("x");
-        this.item.caseHeight = dimension[0];
-        this.item.caseWidth = dimension[1];
-        this.item.caseDepth = dimension[2];
+    caseDimension: function(newValue, oldValue) {
+      var dimension = newValue.replace(/\s+/g, "").split("x");
+      this.item.caseHeight = dimension[0];
+      this.item.caseWidth = dimension[1];
+      this.item.caseDepth = dimension[2];
     }
   },
   methods: {
+      getComponentsById: function(id) {
+        return this.item.itemComponents.filter(ic => {
+            return ic.component.category.id == id;
+        })
+    },
+    openFileSelect() {
+      var input = document.createElement("input");
+      input.type = "file";
+      input.onchange=this.uploadImage;
+      input.accept="image/png, image/jpeg";
+      input.click();
+    },
     getComponentsData() {
       http
         .get("/component")
@@ -281,8 +293,18 @@ export default {
         .get("/item/" + item_id)
         .then(response => {
           this.item = response.data;
-          this.dimension = response.data.height+" x "+response.data.width+" x "+response.data.depth;
-          this.caseDimension = response.data.caseHeight+" x "+response.data.caseWidth+" x "+response.data.caseDepth;
+          this.dimension =
+            response.data.height +
+            " x " +
+            response.data.width +
+            " x " +
+            response.data.depth;
+          this.caseDimension =
+            response.data.caseHeight +
+            " x " +
+            response.data.caseWidth +
+            " x " +
+            response.data.caseDepth;
           if (response.data.brand) {
             this.brand = response.data.brand;
           }
@@ -309,9 +331,17 @@ export default {
     },
     getAvailableCategories() {
       http
-        .get("/category/type/ITM")
+        .get("/category")
         .then(response => {
-          this.availableCategories = response.data;
+            response.data.forEach(category =>{
+                if(category.type=="CMP"){
+                    this.availableComponentCs.push(category)
+                }
+                if(category.type=="ITM"){
+                    this.availableItemCs.push(category)
+                }
+            })
+        //   this.availableItemCs = response.data;
         })
         .catch(e => {
           console.log("API error: " + e);
@@ -337,9 +367,9 @@ export default {
           console.log("API error: " + e);
         });
     },
-    uploadImage(e){
-        this.image = e.target.files[0] || e.dataTransfer.files[0];
-        this.saveAndUpload();
+    uploadImage(e) {
+      this.image = e.target.files[0] || e.dataTransfer.files[0];
+      this.saveAndUpload();
     },
     saveAndUpload() {
       let formData = new FormData();
@@ -352,10 +382,10 @@ export default {
           }
         })
         .then(response => {
-            this.getItemData(this.item.id);
+          this.getItemData(this.item.id);
         })
         .catch(e => {
-          console.log("API error: "+e);
+          console.log("API error: " + e);
         });
     },
     cancelItem() {
@@ -365,10 +395,10 @@ export default {
       this.saveAndUpload();
       httpUtils.goTo(view);
     },
-    removeItemComponent(ic_id) {
+    removeItemComponent(c_id) {
       console.log("remove comp");
       for (var i = 0; i < this.item.itemComponents.length; i++) {
-        if (this.item.itemComponents[i].id == ic_id) {
+        if (this.item.itemComponents[i].component.id == c_id) {
           this.item.itemComponents.splice(i, 1);
           break;
         }

@@ -124,4 +124,8 @@ export default {
 .invalid{
     border-color: red !important;
 }
+.top-label{
+    margin-bottom: 0px;
+    font-size: 12px;
+}
 </style>
