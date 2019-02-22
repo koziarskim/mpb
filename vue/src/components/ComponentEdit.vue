@@ -35,31 +35,36 @@
                         <label class="top-label">Supplier's Stock#:</label>
                         <input class="form-control" type="text" v-model="component.supplierStockNumber" placeholder="Supplier's stock number"/>
                     </b-col>
-                </b-row>
-                <b-row>
-                    <b-col cols=3>
-                        <label class="top-label">Units in case:</label>
-                        <input class="form-control" type="number" min=0 v-model="component.unitsPerCase" placeholder="Units"/>
-                    </b-col>                      
-                    <b-col cols=3>
-                        <label class="top-label">Weight:</label>
-                        <input class="form-control" type="number" min=0 v-model="component.weight" placeholder="Weight"/>
-                    </b-col>                 
+                    <b-col cols=4>
+                        <label class="top-label">Dimension (H x W x D):</label>
+                        <input class="form-control" @blur="onBlur" v-mask="/\d{1,100} x \d{1,100} x \d{1,100}/" v-model="dimension">
+                    </b-col>
                 </b-row>
                 <b-row>
                     <b-col cols=8>
+                        <label class="top-label">Description:</label>
                         <b-form-textarea type="text" :rows=3 v-model="component.description" placeholder="Enter short description"></b-form-textarea>
                     </b-col>
-                    <b-col cols=3>
-                        <label title="Full Container Load (units per container)">FCL:</label>
-                        <input class="form-control" type="number" min=0 v-model="component.unitsPerContainer" placeholder="Units"/>
+                    <b-col cols=4>
+                        <b-row>
+                            <b-col cols=6>
+                                <label class="top-label">Units in case:</label>
+                                <input class="form-control" type="number" min=0 v-model="component.unitsPerCase" placeholder="Units"/>
+                            </b-col>                      
+                            <b-col cols=6>
+                                <label class="top-label">Weight:</label>
+                                <input class="form-control" type="number" min=0 v-model="component.weight" placeholder="Weight"/>
+                            </b-col>                 
+                        </b-row>
+                        <b-row>
+                            <b-col cols=6>
+                                <label class="top-label" title="Full Container Load (units per container)">FCL:</label>
+                                <input class="form-control" type="number" min=0 v-model="component.unitsPerContainer" placeholder="Units"/>
+                            </b-col>
+                        </b-row>
                     </b-col>                      
                 </b-row>
                 <b-row>
-                    <b-col cols=4>
-                        <label>Dimension (H x W x D):</label>
-                        <input class="form-control" @blur="onBlur" v-mask="/\d{1,100} x \d{1,100} x \d{1,100}/" v-model="dimension">
-                    </b-col>
                 </b-row>
             </b-col>
             <b-col cols=4 style="border-left: 1px solid #dededf;">
@@ -74,25 +79,34 @@
         <hr class="hr-text" data-content="Unit prices/fees are in USD ($)">
         <b-row>
             <b-col cols=2>
-                <label>Purchase $:</label>
+                <label class="top-label">Purchase $:</label>
                 <input class="form-control" type="number" min=0 v-model="component.purchaseCost" placeholder="Price"/>
             </b-col>
             <b-col cols=2>
-                <label>Duty %:</label>
+                <label class="top-label">Duty %:</label>
                 <input class="form-control" type="number" min=0 v-model="component.dutyPercentage" placeholder="Duty"/>
             </b-col>
             <b-col cols=2>
-                <label>Container Cost $:</label>
+                <label class="top-label">Container Cost $:</label>
                 <input class="form-control" type="number" min=0 v-model="component.containerCost" placeholder="Container"/>
             </b-col>
             <b-col cols=2>
-                <label>Other $:</label>
+                <label class="top-label">Other $:</label>
                 <input class="form-control" type="number" min=0 v-model="component.otherCost" placeholder="Other"/>
             </b-col>
-            <b-col cols=2 offset=2>
-                <label>Unit total: {{unitTotalCost}}</label>
-                <label>Case total: {{caseTotalCost}}</label>
-                <label>Delivery: {{deliveryCost}}</label>
+        </b-row>
+        <b-row>
+            <b-col cols=2>
+                <label class="top-label">Delivery $:</label>
+                <input class="form-control" readOnly :value="deliveryCost" placeholder="Other"/>
+            </b-col>
+            <b-col cols=2>
+                <label class="top-label">Unit total $:</label>
+                <input class="form-control" readOnly :value="unitTotalCost" placeholder="Other"/>
+            </b-col>
+            <b-col cols=2>
+                <label class="top-label">Case total $:</label>
+                <input class="form-control" readOnly :value="caseTotalCost" placeholder="Other"/>
             </b-col>
         </b-row>
     </b-container>

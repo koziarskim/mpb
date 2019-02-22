@@ -10,64 +10,61 @@
         <b-row>
         <b-col cols=8>
             <b-row>
-                <b-col cols=4>
+                <b-col cols=3>
                     <label class="top-label">Season:</label>
                     <b-select option-value="id" option-text="name" :list="availableSeasons" v-model="season" placeholder="Select season"></b-select>
                 </b-col>
-                <b-col cols=4>
+                <b-col cols=3>
                     <label class="top-label">Name:</label>
                     <input class="form-control" type="text" v-model="item.name" placeholder="Item name"/>
                 </b-col>
-                <b-col cols=4>
+                <b-col cols=3>
                     <label class="top-label">Item#:</label>
                     <input class="form-control" readOnly type="text" :value="item.number" placeholder="Item number"/>
                 </b-col>
-            </b-row>
-            <b-row>
-                <b-col cols=4>
-                    <label class="top-label">Category:</label>
-                    <b-select option-value="id" option-text="name" :list="availableItemCs" v-model="category" placeholder="Select category"></b-select>
-                </b-col>
-                <b-col cols=4>
-                    <label class="top-label">Brand:</label>
-                    <b-select option-value="id" option-text="name" :list="availableBrands" v-model="brand" placeholder="Select Brand"></b-select>
-                </b-col>
-                <b-col cols=4>
+                <b-col cols=3>
                     <label class="top-label">UPC# {{item.upc.code}}:</label><br/>
                     <img width=150px :src="barcodeUrl" fluid />
                 </b-col>
             </b-row>
             <b-row>
-                <b-col cols=8>
-                    <b-form-textarea type="text" :rows=3 v-model="item.description" placeholder="Enter short description"></b-form-textarea>
+                <b-col cols=9>
+                    <b-row>
+                        <b-col cols=4>
+                            <label class="top-label">Category:</label>
+                            <b-select option-value="id" option-text="name" :list="availableItemCs" v-model="category" placeholder="Select category"></b-select>
+                        </b-col>
+                        <b-col cols=4>
+                            <label class="top-label">Brand:</label>
+                            <b-select option-value="id" option-text="name" :list="availableBrands" v-model="brand" placeholder="Select Brand"></b-select>
+                        </b-col>
+                        <b-col cols=4>
+                            <label class="top-label">Dimension (H x W x D):</label>
+                            <input class="form-control" v-model="dimension"/>
+                        </b-col>
+                    </b-row>
+                    <b-row>
+                        <b-col cols=8 style="padding-top: 5px;">
+                            <b-form-textarea type="text" :rows=3 v-model="item.description" placeholder="Enter short description"></b-form-textarea>
+                        </b-col>
+                        <b-col cols=2>
+                            <label class="top-label">Weight (lbs):</label>
+                            <input class="form-control" type="number" min=0 v-model="item.weight"/>
+                        </b-col>
+                        <b-col cols=2>
+                            <label class="top-label">Cubic (ft):</label>
+                            <input class="form-control" readonly type="number" min=0 :value="itemCubic"/>
+                        </b-col>
+                    </b-row>
                 </b-col>
-                <b-col cols=4>
-                    <a href="#" v-b-popover.hover="'Click to select new image'"><img style="border: solid 1px #c1c4c7" width="150px" height="150px" :src="imageUrl" @click="openFileSelect"/></a>
-                </b-col>                
+                <b-col cols=3>
+                    <b-row>
+                        <b-col style="padding-top: 5px; padding-left: 5px;">
+                            <a href="#" v-b-popover.hover="'Click to select new image'"><img style="border: solid 1px #c1c4c7" width="150px" height="150px" :src="imageUrl" @click="openFileSelect"/></a>
+                        </b-col>
+                    </b-row> 
+                </b-col>
             </b-row>
-        <hr class="hr-text" data-content="Unit dimension">
-        <b-row>
-            <b-col cols=3>
-                <label class="top-label">Dimension (H x W x D):</label>
-                <input class="form-control" v-model="dimension"/>
-            </b-col>
-            <b-col cols=2>
-                <label class="top-label">Weight (lbs):</label>
-                <input class="form-control" type="number" min=0 v-model="item.weight"/>
-            </b-col>
-            <b-col cols=2>
-                <label class="top-label">Cubic (ft):</label>
-                <input class="form-control" readonly type="number" min=0 :value="itemCubic"/>
-            </b-col>
-            <b-col cols=2>
-                <label class="top-label" v-b-popover.hover="'Number of case on single layer/tier'">TI (in):</label>
-                <input class="form-control" type="number" min=0 v-model="item.ti"/>
-            </b-col>
-            <b-col cols=2>
-                <label class="top-label" v-b-popover.hover="'Number of layers/tiers on the pallet'">HI (in):</label>
-                <input class="form-control" type="number" min=0 v-model="item.hi"/>
-            </b-col>
-        </b-row>
         <hr class="hr-text" data-content="Case dimenstion">
         <b-row>
             <b-col cols=3>
@@ -79,39 +76,51 @@
                 <input class="form-control" type="number" min=0 v-model="item.caseWeight"/>
             </b-col>
             <b-col cols=2>
-                <label class="top-label">Case cubic:</label>
-                <input class="form-control" readonly type="number" min=0 :value="caseCubic"/>
-            </b-col>
-            <b-col cols=2>
                 <label class="top-label">Units p/ case:</label>
                  <input class="form-control" type="number" min=0 v-model="item.unitsPerCase"/>
+            </b-col>
+            <b-col cols=2>
+                <label class="top-label">Case cubic:</label>
+                <input class="form-control" readonly type="number" min=0 :value="caseCubic"/>
             </b-col>
             <b-col cols=2>
                 <label class="top-label">Pallet height:</label>
                 <input class="form-control" readonly type="number" min=0 :value="palletHeight"/>
             </b-col>
         </b-row>
+        <b-row>
+            <b-col cols=2>
+                <label class="top-label" v-b-popover.hover="'Number of case on single layer/tier'">TI (pcs):</label>
+                <input class="form-control" type="number" min=0 v-model="item.ti"/>
+            </b-col>
+            <b-col cols=2>
+                <label class="top-label" v-b-popover.hover="'Number of layers/tiers on the pallet'">HI (pcs):</label>
+                <input class="form-control" type="number" min=0 v-model="item.hi"/>
+            </b-col>
+            <b-col cols=2>
+                <label class="top-label">Pallet cubic:</label>
+                <input class="form-control" readonly type="number" min=0 :value="palletCubic"/>
+            </b-col>
+        </b-row>
         <hr class="hr-text" data-content="Prices are in USD">
         <b-row>
-            <b-col cols=3>
+            <b-col cols=2>
                 <label class="top-label">Warehouse ($):</label>
                 <input class="form-control" readonly type="number" min=0 :value="item.warehouseCost"/>
             </b-col>
-            <b-col cols=3>
+            <b-col cols=2>
                 <label class="top-label">Package/mat. ($):</label>
                 <input class="form-control" readonly type="number" min=0 :value="item.packageCost"/>
             </b-col>
-            <b-col cols=3>
+            <b-col cols=2>
                 <label class="top-label">Labor ($):</label>
                 <input class="form-control" type="number" min=0 v-model="item.laborCost"/>
             </b-col>
-            <b-col cols=3>
+            <b-col cols=2>
                 <label class="top-label">Other ($):</label>
                 <input class="form-control" type="number" min=0 v-model="item.otherCost"/>
             </b-col>
-        </b-row>
-        <b-row>
-            <b-col cols=3>
+            <b-col cols=2>
                 <label class="top-label">Total Cost:</label>
                 <input class="form-control" readonly type="number" :value="totalCost"/>
             </b-col>
@@ -213,6 +222,13 @@ export default {
         +this.item.caseWidth *
         +this.item.caseDepth /
         1728
+      ).toFixed(2);
+    },
+    palletCubic: function() {
+      return (
+        +this.item.hi *
+        +this.item.ti *
+        +this.caseCubic
       ).toFixed(2);
     },
     barcodeUrl: function() {

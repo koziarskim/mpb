@@ -78,7 +78,7 @@ export default {
 // Custom MPB
 .center {
   margin: auto;
-  width: 75%;
+  width: 95%;
   padding: 10px;
 }
 .hr-text {
@@ -118,7 +118,6 @@ export default {
 }
 // Overwrides BV
 .row{
-    padding: 4px;
     text-align: left;
 }
 .invalid{
