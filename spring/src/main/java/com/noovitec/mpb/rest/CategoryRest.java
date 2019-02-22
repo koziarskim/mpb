@@ -1,9 +1,12 @@
 package com.noovitec.mpb.rest;
 
 import java.util.Collection;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,6 +28,12 @@ class CategoryRest {
 	public CategoryRest(CategoryRepo categoryRepo) {
 		this.categoryRepo = categoryRepo;
 	}
+	
+	@GetMapping("/category/{id}")
+	ResponseEntity<Category> getCategory(@PathVariable Long id) {
+		Optional<Category> category = categoryRepo.findById(id);
+		return ResponseEntity.ok().body(category.get());
+	}
 
 	@GetMapping("/category")
 	Collection<Category> getAll() {
@@ -35,4 +44,6 @@ class CategoryRest {
 	Collection<Category> getAllForComponent(@PathVariable String type) {
 		return categoryRepo.findAllByType(type);
 	}
+	
+	
 }

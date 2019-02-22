@@ -15,12 +15,12 @@
                     <b-select option-value="id" option-text="name" :list="availableSeasons" v-model="season" placeholder="Select season"></b-select>
                 </b-col>
                 <b-col cols=4>
-                    <label class="top-label">Item#:</label>
-                    <input class="form-control" readOnly type="text" :value="item.number" placeholder="Item number"/>
-                </b-col>
-                <b-col cols=4>
                     <label class="top-label">Name:</label>
                     <input class="form-control" type="text" v-model="item.name" placeholder="Item name"/>
+                </b-col>
+                <b-col cols=4>
+                    <label class="top-label">Item#:</label>
+                    <input class="form-control" readOnly type="text" :value="item.number" placeholder="Item number"/>
                 </b-col>
             </b-row>
             <b-row>
@@ -249,8 +249,10 @@ export default {
       this.item.category = newValue;
     },
     season: function(newValue, oldValue) {
-      this.item.season = newValue;
-      this.setItemNumber(this.item.season.id);
+        if(!this.item.season || this.item.season.id != newValue.id){
+            this.item.season = newValue;
+            this.setItemNumber(this.item.season.id);
+        }
     },
     dimension: function(newValue, oldValue) {
       var dimension = newValue.replace(/\s+/g, "").split("x");
@@ -359,9 +361,9 @@ export default {
     },
     setItemNumber(season_id) {
       http
-        .get("/item/number/season/" + season_id)
+        .get("/season/" + season_id)
         .then(response => {
-          this.item.number = response.data.number;
+          this.item.number = response.data.prefix+this.item.id;
         })
         .catch(e => {
           console.log("API error: " + e);

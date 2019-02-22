@@ -1,7 +1,7 @@
 <template>
     <b-container fluid>
         <div style="border: 0px" class="d-flex justify-content-between align-items-center">
-            <h2>New Component</h2>
+            <h4>New Component</h4>
             <div style="color: red;" v-bind:style="{visibility: component.locked?'visible':'hidden'}">
                 Component is locked. Changes here will update Item(s) as well.
             </div>
@@ -13,44 +13,38 @@
         <b-row>
             <b-col cols=8>
                 <b-row>
-                    <b-col cols=2>
-                        <label>Category:</label>
+                    <b-col cols=4>
+                        <label class="top-label">Category:</label>
+                        <b-select option-value="id" option-text="name" :list="availableCategories" v-model="category" placeholder="Select Category"></b-select>
                     </b-col>
                     <b-col cols=4>
-                            <b-select option-value="id" option-text="name" :list="availableCategories" v-model="category" placeholder="Select Category"></b-select>
-                    </b-col>
-                    <b-col cols=2>
-                        <label>Supplier:</label>
-                    </b-col>
-                    <b-col cols=4>
-                        <b-select option-value="id" option-text="name" :list="availableSuppliers" v-model="supplier" placeholder="Select Supplier"></b-select>
-                    </b-col>
-                </b-row>
-                <b-row>
-                    <b-col cols=2>
-                        <label>Component#:</label>
-                    </b-col>
-                    <b-col cols=4>
-                        <input class="form-control" type="text" v-model="component.number" placeholder="Component number"/>
-                    </b-col>
-                    <b-col cols=2>
-                        <label>Name:</label>
-                    </b-col>
-                    <b-col cols=4>
+                        <label class="top-label">Name:</label>
                         <input class="form-control" type="text" v-model="component.name" placeholder="Component name"/>
                     </b-col>
+                    <b-col cols=4>
+                        <label class="top-label">Component#:</label>
+                        <input class="form-control" readOnly type="text" :value="component.number" placeholder="Component number"/>
+                    </b-col>
+                </b-row>
+                <b-row>
+                    <b-col cols=4>
+                        <label class="top-label">Supplier:</label>
+                        <b-select option-value="id" option-text="name" :list="availableSuppliers" v-model="supplier" placeholder="Select Supplier"></b-select>
+                    </b-col>
+                    <b-col cols=4>
+                        <label class="top-label">Supplier's Stock#:</label>
+                        <input class="form-control" type="text" v-model="component.supplierStockNumber" placeholder="Supplier's stock number"/>
+                    </b-col>
                 </b-row>
                 <b-row>
                     <b-col cols=3>
-                        <label>Supplier's Stock#:</label>
-                    </b-col>
-                    <b-col cols=5>
-                        <input class="form-control" type="text" v-model="component.supplierStockNumber" placeholder="Supplier's stock number"/>
-                    </b-col>
-                    <b-col cols=3>
-                        <label>Units in case:</label>
+                        <label class="top-label">Units in case:</label>
                         <input class="form-control" type="number" min=0 v-model="component.unitsPerCase" placeholder="Units"/>
                     </b-col>                      
+                    <b-col cols=3>
+                        <label class="top-label">Weight:</label>
+                        <input class="form-control" type="number" min=0 v-model="component.weight" placeholder="Weight"/>
+                    </b-col>                 
                 </b-row>
                 <b-row>
                     <b-col cols=8>
@@ -124,7 +118,8 @@ export default {
           unitsPerContainer: 1,
           number: 0,
           totalCost: 0,
-          height: 0
+          height: 0,
+          weight: 0
       },
       dimension: "",
       image: "",
@@ -155,8 +150,10 @@ export default {
         this.component.supplier=newValue;
     },
     category: function(newValue, oldValue) {
-        this.component.category=newValue;
-        this.setCategoryNumber(this.category.id);
+        if(!this.component.category || this.component.category.id != newValue.id){
+            this.component.category=newValue;
+            this.setCategoryNumber(this.category.id);
+        }
     },
     deliveryCost: function(newValue, oldValue){
         this.component.deliveryCost = newValue;
@@ -214,9 +211,9 @@ export default {
     },
     setCategoryNumber(category_id) {
       http
-        .get("/component/number/category/"+category_id)
+        .get("/category/"+category_id)
         .then(response => {
-          this.component.number = response.data.number;
+          this.component.number = response.data.prefix+this.component.id;
         })
         .catch(e => {
           console.log("API error: " + e);

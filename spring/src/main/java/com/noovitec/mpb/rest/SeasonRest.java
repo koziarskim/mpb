@@ -1,9 +1,11 @@
 package com.noovitec.mpb.rest;
 
 import java.util.Collection;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,5 +33,11 @@ class SeasonRest {
 	@GetMapping("/season")
 	Collection<Season> getAll() {
 		return seasonRepo.findAll();
+	}
+	
+	@GetMapping("/season/{id}")
+	ResponseEntity<Season> getSeason(@PathVariable Long id) {
+		Optional<Season> season = seasonRepo.findById(id);
+		return ResponseEntity.ok().body(season.get());
 	}
 }
