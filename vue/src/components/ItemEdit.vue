@@ -53,7 +53,7 @@
                         </b-col>
                         <b-col cols=2>
                             <label class="top-label">Cubic (ft):</label>
-                            <input class="form-control" readonly type="number" min=0 :value="itemCubic"/>
+                            <input class="form-control" readonly :value="itemCubic"/>
                         </b-col>
                     </b-row>
                 </b-col>
@@ -81,11 +81,11 @@
             </b-col>
             <b-col cols=2>
                 <label class="top-label">Case cubic:</label>
-                <input class="form-control" readonly type="number" min=0 :value="caseCubic"/>
+                <input class="form-control" readonly :value="caseCubic"/>
             </b-col>
             <b-col cols=2>
                 <label class="top-label">Pallet height:</label>
-                <input class="form-control" readonly type="number" min=0 :value="palletHeight"/>
+                <input class="form-control" readonly :value="palletHeight"/>
             </b-col>
         </b-row>
         <b-row>
@@ -99,22 +99,22 @@
             </b-col>
             <b-col cols=2>
                 <label class="top-label">Pallet cubic:</label>
-                <input class="form-control" readonly type="number" min=0 :value="palletCubic"/>
+                <input class="form-control" readonly :value="palletCubic"/>
             </b-col>
             <b-col cols=2>
                 <label class="top-label">Units p/ pallet:</label>
-                <input class="form-control" readonly type="number" min=0 :value="unitsPerPallet"/>
+                <input class="form-control" readonly :value="unitsPerPallet"/>
             </b-col>
         </b-row>
         <hr class="hr-text" data-content="Prices are in USD">
         <b-row>
             <b-col cols=2>
                 <label class="top-label">Warehouse ($):</label>
-                <input class="form-control" readonly type="number" min=0 :value="warehouseCost"/>
+                <input class="form-control" readonly :value="warehouseCost"/>
             </b-col>
             <b-col cols=2>
                 <label class="top-label">Package/mat. ($):</label>
-                <input class="form-control" readonly type="number" min=0 :value="packageCost"/>
+                <input class="form-control" readonly :value="packageCost"/>
             </b-col>
             <b-col cols=2>
                 <label class="top-label">Labor ($):</label>
@@ -126,7 +126,7 @@
             </b-col>
             <b-col cols=2>
                 <label class="top-label">Total Cost:</label>
-                <input class="form-control" readonly type="number" :value="totalCost"/>
+                <input class="form-control" readonly :value="totalCost"/>
             </b-col>
         </b-row>
         </b-col>

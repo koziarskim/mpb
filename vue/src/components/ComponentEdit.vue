@@ -23,7 +23,7 @@
                     </b-col>
                     <b-col cols=4>
                         <label class="top-label">Component#:</label>
-                        <input class="form-control" readOnly type="text" :value="component.number" placeholder="Component number"/>
+                        <input class="form-control" readOnly :value="component.number" />
                     </b-col>
                 </b-row>
                 <b-row>
@@ -98,15 +98,15 @@
         <b-row>
             <b-col cols=2>
                 <label class="top-label">Delivery $:</label>
-                <input class="form-control" readOnly :value="deliveryCost" placeholder="Other"/>
+                <input class="form-control" readOnly :value="deliveryCost" />
             </b-col>
             <b-col cols=2>
                 <label class="top-label">Unit total $:</label>
-                <input class="form-control" readOnly :value="unitTotalCost" placeholder="Other"/>
+                <input class="form-control" readOnly :value="unitTotalCost" />
             </b-col>
             <b-col cols=2>
                 <label class="top-label">Case total $:</label>
-                <input class="form-control" readOnly :value="caseTotalCost" placeholder="Other"/>
+                <input class="form-control" readOnly :value="caseTotalCost" />
             </b-col>
         </b-row>
     </b-container>
