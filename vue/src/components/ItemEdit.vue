@@ -40,7 +40,7 @@
                         </b-col>
                         <b-col cols=4>
                             <label class="top-label">Dimension (H x W x D):</label>
-                            <input class="form-control" v-model="dimension"/>
+                            <input class="form-control" v-mask="/\d{1,100} x \d{1,100} x \d{1,100}/" v-model="dimension"/>
                         </b-col>
                     </b-row>
                     <b-row>
@@ -69,7 +69,7 @@
         <b-row>
             <b-col cols=3>
                 <label class="top-label">Case Dimension:</label>
-                <input class="form-control" v-model="caseDimension"/>
+                <input class="form-control" v-mask="/\d{1,100} x \d{1,100} x \d{1,100}/" v-model="caseDimension"/>
             </b-col>
             <b-col cols=2>
                 <label class="top-label">Case weight:</label>
@@ -101,16 +101,20 @@
                 <label class="top-label">Pallet cubic:</label>
                 <input class="form-control" readonly type="number" min=0 :value="palletCubic"/>
             </b-col>
+            <b-col cols=2>
+                <label class="top-label">Units p/ pallet:</label>
+                <input class="form-control" readonly type="number" min=0 :value="unitsPerPallet"/>
+            </b-col>
         </b-row>
         <hr class="hr-text" data-content="Prices are in USD">
         <b-row>
             <b-col cols=2>
                 <label class="top-label">Warehouse ($):</label>
-                <input class="form-control" readonly type="number" min=0 :value="item.warehouseCost"/>
+                <input class="form-control" readonly type="number" min=0 :value="warehouseCost"/>
             </b-col>
             <b-col cols=2>
                 <label class="top-label">Package/mat. ($):</label>
-                <input class="form-control" readonly type="number" min=0 :value="item.packageCost"/>
+                <input class="form-control" readonly type="number" min=0 :value="packageCost"/>
             </b-col>
             <b-col cols=2>
                 <label class="top-label">Labor ($):</label>
@@ -176,8 +180,8 @@ export default {
         caseWidth: 0,
         caseDepth: 0
       },
-      dimension: 0,
-      caseDimension: 0,
+      dimension: "",
+      caseDimension: "",
       image: "",
       httpUtils: httpUtils,
       brand: {},
@@ -199,12 +203,13 @@ export default {
       });
       totalCost =
         +totalCost +
-        +this.item.warehouseCost +
-        +this.item.packageCost +
+        +this.warehouseCost +
+        +this.packageCost +
         +this.item.laborCost +
         +this.item.otherCost;
-      return totalCost;
+      return totalCost.toFixed(2);;
     },
+    
     palletHeight: function() {
       return +this.item.caseHeight * +this.item.ti;
     },
@@ -230,6 +235,21 @@ export default {
         +this.item.ti *
         +this.caseCubic
       ).toFixed(2);
+    },
+    unitsPerPallet: function() {
+      return (
+        +this.item.hi *
+        +this.item.ti *
+        +this.item.unitsPerCase
+      );
+    },
+    warehouseCost: function() {
+        var cost = 12 / +this.unitsPerPallet
+      return cost.toFixed(2);
+    },
+    packageCost: function() {
+      var cost = 12 / +this.unitsPerPallet
+      return cost.toFixed(2);
     },
     barcodeUrl: function() {
       if (this.item.upc.code) {

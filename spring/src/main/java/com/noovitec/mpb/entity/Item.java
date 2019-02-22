@@ -36,13 +36,13 @@ public class Item {
 	private int width = 0;
 	private int depth = 0;
 	private int weight = 0;
-	private int unitsPerCase = 0;
+	private int unitsPerCase = 1;
 	private int caseHeight = 0;
 	private int caseWidth = 0;
 	private int caseDepth = 0;
 	private int caseWeight = 0;
-	private int ti = 0; //number of cases in single layer on pallet.
-	private int hi = 0; //number of layers on pallet.
+	private int ti = 1; //number of cases in single layer on pallet.
+	private int hi = 1; //number of layers on pallet.
 	private BigDecimal warehouseCost = new BigDecimal(12);
 	private BigDecimal packageCost = new BigDecimal(12);
 	private BigDecimal laborCost = BigDecimal.ZERO;
