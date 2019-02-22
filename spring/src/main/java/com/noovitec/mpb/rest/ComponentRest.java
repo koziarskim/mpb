@@ -5,12 +5,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-
-import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,14 +44,14 @@ class ComponentRest {
 	AttachmentRepo attachmentRepo;
 	@Autowired
 	CategoryRepo categoryRepo;
-	
+
 	private final Logger log = LoggerFactory.getLogger(ComponentRest.class);
 	private ComponentRepo componentRepo;
 
 	public ComponentRest(ComponentRepo componentRepo) {
 		this.componentRepo = componentRepo;
 	}
-	
+
 //	GET methods.
 
 	@GetMapping("/component")
@@ -65,38 +60,41 @@ class ComponentRest {
 	}
 
 	@GetMapping("/component/{id}")
-	ResponseEntity<?> getComponent(@PathVariable Long id) {
+	ResponseEntity<?> get(@PathVariable Long id) {
 		Optional<Component> component = componentRepo.findById(id);
 		return component.map(response -> ResponseEntity.ok().body(response))
 				.orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
 	}
-	
+
 	@GetMapping("/component/number/category/{category_id}")
 	ResponseEntity<?> getAvailableNumberByCategory(@PathVariable Long category_id) {
 		Category category = categoryRepo.findById(category_id).get();
 		String prefix = category.getPrefix();
 		Component component = componentRepo.getLast();
-		Long component_id = (component==null?0L:component.getId())+1;
-		String number = prefix+component_id.toString();
+		Long component_id = (component == null ? 0L : component.getId()) + 1;
+		String number = prefix + component_id.toString();
 		return ResponseEntity.ok().body(Collections.singletonMap("number", number));
 	}
-	
+
 //	POST methods.
-	
+
 	@PostMapping("/component")
-	ResponseEntity<Component> postComponent(@RequestBody(required=false) Component component) throws URISyntaxException {
-		if(component==null) {
+	ResponseEntity<Component> post(@RequestBody(required = false) Component component) throws URISyntaxException {
+		if (component == null) {
 			component = new Component();
 		}
 		Component result = componentRepo.save(component);
 		return ResponseEntity.ok().body(result);
 	}
 
-	//This includes image upload.
+	// This includes image upload.
 	@PostMapping("/component/upload")
-	ResponseEntity<Component> postComponentAndAttachment(@RequestParam(value="image", required=false) MultipartFile image, @RequestParam("jsonComponent") String jsonComponent) throws URISyntaxException, JsonParseException, JsonMappingException, IOException {
+	ResponseEntity<Component> postComponentAndAttachment(
+			@RequestParam(value = "image", required = false) MultipartFile image,
+			@RequestParam("jsonComponent") String jsonComponent)
+			throws URISyntaxException, JsonParseException, JsonMappingException, IOException {
 		Component component = objectMapper.readValue(jsonComponent, Component.class);
-		if(image!=null) {
+		if (image != null) {
 			Attachment attachment = new Attachment();
 			attachment.setData(image.getBytes());
 			attachmentRepo.save(attachment);
@@ -107,9 +105,9 @@ class ComponentRest {
 	}
 
 //	DELETE methods.
-	
+
 	@DeleteMapping("/component/{id}")
-	public ResponseEntity<?> deleteComponent(@PathVariable Long id) {
+	public ResponseEntity<?> delete(@PathVariable Long id) {
 		Component component = componentRepo.getOne(id);
 		if (component.getLocked()) {
 			return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED)

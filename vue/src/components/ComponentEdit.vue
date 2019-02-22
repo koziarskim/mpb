@@ -1,7 +1,7 @@
 <template>
     <b-container fluid>
         <div style="border: 0px" class="d-flex justify-content-between align-items-center">
-            <h4>New Component</h4>
+            <h4>New/Edit Component</h4>
             <div style="color: red;" v-bind:style="{visibility: component.locked?'visible':'hidden'}">
                 Component is locked. Changes here will update Item(s) as well.
             </div>

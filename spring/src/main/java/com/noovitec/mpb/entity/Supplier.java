@@ -26,7 +26,14 @@ public class Supplier {
 	@GeneratedValue
 	private Long id;
 	private String name;
-	private String number;
+	private String account;
+	private String address;
+	private String city;
+	private String state;
+	private String zip;
+	private String phone;
+	private String paymentTerms;
+	private String freightTerms;
 
 	@OneToMany(fetch = FetchType.LAZY)
 	@JoinColumn(name = "supplier_id")

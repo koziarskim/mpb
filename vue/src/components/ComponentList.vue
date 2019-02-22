@@ -1,7 +1,7 @@
 <template>
     <b-container fluid>
         <div class="d-flex justify-content-between align-items-center">
-            <h2>Component List</h2>
+            <h2>Components</h2>
             <div>
                 <b-button type="submit" variant="primary" @click="goToComponent('')">New Component</b-button>
             </div>
