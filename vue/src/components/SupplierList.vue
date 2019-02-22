@@ -13,10 +13,10 @@
                 :items="suppliers"
                 :fields="fields">
                 <template slot="account" slot-scope="row">
-                    <b-button size="sm" @click.stop=goToSupplier(row.item.id) variant="link">{{row.item.id}}</b-button>
+                    <b-button size="sm" @click.stop="goToSupplier(row.item.id)" variant="link">{{row.item.id}}</b-button>
                 </template>
                 <template slot="action" slot-scope="row">
-                    <b-button size="sm" @click.stop="delete(row.item.id)">x</b-button>
+                    <b-button size="sm" @click.stop="deleteSupplier(row.item.id)">x</b-button>
                 </template>
         </b-table>
     </b-container>
@@ -51,7 +51,7 @@ export default {
           console.log("API error: " + e);
         });
     },
-    delete(id) {
+    deleteSupplier(id) {
       http
         .delete("/supplier/" + id)
         .then(() => {

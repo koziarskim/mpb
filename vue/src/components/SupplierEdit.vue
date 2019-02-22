@@ -18,7 +18,7 @@
             </b-col>
             <b-col cols=4>
                 <label class="top-label">City:</label>
-                <input class="form-control" type="text" :value="supplier.city" placeholder="City"/>
+                <input class="form-control" type="text" v-model="supplier.city" placeholder="City"/>
             </b-col>
         </b-row>
     </b-container>
