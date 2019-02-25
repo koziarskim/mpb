@@ -32,10 +32,12 @@ public class Supplier {
 	private String state;
 	private String zip;
 	private String phone;
+	private String phone2;
 	private String paymentTerms;
 	private int freightTerms;
 	private String email;
 	private String email2;
+	private String contactName;
 
 	@OneToMany(fetch = FetchType.LAZY)
 	@JoinColumn(name = "supplier_id")

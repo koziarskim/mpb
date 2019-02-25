@@ -52,6 +52,12 @@
                 <input class="form-control" type="text" v-model="supplier.phone" placeholder="Phone"/>
             </b-col>
             <b-col cols=3>
+                <label class="top-label">Phone 2:</label>
+                <input class="form-control" type="text" v-model="supplier.phone2" placeholder="Phone 2"/>
+            </b-col>
+        </b-row>
+        <b-row>            
+            <b-col cols=3>
                 <label class="top-label">Email:</label>
                 <input class="form-control" type="text" v-model="supplier.email" placeholder="Email"/>
             </b-col>
@@ -60,6 +66,11 @@
                 <input class="form-control" type="text" v-model="supplier.email2" placeholder="Email 2"/>
             </b-col>
         </b-row>
+        <b-row>
+             <b-col cols=4>
+                <label class="top-label">Contact:</label>
+                <input class="form-control" type="text" v-model="supplier.contactName" placeholder="Contact Name"/>
+            </b-col>       </b-row>
     </b-container>
 </template>
 
