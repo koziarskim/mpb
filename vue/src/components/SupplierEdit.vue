@@ -51,6 +51,14 @@
                 <label class="top-label">Phone:</label>
                 <input class="form-control" type="text" v-model="supplier.phone" placeholder="Phone"/>
             </b-col>
+            <b-col cols=3>
+                <label class="top-label">Email:</label>
+                <input class="form-control" type="text" v-model="supplier.email" placeholder="Email"/>
+            </b-col>
+            <b-col cols=3>
+                <label class="top-label">Email 2:</label>
+                <input class="form-control" type="text" v-model="supplier.email2" placeholder="Email 2"/>
+            </b-col>
         </b-row>
     </b-container>
 </template>

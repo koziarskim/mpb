@@ -34,6 +34,8 @@ public class Supplier {
 	private String phone;
 	private String paymentTerms;
 	private int freightTerms;
+	private String email;
+	private String email2;
 
 	@OneToMany(fetch = FetchType.LAZY)
 	@JoinColumn(name = "supplier_id")
