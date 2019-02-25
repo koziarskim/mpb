@@ -28,7 +28,8 @@
             </b-col>
             <b-col cols=2 offset=3>
                 <label class="top-label">Freight Terms:</label>
-                <input class="form-control" type="text" v-model="supplier.freightTerms" placeholder="Freight Terms"/>
+                <b-select option-value="id" option-text="name" :list="availableFreights" v-model="freightTerms" placeholder="Freight terms"></b-select>
+                <!-- <input class="form-control" type="text" v-model="supplier.freightTerms" placeholder="Freight Terms"/> -->
             </b-col>
         </b-row>
         <b-row>
@@ -72,20 +73,26 @@ export default {
         zip: "",
         phone: "",
         paymentTerms: "",
-        freightTerms: ""
+        freightTerms: 1
       },
-      selected: "",
+      freightTerms: {},
       availableStates: state.states,
+      availableFreights: [{id: 1, name: "Delivered"},{id: 2, name: "Collect"}]
     };
   },
   computed: {},
-  watch: {},
+  watch: {
+      freightTerms: function(newValue, oldValue) {
+        this.supplier.freightTerms=newValue.id;
+    },
+  },
   methods: {
     getSupplier(id) {
       http
         .get("/supplier/" + id)
         .then(response => {
           this.supplier = response.data;
+          this.freightTerms = this.getFreightById(response.data.freightTerms);
         })
         .catch(e => {
           console.log("API error: " + e);
@@ -101,6 +108,15 @@ export default {
     },
     cancel() {
       window.history.back();
+    },
+    getFreightById(id) {
+        var freight = {};
+        this.availableFreights.filter(it =>{
+            if(it.id == id){
+                freight = it;
+            }
+        })
+        return freight;
     }
   },
   mounted() {

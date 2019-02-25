@@ -33,7 +33,7 @@ public class Supplier {
 	private String zip;
 	private String phone;
 	private String paymentTerms;
-	private String freightTerms;
+	private int freightTerms;
 
 	@OneToMany(fetch = FetchType.LAZY)
 	@JoinColumn(name = "supplier_id")
