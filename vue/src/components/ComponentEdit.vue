@@ -1,11 +1,11 @@
 <template>
     <b-container fluid>
         <div style="border: 0px" class="d-flex justify-content-between align-items-center">
-            <h4>New/Edit Component</h4>
-            <div style="color: red;" v-bind:style="{visibility: component.locked?'visible':'hidden'}">
+            <h4 style="text-align: left;">New/Edit Component</h4>
+            <div style="text-align: center; color: red;" v-bind:style="{visibility: component.locked?'visible':'hidden'}">
                 Component is locked. Changes here will update Item(s) as well.
             </div>
-            <div>
+            <div style="text-align: right;">
                 <b-button type="submit" variant="primary" @click="saveAndUpload">Save</b-button>
                 <b-button type="reset" variant="danger" @click="cancelComponent">Close</b-button>
             </div>

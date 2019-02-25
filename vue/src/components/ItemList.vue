@@ -1,8 +1,8 @@
 <template>
     <b-container fluid>
         <div class="d-flex justify-content-between align-items-center">
-            <h2>Items</h2>
-            <div>
+            <h2 style="text-align: left;">Items</h2>
+            <div style="text-align: right;">
                 <b-button type="submit" variant="primary" @click="createNewItem">New Item</b-button>
             </div>
         </div>

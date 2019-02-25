@@ -1,8 +1,8 @@
 <template>
     <b-container fluid>
         <div style="border: 0px" class="d-flex justify-content-between align-items-center">
-            <h4>New/Edit Supplier</h4>
-            <div>
+            <h4 style="text-align: left;">New/Edit Supplier</h4>
+            <div style="text-align: right;">
                 <b-button type="submit" variant="primary" @click="save">Save</b-button>
                 <b-button type="reset" variant="danger" @click="cancel">Close</b-button>
             </div>
