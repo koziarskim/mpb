@@ -79,7 +79,7 @@
         <hr class="hr-text" data-content="Unit prices/fees are in USD ($)">
         <b-row>
             <b-col cols=2>
-                <label class="top-label">Purchase $:</label>
+                <label class="top-label">Unit Cost $:</label>
                 <input class="form-control" type="number" min=0 v-model="component.purchaseCost" placeholder="Price"/>
             </b-col>
             <b-col cols=2>
@@ -101,12 +101,12 @@
                 <input class="form-control" readOnly :value="deliveryCost" />
             </b-col>
             <b-col cols=2>
-                <label class="top-label">Unit total $:</label>
-                <input class="form-control" readOnly :value="unitTotalCost" />
+                <label class="top-label">Duty cost $:</label>
+                <input class="form-control" readOnly :value="dutyCost" />
             </b-col>
             <b-col cols=2>
-                <label class="top-label">Case total $:</label>
-                <input class="form-control" readOnly :value="caseTotalCost" />
+                <label class="top-label">Total Landed Cost $:</label>
+                <input class="form-control" readOnly :value="totalLandedCost" />
             </b-col>
         </b-row>
     </b-container>
@@ -144,11 +144,8 @@ export default {
     };
   },
   computed: {
-      unitTotalCost(){
+      totalLandedCost(){
           return (+this.component.purchaseCost + +this.component.deliveryCost + +this.component.otherCost).toFixed(2);
-      },
-      caseTotalCost(){
-          return (+this.unitTotalCost * +this.component.unitsPerCase).toFixed(2);
       },
       deliveryCost(){
           return (+this.component.containerCost / +this.component.unitsPerContainer).toFixed(2);
@@ -157,7 +154,10 @@ export default {
         if(this.component.attachment){
             return httpUtils.baseUrl + "/attachment/" + this.component.attachment.id;
         }
-      }
+      },
+      dutyCost: function(newValue, oldValue){
+        return 0; //TODO: Need packCase * Duty %????????
+    },
   },
   watch: {
     supplier: function(newValue, oldValue) {
@@ -172,7 +172,7 @@ export default {
     deliveryCost: function(newValue, oldValue){
         this.component.deliveryCost = newValue;
     },
-    unitTotalCost: function(newValue, oldValue){
+    totalLandedCost: function(newValue, oldValue){
         this.component.totalCost = newValue;
     },
     dimension: function(newValue, oldValue){

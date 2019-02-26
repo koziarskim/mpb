@@ -91,7 +91,7 @@ public class Item {
 	public BigDecimal getTotalCost() {
 		BigDecimal totalCost = new BigDecimal(0);
 		for(ItemComponent ic : this.itemComponents) {
-			totalCost.add(ic.getComponent().getTotalCost()
+			totalCost.add(ic.getComponent().getTotalLandedCost()
 					.multiply(BigDecimal.valueOf(ic.getUnits())));
 		}
 		totalCost = totalCost.add(this.warehouseCost).add(this.packageCost).add(this.laborCost).add(this.otherCost);

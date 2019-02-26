@@ -43,7 +43,7 @@ public class Component {
 	private BigDecimal deliveryCost = BigDecimal.ZERO;
 	private BigDecimal containerCost = BigDecimal.ZERO;
 	private BigDecimal otherCost = BigDecimal.ZERO;
-	private BigDecimal totalCost = BigDecimal.ZERO;
+	private BigDecimal totalLandedCost = BigDecimal.ZERO;
 	
 	@JsonIgnoreProperties({ "component" })
 	@OneToMany(fetch = FetchType.EAGER, orphanRemoval = true)
