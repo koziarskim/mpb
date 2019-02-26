@@ -98,12 +98,8 @@
         </b-row>
         <b-row>
             <b-col cols=2>
-                <label class="top-label" v-b-popover.hover="'Number of case on single layer/tier'">TI (pcs):</label>
-                <input class="form-control" type="number" min=0 v-model="item.ti"/>
-            </b-col>
-            <b-col cols=2>
-                <label class="top-label" v-b-popover.hover="'Number of layers/tiers on the pallet'">HI (pcs):</label>
-                <input class="form-control" type="number" min=0 v-model="item.hi"/>
+                <label class="top-label">TI x HI (pcs):</label>
+                <input class="form-control" v-mask="/\d{1,100} x \d{1,100}/" v-model="tiHi"/>
             </b-col>
             <b-col cols=2>
                 <label class="top-label">Pallet cubic:</label>
@@ -191,10 +187,13 @@ export default {
         depth: 0,
         caseHeight: 0,
         caseWidth: 0,
-        caseDepth: 0
+        caseDepth: 0,
+        ti: 1,
+        hi: 1
       },
       dimension: "",
       caseDimension: "",
+      tiHi: "",
       image: "",
       httpUtils: httpUtils,
       brand: {},
@@ -323,6 +322,11 @@ export default {
       this.item.width = dimension[1];
       this.item.depth = dimension[2];
     },
+    tiHi: function(newValue, oldValue) {
+      var tiHi = newValue.replace(/\s+/g, "").split("x");
+      this.item.ti = tiHi[0];
+      this.item.hi = tiHi[1];
+    },
     caseDimension: function(newValue, oldValue) {
       var dimension = newValue.replace(/\s+/g, "").split("x");
       this.item.caseHeight = dimension[0];
@@ -358,18 +362,9 @@ export default {
         .get("/item/" + item_id)
         .then(response => {
           this.item = response.data;
-          this.dimension =
-            response.data.height +
-            " x " +
-            response.data.width +
-            " x " +
-            response.data.depth;
-          this.caseDimension =
-            response.data.caseHeight +
-            " x " +
-            response.data.caseWidth +
-            " x " +
-            response.data.caseDepth;
+          this.dimension = response.data.height + " x " + response.data.width + " x " +  response.data.depth;
+          this.caseDimension = response.data.caseHeight + " x " + response.data.caseWidth + " x " + response.data.caseDepth;
+          this.tiHi = response.data.ti + " x " + response.data.hi;
           if (response.data.brand) {
             this.brand = response.data.brand;
           }
