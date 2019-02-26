@@ -108,6 +108,10 @@
                 <label class="top-label">Total Landed Cost $:</label>
                 <input class="form-control" readOnly :value="totalLandedCost" />
             </b-col>
+            <b-col cols=2>
+                <label class="top-label">Case Cost $:</label>
+                <input class="form-control" readOnly :value="caseCost" />
+            </b-col>
         </b-row>
     </b-container>
 </template>
@@ -155,9 +159,12 @@ export default {
             return httpUtils.baseUrl + "/attachment/" + this.component.attachment.id;
         }
       },
-      dutyCost: function(newValue, oldValue){
+      dutyCost: function(){
         return +this.component.unitCost * +this.component.dutyPercentage;
     },
+    caseCost(){
+           return +this.component.unitCost * +this.component.unitsPerCase;
+    }
   },
   watch: {
     supplier: function(newValue, oldValue) {
