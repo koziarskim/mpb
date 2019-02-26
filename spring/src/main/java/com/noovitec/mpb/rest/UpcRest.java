@@ -72,6 +72,7 @@ class UpcRest {
 		AbstractBarcodeBean bean = null;
 		if (msg.length() == 12) {
 			bean = new UPCABean();
+			bean.setHeight(8);
 		}
 		if (msg.length() == 14) {
 			bean = new ITF14Bean();

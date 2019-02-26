@@ -24,11 +24,11 @@
                     <b-select option-value="id" option-text="name" :list="availableSeasons" v-model="season" placeholder="Select season"></b-select>
                 </b-col>
                 <b-col cols=3 offset=3>
-                    <label class="top-label">Case UPC# {{item.caseUpc.code}}</label><br/>
+                    <label class="top-label">Case UPC#</label><br/>
                     <img width=150px :src="caseBarcodeUrl" fluid />
                 </b-col>
                 <b-col cols=3>
-                    <label class="top-label">UPC# {{item.upc.code}}</label><br/>
+                    <label class="top-label">UPC#</label><br/>
                     <img width=150px :src="barcodeUrl" fluid />
                 </b-col>
             </b-row>
@@ -52,7 +52,7 @@
                 </b-col>
                 <b-col cols=3>
                     <b-row>
-                        <b-col style="padding-top: 5px; padding-left: 5px;">
+                        <b-col>
                             <a href="#" v-b-popover.hover="'Click to select new image'"><img style="border: solid 1px #c1c4c7" width="150px" height="150px" :src="imageUrl" @click="openFileSelect"/></a>
                         </b-col>
                     </b-row> 
