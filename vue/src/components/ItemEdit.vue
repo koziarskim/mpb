@@ -23,8 +23,12 @@
                     <label class="top-label">Season:</label>
                     <b-select option-value="id" option-text="name" :list="availableSeasons" v-model="season" placeholder="Select season"></b-select>
                 </b-col>
+                <b-col cols=3 offset=3>
+                    <label class="top-label">Case UPC# {{item.caseUpc.code}}</label><br/>
+                    <img width=150px :src="caseBarcodeUrl" fluid />
+                </b-col>
                 <b-col cols=3>
-                    <label class="top-label">UPC# {{item.upc.code}}:</label><br/>
+                    <label class="top-label">UPC# {{item.upc.code}}</label><br/>
                     <img width=150px :src="barcodeUrl" fluid />
                 </b-col>
             </b-row>
@@ -39,22 +43,10 @@
                             <label class="top-label">Brand:</label>
                             <b-select option-value="id" option-text="name" :list="availableBrands" v-model="brand" placeholder="Select Brand"></b-select>
                         </b-col>
-                        <b-col cols=4>
-                            <label class="top-label">Dimension (H x W x D):</label>
-                            <input class="form-control" v-mask="/\d{1,100} x \d{1,100} x \d{1,100}/" v-model="dimension"/>
-                        </b-col>
                     </b-row>
                     <b-row>
                         <b-col cols=8 style="padding-top: 5px;">
                             <b-form-textarea type="text" :rows=3 v-model="item.description" placeholder="Enter short description"></b-form-textarea>
-                        </b-col>
-                        <b-col cols=2>
-                            <label class="top-label">Weight (lbs):</label>
-                            <input class="form-control" type="number" min=0 v-model="item.weight"/>
-                        </b-col>
-                        <b-col cols=2>
-                            <label class="top-label">Cubic (ft):</label>
-                            <input class="form-control" readonly :value="itemCubic"/>
                         </b-col>
                     </b-row>
                 </b-col>
@@ -66,6 +58,21 @@
                     </b-row> 
                 </b-col>
             </b-row>
+        <hr class="hr-text" data-content="Unit dimenstion">
+        <b-row>
+            <b-col cols=4>
+                <label class="top-label">Dimension (H x W x D):</label>
+                <input class="form-control" v-mask="/\d{1,100} x \d{1,100} x \d{1,100}/" v-model="dimension"/>
+            </b-col>
+            <b-col cols=2>
+                <label class="top-label">Weight (lbs):</label>
+                <input class="form-control" type="number" min=0 v-model="item.weight"/>
+            </b-col>
+            <b-col cols=2>
+                <label class="top-label">Cubic (ft):</label>
+                <input class="form-control" readonly :value="itemCubic"/>
+            </b-col>
+        </b-row>
         <hr class="hr-text" data-content="Case dimenstion">
         <b-row>
             <b-col cols=3>
@@ -178,6 +185,7 @@ export default {
         number: 0,
         upc: {},
         caseUpc: {},
+        caseUpc: {},
         height: 0,
         width: 0,
         depth: 0,
@@ -268,6 +276,11 @@ export default {
     barcodeUrl: function() {
       if (this.item.upc.code) {
         return httpUtils.baseUrl + "/upc/image/" + this.item.upc.code;
+      }
+    },
+    caseBarcodeUrl: function() {
+      if (this.item.caseUpc.code) {
+        return httpUtils.baseUrl + "/upc/image/" + this.item.caseUpc.code;
       }
     },
     imageUrl: function() {
