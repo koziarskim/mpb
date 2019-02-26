@@ -80,7 +80,7 @@
         <b-row>
             <b-col cols=2>
                 <label class="top-label">Unit Cost $:</label>
-                <input class="form-control" type="number" min=0 v-model="component.purchaseCost" placeholder="Price"/>
+                <input class="form-control" type="number" min=0 v-model="component.unitCost" placeholder="Price"/>
             </b-col>
             <b-col cols=2>
                 <label class="top-label">Duty %:</label>
@@ -123,7 +123,7 @@ export default {
   data() {
     return {
       component: {
-          purchaseCost: 0,
+          unitCost: 0,
           dutyPercentage: 0,
           deliveryCost: 0,
           containerCost: 0,
@@ -145,7 +145,7 @@ export default {
   },
   computed: {
       totalLandedCost(){
-          return (+this.component.purchaseCost + +this.component.deliveryCost + +this.component.otherCost).toFixed(2);
+          return (+this.component.unitCost + +this.component.deliveryCost + +this.component.otherCost).toFixed(2);
       },
       deliveryCost(){
           return (+this.component.containerCost / +this.component.unitsPerContainer).toFixed(2);
@@ -156,7 +156,7 @@ export default {
         }
       },
       dutyCost: function(newValue, oldValue){
-        return 0; //TODO: Need packCase * Duty %????????
+        return +this.component.unitCost * +this.component.dutyPercentage;
     },
   },
   watch: {
