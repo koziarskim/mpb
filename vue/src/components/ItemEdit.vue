@@ -1,26 +1,27 @@
 <template>
     <b-container fluid>
-        <div style="border: 0px" class="d-flex justify-content-between align-items-center">
-            <h4 style="text-align: left;">New/Edit Item</h4>
+        <b-row>
+            <b-col cols=2>
+        <!-- <div style="border: 0px" class="d-flex justify-content-between align-items-center"> -->
+            <h4 style="text-align: left;">Item: {{item.number}}</h4>
+            </b-col>
+            <b-col cols=3>
+                <input class="form-control" type="text" v-model="item.name" placeholder="Item name"/>
+            </b-col>
+            <b-col cols=2 offset=5>
             <div style="text-align: right;">
                 <b-button type="submit" variant="primary" @click="saveAndUpload">Save</b-button>
                 <b-button type="reset" variant="danger" @click="cancelItem">Close</b-button>
             </div>
-        </div>
+            </b-col>
+        <!-- </div> -->
+        </b-row>
         <b-row>
         <b-col cols=8>
             <b-row>
                 <b-col cols=3>
                     <label class="top-label">Season:</label>
                     <b-select option-value="id" option-text="name" :list="availableSeasons" v-model="season" placeholder="Select season"></b-select>
-                </b-col>
-                <b-col cols=3>
-                    <label class="top-label">Name:</label>
-                    <input class="form-control" type="text" v-model="item.name" placeholder="Item name"/>
-                </b-col>
-                <b-col cols=3>
-                    <label class="top-label">Item#:</label>
-                    <input class="form-control" readOnly type="text" :value="item.number" placeholder="Item number"/>
                 </b-col>
                 <b-col cols=3>
                     <label class="top-label">UPC# {{item.upc.code}}:</label><br/>
