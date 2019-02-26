@@ -151,7 +151,7 @@ export default {
           return (+this.unitTotalCost * +this.component.unitsPerCase).toFixed(2);
       },
       deliveryCost(){
-          return ((+this.component.containerCost / +this.component.unitsPerContainer) * +this.component.dutyPercentage).toFixed(2);
+          return (+this.component.containerCost / +this.component.unitsPerContainer).toFixed(2);
       },
       imageUrl: function(){
         if(this.component.attachment){
