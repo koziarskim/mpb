@@ -48,8 +48,8 @@
                     <b-col cols=4>
                         <b-row>
                             <b-col cols=6>
-                                <label class="top-label">Units in case:</label>
-                                <input class="form-control" type="number" min=0 v-model="component.unitsPerCase" placeholder="Units"/>
+                                <label class="top-label">Case Pack:</label>
+                                <input class="form-control" type="number" min=0 v-model="component.casePack" placeholder="Units"/>
                             </b-col>                      
                             <b-col cols=6>
                                 <label class="top-label">Weight:</label>
@@ -132,7 +132,7 @@ export default {
           deliveryCost: 0,
           containerCost: 0,
           otherCost: 0,
-          unitsPerCase: 1,
+          casePack: 1,
           unitsPerContainer: 1,
           number: 0,
           totalCost: 0,
@@ -163,7 +163,7 @@ export default {
         return +this.component.unitCost * +this.component.dutyPercentage;
     },
     caseCost(){
-           return +this.component.unitCost * +this.component.unitsPerCase;
+           return +this.component.unitCost * +this.component.casePack;
     }
   },
   watch: {

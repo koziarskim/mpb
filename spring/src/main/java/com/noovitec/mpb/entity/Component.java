@@ -37,7 +37,7 @@ public class Component {
 	private int width = 0;
 	private int depth = 0;
 	private BigDecimal weight = BigDecimal.ZERO;
-	private int unitsPerCase = 1;
+	private int casePack = 1;
 	private BigDecimal unitCost = BigDecimal.ZERO;
 	private BigDecimal dutyPercentage = BigDecimal.ZERO;
 	private BigDecimal deliveryCost = BigDecimal.ZERO;

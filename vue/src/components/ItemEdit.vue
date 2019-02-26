@@ -84,8 +84,8 @@
                 <input class="form-control" readonly :value="caseWeight"/>
             </b-col>
             <b-col cols=2>
-                <label class="top-label">Units p/ case:</label>
-                 <input class="form-control" type="number" min=0 v-model="item.unitsPerCase"/>
+                <label class="top-label">Case Pack:</label>
+                 <input class="form-control" type="number" min=0 v-model="item.casePack"/>
             </b-col>
             <b-col cols=2>
                 <label class="top-label">Case cubic:</label>
@@ -252,7 +252,7 @@ export default {
       return (
         +this.item.hi *
         +this.item.ti *
-        +this.item.unitsPerCase
+        +this.item.casePack
       )
     },
     casesPerPallet: function() {
@@ -262,7 +262,7 @@ export default {
       )
     },
     caseWeight: function() {
-          return (+this.item.unitsPerCase * + this.item.weight).toFixed(2);
+          return (+this.item.casePack * + this.item.weight).toFixed(2);
       },
     warehouseCost: function() {
         var cost = 12 / +this.unitsPerPallet

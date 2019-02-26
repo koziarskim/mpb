@@ -36,7 +36,7 @@ public class Item {
 	private int width = 0;
 	private int depth = 0;
 	private BigDecimal weight = BigDecimal.ZERO;
-	private int unitsPerCase = 1;
+	private int casePack = 1;
 	private int caseHeight = 0;
 	private int caseWidth = 0;
 	private int caseDepth = 0;
