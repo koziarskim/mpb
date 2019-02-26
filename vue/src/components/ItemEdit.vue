@@ -105,6 +105,10 @@
                 <label class="top-label">Units p/ pallet:</label>
                 <input class="form-control" readonly :value="unitsPerPallet"/>
             </b-col>
+            <b-col cols=2>
+                <label class="top-label">Cases p/ pallet:</label>
+                <input class="form-control" readonly :value="casesPerPallet"/>
+            </b-col>
         </b-row>
         <hr class="hr-text" data-content="Prices are in USD">
         <b-row>
@@ -241,6 +245,12 @@ export default {
         +this.item.hi *
         +this.item.ti *
         +this.item.unitsPerCase
+      )
+    },
+    casesPerPallet: function() {
+      return (
+        +this.item.hi *
+        +this.item.ti
       )
     },
     caseWeight: function() {
