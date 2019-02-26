@@ -40,7 +40,7 @@ public class Item {
 	private int caseHeight = 0;
 	private int caseWidth = 0;
 	private int caseDepth = 0;
-	private int caseWeight = 0;
+	private BigDecimal caseWeight = BigDecimal.ZERO;
 	private int ti = 1; //number of cases in single layer on pallet.
 	private int hi = 1; //number of layers on pallet.
 	private BigDecimal warehouseCost = new BigDecimal(12);
