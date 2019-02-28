@@ -1,7 +1,8 @@
 package com.noovitec.mpb.entity;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -41,6 +42,6 @@ public class Customer {
 	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "customer_id")
 	@OrderBy("id DESC")
-	private List<Address> addresses = new ArrayList<Address>();
+	private Collection<Address> addresses = new HashSet<Address>();
 
 }

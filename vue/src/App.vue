@@ -8,6 +8,7 @@
                     <b-nav-item v-on:click="goTo('/supplierList')">Supplier</b-nav-item>
                     <b-nav-item v-on:click="goTo('/componentList')">Component</b-nav-item>
                     <b-nav-item v-on:click="goTo('/itemList')">Item</b-nav-item>
+                    <b-nav-item v-on:click="goTo('/customerList')">Customer</b-nav-item>
                     <b-nav-item v-on:click="goTo('/purchaseList')">Purchase</b-nav-item>
                 </b-navbar-nav>
                 <!-- Right aligned nav items -->
