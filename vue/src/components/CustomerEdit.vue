@@ -68,10 +68,15 @@
                     </b-col>
                 </b-row>
                 <b-row>
-                    <b-col>
-                        <label class="top-label">Street:</label>
-                        <input class="form-control" type="text" v-model="address.street" placeholder="Street"/>
-                    </b-col>
+                    <div v-if="addressEditFlag || address">
+                        <b-col>
+                            <b-form-checkbox :disabled="address.defaultFlag" v-model="address.defaultFlag" @change="unsetDefaultAddress"><label class="top-label">Default Address:</label></b-form-checkbox>
+                        </b-col>
+                        <b-col>
+                            <label class="top-label">Street:</label>
+                            <input class="form-control" type="text" v-model="address.street" placeholder="Street"/>
+                        </b-col>
+                    </div>
                 </b-row>
             </b-col>
         </b-row>
@@ -99,9 +104,7 @@ export default {
         addresses: []
       },
       addressEditFlag: false,
-      address: {
-        street: ""
-      },
+      address: {},
       freightTerms: {},
       availableStates: state.states,
       availableFreights: [
@@ -164,6 +167,16 @@ export default {
         .catch(e => {
           console.log("API error: " + e);
         });
+    },
+    unsetDefaultAddress(value) {
+        if(value) {
+            this.customer.addresses.forEach(address => {
+                if(address.id == this.address.id){
+                    return;
+                }
+                address.defaultFlag = false;
+            })            
+        }
     }
   },
   mounted() {
