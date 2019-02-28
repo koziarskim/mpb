@@ -24,7 +24,7 @@
         <b-row>
             <b-col cols=4>
                 <label class="top-label">Address:</label>
-                <input class="form-control" type="text" v-model="supplier.address" placeholder="Street and number"/>
+                <input class="form-control" type="text" v-model="supplier.street" placeholder="Street and number"/>
             </b-col>
             <b-col cols=2 offset=3>
                 <label class="top-label">Freight Terms:</label>
@@ -86,7 +86,7 @@ export default {
       supplier: {
         name: "",
         account: "",
-        address: "",
+        street: "",
         city: "",
         state: "",
         zip: "",
