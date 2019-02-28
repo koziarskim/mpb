@@ -1,12 +1,13 @@
 package com.noovitec.mpb.entity;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,29 +17,19 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Supplier {
+public class Address {
 
 	@Id
 	@GeneratedValue
 	private Long id;
-	private String name;
-	private String account;
-
-	// TODO: Switch to defaultAddress
 	private String street;
 	private String city;
 	private String state;
 	private String zip;
+	private Boolean defaultFlag;
 
-	private String phone;
-	private String phone2;
-	private String paymentTerms;
-	private int freightTerms;
-	private String email;
-	private String email2;
-	private String contactName;
-
-	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-	@JoinColumn(name = "address_id", referencedColumnName = "id")
-	private Address address;
+	@JsonIgnoreProperties({ "addresses" })
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "customer_id", referencedColumnName = "id")
+	private Customer customer;
 }
