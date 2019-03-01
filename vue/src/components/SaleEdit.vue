@@ -14,7 +14,6 @@
 import http from "../http-common";
 
 export default {
-  name: "add-component",
   data() {
     return {
       sale: {
@@ -36,11 +35,11 @@ export default {
           console.log("API error: " + e);
         });
     },
-    save() {
+    saveSale() {
       http
         .post("/sale", this.sale)
         .then(response => {
-            this.getSaleData(this.sale.id);
+            this.getSaleData(response.data.id);
         })
         .catch(e => {
           console.log("API error: " + e);
