@@ -1,16 +1,15 @@
 <template>
     <b-container fluid>
         <div style="border: 0px" class="d-flex justify-content-between align-items-center">
-            <h4 style="text-align: left;">Sale Order:</h4>
+            <h4 style="text-align: left;">Purchase Order:</h4>
             <div style="text-align: right;">
                 <b-button type="submit" variant="primary" @click="saveSale">Save</b-button>
                 <b-button type="reset" variant="danger" @click="cancelSale">Close</b-button>
             </div>
         </div>
         <b-row>
-            <b-col cols=4>
-                <label class="top-label">Customer:</label>
-                <b-select option-value="id" option-text="name" :list="availableCustomers" v-model="customer" placeholder="Customer"></b-select>
+            <b-col cols=4 style="border: ">
+                <label class="top-label">Marketplace Brands LLC<br/>951 Fargo Ave<br/>Elk Grove Village, IL 60007</label>
             </b-col>
             <b-col cols=2>
                 <label class="top-label">Date:</label>
@@ -26,13 +25,13 @@
             </b-col>
         </b-row>
         <b-row>
-            <b-col cols=4 style="border: ">
-                <label class="top-label">Vendor:</label><br/>
-                <label class="top-label">Marketplace Brands LLC</label>
+            <b-col cols=4>
+                <label class="top-label">Supplier/Vendor:</label>
+                <b-select option-value="id" option-text="name" :list="availableCustomers" v-model="customer" placeholder="Customer"></b-select>
             </b-col>
             <b-col cols=4>
-                <label class="top-label">Shipping Address:</label>
-                <b-select option-value="id" option-text="name" :list="availableCustomers" v-model="customer" placeholder="Customer"></b-select>
+                <label class="top-label">Shipping Address:</label><br/>
+                <label class="top-label">Marketplace Brands LLC<br/>951 Fargo Ave<br/>Elk Grove Village, IL 60007</label>
             </b-col>
             <b-col cols=2 offset=2>
                 <label class="top-label">Expected Date:</label>
@@ -42,7 +41,7 @@
         <b-row>
             <b-col cols=2 offset=4>
                 <label class="top-label">City:</label>
-                <input class="form-control" type="tel" v-model="sale.city" placeholder="City"/>
+                <input class="form-control" type="tel" value="951 Fargo Ave" placeholder="City"/>
             </b-col>
             <b-col cols=1>
                 <label class="top-label">State:</label>
@@ -92,7 +91,9 @@ export default {
       sale: {},
       customer: {},
       availableCustomers: [],
-      saleItems: [{}],
+      saleItems: [{number: 1, description: "Item for testing", quantity: 3, rate: 0.50}],
+      sortBy: "id",
+      sortDesc: false,
       columns: [
         { key: "number", label: "Item", sortable: true },
         { key: "description", label: "Description", sortable: true },
