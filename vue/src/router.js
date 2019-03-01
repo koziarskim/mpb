@@ -10,6 +10,8 @@ import SupplierList from "./components/SupplierList";
 import SupplierEdit from "./components/SupplierEdit";
 import CustomerList from "./components/CustomerList";
 import CustomerEdit from "./components/CustomerEdit";
+import SaleList from "./components/SaleList";
+import SaleEdit from "./components/SaleEdit";
 
 Vue.use(Router);
 
@@ -48,6 +50,11 @@ export default new Router({
       component: CustomerList
     },
     {
+      path: "/saleList",
+      name: "saleList",
+      component: SaleList
+    },
+    {
       path: "/purchaseList",
       name: "purchaseList",
       component: PurchaseList
@@ -71,6 +78,11 @@ export default new Router({
       path: "/customerEdit/:customer_id?",
       name: "CustomerEdit",
       component: CustomerEdit
+    },
+    {
+      path: "/saleEdit/:sale_id?",
+      name: "SaleEdit",
+      component: SaleEdit
     }
   ]
 });
