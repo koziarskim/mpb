@@ -29,7 +29,7 @@ public class Address {
 	private String zip;
 	private boolean defaultFlag = false;
 
-	@JsonIgnoreProperties({ "addresses" })
+	@JsonIgnoreProperties({ "addresses", "sales" })
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "customer_id", referencedColumnName = "id")
 	private Customer customer;

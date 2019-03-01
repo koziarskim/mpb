@@ -1,6 +1,5 @@
 package com.noovitec.mpb.entity;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -53,10 +52,9 @@ public class Customer {
 	@JoinColumn(name = "customer_id")
 	@OrderBy("id DESC")
 	private Set<Sale> sales = new HashSet<Sale>();
-	
+
 //	@JsonIgnoreProperties({ "customer" })
 //	@OneToMany(mappedBy = "customer", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
 //	private Set<Sale> sales = new HashSet<Sale>();
-
 
 }

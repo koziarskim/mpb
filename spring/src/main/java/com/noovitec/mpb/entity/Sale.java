@@ -1,6 +1,5 @@
 package com.noovitec.mpb.entity;
 
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -35,12 +34,12 @@ public class Sale {
 	private int freightTerms;
 	private Date expectedDate;
 
-	@JsonIgnoreProperties({ "sales" })
+	@JsonIgnoreProperties({ "addresses", "sales" })
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "customer_id", referencedColumnName = "id")
 	private Customer customer;
 
-	@JsonIgnoreProperties({ "sales" })
+	@JsonIgnoreProperties({ "addresses", "sales" })
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "address_id", referencedColumnName = "id")
 	private Address shipAddress;

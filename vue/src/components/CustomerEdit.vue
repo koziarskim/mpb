@@ -59,7 +59,31 @@
             <b-col cols=5>
                 <b-row>
                     <b-col cols=10>
-                        <label v-if="!addressEditFlag" class="top-label">Default Address:</label>
+                        <label class="top-label">Billing Address:</label>
+                        <input class="form-control" type="search" v-model="address.street" placeholder="Street"/>
+                    </b-col>
+                </b-row>
+                <b-row>
+                </b-row>
+                <b-row>
+                    <b-col cols=7>
+                        <label class="top-label">City:</label>
+                        <input class="form-control" type="tel" v-model="address.city" placeholder="City"/>
+                    </b-col>
+                    <b-col cols=2>
+                        <label class="top-label">State:</label>
+                        <input class="form-control" type="tel" v-model="address.state" placeholder=""/>
+                    </b-col>
+                    <b-col cols=3>
+                        <label class="top-label">Zip Code:</label>
+                        <input class="form-control" type="tel" v-model="address.zip" placeholder="Zip"/>
+                    </b-col>
+                </b-row>
+                <div style="padding-top: 43px"></div>
+                <hr class="hr-text" data-content="Shipping Address(es)">
+                <b-row>
+                    <b-col cols=10>
+                        <label v-if="!addressEditFlag" class="top-label">Shipping Address:</label>
                         <b-select v-if="customer.addresses.length > 0 && !addressEditFlag" option-value="id" option-text="street" :list="customer.addresses" v-model="address" placeholder="Address"></b-select>
                         <label v-if="addressEditFlag" class="top-label">Street:</label>
                         <input v-if="customer.addresses.length == 0 ||  addressEditFlag" class="form-control" type="search" v-model="address.street" placeholder="Street"/>
