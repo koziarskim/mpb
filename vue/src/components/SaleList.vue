@@ -71,16 +71,11 @@ export default {
         });
         return component;
     },
-    deleteComponent(component_id) {
-        var item = this.getItem(component_id);
-        if(item && item.locked){
-            this.showAlert("Component is locked. It may be currently used by Item(s)")
-            return;
-        }
+    deleteSale(id) {
       http
-        .delete("/sale/"+component_id)
+        .delete("/sale/"+id)
         .then(response => {
-          this.getComponentsData();
+          this.getSalesData();
         })
         .catch(e => {
             console.log("API Error: "+e);
