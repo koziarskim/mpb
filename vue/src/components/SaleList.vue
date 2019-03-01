@@ -1,22 +1,22 @@
 <template>
     <b-container fluid>
         <div class="d-flex justify-content-between align-items-center">
-            <h2 style="text-align: left;">Components</h2>
+            <h2 style="text-align: left;">Sale Orders</h2>
             <div style="text-align: right;">
-                <b-button type="submit" variant="primary" @click="goToComponent('')">New Component</b-button>
+                <b-button type="submit" variant="primary" @click="goToSale('')">New S.O.</b-button>
             </div>
         </div>
-        <div v-if="components.length==0">Not found any components...</div>
-        <b-table v-if="components.length>0"
+        <div v-if="sales.length==0">Not found any sale orders...</div>
+        <b-table v-if="sales.length>0"
                 :sort-by.sync="sortBy"
                 :sort-desc.sync="sortDesc"
-                :items="components"
+                :items="sales"
                 :fields="fields">
                 <template slot="number" slot-scope="row">
-                    <b-button size="sm" @click.stop=goToComponent(row.item.id) variant="link">{{row.item.number}}</b-button>
+                    <b-button size="sm" @click.stop=goToSale(row.item.id) variant="link">{{row.item.number}}</b-button>
                 </template>
                 <template slot="action" slot-scope="row">
-                    <b-button size="sm" @click.stop="deleteComponent(row.item.id)">x</b-button>
+                    <b-button size="sm" @click.stop="deleteSale(row.item.id)">x</b-button>
                 </template>
         </b-table>
         <b-alert :show="alertSecs" dismissible variant="warning" @dismiss-count-down="(secs) => { alertSecs = secs }">
@@ -29,22 +29,21 @@ import http from "../http-common";
 import router from "../router";
 
 export default {
-  name: "edit-component",
   data() {
     return {
       alertSecs: 0,
       alertMessage: "",
-      sortBy: 'age',
+      sortBy: 'id',
       sortDesc: false,
       fields: [
-        { key: "number", label: "Component #", sortable: true },
+        { key: "number", label: "S.O. #", sortable: true },
         { key: "name", label: "Name", sortable: true },
         { key: "supplierStockNumber", label: "Supplier's Stock #", sortable: true },
         { key: "category.name", label: "Category", sortable: true },
         { key: "supplier.name", label: "Supplier", sortable: true },
         { key: "action", label: "Action", sortable: false}
       ],
-      components: []
+      sales: []
     };
   },
   methods: {
@@ -52,11 +51,11 @@ export default {
       this.alertSecs = 3,
       this.alertMessage = message
     },
-    getComponentsData() {
+    getSalesData() {
       http
-        .get("/component")
+        .get("/sale")
         .then(response => {
-          this.components = response.data;
+          this.sales = response.data;
           console.log("Success getting component data");
         })
         .catch(e => {
@@ -65,7 +64,7 @@ export default {
     },
     getItem(component_id){
         var component;
-        var found = this.components.some(function(element) {
+        var found = this.sales.some(function(element) {
            if(element.id === component_id){
                 component = element;
            }
@@ -79,7 +78,7 @@ export default {
             return;
         }
       http
-        .delete("/component/"+component_id)
+        .delete("/sale/"+component_id)
         .then(response => {
           this.getComponentsData();
         })
@@ -87,23 +86,23 @@ export default {
             console.log("API Error: "+e);
         });
     },
-    goToComponent(component_id){
-        if(!component_id){
+    goToSale(id){
+        if(!id){
             http
-            .post("/component")
+            .post("/sale")
             .then(response =>{
-                router.push('/componentEdit/'+response.data.id);
+                router.push('/saleEdit/'+response.data.id);
             })
             .catch(e =>{
                 console.log("API Error: "+e);
             })
         }else{
-            router.push('/componentEdit/'+component_id);
+            router.push('/componentEdit/'+id);
         }
     },
   },
   mounted() {
-     this.getComponentsData();
+     this.getSalesData();
   }
 };
 </script>

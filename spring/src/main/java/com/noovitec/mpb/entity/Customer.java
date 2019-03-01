@@ -38,10 +38,25 @@ public class Customer {
 	private String email2;
 	private String contactName;
 
+//	@JsonIgnoreProperties({ "customer" })
+//	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+//	@JoinColumn(name = "customer_id")
+//	@OrderBy("id DESC")
+//	private Collection<Address> addresses = new HashSet<Address>();
+
 	@JsonIgnoreProperties({ "customer" })
-	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn(name = "customer_id")
-	@OrderBy("id DESC")
-	private Collection<Address> addresses = new HashSet<Address>();
+	@OneToMany(mappedBy = "customer", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+	private Set<Address> addresses = new HashSet<Address>();
+
+//	@JsonIgnoreProperties({ "customer" })
+//	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+//	@JoinColumn(name = "customer_id")
+//	@OrderBy("id DESC")
+//	private Collection<Sale> sales = new HashSet<Sale>();
+	
+	@JsonIgnoreProperties({ "customer" })
+	@OneToMany(mappedBy = "customer", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+	private Set<Sale> sales = new HashSet<Sale>();
+
 
 }
