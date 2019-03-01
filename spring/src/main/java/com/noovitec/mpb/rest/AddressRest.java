@@ -55,7 +55,10 @@ class AddressRest {
 
 	@DeleteMapping("/address/{id}")
 	public ResponseEntity<?> delete(@PathVariable Long id) {
-		addressRepo.deleteById(id);
+		Optional<Address> address = addressRepo.findById(id);
+		address.get().getCustomer().getAddresses().remove(address.get());
+//		addressRepo.saveAndFlush(address.get());
+		addressRepo.delete(address.get());
 		return ResponseEntity.ok().build();
 	}
 }
