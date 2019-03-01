@@ -12,7 +12,7 @@
                 <b-row>
                     <b-col cols=4>
                         <label class="top-label">Name:</label>
-                        <input class="form-control" type="text" v-model="customer.name" placeholder="Name"/>
+                        <input class="form-control" type="search" v-model="customer.name" placeholder="Name"/>
                     </b-col>
                     <b-col cols=3>
                         <label class="top-label">Account #:</label>
@@ -27,7 +27,6 @@
                     <b-col cols=2>
                         <label class="top-label">Freight Terms:</label>
                         <b-select option-value="id" option-text="name" :list="availableFreights" v-model="freightTerms" placeholder="Freight terms"></b-select>
-                        <!-- <input class="form-control" type="text" v-model="customer.freightTerms" placeholder="Freight Terms"/> -->
                     </b-col>
                 </b-row>
                 <b-row>
@@ -60,7 +59,10 @@
             <b-col>
                 <b-row>
                     <b-col cols=8>
-                        <b-select v-if="!addressEditFlag" option-value="id" option-text="street" :list="customer.addresses" v-model="address" placeholder="Address"></b-select>
+                        <label v-if="customer.addresses.length > 0 && !addressEditFlag" class="top-label">Default Address:</label>
+                        <b-select v-if="customer.addresses.length > 0 && !addressEditFlag" option-value="id" option-text="street" :list="customer.addresses" v-model="address" placeholder="Address"></b-select>
+                        <label v-if="customer.addresses.length == 0 ||  addressEditFlag" class="top-label">Street:</label>
+                        <input v-if="customer.addresses.length == 0 ||  addressEditFlag" class="form-control" type="search" v-model="address.street" placeholder="Street"/>
                     </b-col>
                     <b-col cols=4>
                         <b-button v-if="!addressEditFlag" variant="link" @click="addAddress()">add</b-button>
@@ -68,15 +70,17 @@
                     </b-col>
                 </b-row>
                 <b-row>
-                    <div v-if="addressEditFlag || address">
-                        <b-col>
+                    <!-- <b-row v-if="addressEditFlag || address"> -->
+                        <!-- <b-col>
                             <b-form-checkbox :disabled="address.defaultFlag" v-model="address.defaultFlag" @change="unsetDefaultAddress"><label class="top-label">Default Address:</label></b-form-checkbox>
-                        </b-col>
+                        </b-col> -->
+                </b-row>
+                <b-row>
                         <b-col>
-                            <label class="top-label">Street:</label>
-                            <input class="form-control" type="text" v-model="address.street" placeholder="Street"/>
+                            <label class="top-label">City:</label>
+                            <input class="form-control" type="search" v-model="address.city" placeholder="City"/>
                         </b-col>
-                    </div>
+                    <!-- </div> -->
                 </b-row>
             </b-col>
         </b-row>
@@ -104,7 +108,7 @@ export default {
         addresses: []
       },
       addressEditFlag: false,
-      address: {},
+      address: {defaultFlag: true},
       freightTerms: {},
       availableStates: state.states,
       availableFreights: [
@@ -120,21 +124,39 @@ export default {
     }
   },
   methods: {
-    getCustomer(id) {
+    getDefaultAddress: function(action) {
+        var address = {defaultFlag: true};
+        if(action=="add"){
+            return {};
+        }
+        this.customer.addresses.filter(it =>{
+            if(it.defaultFlag){
+                address = it;
+            }
+        })
+        return address;
+    },
+    getCustomer(id, action) {
       http
         .get("/customer/" + id)
         .then(response => {
           this.customer = response.data;
           this.freightTerms = this.getFreightById(response.data.freightTerms);
+          this.address = this.getDefaultAddress(action);
         })
         .catch(e => {
           console.log("API error: " + e);
         });
     },
-    save() {
+    save(action) {
+        if(this.customer.addresses.length == 0){
+            this.customer.addresses.push(this.address);
+        }
       http
         .post("/customer", this.customer)
-        .then(response => {})
+        .then(response => {
+            this.getCustomer(this.customer.id, action);
+        })
         .catch(e => {
           console.log("API error: " + e);
         });
@@ -152,16 +174,18 @@ export default {
       return freight;
     },
     addAddress() {
-      this.addressEditFlag = true;
-      this.address = {};
+        this.addressEditFlag = true;
+        this.save("add")
+    },
+    setAddress(){
+        this.address = {};
     },
     saveAddress() {
       http
         .post("/address", this.address)
         .then(response => {
           this.customer.addresses.push(response.data);
-          this.address = response.data;
-          this.save();
+          this.address = this.getDefaultAddress();
           this.addressEditFlag = false;
         })
         .catch(e => {
@@ -175,6 +199,7 @@ export default {
                     return;
                 }
                 address.defaultFlag = false;
+                address.label = address.street;
             })            
         }
     }

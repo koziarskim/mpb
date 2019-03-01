@@ -53,7 +53,7 @@ class CustomerRest {
 		}
 		//TODO: if parent is not set, the all children are deleted.
 		for (Address address : customer.getAddresses()) {
-			if (address.getId() != null) {
+			if (address.getCustomer() == null) {
 				address.setCustomer(customer);
 			}
 		}
