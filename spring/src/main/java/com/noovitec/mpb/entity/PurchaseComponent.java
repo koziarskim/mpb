@@ -17,20 +17,20 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class PurchaseItem {
+public class PurchaseComponent {
 
 	@Id
 	@GeneratedValue
 	private Long id;
 	private Integer units;
 
-	@JsonIgnoreProperties({ "purchaseItems" })
+	@JsonIgnoreProperties({ "purchaseComponents" })
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "purchase_id", referencedColumnName = "id")
 	private Purchase purchase;
 
-	@JsonIgnoreProperties({ "purchaseItems" })
+	@JsonIgnoreProperties({ "purchaseComponents" })
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "item_id", referencedColumnName = "id")
-	private Item item;
+	@JoinColumn(name = "component_id", referencedColumnName = "id")
+	private Component component;
 }

@@ -3,7 +3,9 @@ package com.noovitec.mpb.entity;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -63,6 +65,11 @@ public class Component {
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "attachment_id", referencedColumnName = "id")
 	private Attachment attachment;
+
+	@JsonIgnoreProperties({ "component" })
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name = "component_id")
+	private Set<PurchaseComponent> purchaseComponents = new HashSet<PurchaseComponent>();
 
 	// Transient not managed by DB
 

@@ -34,10 +34,10 @@ public class Purchase {
 	private int freightTerms;
 	private Date expectedDate;
 
-	@JsonIgnoreProperties({ "addresses", "purchases" })
+//	@JsonIgnoreProperties({ "addresses", "purchases" })
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "customer_id", referencedColumnName = "id")
-	private Customer customer;
+	@JoinColumn(name = "supplier_id", referencedColumnName = "id")
+	private Supplier supplier;
 
 	@JsonIgnoreProperties({ "addresses", "purchases" })
 	@ManyToOne(fetch = FetchType.EAGER)
@@ -47,5 +47,11 @@ public class Purchase {
 	@JsonIgnoreProperties({ "purchase" })
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "purchase_id")
-	private Set<PurchaseItem> purchaseItems = new HashSet<PurchaseItem>();
+	private Set<PurchaseSale> purchaseSales = new HashSet<PurchaseSale>();
+
+	@JsonIgnoreProperties({ "purchase" })
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name = "purchase_id")
+	private Set<PurchaseComponent> purchaseComponents = new HashSet<PurchaseComponent>();
+	
 }

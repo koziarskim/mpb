@@ -48,4 +48,10 @@ public class Sale {
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "sale_id")
 	private Set<SaleItem> saleItems = new HashSet<SaleItem>();
+	
+	@JsonIgnoreProperties({ "sale" })
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name = "sale_id")
+	private Set<PurchaseSale> purchaseSales = new HashSet<PurchaseSale>();
+
 }
