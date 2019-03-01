@@ -52,11 +52,11 @@ class CustomerRest {
 			customer = new Customer();
 		}
 		//TODO: if parent is not set, the all children are deleted.
-		for (Address address : customer.getAddresses()) {
-			if (address.getCustomer() == null) {
-				address.setCustomer(customer);
-			}
-		}
+//		for (Address address : customer.getAddresses()) {
+//			if (address.getCustomer() == null) {
+//				address.setCustomer(customer);
+//			}
+//		}
 		Customer result = customerRepo.save(customer);
 		return ResponseEntity.ok().body(result);
 	}

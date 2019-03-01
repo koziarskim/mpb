@@ -39,7 +39,7 @@ public class Sale {
 	@JoinColumn(name = "customer_id", referencedColumnName = "id")
 	private Customer customer;
 
-	@JsonIgnoreProperties({ "addresses", "sales" })
+	@JsonIgnoreProperties({ "customer" })
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "address_id", referencedColumnName = "id")
 	private Address shipAddress;
