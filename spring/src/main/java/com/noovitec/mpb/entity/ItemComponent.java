@@ -29,7 +29,7 @@ public class ItemComponent {
 	@JoinColumn(name = "item_id", referencedColumnName = "id")
 	private Item item;
 
-	@JsonIgnoreProperties({ "itemComponents" })
+	@JsonIgnoreProperties({ "itemComponents", "purchaseComponents" })
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "component_id", referencedColumnName = "id")
 	private Component component;

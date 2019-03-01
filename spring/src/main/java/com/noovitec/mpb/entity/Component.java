@@ -66,7 +66,7 @@ public class Component {
 	@JoinColumn(name = "attachment_id", referencedColumnName = "id")
 	private Attachment attachment;
 
-	@JsonIgnoreProperties({ "component" })
+//	@JsonIgnoreProperties({ "component" })
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "component_id")
 	private Set<PurchaseComponent> purchaseComponents = new HashSet<PurchaseComponent>();
