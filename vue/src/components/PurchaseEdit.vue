@@ -1,84 +1,41 @@
 <template>
     <b-container fluid>
         <div style="border: 0px" class="d-flex justify-content-between align-items-center">
-            <h4 style="text-align: left;">Purchase Order:</h4>
+            <h4 style="text-align: left;">Create Purchase Order:</h4>
             <div style="text-align: right;">
                 <b-button type="submit" variant="primary" @click="saveSale">Save</b-button>
                 <b-button type="reset" variant="danger" @click="cancelSale">Close</b-button>
             </div>
         </div>
         <b-row>
-            <b-col cols=4 style="border: ">
-                <label class="top-label">Marketplace Brands LLC<br/>951 Fargo Ave<br/>Elk Grove Village, IL 60007</label>
-            </b-col>
-            <b-col cols=2>
-                <label class="top-label">Date:</label>
-                <input class="form-control" type="tel" v-model="sale.date" placeholder="City"/>
-            </b-col>
-            <b-col cols=2>
-                <label class="top-label">Number:</label>
-                <input class="form-control" type="tel" v-model="sale.number" placeholder="City"/>
-            </b-col>
-            <b-col cols=2 offset=2>
-                <label class="top-label">Pay Terms:</label>
-                <input class="form-control" type="tel" v-model="sale.number" placeholder="City"/>
-            </b-col>
-        </b-row>
-        <b-row>
-            <b-col cols=4>
-                <label class="top-label">Supplier/Vendor:</label>
-                <b-select option-value="id" option-text="name" :list="availableCustomers" v-model="customer" placeholder="Customer"></b-select>
-            </b-col>
-            <b-col cols=4>
-                <label class="top-label">Shipping Address:</label><br/>
-                <label class="top-label">Marketplace Brands LLC<br/>951 Fargo Ave<br/>Elk Grove Village, IL 60007</label>
-            </b-col>
-            <b-col cols=2 offset=2>
-                <label class="top-label">Expected Date:</label>
-                <input class="form-control" type="tel" v-model="sale.number" placeholder="City"/>
-            </b-col>
-        </b-row>
-        <b-row>
-            <b-col cols=2 offset=4>
-                <label class="top-label">City:</label>
-                <input class="form-control" type="tel" value="951 Fargo Ave" placeholder="City"/>
+            <b-col cols=1>
+                <b-button type="submit" variant="primary" @click="back()">Back</b-button>
             </b-col>
             <b-col cols=1>
-                <label class="top-label">State:</label>
-                <input class="form-control" type="tel" v-model="sale.state" placeholder=""/>
-            </b-col>
-            <b-col cols=2>
-                <label class="top-label">Zip Code:</label>
-                <input class="form-control" type="tel" v-model="sale.zip" placeholder="Zip"/>
-            </b-col>
-            <b-col cols=2 offset=1>
-                <label class="top-label">FOB:</label>
-                <input class="form-control" type="tel" v-model="sale.number" placeholder="City"/>
+                <b-button type="submit" variant="primary" @click="next()">Next</b-button>
             </b-col>
         </b-row>
-        <b-row>
-            <b-col cols=4>
-                <label class="top-label">Available Items:</label>
-                <b-select option-value="id" option-text="name" :list="availableCustomers" v-model="customer" placeholder="Customer"></b-select>
-            </b-col>
-        </b-row>
+        <div v-if="visibleStep1">
         <b-row>
             <b-col>
-                <label class="top-label"></label>
-                <b-table v-if="saleItems.length>0"
+                <label class="top-label">Available Sale Orders:</label>
+                <b-table v-if="salePurchases.length>0"
                     :sort-by.sync="sortBy"
                     :sort-desc.sync="sortDesc"
-                    :items="saleItems"
-                    :fields="columns">
+                    :items="salePurchases"
+                    :fields="spColumns">
                     <template slot="account" slot-scope="row">
                         <b-button size="sm" @click.stop="goTo(row.item.id)" variant="link">{{row.item.id}}</b-button>
                     </template>
                     <template slot="action" slot-scope="row">
-                        <b-button size="sm" @click.stop="remove(row.item.id)">x</b-button>
+                        <b-form-checkbox v-model="status" @change="rowSelect(row.item.id)"></b-form-checkbox>
                     </template>
                 </b-table>
             </b-col>
         </b-row>
+        </div>
+        <div v-if="visibleStep2">
+        </div>
     </b-container>
 </template>
 
@@ -91,22 +48,35 @@ export default {
       sale: {},
       customer: {},
       availableCustomers: [],
-      saleItems: [{number: 1, description: "Item for testing", quantity: 3, rate: 0.50}],
+      salePurchases: [{id: 1, number: 1, description: "Item for testing", quantity: 3, rate: 0.50}],
       sortBy: "id",
       sortDesc: false,
-      columns: [
+      spColumns: [
         { key: "number", label: "Item", sortable: true },
         { key: "description", label: "Description", sortable: true },
         { key: "quantity", label: "Qty", sortable: true },
         { key: "rate", label: "Rate", sortable: false },
         { key: "action", label: "Action", sortable: false }
-      ]
+      ],
+      visibleStep1: true,
+      visibleStep2: false,
     };
   },
 
   computed: {},
   watch: {},
   methods: {
+    next(){
+        this.visibleStep1 = false;
+        this.visibleStep2 = true;
+    },
+    back(){
+        this.visibleStep2 = false;
+        this.visibleStep1 = true;
+    },
+    rowSelect(event, id){
+        console.log(event, id)
+    },
     getSaleData(id) {
       http
         .get("/sale/" + id)
