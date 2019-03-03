@@ -1,10 +1,9 @@
 <template>
     <div id="app">
         <b-navbar toggleable="md" type="dark" variant="dark">
-            <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
-            <b-navbar-brand href="#" v-on:click="goTo('/home')">Home</b-navbar-brand>
             <b-collapse is-nav id="nav_collapse">
-                <b-navbar-nav>
+                <b-navbar-nav v-if="!homePage()" >
+                    <b-nav-item v-on:click="goTo('/home')">Home</b-nav-item>
                     <b-nav-item v-on:click="goTo('/supplierList')">Supplier</b-nav-item>
                     <b-nav-item v-on:click="goTo('/componentList')">Component</b-nav-item>
                     <b-nav-item v-on:click="goTo('/itemList')">Item</b-nav-item>
@@ -14,6 +13,8 @@
                 </b-navbar-nav>
                 <!-- Right aligned nav items -->
                 <b-navbar-nav class="ml-auto">
+                    <span v-if="homePage()" style="color: white; margin-right: 490px; padding-top: 7px;">Marketplace Brands</span>
+                    <img v-if="homePage()" style="width: 40px; height: 40px; margin-right: 490px" src="./assets/mpb-logo.jpg" />
                     <b-nav-item-dropdown right>
                         <!-- Using button-content slot -->
                         <template slot="button-content">
@@ -49,6 +50,13 @@ export default {
     }
   },
   methods: {
+    homePage: function(){
+        var pathArray = window.location.pathname.split("/")
+        if(pathArray[3]==="home"){
+            return true;
+        }
+        return false;
+    },
     changeUserName: function(user_name) {
       this.$store.dispatch("changeUserName", user_name);
     },
