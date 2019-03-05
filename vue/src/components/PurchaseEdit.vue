@@ -28,7 +28,7 @@
                         <b-button size="sm" @click.stop="goTo(row.item.id)" variant="link">{{row.item.id}}</b-button>
                     </template>
                     <template slot="action" slot-scope="row">
-                        <b-form-checkbox v-model="status" @change="rowSelect(row.item.id)"></b-form-checkbox>
+                        <b-form-checkbox v-model="row.item.selected" @change="rowSelect(row.item.id)"></b-form-checkbox>
                     </template>
                 </b-table>
             </b-col>

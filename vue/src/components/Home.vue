@@ -7,7 +7,7 @@
             <b-col cols=10>
                 <b-row style="width: 1500px">
                     <b-col cols=2>
-                        <div class="home-box-green"><span style="padding-right: 15px">Manage Suppliers</span></div>
+                        <div class="home-box-green" v-on:click="goTo('/supplierList')"><span style="padding-right: 15px">Manage Suppliers</span></div>
                     </b-col>
                     <b-col cols=2>
                         <div class="home-box-orange"><span style="padding-right: 15px">Add New Component</span></div>
@@ -37,6 +37,25 @@
         </b-row>
     </b-container>
 </template>
+
+<script>
+import http from "../http-common";
+import router from "../router";
+
+export default {
+  data() {
+    return {
+    };
+  },
+  computed: {
+  },
+  methods: {
+    goTo(view) {
+      router.push(view);
+    },
+  }
+};
+</script>
 <style lang="scss">
 .home-box-green {
   color: white;
@@ -74,8 +93,3 @@
   height: 240px;
 }
 </style>
-<script>
-export default {
-  name: "home"
-};
-</script>
