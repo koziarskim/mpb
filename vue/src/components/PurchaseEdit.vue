@@ -28,7 +28,7 @@
                         <b-button size="sm" @click.stop="goTo(row.item.id)" variant="link">{{row.item.id}}</b-button>
                     </template>
                     <template slot="action" slot-scope="row">
-                        <b-form-checkbox v-model="row.item.selected" @change="rowSelect(row.item.id)"></b-form-checkbox>
+                        <b-form-checkbox v-model="row.item.selected" @input="rowSelect(row.item.id, row.item.selected)"></b-form-checkbox>
                     </template>
                 </b-table>
             </b-col>
@@ -48,7 +48,8 @@ export default {
       sale: {},
       customer: {},
       availableCustomers: [],
-      salePurchases: [{id: 1, number: 1, description: "Item for testing", quantity: 3, rate: 0.50}],
+      salePurchases: [{id: 1, number: 1, description: "Item for testing", quantity: 3, rate: 0.50, selected: true},
+                        {id: 2, number: 2, description: "Item for testing", quantity: 3, rate: 0.50, selected: false}],
       sortBy: "id",
       sortDesc: false,
       spColumns: [
@@ -74,8 +75,10 @@ export default {
         this.visibleStep2 = false;
         this.visibleStep1 = true;
     },
-    rowSelect(event, id){
-        console.log(event, id)
+    rowSelect(id, value){
+        console.log(id)
+        console.log(this.salePurchases[id-1].selected);
+        console.log(value)
     },
     getSaleData(id) {
       http
