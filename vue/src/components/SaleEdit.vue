@@ -130,12 +130,23 @@ export default {
     },
     cancelSale() {
       window.history.back();
+    },
+    getAvailableCustomers() {
+      http
+        .get("/customer")
+        .then(response => {
+          this.availableCustomers = response.data;
+        })
+        .catch(e => {
+          console.log("API error: " + e);
+        });
     }
   },
   mounted() {
     var id = this.$route.params.sale_id;
     if (id) {
       this.getSaleData(id);
+      this.getAvailableCustomers();
     }
   }
 };
