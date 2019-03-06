@@ -60,7 +60,7 @@
         <b-row>
             <b-col cols=4>
                 <label class="top-label">Available Items:</label>
-                <b-select option-value="id" option-text="name" :list="availableItems" v-model="item" placeholder="Customer"></b-select>
+                <b-select option-value="id" option-text="label" :list="availableItems" v-model="item" placeholder="Customer"></b-select>
             </b-col>
         </b-row>
         <b-row>

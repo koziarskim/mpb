@@ -104,5 +104,12 @@ public class Item {
 		totalCost = totalCost.add(this.warehouseCost).add(this.packageCost).add(this.laborCost).add(this.otherCost);
 		return totalCost;
 	}
+	
+	@Transient
+	private String label;
+	
+	public String getLabel() {
+		return this.getNumber() +" - "+this.getName();
+	}
 
 }

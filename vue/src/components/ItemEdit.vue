@@ -143,7 +143,7 @@
             <b-row>
                 <b-col cols=12>
                     <label class="top-label">Components:</label>
-                    <b-select option-value="id" option-text="name" :list="availableComponents" v-model="component" placeholder="Select component"></b-select>
+                    <b-select option-value="id" option-text="label" :list="availableComponents" v-model="component" placeholder="Select component"></b-select>
                 </b-col>
             </b-row>
             <b-row>
