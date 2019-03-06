@@ -60,7 +60,7 @@
         <b-row>
             <b-col cols=4>
                 <label class="top-label">Available Items:</label>
-                <b-select option-value="id" option-text="name" :list="availableCustomers" v-model="customer" placeholder="Customer"></b-select>
+                <b-select option-value="id" option-text="name" :list="availableItems" v-model="item" placeholder="Customer"></b-select>
             </b-col>
         </b-row>
         <b-row>
@@ -91,7 +91,9 @@ export default {
     return {
       sale: {},
       customer: {},
+      item: {},
       availableCustomers: [],
+      availableItems: [],
       saleItems: [{}],
       sortBy: "id",
       sortDesc: false,
@@ -140,6 +142,16 @@ export default {
         .catch(e => {
           console.log("API error: " + e);
         });
+    },
+    getAvailableItems() {
+      http
+        .get("/item")
+        .then(response => {
+          this.availableItems = response.data;
+        })
+        .catch(e => {
+          console.log("API error: " + e);
+        });
     }
   },
   mounted() {
@@ -147,6 +159,7 @@ export default {
     if (id) {
       this.getSaleData(id);
       this.getAvailableCustomers();
+      this.getAvailableItems();
     }
   }
 };
