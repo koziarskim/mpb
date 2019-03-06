@@ -114,7 +114,7 @@ export default {
     },
     savePurchase() {
       http
-        .post("/purchase", JSON.stringify(this.purchase))
+        .post("/purchase", this.purchase)
         .then(response => {
           this.getPurchaseData(response.data.id);
         })

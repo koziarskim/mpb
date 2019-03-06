@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.noovitec.mpb.entity.Item;
 import com.noovitec.mpb.entity.Purchase;
 import com.noovitec.mpb.repo.PurchaseRepo;
 
@@ -33,7 +32,7 @@ class PurchaseRest {
 
 	@Autowired
 	ObjectMapper objectMapper;
-	
+
 	private final Logger log = LoggerFactory.getLogger(PurchaseRest.class);
 	private PurchaseRepo purchaseRepo;
 
@@ -54,17 +53,10 @@ class PurchaseRest {
 	}
 
 	@PostMapping("/purchase")
-	ResponseEntity<Purchase> post(@RequestBody(required = false) String jsonPurchase) throws URISyntaxException, JsonParseException, JsonMappingException, IOException {
-		Purchase purchase = null;
-		if(jsonPurchase==null) {
+	ResponseEntity<Purchase> post(@RequestBody(required = false) Purchase purchase)
+			throws URISyntaxException, JsonParseException, JsonMappingException, IOException {
+		if (purchase == null) {
 			purchase = new Purchase();
-		}else {
-			try {
-				purchase = objectMapper.readValue(jsonPurchase, Purchase.class);
-			}catch(Exception e) {
-				log.info(e.toString());
-				throw e;
-			}
 		}
 		Purchase result = purchaseRepo.save(purchase);
 		return ResponseEntity.ok().body(result);
