@@ -88,7 +88,7 @@ public class Item {
 	@JsonIgnoreProperties({ "item" })
 	@OneToMany(fetch = FetchType.EAGER, orphanRemoval = true)
 	@JoinColumn(name = "item_id")
-	private Set<SaleItem> saleItems = new HashSet<SaleItem>();
+	private Collection<SaleItem> saleItems = new HashSet<SaleItem>();
 
 
 	//Transient not managed by DB

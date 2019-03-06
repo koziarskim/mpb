@@ -1,5 +1,6 @@
 package com.noovitec.mpb.entity;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -44,14 +45,14 @@ public class Purchase {
 	@JoinColumn(name = "address_id", referencedColumnName = "id")
 	private Address shipAddress;
 
-	@JsonIgnoreProperties({ "purchase" })
+	@JsonIgnoreProperties(value={ "purchase" }, allowSetters=true)
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "purchase_id")
-	private Set<PurchaseSale> purchaseSales = new HashSet<PurchaseSale>();
+	private Collection<PurchaseSale> purchaseSales = new HashSet<PurchaseSale>();
 
-	@JsonIgnoreProperties({ "purchase" })
+	@JsonIgnoreProperties(value={ "purchase" }, allowSetters=true)
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "purchase_id")
-	private Set<PurchaseComponent> purchaseComponents = new HashSet<PurchaseComponent>();
+	private Collection<PurchaseComponent> purchaseComponents = new HashSet<PurchaseComponent>();
 	
 }

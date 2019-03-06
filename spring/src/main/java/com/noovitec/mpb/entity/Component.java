@@ -66,10 +66,10 @@ public class Component {
 	@JoinColumn(name = "attachment_id", referencedColumnName = "id")
 	private Attachment attachment;
 
-//	@JsonIgnoreProperties({ "component" })
+	@JsonIgnoreProperties(value={ "component" }, allowSetters=true)
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "component_id")
-	private Set<PurchaseComponent> purchaseComponents = new HashSet<PurchaseComponent>();
+	private Collection<PurchaseComponent> purchaseComponents = new HashSet<PurchaseComponent>();
 
 	// Transient not managed by DB
 

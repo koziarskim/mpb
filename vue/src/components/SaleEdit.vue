@@ -93,6 +93,8 @@ export default {
       customer: {},
       availableCustomers: [],
       saleItems: [{}],
+      sortBy: "id",
+      sortDesc: false,
       columns: [
         { key: "number", label: "Item", sortable: true },
         { key: "description", label: "Description", sortable: true },

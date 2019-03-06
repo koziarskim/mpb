@@ -3,8 +3,8 @@
         <div style="border: 0px" class="d-flex justify-content-between align-items-center">
             <h4 style="text-align: left;">Create Purchase Order:</h4>
             <div style="text-align: right;">
-                <b-button type="submit" variant="primary" @click="saveSale">Save</b-button>
-                <b-button type="reset" variant="danger" @click="cancelSale">Close</b-button>
+                <b-button type="submit" variant="primary" @click="savePurchase">Save</b-button>
+                <b-button type="reset" variant="danger" @click="cancelPurchase">Close</b-button>
             </div>
         </div>
         <b-row>
@@ -19,10 +19,10 @@
         <b-row>
             <b-col>
                 <label class="top-label">Available Sale Orders:</label>
-                <b-table v-if="salePurchases.length>0"
+                <b-table v-if="availableSales.length>0"
                     :sort-by.sync="sortBy"
                     :sort-desc.sync="sortDesc"
-                    :items="salePurchases"
+                    :items="availableSales"
                     :fields="spColumns">
                     <template slot="account" slot-scope="row">
                         <b-button size="sm" @click.stop="goTo(row.item.id)" variant="link">{{row.item.id}}</b-button>
@@ -45,10 +45,10 @@ import http from "../http-common";
 export default {
   data() {
     return {
-      sale: {},
+      purchase: {},
       customer: {},
       availableCustomers: [],
-      salePurchases: [{id: 1, number: 1, description: "Item for testing", quantity: 3, rate: 0.50, selected: true},
+      availableSales: [{id: 1, number: 1, description: "Item for testing", quantity: 3, rate: 0.50, selected: true},
                         {id: 2, number: 2, description: "Item for testing", quantity: 3, rate: 0.50, selected: false}],
       sortBy: "id",
       sortDesc: false,
@@ -76,38 +76,60 @@ export default {
         this.visibleStep1 = true;
     },
     rowSelect(id, value){
-        console.log(id)
-        console.log(this.salePurchases[id-1].selected);
-        console.log(value)
+        var ps = {}
+        if(value){
+            ps = {
+                sale: {id: id}
+                // purchase: {id: this.purchase.id}
+            }
+            this.purchase.purchaseSales.push(ps)
+        }else{
+            ps = this.purchase.purchaseSales.find(item => item.id == id);
+            this.purchase.purchaseSales.splice(this.purchase.purchaseSales.indexOf(ps), 1);
+        }
+        // console.log(id)
+        // console.log(this.availableSales[id-1].selected);
+        // console.log(value)
     },
-    getSaleData(id) {
-      http
-        .get("/sale/" + id)
+    getAvailableSales(purchase_id){
+        http
+        .get("/sale/purchase/" + purchase_id)
         .then(response => {
-          this.component = response.data;
+          this.availableSales = response.data;
         })
         .catch(e => {
           console.log("API error: " + e);
         });
     },
-    saveSale() {
+    getPurchaseData(id) {
       http
-        .post("/sale", this.sale)
+        .get("/purchase/" + id)
         .then(response => {
-          this.getSaleData(response.data.id);
+          this.purchase = response.data;
+          this.getAvailableSales(response.data.id);
         })
         .catch(e => {
           console.log("API error: " + e);
         });
     },
-    cancelSale() {
+    savePurchase() {
+      http
+        .post("/purchase", JSON.stringify(this.purchase))
+        .then(response => {
+          this.getPurchaseData(response.data.id);
+        })
+        .catch(e => {
+          console.log("API error: " + e);
+        });
+    },
+    cancelPurchase() {
       window.history.back();
     }
   },
   mounted() {
-    var id = this.$route.params.sale_id;
+    var id = this.$route.params.purchase_id;
     if (id) {
-      this.getSaleData(id);
+      this.getPurchaseData(id);
     }
   }
 };

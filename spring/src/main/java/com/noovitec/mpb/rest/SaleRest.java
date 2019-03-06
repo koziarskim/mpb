@@ -2,6 +2,7 @@ package com.noovitec.mpb.rest;
 
 import java.net.URISyntaxException;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.noovitec.mpb.dto.SaleDto;
 import com.noovitec.mpb.entity.Address;
 import com.noovitec.mpb.entity.Sale;
 import com.noovitec.mpb.repo.AddressRepo;
@@ -44,6 +46,12 @@ class SaleRest {
 		Optional<Sale> result = saleRepo.findById(id);
 		return result.map(response -> ResponseEntity.ok().body(response))
 				.orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+	}
+
+	@GetMapping("/sale/purchase/{purchase_id}")
+	Collection<SaleDto> getAllByPurchase(@PathVariable Long purchase_id) {
+		List<SaleDto> sales = saleRepo.findAllByPurchase(purchase_id);
+		return sales;
 	}
 
 	@PostMapping("/sale")
