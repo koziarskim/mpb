@@ -6,11 +6,11 @@
                 <b-button type="submit" variant="primary" @click="goToPurchase('')">New S.O.</b-button>
             </div>
         </div>
-        <div v-if="sales.length==0">Not found any sale orders...</div>
-        <b-table v-if="sales.length>0"
+        <div v-if="purchases.length==0">Not found any purchase orders...</div>
+        <b-table v-if="purchases.length>0"
                 :sort-by.sync="sortBy"
                 :sort-desc.sync="sortDesc"
-                :items="sales"
+                :items="purchases"
                 :fields="fields">
                 <template slot="number" slot-scope="row">
                     <b-button size="sm" @click.stop=goToPurchase(row.item.id) variant="link">{{row.item.number}}</b-button>
@@ -36,14 +36,14 @@ export default {
       sortBy: 'id',
       sortDesc: false,
       fields: [
-        { key: "number", label: "S.O. #", sortable: true },
+        { key: "number", label: "P.O. #", sortable: true },
         { key: "name", label: "Name", sortable: true },
         { key: "supplierStockNumber", label: "Supplier's Stock #", sortable: true },
         { key: "category.name", label: "Category", sortable: true },
         { key: "supplier.name", label: "Supplier", sortable: true },
         { key: "action", label: "Action", sortable: false}
       ],
-      sales: []
+      purchases: []
     };
   },
   methods: {
@@ -51,11 +51,11 @@ export default {
       this.alertSecs = 3,
       this.alertMessage = message
     },
-    getSalesData() {
+    getPurchasesData() {
       http
-        .get("/sale")
+        .get("/purchase")
         .then(response => {
-          this.sales = response.data;
+          this.purchases = response.data;
           console.log("Success getting component data");
         })
         .catch(e => {
@@ -64,7 +64,7 @@ export default {
     },
     getItem(component_id){
         var component;
-        var found = this.sales.some(function(element) {
+        var found = this.purchases.some(function(element) {
            if(element.id === component_id){
                 component = element;
            }
@@ -75,7 +75,7 @@ export default {
       http
         .delete("/purchase/"+id)
         .then(response => {
-          this.getSalesData();
+          this.getPurchasesData();
         })
         .catch(e => {
             console.log("API Error: "+e);
@@ -97,7 +97,7 @@ export default {
     },
   },
   mounted() {
-     this.getSalesData();
+     this.getPurchasesData();
   }
 };
 </script>

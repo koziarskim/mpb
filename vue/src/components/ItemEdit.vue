@@ -2,19 +2,17 @@
     <b-container fluid>
         <b-row>
             <b-col cols=2>
-        <!-- <div style="border: 0px" class="d-flex justify-content-between align-items-center"> -->
-            <h4 style="text-align: left;">Item: {{item.number}}</h4>
+                <h4 style="text-align: left;">Item: {{item.number}}</h4>
             </b-col>
             <b-col cols=3>
                 <input class="form-control" type="text" v-model="item.name" placeholder="Item name"/>
             </b-col>
             <b-col cols=2 offset=5>
-            <div style="text-align: right;">
-                <b-button type="submit" variant="primary" @click="saveAndUpload">Save</b-button>
-                <b-button type="reset" variant="danger" @click="cancelItem">Close</b-button>
-            </div>
+                <div style="text-align: right;">
+                    <b-button type="submit" variant="primary" @click="saveAndUpload">Save</b-button>
+                    <b-button type="reset" variant="danger" @click="cancelItem">Close</b-button>
+                </div>
             </b-col>
-        <!-- </div> -->
         </b-row>
         <b-row>
         <b-col cols=8>

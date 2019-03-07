@@ -1,12 +1,19 @@
 <template>
     <b-container fluid>
-        <div style="border: 0px" class="d-flex justify-content-between align-items-center">
-            <h4 style="text-align: left;">Create Purchase Order:</h4>
-            <div style="text-align: right;">
-                <b-button type="submit" variant="primary" @click="savePurchase">Save</b-button>
-                <b-button type="reset" variant="danger" @click="cancelPurchase">Close</b-button>
-            </div>
-        </div>
+        <b-row>
+            <b-col cols=2>
+                <h4 style="text-align: left;">Purchase Order: </h4>
+            </b-col>
+            <b-col cols=3>
+                <input class="form-control" type="text" v-model="purchase.number" placeholder="Item name"/>
+            </b-col>
+            <b-col cols=2 offset=5>
+                <div style="text-align: right;">
+                    <b-button type="submit" variant="primary" @click="savePurchase">Save</b-button>
+                    <b-button type="reset" variant="danger" @click="cancelPurchase">Close</b-button>
+                </div>
+            </b-col>
+        </b-row>
         <b-row>
             <b-col cols=1>
                 <b-button type="submit" variant="primary" @click="back()">Back</b-button>
