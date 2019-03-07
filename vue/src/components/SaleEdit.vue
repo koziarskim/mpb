@@ -31,8 +31,8 @@
                 <label class="top-label">Marketplace Brands LLC</label>
             </b-col>
             <b-col cols=4>
-                <label class="top-label">Shipping Address:</label>
-                <b-select option-value="id" option-text="name" :list="availableCustomers" v-model="customer" placeholder="Customer"></b-select>
+                <label class="top-label">Ship to Address:</label>
+                <b-select option-value="id" option-text="street" :list="customer.addresses" v-model="shipAddress" placeholder="Ship to address"></b-select>
             </b-col>
             <b-col cols=2 offset=2>
                 <label class="top-label">Expected Date:</label>
@@ -62,14 +62,17 @@
                 <label class="top-label">Available Items:</label>
                 <b-select option-value="id" option-text="label" :list="availableItems" v-model="item" placeholder="Customer"></b-select>
             </b-col>
+            <b-col style="padding-top: 30px" cols=1>
+                <a href="#" @click="addItem()">(+)</a>
+            </b-col>
         </b-row>
         <b-row>
             <b-col>
                 <label class="top-label"></label>
-                <b-table v-if="saleItems.length>0"
+                <b-table v-if="sale.saleItems.length>0"
                     :sort-by.sync="sortBy"
                     :sort-desc.sync="sortDesc"
-                    :items="saleItems"
+                    :items="sale.saleItems"
                     :fields="columns">
                     <template slot="account" slot-scope="row">
                         <b-button size="sm" @click.stop="goTo(row.item.id)" variant="link">{{row.item.id}}</b-button>
@@ -89,12 +92,16 @@ import http from "../http-common";
 export default {
   data() {
     return {
-      sale: {},
-      customer: {},
+      sale: {
+          saleItems: []
+      },
+      customer: {
+          addresses: []
+      },
       item: {},
+      shipAddress: {},
       availableCustomers: [],
       availableItems: [],
-      saleItems: [{}],
       sortBy: "id",
       sortDesc: false,
       columns: [
@@ -108,13 +115,19 @@ export default {
   },
 
   computed: {},
-  watch: {},
+  watch: {
+      shipAddress: function(new_value, old_value) {
+          var address = this.customer.addresses.find(it => it.id == new_value);
+          this.sale.shipAddress = address;
+      }
+  },
   methods: {
     getSaleData(id) {
       http
         .get("/sale/" + id)
         .then(response => {
           this.component = response.data;
+          this.shipAddress = response.data.shipAddress;
         })
         .catch(e => {
           console.log("API error: " + e);
@@ -152,6 +165,16 @@ export default {
         .catch(e => {
           console.log("API error: " + e);
         });
+    },
+    addItem(){
+        if(!this.item.id){
+            return;
+        }
+        var sa = this.sale.saleItems.find(it => it.id == this.item.id);
+        if(sa){
+            return;
+        }
+        this.sale.saleItems.push(this.item)
     }
   },
   mounted() {

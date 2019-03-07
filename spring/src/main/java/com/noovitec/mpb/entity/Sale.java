@@ -35,13 +35,13 @@ public class Sale {
 	private int freightTerms;
 	private Date expectedDate;
 
-	@JsonIgnoreProperties({ "addresses", "sales" })
-	@ManyToOne(fetch = FetchType.EAGER)
+	@JsonIgnoreProperties(value={ "sales" }, allowSetters=true)
+	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "customer_id", referencedColumnName = "id")
 	private Customer customer;
 
-	@JsonIgnoreProperties({ "customer" })
-	@ManyToOne(fetch = FetchType.EAGER)
+//	@JsonIgnoreProperties(value = { "customer" }, allowSetters=true)
+	@ManyToOne()
 	@JoinColumn(name = "address_id", referencedColumnName = "id")
 	private Address shipAddress;
 

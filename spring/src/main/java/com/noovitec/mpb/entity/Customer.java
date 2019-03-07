@@ -1,11 +1,10 @@
 package com.noovitec.mpb.entity;
 
+import java.util.Collection;
 import java.util.HashSet;
-import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -37,21 +36,21 @@ public class Customer {
 	private String email2;
 	private String contactName;
 
-	@JsonIgnoreProperties({ "customer" })
-	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonIgnoreProperties(value = { "customer" }, allowSetters = true)
+	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "customer_id")
 	@OrderBy("id DESC")
-	private Set<Address> addresses = new HashSet<Address>();
+	private Collection<Address> addresses = new HashSet<Address>();
 
 //	@JsonIgnoreProperties({ "customer" })
 //	@OneToMany(mappedBy = "customer", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
 //	private Set<Address> addresses = new HashSet<Address>();
 
-	@JsonIgnoreProperties({ "customer" })
-	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonIgnoreProperties(value = { "customer" }, allowSetters = true)
+	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "customer_id")
 	@OrderBy("id DESC")
-	private Set<Sale> sales = new HashSet<Sale>();
+	private Collection<Sale> sales = new HashSet<Sale>();
 
 //	@JsonIgnoreProperties({ "customer" })
 //	@OneToMany(mappedBy = "customer", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
