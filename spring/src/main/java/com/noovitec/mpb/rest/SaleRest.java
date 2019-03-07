@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.noovitec.mpb.dto.SaleDto;
 import com.noovitec.mpb.entity.Address;
 import com.noovitec.mpb.entity.Sale;
+import com.noovitec.mpb.entity.SaleItem;
 import com.noovitec.mpb.repo.AddressRepo;
 import com.noovitec.mpb.repo.SaleRepo;
 
@@ -58,6 +59,10 @@ class SaleRest {
 	ResponseEntity<Sale> post(@RequestBody(required = false) Sale sale) throws URISyntaxException {
 		if (sale == null) {
 			sale = new Sale();
+		}
+		//Needed for update.
+		for(SaleItem sa : sale.getSaleItems()) {
+			sa.setSale(sale);
 		}
 		Sale result = saleRepo.save(sale);
 		return ResponseEntity.ok().body(result);

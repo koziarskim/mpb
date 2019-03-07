@@ -129,9 +129,9 @@ export default {
     },
     customer: function(new_value, old_value) {
       this.sale.customer = new_value;
-    //   if(old_value.id){
-    //     this.shippingAddress = {};
-    //   }
+      if(old_value.id){
+        this.shippingAddress = {};
+      }
     }
   },
   methods: {
