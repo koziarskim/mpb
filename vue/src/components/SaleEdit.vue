@@ -14,15 +14,15 @@
             </b-col>
             <b-col cols=2>
                 <label class="top-label">Date:</label>
-                <input class="form-control" type="tel" v-model="sale.date" placeholder="City"/>
+                <input class="form-control" type="tel" v-model="sale.date" placeholder="Date"/>
             </b-col>
             <b-col cols=2>
                 <label class="top-label">Number:</label>
-                <input class="form-control" type="tel" v-model="sale.number" placeholder="City"/>
+                <input class="form-control" type="tel" v-model="sale.number" placeholder="Number"/>
             </b-col>
             <b-col cols=2 offset=2>
                 <label class="top-label">Pay Terms:</label>
-                <input class="form-control" type="tel" v-model="sale.number" placeholder="City"/>
+                <input class="form-control" type="tel" v-model="sale.paymentTerms" placeholder="Pay Terms"/>
             </b-col>
         </b-row>
         <b-row>
@@ -31,30 +31,36 @@
                 <label class="top-label">Marketplace Brands LLC</label>
             </b-col>
             <b-col cols=4>
-                <label class="top-label">Ship to Address:</label>
-                <b-select option-value="id" option-text="street" :list="customer.addresses" v-model="shipAddress" placeholder="Ship to address"></b-select>
+                <label class="top-label">shipping to Address:</label>
+                <b-select option-value="id" option-text="dc" :list="customer.addresses" v-model="shippingAddress" placeholder="shipping to address"></b-select>
             </b-col>
             <b-col cols=2 offset=2>
                 <label class="top-label">Expected Date:</label>
-                <input class="form-control" type="tel" v-model="sale.number" placeholder="City"/>
+                <input class="form-control" type="tel" v-model="sale.expectedDate" placeholder="Date"/>
             </b-col>
         </b-row>
         <b-row>
+            <b-col cols=4 offset=4>
+                <label class="top-label">Street:</label>
+                <input class="form-control" type="tel" readOnly :value="shippingAddress.street" placeholder="City"/>
+            </b-col>
+            <b-col cols=2 offset=2>
+                <label class="top-label">FOB:</label>
+                <input class="form-control" type="tel" v-model="sale.freightTerms" placeholder="Flight Terms"/>
+            </b-col>        
+        <b-row>
+        </b-row>
             <b-col cols=2 offset=4>
                 <label class="top-label">City:</label>
-                <input class="form-control" type="tel" v-model="sale.city" placeholder="City"/>
+                <input class="form-control" type="tel" readOnly :value="shippingAddress.city" placeholder="City"/>
             </b-col>
             <b-col cols=1>
                 <label class="top-label">State:</label>
-                <input class="form-control" type="tel" v-model="sale.state" placeholder=""/>
+                <input class="form-control" type="tel" readOnly :value="shippingAddress.state" placeholder=""/>
             </b-col>
             <b-col cols=2>
                 <label class="top-label">Zip Code:</label>
-                <input class="form-control" type="tel" v-model="sale.zip" placeholder="Zip"/>
-            </b-col>
-            <b-col cols=2 offset=1>
-                <label class="top-label">FOB:</label>
-                <input class="form-control" type="tel" v-model="sale.number" placeholder="City"/>
+                <input class="form-control" type="tel" readOnly :value="shippingAddress.zip" placeholder="Zip"/>
             </b-col>
         </b-row>
         <b-row>
@@ -99,7 +105,7 @@ export default {
           addresses: []
       },
       item: {},
-      shipAddress: {},
+      shippingAddress: {},
       availableCustomers: [],
       availableItems: [],
       sortBy: "id",
@@ -116,9 +122,11 @@ export default {
 
   computed: {},
   watch: {
-      shipAddress: function(new_value, old_value) {
-          var address = this.customer.addresses.find(it => it.id == new_value);
-          this.sale.shipAddress = address;
+      shippingAddress: function(new_value, old_value) {
+          this.sale.shippingAddress = this.shippingAddress;
+      },
+      customer: function(new_value, old_value){
+          this.sale.customer = this.customer;
       }
   },
   methods: {
@@ -126,8 +134,11 @@ export default {
       http
         .get("/sale/" + id)
         .then(response => {
-          this.component = response.data;
-          this.shipAddress = response.data.shipAddress;
+          this.sale = response.data;
+          if(response.data.shippingAddress.id){
+            this.shippingAddress = response.data.shippingAddress;
+            this.customer = response.data.customer;
+          }
         })
         .catch(e => {
           console.log("API error: " + e);

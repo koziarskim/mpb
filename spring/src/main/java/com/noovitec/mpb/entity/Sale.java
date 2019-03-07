@@ -43,7 +43,7 @@ public class Sale {
 //	@JsonIgnoreProperties(value = { "customer" }, allowSetters=true)
 	@ManyToOne()
 	@JoinColumn(name = "address_id", referencedColumnName = "id")
-	private Address shipAddress;
+	private Address shippingAddress;
 
 	@JsonIgnoreProperties(value={ "sale" }, allowSetters=true)
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
