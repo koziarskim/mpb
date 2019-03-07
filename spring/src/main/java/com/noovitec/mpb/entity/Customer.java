@@ -54,7 +54,7 @@ public class Customer {
 //	private Set<Address> addresses = new HashSet<Address>();
 
 	@JsonIgnoreProperties(value = { "customer" }, allowSetters = true)
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany()
 	@JoinColumn(name = "customer_id")
 	@OrderBy("id DESC")
 	private Collection<Sale> sales = new HashSet<Sale>();
