@@ -36,7 +36,7 @@ public class Sale {
 	private Date expectedDate;
 
 	@JsonIgnoreProperties(value={ "sales" }, allowSetters=true)
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne()
 	@JoinColumn(name = "customer_id", referencedColumnName = "id")
 	private Customer customer;
 
@@ -46,12 +46,12 @@ public class Sale {
 	private Address shippingAddress;
 
 	@JsonIgnoreProperties(value={ "sale" }, allowSetters=true)
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "sale_id")
 	private Collection<SaleItem> saleItems = new HashSet<SaleItem>();
 	
 	@JsonIgnoreProperties(value={ "sale" }, allowSetters=true)
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "sale_id")
 	private Collection<PurchaseSale> purchaseSales = new HashSet<PurchaseSale>();
 

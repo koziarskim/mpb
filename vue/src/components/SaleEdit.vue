@@ -69,7 +69,7 @@
                 <b-select option-value="id" option-text="label" :list="availableItems" v-model="item" placeholder="Customer"></b-select>
             </b-col>
             <b-col style="padding-top: 30px" cols=1>
-                <a href="#" @click="addItem()">(+)</a>
+                <b-button variant="link" @click="addItem()">(+)</b-button>
             </b-col>
         </b-row>
         <b-row>
@@ -99,10 +99,12 @@ export default {
   data() {
     return {
       sale: {
-          saleItems: []
+        saleItems: [],
+        customer: {},
+        shippingAddress: {}
       },
       customer: {
-          addresses: []
+        addresses: []
       },
       item: {},
       shippingAddress: {},
@@ -111,10 +113,10 @@ export default {
       sortBy: "id",
       sortDesc: false,
       columns: [
-        { key: "number", label: "Item", sortable: true },
-        { key: "description", label: "Description", sortable: true },
-        { key: "quantity", label: "Qty", sortable: true },
-        { key: "rate", label: "Rate", sortable: false },
+        { key: "item.number", label: "Item", sortable: true },
+        { key: "item.description", label: "Description", sortable: true },
+        { key: "item.quantity", label: "Qty", sortable: true },
+        { key: "item.rate", label: "Rate", sortable: false },
         { key: "action", label: "Action", sortable: false }
       ]
     };
@@ -122,12 +124,15 @@ export default {
 
   computed: {},
   watch: {
-      shippingAddress: function(new_value, old_value) {
-          this.sale.shippingAddress = this.shippingAddress;
-      },
-      customer: function(new_value, old_value){
-          this.sale.customer = this.customer;
-      }
+    shippingAddress: function(new_value, old_value) {
+      this.sale.shippingAddress = new_value;
+    },
+    customer: function(new_value, old_value) {
+      this.sale.customer = new_value;
+    //   if(old_value.id){
+    //     this.shippingAddress = {};
+    //   }
+    }
   },
   methods: {
     getSaleData(id) {
@@ -135,9 +140,11 @@ export default {
         .get("/sale/" + id)
         .then(response => {
           this.sale = response.data;
-          if(response.data.shippingAddress.id){
-            this.shippingAddress = response.data.shippingAddress;
+          if (response.data.customer) {
             this.customer = response.data.customer;
+          }
+          if (response.data.shippingAddress) {
+            this.shippingAddress = response.data.shippingAddress;
           }
         })
         .catch(e => {
@@ -177,15 +184,15 @@ export default {
           console.log("API error: " + e);
         });
     },
-    addItem(){
-        if(!this.item.id){
-            return;
-        }
-        var sa = this.sale.saleItems.find(it => it.id == this.item.id);
-        if(sa){
-            return;
-        }
-        this.sale.saleItems.push(this.item)
+    addItem() {
+      if (!this.item.id) {
+        return;
+      }
+      var item = this.sale.saleItems.find(it => it.item.id == this.item.id);
+      if (item) {
+        return;
+      }
+      this.sale.saleItems.push({ item: this.item });
     }
   },
   mounted() {
