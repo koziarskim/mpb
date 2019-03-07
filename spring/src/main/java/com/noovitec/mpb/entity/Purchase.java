@@ -36,22 +36,22 @@ public class Purchase {
 	private Date expectedDate;
 
 //	@JsonIgnoreProperties({ "addresses", "purchases" })
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne()
 	@JoinColumn(name = "supplier_id", referencedColumnName = "id")
 	private Supplier supplier;
 
-	@JsonIgnoreProperties({ "customer" })
-	@ManyToOne(fetch = FetchType.EAGER)
+	@JsonIgnoreProperties(value={ "customer" }, allowSetters=true)
+	@ManyToOne()
 	@JoinColumn(name = "address_id", referencedColumnName = "id")
 	private Address shipAddress;
 
 	@JsonIgnoreProperties(value={ "purchase" }, allowSetters=true)
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany()
 	@JoinColumn(name = "purchase_id")
 	private Collection<PurchaseSale> purchaseSales = new HashSet<PurchaseSale>();
 
 	@JsonIgnoreProperties(value={ "purchase" }, allowSetters=true)
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany()
 	@JoinColumn(name = "purchase_id")
 	private Collection<PurchaseComponent> purchaseComponents = new HashSet<PurchaseComponent>();
 	

@@ -25,12 +25,12 @@ public class PurchaseComponent {
 	private Integer units;
 
 	@JsonIgnoreProperties(value={ "purchaseComponents" }, allowSetters=true)
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne()
 	@JoinColumn(name = "purchase_id", referencedColumnName = "id")
 	private Purchase purchase;
 
 	@JsonIgnoreProperties(value={ "purchaseComponents" }, allowSetters=true)
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne()
 	@JoinColumn(name = "component_id", referencedColumnName = "id")
 	private Component component;
 }

@@ -24,13 +24,13 @@ public class SaleItem {
 	private Long id;
 	private Integer units;
 
-	@JsonIgnoreProperties({ "saleItems" })
-	@ManyToOne(fetch = FetchType.EAGER)
+	@JsonIgnoreProperties(value={ "saleItems" }, allowSetters=true)
+	@ManyToOne()
 	@JoinColumn(name = "sale_id", referencedColumnName = "id")
 	private Sale sale;
 
-	@JsonIgnoreProperties({ "saleItems" })
-	@ManyToOne(fetch = FetchType.EAGER)
+	@JsonIgnoreProperties(value={ "saleItems" }, allowSetters=true)
+	@ManyToOne()
 	@JoinColumn(name = "item_id", referencedColumnName = "id")
 	private Item item;
 }

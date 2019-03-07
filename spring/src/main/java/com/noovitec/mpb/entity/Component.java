@@ -47,17 +47,17 @@ public class Component {
 	private BigDecimal otherCost = BigDecimal.ZERO;
 	private BigDecimal totalLandedCost = BigDecimal.ZERO;
 	
-	@JsonIgnoreProperties({ "component" })
-	@OneToMany(fetch = FetchType.EAGER, orphanRemoval = true)
+	@JsonIgnoreProperties(value = { "component" }, allowSetters=true)
+	@OneToMany()
 	@JoinColumn(name = "component_id")
 	private Collection<ItemComponent> itemComponents = new HashSet<ItemComponent>();
 
-	@JsonIgnoreProperties({ "components" })
+	@JsonIgnoreProperties(value={ "components" }, allowSetters=true)
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "supplier_id")
 	private Supplier supplier;
 
-	@JsonIgnoreProperties({ "items", "components" })
+	@JsonIgnoreProperties(value={ "items", "components" }, allowSetters=true)
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "category_id", referencedColumnName = "id")
 	private Category category;
@@ -67,7 +67,7 @@ public class Component {
 	private Attachment attachment;
 
 	@JsonIgnoreProperties(value={ "component" }, allowSetters=true)
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany()
 	@JoinColumn(name = "component_id")
 	private Collection<PurchaseComponent> purchaseComponents = new HashSet<PurchaseComponent>();
 

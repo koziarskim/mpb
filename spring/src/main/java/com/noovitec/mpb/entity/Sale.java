@@ -46,12 +46,12 @@ public class Sale {
 	private Address shippingAddress;
 
 	@JsonIgnoreProperties(value={ "sale" }, allowSetters=true)
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany(cascade=CascadeType.ALL, orphanRemoval=true)
 	@JoinColumn(name = "sale_id")
 	private Collection<SaleItem> saleItems = new HashSet<SaleItem>();
 	
 	@JsonIgnoreProperties(value={ "sale" }, allowSetters=true)
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany()
 	@JoinColumn(name = "sale_id")
 	private Collection<PurchaseSale> purchaseSales = new HashSet<PurchaseSale>();
 

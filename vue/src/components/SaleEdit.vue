@@ -192,7 +192,8 @@ export default {
       if (item) {
         return;
       }
-      this.sale.saleItems.push({ item: this.item });
+      this.sale.saleItems.push({ item: {id: this.item.id},
+                                sale: {id: this.sale.id} });
     }
   },
   mounted() {

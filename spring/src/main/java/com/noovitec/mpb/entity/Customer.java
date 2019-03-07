@@ -49,18 +49,9 @@ public class Customer {
 	@JoinColumn(name = "billig_address_id", referencedColumnName = "id")
 	private Address billingAddress;
 
-//	@JsonIgnoreProperties({ "customer" })
-//	@OneToMany(mappedBy = "customer", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
-//	private Set<Address> addresses = new HashSet<Address>();
-
 	@JsonIgnoreProperties(value = { "customer" }, allowSetters = true)
 	@OneToMany()
 	@JoinColumn(name = "customer_id")
 	@OrderBy("id DESC")
 	private Collection<Sale> sales = new HashSet<Sale>();
-
-//	@JsonIgnoreProperties({ "customer" })
-//	@OneToMany(mappedBy = "customer", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
-//	private Set<Sale> sales = new HashSet<Sale>();
-
 }

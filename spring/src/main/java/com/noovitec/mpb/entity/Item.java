@@ -51,32 +51,32 @@ public class Item {
 
 	
 	
-	@JsonIgnoreProperties({"item"})
+	@JsonIgnoreProperties(value={"item"}, allowSetters=true)
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "item_id")
 	private Collection<ItemComponent> itemComponents = new HashSet<ItemComponent>(); 
 	
-	@JsonIgnoreProperties({ "items", "components" })
+	@JsonIgnoreProperties(value={ "items" }, allowSetters=true)
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "category_id", referencedColumnName = "id")
 	private Category category;
 
-	@JsonIgnoreProperties({ "items" })
+	@JsonIgnoreProperties(value={ "items" }, allowSetters=true)
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "brand_id", referencedColumnName = "id")
 	private Brand brand;
 
-	@JsonIgnoreProperties({ "items" })
+	@JsonIgnoreProperties(value={ "items" }, allowSetters=true)
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "season_id", referencedColumnName = "id")
 	private Season season;
 	
-	@JsonIgnoreProperties({ "items" })
+	@JsonIgnoreProperties(value={ "items" }, allowSetters=true)
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "upc_id", referencedColumnName = "id")
 	private Upc upc;
 	
-	@JsonIgnoreProperties({ "items" })
+	@JsonIgnoreProperties(value={ "items" }, allowSetters=true)
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "case_upc_id", referencedColumnName = "id")
 	private Upc caseUpc;
@@ -85,8 +85,8 @@ public class Item {
 	@JoinColumn(name = "attachment_id", referencedColumnName = "id")
 	private Attachment attachment;
 	
-	@JsonIgnoreProperties({ "item" })
-	@OneToMany(fetch = FetchType.EAGER, orphanRemoval = true)
+	@JsonIgnoreProperties(value={ "item" }, allowSetters=true)
+	@OneToMany()
 	@JoinColumn(name = "item_id")
 	private Collection<SaleItem> saleItems = new HashSet<SaleItem>();
 
