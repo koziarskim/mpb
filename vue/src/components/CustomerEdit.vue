@@ -60,7 +60,7 @@
                 <b-row>
                     <b-col cols=10>
                         <label class="top-label">Billing Address:</label>
-                        <input class="form-control" type="search" v-model="address.street" placeholder="Street"/>
+                        <input class="form-control" type="search" v-model="billingAddress.street" placeholder="Street"/>
                     </b-col>
                 </b-row>
                 <b-row>
@@ -68,45 +68,56 @@
                 <b-row>
                     <b-col cols=7>
                         <label class="top-label">City:</label>
-                        <input class="form-control" type="tel" v-model="address.city" placeholder="City"/>
+                        <input class="form-control" type="tel" v-model="billingAddress.city" placeholder="City"/>
                     </b-col>
                     <b-col cols=2>
                         <label class="top-label">State:</label>
-                        <input class="form-control" type="tel" v-model="address.state" placeholder=""/>
+                        <input class="form-control" type="tel" v-model="billingAddress.state" placeholder=""/>
                     </b-col>
                     <b-col cols=3>
                         <label class="top-label">Zip Code:</label>
-                        <input class="form-control" type="tel" v-model="address.zip" placeholder="Zip"/>
+                        <input class="form-control" type="tel" v-model="billingAddress.zip" placeholder="Zip"/>
                     </b-col>
                 </b-row>
                 <div style="padding-top: 43px"></div>
                 <hr class="hr-text" data-content="Shipping Address(es)">
                 <b-row>
                     <b-col cols=10>
-                        <label v-if="!addressEditFlag" class="top-label">Shipping Address:</label>
-                        <b-select v-if="customer.addresses.length > 0 && !addressEditFlag" option-value="id" option-text="street" :list="customer.addresses" v-model="address" placeholder="Address"></b-select>
-                        <label v-if="addressEditFlag" class="top-label">Street:</label>
-                        <input v-if="customer.addresses.length == 0 ||  addressEditFlag" class="form-control" type="search" v-model="address.street" placeholder="Street"/>
+                        <label class="top-label">Ship to Address:</label>
+                        <b-select option-value="id" option-text="label" :list="customer.addresses" v-model="address" placeholder="Address"></b-select>
                     </b-col>
-                    <b-col cols=2 style="padding-top: 20px; padding-left: 0px">
-                        <b-button v-if="!addressEditFlag" variant="link" @click="addAddress()"><span>Add</span></b-button>
-                        <b-button v-if="addressEditFlag" variant="link" @click="saveAddress()"><span>Save</span></b-button>
+                    <b-col cols=1 style="padding-top: 22px">
+                        <b-button v-if="!addressEditFlag" variant="link" @click="addAddress()">(Add)</b-button>
+                    </b-col>
+                    <b-col cols=1 style="padding-top: 22px">
+                        <b-button v-if="addressEditFlag" variant="link" @click="saveAddress()">(Save)</b-button>
+                        <b-button v-if="!addressEditFlag" variant="link" @click="editAddress()">(Edit)</b-button>
+                    </b-col>
+                </b-row>
+                <b-row v-if="addressEditFlag" >
+                    <b-col cols=8>
+                        <label class="top-label">Street:</label>
+                        <input class="form-control" type="search" v-model="newAddress.street" placeholder="Street"/>
+                    </b-col>
+                    <b-col cols=4>
+                        <label class="top-label">DC:</label>
+                        <input class="form-control" type="search" v-model="newAddress.dc" placeholder="DC"/>
                     </b-col>
                 </b-row>
                 <b-row>
                 </b-row>
-                <b-row>
+                <b-row v-if="addressEditFlag">
                     <b-col cols=7>
                         <label class="top-label">City:</label>
-                        <input class="form-control" type="tel" v-model="address.city" placeholder="City"/>
+                        <input class="form-control" type="tel" v-model="newAddress.city" placeholder="City"/>
                     </b-col>
                     <b-col cols=2>
                         <label class="top-label">State:</label>
-                        <input class="form-control" type="tel" v-model="address.state" placeholder=""/>
+                        <input class="form-control" type="tel" v-model="newAddress.state" placeholder=""/>
                     </b-col>
                     <b-col cols=3>
                         <label class="top-label">Zip Code:</label>
-                        <input class="form-control" type="tel" v-model="address.zip" placeholder="Zip"/>
+                        <input class="form-control" type="tel" v-model="newAddress.zip" placeholder="Zip"/>
                     </b-col>
                 </b-row>
             </b-col>
@@ -125,17 +136,16 @@ export default {
       customer: {
         name: "",
         account: "",
-        address: "",
-        city: "",
-        state: "",
-        zip: "",
+        billingAddress: {},
         phone: "",
         paymentTerms: "",
         freightTerms: 1,
         addresses: []
       },
       addressEditFlag: false,
-      address: {defaultFlag: true},
+      address: {},
+      newAddress: {},
+      billingAddress: {},
       freightTerms: {},
       availableStates: state.states,
       availableFreights: [
@@ -148,41 +158,34 @@ export default {
   watch: {
     freightTerms: function(newValue, oldValue) {
       this.customer.freightTerms = newValue.id;
+    },
+    billingAddress: {
+      handler: function(newValue, oldValue) {
+        this.customer.billingAddress = this.billingAddress;
+      },
+      deep: true
     }
   },
   methods: {
-    getDefaultAddress: function(action) {
-        var address = {defaultFlag: true};
-        if(action=="add"){
-            return {};
-        }
-        this.customer.addresses.filter(it =>{
-            if(it.defaultFlag){
-                address = it;
-            }
-        })
-        return address;
-    },
-    getCustomer(id, action) {
+    getCustomer(id) {
       http
         .get("/customer/" + id)
         .then(response => {
           this.customer = response.data;
           this.freightTerms = this.getFreightById(response.data.freightTerms);
-          this.address = this.getDefaultAddress(action);
+          if (response.data.billingAddress) {
+            this.billingAddress = response.data.billingAddress;
+          }
         })
         .catch(e => {
           console.log("API error: " + e);
         });
     },
-    save(action) {
-        if(this.customer.addresses.length == 0){
-            this.customer.addresses.push(this.address);
-        }
+    save() {
       http
         .post("/customer", this.customer)
         .then(response => {
-            this.getCustomer(this.customer.id, action);
+          this.getCustomer(this.customer.id);
         })
         .catch(e => {
           console.log("API error: " + e);
@@ -190,6 +193,16 @@ export default {
     },
     cancel() {
       window.history.back();
+    },
+    updateAddress: function(address) {
+      var existingAddress = this.customer.addresses.find(item => item.id == address.id);
+      if (existingAddress) {
+        this.customer.addresses.splice(
+          this.customer.addresses.indexOf(existingAddress),
+          1
+        );
+      }
+      this.customer.addresses.push(address);
     },
     getFreightById(id) {
       var freight = {};
@@ -201,34 +214,23 @@ export default {
       return freight;
     },
     addAddress() {
-        this.addressEditFlag = true;
-        this.save("add")
+      this.addressEditFlag = true;
+      this.newAddress = {};
     },
-    setAddress(){
-        this.address = {};
+    editAddress() {
+      this.addressEditFlag = true;
+      this.newAddress = this.address;
     },
     saveAddress() {
       http
-        .post("/address", this.address)
+        .post("/address", this.newAddress)
         .then(response => {
-          this.customer.addresses.push(response.data);
-          this.address = this.getDefaultAddress();
+          this.updateAddress(response.data);
           this.addressEditFlag = false;
         })
         .catch(e => {
           console.log("API error: " + e);
         });
-    },
-    unsetDefaultAddress(value) {
-        if(value) {
-            this.customer.addresses.forEach(address => {
-                if(address.id == this.address.id){
-                    return;
-                }
-                address.defaultFlag = false;
-                address.label = address.street;
-            })            
-        }
     }
   },
   mounted() {

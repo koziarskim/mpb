@@ -5,9 +5,11 @@ import java.util.HashSet;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 
@@ -36,11 +38,16 @@ public class Customer {
 	private String email2;
 	private String contactName;
 
-	@JsonIgnoreProperties(value = { "customer" }, allowSetters = true)
+//	@JsonIgnoreProperties(value = { "customer" }, allowSetters = true)
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "customer_id")
 	@OrderBy("id DESC")
 	private Collection<Address> addresses = new HashSet<Address>();
+
+//	@JsonIgnoreProperties(value = { "customer" }, allowSetters = true)
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "billig_address_id", referencedColumnName = "id")
+	private Address billingAddress;
 
 //	@JsonIgnoreProperties({ "customer" })
 //	@OneToMany(mappedBy = "customer", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)

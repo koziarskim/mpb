@@ -27,7 +27,7 @@ public class Address {
 	private String city;
 	private String state;
 	private String zip;
-	private boolean defaultFlag = false;
+	private String dc;
 
 //	@JsonIgnoreProperties({ "addresses", "sales" })
 //	@ManyToOne(fetch = FetchType.EAGER)
@@ -39,6 +39,6 @@ public class Address {
 	private String label;
 
 	public String getLabel() {
-		return this.street + (this.defaultFlag?"- default":"");
+		return this.dc + " - "+this.street;
 	}
 }
