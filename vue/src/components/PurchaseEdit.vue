@@ -60,10 +60,10 @@ export default {
       sortBy: "id",
       sortDesc: false,
       spColumns: [
-        { key: "number", label: "Item", sortable: true },
-        { key: "description", label: "Description", sortable: true },
-        { key: "quantity", label: "Qty", sortable: true },
-        { key: "rate", label: "Rate", sortable: false },
+        { key: "number", label: "S.O.", sortable: true },
+        { key: "customer.name", label: "Customer", sortable: true },
+        { key: "date", label: "Date", sortable: true },
+        { key: "shippingAddress.dc", label: "Distribution", sortable: false },
         { key: "action", label: "Action", sortable: false }
       ],
       visibleStep1: true,
@@ -87,20 +87,16 @@ export default {
         if(value){
             ps = {
                 sale: {id: id}
-                // purchase: {id: this.purchase.id}
             }
             this.purchase.purchaseSales.push(ps)
         }else{
             ps = this.purchase.purchaseSales.find(item => item.id == id);
             this.purchase.purchaseSales.splice(this.purchase.purchaseSales.indexOf(ps), 1);
         }
-        // console.log(id)
-        // console.log(this.availableSales[id-1].selected);
-        // console.log(value)
     },
     getAvailableSales(purchase_id){
         http
-        .get("/sale/purchase/" + purchase_id)
+        .get("/sale/")
         .then(response => {
           this.availableSales = response.data;
         })
