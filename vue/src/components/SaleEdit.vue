@@ -192,8 +192,7 @@ export default {
       if (item) {
         return;
       }
-      this.sale.saleItems.push({ item: {id: this.item.id},
-                                sale: {id: this.sale.id} });
+      this.sale.saleItems.push({ item: this.item});
     }
   },
   mounted() {
