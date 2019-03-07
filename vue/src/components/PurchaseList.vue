@@ -37,10 +37,7 @@ export default {
       sortDesc: false,
       fields: [
         { key: "number", label: "P.O. #", sortable: true },
-        { key: "name", label: "Name", sortable: true },
-        { key: "supplierStockNumber", label: "Supplier's Stock #", sortable: true },
-        { key: "category.name", label: "Category", sortable: true },
-        { key: "supplier.name", label: "Supplier", sortable: true },
+        { key: "date", label: "Date", sortable: true },
         { key: "action", label: "Action", sortable: false}
       ],
       purchases: []

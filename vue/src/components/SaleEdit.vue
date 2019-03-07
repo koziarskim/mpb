@@ -129,7 +129,7 @@ export default {
     },
     customer: function(new_value, old_value) {
       this.sale.customer = new_value;
-      if(old_value.id){
+      if(old_value.id && new_value.id != old_value.id){
         this.shippingAddress = {};
       }
     }

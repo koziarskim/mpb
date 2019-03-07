@@ -61,9 +61,9 @@ export default {
       sortDesc: false,
       spColumns: [
         { key: "number", label: "S.O.", sortable: true },
-        { key: "customer.name", label: "Customer", sortable: true },
+        { key: "customerName", label: "Customer", sortable: true },
         { key: "date", label: "Date", sortable: true },
-        { key: "shippingAddress.dc", label: "Distribution", sortable: false },
+        { key: "dc", label: "Distribution", sortable: false },
         { key: "action", label: "Action", sortable: false }
       ],
       visibleStep1: true,
@@ -96,7 +96,7 @@ export default {
     },
     getAvailableSales(purchase_id){
         http
-        .get("/sale/")
+        .get("/sale/purchase/"+purchase_id)
         .then(response => {
           this.availableSales = response.data;
         })

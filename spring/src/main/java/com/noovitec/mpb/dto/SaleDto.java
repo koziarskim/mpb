@@ -11,15 +11,18 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class SaleDto {
 	
-	public SaleDto(Long id) {
+	public SaleDto(Long id, String number, Date date, String customerName, String dc) {
 		this.id = id;
+		this.date = date;
+		this.number = number;
+		this.customerName = customerName;
+		this.dc = dc;
 	}
 
 	private Long id;
 	private Date date;
 	private String number;
-	private String paymentTerms;
-	private int freightTerms;
-	private Date expectedDate;
+	private String customerName;
+	private String dc;
 	private boolean selected;
 }
