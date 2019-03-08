@@ -1,7 +1,5 @@
 package com.noovitec.mpb.dto;
 
-import java.util.Date;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,12 +7,10 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class SaleDto {
+public class SupplierDto {
 	
 	private Long id;
-	private String number;
-	private Date date;
-	private String customerName;
-	private String dc;
+	private String name;
+	private String account;
 	private boolean selected;
 }

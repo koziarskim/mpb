@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.noovitec.mpb.dto.SaleDto;
 import com.noovitec.mpb.entity.Purchase;
 import com.noovitec.mpb.entity.PurchaseSale;
 import com.noovitec.mpb.repo.PurchaseRepo;
@@ -47,12 +46,6 @@ class PurchaseRest {
 		return purchaseRepo.findAll();
 	}
 
-	@GetMapping("/purchase/{id}/sale")
-	Collection<SaleDto> getAllByPurchase(@PathVariable Long id) {
-		Collection<SaleDto> saleDtos = purchaseRepo.findAllSalesAndPurchaseSales(id);
-		return saleDtos;
-	}
-
 	@GetMapping("/purchase/{id}")
 	ResponseEntity<Purchase> get(@PathVariable Long id) {
 		Optional<Purchase> result = purchaseRepo.findById(id);
@@ -66,7 +59,7 @@ class PurchaseRest {
 		if (purchase == null) {
 			purchase = new Purchase();
 		}
-		for(PurchaseSale ps : purchase.getPurchaseSales()) {
+		for (PurchaseSale ps : purchase.getPurchaseSales()) {
 			ps.setPurchase(purchase);
 		}
 		Purchase result = purchaseRepo.save(purchase);

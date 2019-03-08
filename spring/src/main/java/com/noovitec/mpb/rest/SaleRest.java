@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.noovitec.mpb.dto.SaleDto;
 import com.noovitec.mpb.entity.Sale;
 import com.noovitec.mpb.entity.SaleItem;
 import com.noovitec.mpb.repo.SaleRepo;
@@ -43,6 +44,12 @@ class SaleRest {
 		Optional<Sale> result = saleRepo.findById(id);
 		return result.map(response -> ResponseEntity.ok().body(response))
 				.orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+	}
+
+	@GetMapping("/sale/purchase/{purchase_id}")
+	Collection<SaleDto> getAllByPurchase(@PathVariable Long purchase_id) {
+		Collection<SaleDto> saleDtos = saleRepo.findAllSalesAndPurchaseSales(purchase_id);
+		return saleDtos;
 	}
 
 	@PostMapping("/sale")
