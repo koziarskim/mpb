@@ -75,6 +75,7 @@ export default {
     return {
       purchase: {},
       customer: {},
+      supplier: {},
       availableCustomers: [],
       availableSales: [],
       availableSuppliers: [],
@@ -127,11 +128,11 @@ export default {
           console.log("API error: " + e);
         });
     },
-    getAvailableSuppliers(supplier_id){
+    getAvailableSuppliers(purchase_id){
         http
-        .get("/supplier/"+supplier_id+"/component")
+        .get("/supplier/purchase/"+purchase_id)
         .then(response => {
-          this.availableSales = response.data;
+          this.availableSuppliers = response.data;
         })
         .catch(e => {
           console.log("API error: " + e);
@@ -142,6 +143,7 @@ export default {
             return;
         }
         this.visibleStep++;
+        this.getAvailableSuppliers(this.purchase.id);
     },
     back(){
         if(this.visibleStep<=1){
