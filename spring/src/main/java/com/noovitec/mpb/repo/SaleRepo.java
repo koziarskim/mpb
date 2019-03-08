@@ -11,7 +11,7 @@ import com.noovitec.mpb.entity.Sale;
 
 public interface SaleRepo extends JpaRepository<Sale, Long> {
 
-	@Query(value="select distinct new com.noovitec.mpb.dto.SaleDto(s.id, s.number, s.date, c.name, a.dc, (ps.id is not null)) "
+	@Query(value="select new com.noovitec.mpb.dto.SaleDto(s.id, s.number, s.date, c.name, a.dc, (ps.id is not null)) "
 			+ "from Sale s "
 			+ "left join s.purchaseSales ps with ps.purchase.id = :purchase_id "
 			+ "left join s.customer c "

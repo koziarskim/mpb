@@ -5,6 +5,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -26,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.noovitec.mpb.dto.ComponentDto;
 import com.noovitec.mpb.entity.Attachment;
 import com.noovitec.mpb.entity.Category;
 import com.noovitec.mpb.entity.Component;
@@ -74,6 +76,19 @@ class ComponentRest {
 		Long component_id = (component == null ? 0L : component.getId()) + 1;
 		String number = prefix + component_id.toString();
 		return ResponseEntity.ok().body(Collections.singletonMap("number", number));
+	}
+
+	@GetMapping("/component/purchase/{purchase_id}/supplier/{supplier_id}")
+	Collection<ComponentDto> getComponentsForPurchaseAndSupplier(@PathVariable Long purchase_id, @PathVariable Long supplier_id) {
+		Collection<ComponentDto> dtos = componentRepo.getComponentsForPurchaseAndSupplier(purchase_id, supplier_id);
+//		Collection<ComponentDto> dtos = new HashSet<ComponentDto>();
+//		for(Component comp : componentRepo.findAll()) {
+//			ComponentDto dto = new ComponentDto();
+//			dto.setId(comp.getId());
+//			dto.setNumber(comp.getNumber());
+//			dtos.add(dto);
+//		}
+		return dtos;
 	}
 
 //	POST methods.

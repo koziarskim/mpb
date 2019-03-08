@@ -30,10 +30,10 @@
                     :items="availableSales"
                     :fields="spColumns">
                     <template slot="account" slot-scope="row">
-                        <b-button size="sm" @click.stop="goTo(row.item.id)" variant="link">{{row.item.id}}</b-button>
+                        <b-button size="sm" @click.stop="goToSale(row.item.id)" variant="link">{{row.item.id}}</b-button>
                     </template>
                     <template slot="action" slot-scope="row">
-                        <b-form-checkbox v-model="row.item.selected" @input="rowSelect(row.item.id, row.item.selected)"></b-form-checkbox>
+                        <b-form-checkbox v-model="row.item.selected" @input="saleRowSelect(row.item.id, row.item.selected)"></b-form-checkbox>
                     </template>
                 </b-table>
             </b-col>
@@ -48,17 +48,17 @@
             </b-row>
             <b-row>
                 <b-col>
-                    <label class="top-label">Available Sale Orders:</label>
-                    <b-table v-if="availableSales.length>0"
+                    <label class="top-label">Available Components:</label>
+                    <b-table v-if="availableComponents.length>0"
                         :sort-by.sync="sortBy"
                         :sort-desc.sync="sortDesc"
-                        :items="availableSales"
-                        :fields="spColumns">
+                        :items="availableComponents"
+                        :fields="comColumns">
                         <template slot="account" slot-scope="row">
-                            <b-button size="sm" @click.stop="goTo(row.item.id)" variant="link">{{row.item.id}}</b-button>
+                            <b-button size="sm" @click.stop="goToComponent(row.item.id)" variant="link">{{row.item.id}}</b-button>
                         </template>
                         <template slot="action" slot-scope="row">
-                            <b-form-checkbox v-model="row.item.selected" @input="rowSelect(row.item.id, row.item.selected)"></b-form-checkbox>
+                            <b-form-checkbox v-model="row.item.selected" @input="comRowSelect(row.item.id, row.item.selected)"></b-form-checkbox>
                         </template>
                     </b-table>
                 </b-col>
@@ -79,6 +79,7 @@ export default {
       availableCustomers: [],
       availableSales: [],
       availableSuppliers: [],
+      availableComponents: [],
       sortBy: "id",
       sortDesc: false,
       spColumns: [
@@ -88,11 +89,23 @@ export default {
         { key: "dc", label: "Distribution", sortable: false },
         { key: "action", label: "Action", sortable: false }
       ],
+      comColumns: [
+        { key: "number", label: "Component #", sortable: true },
+        { key: "name", label: "Component Name", sortable: true },
+        { key: "itemNumber", label: "Item #", sortable: true },
+        { key: "itemName", label: "Item Name", sortable: true },
+        { key: "action", label: "Action", sortable: false }
+      ],
       visibleStep: 1
     };
   },
   computed: {},
-  watch: {},
+  watch: {
+      supplier: function(new_supplier, old_supplier) {
+          this.purchase.purchaseComponents = [];
+          this.savePurchase();
+      }
+  },
   methods: {
     getPurchaseData(id) {
       http
@@ -110,6 +123,9 @@ export default {
         .post("/purchase", this.purchase)
         .then(response => {
           this.getPurchaseData(response.data.id);
+          if(this.supplier.id){
+              this.getAvailableComponents(this.purchase.id, this.supplier.id);
+          }
         })
         .catch(e => {
           console.log("API error: " + e);
@@ -118,9 +134,9 @@ export default {
     cancelPurchase() {
       window.history.back();
     },
-    getAvailableSales(purchase_id){
-        http
-        .get("/sale/purchase/"+purchase_id)
+    getAvailableSales(purchase_id) {
+      http
+        .get("/sale/purchase/" + purchase_id)
         .then(response => {
           this.availableSales = response.data;
         })
@@ -128,9 +144,9 @@ export default {
           console.log("API error: " + e);
         });
     },
-    getAvailableSuppliers(purchase_id){
-        http
-        .get("/supplier/purchase/"+purchase_id)
+    getAvailableSuppliers(purchase_id) {
+      http
+        .get("/supplier/purchase/" + purchase_id)
         .then(response => {
           this.availableSuppliers = response.data;
         })
@@ -138,30 +154,58 @@ export default {
           console.log("API error: " + e);
         });
     },
-    next(){
-        if(this.visibleStep>=2){
-            return;
-        }
-        this.visibleStep++;
-        this.getAvailableSuppliers(this.purchase.id);
+    getAvailableComponents(purchase_id, supplier_id) {
+      http
+        .get("/component/purchase/" + purchase_id + "/supplier/" + supplier_id)
+        .then(response => {
+          this.availableComponents = response.data;
+        })
+        .catch(e => {
+          console.log("API error: " + e);
+        });
     },
-    back(){
-        if(this.visibleStep<=1){
-            return;
-        }
-        this.visibleStep--;
+    next() {
+      if (this.visibleStep >= 2) {
+        return;
+      }
+      this.visibleStep++;
+      this.getAvailableSuppliers(this.purchase.id);
     },
-    rowSelect(sale_id, value){
-        var ps = {}
-        if(value){
-            ps = {
-                sale: {id: sale_id},
-            }
-            this.purchase.purchaseSales.push(ps)
-        }else{
-            ps = this.purchase.purchaseSales.find(ps => ps.sale.id == sale_id);
-            this.purchase.purchaseSales.splice(this.purchase.purchaseSales.indexOf(ps), 1);
-        }
+    back() {
+      if (this.visibleStep <= 1) {
+        return;
+      }
+      this.visibleStep--;
+    },
+    saleRowSelect(sale_id, value) {
+      var ps = {};
+      if (value) {
+        ps = {
+          sale: { id: sale_id }
+        };
+        this.purchase.purchaseSales.push(ps);
+      } else {
+        ps = this.purchase.purchaseSales.find(ps => ps.sale.id == sale_id);
+        this.purchase.purchaseSales.splice(
+          this.purchase.purchaseSales.indexOf(ps),
+          1
+        );
+      }
+    },
+    comRowSelect(sale_id, value) {
+      var ps = {};
+      if (value) {
+        ps = {
+          sale: { id: sale_id }
+        };
+        this.purchase.purchaseSales.push(ps);
+      } else {
+        ps = this.purchase.purchaseSales.find(ps => ps.sale.id == sale_id);
+        this.purchase.purchaseSales.splice(
+          this.purchase.purchaseSales.indexOf(ps),
+          1
+        );
+      }
     }
   },
   mounted() {
