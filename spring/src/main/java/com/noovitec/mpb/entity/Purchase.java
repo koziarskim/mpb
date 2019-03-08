@@ -3,11 +3,9 @@ package com.noovitec.mpb.entity;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -40,19 +38,19 @@ public class Purchase {
 	@JoinColumn(name = "supplier_id", referencedColumnName = "id")
 	private Supplier supplier;
 
-	@JsonIgnoreProperties(value={ "customer" }, allowSetters=true)
+	@JsonIgnoreProperties(value = { "customer" }, allowSetters = true)
 	@ManyToOne()
 	@JoinColumn(name = "address_id", referencedColumnName = "id")
 	private Address shipAddress;
 
-	@JsonIgnoreProperties(value={ "purchase" }, allowSetters=true)
-	@OneToMany()
+	@JsonIgnoreProperties(value = { "purchase" }, allowSetters = true)
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "purchase_id")
 	private Collection<PurchaseSale> purchaseSales = new HashSet<PurchaseSale>();
 
-	@JsonIgnoreProperties(value={ "purchase" }, allowSetters=true)
-	@OneToMany()
+	@JsonIgnoreProperties(value = { "purchase" }, allowSetters = true)
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "purchase_id")
 	private Collection<PurchaseComponent> purchaseComponents = new HashSet<PurchaseComponent>();
-	
+
 }

@@ -2,7 +2,6 @@ package com.noovitec.mpb.rest;
 
 import java.net.URISyntaxException;
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -18,11 +17,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.noovitec.mpb.dto.SaleDto;
-import com.noovitec.mpb.entity.Address;
 import com.noovitec.mpb.entity.Sale;
 import com.noovitec.mpb.entity.SaleItem;
-import com.noovitec.mpb.repo.AddressRepo;
 import com.noovitec.mpb.repo.SaleRepo;
 
 @CrossOrigin
@@ -49,19 +45,13 @@ class SaleRest {
 				.orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
 	}
 
-	@GetMapping("/sale/purchase/{purchase_id}")
-	Collection<SaleDto> getAllByPurchase(@PathVariable Long purchase_id) {
-		List<SaleDto> sales = saleRepo.findAllByPurchase(purchase_id);
-		return sales;
-	}
-
 	@PostMapping("/sale")
 	ResponseEntity<Sale> post(@RequestBody(required = false) Sale sale) throws URISyntaxException {
 		if (sale == null) {
 			sale = new Sale();
 		}
-		//Needed for update.
-		for(SaleItem sa : sale.getSaleItems()) {
+		// Needed for update.
+		for (SaleItem sa : sale.getSaleItems()) {
 			sa.setSale(sale);
 		}
 		Sale result = saleRepo.save(sale);

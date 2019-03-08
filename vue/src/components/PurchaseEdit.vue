@@ -55,8 +55,7 @@ export default {
       purchase: {},
       customer: {},
       availableCustomers: [],
-      availableSales: [{id: 1, number: 1, description: "Item for testing", quantity: 3, rate: 0.50, selected: true},
-                        {id: 2, number: 2, description: "Item for testing", quantity: 3, rate: 0.50, selected: false}],
+      availableSales: [],
       sortBy: "id",
       sortDesc: false,
       spColumns: [
@@ -82,21 +81,21 @@ export default {
         this.visibleStep2 = false;
         this.visibleStep1 = true;
     },
-    rowSelect(id, value){
+    rowSelect(sale_id, value){
         var ps = {}
         if(value){
             ps = {
-                sale: {id: id}
+                sale: {id: sale_id},
             }
             this.purchase.purchaseSales.push(ps)
         }else{
-            ps = this.purchase.purchaseSales.find(item => item.id == id);
+            ps = this.purchase.purchaseSales.find(ps => ps.sale.id == sale_id);
             this.purchase.purchaseSales.splice(this.purchase.purchaseSales.indexOf(ps), 1);
         }
     },
     getAvailableSales(purchase_id){
         http
-        .get("/sale/purchase/"+purchase_id)
+        .get("/purchase/"+purchase_id+"/sale")
         .then(response => {
           this.availableSales = response.data;
         })
