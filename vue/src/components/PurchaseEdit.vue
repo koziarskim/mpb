@@ -94,6 +94,8 @@ export default {
         { key: "name", label: "Component Name", sortable: true },
         { key: "itemNumber", label: "Item #", sortable: true },
         { key: "itemName", label: "Item Name", sortable: true },
+        { key: "saleNumber", label: "Sale Number", sortable: true },
+        { key: "saleDate", label: "Sale Date", sortable: true },
         { key: "action", label: "Action", sortable: false }
       ],
       visibleStep: 1
@@ -168,6 +170,7 @@ export default {
       if (this.visibleStep >= 2) {
         return;
       }
+      this.savePurchase();
       this.visibleStep++;
       this.getAvailableSuppliers(this.purchase.id);
     },
@@ -175,6 +178,7 @@ export default {
       if (this.visibleStep <= 1) {
         return;
       }
+      this.savePurchase();
       this.visibleStep--;
     },
     saleRowSelect(sale_id, value) {
@@ -192,19 +196,17 @@ export default {
         );
       }
     },
-    comRowSelect(sale_id, value) {
-      var ps = {};
+    comRowSelect(com_id, value) {
+      var pc = {};
       if (value) {
-        ps = {
-          sale: { id: sale_id }
+        pc = {
+          component: { id: com_id }
         };
-        this.purchase.purchaseSales.push(ps);
+        this.purchase.purchaseComponents.push(pc);
       } else {
-        ps = this.purchase.purchaseSales.find(ps => ps.sale.id == sale_id);
-        this.purchase.purchaseSales.splice(
-          this.purchase.purchaseSales.indexOf(ps),
-          1
-        );
+        pc = this.purchase.purchaseComponents.find(pc => pc.component.id == com_id);
+        this.purchase.purchaseComponents.splice(
+          this.purchase.purchaseComponents.indexOf(pc), 1);
       }
     }
   },
