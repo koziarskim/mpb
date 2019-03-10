@@ -104,6 +104,12 @@ export default {
   computed: {},
   watch: {
       supplier: function(new_supplier, old_supplier) {
+          if(new_supplier.id == old_supplier.id){
+              return;
+          }
+          if(this.supplier && this.availableSuppliers.length>0){
+            this.purchase.supplier = this.availableSuppliers.find(s => s.id == this.supplier.id);
+          }
           this.purchase.purchaseComponents = [];
           this.savePurchase();
       }
@@ -114,6 +120,9 @@ export default {
         .get("/purchase/" + id)
         .then(response => {
           this.purchase = response.data;
+          if(response.data.supplier){
+            this.supplier = response.data.supplier;
+          }
           this.getAvailableSales(response.data.id);
         })
         .catch(e => {

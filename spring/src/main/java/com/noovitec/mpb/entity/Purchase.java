@@ -33,7 +33,7 @@ public class Purchase {
 	private int freightTerms;
 	private Date expectedDate;
 
-//	@JsonIgnoreProperties({ "addresses", "purchases" })
+	@JsonIgnoreProperties({ "components" })
 	@ManyToOne()
 	@JoinColumn(name = "supplier_id", referencedColumnName = "id")
 	private Supplier supplier;
