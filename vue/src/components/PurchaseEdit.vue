@@ -29,8 +29,8 @@
                     :sort-desc.sync="sortDesc"
                     :items="availableSales"
                     :fields="spColumns">
-                    <template slot="account" slot-scope="row">
-                        <b-button size="sm" @click.stop="goToSale(row.item.id)" variant="link">{{row.item.id}}</b-button>
+                    <template slot="number" slot-scope="row">
+                        <b-button size="sm" @click.stop="goToSale(row.item.id)" variant="link">{{row.item.number}}</b-button>
                     </template>
                     <template slot="action" slot-scope="row">
                         <b-form-checkbox v-model="row.item.selected" @input="saleRowSelect(row.item.id, row.item.selected)"></b-form-checkbox>
@@ -54,8 +54,8 @@
                         :sort-desc.sync="sortDesc"
                         :items="availableComponents"
                         :fields="comColumns">
-                        <template slot="account" slot-scope="row">
-                            <b-button size="sm" @click.stop="goToComponent(row.item.id)" variant="link">{{row.item.id}}</b-button>
+                        <template slot="number" slot-scope="row">
+                            <b-button size="sm" @click.stop="goToComponent(row.item.id)" variant="link">{{row.item.number}}</b-button>
                         </template>
                         <template slot="action" slot-scope="row">
                             <b-form-checkbox v-model="row.item.selected" @input="comRowSelect(row.item.id, row.item.selected)"></b-form-checkbox>
@@ -69,6 +69,7 @@
 
 <script>
 import http from "../http-common";
+import router from "../router";
 
 export default {
   data() {
@@ -92,10 +93,10 @@ export default {
       comColumns: [
         { key: "number", label: "Component #", sortable: true },
         { key: "name", label: "Component Name", sortable: true },
-        { key: "itemNumber", label: "Item #", sortable: true },
-        { key: "itemName", label: "Item Name", sortable: true },
-        { key: "saleNumber", label: "Sale Number", sortable: true },
-        { key: "saleDate", label: "Sale Date", sortable: true },
+        // { key: "itemNumber", label: "Item #", sortable: true },
+        // { key: "itemName", label: "Item Name", sortable: true },
+        // { key: "saleNumber", label: "Sale Number", sortable: true },
+        // { key: "saleDate", label: "Sale Date", sortable: true },
         { key: "action", label: "Action", sortable: false }
       ],
       visibleStep: 1
@@ -103,19 +104,16 @@ export default {
   },
   computed: {},
   watch: {
-      supplier: function(new_supplier, old_supplier) {
-          if(new_supplier.id == old_supplier.id){
-              return;
-          }
-          if(this.supplier && this.availableSuppliers.length>0){
-            this.purchase.supplier = this.availableSuppliers.find(s => s.id == this.supplier.id);
-          }
-          this.purchase.purchaseComponents = [];
-          if(this.supplier.id){
-              this.getAvailableComponents(this.purchase.id, this.supplier.id);
-          }
-          this.savePurchase();
+    supplier: function(new_supplier, old_supplier) {
+      if (new_supplier) {
+        this.purchase.supplier = new_supplier;
+        if(old_supplier.id){
+            this.purchase.purchaseComponents = [];
+        }
       }
+      this.savePurchase();
+      this.getAvailableComponents(this.purchase.id, new_supplier.id);
+    }
   },
   methods: {
     getPurchaseData(id) {
@@ -123,9 +121,6 @@ export default {
         .get("/purchase/" + id)
         .then(response => {
           this.purchase = response.data;
-          if(response.data.supplier){
-            this.supplier = response.data.supplier;
-          }
           this.getAvailableSales(response.data.id);
         })
         .catch(e => {
@@ -160,12 +155,18 @@ export default {
         .get("/supplier/purchase/" + purchase_id)
         .then(response => {
           this.availableSuppliers = response.data;
+          if (this.purchase.supplier) {
+            this.supplier = this.purchase.supplier;
+          }
         })
         .catch(e => {
           console.log("API error: " + e);
         });
     },
     getAvailableComponents(purchase_id, supplier_id) {
+        if(!supplier_id){
+            return [];
+        }
       http
         .get("/component/purchase/" + purchase_id + "/supplier/" + supplier_id)
         .then(response => {
@@ -213,10 +214,20 @@ export default {
         };
         this.purchase.purchaseComponents.push(pc);
       } else {
-        pc = this.purchase.purchaseComponents.find(pc => pc.component.id == com_id);
+        pc = this.purchase.purchaseComponents.find(
+          pc => pc.component.id == com_id
+        );
         this.purchase.purchaseComponents.splice(
-          this.purchase.purchaseComponents.indexOf(pc), 1);
+          this.purchase.purchaseComponents.indexOf(pc),
+          1
+        );
       }
+    },
+    goToComponent(component_id){
+        router.push('/componentEdit/'+component_id);
+    },
+    goToSale(sale_id){
+        router.push('/saleEdit/'+sale_id);
     }
   },
   mounted() {

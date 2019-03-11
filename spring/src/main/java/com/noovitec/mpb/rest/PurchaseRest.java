@@ -23,6 +23,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.noovitec.mpb.entity.Purchase;
+import com.noovitec.mpb.entity.PurchaseComponent;
 import com.noovitec.mpb.entity.PurchaseSale;
 import com.noovitec.mpb.repo.PurchaseRepo;
 
@@ -61,6 +62,9 @@ class PurchaseRest {
 		}
 		for (PurchaseSale ps : purchase.getPurchaseSales()) {
 			ps.setPurchase(purchase);
+		}
+		for (PurchaseComponent pc : purchase.getPurchaseComponents()) {
+			pc.setPurchase(purchase);
 		}
 		Purchase result = purchaseRepo.save(purchase);
 		return ResponseEntity.ok().body(result);
