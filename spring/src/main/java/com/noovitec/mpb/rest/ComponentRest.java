@@ -81,13 +81,6 @@ class ComponentRest {
 	@GetMapping("/component/purchase/{purchase_id}/supplier/{supplier_id}")
 	Collection<ComponentDto> getComponentsForPurchaseAndSupplier(@PathVariable Long purchase_id, @PathVariable Long supplier_id) {
 		Collection<ComponentDto> dtos = componentRepo.getComponentsForPurchaseAndSupplier(purchase_id, supplier_id);
-//		Collection<ComponentDto> dtos = new HashSet<ComponentDto>();
-//		for(Component comp : componentRepo.findAll()) {
-//			ComponentDto dto = new ComponentDto();
-//			dto.setId(comp.getId());
-//			dto.setNumber(comp.getNumber());
-//			dtos.add(dto);
-//		}
 		return dtos;
 	}
 

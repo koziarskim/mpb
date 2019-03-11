@@ -111,6 +111,9 @@ export default {
             this.purchase.supplier = this.availableSuppliers.find(s => s.id == this.supplier.id);
           }
           this.purchase.purchaseComponents = [];
+          if(this.supplier.id){
+              this.getAvailableComponents(this.purchase.id, this.supplier.id);
+          }
           this.savePurchase();
       }
   },
@@ -134,9 +137,6 @@ export default {
         .post("/purchase", this.purchase)
         .then(response => {
           this.getPurchaseData(response.data.id);
-          if(this.supplier.id){
-              this.getAvailableComponents(this.purchase.id, this.supplier.id);
-          }
         })
         .catch(e => {
           console.log("API error: " + e);

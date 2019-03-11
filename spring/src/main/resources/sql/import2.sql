@@ -31,11 +31,9 @@ INSERT INTO public.item_component (id, units, component_id, item_id) VALUES (13,
 INSERT INTO public.item_component (id, units, component_id, item_id) VALUES (14, 1, 5, 11);
 INSERT INTO public.item_component (id, units, component_id, item_id) VALUES (37, 1, 33, 36);
 
-
 --Purchase
 
-INSERT INTO public.purchase (id, date, expected_date, freight_terms, number, payment_terms, address_id, supplier_id) VALUES (24, NULL, NULL, 0, '11', NULL, NULL, NULL);
-
+INSERT INTO public.purchase (id, date, expected_date, freight_terms, number, payment_terms, address_id, supplier_id) VALUES (24, NULL, NULL, 0, '11', NULL, NULL, 2);
 
 --Sale
 
@@ -44,11 +42,12 @@ INSERT INTO public.sale (id, date, expected_date, freight_terms, number, payment
 INSERT INTO public.sale (id, date, expected_date, freight_terms, number, payment_terms, customer_id, address_id) VALUES (20, NULL, NULL, 0, '33', NULL, NULL, NULL);
 INSERT INTO public.sale (id, date, expected_date, freight_terms, number, payment_terms, customer_id, address_id) VALUES (38, NULL, NULL, 0, '44', NULL, NULL, NULL);
 
-
 --Purchase_Sale
 
 INSERT INTO public.purchase_sale (id, units, purchase_id, sale_id) VALUES (40, NULL, 24, 38);
-
+INSERT INTO public.purchase_sale (id, units, purchase_id, sale_id) VALUES (1, NULL, 24, 20);
+INSERT INTO public.purchase_sale (id, units, purchase_id, sale_id) VALUES (2, NULL, 24, 17);
+INSERT INTO public.purchase_sale (id, units, purchase_id, sale_id) VALUES (3, NULL, 24, 15);
 
 --Sale_Item
 
@@ -59,5 +58,10 @@ INSERT INTO public.sale_item (id, units, item_id, sale_id) VALUES (21, NULL, 6, 
 INSERT INTO public.sale_item (id, units, item_id, sale_id) VALUES (22, NULL, 8, 20);
 INSERT INTO public.sale_item (id, units, item_id, sale_id) VALUES (23, NULL, 11, 20);
 INSERT INTO public.sale_item (id, units, item_id, sale_id) VALUES (39, NULL, 36, 38);
+
+--Purchase_Component
+
+INSERT INTO public.purchase_component (id, units, component_id, purchase_id) VALUES (4, NULL, 4, 24);
+
 
 

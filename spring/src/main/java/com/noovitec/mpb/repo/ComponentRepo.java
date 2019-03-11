@@ -16,15 +16,15 @@ public interface ComponentRepo extends JpaRepository<Component, Long> {
 	@Query(value="select c.* from Component c order by c.id desc limit 1", nativeQuery=true)
 	Component getLast();
 
-	@Query("select new com.noovitec.mpb.dto.ComponentDto(c.id, c.number, c.name, i.number, i.name, s.number, s.date, (pc.id is not null)) "
+	@Query("select distinct new com.noovitec.mpb.dto.ComponentDto(c.id, c.number, c.name, (pc.id is not null)) "
 			+ "from Component c " 
-			+ "left join c.itemComponents ic "
-			+ "left join ic.item i "
-			+ "left join i.saleItems si "
-			+ "left join si.sale s "
-			+ "left join s.purchaseSales ps "
-			+ "left join ps.purchase p "
-			+ "left join p.purchaseComponents pc "
+			+ "join c.itemComponents ic "
+			+ "join ic.item i "
+			+ "join i.saleItems si "
+			+ "join si.sale s "
+			+ "join s.purchaseSales ps "
+			+ "join ps.purchase p "
+			+ "left join c.purchaseComponents pc "
 			+ "where p.id = :purchase_id "
 			+ "and c.supplier.id = :supplier_id")
 	List<ComponentDto> getComponentsForPurchaseAndSupplier(@Param("purchase_id") Long purchase_id, @Param("supplier_id") Long supplier_id);

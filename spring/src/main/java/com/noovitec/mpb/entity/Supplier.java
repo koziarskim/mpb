@@ -5,7 +5,6 @@ import java.util.HashSet;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -47,8 +46,8 @@ public class Supplier {
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "address_id", referencedColumnName = "id")
 	private Address address;
-	
-	@JsonIgnoreProperties(value={ "supplier" }, allowSetters=true)
+
+	@JsonIgnoreProperties(value = { "supplier" }, allowSetters = true)
 	@OneToMany()
 	@JoinColumn(name = "supplier_id")
 	private Collection<Component> components = new HashSet<Component>();
