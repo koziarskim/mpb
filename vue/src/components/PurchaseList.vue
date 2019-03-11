@@ -3,7 +3,7 @@
         <div class="d-flex justify-content-between align-items-center">
             <h2 style="text-align: left;">Purchase Orders</h2>
             <div style="text-align: right;">
-                <b-button type="submit" variant="primary" @click="goToPurchase('')">New S.O.</b-button>
+                <b-button type="submit" variant="primary" @click="goToPurchase('')">New P.O.</b-button>
             </div>
         </div>
         <div v-if="purchases.length==0">Not found any purchase orders...</div>

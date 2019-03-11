@@ -107,8 +107,8 @@ export default {
     supplier: function(new_supplier, old_supplier) {
       if (new_supplier) {
         this.purchase.supplier = new_supplier;
-        if(old_supplier.id){
-            this.purchase.purchaseComponents = [];
+        if (old_supplier.id) {
+          this.purchase.purchaseComponents = [];
         }
       }
       this.savePurchase();
@@ -128,7 +128,7 @@ export default {
         });
     },
     savePurchase() {
-      http
+      return http
         .post("/purchase", this.purchase)
         .then(response => {
           this.getPurchaseData(response.data.id);
@@ -151,7 +151,7 @@ export default {
         });
     },
     getAvailableSuppliers(purchase_id) {
-      http
+      return http
         .get("/supplier/purchase/" + purchase_id)
         .then(response => {
           this.availableSuppliers = response.data;
@@ -164,9 +164,9 @@ export default {
         });
     },
     getAvailableComponents(purchase_id, supplier_id) {
-        if(!supplier_id){
-            return [];
-        }
+      if (!supplier_id) {
+        return [];
+      }
       http
         .get("/component/purchase/" + purchase_id + "/supplier/" + supplier_id)
         .then(response => {
@@ -180,16 +180,19 @@ export default {
       if (this.visibleStep >= 2) {
         return;
       }
-      this.savePurchase();
-      this.visibleStep++;
-      this.getAvailableSuppliers(this.purchase.id);
+      this.savePurchase().then(response => {
+        this.getAvailableSuppliers(this.purchase.id).then(r => {
+          this.visibleStep++;
+        });
+      });
     },
     back() {
       if (this.visibleStep <= 1) {
         return;
       }
-      this.savePurchase();
-      this.visibleStep--;
+      this.savePurchase().then(response => {
+        this.visibleStep--;
+      });
     },
     saleRowSelect(sale_id, value) {
       var ps = {};
@@ -223,11 +226,11 @@ export default {
         );
       }
     },
-    goToComponent(component_id){
-        router.push('/componentEdit/'+component_id);
+    goToComponent(component_id) {
+      router.push("/componentEdit/" + component_id);
     },
-    goToSale(sale_id){
-        router.push('/saleEdit/'+sale_id);
+    goToSale(sale_id) {
+      router.push("/saleEdit/" + sale_id);
     }
   },
   mounted() {
