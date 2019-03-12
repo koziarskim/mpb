@@ -85,8 +85,13 @@ export default new Router({
       name: "SaleEdit",
       component: SaleEdit
     },
+    // {
+    //   path: "/purchaseEdit/:purchase_id?",
+    //   name: "PurchaseEdit",
+    //   component: PurchaseEdit
+    // },
     {
-      path: "/purchaseEdit/:purchase_id?",
+      path: "/purchaseEdit/:purchase_id/step/:step_id",
       name: "PurchaseEdit",
       component: PurchaseEdit
     }

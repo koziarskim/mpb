@@ -89,7 +89,7 @@ export default {
                 console.log("API Error: "+e);
             })
         }else{
-            router.push('/purchaseEdit/'+id);
+            router.push('/purchaseEdit/'+id+"/step/1");
         }
     },
   },

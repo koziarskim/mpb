@@ -147,7 +147,7 @@ export default {
         });
     },
     cancelPurchase() {
-      window.history.back();
+      router.push("/purchaseList");
     },
     getAvailableSales(purchase_id) {
       http
@@ -205,7 +205,7 @@ export default {
         this.purchase.supplier = this.supplier;
       }
       this.savePurchase().then(r => {
-        this.visibleStep++;
+        this.goToStep(this.visibleStep+1);
       })
     },
     back() {
@@ -213,7 +213,7 @@ export default {
         return;
       }
       this.savePurchase().then(response => {
-        this.visibleStep--;
+        this.goToStep(this.visibleStep-1);
       });
     },
     saleRowSelect(sale_id, value) {
@@ -253,10 +253,17 @@ export default {
     },
     goToSale(sale_id) {
       router.push("/saleEdit/" + sale_id);
+    },
+    goToStep(step_id) {
+      router.push("/purchaseEdit/" + this.purchase.id+"/step/"+step_id);
     }
   },
   mounted() {
     var id = this.$route.params.purchase_id;
+    var step_id = this.$route.params.step_id;
+    if(step_id){
+        this.visibleStep = parseInt(step_id);
+    }
     if (id) {
       this.getPurchaseData(id);
     }
