@@ -3,8 +3,8 @@
         <div style="border: 0px" class="d-flex justify-content-between align-items-center">
             <h4 style="text-align: left;">New/Edit Customer</h4>
             <div style="text-align: right;">
-                <b-button type="submit" variant="primary" @click="save">Save</b-button>
-                <b-button type="reset" variant="danger" @click="cancel">Close</b-button>
+                <!-- <b-button type="submit" variant="primary" @click="save">Save</b-button> -->
+                <b-button type="reset" variant="danger" @click="saveAndClose">Save & Close</b-button>
             </div>
         </div>
         <b-row>
@@ -182,7 +182,7 @@ export default {
         });
     },
     save() {
-      http
+      return http
         .post("/customer", this.customer)
         .then(response => {
           this.getCustomer(this.customer.id);
@@ -191,8 +191,10 @@ export default {
           console.log("API error: " + e);
         });
     },
-    cancel() {
-      window.history.back();
+    saveAndClose() {
+    	this.save().then(r=>{
+    		window.history.back();
+    	})
     },
     updateAddress: function(address) {
       var existingAddress = this.customer.addresses.find(item => item.id == address.id);

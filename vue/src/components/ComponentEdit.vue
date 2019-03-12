@@ -6,8 +6,8 @@
                 Component is locked. Changes here will update Item(s) as well.
             </div>
             <div style="text-align: right;">
-                <b-button type="submit" variant="primary" @click="saveAndUpload">Save</b-button>
-                <b-button type="reset" variant="danger" @click="cancelComponent">Close</b-button>
+                <!-- <b-button type="submit" variant="primary" @click="saveAndUpload">Save</b-button> -->
+                <b-button type="reset" variant="danger" @click="saveAndClose">Save & Close</b-button>
             </div>
         </div>
         <b-row>
@@ -248,7 +248,7 @@ export default {
       let formData = new FormData();
       formData.append("image", this.image);
       formData.append("jsonComponent", JSON.stringify(this.component));
-      axios
+      return axios
         .post(httpUtils.baseUrl + "/component/upload", formData, {
           headers: {
             "Content-Type": "multipart/form-data"
@@ -261,8 +261,10 @@ export default {
           console.log("API error: "+e);
         });
     },
-    cancelComponent() {
-      window.history.back();
+    saveAndClose() {
+      this.saveAndUpload().then(r=>{
+          window.history.back();
+      })
     }
   },
   mounted() {

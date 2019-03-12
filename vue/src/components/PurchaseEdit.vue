@@ -15,8 +15,8 @@
             </b-col>
             <b-col>
                 <div style="text-align: right;">
-                    <b-button type="submit" variant="primary" @click="savePurchase">Save</b-button>
-                    <b-button type="reset" variant="danger" @click="cancelPurchase">Close</b-button>
+                    <!-- <b-button type="submit" variant="primary" @click="savePurchase">Save</b-button> -->
+                    <b-button type="reset" variant="danger" @click="saveAndClose">Save & Close</b-button>
                 </div>
             </b-col>
         </b-row>
@@ -146,8 +146,10 @@ export default {
           console.log("API error: " + e);
         });
     },
-    cancelPurchase() {
-      router.push("/purchaseList");
+    saveAndClose() {
+        this.savePurchase().then(r=>{
+            router.push("/purchaseList");
+        })
     },
     getAvailableSales(purchase_id) {
       http

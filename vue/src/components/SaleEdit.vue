@@ -3,8 +3,8 @@
         <div style="border: 0px" class="d-flex justify-content-between align-items-center">
             <h4 style="text-align: left;">Sale Order:</h4>
             <div style="text-align: right;">
-                <b-button type="submit" variant="primary" @click="saveSale">Save</b-button>
-                <b-button type="reset" variant="danger" @click="cancelSale">Close</b-button>
+                <!-- <b-button type="submit" variant="primary" @click="saveSale">Save</b-button> -->
+                <b-button type="reset" variant="danger" @click="saveAndClose">Save & Close</b-button>
             </div>
         </div>
         <b-row>
@@ -152,7 +152,7 @@ export default {
         });
     },
     saveSale() {
-      http
+      return http
         .post("/sale", this.sale)
         .then(response => {
           this.getSaleData(response.data.id);
@@ -161,8 +161,10 @@ export default {
           console.log("API error: " + e);
         });
     },
-    cancelSale() {
-      window.history.back();
+    saveAndClose() {
+      this.saveSale().then(r=>{
+        window.history.back();
+      })
     },
     getAvailableCustomers() {
       http

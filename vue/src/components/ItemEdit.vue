@@ -9,8 +9,8 @@
             </b-col>
             <b-col cols=2 offset=5>
                 <div style="text-align: right;">
-                    <b-button type="submit" variant="primary" @click="saveAndUpload">Save</b-button>
-                    <b-button type="reset" variant="danger" @click="cancelItem">Close</b-button>
+                    <!-- <b-button type="submit" variant="primary" @click="saveAndUpload">Save</b-button> -->
+                    <b-button type="reset" variant="danger" @click="saveAndClose">Save & Close</b-button>
                 </div>
             </b-col>
         </b-row>
@@ -433,7 +433,7 @@ export default {
       let formData = new FormData();
       formData.append("image", this.image);
       formData.append("jsonItem", JSON.stringify(this.item));
-      axios
+      return axios
         .post(httpUtils.baseUrl + "/item/upload", formData, {
           headers: {
             "Content-Type": "multipart/form-data"
@@ -446,8 +446,10 @@ export default {
           console.log("API error: " + e);
         });
     },
-    cancelItem() {
-      window.history.back();
+    saveAndClose() {
+        this.saveAndUpload().then(r=>{
+            window.history.back();
+        })
     },
     goTo(view) {
       this.saveAndUpload();
