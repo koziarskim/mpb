@@ -93,11 +93,11 @@ export default {
       comColumns: [
         { key: "number", label: "Component #", sortable: true },
         { key: "name", label: "Component Name", sortable: true },
-        // { key: "itemNumber", label: "Item #", sortable: true },
-        // { key: "itemName", label: "Item Name", sortable: true },
-        // { key: "saleNumber", label: "Sale Number", sortable: true },
+        { key: "units", label: "Quantity", sortable: true },
+        { key: "unitPrice", label: "Rate", sortable: true },
+        { key: "totalPrice", label: "Amount", sortable: true },
         // { key: "saleDate", label: "Sale Date", sortable: true },
-        { key: "action", label: "Action", sortable: false }
+        { key: "action", label: "Action", sortable: true }
       ],
       visibleStep: 1
     };

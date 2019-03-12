@@ -135,7 +135,7 @@ export default {
           casePack: 1,
           unitsPerContainer: 1,
           number: 0,
-          totalCost: 0,
+          totalLandedCost: 0,
           height: 0,
           weight: 0
       },
@@ -180,7 +180,7 @@ export default {
         this.component.deliveryCost = newValue;
     },
     totalLandedCost: function(newValue, oldValue){
-        this.component.totalCost = newValue;
+        this.component.totalLandedCost = newValue;
     },
     dimension: function(newValue, oldValue){
         var dimension = newValue.replace(/\s+/g, '').split("x");
