@@ -105,14 +105,20 @@ export default {
   computed: {},
   watch: {
     supplier: function(new_supplier, old_supplier) {
-      if (new_supplier) {
-        this.purchase.supplier = new_supplier;
-        if (old_supplier.id) {
-          this.purchase.purchaseComponents = [];
-        }
+      if(!new_supplier){
+          return;
       }
+      if(this.purchase.supplier && new_supplier.id == this.purchase.supplier.id){
+            return;
+        }
+      var supplier = {};
+      if (typeof new_supplier == "number") {
+        supplier = this.availableSuppliers.find(s => s.id == new_supplier);
+      } else {
+        supplier = this.availableSuppliers.find(s => s.id == new_supplier.id);
+      }
+      this.purchase.supplier = supplier;
       this.savePurchase();
-      this.getAvailableComponents(this.purchase.id, new_supplier.id);
     }
   },
   methods: {
@@ -121,6 +127,9 @@ export default {
         .get("/purchase/" + id)
         .then(response => {
           this.purchase = response.data;
+          if (response.data.supplier && this.supplier && this.supplier.id != response.data.supplier.id) {
+            this.supplier = response.data.supplier;
+          }
           this.getAvailableSales(response.data.id);
         })
         .catch(e => {
@@ -145,6 +154,7 @@ export default {
         .get("/sale/purchase/" + purchase_id)
         .then(response => {
           this.availableSales = response.data;
+          this.getAvailableSuppliers(purchase_id);
         })
         .catch(e => {
           console.log("API error: " + e);
@@ -155,22 +165,32 @@ export default {
         .get("/supplier/purchase/" + purchase_id)
         .then(response => {
           this.availableSuppliers = response.data;
-          if (this.purchase.supplier) {
-            this.supplier = this.purchase.supplier;
-          }
+          this.getAvailableComponents();
         })
         .catch(e => {
           console.log("API error: " + e);
         });
     },
-    getAvailableComponents(purchase_id, supplier_id) {
-      if (!supplier_id) {
-        return [];
+    getAvailableComponents() {
+      if (!this.purchase.supplier) {
+        this.availableComponents = [];
+        return;
       }
       http
-        .get("/component/purchase/" + purchase_id + "/supplier/" + supplier_id)
+        .get(
+          "/component/purchase/" +
+            this.purchase.id +
+            "/supplier/" +
+            this.purchase.supplier.id
+        )
         .then(response => {
-          this.availableComponents = response.data;
+          var supplier = this.availableSuppliers.find(s => s.id == this.purchase.supplier.id);
+          if(supplier){
+            this.availableComponents = response.data;
+          }else{
+            this.availableComponents = [];
+            this.purchase.purchaseComponents = [];
+          }
         })
         .catch(e => {
           console.log("API error: " + e);
@@ -180,11 +200,13 @@ export default {
       if (this.visibleStep >= 2) {
         return;
       }
-      this.savePurchase().then(response => {
-        this.getAvailableSuppliers(this.purchase.id).then(r => {
-          this.visibleStep++;
-        });
-      });
+      if(this.purchase.supplier){
+        this.supplier = this.availableSuppliers.find(s => s.id == this.purchase.supplier.id);
+        this.purchase.supplier = this.supplier;
+      }
+      this.savePurchase().then(r => {
+        this.visibleStep++;
+      })
     },
     back() {
       if (this.visibleStep <= 1) {
