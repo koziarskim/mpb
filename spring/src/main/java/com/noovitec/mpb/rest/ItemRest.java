@@ -28,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.noovitec.mpb.dto.ItemDto;
 import com.noovitec.mpb.entity.Attachment;
 import com.noovitec.mpb.entity.Brand;
 import com.noovitec.mpb.entity.Category;
@@ -91,6 +92,10 @@ class ItemRest {
 		return ResponseEntity.ok().body(Collections.singletonMap("number", number));
 	}
 
+	@GetMapping("/item/purchase/{purchase_id}")
+	Collection<ItemDto> getAll(@PathVariable Long purchase_id) {
+		return itemRepo.getPurchaseItems(purchase_id);
+	}
 	/*
 	 * Use this to create and update entity. No need to use PUT for update. If ID is
 	 * not null, it will try to update.

@@ -58,7 +58,7 @@ export default {
         .get("/purchase/" + id)
         .then(response => {
           this.purchase = response.data;
-        //   this.getAvailableItems(response.data.id);
+          this.getAvailableItems(response.data.id);
         })
         .catch(e => {
           console.log("API error: " + e);

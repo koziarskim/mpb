@@ -200,7 +200,9 @@ export default {
     },
     next() {
       if (this.visibleStep == 2){
-          this.goToPurchaseItem();
+          this.savePurchase().then(r => {
+            this.goToPurchaseItem();
+          })
       }
       if (this.visibleStep >= 2) {
         return;
