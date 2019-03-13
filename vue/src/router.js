@@ -13,6 +13,7 @@ import SaleList from "./components/SaleList";
 import SaleEdit from "./components/SaleEdit";
 import PurchaseList from "./components/PurchaseList";
 import PurchaseEdit from "./components/PurchaseEdit";
+import PurchaseItem from "./components/PurchaseItem";
 
 Vue.use(Router);
 
@@ -85,15 +86,15 @@ export default new Router({
       name: "SaleEdit",
       component: SaleEdit
     },
-    // {
-    //   path: "/purchaseEdit/:purchase_id?",
-    //   name: "PurchaseEdit",
-    //   component: PurchaseEdit
-    // },
     {
       path: "/purchaseEdit/:purchase_id/step/:step_id",
       name: "PurchaseEdit",
       component: PurchaseEdit
-    }
+    },
+    {
+      path: "/purchaseItem/:purchase_id?",
+      name: "PurchaseItem",
+      component: PurchaseItem
+    },
   ]
 });

@@ -199,6 +199,9 @@ export default {
         });
     },
     next() {
+      if (this.visibleStep == 2){
+          this.goToPurchaseItem();
+      }
       if (this.visibleStep >= 2) {
         return;
       }
@@ -258,6 +261,9 @@ export default {
     },
     goToStep(step_id) {
       router.push("/purchaseEdit/" + this.purchase.id+"/step/"+step_id);
+    },
+    goToPurchaseItem() {
+      router.push("/purchaseItem/" + this.purchase.id);
     }
   },
   mounted() {
