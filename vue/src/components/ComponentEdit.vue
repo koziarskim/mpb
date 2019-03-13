@@ -113,6 +113,20 @@
                 <input class="form-control" readOnly :value="caseCost" />
             </b-col>
         </b-row>
+        <b-row>
+            <b-col>
+                <label class="top-label">Component is included in following Items:</label>
+                <b-table v-if="component.itemComponents.length>0"
+                    :sort-by.sync="sortBy"
+                    :sort-desc.sync="sortDesc"
+                    :items="component.itemComponents"
+                    :fields="columns">
+                    <template slot="item.number" slot-scope="row">
+                        <b-button size="sm" @click.stop="goToItem(row.item.item.id)" variant="link">{{row.item.item.number}}</b-button>
+                    </template>
+                </b-table>
+            </b-col>
+        </b-row>
     </b-container>
 </template>
 
@@ -137,14 +151,23 @@ export default {
           number: 0,
           totalLandedCost: 0,
           height: 0,
-          weight: 0
+          weight: 0,
+          itemComponents: [],
       },
       dimension: "",
       image: "",
       supplier: {},
       category: {},
       availableSuppliers: [],
-      availableCategories: []
+      availableCategories: [],
+      availableItems: [],
+      sortBy: "id",
+      sortDesc: false,
+      columns: [
+        { key: "item.number", label: "Item #", sortable: true },
+        { key: "item.name", label: "Name", sortable: true },
+        { key: "item.brand.name", label: "Brand", sortable: true },
+      ]
     };
   },
   computed: {
@@ -265,6 +288,9 @@ export default {
       this.saveAndUpload().then(r=>{
           window.history.back();
       })
+    },
+    goToItem(item_id) {
+      router.push("/itemEdit/" + item_id);
     }
   },
   mounted() {
