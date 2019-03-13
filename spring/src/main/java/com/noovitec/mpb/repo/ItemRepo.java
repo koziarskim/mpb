@@ -18,9 +18,8 @@ public interface ItemRepo extends JpaRepository<Item, Long> {
 	@Query("select distinct new com.noovitec.mpb.dto.ItemDto"
 			+ "(i.id, i.number, i.name) "
 			+ "from Item i " 
-			+ "join i.saleItems si "
-			+ "join si.sale.purchaseSales ps "
-			+ "join ps.purchase.purchaseComponents pc "
+			+ "join i.itemComponents ic "
+			+ "join ic.component.purchaseComponents pc "
 			+ "where pc.purchase.id = :purchase_id")
 	List<ItemDto> getPurchaseItems(@Param("purchase_id") Long purchase_id);
 

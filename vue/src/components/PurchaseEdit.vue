@@ -4,10 +4,10 @@
       <b-col cols="2">
         <h4 style="text-align: left;">Purchase Order:</h4>
       </b-col>
-      <b-col cols="3">
+      <b-col cols="2">
         <input class="form-control" type="text" v-model="purchase.number" placeholder="Item name">
       </b-col>
-      <b-col cols="1">
+      <b-col cols="1" offset="2">
         <b-button type="submit" variant="primary" @click="goToPurchaseComponent()">Next</b-button>
       </b-col>
       <b-col>
