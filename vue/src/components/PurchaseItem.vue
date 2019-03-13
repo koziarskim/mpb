@@ -1,8 +1,14 @@
 <template>
     <b-container fluid>
-        <b-row>
-            <b-col cols=4>
+                <b-row>
+            <b-col cols=5>
                 <h4 style="text-align: left;">Purchase Order: {{purchase.number}}</h4>
+            </b-col>
+            <b-col cols=1>
+                <b-button type="submit" variant="primary" @click="back()">Back</b-button>
+            </b-col>
+            <b-col cols=1>
+                <b-button style="visibility: hidden" type="submit" variant="primary" @click="next()">Next</b-button>
             </b-col>
             <b-col>
                 <div style="text-align: right;">
@@ -59,6 +65,12 @@ export default {
         });
     },
     saveAndClose() {
+        router.push("/purchaseList");
+    },
+    next(){
+        window.history.back();
+    },
+    back(){
         window.history.back();
     },
     getAvailableItems(purchase_id) {
