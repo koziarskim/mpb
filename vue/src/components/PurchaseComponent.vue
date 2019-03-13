@@ -4,15 +4,11 @@
       <b-col cols="5">
         <h4 style="text-align: left;">Purchase Order: {{purchase.number}}</h4>
       </b-col>
-      <b-col cols="1">
-        <b-button type="submit" variant="primary" @click="goToPurchaseEdit()">Back</b-button>
-      </b-col>
-      <b-col cols="1">
-        <b-button type="submit" variant="primary" @click="goToPurchaseItem()">Next</b-button>
-      </b-col>
       <b-col>
         <div style="text-align: right;">
-          <b-button type="reset" variant="danger" @click="saveAndClose">Save & Close</b-button>
+            <b-button style="margin: 2px;" type="submit" variant="primary" @click="goToPurchaseEdit()">Back</b-button>
+            <b-button style="margin: 2px;" type="submit" variant="primary" @click="goToPurchaseItem()">Next</b-button>
+            <b-button style="margin: 2px;" type="reset" variant="danger" @click="saveAndClose">Save & Close</b-button>
         </div>
       </b-col>
     </b-row>

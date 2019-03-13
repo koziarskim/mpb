@@ -7,12 +7,13 @@
       <b-col cols="2">
         <input class="form-control" type="text" v-model="purchase.number" placeholder="Item name">
       </b-col>
-      <b-col cols="1" offset="2">
+      <!-- <b-col cols="1" offset="2">
         <b-button type="submit" variant="primary" @click="goToPurchaseComponent()">Next</b-button>
-      </b-col>
+      </b-col> -->
       <b-col>
         <div style="text-align: right;">
-          <b-button type="reset" variant="danger" @click="saveAndClose">Save & Close</b-button>
+            <b-button style="margin: 2px;" type="submit" variant="primary" @click="goToPurchaseComponent()">Next</b-button>
+            <b-button style="margin: 2px;" type="reset" variant="danger" @click="saveAndClose">Save & Close</b-button>
         </div>
       </b-col>
     </b-row>
