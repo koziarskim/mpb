@@ -16,7 +16,7 @@ public interface ItemRepo extends JpaRepository<Item, Long> {
 	Item getLast();
 	
 	@Query("select distinct new com.noovitec.mpb.dto.ItemDto"
-			+ "(i.id, i.number, i.name) "
+			+ "(i.id, i.number, i.name, (case when i.brand is not null then 'brand' end), (case when i.category is not null then i.category.name end)) "
 			+ "from Item i " 
 			+ "join i.itemComponents ic "
 			+ "join ic.component.purchaseComponents pc "

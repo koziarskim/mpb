@@ -12,5 +12,7 @@ public class ItemDto {
 	private Long id;
 	private String number;
 	private String name;
+	private String brand;
+	private String category;
 
 }

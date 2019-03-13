@@ -94,7 +94,8 @@ class ItemRest {
 
 	@GetMapping("/item/purchase/{purchase_id}")
 	Collection<ItemDto> getAll(@PathVariable Long purchase_id) {
-		return itemRepo.getPurchaseItems(purchase_id);
+		Collection<ItemDto> dtos = itemRepo.getPurchaseItems(purchase_id);
+		return dtos;
 	}
 	/*
 	 * Use this to create and update entity. No need to use PUT for update. If ID is

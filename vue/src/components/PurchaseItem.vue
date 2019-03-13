@@ -47,6 +47,9 @@ export default {
       columns: [
         { key: "number", label: "Item", sortable: true },
         { key: "name", label: "Name", sortable: true },
+        { key: "brand", label: "Brand", sortable: true },
+        { key: "category", label: "Category", sortable: true },
+
       ]
     };
   },
