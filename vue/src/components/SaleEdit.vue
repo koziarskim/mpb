@@ -80,8 +80,8 @@
                     :sort-desc.sync="sortDesc"
                     :items="sale.saleItems"
                     :fields="columns">
-                    <template slot="account" slot-scope="row">
-                        <b-button size="sm" @click.stop="goTo(row.item.id)" variant="link">{{row.item.id}}</b-button>
+                    <template slot="item.number" slot-scope="row">
+                        <b-button size="sm" @click.stop="goToItem(row.item.item.id)" variant="link">{{row.item.item.number}}</b-button>
                     </template>
                     <template slot="action" slot-scope="row">
                         <b-button size="sm" @click.stop="remove(row.item.id)">x</b-button>
@@ -94,6 +94,7 @@
 
 <script>
 import http from "../http-common";
+import router from "../router";
 
 export default {
   data() {
@@ -195,6 +196,9 @@ export default {
         return;
       }
       this.sale.saleItems.push({ item: this.item});
+    },
+    goToItem(item_id) {
+      router.push("/itemEdit/" + item_id);
     }
   },
   mounted() {
