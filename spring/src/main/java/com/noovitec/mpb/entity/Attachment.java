@@ -1,6 +1,5 @@
 package com.noovitec.mpb.entity;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -28,8 +27,8 @@ public class Attachment {
 	@Lob
 	@Type(type = "org.hibernate.type.BinaryType")
 	private byte[] data;
-	
-	@JsonIgnore //Don't send it to client.
+
+	@JsonIgnore // Don't send it to client.
 	public byte[] getDate() {
 		return this.data;
 	}
