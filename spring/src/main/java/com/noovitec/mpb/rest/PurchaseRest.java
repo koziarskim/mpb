@@ -9,6 +9,7 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -34,11 +35,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfStamper;
+import com.noovitec.mpb.dto.ComponentDto;
 import com.noovitec.mpb.entity.Attachment;
 import com.noovitec.mpb.entity.Purchase;
 import com.noovitec.mpb.entity.PurchaseComponent;
 import com.noovitec.mpb.entity.PurchaseSale;
 import com.noovitec.mpb.repo.AttachmentRepo;
+import com.noovitec.mpb.repo.ComponentRepo;
 import com.noovitec.mpb.repo.PurchaseRepo;
 
 @CrossOrigin
@@ -53,6 +56,8 @@ class PurchaseRest {
 
 	private final Logger log = LoggerFactory.getLogger(PurchaseRest.class);
 	private PurchaseRepo purchaseRepo;
+	@Autowired
+	private ComponentRepo componentRepo;
 
 	public PurchaseRest(PurchaseRepo purchaseRepo) {
 		this.purchaseRepo = purchaseRepo;
@@ -74,24 +79,42 @@ class PurchaseRest {
 	HttpEntity<byte[]> getPdf(@PathVariable Long id) throws DocumentException, IOException {
 		Purchase purchase = purchaseRepo.findById(id).get();
 		if (purchase.getAttachment() == null || !purchase.isLocked()) {
+			NumberFormat currencyFormat = NumberFormat.getCurrencyInstance();
+			String componentName = "";
+			String componentDescription = "";
+			String componentUnits = "";
+			String componentPrice = "";
+			String componentTotalPrice = "";
+			List<ComponentDto> dtos = componentRepo.getComponentsForPurchaseAndSupplier(id, purchase.getSupplier().getId());
+			for(ComponentDto dto : dtos) {
+				if(dto.isSelected()) {
+					componentName += dto.getNumber()+"\n";
+					componentDescription += dto.getName()+"\n";
+					componentUnits += dto.getUnits()+"\n";
+					componentPrice += currencyFormat.format(dto.getUnitPrice())+"\n";
+					componentTotalPrice += currencyFormat.format(dto.getTotalPrice())+"\n";
+				}
+			}
 			InputStream in = this.getClass().getClassLoader().getResourceAsStream("pdf/PO-Template.pdf");
 			PdfReader pdfTemplate = new PdfReader(in);
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			PdfStamper stamper = new PdfStamper(pdfTemplate, baos);
 			stamper.setFormFlattening(true);
-			SimpleDateFormat dateFormatter = new SimpleDateFormat("MM/dd/yyy");
-			stamper.getAcroFields().setField("date", dateFormatter.format(new Date()));
+			SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyy");
+			stamper.getAcroFields().setField("date", dateFormat.format(new Date()));
 			stamper.getAcroFields().setField("number", purchase.getNumber());
 			stamper.getAcroFields().setField("supplierName", purchase.getSupplier().getName());
 			stamper.getAcroFields().setField("paymentTerms", purchase.getSupplier().getPaymentTerms());
-			stamper.getAcroFields().setField("expectedDate", purchase.getExpectedDate()!=null?dateFormatter.format(purchase.getExpectedDate()):"");
+			stamper.getAcroFields().setField("expectedDate",
+					purchase.getExpectedDate() != null ? dateFormat.format(purchase.getExpectedDate()) : "");
 			stamper.getAcroFields().setField("freighTerms", purchase.getSupplier().getFreightTerms());
-			stamper.getAcroFields().setField("componentName", "???");
-			stamper.getAcroFields().setField("componentDescription", "???");
-			stamper.getAcroFields().setField("componentUnits", "???");
-			stamper.getAcroFields().setField("componentPrice", "???");
-			stamper.getAcroFields().setField("componentTotalPrice", "???");
-			stamper.getAcroFields().setField("totalPrice", NumberFormat.getCurrencyInstance().format(purchase.getTotalPrice()));
+			stamper.getAcroFields().setField("componentName", componentName);
+			stamper.getAcroFields().setField("componentDescription", componentDescription);
+			stamper.getAcroFields().setField("componentUnits", componentUnits);
+			stamper.getAcroFields().setField("componentPrice", componentPrice);
+			stamper.getAcroFields().setField("componentTotalPrice", componentTotalPrice);
+			stamper.getAcroFields().setField("totalPrice",
+					currencyFormat.format(purchase.getTotalPrice()));
 			stamper.close();
 			pdfTemplate.close();
 			byte[] data = baos.toByteArray();
@@ -132,9 +155,6 @@ class PurchaseRest {
 
 	@DeleteMapping("/purchase/{id}")
 	public ResponseEntity<?> delete(@PathVariable Long id) {
-//		Optional<Sale> sale = saleRepo.findById(id);
-//		sale.get().getCustomer().getAddresses().remove(sale.get());
-//		saleRepo.delete(sale.get());
 		purchaseRepo.deleteById(id);
 		return ResponseEntity.ok().build();
 	}
