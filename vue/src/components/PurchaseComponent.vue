@@ -1,51 +1,37 @@
 <template>
   <b-container fluid>
     <b-row>
-      <b-col cols="5">
-        <h4 style="text-align: left;">Purchase Order: {{purchase.number}}</h4>
+      <b-col cols="2">
+        <span style="text-align: left; font-size: 18px; font-weight: bold">Purchase Order: {{purchase.number}}</span>
       </b-col>
-      <b-col>
-        <div style="text-align: right;">
-            <b-button style="margin: 2px;" type="submit" variant="info" @click="goToPurchaseEdit()">Back</b-button>
-            <b-button style="margin: 2px;" type="submit" variant="info" @click="goToPurchaseItem()">Next</b-button>
-            <b-button style="margin: 2px;" type="reset" variant="success" @click="saveAndClose">Save & Close</b-button>
-        </div>
-      </b-col>
-    </b-row>
-    <b-row>
       <b-col cols="3">
-        <label class="top-label">Supplier:</label>
-        <b-select
-          option-value="id"
-          option-text="name"
-          :list="availableSuppliers"
-          v-model="supplier"
-          placeholder="Supplier"
-        ></b-select>
+        <b-select option-value="id" option-text="name" :list="availableSuppliers" v-model="supplier" placeholder="Supplier"></b-select>
+      </b-col>
+      <b-col cols="2">
+        <input class="form-control" type="text" v-model="purchase.expectedDate" placeholder="Expected Date">
+      </b-col>
+      <b-col cols="2" style="margin-top: -6px">
+        <label class="top-label">Pay Term:{{purchase.supplier?purchase.supplier.paymentTerms:''}}</label>
+        <br>
+        <label class="top-label">Freight Term:{{purchase.supplier?purchase.supplier.freightTerms:''}}</label>
+      </b-col>
+      <b-col cols="3">
+        <div style="text-align: right;">
+          <b-button style="margin: 2px;" type="submit" variant="info" @click="goToPurchaseEdit()">Back</b-button>
+          <b-button style="margin: 2px;" type="submit" variant="info" @click="goToPurchaseItem()">Next</b-button>
+          <b-button style="margin: 2px;" type="reset" variant="success" @click="saveAndClose">Save & Close</b-button>
+        </div>
       </b-col>
     </b-row>
     <b-row>
       <b-col>
         <label class="top-label">Available Components:</label>
-        <b-table
-          v-if="availableComponents.length>0"
-          :sort-by.sync="sortBy"
-          :sort-desc.sync="sortDesc"
-          :items="availableComponents"
-          :fields="columns"
-        >
+        <b-table v-if="availableComponents.length>0" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="availableComponents" :fields="columns">
           <template slot="number" slot-scope="row">
-            <b-button
-              size="sm"
-              @click.stop="goToComponent(row.item.id)"
-              variant="link"
-            >{{row.item.number}}</b-button>
+            <b-button size="sm" @click.stop="goToComponent(row.item.id)" variant="link">{{row.item.number}}</b-button>
           </template>
           <template slot="action" slot-scope="row">
-            <b-form-checkbox
-              v-model="row.item.selected"
-              @input="rowSelect(row.item.id, row.item.selected)"
-            ></b-form-checkbox>
+            <b-form-checkbox v-model="row.item.selected" @input="rowSelect(row.item.id, row.item.selected)"></b-form-checkbox>
           </template>
         </b-table>
       </b-col>

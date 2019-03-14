@@ -6,7 +6,6 @@ import java.util.HashSet;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -30,8 +29,6 @@ public class Purchase {
 	private Long id;
 	private Date date;
 	private String number;
-	private String paymentTerms;
-	private int freightTerms;
 	private Date expectedDate;
 
 	@JsonIgnoreProperties({ "components" })

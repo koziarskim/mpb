@@ -1649,9 +1649,9 @@ INSERT INTO public.item_component (id, units, component_id, item_id) VALUES (37,
 -- Data for Name: purchase; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public.purchase (id, date, expected_date, freight_terms, number, payment_terms, address_id, supplier_id) VALUES (28, NULL, NULL, 0, '33', NULL, NULL, 2);
-INSERT INTO public.purchase (id, date, expected_date, freight_terms, number, payment_terms, address_id, supplier_id) VALUES (6, NULL, NULL, 0, '22', NULL, NULL, 2);
-INSERT INTO public.purchase (id, date, expected_date, freight_terms, number, payment_terms, address_id, supplier_id) VALUES (24, NULL, NULL, 0, '11', NULL, NULL, 1);
+INSERT INTO public.purchase (id, date, expected_date, number, address_id, supplier_id) VALUES (28, NULL, NULL, '33', NULL, 2);
+INSERT INTO public.purchase (id, date, expected_date, number, address_id, supplier_id) VALUES (6, NULL, NULL, '22', NULL, 2);
+INSERT INTO public.purchase (id, date, expected_date, number, address_id, supplier_id) VALUES (24, NULL, NULL,'11', NULL, 1);
 
 
 --
