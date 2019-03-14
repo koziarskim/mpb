@@ -66,9 +66,9 @@ INSERT INTO public.category (id, name, prefix, type) VALUES (11, 'Other', '900',
 -- Data for Name: supplier; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public.supplier (id, account, city, contact_name, email, email2, freight_terms, name, payment_terms, phone, phone2, state, street, zip, address_id) VALUES (2, '22', 'Bensenville', NULL, 'koziarskim@yahoo.com', 'koziarskim@yahoo.com', 0, 'Marcin Koziarski2', NULL, '7738025692', NULL, 'IL', '4N311 Hawthorne', '60106', NULL);
-INSERT INTO public.supplier (id, account, city, contact_name, email, email2, freight_terms, name, payment_terms, phone, phone2, state, street, zip, address_id) VALUES (1, '11', 'Bensenville', NULL, 'koziarskim@yahoo.com', 'koziarskim@yahoo.com', 0, 'Marcin Koziarski1', NULL, '7738025692', NULL, 'IL', '4N311 Hawthorne', '60106', NULL);
-INSERT INTO public.supplier (id, account, city, contact_name, email, email2, freight_terms, name, payment_terms, phone, phone2, state, street, zip, address_id) VALUES (32, '33', 'Bensenville', NULL, 'koziarskim@yahoo.com', 'koziarskim@yahoo.com', 0, 'Marcin Koziarski3', NULL, '7738025692', NULL, 'IL', '4N311 Hawthorne', '60106', NULL);
+INSERT INTO public.supplier (id, account, city, contact_name, email, email2, freight_terms, name, payment_terms, phone, phone2, state, street, zip, address_id) VALUES (2, '22', 'Bensenville', NULL, 'koziarskim@yahoo.com', 'koziarskim@yahoo.com', 0, 'Marcin Koziarski2', 'Net 30', '7738025692', NULL, 'IL', '4N311 Hawthorne', '60106', NULL);
+INSERT INTO public.supplier (id, account, city, contact_name, email, email2, freight_terms, name, payment_terms, phone, phone2, state, street, zip, address_id) VALUES (1, '11', 'Bensenville', NULL, 'koziarskim@yahoo.com', 'koziarskim@yahoo.com', 0, 'Marcin Koziarski1', 'Net 30', '7738025692', NULL, 'IL', '4N311 Hawthorne', '60106', NULL);
+INSERT INTO public.supplier (id, account, city, contact_name, email, email2, freight_terms, name, payment_terms, phone, phone2, state, street, zip, address_id) VALUES (32, '33', 'Bensenville', NULL, 'koziarskim@yahoo.com', 'koziarskim@yahoo.com', 0, 'Marcin Koziarski3', 'Net 30', '7738025692', NULL, 'IL', '4N311 Hawthorne', '60106', NULL);
 
 
 --
@@ -1649,9 +1649,9 @@ INSERT INTO public.item_component (id, units, component_id, item_id) VALUES (37,
 -- Data for Name: purchase; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public.purchase (id, date, expected_date, number, address_id, supplier_id) VALUES (28, NULL, NULL, '33', NULL, 2);
-INSERT INTO public.purchase (id, date, expected_date, number, address_id, supplier_id) VALUES (6, NULL, NULL, '22', NULL, 2);
-INSERT INTO public.purchase (id, date, expected_date, number, address_id, supplier_id) VALUES (24, NULL, NULL,'11', NULL, 1);
+INSERT INTO public.purchase (id, date, expected_date, number, address_id, supplier_id, locked) VALUES (28, NULL, NULL, '33', NULL, 2, false);
+INSERT INTO public.purchase (id, date, expected_date, number, address_id, supplier_id, locked) VALUES (6, NULL, NULL, '22', NULL, 2, false);
+INSERT INTO public.purchase (id, date, expected_date, number, address_id, supplier_id, locked) VALUES (24, NULL, NULL,'11', NULL, 1, false);
 
 
 --
