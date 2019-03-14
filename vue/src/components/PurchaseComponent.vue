@@ -36,6 +36,11 @@
         </b-table>
       </b-col>
     </b-row>
+    <b-row>
+      <b-col cols="3" offset="9" style="text-align: right;">
+        <span>Total: ${{totalPrice}}</span>
+      </b-col>
+    </b-row>
   </b-container>
 </template>
 
@@ -62,7 +67,17 @@ export default {
       ]
     };
   },
-  computed: {},
+  computed: {
+    totalPrice() {
+      var total = 0;
+      this.availableComponents.forEach(component => {
+        if (component.selected) {
+          total += +component.totalPrice;
+        }
+      });
+      return total.toFixed(2);
+    }
+  },
   watch: {
     supplier: function(new_supplier, old_supplier) {
       if (!new_supplier) {
@@ -99,6 +114,7 @@ export default {
         });
     },
     savePurchase() {
+      this.purchase.totalPrice = this.totalPrice;
       return http
         .post("/purchase", this.purchase)
         .then(response => {

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.sql.Timestamp;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
@@ -72,7 +73,7 @@ class PurchaseRest {
 	@GetMapping("/purchase/{id}/pdf")
 	HttpEntity<byte[]> getPdf(@PathVariable Long id) throws DocumentException, IOException {
 		Purchase purchase = purchaseRepo.findById(id).get();
-		if (purchase.getAttachment() == null && !purchase.isLocked()) {
+		if (purchase.getAttachment() == null || !purchase.isLocked()) {
 			InputStream in = this.getClass().getClassLoader().getResourceAsStream("pdf/PO-Template.pdf");
 			PdfReader pdfTemplate = new PdfReader(in);
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -85,12 +86,12 @@ class PurchaseRest {
 			stamper.getAcroFields().setField("paymentTerms", purchase.getSupplier().getPaymentTerms());
 			stamper.getAcroFields().setField("expectedDate", purchase.getExpectedDate()!=null?dateFormatter.format(purchase.getExpectedDate()):"");
 			stamper.getAcroFields().setField("freighTerms", purchase.getSupplier().getFreightTerms());
-			stamper.getAcroFields().setField("componentName", "Walmart");
-			stamper.getAcroFields().setField("componentDescription", "Walmart");
-			stamper.getAcroFields().setField("componentUnits", "Walmart");
-			stamper.getAcroFields().setField("componentPrice", "Walmart");
-			stamper.getAcroFields().setField("componentTotalPrice", "Walmart");
-			stamper.getAcroFields().setField("totalPrice", "Walmart");
+			stamper.getAcroFields().setField("componentName", "???");
+			stamper.getAcroFields().setField("componentDescription", "???");
+			stamper.getAcroFields().setField("componentUnits", "???");
+			stamper.getAcroFields().setField("componentPrice", "???");
+			stamper.getAcroFields().setField("componentTotalPrice", "???");
+			stamper.getAcroFields().setField("totalPrice", NumberFormat.getCurrencyInstance().format(purchase.getTotalPrice()));
 			stamper.close();
 			pdfTemplate.close();
 			byte[] data = baos.toByteArray();

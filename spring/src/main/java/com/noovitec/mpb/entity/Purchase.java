@@ -1,5 +1,6 @@
 package com.noovitec.mpb.entity;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -31,6 +32,7 @@ public class Purchase {
 	private String number;
 	private Date expectedDate;
 	private boolean locked;
+	private BigDecimal totalPrice = BigDecimal.ZERO;
 
 	@JsonIgnoreProperties({ "components" })
 	@ManyToOne()
