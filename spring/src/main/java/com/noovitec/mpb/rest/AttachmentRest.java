@@ -1,9 +1,6 @@
 package com.noovitec.mpb.rest;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.sql.Blob;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -11,9 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,14 +32,15 @@ class AttachmentRest {
 	}
 
 	@GetMapping("/attachment/{id}")
-	@ResponseBody HttpEntity<byte[]> downloadImage(@PathVariable Long id) throws IOException {
+	@ResponseBody
+	HttpEntity<byte[]> downloadImage(@PathVariable Long id) throws IOException {
 		Optional<Attachment> attachment = attachmentRepo.findById(id);
-	    byte[] data = attachment.get().getData();
-	    HttpHeaders header = new HttpHeaders();
-	    header.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-	    header.set("Content-Disposition", "inline; filename=" + "filename.jpg");
-	    header.setContentLength(data.length);
-	    return new HttpEntity<byte[]>(data, header);
+		byte[] data = attachment.get().getData();
+		HttpHeaders header = new HttpHeaders();
+		header.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+		header.set("Content-Disposition", "inline; filename=" + "filename.jpg");
+		header.setContentLength(data.length);
+		return new HttpEntity<byte[]>(data, header);
 	}
 
 	@GetMapping("/attachment")

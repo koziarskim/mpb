@@ -12,8 +12,8 @@
       </b-col> -->
       <b-col>
         <div style="text-align: right;">
-            <b-button style="margin: 2px;" type="submit" variant="primary" @click="goToPurchaseComponent()">Next</b-button>
-            <b-button style="margin: 2px;" type="reset" variant="danger" @click="saveAndClose">Save & Close</b-button>
+            <b-button style="margin: 2px;" type="submit" variant="info" @click="goToPurchaseComponent()">Next</b-button>
+            <b-button style="margin: 2px;" type="reset" variant="success" @click="saveAndClose">Save & Close</b-button>
         </div>
       </b-col>
     </b-row>

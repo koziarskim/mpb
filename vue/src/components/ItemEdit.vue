@@ -10,7 +10,7 @@
             <b-col cols=2 offset=5>
                 <div style="text-align: right;">
                     <!-- <b-button type="submit" variant="primary" @click="saveAndUpload">Save</b-button> -->
-                    <b-button type="reset" variant="danger" @click="saveAndClose">Save & Close</b-button>
+                    <b-button type="reset" variant="success" @click="saveAndClose">Save & Close</b-button>
                 </div>
             </b-col>
         </b-row>

@@ -6,8 +6,9 @@
             </b-col>
             <b-col>
                 <div style="text-align: right;">
-                    <b-button style="margin: 2px;" type="submit" variant="primary" @click="back()">Back</b-button>
-                    <b-button style="margin: 2px;" type="reset" variant="danger" @click="saveAndClose">Save & Close</b-button>
+                    <b-button style="margin: 2px;" type="submit" variant="info" @click="back()">Back</b-button>
+                    <a :href="pdfUrl()" target="_blank"><b-button style="margin: 2px;" type="submit" variant="secondary">PDF</b-button></a>
+                    <b-button style="margin: 2px;" type="reset" variant="success" @click="saveAndClose">Save & Close</b-button>
                 </div>
             </b-col>
         </b-row>
@@ -31,6 +32,7 @@
 <script>
 import http from "../http-common";
 import router from "../router";
+import httpUtils from "../httpUtils";
 
 export default {
   data() {
@@ -83,7 +85,10 @@ export default {
     },
     goToItem(item_id) {
       router.push("/itemEdit/" + item_id)
-    }
+    },
+    pdfUrl: function(){
+        return httpUtils.baseUrl + "/purchase/"+this.purchase.id+"/pdf";
+      },
   },
   mounted() {
     var id = this.$route.params.purchase_id;

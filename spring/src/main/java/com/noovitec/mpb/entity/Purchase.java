@@ -6,6 +6,7 @@ import java.util.HashSet;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -43,6 +44,10 @@ public class Purchase {
 	@JoinColumn(name = "address_id", referencedColumnName = "id")
 	private Address shipAddress;
 
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "attachment_id", referencedColumnName = "id")
+	private Attachment attachment;
+	
 	@JsonIgnoreProperties(value = { "purchase" }, allowSetters = true)
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "purchase_id")

@@ -4,7 +4,7 @@
             <h4 style="text-align: left;">New/Edit Supplier</h4>
             <div style="text-align: right;">
                 <!-- <b-button type="submit" variant="primary" @click="save">Save</b-button> -->
-                <b-button type="reset" variant="danger" @click="saveAndClose">Save & Close</b-button>
+                <b-button type="reset" variant="success" @click="saveAndClose">Save & Close</b-button>
             </div>
         </div>
         <b-row>
