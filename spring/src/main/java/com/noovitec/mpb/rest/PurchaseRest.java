@@ -6,6 +6,7 @@ import java.net.URISyntaxException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -34,6 +35,8 @@ import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.FontFactory;
+import com.itextpdf.text.pdf.PdfReader;
+import com.itextpdf.text.pdf.PdfStamper;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.noovitec.mpb.entity.Attachment;
 import com.noovitec.mpb.entity.Purchase;
@@ -72,17 +75,29 @@ class PurchaseRest {
 	}
 
 	@GetMapping("/purchase/{id}/pdf")
-	HttpEntity<byte[]> getPdf(@PathVariable Long id) throws DocumentException {
+	HttpEntity<byte[]> getPdf(@PathVariable Long id) throws DocumentException, IOException {
 		Purchase purchase = purchaseRepo.findById(id).get();
 		if (purchase.getAttachment() == null) {
+			PdfReader pdfTemplate = new PdfReader("C:\\Users\\kozia\\Desktop\\mpb\\PO_example_acro.pdf");
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			Document document = new Document();
-			PdfWriter.getInstance(document, baos);
-			document.open();
-			Font font = FontFactory.getFont(FontFactory.COURIER, 16, BaseColor.BLACK);
-			Chunk chunk = new Chunk("Purchase Order #: " + purchase.getNumber(), font);
-			document.add(chunk);
-			document.close();
+			PdfStamper stamper = new PdfStamper(pdfTemplate, baos);
+			stamper.setFormFlattening(true);
+			Date date = new Date();
+			String formatedDate = new SimpleDateFormat("MM/dd/yyy").format(date);
+			stamper.getAcroFields().setField("date", formatedDate);
+			stamper.getAcroFields().setField("number", purchase.getNumber());
+			stamper.getAcroFields().setField("supplierName", purchase.getSupplier().getName());
+			stamper.getAcroFields().setField("paymentTerms", purchase.getSupplier().getPaymentTerms());
+			stamper.getAcroFields().setField("expectedDate", "???");
+			stamper.getAcroFields().setField("freighTerms", String.valueOf(purchase.getSupplier().getFreightTerms()));
+			stamper.getAcroFields().setField("componentName", "Walmart");
+			stamper.getAcroFields().setField("componentDescription", "Walmart");
+			stamper.getAcroFields().setField("componentUnits", "Walmart");
+			stamper.getAcroFields().setField("componentPrice", "Walmart");
+			stamper.getAcroFields().setField("componentTotalPrice", "Walmart");
+			stamper.getAcroFields().setField("totalPrice", "Walmart");
+			stamper.close();
+			pdfTemplate.close();
 			byte[] data = baos.toByteArray();
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
 			Timestamp timestamp = new Timestamp(System.currentTimeMillis());
