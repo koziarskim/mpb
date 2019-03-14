@@ -28,8 +28,7 @@
             </b-col>
             <b-col cols=2 offset=3>
                 <label class="top-label">Freight Terms:</label>
-                <b-select option-value="id" option-text="name" :list="availableFreights" v-model="freightTerms" placeholder="Freight terms"></b-select>
-                <!-- <input class="form-control" type="text" v-model="supplier.freightTerms" placeholder="Freight Terms"/> -->
+                <b-select option-value="code" option-text="name" :list="availableFreights" v-model="freightTerms" placeholder="Freight terms"></b-select>
             </b-col>
         </b-row>
         <b-row>
@@ -92,17 +91,17 @@ export default {
         zip: "",
         phone: "",
         paymentTerms: "",
-        freightTerms: 1
+        freightTerms: "Collect"
       },
       freightTerms: {},
       availableStates: state.states,
-      availableFreights: [{id: 1, name: "Delivered"},{id: 2, name: "Collect"}]
+      availableFreights: [{code: "Delivered", name: "Delivered"},{code: "Collect", name: "Collect"}]
     };
   },
   computed: {},
   watch: {
       freightTerms: function(newValue, oldValue) {
-        this.supplier.freightTerms=newValue.id;
+        this.supplier.freightTerms=newValue.code;
     },
   },
   methods: {
@@ -130,10 +129,10 @@ export default {
             window.history.back();
         })
     },
-    getFreightById(id) {
+    getFreightById(code) {
         var freight = {};
         this.availableFreights.filter(it =>{
-            if(it.id == id){
+            if(it.code == code){
                 freight = it;
             }
         })

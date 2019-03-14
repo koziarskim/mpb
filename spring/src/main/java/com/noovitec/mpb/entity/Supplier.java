@@ -38,7 +38,7 @@ public class Supplier {
 	private String phone;
 	private String phone2;
 	private String paymentTerms;
-	private int freightTerms;
+	private String freightTerms;
 	private String email;
 	private String email2;
 	private String contactName;

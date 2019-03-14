@@ -32,7 +32,7 @@ public class Sale {
 	private Date date;
 	private String number;
 	private String paymentTerms;
-	private int freightTerms;
+	private String freightTerms;
 	private Date expectedDate;
 
 	@JsonIgnoreProperties(value={ "sales" }, allowSetters=true)

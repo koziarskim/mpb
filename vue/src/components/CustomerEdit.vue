@@ -26,7 +26,7 @@
                     </b-col>
                     <b-col cols=4>
                         <label class="top-label">Freight Terms:</label>
-                        <b-select option-value="id" option-text="name" :list="availableFreights" v-model="freightTerms" placeholder="Freight terms"></b-select>
+                        <b-select option-value="code" option-text="name" :list="availableFreights" v-model="freightTerms" placeholder="Freight terms"></b-select>
                     </b-col>
                 </b-row>
                 <b-row>
@@ -139,7 +139,7 @@ export default {
         billingAddress: {},
         phone: "",
         paymentTerms: "",
-        freightTerms: 1,
+        freightTerms: 'Collect',
         addresses: []
       },
       addressEditFlag: false,
@@ -149,15 +149,15 @@ export default {
       freightTerms: {},
       availableStates: state.states,
       availableFreights: [
-        { id: 1, name: "Delivered" },
-        { id: 2, name: "Collect" }
+        { code: "Delivered", name: "Delivered" },
+        { code: "Collect", name: "Collect" }
       ]
     };
   },
   computed: {},
   watch: {
     freightTerms: function(newValue, oldValue) {
-      this.customer.freightTerms = newValue.id;
+      this.customer.freightTerms = newValue.code;
     },
     billingAddress: {
       handler: function(newValue, oldValue) {
@@ -206,10 +206,10 @@ export default {
       }
       this.customer.addresses.push(address);
     },
-    getFreightById(id) {
+    getFreightById(code) {
       var freight = {};
       this.availableFreights.filter(it => {
-        if (it.id == id) {
+        if (it.code == code) {
           freight = it;
         }
       });

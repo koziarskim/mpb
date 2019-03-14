@@ -66,9 +66,9 @@ INSERT INTO public.category (id, name, prefix, type) VALUES (11, 'Other', '900',
 -- Data for Name: supplier; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public.supplier (id, account, city, contact_name, email, email2, freight_terms, name, payment_terms, phone, phone2, state, street, zip, address_id) VALUES (2, '22', 'Bensenville', NULL, 'koziarskim@yahoo.com', 'koziarskim@yahoo.com', 0, 'Marcin Koziarski2', 'Net 30', '7738025692', NULL, 'IL', '4N311 Hawthorne', '60106', NULL);
-INSERT INTO public.supplier (id, account, city, contact_name, email, email2, freight_terms, name, payment_terms, phone, phone2, state, street, zip, address_id) VALUES (1, '11', 'Bensenville', NULL, 'koziarskim@yahoo.com', 'koziarskim@yahoo.com', 0, 'Marcin Koziarski1', 'Net 30', '7738025692', NULL, 'IL', '4N311 Hawthorne', '60106', NULL);
-INSERT INTO public.supplier (id, account, city, contact_name, email, email2, freight_terms, name, payment_terms, phone, phone2, state, street, zip, address_id) VALUES (32, '33', 'Bensenville', NULL, 'koziarskim@yahoo.com', 'koziarskim@yahoo.com', 0, 'Marcin Koziarski3', 'Net 30', '7738025692', NULL, 'IL', '4N311 Hawthorne', '60106', NULL);
+INSERT INTO public.supplier (id, account, city, contact_name, email, email2, freight_terms, name, payment_terms, phone, phone2, state, street, zip, address_id) VALUES (2, '22', 'Bensenville', NULL, 'koziarskim@yahoo.com', 'koziarskim@yahoo.com', 'Collect', 'Marcin Koziarski2', 'Net 30', '7738025692', NULL, 'IL', '4N311 Hawthorne', '60106', NULL);
+INSERT INTO public.supplier (id, account, city, contact_name, email, email2, freight_terms, name, payment_terms, phone, phone2, state, street, zip, address_id) VALUES (1, '11', 'Bensenville', NULL, 'koziarskim@yahoo.com', 'koziarskim@yahoo.com', 'Delivered', 'Marcin Koziarski1', 'Net 30', '7738025692', NULL, 'IL', '4N311 Hawthorne', '60106', NULL);
+INSERT INTO public.supplier (id, account, city, contact_name, email, email2, freight_terms, name, payment_terms, phone, phone2, state, street, zip, address_id) VALUES (32, '33', 'Bensenville', NULL, 'koziarskim@yahoo.com', 'koziarskim@yahoo.com', 'Collect', 'Marcin Koziarski3', 'Net 30', '7738025692', NULL, 'IL', '4N311 Hawthorne', '60106', NULL);
 
 
 --
@@ -89,8 +89,8 @@ INSERT INTO public.component (id, case_pack, container_cost, delivery_cost, dept
 -- Data for Name: customer; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public.customer (id, account, contact_name, email, email2, freight_terms, name, payment_terms, phone, phone2, billig_address_id) VALUES (49, '123', 'Juzek', 'koziarskim@yahoo.com', 'koziarskim@yahoo.com', 1, 'Walmart', NULL, '7738025692', NULL, 52);
-INSERT INTO public.customer (id, account, contact_name, email, email2, freight_terms, name, payment_terms, phone, phone2, billig_address_id) VALUES (53, '221', 'Joe', 'koziarskim@yahoo.com', 'koziarskim@yahoo.com', 2, 'Costco', NULL, '7738025692', NULL, 56);
+INSERT INTO public.customer (id, account, contact_name, email, email2, freight_terms, name, payment_terms, phone, phone2, billig_address_id) VALUES (49, '123', 'Juzek', 'koziarskim@yahoo.com', 'koziarskim@yahoo.com', 'Collect', 'Walmart', NULL, '7738025692', NULL, 52);
+INSERT INTO public.customer (id, account, contact_name, email, email2, freight_terms, name, payment_terms, phone, phone2, billig_address_id) VALUES (53, '221', 'Joe', 'koziarskim@yahoo.com', 'koziarskim@yahoo.com', 'Delivered', 'Costco', NULL, '7738025692', NULL, 56);
 
 UPDATE public.address set customer_id = 49 where id = 50;
 UPDATE public.address set customer_id = 49 where id = 51;
@@ -1670,10 +1670,10 @@ INSERT INTO public.purchase_component (id, units, component_id, purchase_id) VAL
 -- Data for Name: sale; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public.sale (id, date, expected_date, freight_terms, number, payment_terms, customer_id, address_id) VALUES (15, NULL, NULL, 0, '11', NULL, 49, 51);
-INSERT INTO public.sale (id, date, expected_date, freight_terms, number, payment_terms, customer_id, address_id) VALUES (17, NULL, NULL, 0, '22', NULL, 53, 55);
-INSERT INTO public.sale (id, date, expected_date, freight_terms, number, payment_terms, customer_id, address_id) VALUES (38, NULL, NULL, 0, '38', NULL, 53, 54);
-INSERT INTO public.sale (id, date, expected_date, freight_terms, number, payment_terms, customer_id, address_id) VALUES (90, NULL, NULL, 0, '90', NULL, 49, 51);
+INSERT INTO public.sale (id, date, expected_date, freight_terms, number, payment_terms, customer_id, address_id) VALUES (15, NULL, NULL, 'Collect', '11', NULL, 49, 51);
+INSERT INTO public.sale (id, date, expected_date, freight_terms, number, payment_terms, customer_id, address_id) VALUES (17, NULL, NULL, 'Collect', '22', NULL, 53, 55);
+INSERT INTO public.sale (id, date, expected_date, freight_terms, number, payment_terms, customer_id, address_id) VALUES (38, NULL, NULL, 'Delivered', '38', NULL, 53, 54);
+INSERT INTO public.sale (id, date, expected_date, freight_terms, number, payment_terms, customer_id, address_id) VALUES (90, NULL, NULL, 'Delivered', '90', NULL, 49, 51);
 
 
 --

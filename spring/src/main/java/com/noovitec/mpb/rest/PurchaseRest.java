@@ -72,7 +72,7 @@ class PurchaseRest {
 	@GetMapping("/purchase/{id}/pdf")
 	HttpEntity<byte[]> getPdf(@PathVariable Long id) throws DocumentException, IOException {
 		Purchase purchase = purchaseRepo.findById(id).get();
-		if (purchase.getAttachment() == null && purchase.isLocked()) {
+		if (purchase.getAttachment() == null && !purchase.isLocked()) {
 			InputStream in = this.getClass().getClassLoader().getResourceAsStream("pdf/PO-Template.pdf");
 			PdfReader pdfTemplate = new PdfReader(in);
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -83,8 +83,8 @@ class PurchaseRest {
 			stamper.getAcroFields().setField("number", purchase.getNumber());
 			stamper.getAcroFields().setField("supplierName", purchase.getSupplier().getName());
 			stamper.getAcroFields().setField("paymentTerms", purchase.getSupplier().getPaymentTerms());
-			stamper.getAcroFields().setField("expectedDate", dateFormatter.format(purchase.getExpectedDate()));
-			stamper.getAcroFields().setField("freighTerms", String.valueOf(purchase.getSupplier().getFreightTerms()));
+			stamper.getAcroFields().setField("expectedDate", purchase.getExpectedDate()!=null?dateFormatter.format(purchase.getExpectedDate()):"");
+			stamper.getAcroFields().setField("freighTerms", purchase.getSupplier().getFreightTerms());
 			stamper.getAcroFields().setField("componentName", "Walmart");
 			stamper.getAcroFields().setField("componentDescription", "Walmart");
 			stamper.getAcroFields().setField("componentUnits", "Walmart");
