@@ -4,16 +4,15 @@
       <b-col cols="2">
         <span style="text-align: left; font-size: 18px; font-weight: bold">Purchase Order: {{purchase.number}}</span>
       </b-col>
-      <b-col cols="3">
-        <input class="form-control" type="text" readonly :value="purchase.supplier.name" placeholder="Expected Date">
-      </b-col>
-      <b-col cols="2">
-        <input class="form-control" type="text" readonly :value="purchase.expectedDate" placeholder="Expected Date">
+      <b-col cols="2" style="margin-top: -6px">
+        <label class="top-label">Supplier: {{purchase.supplier.name}}</label>
+        <br>
+        <label class="top-label">Exp. Date: {{purchase.expectedDate}}</label>
       </b-col>
       <b-col cols="2" style="margin-top: -6px">
-        <label class="top-label">Pay Term:{{purchase.supplier?purchase.supplier.paymentTerms:''}}</label>
+        <label class="top-label">Pay Term: {{purchase.supplier?purchase.supplier.paymentTerms:''}}</label>
         <br>
-        <label class="top-label">Freight Term:{{purchase.supplier?purchase.supplier.freightTerms:''}}</label>
+        <label class="top-label">Freight Term: {{purchase.supplier?purchase.supplier.freightTerms:''}}</label>
       </b-col>
       <b-col>
         <div style="text-align: right;">
@@ -21,7 +20,7 @@
           <a :href="pdfUrl()" target="_blank">
             <b-button style="margin: 2px;" type="submit" variant="secondary">PDF</b-button>
           </a>
-          <b-button style="margin: 2px;" type="reset" variant="success" @click="saveAndClose">Save & Close</b-button>
+          <b-button style="margin: 2px;" type="reset" variant="success" @click="complete()">Complete</b-button>
         </div>
       </b-col>
     </b-row>
@@ -68,14 +67,22 @@ export default {
         .get("/purchase/" + id)
         .then(response => {
           this.purchase = response.data;
-          this.getAvailableItems(response.data.id);
+           this.getAvailableItems(response.data.id);
         })
         .catch(e => {
           console.log("API error: " + e);
         });
     },
-    saveAndClose() {
-      router.push("/purchaseList");
+    complete() {
+      this.purchase.completed = true;
+      return http
+        .post("/purchase", this.purchase)
+        .then(response => {
+          this.getPurchaseData(response.data.id);
+        })
+        .catch(e => {
+          console.log("API error: " + e);
+        });
     },
     next() {
       window.history.back();

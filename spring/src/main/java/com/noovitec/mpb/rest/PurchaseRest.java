@@ -78,61 +78,30 @@ class PurchaseRest {
 	@GetMapping("/purchase/{id}/pdf")
 	HttpEntity<byte[]> getPdf(@PathVariable Long id) throws DocumentException, IOException {
 		Purchase purchase = purchaseRepo.findById(id).get();
-		if (purchase.getAttachment() == null || !purchase.isLocked()) {
-			NumberFormat currencyFormat = NumberFormat.getCurrencyInstance();
-			String componentName = "";
-			String componentDescription = "";
-			String componentUnits = "";
-			String componentPrice = "";
-			String componentTotalPrice = "";
-			List<ComponentDto> dtos = componentRepo.getComponentsForPurchaseAndSupplier(id, purchase.getSupplier().getId());
-			for(ComponentDto dto : dtos) {
-				if(dto.isSelected()) {
-					componentName += dto.getNumber()+"\n";
-					componentDescription += dto.getName()+"\n";
-					componentUnits += dto.getUnits()+"\n";
-					componentPrice += currencyFormat.format(dto.getUnitPrice())+"\n";
-					componentTotalPrice += currencyFormat.format(dto.getTotalPrice())+"\n";
-				}
+		byte[] data = null;
+		if(purchase.isCompleted()) {
+			if(purchase.getAttachment()!=null) {
+				Attachment attachment = attachmentRepo.findById(purchase.getAttachment().getId()).get();
+				data = attachment.getData();
+			}else {
+				data = this.generatePdf(purchase, true);
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+				Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+				String fileName = "PO" + purchase.getNumber() + "-" + sdf.format(timestamp) + ".pdf";
+				Attachment attachment = new Attachment();
+				attachment.setData(data);
+				attachment.setType("POR");
+				attachment.setName(fileName);
+				purchase.setAttachment(attachment);
+				purchaseRepo.save(purchase);
 			}
-			InputStream in = this.getClass().getClassLoader().getResourceAsStream("pdf/PO-Template.pdf");
-			PdfReader pdfTemplate = new PdfReader(in);
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			PdfStamper stamper = new PdfStamper(pdfTemplate, baos);
-			stamper.setFormFlattening(true);
-			SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyy");
-			stamper.getAcroFields().setField("date", dateFormat.format(new Date()));
-			stamper.getAcroFields().setField("number", purchase.getNumber());
-			stamper.getAcroFields().setField("supplierName", purchase.getSupplier().getName());
-			stamper.getAcroFields().setField("paymentTerms", purchase.getSupplier().getPaymentTerms());
-			stamper.getAcroFields().setField("expectedDate",
-					purchase.getExpectedDate() != null ? dateFormat.format(purchase.getExpectedDate()) : "");
-			stamper.getAcroFields().setField("freighTerms", purchase.getSupplier().getFreightTerms());
-			stamper.getAcroFields().setField("componentName", componentName);
-			stamper.getAcroFields().setField("componentDescription", componentDescription);
-			stamper.getAcroFields().setField("componentUnits", componentUnits);
-			stamper.getAcroFields().setField("componentPrice", componentPrice);
-			stamper.getAcroFields().setField("componentTotalPrice", componentTotalPrice);
-			stamper.getAcroFields().setField("totalPrice",
-					currencyFormat.format(purchase.getTotalPrice()));
-			stamper.close();
-			pdfTemplate.close();
-			byte[] data = baos.toByteArray();
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
-			Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-			String fileName = "PO" + purchase.getNumber() + "-" + sdf.format(timestamp) + ".pdf";
-			Attachment attachment = new Attachment();
-			attachment.setData(data);
-			attachment.setType("POR");
-			attachment.setName(fileName);
-			purchase.setAttachment(attachment);
-			purchaseRepo.save(purchase);
+		}else {
+			data = this.generatePdf(purchase, false);
 		}
-		Attachment attachment = attachmentRepo.findById(purchase.getAttachment().getId()).get();
-		byte[] data = attachment.getData();
 		HttpHeaders header = new HttpHeaders();
 		header.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-		header.set("Content-Disposition", "inline; filename=" + attachment.getName());
+		String fileName = purchase.getAttachment()!=null?purchase.getAttachment().getName():"PO"+purchase.getNumber()+"-Draft.pdf";
+		header.set("Content-Disposition", "inline; filename=" + fileName);
 		header.setContentLength(data.length);
 		return new HttpEntity<byte[]>(data, header);
 	}
@@ -157,5 +126,48 @@ class PurchaseRest {
 	public ResponseEntity<?> delete(@PathVariable Long id) {
 		purchaseRepo.deleteById(id);
 		return ResponseEntity.ok().build();
+	}
+	
+	
+	private byte[] generatePdf(Purchase purchase, boolean completed) throws IOException, DocumentException {
+		NumberFormat currencyFormat = NumberFormat.getCurrencyInstance();
+		String componentName = "";
+		String componentDescription = "";
+		String componentUnits = "";
+		String componentPrice = "";
+		String componentTotalPrice = "";
+		List<ComponentDto> dtos = componentRepo.getComponentsForPurchaseAndSupplier(purchase.getId(), purchase.getSupplier().getId());
+		for(ComponentDto dto : dtos) {
+			if(dto.isSelected()) {
+				componentName += dto.getNumber()+"\n";
+				componentDescription += dto.getName()+"\n";
+				componentUnits += dto.getUnits()+"\n";
+				componentPrice += currencyFormat.format(dto.getUnitPrice())+"\n";
+				componentTotalPrice += currencyFormat.format(dto.getTotalPrice())+"\n";
+			}
+		}
+		InputStream in = this.getClass().getClassLoader().getResourceAsStream("pdf/PO-Template.pdf");
+		PdfReader pdfTemplate = new PdfReader(in);
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		PdfStamper stamper = new PdfStamper(pdfTemplate, baos);
+		stamper.setFormFlattening(true);
+		SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyy");
+		stamper.getAcroFields().setField("date", dateFormat.format(new Date()));
+		stamper.getAcroFields().setField("number", purchase.getNumber());
+		stamper.getAcroFields().setField("supplierName", purchase.getSupplier().getName());
+		stamper.getAcroFields().setField("paymentTerms", purchase.getSupplier().getPaymentTerms());
+		stamper.getAcroFields().setField("expectedDate",
+				purchase.getExpectedDate() != null ? dateFormat.format(purchase.getExpectedDate()) : "");
+		stamper.getAcroFields().setField("freighTerms", purchase.getSupplier().getFreightTerms());
+		stamper.getAcroFields().setField("componentName", componentName);
+		stamper.getAcroFields().setField("componentDescription", componentDescription);
+		stamper.getAcroFields().setField("componentUnits", componentUnits);
+		stamper.getAcroFields().setField("componentPrice", componentPrice);
+		stamper.getAcroFields().setField("componentTotalPrice", componentTotalPrice);
+		stamper.getAcroFields().setField("totalPrice",
+				currencyFormat.format(purchase.getTotalPrice()));
+		stamper.close();
+		pdfTemplate.close();
+		return baos.toByteArray();
 	}
 }

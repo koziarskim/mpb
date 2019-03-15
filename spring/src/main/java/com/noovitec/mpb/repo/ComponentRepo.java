@@ -24,7 +24,6 @@ public interface ComponentRepo extends JpaRepository<Component, Long> {
 			+ "join i.saleItems si "
 			+ "join si.sale s "
 			+ "join s.purchaseSales ps with ps.purchase.id = :purchase_id "
-//			+ "join ps.purchase p "
 			+ "left join c.purchaseComponents pc with pc.purchase.id = ps.purchase.id and pc.component.id = c.id "
 			+ "where c.supplier.id = :supplier_id "
 			+ "group by c.id, pc.id")
