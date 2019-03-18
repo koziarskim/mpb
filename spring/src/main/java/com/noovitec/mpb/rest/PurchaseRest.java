@@ -32,7 +32,17 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.Font.FontFamily;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.pdf.ColumnText;
+import com.itextpdf.text.pdf.PdfContentByte;
+import com.itextpdf.text.pdf.PdfGState;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfStamper;
 import com.noovitec.mpb.dto.ComponentDto;
@@ -79,11 +89,11 @@ class PurchaseRest {
 	HttpEntity<byte[]> getPdf(@PathVariable Long id) throws DocumentException, IOException {
 		Purchase purchase = purchaseRepo.findById(id).get();
 		byte[] data = null;
-		if(purchase.isCompleted()) {
-			if(purchase.getAttachment()!=null) {
+		if (purchase.isCompleted()) {
+			if (purchase.getAttachment() != null) {
 				Attachment attachment = attachmentRepo.findById(purchase.getAttachment().getId()).get();
 				data = attachment.getData();
-			}else {
+			} else {
 				data = this.generatePdf(purchase, true);
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
 				Timestamp timestamp = new Timestamp(System.currentTimeMillis());
@@ -95,12 +105,13 @@ class PurchaseRest {
 				purchase.setAttachment(attachment);
 				purchaseRepo.save(purchase);
 			}
-		}else {
+		} else {
 			data = this.generatePdf(purchase, false);
 		}
 		HttpHeaders header = new HttpHeaders();
 		header.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-		String fileName = purchase.getAttachment()!=null?purchase.getAttachment().getName():"PO"+purchase.getNumber()+"-Draft.pdf";
+		String fileName = purchase.getAttachment() != null ? purchase.getAttachment().getName()
+				: "PO" + purchase.getNumber() + "-Draft.pdf";
 		header.set("Content-Disposition", "inline; filename=" + fileName);
 		header.setContentLength(data.length);
 		return new HttpEntity<byte[]>(data, header);
@@ -127,8 +138,7 @@ class PurchaseRest {
 		purchaseRepo.deleteById(id);
 		return ResponseEntity.ok().build();
 	}
-	
-	
+
 	private byte[] generatePdf(Purchase purchase, boolean completed) throws IOException, DocumentException {
 		NumberFormat currencyFormat = NumberFormat.getCurrencyInstance();
 		String componentName = "";
@@ -136,14 +146,15 @@ class PurchaseRest {
 		String componentUnits = "";
 		String componentPrice = "";
 		String componentTotalPrice = "";
-		List<ComponentDto> dtos = componentRepo.getComponentsForPurchaseAndSupplier(purchase.getId(), purchase.getSupplier().getId());
-		for(ComponentDto dto : dtos) {
-			if(dto.isSelected()) {
-				componentName += dto.getNumber()+"\n";
-				componentDescription += dto.getName()+"\n";
-				componentUnits += dto.getUnits()+"\n";
-				componentPrice += currencyFormat.format(dto.getUnitPrice())+"\n";
-				componentTotalPrice += currencyFormat.format(dto.getTotalPrice())+"\n";
+		List<ComponentDto> dtos = componentRepo.getComponentsForPurchaseAndSupplier(purchase.getId(),
+				purchase.getSupplier().getId());
+		for (ComponentDto dto : dtos) {
+			if (dto.isSelected()) {
+				componentName += dto.getNumber() + "\n";
+				componentDescription += dto.getName() + "\n";
+				componentUnits += dto.getUnits() + "\n";
+				componentPrice += currencyFormat.format(dto.getUnitPrice()) + "\n";
+				componentTotalPrice += currencyFormat.format(dto.getTotalPrice()) + "\n";
 			}
 		}
 		InputStream in = this.getClass().getClassLoader().getResourceAsStream("pdf/PO-Template.pdf");
@@ -164,8 +175,17 @@ class PurchaseRest {
 		stamper.getAcroFields().setField("componentUnits", componentUnits);
 		stamper.getAcroFields().setField("componentPrice", componentPrice);
 		stamper.getAcroFields().setField("componentTotalPrice", componentTotalPrice);
-		stamper.getAcroFields().setField("totalPrice",
-				currencyFormat.format(purchase.getTotalPrice()));
+		stamper.getAcroFields().setField("totalPrice", currencyFormat.format(purchase.getTotalPrice()));
+		if (!completed) {
+			PdfContentByte under = stamper.getUnderContent(1);
+			PdfGState gs1 = new PdfGState();
+			gs1.setFillOpacity(0.5f);
+			under.setGState(gs1);
+			Font f = new Font(FontFamily.HELVETICA, 15);
+			Phrase p = new Phrase(
+					"DAFT...DRAFT...DRAFT...DRAFT...DRAFT...DRAFT...DRAFT...DRAFT...DRAFT...DRAFT...DRAFT...DRAFT", f);
+			ColumnText.showTextAligned(under, Element.ALIGN_CENTER, p, 300, 400, 45f);
+		}
 		stamper.close();
 		pdfTemplate.close();
 		return baos.toByteArray();
