@@ -15,6 +15,8 @@ import PurchaseList from "./components/PurchaseList";
 import PurchaseEdit from "./components/PurchaseEdit";
 import PurchaseItem from "./components/PurchaseItem";
 import PurchaseComponent from "./components/PurchaseComponent";
+import Inventory from "./components/Inventory";
+
 
 
 Vue.use(Router);
@@ -103,5 +105,9 @@ export default new Router({
       name: "PurchaseItem",
       component: PurchaseItem
     },
-  ]
+    {
+      path: "/Inventory",
+      name: "Inventory",
+      component: Inventory
+    },  ]
 });
