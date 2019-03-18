@@ -7,6 +7,9 @@
       <b-col cols="2">
         <input class="form-control" type="text" v-model="purchase.number" placeholder="Item name">
       </b-col>
+      <b-col cols="2">
+        <input class="form-control" type="date" v-model="date" placeholder="Date">
+      </b-col>
       <b-col>
         <div style="text-align: right;">
           <b-button style="margin: 2px;" type="submit" variant="info" @click="goToPurchaseComponent()">Next</b-button>
@@ -33,6 +36,7 @@
 <script>
 import http from "../http-common";
 import router from "../router";
+import moment from "moment";
 
 export default {
   data() {
@@ -50,17 +54,23 @@ export default {
         { key: "date", label: "Date", sortable: true },
         { key: "dc", label: "Distribution", sortable: false },
         { key: "action", label: "Action", sortable: false }
-      ]
+      ],
+      date: "",
     };
   },
   computed: {},
-  watch: {},
+  watch: {
+      date(new_date, old_date){
+          this.purchase.date = new_date;
+      }
+  },
   methods: {
     getPurchaseData(id) {
       http
         .get("/purchase/" + id)
         .then(response => {
           this.purchase = response.data;
+          this.date = moment(response.data.date?response.data.date:moment()).utc().format("YYYY-MM-DD");
           this.getAvailableSales(response.data.id);
         })
         .catch(e => {

@@ -7,7 +7,7 @@
       <b-col cols="2" style="margin-top: -6px">
         <label class="top-label">Supplier: {{purchase.supplier.name}}</label>
         <br>
-        <label class="top-label">Exp. Date: {{purchase.expectedDate}}</label>
+        <label class="top-label">Exp. Date: {{purchase.expectedDate | formatDate}}</label>
       </b-col>
       <b-col cols="2" style="margin-top: -6px">
         <label class="top-label">Pay Term: {{purchase.supplier?purchase.supplier.paymentTerms:''}}</label>

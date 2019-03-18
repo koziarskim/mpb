@@ -8,7 +8,7 @@
         <b-select option-value="id" option-text="name" :list="availableSuppliers" v-model="supplier" placeholder="Supplier"></b-select>
       </b-col>
       <b-col cols="2">
-        <input class="form-control" type="text" v-model="purchase.expectedDate" placeholder="Expected Date">
+        <input class="form-control" type="date" v-model="expectedDate" placeholder="Expected Date">
       </b-col>
       <b-col cols="2" style="margin-top: -6px">
         <label class="top-label">Pay Term:{{purchase.supplier?purchase.supplier.paymentTerms:''}}</label>
@@ -47,6 +47,7 @@
 <script>
 import http from "../http-common";
 import router from "../router";
+import moment from "moment";
 
 export default {
   data() {
@@ -64,7 +65,8 @@ export default {
         { key: "unitPrice", label: "Rate", sortable: true },
         { key: "totalPrice", label: "Amount", sortable: true },
         { key: "action", label: "Action", sortable: true }
-      ]
+      ],
+      expectedDate: "",
     };
   },
   computed: {
@@ -79,6 +81,9 @@ export default {
     }
   },
   watch: {
+    expectedDate(new_date, old_date){
+        this.purchase.expectedDate = new_date;
+    },
     supplier: function(new_supplier, old_supplier) {
       if (!new_supplier) {
         return;
@@ -107,6 +112,7 @@ export default {
         .then(response => {
           this.purchase = response.data;
           this.supplier = response.data.supplier;
+          this.expectedDate = response.data.expectedDate?moment(response.data.expectedDate).utc().format("YYYY-MM-DD"):"";
           this.getAvailableSuppliers(response.data.id);
         })
         .catch(e => {

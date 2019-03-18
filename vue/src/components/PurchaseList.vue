@@ -24,6 +24,12 @@
                 <template slot="pdf" slot-scope="row">
                     <a :href="rowPdfUrl(row.item.id)" target="_blank"><img src="../assets/pdf-download.png" width="20px"/></a>
                 </template>
+                <template slot="expectedDate" slot-scope="row">
+                    <span>{{row.item.expectedDate | formatDate}}</span>
+                </template>
+                <template slot="date" slot-scope="row">
+                    <span>{{row.item.date | formatDate}}</span>
+                </template>
         </b-table>
         <b-alert :show="alertSecs" dismissible variant="warning" @dismiss-count-down="(secs) => { alertSecs = secs }">
                 {{alertMessage}}
