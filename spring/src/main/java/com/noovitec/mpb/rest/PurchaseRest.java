@@ -89,22 +89,9 @@ class PurchaseRest {
 	HttpEntity<byte[]> getPdf(@PathVariable Long id) throws DocumentException, IOException {
 		Purchase purchase = purchaseRepo.findById(id).get();
 		byte[] data = null;
-		if (purchase.isCompleted()) {
-			if (purchase.getAttachment() != null) {
-				Attachment attachment = attachmentRepo.findById(purchase.getAttachment().getId()).get();
-				data = attachment.getData();
-			} else {
-				data = this.generatePdf(purchase, true);
-				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
-				Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-				String fileName = "PO" + purchase.getNumber() + "-" + sdf.format(timestamp) + ".pdf";
-				Attachment attachment = new Attachment();
-				attachment.setData(data);
-				attachment.setType("POR");
-				attachment.setName(fileName);
-				purchase.setAttachment(attachment);
-				purchaseRepo.save(purchase);
-			}
+		if (purchase.isCompleted() && purchase.getAttachment() != null) {
+			Attachment attachment = attachmentRepo.findById(purchase.getAttachment().getId()).get();
+			data = attachment.getData();
 		} else {
 			data = this.generatePdf(purchase, false);
 		}
@@ -117,9 +104,10 @@ class PurchaseRest {
 		return new HttpEntity<byte[]>(data, header);
 	}
 
+	// Save and update.
 	@PostMapping("/purchase")
 	ResponseEntity<Purchase> post(@RequestBody(required = false) Purchase purchase)
-			throws URISyntaxException, JsonParseException, JsonMappingException, IOException {
+			throws URISyntaxException, JsonParseException, JsonMappingException, IOException, DocumentException {
 		if (purchase == null) {
 			purchase = new Purchase();
 		}
@@ -128,6 +116,17 @@ class PurchaseRest {
 		}
 		for (PurchaseComponent pc : purchase.getPurchaseComponents()) {
 			pc.setPurchase(purchase);
+		}
+		if (purchase.isCompleted() && purchase.getAttachment() == null) {
+			byte[] data = this.generatePdf(purchase, true);
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+			Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+			String fileName = "PO" + purchase.getNumber() + "-" + sdf.format(timestamp) + ".pdf";
+			Attachment attachment = new Attachment();
+			attachment.setData(data);
+			attachment.setType("POR");
+			attachment.setName(fileName);
+			purchase.setAttachment(attachment);
 		}
 		Purchase result = purchaseRepo.save(purchase);
 		return ResponseEntity.ok().body(result);
