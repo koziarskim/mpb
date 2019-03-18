@@ -17,10 +17,10 @@
       <b-col>
         <div style="text-align: right;">
           <b-button style="margin: 2px;" type="submit" variant="info" @click="back()">Back</b-button>
-          <a :href="pdfUrl()" target="_blank">
-            <b-button style="margin: 2px;" type="submit" variant="secondary">PDF</b-button>
-          </a>
           <b-button :disabled="purchase.completed" style="margin: 2px;" type="reset" variant="success" @click="complete()">Complete</b-button>
+          <a :href="pdfUrl()" target="_blank">
+            <img style="margin: 2px;" src="../assets/pdf-download.png" width="25px">
+          </a>
         </div>
       </b-col>
     </b-row>
@@ -67,7 +67,7 @@ export default {
         .get("/purchase/" + id)
         .then(response => {
           this.purchase = response.data;
-           this.getAvailableItems(response.data.id);
+          this.getAvailableItems(response.data.id);
         })
         .catch(e => {
           console.log("API error: " + e);

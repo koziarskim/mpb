@@ -15,8 +15,14 @@
                 <template slot="number" slot-scope="row">
                     <b-button size="sm" @click.stop=goToPurchase(row.item.id) variant="link">{{row.item.number}}</b-button>
                 </template>
+                <template slot="completed" slot-scope="row">
+                    <span>{{row.item.completed?"Yes":"No"}}</span>
+                </template>
                 <template slot="action" slot-scope="row">
                     <b-button size="sm" @click.stop="deletePurchase(row.item.id)">x</b-button>
+                </template>
+                <template slot="pdf" slot-scope="row">
+                    <a :href="rowPdfUrl(row.item.id)" target="_blank"><img src="../assets/pdf-download.png" width="20px"/></a>
                 </template>
         </b-table>
         <b-alert :show="alertSecs" dismissible variant="warning" @dismiss-count-down="(secs) => { alertSecs = secs }">
@@ -27,6 +33,7 @@
 <script>
 import http from "../http-common";
 import router from "../router";
+import httpUtils from "../httpUtils";
 
 export default {
   data() {
@@ -37,7 +44,11 @@ export default {
       sortDesc: false,
       fields: [
         { key: "number", label: "P.O. #", sortable: true },
+        { key: "supplier.name", label: "Supplier", sortable: true },
         { key: "date", label: "Date", sortable: true },
+        { key: "expectedDate", label: "Expected", sortable: true },
+        { key: "completed", label: "Completed", sortable: true },
+        { key: "pdf", label: "PDF", sortable: true },
         { key: "action", label: "Action", sortable: false}
       ],
       purchases: []
@@ -92,6 +103,9 @@ export default {
             router.push('/purchaseEdit/'+id);
         }
     },
+    rowPdfUrl: function(purchase_id) {
+      return httpUtils.baseUrl + "/purchase/" + purchase_id + "/pdf";
+    }
   },
   mounted() {
      this.getPurchasesData();
