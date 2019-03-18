@@ -20,7 +20,7 @@
           <a :href="pdfUrl()" target="_blank">
             <b-button style="margin: 2px;" type="submit" variant="secondary">PDF</b-button>
           </a>
-          <b-button style="margin: 2px;" type="reset" variant="success" @click="complete()">Complete</b-button>
+          <b-button :disabled="purchase.completed" style="margin: 2px;" type="reset" variant="success" @click="complete()">Complete</b-button>
         </div>
       </b-col>
     </b-row>
