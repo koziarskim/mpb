@@ -5,12 +5,12 @@
 -- Data for Name: address; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public.address (id, city, dc, state, street, zip, customer_id) VALUES (52, 'Chicago', NULL, 'IL', '123 Main St', '60015', NULL);
-INSERT INTO public.address (id, city, dc, state, street, zip, customer_id) VALUES (50, 'Chicago', 'DC1', 'IL', '122 Main', '60634', NULL);
-INSERT INTO public.address (id, city, dc, state, street, zip, customer_id) VALUES (51, 'Chicago', 'DC2', 'IL', '111 Green St.', '60634', NULL);
-INSERT INTO public.address (id, city, dc, state, street, zip, customer_id) VALUES (56, 'Chicago', NULL, 'IL', '111 Red Oak', '60634', NULL);
-INSERT INTO public.address (id, city, dc, state, street, zip, customer_id) VALUES (54, 'Chicago', 'DC1', 'IL', '333 Orange Ave', '60634', NULL);
-INSERT INTO public.address (id, city, dc, state, street, zip, customer_id) VALUES (55, 'Chicago', 'DC2', 'IL', '4444 Mongo', '60643', NULL);
+INSERT INTO public.address (id, city, dc, state, street, zip) VALUES (52, 'Chicago', NULL, 'IL', '123 Main St', '60015');
+INSERT INTO public.address (id, city, dc, state, street, zip) VALUES (50, 'Chicago', 'DC1', 'IL', '122 Main', '60634');
+INSERT INTO public.address (id, city, dc, state, street, zip) VALUES (51, 'Chicago', 'DC2', 'IL', '111 Green St.', '60634');
+INSERT INTO public.address (id, city, dc, state, street, zip) VALUES (56, 'Chicago', NULL, 'IL', '111 Red Oak', '60634');
+INSERT INTO public.address (id, city, dc, state, street, zip) VALUES (54, 'Chicago', 'DC1', 'IL', '333 Orange Ave', '60634');
+INSERT INTO public.address (id, city, dc, state, street, zip) VALUES (55, 'Chicago', 'DC2', 'IL', '4444 Mongo', '60643');
 
 
 --
@@ -92,10 +92,10 @@ INSERT INTO public.component (id, case_pack, container_cost, delivery_cost, dept
 INSERT INTO public.customer (id, account, contact_name, email, email2, freight_terms, name, payment_terms, phone, phone2, billig_address_id) VALUES (49, '123', 'Juzek', 'koziarskim@yahoo.com', 'koziarskim@yahoo.com', 'Collect', 'Walmart', NULL, '7738025692', NULL, 52);
 INSERT INTO public.customer (id, account, contact_name, email, email2, freight_terms, name, payment_terms, phone, phone2, billig_address_id) VALUES (53, '221', 'Joe', 'koziarskim@yahoo.com', 'koziarskim@yahoo.com', 'Delivered', 'Costco', NULL, '7738025692', NULL, 56);
 
-UPDATE public.address set customer_id = 49 where id = 50;
-UPDATE public.address set customer_id = 49 where id = 51;
-UPDATE public.address set customer_id = 53 where id = 54;
-UPDATE public.address set customer_id = 53 where id = 55;
+INSERT INTO public.customer_address (customer_id, address_id) VALUES (49, 50);
+INSERT INTO public.customer_address (customer_id, address_id) VALUES (49, 51);
+INSERT INTO public.customer_address (customer_id, address_id) VALUES (53, 54);
+INSERT INTO public.customer_address (customer_id, address_id) VALUES (53, 55);
 
 --
 -- TOC entry 2235 (class 0 OID 267012)

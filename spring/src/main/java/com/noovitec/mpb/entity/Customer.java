@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
@@ -39,7 +40,8 @@ public class Customer {
 
 //	@JsonIgnoreProperties(value = { "customer" }, allowSetters = true)
 	@OneToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name = "customer_id")
+//	@JoinColumn(name = "customer_id")
+	@JoinTable(name="customer_address", joinColumns = @JoinColumn( name="customer_id"), inverseJoinColumns = @JoinColumn( name="address_id"))
 	@OrderBy("id DESC")
 	private Collection<Address> addresses = new HashSet<Address>();
 
