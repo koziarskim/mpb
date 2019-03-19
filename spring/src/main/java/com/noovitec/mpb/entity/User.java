@@ -28,7 +28,7 @@ public class User {
 	@GeneratedValue
 	private Long id;
 	private String number; // employee name
-	private String name; // userName, loginName, etc.
+	private String username; // userName, loginName, etc.
 	private String password;
 	private String firstName;
 	private String lastName;
