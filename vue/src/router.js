@@ -16,8 +16,7 @@ import PurchaseEdit from "./components/PurchaseEdit";
 import PurchaseItem from "./components/PurchaseItem";
 import PurchaseComponent from "./components/PurchaseComponent";
 import Inventory from "./components/Inventory";
-
-
+import Users from "./components/Users";
 
 Vue.use(Router);
 
@@ -109,5 +108,11 @@ export default new Router({
       path: "/Inventory",
       name: "Inventory",
       component: Inventory
-    },  ]
+    },
+    {
+      path: "/Users",
+      name: "Users",
+      component: Users
+    }
+  ]
 });
