@@ -38,14 +38,11 @@ public class Customer {
 	private String email2;
 	private String contactName;
 
-//	@JsonIgnoreProperties(value = { "customer" }, allowSetters = true)
 	@OneToMany(cascade = CascadeType.ALL)
-//	@JoinColumn(name = "customer_id")
-	@JoinTable(name="customer_address", joinColumns = @JoinColumn( name="customer_id"), inverseJoinColumns = @JoinColumn( name="address_id"))
+	@JoinTable(name = "customer_address", joinColumns = @JoinColumn(name = "customer_id"), inverseJoinColumns = @JoinColumn(name = "address_id"))
 	@OrderBy("id DESC")
 	private Collection<Address> addresses = new HashSet<Address>();
 
-//	@JsonIgnoreProperties(value = { "customer" }, allowSetters = true)
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "billig_address_id", referencedColumnName = "id")
 	private Address billingAddress;
