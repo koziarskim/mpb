@@ -22,7 +22,7 @@
         <span>{{row.item.completed?"Yes":"No"}}</span>
       </template>
       <template slot="action" slot-scope="row">
-        <b-button size="sm" @click.stop="deletePurchase(row.item.id)">x</b-button>
+        <b-button size="sm" @click.stop="deletePurchase(row.item.id)" :disabled="disabled(row.item)">x</b-button>
       </template>
       <template slot="pdf" slot-scope="row">
         <a :href="rowPdfUrl(row.item.id)" target="_blank">
@@ -84,6 +84,9 @@ export default {
     }
   },
   methods: {
+    disabled(purchase) {
+      return purchase.completed;
+    },
     showAlert(message) {
       (this.alertSecs = 3), (this.alertMessage = message);
     },

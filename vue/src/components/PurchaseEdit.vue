@@ -5,15 +5,15 @@
         <span style="text-align: left; font-size: 18px; font-weight: bold">Purchase Order:</span>
       </b-col>
       <b-col cols="2">
-        <input class="form-control" type="text" v-model="purchase.number" placeholder="Item name">
+        <input class="form-control" type="text" v-model="purchase.number" placeholder="Item name" :disabled="disabled()">
       </b-col>
       <b-col cols="2">
-        <input class="form-control" type="date" v-model="date" placeholder="Date">
+        <input class="form-control" type="date" v-model="date" placeholder="Date" :disabled="disabled()">
       </b-col>
       <b-col>
         <div style="text-align: right;">
           <b-button style="margin: 2px;" type="submit" variant="info" @click="goToPurchaseComponent()">Next</b-button>
-          <b-button style="margin: 2px;" type="reset" variant="success" @click="saveAndClose">Save & Close</b-button>
+          <b-button style="margin: 2px;" type="reset" variant="success" @click="saveAndClose" :disabled="disabled()">Save & Close</b-button>
         </div>
       </b-col>
     </b-row>
@@ -25,7 +25,7 @@
             <b-button size="sm" @click.stop="goToSale(row.item.id)" variant="link">{{row.item.number}}</b-button>
           </template>
           <template slot="action" slot-scope="row">
-            <b-form-checkbox v-model="row.item.selected" @input="rowSelect(row.item.id, row.item.selected)"></b-form-checkbox>
+            <b-form-checkbox v-model="row.item.selected" @input="rowSelect(row.item.id, row.item.selected)" :disabled="disabled()"></b-form-checkbox>
           </template>
         </b-table>
       </b-col>
@@ -65,6 +65,9 @@ export default {
       }
   },
   methods: {
+    disabled(){
+        return this.purchase.completed;
+    },
     getPurchaseData(id) {
       http
         .get("/purchase/" + id)

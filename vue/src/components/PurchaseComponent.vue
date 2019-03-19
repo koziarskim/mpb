@@ -5,10 +5,11 @@
         <span style="text-align: left; font-size: 18px; font-weight: bold">Purchase Order: {{purchase.number}}</span>
       </b-col>
       <b-col cols="3">
-        <b-select option-value="id" option-text="name" :list="availableSuppliers" v-model="supplier" placeholder="Supplier"></b-select>
+        <b-select v-if="!disabled()" option-value="id" option-text="name" :list="availableSuppliers" v-model="supplier" placeholder="Supplier" :disabled="disabled()"></b-select>
+        <input v-if="disabled()" class="form-control" v-model="supplier.name" :disabled="disabled()">      
       </b-col>
       <b-col cols="2">
-        <input class="form-control" type="date" v-model="expectedDate" placeholder="Expected Date">
+        <input class="form-control" type="date" v-model="expectedDate" placeholder="Expected Date" :disabled="disabled()">
       </b-col>
       <b-col cols="2" style="margin-top: -6px">
         <label class="top-label">Pay Term:{{purchase.supplier?purchase.supplier.paymentTerms:''}}</label>
@@ -19,7 +20,7 @@
         <div style="text-align: right;">
           <b-button style="margin: 2px;" type="submit" variant="info" @click="goToPurchaseEdit()">Back</b-button>
           <b-button style="margin: 2px;" type="submit" variant="info" @click="goToPurchaseItem()">Next</b-button>
-          <b-button style="margin: 2px;" type="reset" variant="success" @click="saveAndClose">Save & Close</b-button>
+          <b-button style="margin: 2px;" type="reset" variant="success" @click="saveAndClose" :disabled="disabled()">Save & Close</b-button>
         </div>
       </b-col>
     </b-row>
@@ -31,7 +32,7 @@
             <b-button size="sm" @click.stop="goToComponent(row.item.id)" variant="link">{{row.item.number}}</b-button>
           </template>
           <template slot="action" slot-scope="row">
-            <b-form-checkbox v-model="row.item.selected" @input="rowSelect(row.item.id, row.item.selected)"></b-form-checkbox>
+            <b-form-checkbox v-model="row.item.selected" @input="rowSelect(row.item.id, row.item.selected)" :disabled="disabled()"></b-form-checkbox>
           </template>
         </b-table>
       </b-col>
@@ -66,7 +67,7 @@ export default {
         { key: "totalPrice", label: "Amount", sortable: true },
         { key: "action", label: "Action", sortable: true }
       ],
-      expectedDate: "",
+      expectedDate: ""
     };
   },
   computed: {
@@ -81,8 +82,8 @@ export default {
     }
   },
   watch: {
-    expectedDate(new_date, old_date){
-        this.purchase.expectedDate = new_date;
+    expectedDate(new_date, old_date) {
+      this.purchase.expectedDate = new_date;
     },
     supplier: function(new_supplier, old_supplier) {
       if (!new_supplier) {
@@ -106,13 +107,20 @@ export default {
     }
   },
   methods: {
+    disabled() {
+      return this.purchase.completed;
+    },
     getPurchaseData(id) {
       http
         .get("/purchase/" + id)
         .then(response => {
           this.purchase = response.data;
           this.supplier = response.data.supplier;
-          this.expectedDate = response.data.expectedDate?moment(response.data.expectedDate).utc().format("YYYY-MM-DD"):"";
+          this.expectedDate = response.data.expectedDate
+            ? moment(response.data.expectedDate)
+                .utc()
+                .format("YYYY-MM-DD")
+            : "";
           this.getAvailableSuppliers(response.data.id);
         })
         .catch(e => {
