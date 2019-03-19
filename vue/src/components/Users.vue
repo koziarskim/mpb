@@ -32,7 +32,7 @@
             </b-col>
             <b-col cols="4">
               <label class="top-label">Last Name:</label>
-              <input class="form-control" type="text" v-model="user.lastName" placeholder="Last Nae">
+              <input class="form-control" type="text" v-model="user.lastName" placeholder="Last Name">
             </b-col>
           </b-row>
           <b-row>
@@ -48,11 +48,8 @@
           <br>
           <div v-for="role in availableRoles" v-bind:key="role.id">
             <b-row>
-              <b-col cols="2">
-                <b-form-checkbox v-model="role.selected"></b-form-checkbox>
-              </b-col>
               <b-col>
-                <label>{{role.name}} - {{role.description}}</label>
+                <b-form-checkbox v-model="role.selected"></b-form-checkbox><label>{{role.name}} - {{role.description}}</label>
               </b-col>
             </b-row>
           </div>
