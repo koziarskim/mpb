@@ -31,7 +31,7 @@ public class Role {
 	private String description;
 
 	@JsonIgnoreProperties(value = { "roles" }, allowSetters=true)
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany()
 	@JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "role_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
 	private Collection<User> users = new HashSet<User>();
 

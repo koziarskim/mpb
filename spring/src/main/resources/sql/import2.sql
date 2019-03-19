@@ -1703,6 +1703,10 @@ INSERT INTO public.sale_item (id, units, item_id, sale_id) VALUES (19, NULL, 6, 
 INSERT INTO public.sale_item (id, units, item_id, sale_id) VALUES (39, NULL, 36, 38);
 INSERT INTO public.sale_item (id, units, item_id, sale_id) VALUES (91, NULL, 11, 90);
 
+INSERT INTO public.role (id, code, name, description) VALUES (1, 'ADMIN', 'Administrator', 'Can access everything');
+INSERT INTO public.role (id, code, name, description) VALUES (2, 'POADMIN', 'P.O. Administrator', 'Can create/modify P.O.');
+INSERT INTO public.role (id, code, name, description) VALUES (3, 'INVENTORY', 'Inventory Admin', 'Can create/modify inventory');
+
 --
 -- TOC entry 2243 (class 0 OID 0)
 -- Dependencies: 181

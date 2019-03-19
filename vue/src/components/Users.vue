@@ -3,7 +3,7 @@
     <div class="d-flex justify-content-between align-items-center">
       <h2 style="text-align: left;">Users</h2>
       <div style="text-align: right;">
-        <b-button v-if="!editMode" type="submit" variant="primary" @click="editUser('')">New User</b-button>
+        <b-button v-if="!editMode" type="submit" variant="primary" @click="createUser()">New User</b-button>
         <b-button v-if="editMode" type="reset" variant="success" @click="saveAndClose()">Save & Close</b-button>
       </div>
     </div>
@@ -12,7 +12,7 @@
       <b-col cols="5">
         <b-table v-if="users.length>0" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="users" :fields="fields">
           <template slot="number" slot-scope="row">
-            <b-button size="sm" @click.stop="editUser(row.item.id)" variant="link">{{row.item.number}}</b-button>
+            <b-button size="sm" @click.stop="editUser(row.item)" variant="link">{{row.item.number}}</b-button>
           </template>
           <template slot="action" slot-scope="row">
             <b-button size="sm" @click.stop="deleteUser(row.item.id)">x</b-button>
@@ -23,18 +23,16 @@
         <div v-if="editMode">
           <b-row>
             <b-col cols="4">
+              <label class="top-label">Account:</label>
+              <input class="form-control" type="text" v-model="user.number" placeholder="Account">
+            </b-col>
+            <b-col cols="4">
               <label class="top-label">First Name:</label>
               <input class="form-control" type="text" v-model="user.firstName" placeholder="First Name">
             </b-col>
             <b-col cols="4">
               <label class="top-label">Last Name:</label>
               <input class="form-control" type="text" v-model="user.lastName" placeholder="Last Nae">
-            </b-col>
-          </b-row>
-          <b-row>
-            <b-col cols="4">
-              <label class="top-label">Account:</label>
-              <input class="form-control" type="text" v-model="user.number" placeholder="Account">
             </b-col>
           </b-row>
           <b-row>
@@ -47,6 +45,17 @@
               <input class="form-control" type="password" v-model="user.password" placeholder="Password">
             </b-col>
           </b-row>
+          <br>
+          <div v-for="role in availableRoles" v-bind:key="role.id">
+            <b-row>
+              <b-col cols="2">
+                <b-form-checkbox v-model="role.selected"></b-form-checkbox>
+              </b-col>
+              <b-col>
+                <label>{{role.name}} - {{role.description}}</label>
+              </b-col>
+            </b-row>
+          </div>
         </div>
       </b-col>
     </b-row>
@@ -79,7 +88,7 @@ export default {
         .then(response => {
           this.users = response.data;
           if (response.data.length == 0) {
-            this.editMode = true;
+            this.createUser();
           }
           this.getAvailableRoles();
         })
@@ -88,10 +97,18 @@ export default {
         });
     },
     save() {
+      this.user.roles = [];
+      this.availableRoles.forEach(role => {
+        if (role.selected) {
+          this.user.roles.push(role);
+        }
+      });
       return http
         .post("/user", this.user)
         .then(response => {
+          //   this.user = response.data;
           this.getUsers();
+          return response;
         })
         .catch(e => {
           console.log("API error: " + e);
@@ -112,10 +129,26 @@ export default {
           console.log("API Error: " + e);
         });
     },
-    editUser(user_id) {
-      this.user = {};
-      if (user_id) {
-        this.user = this.users.find(user => user.id == user_id);
+    createUser() {
+      return http
+        .post("/user")
+        .then(response => {
+          this.editUser(response.data);
+        })
+        .catch(e => {
+          console.log("API error: " + e);
+        });
+    },
+    editUser(user) {
+      this.user = user;
+      if (this.user.roles) {
+        this.availableRoles.forEach(role => {
+          role.selected = false;
+          var userRole = this.user.roles.find(r => r.id == role.id);
+          if (userRole) {
+            role.selected = true;
+          }
+        });
       }
       this.editMode = true;
     },
@@ -128,6 +161,9 @@ export default {
         .catch(e => {
           console.log("API error: " + e);
         });
+    },
+    isSelected(role_id) {
+      return false;
     }
   },
   mounted() {
