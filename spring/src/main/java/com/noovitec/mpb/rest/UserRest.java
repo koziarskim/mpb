@@ -36,8 +36,8 @@ class UserRest {
 	}
 
 	@GetMapping("/user")
-	Collection<User> getAll() {
-		return userRepo.findAll();
+	ResponseEntity<Collection<User>> getAll() {
+		return ResponseEntity.ok().body(userRepo.findAll());
 	}
 
 	@GetMapping("/user/{id}")
