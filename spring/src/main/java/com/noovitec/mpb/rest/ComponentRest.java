@@ -28,6 +28,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.noovitec.mpb.dto.ComponentDto;
+import com.noovitec.mpb.dto.InventoryDto;
 import com.noovitec.mpb.entity.Attachment;
 import com.noovitec.mpb.entity.Category;
 import com.noovitec.mpb.entity.Component;
@@ -81,6 +82,12 @@ class ComponentRest {
 	@GetMapping("/component/purchase/{purchase_id}/supplier/{supplier_id}")
 	Collection<ComponentDto> getComponentsForPurchaseAndSupplier(@PathVariable Long purchase_id, @PathVariable Long supplier_id) {
 		Collection<ComponentDto> dtos = componentRepo.getComponentsForPurchaseAndSupplier(purchase_id, supplier_id);
+		return dtos;
+	}
+
+	@GetMapping("/component/inventory")
+	Collection<InventoryDto> getComponentInventory() {
+		Collection<InventoryDto> dtos = componentRepo.getInventory();
 		return dtos;
 	}
 

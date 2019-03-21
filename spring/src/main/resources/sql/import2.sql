@@ -77,10 +77,10 @@ INSERT INTO public.supplier (id, account, city, contact_name, email, email2, fre
 -- Data for Name: component; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public.component (id, case_pack, container_cost, delivery_cost, depth, description, duty_percentage, height, name, number, other_cost, supplier_stock_number, total_landed_cost, unit_cost, units_per_container, weight, width, attachment_id, category_id, supplier_id) VALUES (4, 1, 0.00, 0.00, 0, NULL, 0.00, 0, '22', '1004', 0.00, NULL, 0.00, 0.00, 1, 0.00, 0, NULL, 1, 2);
-INSERT INTO public.component (id, case_pack, container_cost, delivery_cost, depth, description, duty_percentage, height, name, number, other_cost, supplier_stock_number, total_landed_cost, unit_cost, units_per_container, weight, width, attachment_id, category_id, supplier_id) VALUES (3, 1, 0.00, 0.00, 0, NULL, 0.00, 0, '11', '1003', 0.00, NULL, 0.00, 0.00, 1, 0.00, 0, NULL, 1, 32);
-INSERT INTO public.component (id, case_pack, container_cost, delivery_cost, depth, description, duty_percentage, height, name, number, other_cost, supplier_stock_number, total_landed_cost, unit_cost, units_per_container, weight, width, attachment_id, category_id, supplier_id) VALUES (5, 1, 0.00, 0.00, 0, NULL, 0.00, 0, '005', '1005', 0.00, NULL, 0.00, 0.00, 1, 0.00, 0, NULL, 1, 1);
-INSERT INTO public.component (id, case_pack, container_cost, delivery_cost, depth, description, duty_percentage, height, name, number, other_cost, supplier_stock_number, total_landed_cost, unit_cost, units_per_container, weight, width, attachment_id, category_id, supplier_id) VALUES (33, 1, 0.00, 0.00, 0, NULL, 0.00, 0, '0033', '10033', 0.00, NULL, 0.00, 0.00, 1, 0.00, 0, NULL, 1, 1);
+INSERT INTO public.component (id, case_pack, container_cost, delivery_cost, depth, description, duty_percentage, height, name, number, other_cost, supplier_stock_number, total_landed_cost, unit_cost, units_per_container, weight, width, attachment_id, category_id, supplier_id, units_on_stack) VALUES (4, 1, 0.00, 0.00, 0, NULL, 0.00, 0, '22', '1004', 0.00, NULL, 0.00, 0.00, 1, 0.00, 0, NULL, 1, 2, 2);
+INSERT INTO public.component (id, case_pack, container_cost, delivery_cost, depth, description, duty_percentage, height, name, number, other_cost, supplier_stock_number, total_landed_cost, unit_cost, units_per_container, weight, width, attachment_id, category_id, supplier_id, units_on_stack) VALUES (3, 1, 0.00, 0.00, 0, NULL, 0.00, 0, '11', '1003', 0.00, NULL, 0.00, 0.00, 1, 0.00, 0, NULL, 1, 32, 5);
+INSERT INTO public.component (id, case_pack, container_cost, delivery_cost, depth, description, duty_percentage, height, name, number, other_cost, supplier_stock_number, total_landed_cost, unit_cost, units_per_container, weight, width, attachment_id, category_id, supplier_id, units_on_stack) VALUES (5, 1, 0.00, 0.00, 0, NULL, 0.00, 0, '005', '1005', 0.00, NULL, 0.00, 0.00, 1, 0.00, 0, NULL, 1, 1, 30);
+INSERT INTO public.component (id, case_pack, container_cost, delivery_cost, depth, description, duty_percentage, height, name, number, other_cost, supplier_stock_number, total_landed_cost, unit_cost, units_per_container, weight, width, attachment_id, category_id, supplier_id, units_on_stack) VALUES (33, 1, 0.00, 0.00, 0, NULL, 0.00, 0, '0033', '10033', 0.00, NULL, 0.00, 0.00, 1, 0.00, 0, NULL, 1, 1, 100);
 
 
 --
@@ -1660,8 +1660,8 @@ INSERT INTO public.purchase (id, date, expected_date, number, address_id, suppli
 -- Data for Name: purchase_component; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public.purchase_component (id, units, component_id, purchase_id) VALUES (96, NULL, 5, 24);
-INSERT INTO public.purchase_component (id, units, component_id, purchase_id) VALUES (102, NULL, 33, 24);
+INSERT INTO public.purchase_component (id, units, component_id, purchase_id) VALUES (96, 0, 5, 24);
+INSERT INTO public.purchase_component (id, units, component_id, purchase_id) VALUES (102, 0, 33, 24);
 
 
 --

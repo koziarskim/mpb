@@ -22,7 +22,7 @@ public class PurchaseComponent {
 	@Id
 	@GeneratedValue
 	private Long id;
-	private Integer units;
+	private int units;
 
 	@JsonIgnoreProperties(value={ "purchaseComponents" }, allowSetters=true)
 	@ManyToOne()

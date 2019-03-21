@@ -46,6 +46,7 @@ public class Component {
 	private BigDecimal containerCost = BigDecimal.ZERO;
 	private BigDecimal otherCost = BigDecimal.ZERO;
 	private BigDecimal totalLandedCost = BigDecimal.ZERO;
+	private int unitsOnStack = 0; //Inventory.
 	
 	@JsonIgnoreProperties(value = { "component" }, allowSetters=true)
 	@OneToMany()

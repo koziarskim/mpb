@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.noovitec.mpb.dto.ComponentDto;
+import com.noovitec.mpb.dto.InventoryDto;
 import com.noovitec.mpb.entity.Component;
 
 public interface ComponentRepo extends JpaRepository<Component, Long> {
@@ -28,5 +29,12 @@ public interface ComponentRepo extends JpaRepository<Component, Long> {
 			+ "where c.supplier.id = :supplier_id "
 			+ "group by c.id, pc.id")
 	List<ComponentDto> getComponentsForPurchaseAndSupplier(@Param("purchase_id") Long purchase_id, @Param("supplier_id") Long supplier_id);
+
+	@Query("select new com.noovitec.mpb.dto.InventoryDto("
+			+ "c.id, c.number, c.name, c.unitsOnStack, p.id, p.number, pc.units) "
+			+ "from Component c " 
+			+ "join c.purchaseComponents pc "
+			+ "join pc.purchase p")
+	List<InventoryDto> getInventory();
 
 }
