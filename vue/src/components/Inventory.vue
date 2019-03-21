@@ -1,92 +1,86 @@
 <template>
   <b-container fluid>
-    <b-row>
+    <b-row style="padding-bottom: 4px;">
       <b-col cols="2">
-        <span style="text-align: left; font-size: 18px; font-weight: bold">Inventory:</span>
+        <span style="text-align: left; font-size: 18px; font-weight: bold">Inventory</span>
       </b-col>
-      <b-col>
-        <div style="text-align: right;">
-          <b-button style="margin: 2px;" type="reset" variant="success">Save & Close</b-button>
-        </div>
+      <b-col cols="2">
+        <input class="form-control" type="text" v-model="filterComponent" placeholder="Search Component">
       </b-col>
     </b-row>
+    <div v-if="filteredInventories.length==0">Not found any purchase orders...</div>
+    <b-table v-if="filteredInventories.length>0" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="filteredInventories" :fields="fields">
+      <template slot="componentNumber" slot-scope="row">
+        <b-button size="sm" @click.stop="goToComponent(row.item.componentId)" variant="link">{{row.item.componentNumber}}</b-button>
+      </template>
+      <template slot="unitsOrdered" slot-scope="row">
+        <b-button size="sm" @click.stop="goToPurchase(row.item.componentId)" variant="link">{{row.item.unitsOrdered?row.item.unitsOrdered:0}}</b-button>
+      </template>
+    </b-table>
   </b-container>
 </template>
-
 <script>
 import http from "../http-common";
 import router from "../router";
-import state from "../data/state";
+import httpUtils from "../httpUtils";
 
 export default {
-  name: "add-component",
   data() {
     return {
-      supplier: {
-        name: "",
-        account: "",
-        street: "",
-        city: "",
-        state: "",
-        zip: "",
-        phone: "",
-        paymentTerms: "",
-        freightTerms: "Collect"
-      },
-      freightTerms: {},
-      availableStates: state.states,
-      availableFreights: [
-        { code: "Delivered", name: "Delivered" },
-        { code: "Collect", name: "Collect" }
-      ]
+      sortBy: "componentId",
+      sortDesc: false,
+      fields: [
+        { key: "componentNumber", label: "Component #", sortable: true },
+        { key: "componentName", label: "Name", sortable: true },
+        { key: "supplierName", label: "Supplier", sortable: true },
+        { key: "unitsOnStack", label: "On Stack", sortable: true },
+        { key: "unitsOrdered", label: "Ordered", sortable: true }
+      ],
+      inventories: [],
+      filterComponent: "",
     };
   },
-  computed: {},
-  watch: {
-    freightTerms: function(newValue, oldValue) {
-      this.supplier.freightTerms = newValue.code;
+  computed: {
+    filteredInventories() {
+      var filtered = [];
+      if (this.filterComponent) {
+        this.inventories.filter(it => {
+          var foundComponent = false;
+          if (
+            !this.filterComponent ||
+            it.componentNumber.includes(this.filterComponent) ||
+            it.componentName.includes(this.filterComponent) ||
+            it.supplierName.includes(this.filterComponent)
+          ) {
+            filtered.push(it);
+          }
+        });
+      }else{
+          filtered = this.inventories;
+      }
+      return filtered;
     }
   },
   methods: {
-    getSupplier(id) {
+    getInventories() {
       http
-        .get("/supplier/" + id)
+        .get("/component/inventory")
         .then(response => {
-          this.supplier = response.data;
-          this.freightTerms = this.getFreightById(response.data.freightTerms);
+          this.inventories = response.data;
         })
         .catch(e => {
           console.log("API error: " + e);
         });
     },
-    save() {
-      return http
-        .post("/supplier", this.supplier)
-        .then(response => {})
-        .catch(e => {
-          console.log("API error: " + e);
-        });
+    goToComponent(component_id) {
+      router.push("/componentEdit/" + component_id);
     },
-    saveAndClose() {
-      this.save().then(r => {
-        window.history.back();
-      });
-    },
-    getFreightById(code) {
-      var freight = {};
-      this.availableFreights.filter(it => {
-        if (it.code == code) {
-          freight = it;
-        }
-      });
-      return freight;
+    goToPurchase(component_id) {
+      router.push("/inventoryPurchase/" + component_id);
     }
   },
   mounted() {
-    var supplier_id = this.$route.params.supplier_id;
-    if (supplier_id) {
-      this.getSupplier(supplier_id);
-    }
+    this.getInventories();
   }
 };
 </script>

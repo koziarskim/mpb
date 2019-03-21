@@ -12,9 +12,8 @@ public class InventoryDto {
 	private Long componentId;
 	private String componentNumber;
 	private String componentName;
-	private int unitsOnStock;
-	private Long purchaseId;
-	private String purchaseNumber;
-	private int unitsOrdered;
+	private String supplierName;
+	private int unitsOnStack;
+	private Long unitsOrdered;
 
 }
