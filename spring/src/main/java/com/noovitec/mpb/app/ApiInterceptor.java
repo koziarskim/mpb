@@ -5,8 +5,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -15,14 +13,12 @@ public class ApiInterceptor implements HandlerInterceptor {
 	private final Logger log = LoggerFactory.getLogger(ApiInterceptor.class);
 
 	@Override
-	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object object, Exception arg3)
-			throws Exception {
+	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object object, Exception arg3) throws Exception {
 //		log.info("afterCompletion...");
 	}
 
 	@Override
-	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object object, ModelAndView model)
-			throws Exception {
+	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object object, ModelAndView model) throws Exception {
 //		log.info("postHandle...");
 	}
 
