@@ -2,15 +2,15 @@ import axios from "axios";
 import httpUtils from "./httpUtils";
 
 const http = axios.create({
-  baseURL: httpUtils.baseUrl,
-  headers: {
-    "Content-type": "application/json",
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "GET, OPTIONS, HEAD, PUT, POST",
-    "Access-Control-Allow-Credentials": true,
-    "Access-Control-Allow-Headers":
-      "Access-Control-Allow-Headers, Access-Control-Allow-Origin, Access-Control-Allow-Methods"
-  }
+  baseURL: httpUtils.baseUrl
+  //   headers: {
+  //     "Content-type": "application/json",
+  //     "Access-Control-Allow-Origin": "*",
+  //     "Access-Control-Allow-Methods": "GET, OPTIONS, HEAD, PUT, POST, DELETE",
+  //     "Access-Control-Allow-Credentials": true,
+  //     "Access-Control-Allow-Headers":
+  //       "Access-Control-Allow-Headers, Access-Control-Allow-Origin, Access-Control-Allow-Methods"
+  //   }
 });
 
 http.interceptors.request.use(
@@ -28,7 +28,8 @@ http.interceptors.response.use(
     return response;
   },
   error => {
-    console.log("Iterceptor Response Error: " + error);
+    console.log("Interceptor Response Error: " + error);
+    console.log("Interceptor Response Status: " + error.response.data.status);
     return Promise.reject(error);
   }
 );
