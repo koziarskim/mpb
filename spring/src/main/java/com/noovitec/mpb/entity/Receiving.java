@@ -2,6 +2,7 @@ package com.noovitec.mpb.entity;
 
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -34,7 +35,7 @@ public class Receiving {
 	private Purchase purchase;
 
 	@JsonIgnoreProperties(value = { "receivings", "itemComponents", "supplier", "category", "attachment", "purchaseComponents" }, allowSetters = true)
-	@ManyToOne()
+	@ManyToOne(cascade=CascadeType.ALL)
 	@JoinColumn(name = "component_id", referencedColumnName = "id")
 	private Component component;
 

@@ -19,7 +19,7 @@
 
       <b-col>
         <div style="text-align: right;">
-          <b-button type="submit" variant="primary" @click="goToReceiving('')">New P.O.</b-button>
+          <b-button type="submit" variant="primary" @click="goToReceiving('')">New Receiving</b-button>
         </div>
       </b-col>
     </b-row>

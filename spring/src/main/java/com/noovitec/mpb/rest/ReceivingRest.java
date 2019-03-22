@@ -48,6 +48,10 @@ class ReceivingRest {
 		if (receiving == null) {
 			receiving = new Receiving();
 		}
+		if (receiving.getComponent() != null) {
+			int unitsOnStack = receiving.getComponent().getUnitsOnStack() + receiving.getUnits();
+			receiving.getComponent().setUnitsOnStack(unitsOnStack);
+		}
 		Receiving result = receivingRepo.save(receiving);
 		return ResponseEntity.ok().body(result);
 	}
