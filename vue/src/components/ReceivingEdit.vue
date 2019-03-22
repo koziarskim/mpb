@@ -1,76 +1,36 @@
 <template>
-    <b-container fluid>
-        <div style="border: 0px" class="d-flex justify-content-between align-items-center">
-            <h4 style="text-align: left;">New/Edit Supplier</h4>
-            <div style="text-align: right;">
-                <!-- <b-button type="submit" variant="primary" @click="save">Save</b-button> -->
-                <b-button type="reset" variant="success" @click="saveAndClose">Save & Close</b-button>
-            </div>
-        </div>
-        <b-row>
-            <b-col cols=4>
-                <label class="top-label">Name:</label>
-                <input class="form-control" type="text" v-model="supplier.name" placeholder="Name"/>
-            </b-col>
-            <b-col cols=3>
-                <label class="top-label">Account #:</label>
-                <input class="form-control" type="text" v-model="supplier.account" placeholder="Account #"/>
-            </b-col>
-            <b-col cols=2>
-                <label class="top-label">Pay Terms:</label>
-                <input class="form-control" type="text" v-model="supplier.paymentTerms" placeholder="Payment Terms"/>
-            </b-col>
-        </b-row>
-        <b-row>
-            <b-col cols=4>
-                <label class="top-label">Address:</label>
-                <input class="form-control" type="text" v-model="supplier.street" placeholder="Street and number"/>
-            </b-col>
-            <b-col cols=2 offset=3>
-                <label class="top-label">Freight Terms:</label>
-                <b-select option-value="code" option-text="name" :list="availableFreights" v-model="freightTerms" placeholder="Freight terms"></b-select>
-            </b-col>
-        </b-row>
-        <b-row>
-            <b-col cols=2>
-                <label class="top-label">City:</label>
-                <input class="form-control" type="text" v-model="supplier.city" placeholder="City"/>
-            </b-col>
-            <b-col cols=1>
-                <label class="top-label">State:</label>
-                <input class="form-control" type="text" v-model="supplier.state"/>
-            </b-col>
-            <b-col cols=2>
-                <label class="top-label">Zip Code:</label>
-                <input class="form-control" type="text" v-model="supplier.zip" placeholder="Zip code"/>
-            </b-col>
-        </b-row>
-        <b-row>
-            <b-col cols=3>
-                <label class="top-label">Phone:</label>
-                <input class="form-control" type="text" v-model="supplier.phone" placeholder="Phone"/>
-            </b-col>
-            <b-col cols=3>
-                <label class="top-label">Phone 2:</label>
-                <input class="form-control" type="text" v-model="supplier.phone2" placeholder="Phone 2"/>
-            </b-col>
-        </b-row>
-        <b-row>            
-            <b-col cols=3>
-                <label class="top-label">Email:</label>
-                <input class="form-control" type="text" v-model="supplier.email" placeholder="Email"/>
-            </b-col>
-            <b-col cols=3>
-                <label class="top-label">Email 2:</label>
-                <input class="form-control" type="text" v-model="supplier.email2" placeholder="Email 2"/>
-            </b-col>
-        </b-row>
-        <b-row>
-             <b-col cols=4>
-                <label class="top-label">Contact:</label>
-                <input class="form-control" type="text" v-model="supplier.contactName" placeholder="Contact Name"/>
-            </b-col>       </b-row>
-    </b-container>
+  <b-container fluid>
+    <div style="border: 0px" class="d-flex justify-content-between align-items-center">
+      <h4 style="text-align: left;">Receiving</h4>
+      <div style="text-align: right;">
+        <b-button type="reset" variant="success" @click="saveAndClose">Save & Close</b-button>
+      </div>
+    </div>
+    <b-row>
+      <b-col cols="2">
+        <label class="top-label">Purchase</label>
+        <b-select option-value="id" option-text="number" :list="availablePurchases" v-model="purchase"></b-select>
+      </b-col>
+      <b-col cols="2">
+        <label class="top-label">Component</label>
+        <b-select option-value="id" option-text="number" :list="availableComponents" v-model="component"></b-select>
+      </b-col>
+      <b-col cols="2">
+        <label class="top-label">Number:</label>
+        <input class="form-control" type="text" v-model="receiving.number" placeholder="Number">
+      </b-col>
+    </b-row>
+    <b-row>
+      <b-col cols="2">
+        <label class="top-label">Units:</label>
+        <input class="form-control" type="text" v-model="receiving.units" placeholder="Units">
+      </b-col>
+      <b-col cols="2">
+        <label class="top-label">Reference:</label>
+        <input class="form-control" type="text" v-model="receiving.reference" placeholder="Reference">
+      </b-col>
+    </b-row>
+  </b-container>
 </template>
 
 <script>
@@ -79,71 +39,83 @@ import router from "../router";
 import state from "../data/state";
 
 export default {
-  name: "add-component",
   data() {
     return {
-      supplier: {
-        name: "",
-        account: "",
-        street: "",
-        city: "",
-        state: "",
-        zip: "",
-        phone: "",
-        paymentTerms: "",
-        freightTerms: "Collect"
-      },
-      freightTerms: {},
-      availableStates: state.states,
-      availableFreights: [{code: "Delivered", name: "Delivered"},{code: "Collect", name: "Collect"}]
+      receiving: {},
+      purchase: {},
+      component: {},
+      availablePurchases: [],
+      availableComponents: []
     };
   },
   computed: {},
-  watch: {
-      freightTerms: function(newValue, oldValue) {
-        this.supplier.freightTerms=newValue.code;
-    },
-  },
+  watch: {},
   methods: {
-    getSupplier(id) {
-      http
-        .get("/supplier/" + id)
+    getReceiving(receiving_id) {
+      return http
+        .get("/receiving/" + receiving_id)
         .then(response => {
-          this.supplier = response.data;
-          this.freightTerms = this.getFreightById(response.data.freightTerms);
+          this.receiving = response.data;
+          if (response.data.purchase) {
+            this.purchase = this.availablePurchases.filter(
+              it => it.id == response.data.purchase.id
+            )[0];
+          }
+          if (response.data.component) {
+            this.component = this.availableComponents.filter(
+              it => it.id == response.data.component.id
+            )[0];
+          }
         })
         .catch(e => {
           console.log("API error: " + e);
         });
     },
     save() {
+      this.receiving.purchase = this.purchase;
+      this.receiving.component = this.component;
       return http
-        .post("/supplier", this.supplier)
+        .post("/receiving", this.receiving)
         .then(response => {})
         .catch(e => {
           console.log("API error: " + e);
         });
     },
     saveAndClose() {
-        this.save().then(r=>{
-            window.history.back();
-        })
+      this.save().then(r => {
+        window.history.back();
+      });
     },
-    getFreightById(code) {
-        var freight = {};
-        this.availableFreights.filter(it =>{
-            if(it.code == code){
-                freight = it;
-            }
+    getAvailablePurchases() {
+      return http
+        .get("/purchase/")
+        .then(response => {
+          this.availablePurchases = response.data;
         })
-        return freight;
+        .catch(e => {
+          console.log("API error: " + e);
+        });
+    },
+    getAvailableComponents() {
+      return http
+        .get("/component/")
+        .then(response => {
+          this.availableComponents = response.data;
+        })
+        .catch(e => {
+          console.log("API error: " + e);
+        });
     }
   },
   mounted() {
     var receiving_id = this.$route.params.receiving_id;
-    if (receiving_id) {
-      this.getSupplier(receiving_id);
-    }
+    this.getAvailablePurchases().then(r => {
+      this.getAvailableComponents().then(r => {
+        if (receiving_id) {
+          this.getReceiving(receiving_id);
+        }
+      });
+    });
   }
 };
 </script>
