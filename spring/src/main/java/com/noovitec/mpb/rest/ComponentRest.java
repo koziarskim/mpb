@@ -32,6 +32,7 @@ import com.noovitec.mpb.dto.InventoryDto;
 import com.noovitec.mpb.entity.Attachment;
 import com.noovitec.mpb.entity.Category;
 import com.noovitec.mpb.entity.Component;
+import com.noovitec.mpb.entity.PurchaseComponent;
 import com.noovitec.mpb.repo.AttachmentRepo;
 import com.noovitec.mpb.repo.CategoryRepo;
 import com.noovitec.mpb.repo.ComponentRepo;
@@ -85,9 +86,27 @@ class ComponentRest {
 		return dtos;
 	}
 
-	@GetMapping("/component/inventory")
-	Collection<InventoryDto> getComponentInventory() {
-		Collection<InventoryDto> dtos = componentRepo.getInventory();
+	@GetMapping("/component/dto")
+	Collection<ComponentDto> getComponentInventory() {
+		Collection<ComponentDto> dtos = new HashSet<ComponentDto>();
+		Collection<Component> components = componentRepo.findAll();
+		for(Component c : components) {
+			ComponentDto dto = new ComponentDto();
+			dto.setId(c.getId());
+			dto.setName(c.getName());
+			dto.setNumber(c.getNumber());
+			dto.setSupplierName(c.getSupplier().getName());
+			dto.setUnits(Long.valueOf(c.getUnitsOnStack()));
+			Long unitsOrdered = 0L;
+			for(PurchaseComponent pc : c.getPurchaseComponents()) {
+				if(pc.getPurchase().isCompleted()) {
+					unitsOrdered += pc.getUnits();
+				}
+			}
+			dto.setUnitsOrdered(unitsOrdered);
+			dtos.add(dto);
+			
+		}
 		return dtos;
 	}
 

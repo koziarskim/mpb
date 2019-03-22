@@ -76,16 +76,27 @@ public class Component {
 
 	@Transient
 	private Boolean locked;
-
+	@Transient
+	private int unitsOrdered = 0;
+	@Transient
+	private String label;
+	
 	public Boolean getLocked() {
 		return (this.itemComponents == null || this.itemComponents.size() == 0) ? false : true;
 	}
 	
-	@Transient
-	private String label;
-	
 	public String getLabel() {
 		return this.getNumber() +" - "+this.getName();
+	}
+	
+	public int getUnitsOrdered() {
+		int unitsOrdered = 0;
+		for(PurchaseComponent pc : this.getPurchaseComponents()) {
+			if(pc.getPurchase().isCompleted()) {
+				unitsOrdered += pc.getUnits();
+			}
+		}
+		return unitsOrdered;
 	}
 
 }

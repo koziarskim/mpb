@@ -16,6 +16,8 @@ import PurchaseEdit from "./components/PurchaseEdit";
 import PurchaseItem from "./components/PurchaseItem";
 import PurchaseComponent from "./components/PurchaseComponent";
 import Inventory from "./components/Inventory";
+import ComponentPurchaseList from "./components/ComponentPurchaseList";
+import ShipmentList from "./components/ShipmentList";
 import Users from "./components/Users";
 import Login from "./components/Login";
 
@@ -109,6 +111,16 @@ export default new Router({
       path: "/Inventory",
       name: "Inventory",
       component: Inventory
+    },
+    {
+      path: "/ComponentPurchaseList/:component_id",
+      name: "ComponentPurchaseList",
+      component: ComponentPurchaseList
+    },
+    {
+      path: "/ShipmentList/:purchase_id",
+      name: "ShipmentList",
+      component: ShipmentList
     },
     {
       path: "/Users",

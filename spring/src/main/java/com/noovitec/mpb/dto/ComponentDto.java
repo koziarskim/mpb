@@ -16,7 +16,9 @@ public class ComponentDto {
 	private Long id;
 	private String number;
 	private String name;
+	private String supplierName;
 	private Long units;
+	private Long unitsOrdered;
 	private BigDecimal unitPrice;
 	private boolean selected;
 	

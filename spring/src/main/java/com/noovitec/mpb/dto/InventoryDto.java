@@ -14,6 +14,6 @@ public class InventoryDto {
 	private String componentName;
 	private String supplierName;
 	private int unitsOnStack;
-	private Long unitsOrdered;
+	private int unitsOrdered;
 
 }

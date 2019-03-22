@@ -9,6 +9,7 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,7 +47,10 @@ import com.itextpdf.text.pdf.PdfGState;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfStamper;
 import com.noovitec.mpb.dto.ComponentDto;
+import com.noovitec.mpb.dto.InventoryDto;
+import com.noovitec.mpb.dto.InventoryPurchaseDto;
 import com.noovitec.mpb.entity.Attachment;
+import com.noovitec.mpb.entity.Component;
 import com.noovitec.mpb.entity.Purchase;
 import com.noovitec.mpb.entity.PurchaseComponent;
 import com.noovitec.mpb.entity.PurchaseSale;
@@ -102,6 +106,12 @@ class PurchaseRest {
 		header.set("Content-Disposition", "inline; filename=" + fileName);
 		header.setContentLength(data.length);
 		return new HttpEntity<byte[]>(data, header);
+	}
+
+	@GetMapping("/purchase/component/{component_id}")
+	Collection<Purchase> getPurchaseByComponent(@PathVariable Long component_id) {
+		Collection<Purchase> result = purchaseRepo.findByComponent(component_id);
+		return result;
 	}
 
 	// Save and update.

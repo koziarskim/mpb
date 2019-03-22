@@ -37,7 +37,6 @@ export default {
         { key: "units", label: "On Stack", sortable: true },
         { key: "completed", label: "Completed", sortable: true },
         { key: "shipments", label: "Shipments", sortable: true },
-        { key: "unitsOrdered", label: "Ordered", sortable: true }
       ],
       purchases: [],
     //   filterPurchase: "",
@@ -63,11 +62,11 @@ export default {
 //       }
 //       return filtered;
 //     }
-//   },
+  },
   methods: {
     getPurchases(component_id) {
       http
-        .get("/purchase/component/"+component_id)
+        .get("/purchase/inventory/"+component_id)
         .then(response => {
           this.purchases = response.data;
         })
