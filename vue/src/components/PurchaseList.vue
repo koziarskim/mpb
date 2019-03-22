@@ -4,7 +4,12 @@
       <b-col cols="2">
         <span style="text-align: left; font-size: 18px; font-weight: bold">Purchase Orders</span>
       </b-col>
-      <b-col cols="3">
+      <b-col cols="2" style="margin-top: -12px">
+        <label class="top-label">Component:</label>
+        <b-select option-value="id" option-text="number" :list="availableComponents" v-model="component"></b-select>
+      </b-col>
+      <b-col cols="2" style="margin-top: -12px">
+        <label class="top-label">Search:</label>
         <input class="form-control" type="text" v-model="keyword" placeholder="Type to search">
       </b-col>
       <b-col>
@@ -22,7 +27,8 @@
         <span>{{row.item.completed?"Yes":"No"}}</span>
       </template>
       <template slot="action" slot-scope="row">
-        <b-button size="sm" @click.stop="deletePurchase(row.item.id)" :disabled="disabled(row.item)">x</b-button>
+        <b-button size="sm" @click.stop="deletePurchase(row.item.id)" :disabled="disabled(row.item)">x</b-button>&nbsp;
+        <b-button size="sm" @click.stop="goToReceiving(row.item.id)">Receivings</b-button>
       </template>
       <template slot="pdf" slot-scope="row">
         <a :href="rowPdfUrl(row.item.id)" target="_blank">
@@ -60,8 +66,10 @@ export default {
         { key: "pdf", label: "PDF", sortable: true },
         { key: "action", label: "Action", sortable: false }
       ],
+      availableComponents: [{id: 3, number: "1003"}, {id: 4, number: "1004"},{id: 5, number: "1005"}, {id: 33, number: "10033"}],
+      component: {},
       purchases: [],
-      keyword: ""
+      keyword: "",
     };
   },
   computed: {
@@ -72,7 +80,7 @@ export default {
           if (
             item.number.includes(this.keyword) ||
             item.supplier.name.includes(this.keyword) ||
-            (item.date?item.date.includes(this.keyword):false)
+            (item.date ? item.date.includes(this.keyword) : false)
           ) {
             filtered.push(item);
           }
@@ -90,7 +98,33 @@ export default {
     showAlert(message) {
       (this.alertSecs = 3), (this.alertMessage = message);
     },
+    getAvailableComponents(component_id) {
+      http
+        .get("/component/")
+        .then(response => {
+          this.availableComponents = response.data;
+          if(component_id){
+              this.component = response.data.filter(it => it.id == component_id)[0]
+          }
+          this.getPurchasesData();
+        })
+        .catch(e => {
+          console.log("API error: " + e);
+        });
+    },
+    getComponent(component_id) {
+      http
+        .get("/component/" + component_id)
+        .then(response => {
+          this.component = response.data;
+          this.getPurchasesData();
+        })
+        .catch(e => {
+          console.log("API error: " + e);
+        });
+    },
     getPurchasesData() {
+        //TODO: apply filters to the GET url.
       http
         .get("/purchase")
         .then(response => {
@@ -100,15 +134,6 @@ export default {
         .catch(e => {
           console.log("API error: " + e);
         });
-    },
-    getItem(component_id) {
-      var component;
-      var found = this.purchases.some(function(element) {
-        if (element.id === component_id) {
-          component = element;
-        }
-      });
-      return component;
     },
     deletePurchase(id) {
       http
@@ -134,12 +159,19 @@ export default {
         router.push("/purchaseEdit/" + id);
       }
     },
+    goToReceiving(purchase_id) {
+      var query = { purchase_id: purchase_id };
+      if (this.component.id) {
+        query.component_id = this.component.id;
+      }
+      router.push({ path: "/receivingList", query: query });
+    },
     rowPdfUrl: function(purchase_id) {
       return httpUtils.baseUrl + "/purchase/" + purchase_id + "/pdf";
     }
   },
   mounted() {
-    this.getPurchasesData();
+    this.getAvailableComponents(parseInt(this.$route.query.component_id));
   }
 };
 </script>

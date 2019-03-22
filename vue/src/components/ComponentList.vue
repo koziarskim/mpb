@@ -12,7 +12,7 @@
         <b-button size="sm" @click.stop="goToComponent(row.item.id)" variant="link">{{row.item.number}}</b-button>
       </template>
       <template slot="unitsOrdered" slot-scope="row">
-        <b-button size="sm" @click.stop="goToComponentPurchase(row.item.id)" variant="link">{{row.item.unitsOrdered}}</b-button>
+        <b-button size="sm" @click.stop="goToPurchaseList(row.item.id)" variant="link">{{row.item.unitsOrdered}}</b-button>
       </template>
       <template slot="action" slot-scope="row">
         <b-button size="sm" @click.stop="deleteComponent(row.item.id)">x</b-button>
@@ -100,8 +100,8 @@ export default {
         router.push("/componentEdit/" + component_id);
       }
     },
-    goToComponentPurchase(component_id) {
-      router.push("/ComponentPurchaseList/" + component_id);
+    goToPurchaseList(component_id) {
+      router.push({path: "/purchaseList", query: {component_id: component_id}});
     }
   },
   mounted() {

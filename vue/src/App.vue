@@ -10,7 +10,7 @@
                     <b-nav-item v-on:click="goTo('/customerList')">Customer</b-nav-item>
                     <b-nav-item v-on:click="goTo('/saleList')">Sale</b-nav-item>
                     <b-nav-item v-on:click="goTo('/purchaseList')">Purchase</b-nav-item>
-                    <b-nav-item v-on:click="goTo('/inventory')">Inventory</b-nav-item>
+                    <b-nav-item v-on:click="goTo('/receivingList')">Receiving</b-nav-item>
                     <b-nav-item v-on:click="goTo('/users')">User</b-nav-item>
                 </b-navbar-nav>
                 <!-- Right aligned nav items -->

@@ -9,7 +9,6 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,13 +32,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.Font.FontFamily;
-import com.itextpdf.text.Image;
-import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.ColumnText;
 import com.itextpdf.text.pdf.PdfContentByte;
@@ -47,10 +43,7 @@ import com.itextpdf.text.pdf.PdfGState;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfStamper;
 import com.noovitec.mpb.dto.ComponentDto;
-import com.noovitec.mpb.dto.InventoryDto;
-import com.noovitec.mpb.dto.InventoryPurchaseDto;
 import com.noovitec.mpb.entity.Attachment;
-import com.noovitec.mpb.entity.Component;
 import com.noovitec.mpb.entity.Purchase;
 import com.noovitec.mpb.entity.PurchaseComponent;
 import com.noovitec.mpb.entity.PurchaseSale;
@@ -85,8 +78,7 @@ class PurchaseRest {
 	@GetMapping("/purchase/{id}")
 	ResponseEntity<Purchase> get(@PathVariable Long id) {
 		Optional<Purchase> result = purchaseRepo.findById(id);
-		return result.map(response -> ResponseEntity.ok().body(response))
-				.orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+		return result.map(response -> ResponseEntity.ok().body(response)).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
 	}
 
 	@GetMapping("/purchase/{id}/pdf")
@@ -101,8 +93,7 @@ class PurchaseRest {
 		}
 		HttpHeaders header = new HttpHeaders();
 		header.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-		String fileName = purchase.getAttachment() != null ? purchase.getAttachment().getName()
-				: "PO" + purchase.getNumber() + "-Draft.pdf";
+		String fileName = purchase.getAttachment() != null ? purchase.getAttachment().getName() : "PO" + purchase.getNumber() + "-Draft.pdf";
 		header.set("Content-Disposition", "inline; filename=" + fileName);
 		header.setContentLength(data.length);
 		return new HttpEntity<byte[]>(data, header);
@@ -155,8 +146,7 @@ class PurchaseRest {
 		String componentUnits = "";
 		String componentPrice = "";
 		String componentTotalPrice = "";
-		List<ComponentDto> dtos = componentRepo.getComponentsForPurchaseAndSupplier(purchase.getId(),
-				purchase.getSupplier().getId());
+		List<ComponentDto> dtos = componentRepo.getComponentsForPurchaseAndSupplier(purchase.getId(), purchase.getSupplier().getId());
 		for (ComponentDto dto : dtos) {
 			if (dto.isSelected()) {
 				componentName += dto.getNumber() + "\n";
@@ -176,8 +166,7 @@ class PurchaseRest {
 		stamper.getAcroFields().setField("number", purchase.getNumber());
 		stamper.getAcroFields().setField("supplierName", purchase.getSupplier().getName());
 		stamper.getAcroFields().setField("paymentTerms", purchase.getSupplier().getPaymentTerms());
-		stamper.getAcroFields().setField("expectedDate",
-				purchase.getExpectedDate() != null ? dateFormat.format(purchase.getExpectedDate()) : "");
+		stamper.getAcroFields().setField("expectedDate", purchase.getExpectedDate() != null ? dateFormat.format(purchase.getExpectedDate()) : "");
 		stamper.getAcroFields().setField("freighTerms", purchase.getSupplier().getFreightTerms());
 		stamper.getAcroFields().setField("componentName", componentName);
 		stamper.getAcroFields().setField("componentDescription", componentDescription);
@@ -191,8 +180,7 @@ class PurchaseRest {
 			gs1.setFillOpacity(0.5f);
 			under.setGState(gs1);
 			Font f = new Font(FontFamily.HELVETICA, 15);
-			Phrase p = new Phrase(
-					"DAFT...DRAFT...DRAFT...DRAFT...DRAFT...DRAFT...DRAFT...DRAFT...DRAFT...DRAFT...DRAFT...DRAFT", f);
+			Phrase p = new Phrase("DAFT...DRAFT...DRAFT...DRAFT...DRAFT...DRAFT...DRAFT...DRAFT...DRAFT...DRAFT...DRAFT...DRAFT", f);
 			ColumnText.showTextAligned(under, Element.ALIGN_CENTER, p, 300, 400, 45f);
 		}
 		stamper.close();

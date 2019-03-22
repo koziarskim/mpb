@@ -17,7 +17,7 @@ import PurchaseItem from "./components/PurchaseItem";
 import PurchaseComponent from "./components/PurchaseComponent";
 import Inventory from "./components/Inventory";
 import ComponentPurchaseList from "./components/ComponentPurchaseList";
-import ShipmentList from "./components/ShipmentList";
+import ReceivingList from "./components/ReceivingList";
 import Users from "./components/Users";
 import Login from "./components/Login";
 
@@ -67,6 +67,11 @@ export default new Router({
       name: "purchaseList",
       component: PurchaseList
     },
+    // {
+    //   path: "/purchaseList/component/:component_id",
+    //   name: "purchaseListComponent",
+    //   component: PurchaseList
+    // },
     {
       path: "/componentEdit/:component_id?",
       name: "componentEdit",
@@ -107,20 +112,20 @@ export default new Router({
       name: "PurchaseItem",
       component: PurchaseItem
     },
+    // {
+    //   path: "/Inventory",
+    //   name: "Inventory",
+    //   component: Inventory
+    // },
+    // {
+    //   path: "/ComponentPurchaseList/:component_id",
+    //   name: "ComponentPurchaseList",
+    //   component: ComponentPurchaseList
+    // },
     {
-      path: "/Inventory",
-      name: "Inventory",
-      component: Inventory
-    },
-    {
-      path: "/ComponentPurchaseList/:component_id",
-      name: "ComponentPurchaseList",
-      component: ComponentPurchaseList
-    },
-    {
-      path: "/ShipmentList/:purchase_id",
-      name: "ShipmentList",
-      component: ShipmentList
+      path: "/ReceivingList",
+      name: "ReceivingList",
+      component: ReceivingList
     },
     {
       path: "/Users",

@@ -21,8 +21,8 @@
       <template slot="completed" slot-scope="row">
         <span>{{row.item.completed?"Yes":"No"}}</span>
       </template>
-      <template slot="shipment" slot-scope="row">
-        <b-button size="sm" @click.stop="goToShipment(row.item.id)">View</b-button>
+      <template slot="receiving" slot-scope="row">
+        <b-button size="sm" @click.stop="goToReceiving(row.item.id)">View</b-button>
       </template>
       <template slot="pdf" slot-scope="row">
         <a :href="rowPdfUrl(row.item.id)" target="_blank">
@@ -59,7 +59,7 @@ export default {
         { key: "ordered", label: "Ordered", sortable: true },
         { key: "completed", label: "Completed", sortable: true },
         { key: "pdf", label: "PDF", sortable: true },
-        { key: "shipment", label: "Shipments", sortable: false }
+        { key: "receiving", label: "Receivings", sortable: false }
       ],
       component: {},
       purchaseComponents: [],
@@ -98,7 +98,7 @@ export default {
         .get("/component/" + component_id)
         .then(response => {
           this.component = response.data;
-          this.getPurchasesData(component_id)
+          this.getPurchasesData(component_id);
         })
         .catch(e => {
           console.log("API error: " + e);
@@ -124,8 +124,8 @@ export default {
       });
       return component;
     },
-    goToShipment(purchase_id) {
-        router.push("/shipmentList/" + purchase_id);
+    goToReceiving(purchase_id) {
+      router.push("/receivingList/" + purchase_id + "/" + this.component.id);
     },
     goToPurchase(id) {
       if (!id) {

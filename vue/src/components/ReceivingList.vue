@@ -1,12 +1,22 @@
 <template>
   <b-container fluid>
     <b-row style="padding-bottom: 4px;">
-      <b-col cols="3">
-        <span style="text-align: left; font-size: 18px; font-weight: bold">POs for Component: {{component.number}}</span>
+      <b-col cols="2">
+        <span style="text-align: left; font-size: 18px; font-weight: bold">Receivings</span>
       </b-col>
-      <b-col cols="3">
+      <b-col cols="2" style="margin-top: -12px">
+        <label class="top-label">Purchase:</label>
+        <b-select option-value="id" option-text="number" :list="availablePurchases" v-model="purchase"></b-select>
+      </b-col>
+      <b-col cols="2" style="margin-top: -12px">
+        <label class="top-label">Component:</label>
+        <b-select option-value="id" option-text="number" :list="availableComponents" v-model="component"></b-select>
+      </b-col>
+      <b-col cols="2" style="margin-top: -12px">
+        <label class="top-label">Search:</label>
         <input class="form-control" type="text" v-model="keyword" placeholder="Type to search">
       </b-col>
+
       <b-col>
         <div style="text-align: right;">
           <b-button type="submit" variant="primary" @click="goToPurchase('')">New P.O.</b-button>
@@ -21,8 +31,8 @@
       <template slot="completed" slot-scope="row">
         <span>{{row.item.completed?"Yes":"No"}}</span>
       </template>
-      <template slot="shipment" slot-scope="row">
-        <b-button size="sm" @click.stop="goToShipment(row.item.id)">View</b-button>
+      <template slot="receivements" slot-scope="row">
+        <b-button size="sm" @click.stop="goToReceivements(row.item.id)">View</b-button>
       </template>
       <template slot="pdf" slot-scope="row">
         <a :href="rowPdfUrl(row.item.id)" target="_blank">
@@ -47,8 +57,6 @@ import httpUtils from "../httpUtils";
 export default {
   data() {
     return {
-      alertSecs: 0,
-      alertMessage: "",
       sortBy: "id",
       sortDesc: false,
       fields: [
@@ -59,13 +67,14 @@ export default {
         { key: "ordered", label: "Ordered", sortable: true },
         { key: "completed", label: "Completed", sortable: true },
         { key: "pdf", label: "PDF", sortable: true },
-        { key: "shipment", label: "Shipments", sortable: false }
+        { key: "receivements", label: "Receivements", sortable: false }
       ],
+      purchase: {},
       component: {},
-      purchaseComponents: [],
-      shipments: [],
-      purchases: [],
-      keyword: ""
+      availablePurchases: [],
+      availableComponents: [],
+      receivings: [],
+      keyword: "",
     };
   },
   computed: {
@@ -94,29 +103,47 @@ export default {
     showAlert(message) {
       (this.alertSecs = 3), (this.alertMessage = message);
     },
+    getReceivings() {
+      http
+        .get("/receiving/")
+        .then(response => {
+          this.receivings = response.data;
+        })
+        .catch(e => {
+          console.log("API error: " + e);
+        });
+    },
     getComponent(component_id) {
       http
         .get("/component/" + component_id)
         .then(response => {
           this.component = response.data;
-          this.getPurchasesData(component_id)
+          this.getPurchasesData(component_id);
         })
         .catch(e => {
           console.log("API error: " + e);
         });
     },
-    getPurchasesData(component_id) {
-      http
-        .get("/purchase/component/" + component_id)
+    getAvailablePurchases() {
+      return http
+        .get("/purchase/")
         .then(response => {
-          this.purchases = response.data;
-          console.log("Success getting component data");
+          this.availablePurchases = response.data;
         })
         .catch(e => {
           console.log("API error: " + e);
         });
     },
-    getItem(component_id) {
+    getAvailableComponents() {
+      return http
+        .get("/component/")
+        .then(response => {
+          this.availableComponents = response.data;
+        })
+        .catch(e => {
+          console.log("API error: " + e);
+        });
+    },    getItem(component_id) {
       var component;
       var found = this.purchases.some(function(element) {
         if (element.id === component_id) {
@@ -125,8 +152,8 @@ export default {
       });
       return component;
     },
-    goToShipment(purchase_id) {
-        router.push("/shipmentList/" + purchase_id);
+    goToReceivements(purchase_id) {
+      router.push("/shipmentList/" + purchase_id);
     },
     goToPurchase(id) {
       if (!id) {
@@ -147,8 +174,14 @@ export default {
     }
   },
   mounted() {
-    var purchase_id = this.$route.params.purchase_id;
-    this.getComponent(purchase_id);
+      var purchase_id = parseInt(this.$route.query.purchase_id);
+      var component_id = parseInt(this.$route.query.component_id);
+    this.getAvailablePurchases().then(r=>{
+        this.getAvailableComponents().then(r=>{
+            this.getReceivings();
+        });
+    })
+    
   }
 };
 </script>
