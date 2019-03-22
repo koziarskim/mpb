@@ -19,34 +19,25 @@
 
       <b-col>
         <div style="text-align: right;">
-          <b-button type="submit" variant="primary" @click="goToPurchase('')">New P.O.</b-button>
+          <b-button type="submit" variant="primary" @click="goToReceiving('')">New P.O.</b-button>
         </div>
       </b-col>
     </b-row>
-    <div v-if="purchases.length==0">Not found any purchase orders...</div>
-    <b-table v-if="purchases.length>0" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="items" :fields="fields" :keyword="keyword">
+    <div v-if="receivings.length==0">Not found any purchase orders...</div>
+    <b-table v-if="receivings.length>0" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="receivings" :fields="fields">
       <template slot="number" slot-scope="row">
-        <b-button size="sm" @click.stop="goToPurchase(row.item.id)" variant="link">{{row.item.number}}</b-button>
+        <b-button size="sm" @click.stop="goToReceiving(row.item.id)" variant="link">{{row.item.number}}</b-button>
       </template>
-      <template slot="completed" slot-scope="row">
-        <span>{{row.item.completed?"Yes":"No"}}</span>
+      <template slot="purchase" slot-scope="row">
+        <b-button size="sm" @click.stop="goToPurchase(row.item.purchase.id)" variant="link">{{row.item.purchase?row.item.purchase.number:''}}</b-button>
       </template>
-      <template slot="receivements" slot-scope="row">
-        <b-button size="sm" @click.stop="goToReceivements(row.item.id)">View</b-button>
+      <template slot="component" slot-scope="row">
+        <b-button size="sm" @click.stop="goToComponent(row.item.component.id)" variant="link">{{row.item.component?row.item.component.number:''}}</b-button>
       </template>
-      <template slot="pdf" slot-scope="row">
-        <a :href="rowPdfUrl(row.item.id)" target="_blank">
-          <img src="../assets/pdf-download.png" width="20px">
-        </a>
-      </template>
-      <template slot="expectedDate" slot-scope="row">
-        <span>{{row.item.expectedDate | formatDate}}</span>
-      </template>
-      <template slot="date" slot-scope="row">
-        <span>{{row.item.date | formatDate}}</span>
+      <template slot="action" slot-scope="row">
+        <b-button size="sm" @click.stop="deleteReceiving(row.item.id)">x</b-button>
       </template>
     </b-table>
-    <b-alert :show="alertSecs" dismissible variant="warning" @dismiss-count-down="(secs) => { alertSecs = secs }">{{alertMessage}}</b-alert>
   </b-container>
 </template>
 <script>
@@ -60,21 +51,20 @@ export default {
       sortBy: "id",
       sortDesc: false,
       fields: [
-        { key: "number", label: "P.O. #", sortable: true },
-        { key: "supplier.name", label: "Supplier", sortable: true },
+        { key: "number", label: "Receiving #", sortable: true },
+        { key: "reference", label: "Reference", sortable: true },
+        { key: "units", label: "Units", sortable: true },
         { key: "date", label: "Date", sortable: true },
-        { key: "expectedDate", label: "Expected", sortable: true },
-        { key: "ordered", label: "Ordered", sortable: true },
-        { key: "completed", label: "Completed", sortable: true },
-        { key: "pdf", label: "PDF", sortable: true },
-        { key: "receivements", label: "Receivements", sortable: false }
+        { key: "purchase", label: "Purchase #", sortable: true },
+        { key: "component", label: "Component #", sortable: true },
+        { key: "action", label: "Action", sortable: false }
       ],
       purchase: {},
       component: {},
       availablePurchases: [],
       availableComponents: [],
       receivings: [],
-      keyword: "",
+      keyword: ""
     };
   },
   computed: {
@@ -97,12 +87,6 @@ export default {
     }
   },
   methods: {
-    disabled(purchase) {
-      return purchase.completed;
-    },
-    showAlert(message) {
-      (this.alertSecs = 3), (this.alertMessage = message);
-    },
     getReceivings() {
       http
         .get("/receiving/")
@@ -143,7 +127,8 @@ export default {
         .catch(e => {
           console.log("API error: " + e);
         });
-    },    getItem(component_id) {
+    },
+    getItem(component_id) {
       var component;
       var found = this.purchases.some(function(element) {
         if (element.id === component_id) {
@@ -152,36 +137,45 @@ export default {
       });
       return component;
     },
-    goToReceivements(purchase_id) {
-      router.push("/shipmentList/" + purchase_id);
-    },
-    goToPurchase(id) {
-      if (!id) {
+    goToReceiving(receiving_id) {
+      if (!receiving_id) {
         http
-          .post("/purchase")
+          .post("/receiving")
           .then(response => {
-            router.push("/purchaseEdit/" + response.data.id);
+            router.push("/receivingEdit/" + response.data.id);
           })
           .catch(e => {
             console.log("API Error: " + e);
           });
       } else {
-        router.push("/purchaseEdit/" + id);
+        router.push("/receivingEdit/" + receiving_id);
       }
     },
-    rowPdfUrl: function(purchase_id) {
-      return httpUtils.baseUrl + "/purchase/" + purchase_id + "/pdf";
+    goToPurchase(purchase_id) {
+      router.push("/purchaseEdit/" + purchase_id);
+    },
+    goToComponent(component_id) {
+      router.push("/componentEdit/" + component_id);
+    },
+    deleteReceiving(receiving_id) {
+      http
+        .delete("/receiving/" + receiving_id)
+        .then(response => {
+          this.getReceivings();
+        })
+        .catch(e => {
+          console.log("API Error: " + e);
+        });
     }
   },
   mounted() {
-      var purchase_id = parseInt(this.$route.query.purchase_id);
-      var component_id = parseInt(this.$route.query.component_id);
-    this.getAvailablePurchases().then(r=>{
-        this.getAvailableComponents().then(r=>{
-            this.getReceivings();
-        });
-    })
-    
+    var purchase_id = parseInt(this.$route.query.purchase_id);
+    var component_id = parseInt(this.$route.query.component_id);
+    this.getAvailablePurchases().then(r => {
+      this.getAvailableComponents().then(r => {
+        this.getReceivings();
+      });
+    });
   }
 };
 </script>

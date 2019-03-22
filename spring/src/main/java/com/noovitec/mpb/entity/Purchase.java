@@ -57,5 +57,10 @@ public class Purchase {
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "purchase_id")
 	private Collection<PurchaseComponent> purchaseComponents = new HashSet<PurchaseComponent>();
+	
+	@JsonIgnoreProperties(value = { "purchase" }, allowSetters = true)
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name = "purchase_id")
+	private Collection<Receiving> receivings = new HashSet<Receiving>();
 
 }
