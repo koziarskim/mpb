@@ -71,7 +71,7 @@ public class Component {
 	@JoinColumn(name = "component_id")
 	private Collection<PurchaseComponent> purchaseComponents = new HashSet<PurchaseComponent>();
 
-	@JsonIgnoreProperties(value = { "component" }, allowSetters = true)
+	@JsonIgnoreProperties(value = { "component", "purchase" }, allowSetters = true)
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "component_id")
 	private Collection<Receiving> receivings = new HashSet<Receiving>();

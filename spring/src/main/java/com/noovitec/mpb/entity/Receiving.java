@@ -28,12 +28,12 @@ public class Receiving {
 	private int units;
 	private Date date;
 
-	@JsonIgnoreProperties(value = { "receivings" }, allowSetters = true)
+	@JsonIgnoreProperties(value = { "receivings", "supplier", "shipAddress", "attachment", "purchaseSales", "purchaseComponents" }, allowSetters = true)
 	@ManyToOne()
 	@JoinColumn(name = "purchase_id", referencedColumnName = "id")
 	private Purchase purchase;
 
-	@JsonIgnoreProperties(value = { "receivings" }, allowSetters = true)
+	@JsonIgnoreProperties(value = { "receivings", "itemComponents", "supplier", "category", "attachment", "purchaseComponents" }, allowSetters = true)
 	@ManyToOne()
 	@JoinColumn(name = "component_id", referencedColumnName = "id")
 	private Component component;
