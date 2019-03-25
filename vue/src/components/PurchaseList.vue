@@ -139,7 +139,7 @@ export default {
       //TODO: apply filters to the GET url.
       var component_id = this.component.id?this.component.id:"";
       http
-        .get("/purchase?component_id=" + component_id)
+        .get("/purchase/active?component_id=" + component_id)
         .then(response => {
           this.purchases = response.data;
           console.log("Success getting component data");

@@ -96,7 +96,7 @@ public class Component {
 	public int getUnitsOrdered() {
 		int unitsOrdered = 0;
 		for (PurchaseComponent pc : this.getPurchaseComponents()) {
-			if (pc.getPurchase().isSubmitted()) {
+			if (pc.getPurchase().isSubmitted() && !pc.getPurchase().isReceived()) {
 				unitsOrdered += pc.getUnits();
 			}
 		}

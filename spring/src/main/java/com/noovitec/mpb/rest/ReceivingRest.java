@@ -20,9 +20,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.noovitec.mpb.entity.Component;
+import com.noovitec.mpb.entity.Purchase;
 import com.noovitec.mpb.entity.Receiving;
-import com.noovitec.mpb.repo.ComponentRepo;
+import com.noovitec.mpb.repo.PurchaseRepo;
 import com.noovitec.mpb.repo.ReceivingRepo;
 
 @CrossOrigin
@@ -33,7 +33,7 @@ class ReceivingRest {
 	private final Logger log = LoggerFactory.getLogger(ReceivingRest.class);
 	private ReceivingRepo receivingRepo;
 	@Autowired
-	ComponentRepo componentRepo;
+	PurchaseRepo purchaseRepo;
 
 	public ReceivingRest(ReceivingRepo receivingRepo) {
 		this.receivingRepo = receivingRepo;
@@ -81,6 +81,11 @@ class ReceivingRest {
 			receiving.getComponent().setUnitsOnStack(unitsOnStack);
 		}
 		Receiving result = receivingRepo.save(receiving);
+		if (receiving.getComponent().getUnitsOnStack() >= receiving.getComponent().getUnitsOrdered()) {
+			Purchase purchase = purchaseRepo.getOne(receiving.getPurchase().getId());
+			purchase.setReceived(true);
+			purchaseRepo.save(purchase);
+		}
 		return ResponseEntity.ok().body(result);
 	}
 

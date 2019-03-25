@@ -32,6 +32,7 @@ public class Purchase {
 	private String number;
 	private Date expectedDate;
 	private boolean submitted;
+	private boolean received;
 	private BigDecimal totalPrice = BigDecimal.ZERO;
 
 	@JsonIgnoreProperties({ "components" })

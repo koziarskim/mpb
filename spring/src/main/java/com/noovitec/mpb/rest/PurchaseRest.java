@@ -72,12 +72,17 @@ class PurchaseRest {
 	}
 
 	@GetMapping("/purchase")
-	Collection<Purchase> getAll(@RequestParam(name = "component_id", required = false) Long component_id) {
+	Collection<Purchase> getAll() {
+		return purchaseRepo.findAll();
+	}
+
+	@GetMapping("/purchase/active")
+	Collection<Purchase> getAllActive(@RequestParam(name = "component_id", required = false) Long component_id) {
 		Collection<Purchase> result = null;
 		if (component_id != null) {
 			result = purchaseRepo.findByComponent(component_id);
 		} else {
-			result = purchaseRepo.findAll();
+			result = purchaseRepo.findAllActive();
 		}
 		return result;
 	}
