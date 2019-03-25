@@ -160,7 +160,7 @@ export default {
     goToReceiving(receiving_id) {
       if (!receiving_id) {
         http
-          .post("/receiving")
+          .post("/receiving", {purchase: {id: this.purchase.id}, component: {id: this.component.id}})
           .then(response => {
             router.push("/receivingEdit/" + response.data.id);
           })
