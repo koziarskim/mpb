@@ -75,13 +75,13 @@ class ReceivingRest {
 			receiving = new Receiving();
 		}
 //		 TODO: Need to check if update.
-		if (receiving.getComponent() != null) {
+		if (receiving.getComponent() != null && receiving.getComponent().getId()!=null) {
 //			Receiving existingReceiving = receivingRepo.getOne(receiving.getId());
 			int unitsOnStack = receiving.getComponent().getUnitsOnStack() + receiving.getUnits();
 			receiving.getComponent().setUnitsOnStack(unitsOnStack);
 		}
 		Receiving result = receivingRepo.save(receiving);
-		if (receiving.getComponent().getUnitsOnStack() >= receiving.getComponent().getUnitsOrdered()) {
+		if (receiving.getPurchase()!=null && receiving.getComponent()!=null && receiving.getComponent().getUnitsOnStack() >= receiving.getComponent().getUnitsOrdered()) {
 			Purchase purchase = purchaseRepo.getOne(receiving.getPurchase().getId());
 			purchase.setReceived(true);
 			purchaseRepo.save(purchase);

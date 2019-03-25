@@ -159,8 +159,15 @@ export default {
     },
     goToReceiving(receiving_id) {
       if (!receiving_id) {
+          var receiving = {};
+          if(this.purchase.id){
+              receiving.purchase = {id: this.purchase.id};
+          }
+          if(this.component.id){
+              receiving.component = {id: this.component.id};
+          }
         http
-          .post("/receiving", {purchase: {id: this.purchase.id}, component: {id: this.component.id}})
+          .post("/receiving", receiving)
           .then(response => {
             router.push("/receivingEdit/" + response.data.id);
           })
