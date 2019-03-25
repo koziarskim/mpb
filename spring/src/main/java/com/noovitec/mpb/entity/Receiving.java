@@ -35,7 +35,7 @@ public class Receiving {
 	private Purchase purchase;
 
 	@JsonIgnoreProperties(value = { "receivings", "itemComponents", "supplier", "category", "attachment", "purchaseComponents" }, allowSetters = true)
-	@ManyToOne(cascade=CascadeType.ALL)
+	@ManyToOne(cascade=CascadeType.MERGE)
 	@JoinColumn(name = "component_id", referencedColumnName = "id")
 	private Component component;
 

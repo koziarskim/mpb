@@ -40,22 +40,23 @@ class ReceivingRest {
 	}
 
 	@GetMapping("/receiving")
-	Collection<Receiving> getAll(@RequestParam(name = "purchase_id", required = false) Long purchase_id, @RequestParam(name = "component_id", required = false) Long component_id) {
+	Collection<Receiving> getAll(@RequestParam(name = "purchase_id", required = false) Long purchase_id,
+			@RequestParam(name = "component_id", required = false) Long component_id) {
 		Collection<Receiving> result = new HashSet<Receiving>();
-		for(Receiving receiving : receivingRepo.findAll()) {
+		for (Receiving receiving : receivingRepo.findAll()) {
 			boolean foundPurchase = false;
-			if(purchase_id==null) {
+			if (purchase_id == null) {
 				foundPurchase = true;
-			}else if(receiving.getPurchase()!=null && purchase_id.equals(receiving.getPurchase().getId())) {
+			} else if (receiving.getPurchase() != null && purchase_id.equals(receiving.getPurchase().getId())) {
 				foundPurchase = true;
 			}
 			boolean foundComponent = false;
-			if(component_id==null) {
+			if (component_id == null) {
 				foundComponent = true;
-			}else if(receiving.getComponent()!=null && component_id.equals(receiving.getComponent().getId())) {
+			} else if (receiving.getComponent() != null && component_id.equals(receiving.getComponent().getId())) {
 				foundComponent = true;
 			}
-			if(foundPurchase && foundComponent) {
+			if (foundPurchase && foundComponent) {
 				result.add(receiving);
 			}
 		}
@@ -73,8 +74,9 @@ class ReceivingRest {
 		if (receiving == null) {
 			receiving = new Receiving();
 		}
-//		 TODO: Need to save old value in case there is update or delete of receiving.
+//		 TODO: Need to check if update.
 		if (receiving.getComponent() != null) {
+//			Receiving existingReceiving = receivingRepo.getOne(receiving.getId());
 			int unitsOnStack = receiving.getComponent().getUnitsOnStack() + receiving.getUnits();
 			receiving.getComponent().setUnitsOnStack(unitsOnStack);
 		}
@@ -84,8 +86,14 @@ class ReceivingRest {
 
 	@DeleteMapping("/receiving/{id}")
 	public ResponseEntity<?> delete(@PathVariable Long id) {
-		Optional<Receiving> receiving = receivingRepo.findById(id);
-		receivingRepo.delete(receiving.get());
+		Receiving existingReceiving = receivingRepo.findById(id).get();
+		if (existingReceiving.getComponent() != null) {
+			int unitsOnStack = existingReceiving.getComponent().getUnitsOnStack() - existingReceiving.getUnits();
+			existingReceiving.getComponent().setUnitsOnStack(unitsOnStack);
+		}
+		receivingRepo.save(existingReceiving);
+		Receiving receiving = receivingRepo.findById(id).get();
+		receivingRepo.delete(receiving);
 		return ResponseEntity.ok().build();
 	}
 }

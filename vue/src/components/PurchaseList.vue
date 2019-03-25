@@ -28,7 +28,7 @@
       </template>
       <template slot="action" slot-scope="row">
         <b-button size="sm" @click.stop="deletePurchase(row.item.id)" :disabled="disabled(row.item)">x</b-button>&nbsp;
-        <b-button size="sm" @click.stop="goToReceiving(row.item.id)">Receivings</b-button>
+        <b-button size="sm" @click.stop="goToReceiving(row.item.id)" :disabled="!disabled(row.item)">Receivings</b-button>
       </template>
       <template slot="pdf" slot-scope="row">
         <a :href="rowPdfUrl(row.item.id)" target="_blank">
