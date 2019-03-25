@@ -129,6 +129,10 @@ export default {
     },
     savePurchase() {
       this.purchase.totalPrice = this.totalPrice;
+      this.purchase.purchaseComponents.forEach(pc => {
+          var component = this.availableComponents.find(it => it.id = pc.component.id);
+          pc.units = component.units;
+      })
       return http
         .post("/purchase", this.purchase)
         .then(response => {

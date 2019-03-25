@@ -18,7 +18,7 @@ public class ComponentDto {
 	private String name;
 	private String supplierName;
 	private Long units;
-	private Long unitsOrdered;
+//	private Long unitsOrdered;//TODO: do we need it?
 	private BigDecimal unitPrice;
 	private boolean selected;
 	

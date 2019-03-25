@@ -48,6 +48,7 @@ class ReceivingRest {
 		if (receiving == null) {
 			receiving = new Receiving();
 		}
+		// TODO: Need to save old value in case there is update or delete of receiving.
 		if (receiving.getComponent() != null) {
 			int unitsOnStack = receiving.getComponent().getUnitsOnStack() + receiving.getUnits();
 			receiving.getComponent().setUnitsOnStack(unitsOnStack);
