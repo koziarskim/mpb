@@ -6,7 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.noovitec.mpb.dto.InventoryPurchaseDto;
 import com.noovitec.mpb.entity.Purchase;
 
 public interface PurchaseRepo extends JpaRepository<Purchase, Long> {

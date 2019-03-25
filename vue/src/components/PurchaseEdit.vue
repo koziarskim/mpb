@@ -66,7 +66,7 @@ export default {
   },
   methods: {
     disabled(){
-        return this.purchase.completed;
+        return this.purchase.submitted;
     },
     getPurchaseData(id) {
       http

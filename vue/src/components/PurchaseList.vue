@@ -23,8 +23,8 @@
       <template slot="number" slot-scope="row">
         <b-button size="sm" @click.stop="goToPurchase(row.item.id)" variant="link">{{row.item.number}}</b-button>
       </template>
-      <template slot="completed" slot-scope="row">
-        <span>{{row.item.completed?"Yes":"No"}}</span>
+      <template slot="submitted" slot-scope="row">
+        <span>{{row.item.submitted?"Yes":"No"}}</span>
       </template>
       <template slot="action" slot-scope="row">
         <b-button size="sm" @click.stop="deletePurchase(row.item.id)" :disabled="disabled(row.item)">x</b-button>&nbsp;
@@ -62,7 +62,7 @@ export default {
         { key: "supplier.name", label: "Supplier", sortable: true },
         { key: "date", label: "Date", sortable: true },
         { key: "expectedDate", label: "Expected", sortable: true },
-        { key: "completed", label: "Completed", sortable: true },
+        { key: "completed", label: "Submitted", sortable: true },
         { key: "pdf", label: "PDF", sortable: true },
         { key: "action", label: "Action", sortable: false }
       ],
@@ -103,7 +103,7 @@ export default {
   },
   methods: {
     disabled(purchase) {
-      return purchase.completed;
+      return purchase.submitted;
     },
     showAlert(message) {
       (this.alertSecs = 3), (this.alertMessage = message);

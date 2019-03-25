@@ -17,7 +17,7 @@
       <b-col>
         <div style="text-align: right;">
           <b-button style="margin: 2px;" type="submit" variant="info" @click="back()">Back</b-button>
-          <b-button :disabled="purchase.completed" style="margin: 2px;" type="reset" variant="success" @click="complete()">Complete</b-button>
+          <b-button :disabled="purchase.submitted" style="margin: 2px;" type="reset" variant="success" @click="submitPurchase()">Submit</b-button>
           <a :href="pdfUrl()" target="_blank">
             <img style="margin: 2px;" src="../assets/pdf-download.png" width="25px">
           </a>
@@ -73,8 +73,8 @@ export default {
           console.log("API error: " + e);
         });
     },
-    complete() {
-      this.purchase.completed = true;
+    submitPurchase() {
+      this.purchase.submitted = true;
       return http
         .post("/purchase", this.purchase)
         .then(response => {

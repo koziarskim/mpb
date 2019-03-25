@@ -92,7 +92,7 @@ class PurchaseRest {
 	HttpEntity<byte[]> getPdf(@PathVariable Long id) throws DocumentException, IOException {
 		Purchase purchase = purchaseRepo.findById(id).get();
 		byte[] data = null;
-		if (purchase.isCompleted() && purchase.getAttachment() != null) {
+		if (purchase.isSubmitted() && purchase.getAttachment() != null) {
 			Attachment attachment = attachmentRepo.findById(purchase.getAttachment().getId()).get();
 			data = attachment.getData();
 		} else {
@@ -119,7 +119,7 @@ class PurchaseRest {
 		for (PurchaseComponent pc : purchase.getPurchaseComponents()) {
 			pc.setPurchase(purchase);
 		}
-		if (purchase.isCompleted() && purchase.getAttachment() == null) {
+		if (purchase.isSubmitted() && purchase.getAttachment() == null) {
 			byte[] data = this.generatePdf(purchase, true);
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
 			Timestamp timestamp = new Timestamp(System.currentTimeMillis());
@@ -140,7 +140,7 @@ class PurchaseRest {
 		return ResponseEntity.ok().build();
 	}
 
-	private byte[] generatePdf(Purchase purchase, boolean completed) throws IOException, DocumentException {
+	private byte[] generatePdf(Purchase purchase, boolean submitted) throws IOException, DocumentException {
 		NumberFormat currencyFormat = NumberFormat.getCurrencyInstance();
 		String componentName = "";
 		String componentDescription = "";
@@ -175,7 +175,7 @@ class PurchaseRest {
 		stamper.getAcroFields().setField("componentPrice", componentPrice);
 		stamper.getAcroFields().setField("componentTotalPrice", componentTotalPrice);
 		stamper.getAcroFields().setField("totalPrice", currencyFormat.format(purchase.getTotalPrice()));
-		if (!completed) {
+		if (!submitted) {
 			PdfContentByte under = stamper.getUnderContent(1);
 			PdfGState gs1 = new PdfGState();
 			gs1.setFillOpacity(0.5f);

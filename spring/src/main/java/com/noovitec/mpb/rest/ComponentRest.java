@@ -99,7 +99,7 @@ class ComponentRest {
 			dto.setUnits(Long.valueOf(c.getUnitsOnStack()));
 			Long unitsOrdered = 0L;
 			for(PurchaseComponent pc : c.getPurchaseComponents()) {
-				if(pc.getPurchase().isCompleted()) {
+				if(pc.getPurchase().isSubmitted()) {
 					unitsOrdered += pc.getUnits();
 				}
 			}
