@@ -44,6 +44,7 @@ public class Purchase {
 	@JoinColumn(name = "address_id", referencedColumnName = "id")
 	private Address shipAddress;
 
+	@JsonIgnoreProperties(value = { "data" }, allowSetters = true)
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "attachment_id", referencedColumnName = "id")
 	private Attachment attachment;
@@ -59,7 +60,7 @@ public class Purchase {
 	private Collection<PurchaseComponent> purchaseComponents = new HashSet<PurchaseComponent>();
 	
 	@JsonIgnoreProperties(value = { "purchase", "component" }, allowSetters = true)
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany()
 	@JoinColumn(name = "purchase_id")
 	private Collection<Receiving> receivings = new HashSet<Receiving>();
 

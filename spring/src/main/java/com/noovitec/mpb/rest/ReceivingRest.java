@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -17,7 +18,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.noovitec.mpb.entity.Component;
 import com.noovitec.mpb.entity.Receiving;
+import com.noovitec.mpb.repo.ComponentRepo;
 import com.noovitec.mpb.repo.ReceivingRepo;
 
 @CrossOrigin
@@ -27,6 +30,8 @@ class ReceivingRest {
 
 	private final Logger log = LoggerFactory.getLogger(ReceivingRest.class);
 	private ReceivingRepo receivingRepo;
+	@Autowired
+	ComponentRepo componentRepo;
 
 	public ReceivingRest(ReceivingRepo receivingRepo) {
 		this.receivingRepo = receivingRepo;
@@ -48,7 +53,7 @@ class ReceivingRest {
 		if (receiving == null) {
 			receiving = new Receiving();
 		}
-		// TODO: Need to save old value in case there is update or delete of receiving.
+//		 TODO: Need to save old value in case there is update or delete of receiving.
 		if (receiving.getComponent() != null) {
 			int unitsOnStack = receiving.getComponent().getUnitsOnStack() + receiving.getUnits();
 			receiving.getComponent().setUnitsOnStack(unitsOnStack);

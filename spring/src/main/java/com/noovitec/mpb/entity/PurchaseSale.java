@@ -29,7 +29,7 @@ public class PurchaseSale {
 	@JoinColumn(name = "purchase_id", referencedColumnName = "id")
 	private Purchase purchase;
 
-	@JsonIgnoreProperties(value={ "purchaseSales" }, allowSetters=true)
+	@JsonIgnoreProperties(value={ "purchaseSales" , "saleItems"}, allowSetters=true)
 	@ManyToOne()
 	@JoinColumn(name = "sale_id", referencedColumnName = "id")
 	private Sale sale;
