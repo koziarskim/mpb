@@ -88,10 +88,20 @@ export default {
       return filtered;
     }
   },
+  watch: {
+    purchase() {
+      this.getReceivings();
+    },
+    component() {
+      this.getReceivings();
+    }
+  },
   methods: {
     getReceivings() {
+      var purchase_id = this.purchase.id ? this.purchase.id : "";
+      var component_id = this.component.id ? this.component.id : "";
       http
-        .get("/receiving/")
+        .get("/receiving?purchase_id="+purchase_id+"&component_id="+component_id)
         .then(response => {
           this.receivings = response.data;
         })
@@ -110,21 +120,29 @@ export default {
           console.log("API error: " + e);
         });
     },
-    getAvailablePurchases() {
+    getAvailablePurchases(purchase_id) {
       return http
         .get("/purchase/")
         .then(response => {
           this.availablePurchases = response.data;
+          if (purchase_id) {
+            this.purchase = response.data.filter(it => it.id == purchase_id)[0];
+          }
         })
         .catch(e => {
           console.log("API error: " + e);
         });
     },
-    getAvailableComponents() {
+    getAvailableComponents(component_id) {
       return http
         .get("/component/")
         .then(response => {
           this.availableComponents = response.data;
+          if (component_id) {
+            this.component = response.data.filter(
+              it => it.id == component_id
+            )[0];
+          }
         })
         .catch(e => {
           console.log("API error: " + e);
@@ -173,11 +191,12 @@ export default {
   mounted() {
     var purchase_id = parseInt(this.$route.query.purchase_id);
     var component_id = parseInt(this.$route.query.component_id);
-    this.getAvailablePurchases().then(r => {
-      this.getAvailableComponents().then(r => {
+    this.getAvailablePurchases(purchase_id).then(r => {
+      this.getAvailableComponents(component_id).then(r => {
         this.getReceivings();
       });
     });
+    window.history.pushState({}, document.title, window.location.pathname);
   }
 };
 </script>

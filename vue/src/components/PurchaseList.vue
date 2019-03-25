@@ -66,10 +66,15 @@ export default {
         { key: "pdf", label: "PDF", sortable: true },
         { key: "action", label: "Action", sortable: false }
       ],
-      availableComponents: [{id: 3, number: "1003"}, {id: 4, number: "1004"},{id: 5, number: "1005"}, {id: 33, number: "10033"}],
+      availableComponents: [
+        { id: 3, number: "1003" },
+        { id: 4, number: "1004" },
+        { id: 5, number: "1005" },
+        { id: 33, number: "10033" }
+      ],
       component: {},
       purchases: [],
-      keyword: "",
+      keyword: ""
     };
   },
   computed: {
@@ -91,6 +96,11 @@ export default {
       return filtered;
     }
   },
+  watch: {
+      component(){
+          this.getPurchasesData();
+      }
+  },
   methods: {
     disabled(purchase) {
       return purchase.completed;
@@ -103,8 +113,10 @@ export default {
         .get("/component/")
         .then(response => {
           this.availableComponents = response.data;
-          if(component_id){
-              this.component = response.data.filter(it => it.id == component_id)[0]
+          if (component_id) {
+            this.component = response.data.filter(
+              it => it.id == component_id
+            )[0];
           }
           this.getPurchasesData();
         })
@@ -124,9 +136,10 @@ export default {
         });
     },
     getPurchasesData() {
-        //TODO: apply filters to the GET url.
+      //TODO: apply filters to the GET url.
+      var component_id = this.component.id?this.component.id:"";
       http
-        .get("/purchase")
+        .get("/purchase?component_id=" + component_id)
         .then(response => {
           this.purchases = response.data;
           console.log("Success getting component data");
@@ -172,6 +185,7 @@ export default {
   },
   mounted() {
     this.getAvailableComponents(parseInt(this.$route.query.component_id));
+    window.history.pushState({}, document.title, window.location.pathname);
   }
 };
 </script>

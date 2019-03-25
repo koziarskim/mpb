@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonParseException;
@@ -71,8 +72,14 @@ class PurchaseRest {
 	}
 
 	@GetMapping("/purchase")
-	Collection<Purchase> getAll() {
-		return purchaseRepo.findAll();
+	Collection<Purchase> getAll(@RequestParam(name = "component_id", required = false) Long component_id) {
+		Collection<Purchase> result = null;
+		if (component_id != null) {
+			result = purchaseRepo.findByComponent(component_id);
+		} else {
+			result = purchaseRepo.findAll();
+		}
+		return result;
 	}
 
 	@GetMapping("/purchase/{id}")
@@ -97,12 +104,6 @@ class PurchaseRest {
 		header.set("Content-Disposition", "inline; filename=" + fileName);
 		header.setContentLength(data.length);
 		return new HttpEntity<byte[]>(data, header);
-	}
-
-	@GetMapping("/purchase/component/{component_id}")
-	Collection<Purchase> getPurchaseByComponent(@PathVariable Long component_id) {
-		Collection<Purchase> result = purchaseRepo.findByComponent(component_id);
-		return result;
 	}
 
 	// Save and update.
