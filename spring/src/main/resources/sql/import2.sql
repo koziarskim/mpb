@@ -1703,9 +1703,18 @@ INSERT INTO public.sale_item (id, units, item_id, sale_id) VALUES (19, NULL, 6, 
 INSERT INTO public.sale_item (id, units, item_id, sale_id) VALUES (39, NULL, 36, 38);
 INSERT INTO public.sale_item (id, units, item_id, sale_id) VALUES (91, NULL, 11, 90);
 
-INSERT INTO public.role (id, code, name, description) VALUES (1, 'ADMIN', 'Administrator', 'Can access everything');
-INSERT INTO public.role (id, code, name, description) VALUES (2, 'POADMIN', 'P.O. Administrator', 'Can create/modify P.O.');
-INSERT INTO public.role (id, code, name, description) VALUES (3, 'INVENTORY', 'Inventory Admin', 'Can create/modify inventory');
+INSERT INTO public.role (id, code, description, name) VALUES (1, 'ADMIN', 'Can access everything', 'Administrator');
+INSERT INTO public.role (id, code, description, name) VALUES (2, 'POADMIN', 'Can create/modify P.O.', 'P.O. Administrator');
+INSERT INTO public.role (id, code, description, name) VALUES (3, 'INVENTORY', 'Can create/modify inventory', 'Inventory Admin');
+
+INSERT INTO public.system_user (id, first_name, last_name, number, password, username) VALUES (88, 'Andy', 'Koziarski', '1112', '1234', 'andy');
+INSERT INTO public.system_user (id, first_name, last_name, number, password, username) VALUES (87, 'Marcin', 'Koziarski', '1111', 'a', 'a');
+
+INSERT INTO public.user_role (role_id, user_id) VALUES (1, 88);
+INSERT INTO public.user_role (role_id, user_id) VALUES (2, 88);
+INSERT INTO public.user_role (role_id, user_id) VALUES (3, 88);
+INSERT INTO public.user_role (role_id, user_id) VALUES (1, 87);
+INSERT INTO public.user_role (role_id, user_id) VALUES (2, 87);
 
 --
 -- TOC entry 2243 (class 0 OID 0)

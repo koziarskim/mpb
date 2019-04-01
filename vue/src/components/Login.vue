@@ -39,7 +39,9 @@ export default {
     login() {
       return http
         .post("/user/login", this.user)
-        .then(response => {})
+        .then(response => {
+            router.push("/home")
+        })
         .catch(e => {
           console.log("API error: " + e);
         });

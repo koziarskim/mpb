@@ -4,8 +4,13 @@ import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.Optional;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -17,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.noovitec.mpb.app.MpbAuthenticationContext;
 import com.noovitec.mpb.entity.User;
 import com.noovitec.mpb.repo.UserRepo;
 
@@ -27,6 +33,8 @@ class UserRest {
 
 	private final Logger log = LoggerFactory.getLogger(UserRest.class);
 	private UserRepo userRepo;
+	@Autowired
+	private MpbAuthenticationContext mpbAuthenticationContext;
 
 	public UserRest(UserRepo userRepo) {
 		this.userRepo = userRepo;
@@ -53,14 +61,23 @@ class UserRest {
 	}
 
 	@PostMapping("/user/login")
-	ResponseEntity<User> login(@RequestBody(required = true) User user) throws URISyntaxException {
+	ResponseEntity<?> login(@RequestBody(required = true) User user, HttpServletRequest request, HttpServletResponse response) throws URISyntaxException {
 		User result = userRepo.getByUsername(user.getUsername());
 		if (result == null) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+			log.info("Username not found");
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Username not found");
 		}
 		if (!result.getPassword().equals(user.getPassword())) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+			log.info("Password is wrong");
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Password is wrong");
 		}
+		log.info("Setting SID");
+		//TODO: hash username or something....
+		String sid = user.getUsername();
+		mpbAuthenticationContext.addSid(sid);
+		Cookie cookie = new Cookie("SID", sid);
+		cookie.setPath("/");
+		response.addCookie(cookie);
 		return ResponseEntity.ok().body(result);
 	}
 

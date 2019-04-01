@@ -26,7 +26,7 @@ class CorsFilter extends UrlBasedCorsConfigurationSource implements Filter {
 		response.setHeader("Content-type", "application/json");
 		response.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS, HEAD, PUT, POST, DELETE");
 		response.setHeader("Access-Control-Allow-Headers",
-				"Content-type, Access-Control-Allow-Headers, Access-Control-Allow-Origin, Access-Control-Allow-Methods, Access-Control-Allow-Credentials");
+				"Cookie, Set-Cookie, Content-type, Access-Control-Allow-Headers, Access-Control-Allow-Origin, Access-Control-Allow-Methods, Access-Control-Allow-Credentials");
 		chain.doFilter(request, response);
 	}
 
