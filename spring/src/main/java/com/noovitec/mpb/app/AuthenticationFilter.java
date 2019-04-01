@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
@@ -33,7 +34,7 @@ class AuthenticationFilter extends UrlBasedCorsConfigurationSource implements Fi
 			//If not exist return 401
 			//Compare both cookies
 			//IF not the same, return 401
-//			response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Testing....");
+//			response.sendError(HttpStatus.UNAUTHORIZED.value(), "Testing....");
 			chain.doFilter(servletRrequest, servletResponse);
 		}
 

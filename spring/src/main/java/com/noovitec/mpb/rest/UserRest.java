@@ -6,7 +6,7 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.noovitec.mpb.entity.User;
-import com.noovitec.mpb.repo.RoleRepo;
 import com.noovitec.mpb.repo.UserRepo;
 
 @CrossOrigin
@@ -28,8 +27,6 @@ class UserRest {
 
 	private final Logger log = LoggerFactory.getLogger(UserRest.class);
 	private UserRepo userRepo;
-	@Autowired
-	private RoleRepo roleRepo;
 
 	public UserRest(UserRepo userRepo) {
 		this.userRepo = userRepo;
@@ -52,6 +49,18 @@ class UserRest {
 			user = new User();
 		}
 		User result = userRepo.save(user);
+		return ResponseEntity.ok().body(result);
+	}
+
+	@PostMapping("/user/login")
+	ResponseEntity<User> login(@RequestBody(required = true) User user) throws URISyntaxException {
+		User result = userRepo.getByUsername(user.getUsername());
+		if (result == null) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		}
+		if (!result.getPassword().equals(user.getPassword())) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		}
 		return ResponseEntity.ok().body(result);
 	}
 

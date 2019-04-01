@@ -1,5 +1,6 @@
 import axios from "axios";
 import httpUtils from "./httpUtils";
+import router from "./router";
 
 const http = axios.create({
   baseURL: httpUtils.baseUrl
@@ -29,7 +30,10 @@ http.interceptors.response.use(
   },
   error => {
     console.log("Interceptor Response Error: " + error);
-    console.log("Interceptor Response Status: " + error.response.data.status);
+    // console.log("Interceptor Response Status: " + error.response.data.status);
+    if (error.response.data.status === 401) {
+      router.push("/login");
+    }
     return Promise.reject(error);
   }
 );
