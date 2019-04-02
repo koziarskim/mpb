@@ -6,6 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -33,4 +34,25 @@ public class PurchaseComponent {
 	@ManyToOne()
 	@JoinColumn(name = "component_id", referencedColumnName = "id")
 	private Component component;
+	
+	@Transient
+	private int receivedUnits;
+	@Transient
+	private boolean received;
+	
+	public int getReceivedUnits() {
+		int units = 0;
+		for(Receiving r : this.getComponent().getReceivings()) {
+			units += r.getUnits();
+		}
+		return units;
+	}
+	
+	public boolean isReceived() {
+		if(this.getReceivedUnits() >= this.getUnits()) {
+			return true;
+		}
+		return false;
+	}
+	
 }

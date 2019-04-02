@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.noovitec.mpb.entity.Purchase;
+import com.noovitec.mpb.entity.PurchaseComponent;
 import com.noovitec.mpb.entity.Receiving;
 import com.noovitec.mpb.repo.PurchaseRepo;
 import com.noovitec.mpb.repo.ReceivingRepo;
@@ -70,22 +71,34 @@ class ReceivingRest {
 	}
 
 	@PostMapping("/receiving")
-	ResponseEntity<Receiving> post(@RequestBody(required = false) Receiving receiving) throws URISyntaxException {
+	ResponseEntity<?> post(@RequestBody(required = false) Receiving receiving) throws URISyntaxException {
 		if (receiving == null) {
 			receiving = new Receiving();
 		}
-//		 TODO: Need to check if update.
-		if (receiving.getComponent() != null && receiving.getComponent().getId()!=null) {
-//			Receiving existingReceiving = receivingRepo.getOne(receiving.getId());
+		boolean update = receiving.getId()==null?false:true;
+		if(update) {
+			if(receiving.getPurchase().getId()==null) {
+				return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body("Purchase not set");
+			}
+			if(receiving.getComponent().getId()==null) {
+				return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body("Component not set");
+			}
 			int unitsOnStack = receiving.getComponent().getUnitsOnStack() + receiving.getUnits();
 			receiving.getComponent().setUnitsOnStack(unitsOnStack);
 		}
 		Receiving result = receivingRepo.save(receiving);
-		if (receiving.getPurchase()!=null && receiving.getComponent()!=null && receiving.getComponent().getUnitsOnStack() >= receiving.getComponent().getUnitsOrdered()) {
+		if (receiving.getPurchase()!=null) {
 			Purchase purchase = purchaseRepo.getOne(receiving.getPurchase().getId());
-			purchase.setReceived(true);
+			boolean received = true;
+			for(PurchaseComponent pc : purchase.getPurchaseComponents()) {
+				if(!pc.isReceived()) {
+					received = false;
+					break;
+				}
+			}
+			purchase.setReceived(received);
 			purchaseRepo.save(purchase);
-		}
+		} 
 		return ResponseEntity.ok().body(result);
 	}
 

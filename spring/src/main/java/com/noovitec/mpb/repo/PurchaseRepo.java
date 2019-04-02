@@ -16,4 +16,7 @@ public interface PurchaseRepo extends JpaRepository<Purchase, Long> {
 	@Query("select p from Purchase p where p.received = false")
 	List<Purchase> findAllActive();
 
+	@Query("select p from Purchase p where p.submitted = true")
+	List<Purchase> findAllSubmitted();
+
 }

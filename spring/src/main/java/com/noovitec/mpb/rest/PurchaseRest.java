@@ -87,6 +87,12 @@ class PurchaseRest {
 		return result;
 	}
 
+	@GetMapping("/purchase/submitted")
+	Collection<Purchase> getAllSubmitted() {
+		Collection<Purchase> result = purchaseRepo.findAllSubmitted();
+		return result;
+	}
+
 	@GetMapping("/purchase/{id}")
 	ResponseEntity<Purchase> get(@PathVariable Long id) {
 		Optional<Purchase> result = purchaseRepo.findById(id);

@@ -88,7 +88,7 @@ export default {
     },
     getAvailablePurchases() {
       return http
-        .get("/purchase/")
+        .get("/purchase/submitted")
         .then(response => {
           this.availablePurchases = response.data;
         })
