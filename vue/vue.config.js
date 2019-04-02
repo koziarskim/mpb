@@ -3,7 +3,7 @@ module.exports = {
     port: 8081
   },
 
-  publicPath: "/mpb/static",
+  publicPath: "/mpb-static",
   outputDir: undefined,
   assetsDir: undefined,
   runtimeCompiler: undefined,
