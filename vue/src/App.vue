@@ -1,38 +1,35 @@
 <template>
-    <div id="app">
-        <b-navbar toggleable="md" type="dark" variant="dark">
-            <b-collapse is-nav id="nav_collapse">
-                <b-navbar-nav v-if="!homePage()" >
-                    <b-nav-item v-on:click="goTo('/home')">Home</b-nav-item>
-                    <b-nav-item v-on:click="goTo('/supplierList')">Supplier</b-nav-item>
-                    <b-nav-item v-on:click="goTo('/componentList')">Component</b-nav-item>
-                    <b-nav-item v-on:click="goTo('/itemList')">Item</b-nav-item>
-                    <b-nav-item v-on:click="goTo('/customerList')">Customer</b-nav-item>
-                    <b-nav-item v-on:click="goTo('/saleList')">Sale</b-nav-item>
-                    <b-nav-item v-on:click="goTo('/purchaseList')">Purchase</b-nav-item>
-                    <b-nav-item v-on:click="goTo('/receivingList')">Receiving</b-nav-item>
-                    <b-nav-item v-on:click="goTo('/users')">User</b-nav-item>
-                </b-navbar-nav>
-                <!-- Right aligned nav items -->
-                <b-navbar-nav class="ml-auto">
-                    <span v-if="homePage()" style="color: white; margin-right: 490px; padding-top: 7px;">Marketplace Brands</span>
-                    <img v-if="homePage()" style="width: 40px; height: 40px; margin-right: 490px" src="./assets/mpb-logo.jpg" />
-                    <b-nav-item-dropdown right>
-                        <!-- Using button-content slot -->
-                        <template slot="button-content">
-                        <!-- <em>{{userName}}</em> -->
-                        <em>Marcin Koziarski</em>
-                        </template>
-                        <b-dropdown-item v-on:click="goTo('/')">Profile</b-dropdown-item>
-                        <b-dropdown-item href="#">Signout</b-dropdown-item>
-                    </b-nav-item-dropdown>
-                </b-navbar-nav>
-            </b-collapse>
-        </b-navbar>
-        <div class="center">
-            <router-view :key="$route.fullPath"></router-view>
-        </div>
+  <div id="app">
+    <b-navbar toggleable="md" type="dark" variant="dark">
+      <b-collapse is-nav id="nav_collapse">
+        <b-navbar-nav v-if="!hideNavBar()">
+          <b-nav-item v-on:click="goTo('/home')">Home</b-nav-item>
+          <b-nav-item v-on:click="goTo('/supplierList')">Supplier</b-nav-item>
+          <b-nav-item v-on:click="goTo('/componentList')">Component</b-nav-item>
+          <b-nav-item v-on:click="goTo('/itemList')">Item</b-nav-item>
+          <b-nav-item v-on:click="goTo('/customerList')">Customer</b-nav-item>
+          <b-nav-item v-on:click="goTo('/saleList')">Sale</b-nav-item>
+          <b-nav-item v-on:click="goTo('/purchaseList')">Purchase</b-nav-item>
+          <b-nav-item v-on:click="goTo('/receivingList')">Receiving</b-nav-item>
+          <b-nav-item v-on:click="goTo('/users')">User</b-nav-item>
+        </b-navbar-nav>
+        <b-navbar-nav class="ml-auto">
+          <span v-if="hideNavBar()" style="color: white; margin-right: 455px; padding-top: 7px;">Marketplace Brands</span>
+          <img v-if="hideNavBar()" style="width: 40px; height: 40px; margin-right: 650px" src="./assets/mpb-logo.jpg">
+          <b-nav-item-dropdown v-if="!hideNavBar()" right>
+            <template slot="button-content">
+              <em>{{getUserName()}}</em>
+            </template>
+            <b-dropdown-item @click="goTo('/')">Profile</b-dropdown-item>
+            <b-dropdown-item @click="logout()">Signout</b-dropdown-item>
+          </b-nav-item-dropdown>
+        </b-navbar-nav>
+      </b-collapse>
+    </b-navbar>
+    <div class="center">
+      <router-view :key="$route.fullPath"></router-view>
     </div>
+  </div>
 </template>
 
 <script>
@@ -43,8 +40,7 @@ import store from "./store.js";
 export default {
   name: "app",
   data() {
-    return {
-    };
+    return {};
   },
   computed: {
     userName: function() {
@@ -52,21 +48,26 @@ export default {
     }
   },
   methods: {
-    homePage: function(){
-        var pathArray = window.location.pathname.split("/")
-        if(pathArray[3]==="home"){
-            return true;
-        }
-        return false;
+    hideNavBar: function() {
+      if (window.location.pathname.includes("/login")) {
+        return true;
+      }
+      return false;
     },
     changeUserName: function(user_name) {
       this.$store.dispatch("changeUserName", user_name);
     },
-    /* eslint-disable no-console */
+    getUserName() {
+      return this.$store.getters.pageContext.fullName;
+    },
     goTo(view) {
       router.push(view);
     },
-    /* eslint-enable no-console */
+    logout() {
+      document.cookie = "SID=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      this.$store.dispatch("changePageContext", {});
+      router.push("/login");
+    }
   }
 };
 </script>
@@ -95,8 +96,8 @@ export default {
   padding: 10px;
 }
 .hr-text {
-    margin-top: 0;
-    margin-bottom: 0;
+  margin-top: 0;
+  margin-bottom: 0;
   line-height: 1em;
   position: relative;
   outline: 0;
@@ -104,9 +105,9 @@ export default {
   color: black;
   text-align: center;
   height: 1.5em;
-  opacity: .5;
+  opacity: 0.5;
   &:before {
-    content: '';
+    content: "";
     // use the linear-gradient for the fading effect
     // use a solid background color for a solid bar
     background: linear-gradient(to right, transparent, #818078, transparent);
@@ -122,7 +123,7 @@ export default {
     display: inline-block;
     color: black;
 
-    padding: 0 .5em;
+    padding: 0 0.5em;
     line-height: 1.5em;
     // this is really the only tricky part, you need to specify the background color of the container element...
     color: #818078;
@@ -130,14 +131,14 @@ export default {
   }
 }
 // Overwrides BV
-.row{
-    text-align: left;
+.row {
+  text-align: left;
 }
-.invalid{
-    border-color: red !important;
+.invalid {
+  border-color: red !important;
 }
-.top-label{
-    margin-bottom: 0px;
-    font-size: 12px;
+.top-label {
+  margin-bottom: 0px;
+  font-size: 12px;
 }
 </style>

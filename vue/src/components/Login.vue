@@ -40,6 +40,8 @@ export default {
       return http
         .post("/user/login", this.user)
         .then(response => {
+            //TODO: Get page context instead.
+            this.$store.dispatch("changePageContext", {fullName: response.data.fullName});
             router.push("/home")
         })
         .catch(e => {
