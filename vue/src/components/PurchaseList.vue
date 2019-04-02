@@ -6,11 +6,14 @@
       </b-col>
       <b-col cols="2" style="margin-top: -12px">
         <label class="top-label">Component:</label>
-        <b-select option-value="id" option-text="number" :list="availableComponents" v-model="component"></b-select>
+        <b-select v-if="!showAll" option-value="id" option-text="number" :list="availableComponents" v-model="component"></b-select>
       </b-col>
       <b-col cols="2" style="margin-top: -12px">
         <label class="top-label">Search:</label>
         <input class="form-control" type="text" v-model="keyword" placeholder="Type to search">
+      </b-col>
+      <b-col cols="2" style="margin-top: 16px">
+        <b-form-checkbox v-model="showAll">Show All</b-form-checkbox>
       </b-col>
       <b-col>
         <div style="text-align: right;">
@@ -25,6 +28,9 @@
       </template>
       <template slot="submitted" slot-scope="row">
         <span>{{row.item.submitted?"Yes":"No"}}</span>
+      </template>
+      <template slot="received" slot-scope="row">
+        <span>{{row.item.received?"Yes":"No"}}</span>
       </template>
       <template slot="action" slot-scope="row">
         <b-button size="sm" @click.stop="deletePurchase(row.item.id)" :disabled="disabled(row.item)">x</b-button>&nbsp;
@@ -62,7 +68,8 @@ export default {
         { key: "supplier.name", label: "Supplier", sortable: true },
         { key: "date", label: "Date", sortable: true },
         { key: "expectedDate", label: "Expected", sortable: true },
-        { key: "completed", label: "Submitted", sortable: true },
+        { key: "submitted", label: "Submitted", sortable: true },
+        { key: "received", label: "Received", sortable: true },
         { key: "pdf", label: "PDF", sortable: true },
         { key: "action", label: "Action", sortable: false }
       ],
@@ -74,7 +81,8 @@ export default {
       ],
       component: {},
       purchases: [],
-      keyword: ""
+      keyword: "",
+      showAll: false
     };
   },
   computed: {
@@ -97,9 +105,19 @@ export default {
     }
   },
   watch: {
-      component(){
-          this.getPurchasesData();
+    component(new_value, old_value) {
+        if(this.showAll){
+            return;
+        }
+      this.getPurchasesData();
+    },
+    showAll(new_value, old_value) {
+      if (this.component.id && new_value) {
+        this.component = {};
       }
+      this.keyword = "";
+      this.getPurchasesData();
+    },
   },
   methods: {
     disabled(purchase) {
@@ -136,10 +154,14 @@ export default {
         });
     },
     getPurchasesData() {
-      //TODO: apply filters to the GET url.
-      var component_id = this.component.id?this.component.id:"";
+      var url =
+        "/purchase/active?component_id=" +
+        (this.component.id ? this.component.id : "");
+      if (this.showAll) {
+        url = "/purchase";
+      }
       http
-        .get("/purchase/active?component_id=" + component_id)
+        .get(url)
         .then(response => {
           this.purchases = response.data;
           console.log("Success getting component data");
