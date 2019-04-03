@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class MpbAuthenticationContext {
 
+	//Global storage across all HTTP sessions. Server reboot will reset it.
 	private Set<String> sids = new HashSet<String>();
 
 	public void addSid(String sid) {
