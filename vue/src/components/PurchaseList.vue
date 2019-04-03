@@ -6,14 +6,14 @@
       </b-col>
       <b-col cols="2" style="margin-top: -12px">
         <label class="top-label">Component:</label>
-        <b-select v-if="!showAll" option-value="id" option-text="number" :list="availableComponents" v-model="component"></b-select>
+        <b-select option-value="id" option-text="number" :list="availableComponents" v-model="component"></b-select>
       </b-col>
       <b-col cols="2" style="margin-top: -12px">
         <label class="top-label">Search:</label>
         <input class="form-control" type="text" v-model="keyword" placeholder="Type to search">
       </b-col>
       <b-col cols="2" style="margin-top: 16px">
-        <b-form-checkbox v-model="showAll">Show All</b-form-checkbox>
+        <b-form-checkbox @change="showAllChange()" v-model="showAll">Show All</b-form-checkbox>
       </b-col>
       <b-col>
         <div style="text-align: right;">
@@ -107,19 +107,28 @@ export default {
   watch: {
     component(new_value, old_value) {
         if(this.showAll){
-            return;
+            this.showAll = false;
         }
       this.getPurchasesData();
     },
-    showAll(new_value, old_value) {
-      if (this.component.id && new_value) {
+    // showAll(new_value, old_value) {
+    //   if (this.component.id && new_value) {
+    //     this.component = {};
+    //   }
+    //   this.keyword = "";
+    //   this.getPurchasesData();
+    // },
+  },
+  methods: {
+    showAllChange(){
+      this.showAll = !this.showAll
+      console.log(this.showAll)
+      if (this.component.id) {
         this.component = {};
       }
       this.keyword = "";
       this.getPurchasesData();
     },
-  },
-  methods: {
     disabled(purchase) {
       return purchase.submitted;
     },
