@@ -5,31 +5,28 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    user_name: "",
-    pageContext: {}
+    userContext: {}
   },
   getters: {
-    getUserName: state => {
-      return state.user_name;
-    },
-    pageContext: state => {
-      return state.pageContext;
+    userContext: state => {
+      // Vuex's state is not persisted on refresh. So, we need to store in localStorage.
+      if (!state.userContext.id) {
+        state.userContext = JSON.parse(
+          window.localStorage.getItem("userContext")
+        );
+      }
+      return state.userContext;
     }
   },
   mutations: {
-    CHANGE_USER_NAME: (state, user_name) => {
-      state.user_name = user_name;
-    },
-    CHANGE_PAGE_CONTEXT: (state, pageContext) => {
-      state.pageContext = pageContext;
+    CHANGE_USER_CONTEXT: (state, userContext) => {
+      state.userContext = userContext;
+      window.localStorage.setItem("userContext", JSON.stringify(userContext));
     }
   },
   actions: {
-    changeUserName: (state, user_name) => {
-      state.commit("CHANGE_USER_NAME", user_name);
-    },
-    changePageContext: (state, pageContext) => {
-      state.commit("CHANGE_PAGE_CONTEXT", pageContext);
+    changeUserContext: (state, userContext) => {
+      state.commit("CHANGE_USER_CONTEXT", userContext);
     }
   }
 });

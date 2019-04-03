@@ -18,7 +18,7 @@
           <img v-if="hideNavBar()" style="width: 40px; height: 40px; margin-right: 650px" src="./assets/mpb-logo.jpg">
           <b-nav-item-dropdown v-if="!hideNavBar()" right>
             <template slot="button-content">
-              <em>{{getUserName()}}</em>
+              <em>{{getUserContext().fullName}}</em>
             </template>
             <b-dropdown-item @click="goTo('/')">Profile</b-dropdown-item>
             <b-dropdown-item @click="logout()">Signout</b-dropdown-item>
@@ -54,20 +54,22 @@ export default {
       }
       return false;
     },
-    changeUserName: function(user_name) {
-      this.$store.dispatch("changeUserName", user_name);
-    },
-    getUserName() {
-      return this.$store.getters.pageContext.fullName;
+    getUserContext() {
+      return this.$store.getters.userContext
     },
     goTo(view) {
       router.push(view);
     },
     logout() {
       document.cookie = "SID=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-      this.$store.dispatch("changePageContext", {});
-      router.push("/login");
+      this.$store.dispatch("changeUserContext", {});
+      this.goTo("/login");
     }
+  },
+  mounted(){
+      if(!this.getUserContext().id){
+          this.goTo("/login");
+      }
   }
 };
 </script>
