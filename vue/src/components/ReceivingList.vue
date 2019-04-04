@@ -42,6 +42,9 @@
           variant="link"
         >{{row.item.purchaseComponent?row.item.purchaseComponent.component.number:''}}</b-button>
       </template>
+      <template slot="date" slot-scope="row">
+        <span>{{formatDate(row.item.date)}}</span>
+      </template>
       <template slot="action" slot-scope="row">
         <b-button size="sm" @click.stop="deleteReceiving(row.item.id)">x</b-button>
       </template>
@@ -52,6 +55,7 @@
 import http from "../http-common";
 import router from "../router";
 import httpUtils from "../httpUtils";
+import moment from "moment";
 
 export default {
   data() {
@@ -108,6 +112,13 @@ export default {
     }
   },
   methods: {
+    formatDate(date){
+        return date
+            ? moment(date)
+                .utc()
+                .format("YYYY-MM-DD")
+            : "";
+    },
     getReceivings() {
       var purchase_id = this.purchase.id?this.purchase.id:"";
       var component_id = this.purchaseComponent.component
@@ -163,9 +174,11 @@ export default {
     goToReceiving(receiving_id) {
       if (!receiving_id) {
         var receiving = {};
-        if (this.purchaseComponent.id) {
-          receiving.purchaseComponent = { id: this.purchaseComponent.id };
+        if (!this.purchaseComponent.id) {
+          alert("Please select Purchase and Component first!!!")
+          return;
         }
+        receiving.purchaseComponent = { id: this.purchaseComponent.id };
         return http
           .post("/receiving", receiving)
           .then(response => {

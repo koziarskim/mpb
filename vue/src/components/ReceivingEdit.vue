@@ -9,15 +9,21 @@
     <b-row>
       <b-col cols="2">
         <label class="top-label">Purchase</label>
-        <b-select option-value="id" option-text="number" :list="availablePurchases" v-model="purchase"></b-select>
+        <input class="form-control" type="text" v-model="purchase.number" disabled="true">
+        <!-- <b-select option-value="id" option-text="number" :list="availablePurchases" v-model="purchase"></b-select> -->
       </b-col>
       <b-col cols="2">
         <label class="top-label">Component</label>
-        <b-select option-value="id" option-text="componentNumber" :list="availablePurchaseComponents" v-model="purchaseComponent"></b-select>
+        <input class="form-control" type="text" v-model="purchaseComponent.componentNumber" disabled="true">
+        <!-- <b-select option-value="id" option-text="componentNumber" :list="availablePurchaseComponents" v-model="purchaseComponent"></b-select> -->
       </b-col>
       <b-col cols="2">
         <label class="top-label">Number:</label>
-        <input class="form-control" type="text" v-model="receiving.number" placeholder="Number">
+        <input class="form-control" type="tel" v-model="receiving.number">
+      </b-col>
+      <b-col cols="2">
+        <label class="top-label">Date:</label>
+        <input class="form-control" type="date" v-model="receiving.date" placeholder="Date">
       </b-col>
     </b-row>
     <b-row>
@@ -37,6 +43,7 @@
 import http from "../http-common";
 import router from "../router";
 import state from "../data/state";
+import moment from "moment";
 
 export default {
   data() {
@@ -60,6 +67,11 @@ export default {
         .get("/receiving/" + receiving_id)
         .then(response => {
           this.receiving = response.data;
+          this.receiving.date = response.data.date
+            ? moment(response.data.date)
+                .utc()
+                .format("YYYY-MM-DD")
+            : "";
           if (response.data.purchaseComponent && response.data.purchaseComponent.purchase) {
             this.purchase = this.availablePurchases.filter(
               it => it.id == response.data.purchaseComponent.purchase.id

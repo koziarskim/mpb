@@ -123,7 +123,6 @@ export default {
   methods: {
     showAllChange(){
       this.showAll = !this.showAll
-      console.log(this.showAll)
       if (this.component.id) {
         this.component = {};
       }

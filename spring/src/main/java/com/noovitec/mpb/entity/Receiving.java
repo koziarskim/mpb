@@ -27,11 +27,17 @@ public class Receiving {
 	private String number;
 	private String reference;
 	private int units;
-	private Date date;
+	private Date date = new Date();
 
 	@JsonIgnoreProperties(value = { "receivings" }, allowSetters = true)
 	@ManyToOne()
 	@JoinColumn(name = "purchaseComponent_id", referencedColumnName = "id")
 	private PurchaseComponent purchaseComponent;
 
+	public String getNumber() {
+		if(this.number == null) {
+			this.number = this.getId().toString();
+		}
+		return this.number;
+	}
 }
