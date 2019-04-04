@@ -140,25 +140,25 @@ const router = new Router({
   ]
 });
 
-// router.beforeEach((to, from, next) => {
-//   if (!to.meta.roles) {
-//     next();
-//     return;
-//   }
-//   var foundRole = false;
-//   var roles = store.getters.userContext.user.roles;
-//   roles.forEach(role => {
-//     to.meta.roles.forEach(metaRole => {
-//       if (role.code === metaRole) {
-//         foundRole = true;
-//       }
-//     });
-//   });
-//   if (foundRole) {
-//     next();
-//   } else {
-//     next({ path: "/login" });
-//   }
-// });
+router.beforeEach((to, from, next) => {
+  if (!to.meta.roles) {
+    next();
+    return;
+  }
+  var foundRole = false;
+  var roles = store.getters.userContext.user.roles;
+  roles.forEach(role => {
+    to.meta.roles.forEach(metaRole => {
+      if (role.code === metaRole) {
+        foundRole = true;
+      }
+    });
+  });
+  if (foundRole) {
+    next();
+  } else {
+    next({ path: "/AccessDenied" });
+  }
+});
 
 export default router;

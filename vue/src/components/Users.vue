@@ -105,6 +105,7 @@ export default {
         .then(response => {
           //   this.user = response.data;
           this.getUsers();
+          this.$store.dispatch("changeUser", response.data);
           return response;
         })
         .catch(e => {
