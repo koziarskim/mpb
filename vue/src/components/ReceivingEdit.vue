@@ -50,9 +50,9 @@ export default {
   },
   computed: {},
   watch: {
-      purchase(new_value, old_value){
-          this.getAvailablePurchaseComponents(new_value.id);
-      }
+    purchase(new_value, old_value) {
+      this.getAvailablePurchaseComponents(new_value.id);
+    }
   },
   methods: {
     getReceiving(receiving_id) {
@@ -60,23 +60,17 @@ export default {
         .get("/receiving/" + receiving_id)
         .then(response => {
           this.receiving = response.data;
-          //   if (response.data.purchase) {
-          //     this.purchase = this.availablePurchases.filter(
-          //       it => it.id == response.data.purchase.id
-          //     )[0];
-          //   }
-          //   if (response.data.component) {
-          //     this.component = this.availableComponents.filter(
-          //       it => it.id == response.data.component.id
-          //     )[0];
-          //   }
+          if (response.data.purchaseComponent.purchase) {
+            this.purchase = this.availablePurchases.filter(
+              it => it.id == response.data.purchaseComponent.purchase.id
+            )[0];
+          }
         })
         .catch(e => {
           console.log("API error: " + e);
         });
     },
     save() {
-    //   this.receiving.purchase = this.purchase;
       this.receiving.purchaseComponent = this.purchaseComponent;
       return http
         .post("/receiving", this.receiving)
@@ -102,9 +96,12 @@ export default {
     },
     getAvailablePurchaseComponents(purchase_id) {
       return http
-        .get("/purchaseComponent/")
+        .get("/purchaseComponent/purchase/" + this.purchase.id)
         .then(response => {
           this.availablePurchaseComponents = response.data;
+          this.purchaseComponent = response.data.filter(
+            it => it.id == this.receiving.purchaseComponent.id
+          )[0];
         })
         .catch(e => {
           console.log("API error: " + e);

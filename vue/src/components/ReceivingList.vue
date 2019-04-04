@@ -10,7 +10,7 @@
       </b-col>
       <b-col cols="2" style="margin-top: -12px">
         <label class="top-label">Component:</label>
-        <b-select option-value="id" option-text="number" :list="availableComponents" v-model="component"></b-select>
+        <b-select option-value="id" option-text="componentNumber" :list="availablePurchaseComponents" v-model="purchaseComponent"></b-select>
       </b-col>
       <b-col cols="2" style="margin-top: -12px">
         <label class="top-label">Search:</label>
@@ -29,10 +29,18 @@
         <b-button size="sm" @click.stop="goToReceiving(row.item.id)" variant="link">{{row.item.number}}</b-button>
       </template>
       <template slot="purchase" slot-scope="row">
-        <b-button size="sm" @click.stop="goToPurchase(row.item.purchaseComponent.purchase.id)" variant="link">{{row.item.purchaseComponent.purchase?row.item.purchaseComponent.purchase.number:''}}</b-button>
+        <b-button
+          size="sm"
+          @click.stop="goToPurchase(row.item.purchaseComponent.purchase.id)"
+          variant="link"
+        >{{row.item.purchaseComponent.purchase?row.item.purchaseComponent.purchase.number:''}}</b-button>
       </template>
       <template slot="component" slot-scope="row">
-        <b-button size="sm" @click.stop="goToComponent(row.item.purchaseComponent.component.id)" variant="link">{{row.item.purchaseComponent.component?row.item.purchaseComponent.component.number:''}}</b-button>
+        <b-button
+          size="sm"
+          @click.stop="goToComponent(row.item.purchaseComponent.component.id)"
+          variant="link"
+        >{{row.item.purchaseComponent.component?row.item.purchaseComponent.component.number:''}}</b-button>
       </template>
       <template slot="action" slot-scope="row">
         <b-button size="sm" @click.stop="deleteReceiving(row.item.id)">x</b-button>
@@ -60,9 +68,11 @@ export default {
         { key: "action", label: "Action", sortable: false }
       ],
       purchase: {},
-      component: {},
+      purchaseComponent: {},
       availablePurchases: [],
       availableComponents: [],
+      purchaseComponent: {},
+      availablePurchaseComponents: [],
       receivings: [],
       keyword: ""
     };
@@ -89,19 +99,31 @@ export default {
     }
   },
   watch: {
-    purchase() {
-      this.getReceivings();
+    purchase(new_value, old_value) {
+      this.purchaseComponent = {};
+      this.getAvailablePurchaseComponents().then(r => {
+        this.getReceivings();
+      });
     },
-    component() {
+    purchaseComponent() {
       this.getReceivings();
     }
   },
   methods: {
     getReceivings() {
-      var purchase_id = this.purchase.id ? this.purchase.id : "";
-      var component_id = this.component.id ? this.component.id : "";
+      var purchase_id = this.purchaseComponent.purchase
+        ? this.purchaseComponent.purchase.id
+        : "";
+      var component_id = this.purchaseComponent.component
+        ? this.purchaseComponent.component.id
+        : "";
       http
-        .get("/receiving?purchase_id="+purchase_id+"&component_id="+component_id)
+        .get(
+          "/receiving?purchase_id=" +
+            purchase_id +
+            "&component_id=" +
+            component_id
+        )
         .then(response => {
           this.receivings = response.data;
         })
@@ -109,20 +131,9 @@ export default {
           console.log("API error: " + e);
         });
     },
-    getComponent(component_id) {
-      http
-        .get("/component/" + component_id)
-        .then(response => {
-          this.component = response.data;
-          this.getPurchasesData(component_id);
-        })
-        .catch(e => {
-          console.log("API error: " + e);
-        });
-    },
     getAvailablePurchases(purchase_id) {
       return http
-        .get("/purchase/")
+        .get("/purchase/submitted")
         .then(response => {
           this.availablePurchases = response.data;
           if (purchase_id) {
@@ -133,14 +144,17 @@ export default {
           console.log("API error: " + e);
         });
     },
-    getAvailableComponents(component_id) {
+    getAvailablePurchaseComponents(component_id) {
+      var url = this.purchase.id
+        ? "/purchaseComponent/purchase/" + this.purchase.id
+        : "/purchaseComponent";
       return http
-        .get("/component/")
+        .get(url)
         .then(response => {
-          this.availableComponents = response.data;
+          this.availablePurchaseComponents = response.data;
           if (component_id) {
-            this.component = response.data.filter(
-              it => it.id == component_id
+            this.purchaseComponent = response.data.filter(
+              it => it.component.id == component_id
             )[0];
           }
         })
@@ -148,25 +162,13 @@ export default {
           console.log("API error: " + e);
         });
     },
-    getItem(component_id) {
-      var component;
-      var found = this.purchases.some(function(element) {
-        if (element.id === component_id) {
-          component = element;
-        }
-      });
-      return component;
-    },
     goToReceiving(receiving_id) {
       if (!receiving_id) {
-          var receiving = {};
-          if(this.purchase.id){
-              receiving.purchase = {id: this.purchase.id};
-          }
-          if(this.component.id){
-              receiving.component = {id: this.component.id};
-          }
-        http
+        var receiving = {};
+        if (this.purchaseComponent.id) {
+          receiving.purchaseComponent = { id: this.purchaseComponent.id };
+        }
+        return http
           .post("/receiving", receiving)
           .then(response => {
             router.push("/receivingEdit/" + response.data.id);
@@ -199,7 +201,7 @@ export default {
     var purchase_id = parseInt(this.$route.query.purchase_id);
     var component_id = parseInt(this.$route.query.component_id);
     this.getAvailablePurchases(purchase_id).then(r => {
-      this.getAvailableComponents(component_id).then(r => {
+      this.getAvailablePurchaseComponents(component_id).then(r => {
         this.getReceivings();
       });
     });

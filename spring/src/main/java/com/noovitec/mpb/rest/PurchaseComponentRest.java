@@ -45,9 +45,9 @@ class PurchaseComponentRest {
 	}
 
 	@GetMapping("/purchaseComponent/purchase/{purchase_id}")
-	ResponseEntity<PurchaseComponent> get(@PathVariable Long purchase_id) {
-		Optional<PurchaseComponent> result = purchaseComponentRepo.findByPurchase(purchase_id);
-		return result.map(response -> ResponseEntity.ok().body(response)).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+	Collection<PurchaseComponent> get(@PathVariable Long purchase_id) {
+		Collection<PurchaseComponent> result = purchaseComponentRepo.findByPurchase(purchase_id);
+		return result;
 	}
 
 	@PostMapping("/purchaseComponent")

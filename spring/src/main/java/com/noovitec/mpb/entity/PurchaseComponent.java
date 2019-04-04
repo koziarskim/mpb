@@ -71,6 +71,6 @@ public class PurchaseComponent {
 	}
 	
 	public String getComponentNumber() {
-		return this.getComponent().getNumber();
+		return this.getComponent()!=null?this.getComponent().getNumber():null;
 	}
 }
