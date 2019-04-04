@@ -1,4 +1,5 @@
 import Vue from "vue";
+import store from "./store.js";
 import Router from "vue-router";
 import Home from "./components/Home.vue";
 import ItemEdit from "./components/ItemEdit.vue";
@@ -19,10 +20,11 @@ import ReceivingList from "./components/ReceivingList";
 import ReceivingEdit from "./components/ReceivingEdit";
 import Users from "./components/Users";
 import Login from "./components/Login";
+import AccessDenied from "./components/AccessDenied";
 
 Vue.use(Router);
 
-export default new Router({
+const router = new Router({
   mode: "history",
   base: process.env.BASE_URL,
   routes: [
@@ -64,7 +66,10 @@ export default new Router({
     {
       path: "/purchaseList",
       name: "purchaseList",
-      component: PurchaseList
+      component: PurchaseList,
+      meta: {
+        roles: ["POADMIN"]
+      }
     },
     {
       path: "/componentEdit/:component_id?",
@@ -110,6 +115,7 @@ export default new Router({
       path: "/ReceivingList",
       name: "ReceivingList",
       component: ReceivingList
+      //   meta: { roles: ["INVENTORY"] }
     },
     {
       path: "/ReceivingEdit/:receiving_id",
@@ -125,6 +131,34 @@ export default new Router({
       path: "/Login",
       name: "Login",
       component: Login
+    },
+    {
+      path: "/AccessDenied",
+      name: "AccessDenied",
+      component: AccessDenied
     }
   ]
 });
+
+// router.beforeEach((to, from, next) => {
+//   if (!to.meta.roles) {
+//     next();
+//     return;
+//   }
+//   var foundRole = false;
+//   var roles = store.getters.userContext.user.roles;
+//   roles.forEach(role => {
+//     to.meta.roles.forEach(metaRole => {
+//       if (role.code === metaRole) {
+//         foundRole = true;
+//       }
+//     });
+//   });
+//   if (foundRole) {
+//     next();
+//   } else {
+//     next({ path: "/login" });
+//   }
+// });
+
+export default router;

@@ -9,16 +9,16 @@
           <b-nav-item v-on:click="goTo('/itemList')">Item</b-nav-item>
           <b-nav-item v-on:click="goTo('/customerList')">Customer</b-nav-item>
           <b-nav-item v-on:click="goTo('/saleList')">Sale</b-nav-item>
-          <b-nav-item v-on:click="goTo('/purchaseList')">Purchase</b-nav-item>
-          <b-nav-item v-on:click="goTo('/receivingList')">Receiving</b-nav-item>
-          <b-nav-item v-on:click="goTo('/users')">User</b-nav-item>
+          <b-nav-item v-on:click="goTo('/purchaseList')" v-if="getUserContext().hasRole('POADMIN')">Purchase</b-nav-item>
+          <b-nav-item v-on:click="goTo('/receivingList')" v-if="getUserContext().hasRole('INVENTORY')">Receiving</b-nav-item>
+          <b-nav-item v-on:click="goTo('/users')" v-if="getUserContext().hasRole('ADMIN')">User</b-nav-item>
         </b-navbar-nav>
         <b-navbar-nav class="ml-auto">
           <span v-if="hideNavBar()" style="color: white; margin-right: 455px; padding-top: 7px;">Marketplace Brands</span>
           <img v-if="hideNavBar()" style="width: 40px; height: 40px; margin-right: 650px" src="./assets/mpb-logo.jpg">
           <b-nav-item-dropdown v-if="!hideNavBar()" right>
             <template slot="button-content">
-              <em>{{getUserContext().fullName}}</em>
+              <em>{{getUserContext().user.fullName}}</em>
             </template>
             <b-dropdown-item @click="goTo('/')">Profile</b-dropdown-item>
             <b-dropdown-item @click="logout()">Signout</b-dropdown-item>
@@ -42,11 +42,7 @@ export default {
   data() {
     return {};
   },
-  computed: {
-    userName: function() {
-      return this.$store.getters.getUserName;
-    }
-  },
+  computed: {},
   methods: {
     hideNavBar: function() {
       if (window.location.pathname.includes("/login")) {
@@ -62,12 +58,12 @@ export default {
     },
     logout() {
       document.cookie = "SID=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-      this.$store.dispatch("changeUserContext", {});
+      this.$store.dispatch("changeUser", {});
       this.goTo("/login");
     }
   },
   mounted(){
-      if(!this.getUserContext().id){
+      if(!this.getUserContext().user){
           this.goTo("/login");
       }
   }

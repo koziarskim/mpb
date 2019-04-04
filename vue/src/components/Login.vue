@@ -41,7 +41,7 @@ export default {
         .post("/user/login", this.user)
         .then(response => {
             //TODO: Get page context instead.
-            this.$store.dispatch("changeUserContext", {id: response.data.id, fullName: response.data.fullName});
+            this.$store.dispatch("changeUser", response.data);
             router.push("/home")
         })
         .catch(e => {

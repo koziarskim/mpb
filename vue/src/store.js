@@ -5,28 +5,39 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    userContext: {}
+    userContext: {
+      user: {},
+      hasRole(code) {
+        var roleFound = false;
+        this.user.roles.forEach(role => {
+          if (role.code === code) {
+            roleFound = true;
+          }
+        });
+        return roleFound;
+      }
+    }
   },
   getters: {
     userContext: state => {
       // Vuex's state is not persisted on refresh. So, we need to store in localStorage.
-      if (!state.userContext.id) {
-        state.userContext = JSON.parse(
-          window.localStorage.getItem("userContext")
+      if (!state.userContext.user.id) {
+        state.userContext.user = JSON.parse(
+          window.localStorage.getItem("user")
         );
       }
       return state.userContext;
     }
   },
   mutations: {
-    CHANGE_USER_CONTEXT: (state, userContext) => {
-      state.userContext = userContext;
-      window.localStorage.setItem("userContext", JSON.stringify(userContext));
+    CHANGE_USER: (state, user) => {
+      state.userContext.user = user;
+      window.localStorage.setItem("user", JSON.stringify(user));
     }
   },
   actions: {
-    changeUserContext: (state, userContext) => {
-      state.commit("CHANGE_USER_CONTEXT", userContext);
+    changeUser: (state, user) => {
+      state.commit("CHANGE_USER", user);
     }
   }
 });

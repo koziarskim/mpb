@@ -55,6 +55,7 @@
 import http from "../http-common";
 import router from "../router";
 import httpUtils from "../httpUtils";
+import store from "../store.js";
 
 export default {
   data() {
@@ -215,6 +216,17 @@ export default {
     }
   },
   mounted() {
+      var roles = store.getters.userContext.user.roles;
+      var roleFound = false;
+      roles.forEach(role => {
+          if(role.code === "POADMIN"){
+              roleFound = true;
+              return;
+          }
+      });
+      if(!roleFound){
+          router.push("/AccessDenied");
+      }
     this.getAvailableComponents(parseInt(this.$route.query.component_id));
     window.history.pushState({}, document.title, window.location.pathname);
   }
