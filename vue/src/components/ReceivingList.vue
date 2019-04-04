@@ -109,9 +109,7 @@ export default {
   },
   methods: {
     getReceivings() {
-      var purchase_id = this.purchaseComponent.purchase
-        ? this.purchaseComponent.purchase.id
-        : "";
+      var purchase_id = this.purchase.id?this.purchase.id:"";
       var component_id = this.purchaseComponent.component
         ? this.purchaseComponent.component.id
         : "";
