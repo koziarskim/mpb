@@ -60,7 +60,7 @@ export default {
         .get("/receiving/" + receiving_id)
         .then(response => {
           this.receiving = response.data;
-          if (response.data.purchaseComponent.purchase) {
+          if (response.data.purchaseComponent && response.data.purchaseComponent.purchase) {
             this.purchase = this.availablePurchases.filter(
               it => it.id == response.data.purchaseComponent.purchase.id
             )[0];

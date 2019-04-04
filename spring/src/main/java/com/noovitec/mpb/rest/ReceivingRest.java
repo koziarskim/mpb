@@ -81,7 +81,7 @@ class ReceivingRest {
 			receiving = new Receiving();
 		}
 		Receiving result = receivingRepo.save(receiving);
-		if (receiving.getPurchaseComponent().getComponent() != null) {
+		if (receiving.getPurchaseComponent()!=null && receiving.getPurchaseComponent().getComponent() != null) {
 			Component component = componentRepo.getOne(receiving.getPurchaseComponent().getComponent().getId());
 			component.addUnitsOnStack(receiving.getUnits());
 			componentRepo.save(component);
@@ -92,7 +92,7 @@ class ReceivingRest {
 	@DeleteMapping("/receiving/{id}")
 	public ResponseEntity<?> delete(@PathVariable Long id) {
 		Receiving existingReceiving = receivingRepo.findById(id).get();
-		if (existingReceiving.getPurchaseComponent().getComponent() != null) {
+		if (existingReceiving.getPurchaseComponent()!=null && existingReceiving.getPurchaseComponent().getComponent() != null) {
 			int unitsOnStack = existingReceiving.getPurchaseComponent().getComponent().getUnitsOnStack() - existingReceiving.getUnits();
 			existingReceiving.getPurchaseComponent().getComponent().setUnitsOnStack(unitsOnStack);
 		}

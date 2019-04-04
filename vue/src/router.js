@@ -114,8 +114,10 @@ const router = new Router({
     {
       path: "/ReceivingList",
       name: "ReceivingList",
-      component: ReceivingList
-      //   meta: { roles: ["INVENTORY"] }
+      component: ReceivingList,
+      meta: {
+        roles: ["INVENTORY"]
+      }
     },
     {
       path: "/ReceivingEdit/:receiving_id",
@@ -125,7 +127,10 @@ const router = new Router({
     {
       path: "/Users",
       name: "Users",
-      component: Users
+      component: Users,
+      meta: {
+        roles: ["ADMIN"]
+      }
     },
     {
       path: "/Login",
@@ -157,7 +162,9 @@ router.beforeEach((to, from, next) => {
   if (foundRole) {
     next();
   } else {
-    next({ path: "/AccessDenied" });
+    next({
+      path: "/AccessDenied"
+    });
   }
 });
 
