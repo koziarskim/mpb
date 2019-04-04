@@ -68,9 +68,7 @@ export default {
         { key: "action", label: "Action", sortable: false }
       ],
       purchase: {},
-      purchaseComponent: {},
       availablePurchases: [],
-      availableComponents: [],
       purchaseComponent: {},
       availablePurchaseComponents: [],
       receivings: [],
@@ -145,11 +143,13 @@ export default {
         });
     },
     getAvailablePurchaseComponents(component_id) {
-      var url = this.purchase.id
-        ? "/purchaseComponent/purchase/" + this.purchase.id
-        : "/purchaseComponent";
+        if(!this.purchase.id){
+            this.availablePurchaseComponents = [];
+            this.purchaseComponent = {};
+            return new Promise((resolve, reject) => {});
+        }
       return http
-        .get(url)
+        .get("/purchaseComponent/purchase/" + this.purchase.id)
         .then(response => {
           this.availablePurchaseComponents = response.data;
           if (component_id) {
