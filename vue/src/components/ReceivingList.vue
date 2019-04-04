@@ -29,10 +29,10 @@
         <b-button size="sm" @click.stop="goToReceiving(row.item.id)" variant="link">{{row.item.number}}</b-button>
       </template>
       <template slot="purchase" slot-scope="row">
-        <b-button size="sm" @click.stop="goToPurchase(row.item.purchase.id)" variant="link">{{row.item.purchase?row.item.purchase.number:''}}</b-button>
+        <b-button size="sm" @click.stop="goToPurchase(row.item.purchaseComponent.purchase.id)" variant="link">{{row.item.purchaseComponent.purchase?row.item.purchaseComponent.purchase.number:''}}</b-button>
       </template>
       <template slot="component" slot-scope="row">
-        <b-button size="sm" @click.stop="goToComponent(row.item.component.id)" variant="link">{{row.item.component?row.item.component.number:''}}</b-button>
+        <b-button size="sm" @click.stop="goToComponent(row.item.purchaseComponent.component.id)" variant="link">{{row.item.purchaseComponent.component?row.item.purchaseComponent.component.number:''}}</b-button>
       </template>
       <template slot="action" slot-scope="row">
         <b-button size="sm" @click.stop="deleteReceiving(row.item.id)">x</b-button>

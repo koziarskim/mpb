@@ -14,6 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.AllArgsConstructor;
@@ -66,33 +67,32 @@ public class Component {
 	@JoinColumn(name = "attachment_id", referencedColumnName = "id")
 	private Attachment attachment;
 
+	@JsonIgnore
 	@JsonIgnoreProperties(value = { "component" }, allowSetters = true)
 	@OneToMany()
 	@JoinColumn(name = "component_id")
 	private Collection<PurchaseComponent> purchaseComponents = new HashSet<PurchaseComponent>();
 
-	@JsonIgnoreProperties(value = { "component", "purchase" }, allowSetters = true)
-	@OneToMany()
-	@JoinColumn(name = "component_id")
-	private Collection<Receiving> receivings = new HashSet<Receiving>();
-
 	// Transient not managed by DB
 
 	@Transient
-	private Boolean locked;
+	private boolean locked;
 	@Transient
-	private int unitsOrdered = 0;
+	private int unitsOrdered = 0; //This is for all purchases.
+	@Transient
+	private int unitsReceived = 0; //THis is for all purchases.
 	@Transient
 	private String label;
 
-	public Boolean getLocked() {
-		return (this.itemComponents == null || this.itemComponents.size() == 0) ? false : true;
+	public boolean isLocked() {
+		return this.itemComponents.size() > 0;
 	}
 
 	public String getLabel() {
 		return this.getNumber() + " - " + this.getName();
 	}
 
+	//This is for all purchases.
 	public int getUnitsOrdered() {
 		int unitsOrdered = 0;
 		for (PurchaseComponent pc : this.getPurchaseComponents()) {
@@ -102,5 +102,18 @@ public class Component {
 		}
 		return unitsOrdered;
 	}
+	
+	//This is for all purchases.
+	public int getUnitsReceived(String purchase_id) {
+		int unitsReceived = 0;
+		for(PurchaseComponent pc : this.getPurchaseComponents()) {
+			unitsReceived += pc.getUnitsReceived();
+		}
+		return unitsReceived;
+	}
 
+	//Helper methods
+	public void addUnitsOnStack(int units) {
+		this.unitsOnStack += units;
+	}
 }

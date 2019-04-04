@@ -13,7 +13,7 @@
       </b-col>
       <b-col cols="2">
         <label class="top-label">Component</label>
-        <b-select option-value="id" option-text="number" :list="availableComponents" v-model="component"></b-select>
+        <b-select option-value="id" option-text="componentNumber" :list="availablePurchaseComponents" v-model="purchaseComponent"></b-select>
       </b-col>
       <b-col cols="2">
         <label class="top-label">Number:</label>
@@ -43,37 +43,41 @@ export default {
     return {
       receiving: {},
       purchase: {},
-      component: {},
+      purchaseComponent: {},
       availablePurchases: [],
-      availableComponents: []
+      availablePurchaseComponents: []
     };
   },
   computed: {},
-  watch: {},
+  watch: {
+      purchase(new_value, old_value){
+          this.getAvailablePurchaseComponents(new_value.id);
+      }
+  },
   methods: {
     getReceiving(receiving_id) {
       return http
         .get("/receiving/" + receiving_id)
         .then(response => {
           this.receiving = response.data;
-          if (response.data.purchase) {
-            this.purchase = this.availablePurchases.filter(
-              it => it.id == response.data.purchase.id
-            )[0];
-          }
-          if (response.data.component) {
-            this.component = this.availableComponents.filter(
-              it => it.id == response.data.component.id
-            )[0];
-          }
+          //   if (response.data.purchase) {
+          //     this.purchase = this.availablePurchases.filter(
+          //       it => it.id == response.data.purchase.id
+          //     )[0];
+          //   }
+          //   if (response.data.component) {
+          //     this.component = this.availableComponents.filter(
+          //       it => it.id == response.data.component.id
+          //     )[0];
+          //   }
         })
         .catch(e => {
           console.log("API error: " + e);
         });
     },
     save() {
-      this.receiving.purchase = this.purchase;
-      this.receiving.component = this.component;
+    //   this.receiving.purchase = this.purchase;
+      this.receiving.purchaseComponent = this.purchaseComponent;
       return http
         .post("/receiving", this.receiving)
         .then(response => {})
@@ -96,11 +100,11 @@ export default {
           console.log("API error: " + e);
         });
     },
-    getAvailableComponents() {
+    getAvailablePurchaseComponents(purchase_id) {
       return http
-        .get("/component/")
+        .get("/purchaseComponent/")
         .then(response => {
-          this.availableComponents = response.data;
+          this.availablePurchaseComponents = response.data;
         })
         .catch(e => {
           console.log("API error: " + e);
@@ -110,11 +114,9 @@ export default {
   mounted() {
     var receiving_id = this.$route.params.receiving_id;
     this.getAvailablePurchases().then(r => {
-      this.getAvailableComponents().then(r => {
-        if (receiving_id) {
-          this.getReceiving(receiving_id);
-        }
-      });
+      if (receiving_id) {
+        this.getReceiving(receiving_id);
+      }
     });
   }
 };

@@ -9,6 +9,7 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -78,11 +79,11 @@ class PurchaseRest {
 
 	@GetMapping("/purchase/active")
 	Collection<Purchase> getAllActive(@RequestParam(name = "component_id", required = false) Long component_id) {
-		Collection<Purchase> result = null;
-		if (component_id != null) {
-			result = purchaseRepo.findByComponent(component_id);
-		} else {
-			result = purchaseRepo.findAllActive();
+		Collection<Purchase> result = new HashSet<Purchase>();
+		for(Purchase p : (component_id == null?purchaseRepo.findAll():purchaseRepo.findByComponent(component_id))) {
+			if(!p.isReceived()) {
+				result.add(p);
+			}
 		}
 		return result;
 	}

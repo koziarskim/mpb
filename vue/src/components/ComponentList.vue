@@ -15,7 +15,7 @@
         <b-button size="sm" @click.stop="goToPurchaseList(row.item.id)" variant="link">{{row.item.unitsOrdered}}</b-button>
       </template>
       <template slot="action" slot-scope="row">
-        <b-button size="sm" @click.stop="deleteComponent(row.item.id)">x</b-button>
+        <b-button size="sm" @click.stop="deleteComponent(row.item.id)" :disabled="row.item.locked" >x</b-button>
       </template>
     </b-table>
     <b-alert :show="alertSecs" dismissible variant="warning" @dismiss-count-down="(secs) => { alertSecs = secs }">{{alertMessage}}</b-alert>

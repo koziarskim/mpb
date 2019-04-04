@@ -29,14 +29,9 @@ public class Receiving {
 	private int units;
 	private Date date;
 
-	@JsonIgnoreProperties(value = { "receivings", "supplier", "shipAddress", "attachment", "purchaseSales", "purchaseComponents" }, allowSetters = true)
+	@JsonIgnoreProperties(value = { "receivings", "component", "purchase"}, allowSetters = true)
 	@ManyToOne()
-	@JoinColumn(name = "purchase_id", referencedColumnName = "id")
-	private Purchase purchase;
-
-	@JsonIgnoreProperties(value = { "receivings", "itemComponents", "supplier", "category", "attachment", "purchaseComponents" }, allowSetters = true)
-	@ManyToOne(cascade=CascadeType.MERGE)
-	@JoinColumn(name = "component_id", referencedColumnName = "id")
-	private Component component;
+	@JoinColumn(name = "purchaseComponent_id", referencedColumnName = "id")
+	private PurchaseComponent purchaseComponent;
 
 }

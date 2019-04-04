@@ -20,9 +20,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.noovitec.mpb.entity.Component;
 import com.noovitec.mpb.entity.Purchase;
 import com.noovitec.mpb.entity.PurchaseComponent;
 import com.noovitec.mpb.entity.Receiving;
+import com.noovitec.mpb.repo.ComponentRepo;
 import com.noovitec.mpb.repo.PurchaseRepo;
 import com.noovitec.mpb.repo.ReceivingRepo;
 
@@ -35,6 +37,8 @@ class ReceivingRest {
 	private ReceivingRepo receivingRepo;
 	@Autowired
 	PurchaseRepo purchaseRepo;
+	@Autowired
+	ComponentRepo componentRepo;
 
 	public ReceivingRest(ReceivingRepo receivingRepo) {
 		this.receivingRepo = receivingRepo;
@@ -48,13 +52,14 @@ class ReceivingRest {
 			boolean foundPurchase = false;
 			if (purchase_id == null) {
 				foundPurchase = true;
-			} else if (receiving.getPurchase() != null && purchase_id.equals(receiving.getPurchase().getId())) {
+			} else if (receiving.getPurchaseComponent().getPurchase() != null && purchase_id.equals(receiving.getPurchaseComponent().getPurchase().getId())) {
 				foundPurchase = true;
 			}
 			boolean foundComponent = false;
 			if (component_id == null) {
 				foundComponent = true;
-			} else if (receiving.getComponent() != null && component_id.equals(receiving.getComponent().getId())) {
+			} else if (receiving.getPurchaseComponent().getComponent() != null
+					&& component_id.equals(receiving.getPurchaseComponent().getComponent().getId())) {
 				foundComponent = true;
 			}
 			if (foundPurchase && foundComponent) {
@@ -75,39 +80,21 @@ class ReceivingRest {
 		if (receiving == null) {
 			receiving = new Receiving();
 		}
-		boolean update = receiving.getId()==null?false:true;
-		if(update) {
-			if(receiving.getPurchase().getId()==null) {
-				return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body("Purchase not set");
-			}
-			if(receiving.getComponent().getId()==null) {
-				return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body("Component not set");
-			}
-			int unitsOnStack = receiving.getComponent().getUnitsOnStack() + receiving.getUnits();
-			receiving.getComponent().setUnitsOnStack(unitsOnStack);
-		}
 		Receiving result = receivingRepo.save(receiving);
-		if (receiving.getPurchase()!=null) {
-			Purchase purchase = purchaseRepo.getOne(receiving.getPurchase().getId());
-			boolean received = true;
-			for(PurchaseComponent pc : purchase.getPurchaseComponents()) {
-				if(!pc.isReceived()) {
-					received = false;
-					break;
-				}
-			}
-			purchase.setReceived(received);
-			purchaseRepo.save(purchase);
-		} 
+		if (receiving.getPurchaseComponent() != null) {
+			Component component = componentRepo.getOne(receiving.getPurchaseComponent().getComponent().getId());
+			component.addUnitsOnStack(receiving.getUnits());
+			componentRepo.save(component);
+		}
 		return ResponseEntity.ok().body(result);
 	}
 
 	@DeleteMapping("/receiving/{id}")
 	public ResponseEntity<?> delete(@PathVariable Long id) {
 		Receiving existingReceiving = receivingRepo.findById(id).get();
-		if (existingReceiving.getComponent() != null) {
-			int unitsOnStack = existingReceiving.getComponent().getUnitsOnStack() - existingReceiving.getUnits();
-			existingReceiving.getComponent().setUnitsOnStack(unitsOnStack);
+		if (existingReceiving.getPurchaseComponent().getComponent() != null) {
+			int unitsOnStack = existingReceiving.getPurchaseComponent().getComponent().getUnitsOnStack() - existingReceiving.getUnits();
+			existingReceiving.getPurchaseComponent().getComponent().setUnitsOnStack(unitsOnStack);
 		}
 		receivingRepo.save(existingReceiving);
 		Receiving receiving = receivingRepo.findById(id).get();

@@ -143,7 +143,7 @@ class ComponentRest {
 	@DeleteMapping("/component/{id}")
 	public ResponseEntity<?> delete(@PathVariable Long id) {
 		Component component = componentRepo.getOne(id);
-		if (component.getLocked()) {
+		if (component.isLocked()) {
 			return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED)
 					.body(Collections.singletonMap("message", "Component is currently locked"));
 		}

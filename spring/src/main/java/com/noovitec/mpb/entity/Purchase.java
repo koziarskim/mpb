@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -32,7 +33,6 @@ public class Purchase {
 	private String number;
 	private Date expectedDate;
 	private boolean submitted;
-	private boolean received;
 	private BigDecimal totalPrice = BigDecimal.ZERO;
 
 	@JsonIgnoreProperties({ "components" })
@@ -60,9 +60,20 @@ public class Purchase {
 	@JoinColumn(name = "purchase_id")
 	private Collection<PurchaseComponent> purchaseComponents = new HashSet<PurchaseComponent>();
 	
-	@JsonIgnoreProperties(value = { "purchase", "component" }, allowSetters = true)
-	@OneToMany()
-	@JoinColumn(name = "purchase_id")
-	private Collection<Receiving> receivings = new HashSet<Receiving>();
+	//Transient not managed by DB
+	@Transient
+	private boolean received;
+	
+	public boolean isReceived() {
+		if(this.getPurchaseComponents().size()==0 || !this.isSubmitted()) {
+			return false;
+		}
+		for(PurchaseComponent pc : this.getPurchaseComponents()) {
+			if(!pc.isReceived()) {
+				return false;
+			}
+		}
+		return true;
+	}
 
 }
