@@ -125,9 +125,9 @@ export default {
           console.log("API error: " + e);
         });
     },
-    rowSelect(sale_id, value) {
+    rowSelect(sale_id, selected) {
       var ps = {};
-      if (value) {
+      if (selected) {
         ps = {
           sale: { id: sale_id }
         };
@@ -156,6 +156,7 @@ export default {
           );
         }
       }
+      this.savePurchase();
     },
     comRowSelect(com_id, value) {
       var pc = {};
