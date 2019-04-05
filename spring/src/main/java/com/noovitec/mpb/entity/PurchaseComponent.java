@@ -48,7 +48,7 @@ public class PurchaseComponent {
 	private Collection<Receiving> receivings = new HashSet<Receiving>();
 
 //	@Transient
-	private Long unitsReceived;
+	private Long unitsReceived = 0L;
 	@Transient
 	private boolean received;
 	@Transient
