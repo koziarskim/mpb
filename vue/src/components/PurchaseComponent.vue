@@ -63,6 +63,7 @@ export default {
         { key: "number", label: "Component #", sortable: true },
         { key: "name", label: "Component Name", sortable: true },
         { key: "units", label: "Quantity", sortable: true },
+        { key: "unitsReceived", label: "Received", sortable: true },
         { key: "unitPrice", label: "Rate", sortable: true },
         { key: "totalPrice", label: "Amount", sortable: true },
         { key: "action", label: "Action", sortable: true }

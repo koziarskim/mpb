@@ -1660,8 +1660,8 @@ INSERT INTO public.purchase (id, date, expected_date, number, address_id, suppli
 -- Data for Name: purchase_component; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public.purchase_component (id, units, component_id, purchase_id) VALUES (96, 0, 5, 24);
-INSERT INTO public.purchase_component (id, units, component_id, purchase_id) VALUES (102, 0, 33, 24);
+INSERT INTO public.purchase_component (id, units, units_received, component_id, purchase_id) VALUES (96, 0, 0, 5, 24);
+INSERT INTO public.purchase_component (id, units, units_received, component_id, purchase_id) VALUES (102, 0, 0, 33, 24);
 
 
 --
