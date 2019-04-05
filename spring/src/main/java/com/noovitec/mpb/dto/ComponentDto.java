@@ -19,18 +19,18 @@ public class ComponentDto {
 	private String supplierName;
 	private Long units;
 	private Long unitsOrdered;//TODO: do we need it?
-	private int unitsReceived;
+	private Long unitsReceived;
 	private BigDecimal unitPrice;
 	private boolean selected;
 	
-	public ComponentDto(Long id, String number, String name, Long units, int unitsReceived, BigDecimal unitPrice, boolean selected) {
+	public ComponentDto(Long id, String number, String name, Long units, Long unitsReceived, BigDecimal unitPrice, boolean selected) {
 		this.id = id;
 		this.number = number;
 		this.name = name;
 		this.units = units;
 		this.unitPrice = unitPrice;
 		this.selected = selected;
-		this.unitsReceived = unitsReceived;
+		this.unitsReceived = unitsReceived==null?0L:unitsReceived;
 	}
 	
 	@Transient

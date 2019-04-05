@@ -48,14 +48,14 @@ public class PurchaseComponent {
 	private Collection<Receiving> receivings = new HashSet<Receiving>();
 
 //	@Transient
-	private int unitsReceived;
+	private Long unitsReceived;
 	@Transient
 	private boolean received;
 	@Transient
 	private String componentNumber;
 
 	public void updateUnitsReceived() {
-		int units = 0;
+		Long units = 0L;
 		for (Receiving r : this.getReceivings()) {
 			units += r.getUnits();
 		}
