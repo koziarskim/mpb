@@ -23,6 +23,7 @@ public interface ItemRepo extends JpaRepository<Item, Long> {
 			+ "join s.purchaseSales ps "
 			+ "left join i.brand b "
 			+ "left join i.category c "
+			+ "join ps.purchase.purchaseComponents pc "
 			+ "where ps.purchase.id = :purchase_id")
 	List<ItemDto> getPurchaseItems(@Param("purchase_id") Long purchase_id);
 
