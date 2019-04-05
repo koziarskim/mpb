@@ -48,25 +48,13 @@ public class PurchaseComponent {
 	private Collection<Receiving> receivings = new HashSet<Receiving>();
 
 //	@Transient
-	private int unitsReceived; //It should be Transient but it is also used by CompononentRepo.getComponentsForPurchaseAndSupplier
+	private int unitsReceived;
 	@Transient
 	private boolean received;
 	@Transient
 	private String componentNumber;
 
-	public int getUnitsReceived() {
-		if(this.unitsReceived==0) {
-			int units = 0;
-			for (Receiving r : this.getReceivings()) {
-				units += r.getUnits();
-			}
-			this.unitsReceived = units;
-		}
-		return this.unitsReceived;
-	}
-	
-	//This sees to be not called and DB is not set correctly.
-	public void setUnitsReceived(int unitsReceived) {
+	public void updateUnitsReceived() {
 		int units = 0;
 		for (Receiving r : this.getReceivings()) {
 			units += r.getUnits();
@@ -74,7 +62,6 @@ public class PurchaseComponent {
 		this.unitsReceived = units;
 	}
 
-	//If units received >= units purchases.
 	public boolean isReceived() {
 		if (this.getUnitsReceived() >= this.getUnits()) {
 			return true;

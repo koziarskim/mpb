@@ -129,6 +129,9 @@ export default {
         });
     },
     savePurchase() {
+      if (this.purchase.submitted && this.purchase.attachment){
+          return Promise.resolve();
+      }
       this.purchase.totalPrice = this.totalPrice;
       this.purchase.purchaseComponents.forEach(pc => {
           var component = this.availableComponents.find(it => it.id = pc.component.id);

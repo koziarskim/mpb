@@ -81,6 +81,9 @@ export default {
         });
     },
     savePurchase() {
+      if (this.purchase.submitted && this.purchase.attachment){
+          return Promise.resolve();
+      }
       if (this.purchase.supplier) {
         var supplier = this.availableSuppliers.find(
           s => s.id == this.purchase.supplier.id

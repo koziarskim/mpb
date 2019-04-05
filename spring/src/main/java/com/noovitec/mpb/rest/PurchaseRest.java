@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
+import java.net.http.HttpResponse;
 import java.sql.Timestamp;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -30,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -124,6 +126,9 @@ class PurchaseRest {
 			throws URISyntaxException, JsonParseException, JsonMappingException, IOException, DocumentException {
 		if (purchase == null) {
 			purchase = new Purchase();
+		}
+		if(purchase.isSubmitted() && purchase.getAttachment()!=null) {
+			throw new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED, "Already submitted, no changes allowed");
 		}
 		for (PurchaseSale ps : purchase.getPurchaseSales()) {
 			ps.setPurchase(purchase);

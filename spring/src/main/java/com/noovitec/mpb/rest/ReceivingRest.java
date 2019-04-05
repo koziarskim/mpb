@@ -81,6 +81,9 @@ class ReceivingRest {
 			receiving = new Receiving();
 		}
 		Receiving result = receivingRepo.save(receiving);
+		if (result.getPurchaseComponent()!=null) {
+			result.getPurchaseComponent().updateUnitsReceived();
+		}
 		if (receiving.getPurchaseComponent()!=null && receiving.getPurchaseComponent().getComponent() != null) {
 			Component component = componentRepo.getOne(receiving.getPurchaseComponent().getComponent().getId());
 			component.addUnitsOnStack(receiving.getUnits());
