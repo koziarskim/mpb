@@ -103,9 +103,10 @@ export default {
       return http
         .post("/user", this.user)
         .then(response => {
-          //   this.user = response.data;
           this.getUsers();
-          this.$store.dispatch("changeUser", response.data);
+          if (this.user.id == this.$store.getters.userContext.user.id) {
+            this.$store.dispatch("changeUser", response.data);
+          }
           return response;
         })
         .catch(e => {

@@ -31,10 +31,8 @@ export default new Vuex.Store({
   },
   mutations: {
     CHANGE_USER: (state, user) => {
-      if (user.id == state.userContext.user.id) {
-        state.userContext.user = user;
-        window.localStorage.setItem("user", JSON.stringify(user));
-      }
+      state.userContext.user = user;
+      window.localStorage.setItem("user", JSON.stringify(user));
     }
   },
   actions: {
