@@ -152,7 +152,7 @@
                             <div style="width:100%">
                                 <input size="sm" style="border: 0px; width: 25px" min=1 max=9 v-model="ic.units" type="number"/>
                                 <b-button variant="link" @click="goTo('/componentEdit/'+ic.component.id)">{{ic.component.number}}</b-button>
-                                <label>{{" | "+ic.component.name+" | $"+ic.component.totalCost}}</label>
+                                <label>{{" | "+ic.component.name+" | $"+ic.component.totalLandedCost}}</label>
                             </div>
                             <b-button size="sm" type="reset" variant="link" @click="removeItemComponent(ic.component.id)">(x)</b-button>
                         </div>
@@ -209,7 +209,7 @@ export default {
     totalCost: function() {
       var totalCost = 0;
       this.item.itemComponents.forEach(ic => {
-        totalCost = +totalCost + +ic.component.totalCost * +ic.units;
+        totalCost = +totalCost + (+ic.component.totalLandedCost * +ic.units);
       });
       totalCost =
         +totalCost +
