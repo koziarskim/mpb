@@ -67,7 +67,6 @@ public class Component {
 	@JoinColumn(name = "attachment_id", referencedColumnName = "id")
 	private Attachment attachment;
 
-	@JsonIgnore
 	@JsonIgnoreProperties(value = { "component" }, allowSetters = true)
 	@OneToMany()
 	@JoinColumn(name = "component_id")
