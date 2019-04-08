@@ -10,30 +10,38 @@
       <b-col cols="2">
         <label class="top-label">Purchase</label>
         <input class="form-control" type="text" v-model="purchase.number" disabled="true">
-        <!-- <b-select option-value="id" option-text="number" :list="availablePurchases" v-model="purchase"></b-select> -->
       </b-col>
       <b-col cols="2">
         <label class="top-label">Component</label>
         <input class="form-control" type="text" v-model="purchaseComponent.componentNumber" disabled="true">
-        <!-- <b-select option-value="id" option-text="componentNumber" :list="availablePurchaseComponents" v-model="purchaseComponent"></b-select> -->
       </b-col>
       <b-col cols="2">
         <label class="top-label">Number:</label>
-        <input class="form-control" type="tel" v-model="receiving.number">
+        <input class="form-control" type="tel" v-model="receiving.number" :disabled="editMode">
+      </b-col>
+    </b-row>
+    <b-row>
+      <b-col cols="2">
+        <label class="top-label">Shipped Date:</label>
+        <input class="form-control" type="date" v-model="receiving.shippedDate" :disabled="editMode">
+      </b-col>
+      <b-col cols="2">
+        <label class="top-label">ETA Date:</label>
+        <input class="form-control" type="date" v-model="receiving.etaDate" :disabled="editMode">
       </b-col>
       <b-col cols="2">
         <label class="top-label">Received Date:</label>
-        <input class="form-control" type="receivedDate" v-model="receiving.receivedDate" placeholder="Date">
+        <input class="form-control" type="date" v-model="receiving.receivedDate" :disabled="editMode">
       </b-col>
     </b-row>
     <b-row>
       <b-col cols="2">
         <label class="top-label">Units:</label>
-        <input class="form-control" type="text" v-model="receiving.units" placeholder="Units">
+        <input class="form-control" type="text" v-model="receiving.units" :disabled="editMode" placeholder="Units">
       </b-col>
       <b-col cols="2">
         <label class="top-label">Reference:</label>
-        <input class="form-control" type="text" v-model="receiving.reference" placeholder="Reference">
+        <input class="form-control" type="text" v-model="receiving.reference" :disabled="editMode" placeholder="Reference">
       </b-col>
     </b-row>
   </b-container>
@@ -52,7 +60,8 @@ export default {
       purchase: {},
       purchaseComponent: {},
       availablePurchases: [],
-      availablePurchaseComponents: []
+      availablePurchaseComponents: [],
+      editMode: true
     };
   },
   computed: {},
@@ -67,12 +76,14 @@ export default {
         .get("/receiving/" + receiving_id)
         .then(response => {
           this.receiving = response.data;
-          this.receiving.receivedDate = response.data.receivedDate
-            ? moment(response.data.receivedDate)
-                .utc()
-                .format("YYYY-MM-DD")
-            : "";
-          if (response.data.purchaseComponent && response.data.purchaseComponent.purchase) {
+          this.receiving.shippedDate = response.data.shippedDate ? moment(response.data.shippedDate).utc().format("YYYY-MM-DD") : "";
+          this.receiving.etaDate = response.data.etaDate ? moment(response.data.etaDate).utc().format("YYYY-MM-DD") : "";
+          this.receiving.receivedDate = response.data.receivedDate ? moment(response.data.receivedDate).utc().format("YYYY-MM-DD") : "";
+          this.editMode = this.receiving.receivedDate?true:false;
+          if (
+            response.data.purchaseComponent &&
+            response.data.purchaseComponent.purchase
+          ) {
             this.purchase = this.availablePurchases.filter(
               it => it.id == response.data.purchaseComponent.purchase.id
             )[0];

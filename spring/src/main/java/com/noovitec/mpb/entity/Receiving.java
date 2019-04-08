@@ -27,9 +27,9 @@ public class Receiving {
 	private String number;
 	private String reference;
 	private int units;
-	private Date shippedDate = new Date();
-	private Date etaDate = new Date();
-	private Date receivedDate = new Date();
+	private Date shippedDate;
+	private Date etaDate;
+	private Date receivedDate;
 
 	@JsonIgnoreProperties(value = { "receivings" }, allowSetters = true)
 	@ManyToOne()

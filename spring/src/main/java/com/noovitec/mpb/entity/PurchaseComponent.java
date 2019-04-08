@@ -57,7 +57,9 @@ public class PurchaseComponent {
 	public void updateUnitsReceived() {
 		Long units = 0L;
 		for (Receiving r : this.getReceivings()) {
-			units += r.getUnits();
+			if(r.getReceivedDate()!=null) {
+				units += r.getUnits();
+			}
 		}
 		this.unitsReceived = units;
 	}
