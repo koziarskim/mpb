@@ -69,6 +69,11 @@ class ItemRest {
 		return itemRepo.findAll();
 	}
 
+	@GetMapping("/itemDto")
+	Collection<ItemDto> getDtos() {
+		return itemRepo.findAllDtos();
+	}
+
 	@GetMapping("/item/{id}")
 	ResponseEntity<?> get(@PathVariable Long id) {
 		Optional<Item> item = itemRepo.findById(id);

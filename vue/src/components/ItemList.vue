@@ -26,25 +26,26 @@ import http from "../http-common";
 import router from "../router";
 
 export default {
-  name: "edit-component",
   data() {
     return {
-      sortBy: 'age',
+      sortBy: 'number',
       sortDesc: false,
       fields: [
         { key: 'number', sortable: true, label: 'Item #'},
         { key: 'name', sortable: true, label: 'Name'},
-        { key: 'brand.name', sortable: true, label: 'Brand'},
+        { key: 'brand', sortable: true, label: 'Brand'},
+        { key: 'category', sortable: true, label: 'Category'},
         { key: 'action', sortable: false}
       ],
       items: []
     };
   },
   methods: {
-    getComponentsData() {
+    getItems() {
       http
-        .get("/item")
+        .get("/itemDto")
         .then(response => {
+          //ItemDto
           this.items = response.data;
         })
         .catch(e => {
@@ -55,7 +56,7 @@ export default {
       http
         .delete("/item/"+item_id)
         .then(response => {
-          this.getComponentsData();
+          this.getItems();
         })
         .catch(e => {
           console.log("Error post");
@@ -76,7 +77,7 @@ export default {
     }
   },
   mounted() {
-     this.getComponentsData();
+     this.getItems();
   }
 };
 </script>
