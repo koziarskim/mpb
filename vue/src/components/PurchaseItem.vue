@@ -74,6 +74,10 @@ export default {
         });
     },
     submitPurchase() {
+      if (this.purchase.purchaseComponents.length == 0) {
+        alert("No Component selected!!!");
+        return Promise.resolve();
+      }
       this.purchase.submitted = true;
       return http
         .post("/purchase", this.purchase)

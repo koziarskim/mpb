@@ -136,6 +136,9 @@ class PurchaseRest {
 		for (PurchaseComponent pc : purchase.getPurchaseComponents()) {
 			pc.setPurchase(purchase);
 		}
+		if(purchase.isSubmitted() && purchase.getPurchaseComponents().size() == 0) {
+			throw new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED, "No Component selected on submit");
+		}
 		if (purchase.isSubmitted() && purchase.getAttachment() == null) {
 			byte[] data = this.generatePdf(purchase, true);
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
