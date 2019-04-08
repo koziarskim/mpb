@@ -35,6 +35,7 @@ export default {
         { key: 'name', sortable: true, label: 'Name'},
         { key: 'brand', sortable: true, label: 'Brand'},
         { key: 'category', sortable: true, label: 'Category'},
+        { key: 'status', sortable: true, label: 'Status'},
         { key: 'action', sortable: false}
       ],
       items: []

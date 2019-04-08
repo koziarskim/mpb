@@ -78,6 +78,8 @@ public class Component {
 	private boolean locked;
 	@Transient
 	private int unitsOrdered = 0; //This is for all purchases.
+//	@Transient
+//	private int unitsInTransit = 0; //This is for all purchases. Components that are ordered and shipped but not received yet.
 	@Transient
 	private int unitsReceived = 0; //THis is for all purchases.
 	@Transient

@@ -1709,7 +1709,7 @@ INSERT INTO public.purchase_sale (id, units, purchase_id, sale_id) VALUES (88, N
 -- Data for Name: receiving; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public.receiving (id, date, number, reference, units, purchase_component_id) VALUES (98, '2019-04-04 19:00:00', '98', NULL, 3, 91);
+INSERT INTO public.receiving (id, received_date, number, reference, units, purchase_component_id) VALUES (98, '2019-04-04 19:00:00', '98', NULL, 3, 91);
 
 
 --

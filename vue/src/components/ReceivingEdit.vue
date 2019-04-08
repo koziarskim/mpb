@@ -22,8 +22,8 @@
         <input class="form-control" type="tel" v-model="receiving.number">
       </b-col>
       <b-col cols="2">
-        <label class="top-label">Date:</label>
-        <input class="form-control" type="date" v-model="receiving.date" placeholder="Date">
+        <label class="top-label">Received Date:</label>
+        <input class="form-control" type="receivedDate" v-model="receiving.receivedDate" placeholder="Date">
       </b-col>
     </b-row>
     <b-row>
@@ -67,8 +67,8 @@ export default {
         .get("/receiving/" + receiving_id)
         .then(response => {
           this.receiving = response.data;
-          this.receiving.date = response.data.date
-            ? moment(response.data.date)
+          this.receiving.receivedDate = response.data.receivedDate
+            ? moment(response.data.receivedDate)
                 .utc()
                 .format("YYYY-MM-DD")
             : "";

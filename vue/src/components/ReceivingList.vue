@@ -42,8 +42,8 @@
           variant="link"
         >{{row.item.purchaseComponent?row.item.purchaseComponent.component.number:''}}</b-button>
       </template>
-      <template slot="date" slot-scope="row">
-        <span>{{formatDate(row.item.date)}}</span>
+      <template slot="receivedDate" slot-scope="row">
+        <span>{{formatDate(row.item.receivedDate)}}</span>
       </template>
       <template slot="action" slot-scope="row">
         <b-button size="sm" @click.stop="deleteReceiving(row.item.id)">x</b-button>
@@ -66,7 +66,7 @@ export default {
         { key: "number", label: "Receiving #", sortable: true },
         { key: "reference", label: "Reference", sortable: true },
         { key: "units", label: "Units", sortable: true },
-        { key: "date", label: "Date", sortable: true },
+        { key: "receivedDate", label: "Received Date", sortable: true },
         { key: "purchase", label: "Purchase #", sortable: true },
         { key: "component", label: "Component #", sortable: true },
         { key: "action", label: "Action", sortable: false }
