@@ -1710,8 +1710,8 @@ INSERT INTO public.purchase_sale (id, units, purchase_id, sale_id) VALUES (99, N
 -- Data for Name: receiving; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public.receiving (id, eta_date, number, received_date, reference, shipped_date, units, purchase_component_id) VALUES (98, NULL, '98', '2019-04-04 19:00:00', NULL, NULL, 3, 91);
-INSERT INTO public.receiving (id, eta_date, number, received_date, reference, shipped_date, units, purchase_component_id) VALUES (102, '2019-04-08 10:51:49.717', '102', '2019-04-07 19:00:00', NULL, '2019-04-08 10:51:49.717', 3, 91);
+INSERT INTO public.receiving (id, eta_date, number, received_date, container, shipped_date, units, purchase_component_id) VALUES (98, NULL, '98', '2019-04-04 19:00:00', NULL, NULL, 3, 91);
+INSERT INTO public.receiving (id, eta_date, number, received_date, container, shipped_date, units, purchase_component_id) VALUES (102, '2019-04-08 10:51:49.717', '102', '2019-04-07 19:00:00', NULL, '2019-04-08 10:51:49.717', 3, 91);
 
 
 --

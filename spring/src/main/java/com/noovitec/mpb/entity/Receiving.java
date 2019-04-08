@@ -25,7 +25,7 @@ public class Receiving {
 	@GeneratedValue
 	private Long id;
 	private String number;
-	private String reference;
+	private String container;
 	private int units;
 	private Date shippedDate;
 	private Date etaDate;

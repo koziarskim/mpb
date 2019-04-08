@@ -64,7 +64,7 @@ export default {
       sortDesc: false,
       fields: [
         { key: "number", label: "Receiving #", sortable: true },
-        { key: "reference", label: "Reference", sortable: true },
+        { key: "container", label: "Container", sortable: true },
         { key: "units", label: "Units", sortable: true },
         { key: "receivedDate", label: "Received Date", sortable: true },
         { key: "purchase", label: "Purchase #", sortable: true },

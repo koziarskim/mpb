@@ -1,7 +1,7 @@
 <template>
   <b-container fluid>
     <div style="border: 0px" class="d-flex justify-content-between align-items-center">
-      <h4 style="text-align: left;">Receiving</h4>
+      <h4 style="text-align: left;">Receiving: {{receiving.number}}</h4>
       <div style="text-align: right;">
         <b-button type="reset" variant="success" @click="saveAndClose">Save & Close</b-button>
       </div>
@@ -14,10 +14,6 @@
       <b-col cols="2">
         <label class="top-label">Component</label>
         <input class="form-control" type="text" v-model="purchaseComponent.componentNumber" disabled="true">
-      </b-col>
-      <b-col cols="2">
-        <label class="top-label">Number:</label>
-        <input class="form-control" type="tel" v-model="receiving.number" :disabled="editMode">
       </b-col>
     </b-row>
     <b-row>
@@ -36,12 +32,12 @@
     </b-row>
     <b-row>
       <b-col cols="2">
-        <label class="top-label">Units:</label>
+        <label class="top-label">Units (Shipped/Received):</label>
         <input class="form-control" type="text" v-model="receiving.units" :disabled="editMode" placeholder="Units">
       </b-col>
       <b-col cols="2">
-        <label class="top-label">Reference:</label>
-        <input class="form-control" type="text" v-model="receiving.reference" :disabled="editMode" placeholder="Reference">
+        <label class="top-label">Container:</label>
+        <input class="form-control" type="text" v-model="receiving.container" :disabled="editMode" placeholder="Container">
       </b-col>
     </b-row>
   </b-container>
