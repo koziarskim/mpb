@@ -42,6 +42,12 @@
           variant="link"
         >{{row.item.purchaseComponent?row.item.purchaseComponent.component.number:''}}</b-button>
       </template>
+      <template slot="shippedDate" slot-scope="row">
+        <span>{{formatDate(row.item.shippedDate)}}</span>
+      </template>
+      <template slot="etaDate" slot-scope="row">
+        <span>{{formatDate(row.item.etaDate)}}</span>
+      </template>
       <template slot="receivedDate" slot-scope="row">
         <span>{{formatDate(row.item.receivedDate)}}</span>
       </template>
@@ -66,7 +72,9 @@ export default {
         { key: "number", label: "Receiving #", sortable: true },
         { key: "container", label: "Container", sortable: true },
         { key: "units", label: "Units", sortable: true },
-        { key: "receivedDate", label: "Received Date", sortable: true },
+        { key: "shippedDate", label: "Shipped", sortable: true },
+        { key: "etaDate", label: "ETA", sortable: true },
+        { key: "receivedDate", label: "Received", sortable: true },
         { key: "purchase", label: "Purchase #", sortable: true },
         { key: "component", label: "Component #", sortable: true },
         { key: "action", label: "Action", sortable: false }
