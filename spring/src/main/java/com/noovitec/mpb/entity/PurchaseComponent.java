@@ -48,20 +48,29 @@ public class PurchaseComponent {
 	private Collection<Receiving> receivings = new HashSet<Receiving>();
 
 //	@Transient
+	private Long unitsOrdered = 0L;
 	private Long unitsReceived = 0L;
+	private Long unitsInTransit = 0L;
 	@Transient
 	private boolean received;
 	@Transient
 	private String componentNumber;
 
-	public void updateUnitsReceived() {
-		Long units = 0L;
+	public void updateUnits() {
+		Long unitsInTransit = 0L;
+		Long unitsReceived = 0L;
 		for (Receiving r : this.getReceivings()) {
 			if(r.getReceivedDate()!=null) {
-				units += r.getUnits();
+				unitsReceived += r.getUnits();
+			}else if(r.getShippedDate()!=null) {
+				unitsInTransit += r.getUnits();
 			}
 		}
-		this.unitsReceived = units;
+		if(this.getPurchase()!=null && this.getPurchase().isSubmitted()) {
+			this.unitsOrdered = (long) this.getUnits();			
+		}
+		this.unitsReceived = unitsReceived;
+		this.unitsInTransit = unitsInTransit;
 	}
 
 	public boolean isReceived() {
@@ -69,6 +78,19 @@ public class PurchaseComponent {
 			return true;
 		}
 		return false;
+	}
+	
+	public String getStatus() {
+		if(this.isReceived()) {
+			return "Received";
+		}
+		if(this.getPurchase().isSubmitted()) {
+			if(this.getUnitsInTransit()!=null && this.getUnitsInTransit()>0) {
+				return "In Transit";
+			}
+			return "Ordered";
+		}
+		return "Pending";
 	}
 	
 	public String getComponentNumber() {

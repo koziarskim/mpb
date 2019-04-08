@@ -151,6 +151,10 @@ class PurchaseRest {
 			purchase.setAttachment(attachment);
 		}
 		Purchase result = purchaseRepo.save(purchase);
+		for (PurchaseComponent pc : purchase.getPurchaseComponents()) {
+				pc.updateUnits();
+		}
+		result = purchaseRepo.save(purchase);
 		return ResponseEntity.ok().body(result);
 	}
 

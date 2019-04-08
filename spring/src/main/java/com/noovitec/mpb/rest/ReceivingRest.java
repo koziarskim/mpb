@@ -82,13 +82,14 @@ class ReceivingRest {
 		}
 		Receiving result = receivingRepo.save(receiving);
 		if (result.getPurchaseComponent()!=null) {
-			result.getPurchaseComponent().updateUnitsReceived();
+			result.getPurchaseComponent().updateUnits();
 		}
-		if (receiving.getPurchaseComponent()!=null && receiving.getPurchaseComponent().getComponent() != null && receiving.getReceivedDate()!=null) {
-			Component component = componentRepo.getOne(receiving.getPurchaseComponent().getComponent().getId());
-			component.addUnitsOnStack(receiving.getUnits());
-			componentRepo.save(component);
-		}
+		result = receivingRepo.save(receiving);
+//		if (receiving.getPurchaseComponent()!=null && receiving.getPurchaseComponent().getComponent() != null && receiving.getReceivedDate()!=null) {
+//			Component component = componentRepo.getOne(receiving.getPurchaseComponent().getComponent().getId());
+//			component.addUnitsOnStack(receiving.getUnits());
+//			componentRepo.save(component);
+//		}
 		return ResponseEntity.ok().body(result);
 	}
 

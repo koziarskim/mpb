@@ -6,6 +6,7 @@ import ItemEdit from "./components/ItemEdit.vue";
 import ComponentEdit from "./components/ComponentEdit.vue";
 import ItemList from "./components/ItemList";
 import ComponentList from "./components/ComponentList";
+import ComponentPurchaseList from "./components/ComponentPurchaseList";
 import SupplierList from "./components/SupplierList";
 import SupplierEdit from "./components/SupplierEdit";
 import CustomerList from "./components/CustomerList";
@@ -75,6 +76,11 @@ const router = new Router({
       path: "/componentEdit/:component_id?",
       name: "componentEdit",
       component: ComponentEdit
+    },
+    {
+      path: "/ComponentPurchaseList/:component_id",
+      name: "ComponentPurchaseList",
+      component: ComponentPurchaseList
     },
     {
       path: "/itemEdit/:item_id?",

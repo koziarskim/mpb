@@ -13,4 +13,7 @@ public interface PurchaseComponentRepo extends JpaRepository<PurchaseComponent, 
 
 	@Query(value = "select pc from PurchaseComponent pc where pc.purchase.id = :purchase_id")
 	Collection<PurchaseComponent> findByPurchase(@Param("purchase_id") Long purchase_id);
+
+	@Query(value = "select pc from PurchaseComponent pc where pc.component.id = :component_id")
+	Collection<PurchaseComponent> findByComponent(@Param("component_id") Long component_id);
 }

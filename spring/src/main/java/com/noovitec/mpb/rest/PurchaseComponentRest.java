@@ -45,8 +45,14 @@ class PurchaseComponentRest {
 	}
 
 	@GetMapping("/purchaseComponent/purchase/{purchase_id}")
-	Collection<PurchaseComponent> get(@PathVariable Long purchase_id) {
+	Collection<PurchaseComponent> getByPurchase(@PathVariable Long purchase_id) {
 		Collection<PurchaseComponent> result = purchaseComponentRepo.findByPurchase(purchase_id);
+		return result;
+	}
+
+	@GetMapping("/purchaseComponent/component/{component_id}")
+	Collection<PurchaseComponent> getByComponent(@PathVariable Long component_id) {
+		Collection<PurchaseComponent> result = purchaseComponentRepo.findByComponent(component_id);
 		return result;
 	}
 
