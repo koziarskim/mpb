@@ -85,9 +85,12 @@ class ReceivingRest {
 			result.getPurchaseComponent().updateUnits();
 		}
 		result = receivingRepo.save(receiving);
-		if (receiving.getPurchaseComponent()!=null && receiving.getPurchaseComponent().getComponent() != null && receiving.getReceivedDate()!=null) {
+		if(receiving.getPurchaseComponent()!=null && receiving.getPurchaseComponent().getComponent() != null) {
 			Component component = componentRepo.getOne(receiving.getPurchaseComponent().getComponent().getId());
-			component.addUnitsOnStack(receiving.getUnits());
+			component.updateUnits();
+			if (receiving.getReceivedDate()!=null) {
+				component.addUnitsOnStack(receiving.getUnits());
+			}
 			componentRepo.save(component);
 		}
 		return ResponseEntity.ok().body(result);

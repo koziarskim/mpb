@@ -48,6 +48,7 @@ import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfStamper;
 import com.noovitec.mpb.dto.ComponentDto;
 import com.noovitec.mpb.entity.Attachment;
+import com.noovitec.mpb.entity.Component;
 import com.noovitec.mpb.entity.Purchase;
 import com.noovitec.mpb.entity.PurchaseComponent;
 import com.noovitec.mpb.entity.PurchaseSale;
@@ -153,6 +154,10 @@ class PurchaseRest {
 		Purchase result = purchaseRepo.save(purchase);
 		for (PurchaseComponent pc : purchase.getPurchaseComponents()) {
 				pc.updateUnits();
+				Component component = componentRepo.getOne(pc.getComponent().getId());
+				component.updateUnits();
+				componentRepo.save(component);
+
 		}
 		result = purchaseRepo.save(purchase);
 		return ResponseEntity.ok().body(result);

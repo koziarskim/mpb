@@ -46,7 +46,9 @@ public class Component {
 	private BigDecimal containerCost = BigDecimal.ZERO;
 	private BigDecimal otherCost = BigDecimal.ZERO;
 	private BigDecimal totalLandedCost = BigDecimal.ZERO;
-	private int unitsOnStack = 0; // Inventory.
+	private int unitsOnStack = 0;
+	private int ordered = 0;
+	private int inTransit = 0;
 
 	@JsonIgnoreProperties(value = { "component" }, allowSetters = true)
 	@OneToMany()
@@ -123,5 +125,10 @@ public class Component {
 	//Helper methods
 	public void addUnitsOnStack(int units) {
 		this.unitsOnStack += units;
+	}
+	
+	public void updateUnits() {
+		this.ordered = this.getUnitsOrdered();
+		this.inTransit = this.getUnitsInTransit();
 	}
 }
