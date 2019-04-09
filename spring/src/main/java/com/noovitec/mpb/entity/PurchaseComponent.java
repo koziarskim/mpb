@@ -31,6 +31,9 @@ public class PurchaseComponent {
 	@GeneratedValue
 	private Long id;
 	private int units; //Units ordered;
+	private Long unitsOrdered = 0L;
+	private Long unitsReceived = 0L;
+	private Long unitsInTransit = 0L;
 
 	@JsonIgnoreProperties(value = { "purchaseComponents" }, allowSetters = true)
 	@ManyToOne()
@@ -47,10 +50,6 @@ public class PurchaseComponent {
 	@JoinColumn(name = "purchaseComponent_id")
 	private Collection<Receiving> receivings = new HashSet<Receiving>();
 
-//	@Transient
-	private Long unitsOrdered = 0L;
-	private Long unitsReceived = 0L;
-	private Long unitsInTransit = 0L;
 	@Transient
 	private boolean received;
 	@Transient

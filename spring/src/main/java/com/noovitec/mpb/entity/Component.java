@@ -78,8 +78,8 @@ public class Component {
 	private boolean locked;
 	@Transient
 	private int unitsOrdered = 0; //This is for all purchases.
-//	@Transient
-//	private int unitsInTransit = 0; //This is for all purchases. Components that are ordered and shipped but not received yet.
+	@Transient
+	private int unitsInTransit = 0; //This is for all purchases.
 	@Transient
 	private int unitsReceived = 0; //THis is for all purchases.
 	@Transient
@@ -97,13 +97,20 @@ public class Component {
 	public int getUnitsOrdered() {
 		int unitsOrdered = 0;
 		for (PurchaseComponent pc : this.getPurchaseComponents()) {
-			if (pc.getPurchase().isSubmitted() && !pc.getPurchase().isReceived()) {
-				unitsOrdered += pc.getUnits();
-			}
+			unitsOrdered += pc.getUnitsOrdered();
 		}
 		return unitsOrdered;
 	}
 	
+	//This is for all purchases.
+	public int getUnitsInTransit() {
+		int unitsInTransit = 0;
+		for (PurchaseComponent pc : this.getPurchaseComponents()) {
+			unitsInTransit += pc.getUnitsInTransit();
+		}
+		return unitsInTransit;
+	}
+
 	//This is for all purchases.
 	public int getUnitsReceived(String purchase_id) {
 		int unitsReceived = 0;

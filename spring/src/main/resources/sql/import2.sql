@@ -1675,7 +1675,7 @@ INSERT INTO public.purchase (id, date, expected_date, number, submitted, total_p
 
 INSERT INTO public.purchase_component (id, units, units_in_transit, units_ordered, units_received, component_id, purchase_id) VALUES (96, 2, 0, 0, 0, 5, 24);
 INSERT INTO public.purchase_component (id, units, units_in_transit, units_ordered, units_received, component_id, purchase_id) VALUES (102, 2, 0, 0, 0, 33, 24);
-INSERT INTO public.purchase_component (id, units, units_in_transit, units_ordered, units_received, component_id, purchase_id) VALUES (100, 1, 0, 0, 0, 4, 28);
+INSERT INTO public.purchase_component (id, units, units_in_transit, units_ordered, units_received, component_id, purchase_id) VALUES (100, 1, 0, 1, 0, 4, 28);
 INSERT INTO public.purchase_component (id, units, units_in_transit, units_ordered, units_received, component_id, purchase_id) VALUES (91, 6, 0, 6, 6, 3, 6);
 INSERT INTO public.purchase_component (id, units, units_in_transit, units_ordered, units_received, component_id, purchase_id) VALUES (118, 2, 1, 2, 0, 5, 103);
 INSERT INTO public.purchase_component (id, units, units_in_transit, units_ordered, units_received, component_id, purchase_id) VALUES (119, 2, 1, 2, 1, 33, 103);
