@@ -12,6 +12,9 @@
           <template slot="purchase" slot-scope="row">
             <b-button size="sm" @click.stop="goToPurchaseEdit(row.item.purchase.id)" variant="link">{{row.item.purchase.number}}</b-button>
           </template>
+          <template slot="action" slot-scope="row">
+            <b-button size="sm" @click.stop="goToReceiving(row.item.purchase.id)">Receivings</b-button>
+          </template>
         </b-table>
       </b-col>
     </b-row>
@@ -36,6 +39,7 @@ export default {
         { key: "unitsReceived", label: "Received", sortable: true },
         { key: "unitsInTransit", label: "In Transit", sortable: true },
         { key: "status", label: "Status", sortable: true },
+        { key: "action", label: "Action", sortable: true }
       ],
       expectedDate: ""
     };
@@ -48,7 +52,7 @@ export default {
         .get("/component/" + component_id)
         .then(response => {
           this.component = response.data;
-          this.getPurchaseComponents(component_id)
+          this.getPurchaseComponents(component_id);
         })
         .catch(e => {
           console.log("API error: " + e);
@@ -65,8 +69,12 @@ export default {
         });
     },
     goToPurchaseEdit(purchase_id) {
-        router.push("/purchaseEdit/" + purchase_id);
+      router.push("/purchaseEdit/" + purchase_id);
     },
+    goToReceiving(purchase_id) {
+      var query = { purchase_id: purchase_id, component_id: this.component.id };
+      router.push({ path: "/receivingList", query: query });
+    }
   },
   mounted() {
     var component_id = this.$route.params.component_id;
