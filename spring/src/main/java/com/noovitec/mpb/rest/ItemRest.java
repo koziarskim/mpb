@@ -5,6 +5,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Optional;
 
 import javax.validation.Valid;
@@ -71,9 +72,24 @@ class ItemRest {
 
 	@GetMapping("/itemDto")
 	Collection<ItemDto> getDtos() {
-		return itemRepo.findAllDtos();
+		return this.itemToDto(itemRepo.findAll());
 	}
 
+	private Collection<ItemDto> itemToDto(Collection<Item> items) {
+		Collection<ItemDto> dtos = new HashSet<ItemDto>();
+		for(Item item : items) {
+			ItemDto dto = new ItemDto(
+					item.getId(),
+					item.getNumber(),
+					item.getName(),
+					item.getBrand().getName(),
+					item.getCategory().getName(),
+					item.getStatus());
+			dtos.add(dto);
+		}
+		return dtos;
+	}
+	
 	@GetMapping("/item/{id}")
 	ResponseEntity<?> get(@PathVariable Long id) {
 		Optional<Item> item = itemRepo.findById(id);
@@ -99,8 +115,7 @@ class ItemRest {
 
 	@GetMapping("/item/purchase/{purchase_id}")
 	Collection<ItemDto> getAll(@PathVariable Long purchase_id) {
-		Collection<ItemDto> dtos = itemRepo.getPurchaseItems(purchase_id);
-		return dtos;
+		return this.itemToDto(itemRepo.getPurchaseItems(purchase_id));
 	}
 	/*
 	 * Use this to create and update entity. No need to use PUT for update. If ID is

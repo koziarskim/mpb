@@ -5,6 +5,7 @@ import Home from "./components/Home.vue";
 import ItemEdit from "./components/ItemEdit.vue";
 import ComponentEdit from "./components/ComponentEdit.vue";
 import ItemList from "./components/ItemList";
+import ItemComponentList from "./components/ItemComponentList";
 import ComponentList from "./components/ComponentList";
 import ComponentPurchaseList from "./components/ComponentPurchaseList";
 import SupplierList from "./components/SupplierList";
@@ -43,6 +44,11 @@ const router = new Router({
       path: "/itemList",
       name: "itemList",
       component: ItemList
+    },
+    {
+      path: "/itemComponentList/:item_id",
+      name: "itemComponentList",
+      component: ItemComponentList
     },
     {
       path: "/componentList",

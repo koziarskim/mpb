@@ -15,6 +15,9 @@
                 <template slot="number" slot-scope="row">
                     <b-button size="sm" variant="link" @click.stop="updateItem(row.item.id)">{{row.item.number}}</b-button>
                 </template>
+                <template slot="status" slot-scope="row">
+                    <b-button size="sm" variant="link" @click.stop="gotToItemComponentList(row.item.id)">{{row.item.status}}</b-button>
+                </template>
                 <template slot="action" slot-scope="row">
                     <b-button size="sm" @click.stop="deleteItem(row.item.id)">x</b-button>
                 </template>
@@ -75,6 +78,9 @@ export default {
     },
     updateItem(item_id){
         router.push('./itemEdit/'+item_id);
+    },
+    gotToItemComponentList(item_id){
+        router.push('./itemComponentList/'+item_id);
     }
   },
   mounted() {

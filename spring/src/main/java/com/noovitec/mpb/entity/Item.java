@@ -48,9 +48,8 @@ public class Item {
 	private BigDecimal packageCost = new BigDecimal(12);
 	private BigDecimal laborCost = BigDecimal.ZERO;
 	private BigDecimal otherCost = BigDecimal.ZERO;
+	private String status = "NONE";
 
-	
-	
 	@JsonIgnoreProperties(value={"item"}, allowSetters=true)
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "item_id")
@@ -91,9 +90,10 @@ public class Item {
 	private Collection<SaleItem> saleItems = new HashSet<SaleItem>();
 
 
-	//Transient not managed by DB
 	@Transient
 	private BigDecimal totalCost;
+	@Transient
+	private String label;
 
 	public BigDecimal getTotalCost() {
 		BigDecimal totalCost = new BigDecimal(0);
@@ -105,11 +105,32 @@ public class Item {
 		return totalCost;
 	}
 	
-	@Transient
-	private String label;
-	
 	public String getLabel() {
 		return this.getNumber() +" - "+this.getName();
 	}
 
+	public String getStatus() {
+		Set<String> status = new HashSet<String>();
+		for(ItemComponent ic : this.getItemComponents()) {
+			Component c = ic.getComponent();
+			if(c.getUnitsOnStack() >= ic.getUnits()) {
+				status.add("READY");
+			}else if((c.getUnitsInTransit() > 0 && (c.getUnitsOnStack() + c.getUnitsInTransit()) >= ic.getUnits())){
+				status.add("TRANSIT");
+			}else if((c.getUnitsInTransit() == 0 && c.getUnitsOrdered() > 0 && (c.getUnitsOnStack() + c.getUnitsInTransit() + c.getUnitsOrdered()) >= ic.getUnits())){
+				status.add("ORDERED");
+			}
+		}
+		if(status.contains("READY")) {
+			this.status = "READY";
+		}
+		if(status.contains("TRANSIT")) {
+			this.status = "TRANSIT";
+		}
+		if(status.contains("ORDERED")) {
+			this.status = "ORDERED";
+		}
+		return this.status;
+	}
+	
 }

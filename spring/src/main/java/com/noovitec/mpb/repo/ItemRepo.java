@@ -15,8 +15,7 @@ public interface ItemRepo extends JpaRepository<Item, Long> {
 	@Query(value = "select i.* from Item i order by i.id desc limit 1", nativeQuery = true)
 	Item getLast();
 	
-	@Query("select distinct new com.noovitec.mpb.dto.ItemDto"
-			+ "(i.id, i.number, i.name, b.name, c.name) "
+	@Query("select i "
 			+ "from Item i "
 			+ "join i.saleItems si "
 			+ "join si.sale s "
@@ -25,10 +24,11 @@ public interface ItemRepo extends JpaRepository<Item, Long> {
 			+ "left join i.category c "
 			+ "join ps.purchase.purchaseComponents pc "
 			+ "where ps.purchase.id = :purchase_id")
-	List<ItemDto> getPurchaseItems(@Param("purchase_id") Long purchase_id);
+	List<Item> getPurchaseItems(@Param("purchase_id") Long purchase_id);
 
+	//Not used
 	@Query("select new com.noovitec.mpb.dto.ItemDto"
-			+ "(i.id, i.number, i.name, b.name, c.name) "
+			+ "(i.id, i.number, i.name, b.name, c.name, i.status) "
 			+ "from Item i "
 			+ "left join i.brand b "
 			+ "left join i.category c")
