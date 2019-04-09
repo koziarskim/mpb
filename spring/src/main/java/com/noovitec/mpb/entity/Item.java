@@ -1,8 +1,10 @@
 package com.noovitec.mpb.entity;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -115,9 +117,9 @@ public class Item {
 			Component c = ic.getComponent();
 			if(c.getUnitsOnStack() >= ic.getUnits()) {
 				status.add("READY");
-			}else if((c.getUnitsInTransit() > 0 && (c.getUnitsOnStack() + c.getUnitsInTransit()) >= ic.getUnits())){
+			}else if(c.getUnitsInTransit() > 0){
 				status.add("TRANSIT");
-			}else if((c.getUnitsInTransit() == 0 && c.getUnitsOrdered() > 0 && (c.getUnitsOnStack() + c.getUnitsInTransit() + c.getUnitsOrdered()) >= ic.getUnits())){
+			}else if(c.getUnitsOrdered() > 0){
 				status.add("ORDERED");
 			}
 		}
@@ -130,7 +132,7 @@ public class Item {
 		if(status.contains("ORDERED")) {
 			this.status = "ORDERED";
 		}
-		return this.status;
+		return this.status==null?"SHORT":this.status;
 	}
 	
 }

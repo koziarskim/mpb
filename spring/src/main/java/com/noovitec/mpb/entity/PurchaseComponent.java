@@ -65,6 +65,7 @@ public class PurchaseComponent {
 				unitsInTransit += r.getUnits();
 			}
 		}
+		this.unitsOrdered = 0L;
 		if(this.getPurchase()!=null && this.getPurchase().isSubmitted()) {
 			this.unitsOrdered = (long) this.getUnits();			
 		}
