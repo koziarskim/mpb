@@ -47,8 +47,9 @@ public class Component {
 	private BigDecimal otherCost = BigDecimal.ZERO;
 	private BigDecimal totalLandedCost = BigDecimal.ZERO;
 	private int unitsOnStack = 0;
-	private int ordered = 0;
-	private int inTransit = 0;
+	private int unitsOrdered = 0; //All Purchases.
+	private int unitsInTransit = 0; //All Purchases.
+	private int unitsReceived = 0; //All Purchases.
 
 	@JsonIgnoreProperties(value = { "component" }, allowSetters = true)
 	@OneToMany()
@@ -79,12 +80,6 @@ public class Component {
 	@Transient
 	private boolean locked;
 	@Transient
-	private int unitsOrdered = 0; //This is for all purchases.
-	@Transient
-	private int unitsInTransit = 0; //This is for all purchases.
-	@Transient
-	private int unitsReceived = 0; //THis is for all purchases.
-	@Transient
 	private String label;
 
 	public boolean isLocked() {
@@ -95,32 +90,32 @@ public class Component {
 		return this.getNumber() + " - " + this.getName();
 	}
 
-	//This is for all purchases.
-	public int getUnitsOrdered() {
-		int unitsOrdered = 0;
-		for (PurchaseComponent pc : this.getPurchaseComponents()) {
-			unitsOrdered += pc.getUnitsOrdered();
-		}
-		return unitsOrdered;
-	}
-	
-	//This is for all purchases.
-	public int getUnitsInTransit() {
-		int unitsInTransit = 0;
-		for (PurchaseComponent pc : this.getPurchaseComponents()) {
-			unitsInTransit += pc.getUnitsInTransit();
-		}
-		return unitsInTransit;
-	}
-
-	//This is for all purchases.
-	public int getUnitsReceived(String purchase_id) {
-		int unitsReceived = 0;
-		for(PurchaseComponent pc : this.getPurchaseComponents()) {
-			unitsReceived += pc.getUnitsReceived();
-		}
-		return unitsReceived;
-	}
+//	//This is for all purchases.
+//	public int getUnitsOrdered() {
+//		int unitsOrdered = 0;
+//		for (PurchaseComponent pc : this.getPurchaseComponents()) {
+//			unitsOrdered += pc.getUnitsOrdered();
+//		}
+//		return unitsOrdered;
+//	}
+//	
+//	//This is for all purchases.
+//	public int getUnitsInTransit() {
+//		int unitsInTransit = 0;
+//		for (PurchaseComponent pc : this.getPurchaseComponents()) {
+//			unitsInTransit += pc.getUnitsInTransit();
+//		}
+//		return unitsInTransit;
+//	}
+//
+//	//This is for all purchases.
+//	public int getUnitsReceived(String purchase_id) {
+//		int unitsReceived = 0;
+//		for(PurchaseComponent pc : this.getPurchaseComponents()) {
+//			unitsReceived += pc.getUnitsReceived();
+//		}
+//		return unitsReceived;
+//	}
 
 	//Helper methods
 	public void addUnitsOnStack(int units) {
@@ -128,7 +123,16 @@ public class Component {
 	}
 	
 	public void updateUnits() {
-		this.ordered = this.getUnitsOrdered();
-		this.inTransit = this.getUnitsInTransit();
+		int unitsOrdered = 0;
+		int unitsInTransit = 0;
+		int unitsReceived = 0;
+		for (PurchaseComponent pc : this.getPurchaseComponents()) {
+			unitsOrdered += pc.getUnitsOrdered();
+			unitsInTransit += pc.getUnitsInTransit();
+			unitsReceived += pc.getUnitsReceived();
+		}
+		this.unitsOrdered = unitsOrdered;
+		this.unitsInTransit = unitsInTransit;
+		this.unitsReceived = unitsReceived;
 	}
 }

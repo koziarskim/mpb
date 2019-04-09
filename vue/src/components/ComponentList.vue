@@ -11,8 +11,8 @@
       <template slot="number" slot-scope="row">
         <b-button size="sm" @click.stop="goToComponent(row.item.id)" variant="link">{{row.item.number}}</b-button>
       </template>
-      <template slot="unitsOrdered" slot-scope="row">
-        <b-button size="sm" @click.stop="goToComponentPurchaseList(row.item.id)" variant="link">{{row.item.unitsOrdered}}</b-button>
+      <template slot="units" slot-scope="row">
+        <b-button size="sm" @click.stop="goToComponentPurchaseList(row.item.id)" variant="link">{{row.item.unitsOrdered}} / {{row.item.unitsInTransit}}</b-button>
       </template>
       <template slot="action" slot-scope="row">
         <b-button size="sm" @click.stop="deleteComponent(row.item.id)" :disabled="row.item.locked" >x</b-button>
@@ -36,7 +36,7 @@ export default {
       fields: [
         { key: "number", label: "Component #", sortable: true },
         { key: "name", label: "Name", sortable: true },
-        { key: "unitsOrdered", label: "P.O.(Ordered)", sortable: true },
+        { key: "units", label: "Ordered/Transit", sortable: true },
         { key: "unitsOnStack", label: "On Stack", sortable: true },
         { key: "category.name", label: "Category", sortable: true },
         { key: "supplier.name", label: "Supplier", sortable: true },

@@ -36,8 +36,8 @@ export default {
       columns: [
         { key: "purchase", label: "Purchase #", sortable: true },
         { key: "unitsOrdered", label: "Ordered", sortable: true },
-        { key: "unitsReceived", label: "Received", sortable: true },
         { key: "unitsInTransit", label: "In Transit", sortable: true },
+        { key: "unitsReceived", label: "Received", sortable: true },
         { key: "status", label: "Status", sortable: true },
         { key: "action", label: "Action", sortable: true }
       ],
