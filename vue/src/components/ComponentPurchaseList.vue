@@ -12,9 +12,6 @@
           <template slot="purchase" slot-scope="row">
             <b-button size="sm" @click.stop="goToPurchaseEdit(row.item.purchase.id)" variant="link">{{row.item.purchase.number}}</b-button>
           </template>
-          <template slot="action" slot-scope="row">
-            <b-form-checkbox v-model="row.item.selected" @input="rowSelect(row.item.id, row.item.selected)"></b-form-checkbox>
-          </template>
         </b-table>
       </b-col>
     </b-row>
@@ -39,7 +36,6 @@ export default {
         { key: "unitsReceived", label: "Received", sortable: true },
         { key: "unitsInTransit", label: "In Transit", sortable: true },
         { key: "status", label: "Status", sortable: true },
-        { key: "action", label: "Action", sortable: true }
       ],
       expectedDate: ""
     };
