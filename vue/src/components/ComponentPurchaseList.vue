@@ -13,7 +13,7 @@
             <b-button size="sm" @click.stop="goToPurchaseEdit(row.item.purchase.id)" variant="link">{{row.item.purchase.number}}</b-button>
           </template>
           <template slot="unitsAwaiting" slot-scope="row">
-            <spam>{{(row.item.unitsOrdered - +row.item.unitsInTransit - +row.item.unitsReceived)<0?0:(row.item.unitsOrdered - +row.item.unitsInTransit - +row.item.unitsReceived)}}</spam>
+            <span>{{calculateAwaiting(row.item)}}</span>
           </template>
           <template slot="action" slot-scope="row">
             <b-button size="sm" @click.stop="goToReceiving(row.item.purchase.id)">Receivings</b-button>
@@ -51,6 +51,13 @@ export default {
   computed: {},
   watch: {},
   methods: {
+    calculateAwaiting(item){
+        var units = item.unitsOrdered - +item.unitsInTransit - +item.unitsReceived;
+        if(units < 0){
+            return 0;
+        }
+        return units;
+    },  
     getComponent(component_id) {
       http
         .get("/component/" + component_id)
