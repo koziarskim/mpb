@@ -71,6 +71,9 @@
       <b-col style="padding-top: 30px" cols="1">
         <b-button variant="link" @click="addItem()">(+)</b-button>
       </b-col>
+      <b-col cols=3 offset=1 style="padding-top: 44px; padding-left: 95px;">
+          <span>Total Price: ${{totalPrice}}</span>
+      </b-col>
     </b-row>
     <b-row>
       <b-col>
@@ -125,7 +128,15 @@ export default {
     };
   },
 
-  computed: {},
+  computed: {
+      totalPrice(){
+          var price = 0;
+          this.sale.saleItems.forEach(si=> {
+              price += +(si.unitPrice?si.unitPrice:0);
+          })
+          return price.toFixed(2);
+      }
+  },
   watch: {
     shippingAddress: function(new_value, old_value) {
       this.sale.shippingAddress = new_value;
