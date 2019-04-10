@@ -71,7 +71,7 @@
       <b-col style="padding-top: 30px" cols="1">
         <b-button variant="link" @click="addItem()">(+)</b-button>
       </b-col>
-      <b-col cols=3 offset=1 style="padding-top: 44px; padding-left: 95px;">
+      <b-col cols=3 offset=1 style="padding-top: 44px; padding-left: 0px;">
           <span>Total Price: ${{totalPrice}}</span>
       </b-col>
     </b-row>
@@ -87,6 +87,9 @@
           </template>
           <template slot="unitPrice" slot-scope="row">
             <input class="form-control" style="width:100px" type="tel" v-model="row.item.unitPrice">
+          </template>
+          <template slot="totalUnitPrice" slot-scope="row">
+            <span>${{row.item.totalUnitPrice = (+row.item.unitPrice * +row.item.units).toFixed(2)}}</span>
           </template>
           <template slot="action" slot-scope="row">
             <b-button size="sm" @click.stop="deleteItem(row.item.item.id)">x</b-button>
@@ -123,6 +126,7 @@ export default {
         { key: "item.totalCost", label: "Cost", sortable: true },
         { key: "units", label: "Units", sortable: true },
         { key: "unitPrice", label: "Unit Price", sortable: false },
+        { key: "totalUnitPrice", label: "Total", sortable: false },
         { key: "action", label: "Action", sortable: false }
       ]
     };
@@ -132,7 +136,7 @@ export default {
       totalPrice(){
           var price = 0;
           this.sale.saleItems.forEach(si=> {
-              price += +(si.unitPrice?si.unitPrice:0);
+              price += +(si.totalUnitPrice?si.totalUnitPrice:0);
           })
           return price.toFixed(2);
       }
@@ -166,6 +170,7 @@ export default {
         });
     },
     saveSale() {
+      this.sale.totalPrice = this.totalPrice;
       return http
         .post("/sale", this.sale)
         .then(response => {
@@ -208,7 +213,10 @@ export default {
       if (item) {
         return;
       }
-      this.sale.saleItems.push({ item: this.item });
+      this.sale.saleItems.push({ 
+          units: 0,
+          unitPrice: 0.00,
+          item: this.item });
     },
     goToItem(item_id) {
       router.push("/itemEdit/" + item_id);

@@ -26,6 +26,7 @@ public class SaleItem {
 	private Long id;
 	private int units;
 	private BigDecimal unitPrice = BigDecimal.ZERO;
+	private BigDecimal totalUnitPrice = BigDecimal.ZERO;
 
 	@JsonIgnoreProperties(value={ "saleItems" }, allowSetters=true)
 	@ManyToOne()
