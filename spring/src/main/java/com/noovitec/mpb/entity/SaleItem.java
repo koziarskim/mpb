@@ -1,5 +1,7 @@
 package com.noovitec.mpb.entity;
 
+import java.math.BigDecimal;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -22,7 +24,8 @@ public class SaleItem {
 	@Id
 	@GeneratedValue
 	private Long id;
-	private Integer units;
+	private int units;
+	private BigDecimal unitPrice = BigDecimal.ZERO;
 
 	@JsonIgnoreProperties(value={ "saleItems" }, allowSetters=true)
 	@ManyToOne()

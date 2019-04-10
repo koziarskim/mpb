@@ -1743,11 +1743,11 @@ INSERT INTO public.role (id, code, description, name) VALUES (3, 'INVENTORY', 'C
 -- Data for Name: sale_item; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public.sale_item (id, units, item_id, sale_id) VALUES (16, NULL, 6, 15);
-INSERT INTO public.sale_item (id, units, item_id, sale_id) VALUES (18, NULL, 8, 17);
-INSERT INTO public.sale_item (id, units, item_id, sale_id) VALUES (19, NULL, 6, 17);
-INSERT INTO public.sale_item (id, units, item_id, sale_id) VALUES (39, NULL, 36, 38);
-INSERT INTO public.sale_item (id, units, item_id, sale_id) VALUES (91, NULL, 11, 90);
+INSERT INTO public.sale_item (id, units, item_id, sale_id, unit_price) VALUES (16, 0, 6, 15, 0);
+INSERT INTO public.sale_item (id, units, item_id, sale_id, unit_price) VALUES (18, 0, 8, 17, 0);
+INSERT INTO public.sale_item (id, units, item_id, sale_id, unit_price) VALUES (19, 0, 6, 17, 0);
+INSERT INTO public.sale_item (id, units, item_id, sale_id, unit_price) VALUES (39, 0, 36, 38, 0);
+INSERT INTO public.sale_item (id, units, item_id, sale_id, unit_price) VALUES (91, 0, 11, 90, 0);
 
 
 --
