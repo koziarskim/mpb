@@ -79,6 +79,12 @@
           <template slot="item.number" slot-scope="row">
             <b-button size="sm" @click.stop="goToItem(row.item.item.id)" variant="link">{{row.item.item.number}}</b-button>
           </template>
+          <template slot="units" slot-scope="row">
+            <input class="form-control" style="width:100px" type="tel" v-model="row.item.units">
+          </template>
+          <template slot="unitPrice" slot-scope="row">
+            <input class="form-control" style="width:100px" type="tel" v-model="row.item.unitPrice">
+          </template>
           <template slot="action" slot-scope="row">
             <b-button size="sm" @click.stop="deleteItem(row.item.item.id)">x</b-button>
           </template>
