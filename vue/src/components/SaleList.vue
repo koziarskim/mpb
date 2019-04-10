@@ -1,7 +1,7 @@
 <template>
     <b-container fluid>
         <div class="d-flex justify-content-between align-items-center">
-            <h2 style="text-align: left;">Sale Orders</h2>
+            <span style="text-align: left; font-size: 18px; font-weight: bold">Sale Orders</span>
             <div style="text-align: right;">
                 <b-button type="submit" variant="primary" @click="goToSale('')">New S.O.</b-button>
             </div>
