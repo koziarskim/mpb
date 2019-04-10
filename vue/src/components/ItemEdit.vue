@@ -430,6 +430,7 @@ export default {
       this.saveAndUpload();
     },
     saveAndUpload() {
+      this.item.totalCost = this.totalCost;
       let formData = new FormData();
       formData.append("image", this.image);
       formData.append("jsonItem", JSON.stringify(this.item));

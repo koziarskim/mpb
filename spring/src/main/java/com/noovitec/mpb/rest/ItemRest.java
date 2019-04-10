@@ -8,8 +8,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Optional;
 
-import javax.validation.Valid;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,15 +29,11 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.noovitec.mpb.dto.ItemDto;
 import com.noovitec.mpb.entity.Attachment;
-import com.noovitec.mpb.entity.Brand;
-import com.noovitec.mpb.entity.Category;
-import com.noovitec.mpb.entity.Component;
 import com.noovitec.mpb.entity.Item;
 import com.noovitec.mpb.entity.ItemComponent;
 import com.noovitec.mpb.entity.Season;
 import com.noovitec.mpb.entity.Upc;
 import com.noovitec.mpb.repo.AttachmentRepo;
-import com.noovitec.mpb.repo.BrandRepo;
 import com.noovitec.mpb.repo.ItemRepo;
 import com.noovitec.mpb.repo.SeasonRepo;
 import com.noovitec.mpb.repo.UpcRepo;
@@ -77,39 +71,33 @@ class ItemRest {
 
 	private Collection<ItemDto> itemToDto(Collection<Item> items) {
 		Collection<ItemDto> dtos = new HashSet<ItemDto>();
-		for(Item item : items) {
-			ItemDto dto = new ItemDto(
-					item.getId(),
-					item.getNumber(),
-					item.getName(),
-					item.getBrand().getName(),
-					item.getCategory().getName(),
+		for (Item item : items) {
+			ItemDto dto = new ItemDto(item.getId(), item.getNumber(), item.getName(), item.getBrand().getName(), item.getCategory().getName(),
 					item.getStatus());
 			dtos.add(dto);
 		}
 		return dtos;
 	}
-	
+
 	@GetMapping("/item/{id}")
 	ResponseEntity<?> get(@PathVariable Long id) {
 		Optional<Item> item = itemRepo.findById(id);
-		return item.map(response -> ResponseEntity.ok().body(response))
-				.orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+		return item.map(response -> ResponseEntity.ok().body(response)).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
 	}
-	
+
 	@GetMapping("/item/number/season/{season_id}")
 	ResponseEntity<?> getAvailableNumberByCategory(@PathVariable Long season_id) {
 		Season season = seasonRepo.findById(season_id).get();
 		String prefix = season.getPrefix();
 		Item item = itemRepo.getLast();
-		Long item_id = (item==null?0L:item.getId())+1;
-		if(item_id.toString().length()==1) {
-			prefix = prefix+"00";
+		Long item_id = (item == null ? 0L : item.getId()) + 1;
+		if (item_id.toString().length() == 1) {
+			prefix = prefix + "00";
 		}
-		if(item_id.toString().length()==2) {
-			prefix = prefix+"0";
+		if (item_id.toString().length() == 2) {
+			prefix = prefix + "0";
 		}
-		String number = prefix+item_id.toString();
+		String number = prefix + item_id.toString();
 		return ResponseEntity.ok().body(Collections.singletonMap("number", number));
 	}
 
@@ -117,13 +105,14 @@ class ItemRest {
 	Collection<ItemDto> getAll(@PathVariable Long purchase_id) {
 		return this.itemToDto(itemRepo.getPurchaseItems(purchase_id));
 	}
+
 	/*
 	 * Use this to create and update entity. No need to use PUT for update. If ID is
 	 * not null, it will try to update.
 	 */
 	@PostMapping("/item")
-	ResponseEntity<Item> post(@RequestBody(required=false) Item jsonItem) throws URISyntaxException {
-		if(jsonItem==null) {
+	ResponseEntity<Item> post(@RequestBody(required = false) Item jsonItem) throws URISyntaxException {
+		if (jsonItem == null) {
 			jsonItem = new Item();
 			Upc upc = upcRepo.getFirstAvailable();
 			Upc caseUpc = upcRepo.getFirstAvailable();
@@ -138,16 +127,18 @@ class ItemRest {
 		Item result = itemRepo.save(jsonItem);
 		return ResponseEntity.ok().body(result);
 	}
-	//This includes image upload.
+
+	// This includes image upload.
 	@PostMapping("/item/upload")
-	ResponseEntity<Item> postItemAndAttachment(@RequestParam(value="image", required=false) MultipartFile image, @RequestParam("jsonItem") String jsonItem) throws URISyntaxException, JsonParseException, JsonMappingException, IOException {
+	ResponseEntity<Item> postItemAndAttachment(@RequestParam(value = "image", required = false) MultipartFile image, @RequestParam("jsonItem") String jsonItem)
+			throws URISyntaxException, JsonParseException, JsonMappingException, IOException {
 		Item item = objectMapper.readValue(jsonItem, Item.class);
 		for (ItemComponent ic : item.getItemComponents()) {
 			if (ic.getId() != null) {
 				ic.setItem(item);
 			}
 		}
-		if(image!=null) {
+		if (image != null) {
 			Attachment attachment = new Attachment();
 			attachment.setData(image.getBytes());
 			attachmentRepo.save(attachment);
