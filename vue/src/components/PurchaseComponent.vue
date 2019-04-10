@@ -168,10 +168,7 @@ export default {
       }
       return http
         .get(
-          "/component/purchase/" +
-            this.purchase.id +
-            "/supplier/" +
-            this.purchase.supplier.id
+          "/component/purchase/" + this.purchase.id + "/supplier/" + this.purchase.supplier.id
         )
         .then(response => {
           this.availableComponents = response.data;
