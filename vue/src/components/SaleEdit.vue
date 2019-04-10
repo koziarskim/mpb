@@ -17,7 +17,7 @@
         <input class="form-control" type="tel" v-model="sale.date" placeholder="Date">
       </b-col>
       <b-col cols="2">
-        <label class="top-label">Number:</label>
+        <label class="top-label">Sale Number:</label>
         <input class="form-control" type="tel" v-model="sale.number" placeholder="Number">
       </b-col>
       <b-col cols="2" offset="2">
@@ -111,9 +111,9 @@ export default {
       sortDesc: false,
       columns: [
         { key: "item.number", label: "Item", sortable: true },
-        { key: "item.description", label: "Description", sortable: true },
-        { key: "item.quantity", label: "Qty", sortable: true },
-        { key: "item.rate", label: "Rate", sortable: false },
+        { key: "item.totalCost", label: "Cost", sortable: true },
+        { key: "units", label: "Units", sortable: true },
+        { key: "unitPrice", label: "Unit Price", sortable: false },
         { key: "action", label: "Action", sortable: false }
       ]
     };
