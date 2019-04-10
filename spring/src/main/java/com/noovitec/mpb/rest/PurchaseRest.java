@@ -152,15 +152,15 @@ class PurchaseRest {
 			purchase.setAttachment(attachment);
 		}
 		Purchase result = purchaseRepo.save(purchase);
-		for (PurchaseComponent pc : purchase.getPurchaseComponents()) {
+		for (PurchaseComponent pc : result.getPurchaseComponents()) {
 				pc.updateUnits();
 				Component component = componentRepo.getOne(pc.getComponent().getId());
 				component.updateUnits();
 				componentRepo.save(component);
 
 		}
-		result = purchaseRepo.save(purchase);
-		for (PurchaseComponent pc : purchase.getPurchaseComponents()) {
+		result = purchaseRepo.save(result);
+		for (PurchaseComponent pc : result.getPurchaseComponents()) {
 			Component component = componentRepo.getOne(pc.getComponent().getId());
 			component.updateUnits();
 			componentRepo.save(component);

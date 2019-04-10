@@ -30,7 +30,7 @@ public class ComponentDto {
 		this.name = name;
 		this.unitsNeeded = unitsNeeded;
 		this.unitsOnStack = Long.valueOf(unitsOnStack);
-		this.units = units;
+		this.units = units==null?0:units;
 		this.unitPrice = unitPrice;
 		this.selected = selected;
 		this.unitsReceived = unitsReceived==null?0L:unitsReceived;

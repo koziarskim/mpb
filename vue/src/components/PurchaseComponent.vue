@@ -32,10 +32,11 @@
             <b-button size="sm" @click.stop="goToComponent(row.item.id)" variant="link">{{row.item.number}}</b-button>
           </template>
           <template slot="units" slot-scope="row">
-            <input style="width: 100px" v-model="row.item.units" :disabled="purchase.submitted">
+            <input v-if="!purchase.submitted" style="width: 100px" v-model="row.item.units" :disabled="!row.item.selected">
+            <span v-if="purchase.submitted">{{row.item.units}}</span>
           </template>
           <template slot="action" slot-scope="row">
-            <b-form-checkbox v-model="row.item.selected" @input="rowSelect(row.item.id, row.item.selected)" :disabled="disabled()"></b-form-checkbox>
+            <b-form-checkbox v-model="row.item.selected" @input="rowSelect(row.item, row.item.id, row.item.selected)" :disabled="disabled()"></b-form-checkbox>
           </template>
         </b-table>
       </b-col>
@@ -182,13 +183,14 @@ export default {
           console.log("API error: " + e);
         });
     },
-    rowSelect(component_id, selected) {
+    rowSelect(dto, component_id, selected) {
       var pc = {};
       if (selected) {
         pc = {
           component: { id: component_id }
         };
         this.purchase.purchaseComponents.push(pc);
+        dto.units = dto.unitsNeeded;
       } else {
         pc = this.purchase.purchaseComponents.find(
           pc => pc.component.id == component_id
@@ -197,6 +199,7 @@ export default {
           this.purchase.purchaseComponents.indexOf(pc),
           1
         );
+        dto.units = 0;
       }
     },
     goToComponent(component_id) {
