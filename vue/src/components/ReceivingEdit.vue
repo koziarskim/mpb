@@ -7,38 +7,55 @@
       </div>
     </div>
     <b-row>
-      <b-col cols="2">
+        <b-col cols=6>
+    <b-row>
+      <b-col cols="4">
         <label class="top-label">Purchase</label>
         <input class="form-control" type="text" v-model="purchase.number" disabled="true">
       </b-col>
-      <b-col cols="2">
+      <b-col cols="4">
         <label class="top-label">Component</label>
         <input class="form-control" type="text" v-model="purchaseComponent.componentNumber" disabled="true">
       </b-col>
     </b-row>
     <b-row>
-      <b-col cols="2">
+      <b-col cols="4">
         <label class="top-label">Shipped Date:</label>
         <input class="form-control" type="date" v-model="receiving.shippedDate" :disabled="editMode">
       </b-col>
-      <b-col cols="2">
+      <b-col cols="4">
         <label class="top-label">ETA Date:</label>
         <input class="form-control" type="date" v-model="receiving.etaDate" :disabled="editMode">
       </b-col>
-      <b-col cols="2">
+      <b-col cols="4">
         <label class="top-label">Received Date:</label>
         <input class="form-control" type="date" v-model="receiving.receivedDate" :disabled="editMode">
       </b-col>
     </b-row>
     <b-row>
-      <b-col cols="2">
+      <b-col cols="4">
         <label class="top-label">Units (Shipped/Received):</label>
         <input class="form-control" type="text" v-model="receiving.units" :disabled="editMode" placeholder="Units">
       </b-col>
-      <b-col cols="2">
+      <b-col cols="4">
         <label class="top-label">Container:</label>
         <input class="form-control" type="text" v-model="receiving.container" :disabled="editMode" placeholder="Container">
       </b-col>
+    </b-row>
+    </b-col>
+    <b-col offset=2>
+            <b-row>
+          P.O.# {{purchase.number}}: <br/>
+          Ordered: {{purchaseComponent.unitsOrdered}}<br/>
+          In Transit: {{purchaseComponent.unitsInTransit}}<br/>
+          Received: {{purchaseComponent.unitsReceived}}<br/>
+          <br/>
+          All P.O.s<br/>
+          Ordered: {{purchaseComponent.component.unitsOrdered}}<br/>
+          In Transit: {{purchaseComponent.component.unitsInTransit}}<br/>
+          Received: {{purchaseComponent.component.unitsReceived}}<br/>
+      </b-row>
+    </b-col>
     </b-row>
   </b-container>
 </template>

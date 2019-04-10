@@ -65,12 +65,12 @@ public class PurchaseComponent {
 				unitsInTransit += r.getUnits();
 			}
 		}
+		this.unitsReceived = unitsReceived;
+		this.unitsInTransit = unitsInTransit;
 		this.unitsOrdered = 0L;
 		if(this.getPurchase()!=null && this.getPurchase().isSubmitted()) {
 			this.unitsOrdered = this.getUnits();			
 		}
-		this.unitsReceived = unitsReceived;
-		this.unitsInTransit = unitsInTransit;
 	}
 
 	public boolean isReceived() {

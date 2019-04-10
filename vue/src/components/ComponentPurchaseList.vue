@@ -12,6 +12,9 @@
           <template slot="purchase" slot-scope="row">
             <b-button size="sm" @click.stop="goToPurchaseEdit(row.item.purchase.id)" variant="link">{{row.item.purchase.number}}</b-button>
           </template>
+          <template slot="unitsAwaiting" slot-scope="row">
+            <spam>{{(row.item.unitsOrdered - +row.item.unitsInTransit - +row.item.unitsReceived)<0?0:(row.item.unitsOrdered - +row.item.unitsInTransit - +row.item.unitsReceived)}}</spam>
+          </template>
           <template slot="action" slot-scope="row">
             <b-button size="sm" @click.stop="goToReceiving(row.item.purchase.id)">Receivings</b-button>
           </template>
@@ -38,6 +41,7 @@ export default {
         { key: "unitsOrdered", label: "Ordered", sortable: true },
         { key: "unitsInTransit", label: "In Transit", sortable: true },
         { key: "unitsReceived", label: "Received", sortable: true },
+        { key: "unitsAwaiting", label: "Awaiting", sortable: true },
         { key: "status", label: "Status", sortable: true },
         { key: "action", label: "Action", sortable: true }
       ],
