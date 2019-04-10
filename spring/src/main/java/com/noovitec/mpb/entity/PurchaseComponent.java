@@ -30,8 +30,8 @@ public class PurchaseComponent {
 	@Id
 	@GeneratedValue
 	private Long id;
-	private int units; //Units ordered;
-	private Long unitsOrdered = 0L;
+	private Long units; //Units ordered;
+	private Long unitsOrdered = 0L; //Units submitted.
 	private Long unitsReceived = 0L;
 	private Long unitsInTransit = 0L;
 
@@ -67,14 +67,14 @@ public class PurchaseComponent {
 		}
 		this.unitsOrdered = 0L;
 		if(this.getPurchase()!=null && this.getPurchase().isSubmitted()) {
-			this.unitsOrdered = (long) this.getUnits();			
+			this.unitsOrdered = this.getUnits();			
 		}
 		this.unitsReceived = unitsReceived;
 		this.unitsInTransit = unitsInTransit;
 	}
 
 	public boolean isReceived() {
-		if (this.getUnitsReceived() >= this.getUnits()) {
+		if (this.getUnitsReceived() >= (this.getUnits()==null?0:this.getUnits())) {
 			return true;
 		}
 		return false;

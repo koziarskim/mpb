@@ -31,6 +31,9 @@
           <template slot="number" slot-scope="row">
             <b-button size="sm" @click.stop="goToComponent(row.item.id)" variant="link">{{row.item.number}}</b-button>
           </template>
+          <template slot="units" slot-scope="row">
+            <input style="width: 100px" v-model="row.item.units" :disabled="purchase.submitted">
+          </template>
           <template slot="action" slot-scope="row">
             <b-form-checkbox v-model="row.item.selected" @input="rowSelect(row.item.id, row.item.selected)" :disabled="disabled()"></b-form-checkbox>
           </template>
@@ -61,10 +64,12 @@ export default {
       sortDesc: false,
       columns: [
         { key: "number", label: "Component #", sortable: true },
-        { key: "name", label: "Component Name", sortable: true },
-        { key: "units", label: "Quantity", sortable: true },
+        { key: "name", label: "Name", sortable: true },
+        { key: "unitsNeeded", label: "Needed", sortable: true },
+        { key: "unitsOnStack", label: "On Stack", sortable: true },
+        { key: "units", label: "Ordered", sortable: true },
         { key: "unitsReceived", label: "Received", sortable: true },
-        { key: "unitPrice", label: "Rate", sortable: true },
+        { key: "unitPrice", label: "Unit Cost", sortable: true },
         { key: "totalPrice", label: "Amount", sortable: true },
         { key: "action", label: "Action", sortable: true }
       ],
@@ -134,8 +139,8 @@ export default {
       }
       this.purchase.totalPrice = this.totalPrice;
       this.purchase.purchaseComponents.forEach(pc => {
-          var component = this.availableComponents.find(it => it.id = pc.component.id);
-          pc.units = component.units;
+          var componentDto = this.availableComponents.find(it => it.id == pc.component.id);
+          pc.units = componentDto.units;
       })
       return http
         .post("/purchase", this.purchase)

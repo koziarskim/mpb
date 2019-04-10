@@ -127,9 +127,9 @@ public class Component {
 		int unitsInTransit = 0;
 		int unitsReceived = 0;
 		for (PurchaseComponent pc : this.getPurchaseComponents()) {
-			unitsOrdered += pc.getUnitsOrdered();
-			unitsInTransit += pc.getUnitsInTransit();
-			unitsReceived += pc.getUnitsReceived();
+			unitsOrdered += (pc.getUnitsOrdered()==null?0:pc.getUnitsOrdered());
+			unitsInTransit += (pc.getUnitsInTransit()==null?0:pc.getUnitsInTransit());
+			unitsReceived += (pc.getUnitsReceived()==null?0:pc.getUnitsReceived());
 		}
 		this.unitsOrdered = unitsOrdered;
 		this.unitsInTransit = unitsInTransit;

@@ -160,6 +160,12 @@ class PurchaseRest {
 
 		}
 		result = purchaseRepo.save(purchase);
+		for (PurchaseComponent pc : purchase.getPurchaseComponents()) {
+			Component component = componentRepo.getOne(pc.getComponent().getId());
+			component.updateUnits();
+			componentRepo.save(component);
+
+		}
 		return ResponseEntity.ok().body(result);
 	}
 

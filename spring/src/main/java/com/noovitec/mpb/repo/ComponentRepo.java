@@ -17,7 +17,7 @@ public interface ComponentRepo extends JpaRepository<Component, Long> {
 	Component getLast();
 
 	@Query("select distinct new com.noovitec.mpb.dto.ComponentDto(" 
-			+ "c.id, c.number, c.name, sum(ic.units * si.units), pc.unitsReceived, c.totalLandedCost, (pc.id is not null)) "
+			+ "c.id, c.number, c.name, sum(ic.units * si.units), c.unitsOnStack, pc.units, pc.unitsReceived, c.totalLandedCost, (pc.id is not null)) "
 			+ "from Component c " 
 			+ "join c.itemComponents ic " 
 			+ "join ic.item i " 
