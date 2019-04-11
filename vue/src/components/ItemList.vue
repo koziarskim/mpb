@@ -15,8 +15,8 @@
                 <template slot="number" slot-scope="row">
                     <b-button size="sm" variant="link" @click.stop="updateItem(row.item.id)">{{row.item.number}}</b-button>
                 </template>
-                <template slot="status" slot-scope="row">
-                    <b-button size="sm" variant="link" @click.stop="gotToItemComponentList(row.item.id)">{{row.item.status}}</b-button>
+                <template slot="inventory" slot-scope="row">
+                    <b-button size="sm" variant="link" @click.stop="gotToItemComponentList(row.item.id)">View</b-button>
                 </template>
                 <template slot="action" slot-scope="row">
                     <b-button size="sm" @click.stop="deleteItem(row.item.id)">x</b-button>
@@ -38,7 +38,7 @@ export default {
         { key: 'name', sortable: true, label: 'Name'},
         { key: 'brand', sortable: true, label: 'Brand'},
         { key: 'category', sortable: true, label: 'Category'},
-        { key: 'status', sortable: true, label: 'Status'},
+        { key: 'inventory', sortable: true, label: 'Inventory'},
         { key: 'action', sortable: false}
       ],
       items: []
