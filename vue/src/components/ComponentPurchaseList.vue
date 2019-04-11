@@ -16,7 +16,7 @@
             <span>{{calculateAwaiting(row.item)}}</span>
           </template>
           <template slot="action" slot-scope="row">
-            <b-button size="sm" @click.stop="goToReceiving(row.item.purchase.id)" :disabled="!row.item.purchase.submitted">Receivings</b-button>
+            <b-button size="sm" @click.stop="goToReceiving(row.item.purchase.id)" :disabled="!row.item.purchase.submitted || row.item.purchase.received">Receivings</b-button>
           </template>
         </b-table>
       </b-col>
@@ -34,14 +34,14 @@ export default {
     return {
       purchaseComponents: [],
       component: {},
-      sortBy: "number",
+      sortBy: "purchase.number",
       sortDesc: false,
       columns: [
         { key: "purchase", label: "Purchase #", sortable: true },
         { key: "unitsOrdered", label: "Ordered", sortable: true },
+        { key: "unitsAwaiting", label: "Awaiting", sortable: true },
         { key: "unitsInTransit", label: "In Transit", sortable: true },
         { key: "unitsReceived", label: "Received", sortable: true },
-        { key: "unitsAwaiting", label: "Awaiting", sortable: true },
         { key: "status", label: "Status", sortable: true },
         { key: "action", label: "Action", sortable: true }
       ],
