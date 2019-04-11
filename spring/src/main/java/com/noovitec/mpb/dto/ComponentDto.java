@@ -17,10 +17,10 @@ public class ComponentDto {
 	private String number;
 	private String name;
 	private String supplierName;
-	private Long unitsNeeded;
+	private Long unitsNeeded; //For Sales included in PO (at the time PO was created).
 	private Long unitsOnStack;
 	private Long units;
-	private Long unitsReceived;
+	private Long unitsReceived; //For this PO.
 	private BigDecimal unitPrice;
 	private boolean selected;
 	
