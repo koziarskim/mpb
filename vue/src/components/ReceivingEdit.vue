@@ -71,7 +71,7 @@ export default {
     return {
       receiving: {},
       purchase: {},
-      purchaseComponent: {},
+      purchaseComponent: {component: {}},
       availablePurchases: [],
       availablePurchaseComponents: [],
       editMode: true

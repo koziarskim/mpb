@@ -35,6 +35,9 @@
             <input v-if="!purchase.submitted" style="width: 100px" v-model="row.item.units" :disabled="!row.item.selected">
             <span v-if="purchase.submitted">{{row.item.units}}</span>
           </template>
+          <template slot="totalPrice" slot-scope="row">
+            <span>${{row.item.totalPrice = (+row.item.units * +row.item.unitPrice).toFixed(2)}}</span>
+          </template>
           <template slot="action" slot-scope="row">
             <b-form-checkbox v-model="row.item.selected" @input="rowSelect(row.item, row.item.id, row.item.selected)" :disabled="disabled()"></b-form-checkbox>
           </template>
@@ -190,7 +193,7 @@ export default {
           component: { id: component_id }
         };
         this.purchase.purchaseComponents.push(pc);
-        dto.units = dto.unitsNeeded;
+        dto.units = dto.unitsNeeded - +dto.unitsOnStack;
       } else {
         pc = this.purchase.purchaseComponents.find(
           pc => pc.component.id == component_id

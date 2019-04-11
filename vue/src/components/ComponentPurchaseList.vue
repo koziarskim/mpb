@@ -16,7 +16,7 @@
             <span>{{calculateAwaiting(row.item)}}</span>
           </template>
           <template slot="action" slot-scope="row">
-            <b-button size="sm" @click.stop="goToReceiving(row.item.purchase.id)">Receivings</b-button>
+            <b-button size="sm" @click.stop="goToReceiving(row.item.purchase.id)" :disabled="!row.item.purchase.submitted">Receivings</b-button>
           </template>
         </b-table>
       </b-col>
