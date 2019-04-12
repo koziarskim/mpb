@@ -5,7 +5,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -28,11 +27,9 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.noovitec.mpb.dto.ComponentDto;
-import com.noovitec.mpb.dto.InventoryDto;
 import com.noovitec.mpb.entity.Attachment;
 import com.noovitec.mpb.entity.Category;
 import com.noovitec.mpb.entity.Component;
-import com.noovitec.mpb.entity.PurchaseComponent;
 import com.noovitec.mpb.repo.AttachmentRepo;
 import com.noovitec.mpb.repo.CategoryRepo;
 import com.noovitec.mpb.repo.ComponentRepo;
@@ -66,8 +63,7 @@ class ComponentRest {
 	@GetMapping("/component/{id}")
 	ResponseEntity<?> get(@PathVariable Long id) {
 		Optional<Component> component = componentRepo.findById(id);
-		return component.map(response -> ResponseEntity.ok().body(response))
-				.orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+		return component.map(response -> ResponseEntity.ok().body(response)).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
 	}
 
 	@GetMapping("/component/number/category/{category_id}")
@@ -86,30 +82,6 @@ class ComponentRest {
 		return dtos;
 	}
 
-//	@GetMapping("/component/dto")
-//	Collection<ComponentDto> getComponentInventory() {
-//		Collection<ComponentDto> dtos = new HashSet<ComponentDto>();
-//		Collection<Component> components = componentRepo.findAll();
-//		for(Component c : components) {
-//			ComponentDto dto = new ComponentDto();
-//			dto.setId(c.getId());
-//			dto.setName(c.getName());
-//			dto.setNumber(c.getNumber());
-//			dto.setSupplierName(c.getSupplier().getName());
-//			dto.setUnits(Long.valueOf(c.getUnitsOnStack()));
-//			Long unitsOrdered = 0L;
-//			for(PurchaseComponent pc : c.getPurchaseComponents()) {
-//				if(pc.getPurchase().isSubmitted() && !pc.getPurchase().isReceived()) {
-//					unitsOrdered += pc.getUnits();
-//				}
-//			}
-//			dto.setUnitsOrdered(unitsOrdered);
-//			dtos.add(dto);
-//			
-//		}
-//		return dtos;
-//	}
-
 //	POST methods.
 
 	@PostMapping("/component")
@@ -123,10 +95,8 @@ class ComponentRest {
 
 	// This includes image upload.
 	@PostMapping("/component/upload")
-	ResponseEntity<Component> postComponentAndAttachment(
-			@RequestParam(value = "image", required = false) MultipartFile image,
-			@RequestParam("jsonComponent") String jsonComponent)
-			throws URISyntaxException, JsonParseException, JsonMappingException, IOException {
+	ResponseEntity<Component> postComponentAndAttachment(@RequestParam(value = "image", required = false) MultipartFile image,
+			@RequestParam("jsonComponent") String jsonComponent) throws URISyntaxException, JsonParseException, JsonMappingException, IOException {
 		Component component = objectMapper.readValue(jsonComponent, Component.class);
 		if (image != null) {
 			Attachment attachment = new Attachment();
@@ -144,8 +114,7 @@ class ComponentRest {
 	public ResponseEntity<?> delete(@PathVariable Long id) {
 		Component component = componentRepo.getOne(id);
 		if (component.isLocked()) {
-			return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED)
-					.body(Collections.singletonMap("message", "Component is currently locked"));
+			return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(Collections.singletonMap("message", "Component is currently locked"));
 		}
 		componentRepo.deleteById(id);
 		return ResponseEntity.ok().build();

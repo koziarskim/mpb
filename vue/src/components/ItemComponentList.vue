@@ -35,11 +35,9 @@ export default {
       sortDesc: false,
       columns: [
         { key: "component", label: "Component #", sortable: true },
-        // { key: "units", label: "Needed", sortable: true },
         { key: "component.unitsOnStack", label: "On Stack", sortable: true },
         { key: "component.unitsOrdered", label: "Ordered", sortable: true },
         { key: "component.unitsInTransit", label: "In Transit", sortable: true },
-        // { key: "action", label: "Action", sortable: true }
       ],
     };
   },
@@ -70,10 +68,6 @@ export default {
     goToComponentEdit(component_id) {
       router.push("/componentEdit/" + component_id);
     },
-    // goToReceiving(component_id) {
-    //   var query = { purchase_id: purchase_id, component_id: this.component.id };
-    //   router.push({ path: "/receivingList", query: query });
-    // }
   },
   mounted() {
     var item_id = this.$route.params.item_id;

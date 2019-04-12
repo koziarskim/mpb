@@ -69,10 +69,7 @@ export default {
       columns: [
         { key: "number", label: "Component #", sortable: true },
         { key: "name", label: "Name", sortable: true },
-        // { key: "unitsNeeded", label: "Needed", sortable: true },
-        // { key: "unitsOnStack", label: "On Stack", sortable: true },
         { key: "units", label: "Units", sortable: true },
-        // { key: "unitsReceived", label: "Received", sortable: true },
         { key: "unitPrice", label: "Unit Cost", sortable: true },
         { key: "totalPrice", label: "Amount", sortable: true },
         { key: "action", label: "Action", sortable: true }
