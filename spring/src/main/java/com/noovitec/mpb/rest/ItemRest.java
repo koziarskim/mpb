@@ -8,8 +8,10 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +34,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.noovitec.mpb.dto.ItemDto;
+import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.entity.Attachment;
 import com.noovitec.mpb.entity.Item;
 import com.noovitec.mpb.entity.ItemComponent;
@@ -39,6 +42,7 @@ import com.noovitec.mpb.entity.Season;
 import com.noovitec.mpb.entity.Upc;
 import com.noovitec.mpb.repo.AttachmentRepo;
 import com.noovitec.mpb.repo.ItemRepo;
+import com.noovitec.mpb.repo.ReceivingRepo;
 import com.noovitec.mpb.repo.SeasonRepo;
 import com.noovitec.mpb.repo.UpcRepo;
 
@@ -55,6 +59,8 @@ class ItemRest {
 	SeasonRepo seasonRepo;
 	@Autowired
 	UpcRepo upcRepo;
+	@Autowired
+	ReceivingRepo receivingRepo;
 
 	private final Logger log = LoggerFactory.getLogger(ItemRest.class);
 	private ItemRepo itemRepo;
@@ -113,15 +119,23 @@ class ItemRest {
 	@GetMapping("/item/eta/{date}")
 	Collection<ItemDto> getAllByEta(@PathVariable @DateTimeFormat(pattern="yyyy-MM-dd") Date date) {
 		Collection<ItemDto> dtos = new HashSet<ItemDto>();
+		Map<Long, Long> transitComponents = new HashMap<Long, Long>();
+		List<KeyValueDto> tcs = receivingRepo.findReceivingByEta(date);
+		for(KeyValueDto keyValueDto : tcs) {
+			transitComponents.put(keyValueDto.getKey(), (Long) keyValueDto.getValue());
+		}
 		for(Item item : itemRepo.findAll()) {
 			ItemDto dto = new ItemDto();
 			dto.setId(item.getId());
 			dto.setNumber(item.getNumber());
 			int itemsReady = 0;
 			for(ItemComponent ic : item.getItemComponents()) {
-				int unitsOnStack = ic.getComponent().getUnitsOnStack()/ic.getUnits();
-				if(itemsReady == 0 || unitsOnStack < itemsReady) {
-					itemsReady = unitsOnStack;
+				int unitsOnStack = ic.getComponent().getUnitsOnStack();
+				Long key = transitComponents.get(ic.getComponent().getId());
+				int unitsInTransit = (int) (key==null?0:key);
+				int totalUnits = (unitsOnStack + unitsInTransit)/ic.getUnits();
+				if(itemsReady == 0 || totalUnits < itemsReady) {
+					itemsReady = totalUnits;
 				}
 			}
 			dto.setUnitsReady(itemsReady);
