@@ -15,6 +15,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.AllArgsConstructor;
@@ -89,6 +90,11 @@ public class Item {
 	@OneToMany()
 	@JoinColumn(name = "item_id")
 	private Collection<SaleItem> saleItems = new HashSet<SaleItem>();
+
+	@JsonIgnore
+	@OneToMany()
+	@JoinColumn(name = "item_id")
+	private Collection<ScheduleItem> scheduleItems = new HashSet<ScheduleItem>();
 
 	@Transient
 	private String label;
