@@ -15,4 +15,15 @@ public class ItemDto {
 	private String brand;
 	private String category;
 	private String status;
+	private int unitsReady = 0;
+	private int unitsInTransit = 0;
+	
+	public ItemDto(Long id, String number, String name, String brand, String category, String status) {
+		this.id = id;
+		this.number = number;
+		this.name = name;
+		this.brand = brand;
+		this.category = category;
+		this.status = status;
+	}
 }

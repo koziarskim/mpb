@@ -17,6 +17,6 @@ public class Line {
 	@Id
 	@GeneratedValue
 	private Long id;
+	private int number;
 	private String name;
-	private String code;
 }

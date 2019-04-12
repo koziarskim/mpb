@@ -5,12 +5,16 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -104,6 +108,26 @@ class ItemRest {
 	@GetMapping("/item/purchase/{purchase_id}")
 	Collection<ItemDto> getAll(@PathVariable Long purchase_id) {
 		return this.itemToDto(itemRepo.getPurchaseItems(purchase_id));
+	}
+
+	@GetMapping("/item/eta/{date}")
+	Collection<ItemDto> getAllByEta(@PathVariable @DateTimeFormat(pattern="yyyy-MM-dd") Date date) {
+		Collection<ItemDto> dtos = new HashSet<ItemDto>();
+		for(Item item : itemRepo.findAll()) {
+			ItemDto dto = new ItemDto();
+			dto.setId(item.getId());
+			dto.setNumber(item.getNumber());
+			int itemsReady = 0;
+			for(ItemComponent ic : item.getItemComponents()) {
+				int unitsOnStack = ic.getComponent().getUnitsOnStack()/ic.getUnits();
+				if(itemsReady == 0 || unitsOnStack < itemsReady) {
+					itemsReady = unitsOnStack;
+				}
+			}
+			dto.setUnitsReady(itemsReady);
+			dtos.add(dto);
+		}
+		return dtos;
 	}
 
 	/*
