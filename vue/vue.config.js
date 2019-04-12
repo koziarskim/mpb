@@ -1,6 +1,7 @@
 module.exports = {
   devServer: {
-    port: 8081
+    port: 8081,
+    disableHostCheck: true
   },
   publicPath: "/mpb-static", //publicPath has to be in sync with nginx location path.
   outputDir: undefined,
