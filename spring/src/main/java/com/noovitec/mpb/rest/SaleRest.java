@@ -67,9 +67,6 @@ class SaleRest {
 
 	@DeleteMapping("/sale/{id}")
 	public ResponseEntity<?> delete(@PathVariable Long id) {
-//		Optional<Sale> sale = saleRepo.findById(id);
-//		sale.get().getCustomer().getAddresses().remove(sale.get());
-//		saleRepo.delete(sale.get());
 		saleRepo.deleteById(id);
 		return ResponseEntity.ok().build();
 	}

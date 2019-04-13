@@ -1,5 +1,7 @@
 package com.noovitec.mpb.entity;
 
+import java.util.Date;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -23,6 +25,8 @@ public class ScheduleItem {
 	private Long id;
 	Long unitsScheduled;
 	Long unitsProduced;
+	Date startTime;
+	Date finishTime;
 
 	@JsonIgnoreProperties(value = { "scheduleItems" }, allowSetters = true)
 	@ManyToOne()

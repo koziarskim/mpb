@@ -26,7 +26,7 @@ public class Schedule { //Daily Schedule.
 	@Id
 	@GeneratedValue
 	private Long id;
-	private Date date; //Day
+	private Date date; //Datetime
 	
 	@JsonIgnoreProperties(value = { "schedule" }, allowSetters = true)
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)

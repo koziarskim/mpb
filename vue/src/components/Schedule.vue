@@ -1,21 +1,14 @@
 <template>
     <b-container fluid>
         <div class="d-flex justify-content-between align-items-center">
-            <span style="text-align: left; font-size: 18px; font-weight: bold">Production/Scheduling</span>
+            <span style="text-align: left; font-size: 18px; font-weight: bold">Scheduling</span>
         </div>
-        <b-table v-if="items.length>0"
-                :sort-by.sync="sortBy"
+        <b-table :sort-by.sync="sortBy"
                 :sort-desc.sync="sortDesc"
-                :items="items"
+                :items="days"
                 :fields="fields">
                 <template slot="number" slot-scope="row">
                     <b-button size="sm" variant="link" @click.stop="updateItem(row.item.id)">{{row.item.number}}</b-button>
-                </template>
-                <template slot="status" slot-scope="row">
-                    <b-button size="sm" variant="link" @click.stop="gotToItemComponentList(row.item.id)">{{row.item.status}}</b-button>
-                </template>
-                <template slot="action" slot-scope="row">
-                    <b-button size="sm" @click.stop="deleteItem(row.item.id)">x</b-button>
                 </template>
         </b-table>
     </b-container>
@@ -23,64 +16,42 @@
 <script>
 import http from "../http-common";
 import router from "../router";
+import moment from "moment"
 
 export default {
   data() {
     return {
-      sortBy: 'number',
+      days: [1,2,3,4,5,6,7],
+      schedules: [],
+      scheduleDate: moment().utc().format("YYYY-MM-DD"),
+      sortBy: 'date',
       sortDesc: false,
       fields: [
-        { key: 'number', sortable: true, label: 'Item #'},
-        { key: 'name', sortable: true, label: 'Name'},
-        { key: 'brand', sortable: true, label: 'Brand'},
-        { key: 'category', sortable: true, label: 'Category'},
-        { key: 'status', sortable: true, label: 'Status'},
-        { key: 'action', sortable: false}
+        { key: 'line1', sortable: false, label: 'Line 1'},
+        { key: 'line2', sortable: false, label: 'Line 2'},
+        { key: 'line3', sortable: false, label: 'Line 3'},
+        { key: 'line4', sortable: false, label: 'Line 4'},
+        { key: 'line5', sortable: false, label: 'Line 5'},
+        { key: 'line6', sortable: false, label: 'Line 6'},
+        { key: 'line7', sortable: false, label: 'Line 7'},
+        { key: 'line8', sortable: false, label: 'Line 8'}
       ],
-      items: []
     };
   },
   methods: {
-    getItems() {
+    getSchedules() {
       http
-        .get("/itemDto")
+        .get("/schedule/date/"+this.scheduleDate)
         .then(response => {
-          //ItemDto
-          this.items = response.data;
+          this.schedules = response.data;
         })
         .catch(e => {
           console.log("API error: "+e);
         });
     },
-    deleteItem(item_id) {
-      http
-        .delete("/item/"+item_id)
-        .then(response => {
-          this.getItems();
-        })
-        .catch(e => {
-          console.log("Error post");
-        });
-    },
-    createNewItem(){
-        http
-        .post("/item")
-        .then(response => {
-            router.push('/itemEdit/'+response.data.id);
-        })
-        .catch(e =>{
-            console.log("Error post" + e)
-        })
-    },
-    updateItem(item_id){
-        router.push('./itemEdit/'+item_id);
-    },
-    gotToItemComponentList(item_id){
-        router.push('./itemComponentList/'+item_id);
-    }
   },
   mounted() {
-     this.getItems();
+     this.getSchedules();
   }
 };
 </script>
