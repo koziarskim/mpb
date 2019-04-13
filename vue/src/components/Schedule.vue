@@ -5,10 +5,10 @@
         </div>
         <b-table :sort-by.sync="sortBy"
                 :sort-desc.sync="sortDesc"
-                :items="days"
+                :items="schedules"
                 :fields="fields">
-                <template slot="number" slot-scope="row">
-                    <b-button size="sm" variant="link" @click.stop="updateItem(row.item.id)">{{row.item.number}}</b-button>
+                <template slot="date" slot-scope="row">
+                    <span>{{formatDate(row.item.date)}}</span>
                 </template>
         </b-table>
     </b-container>
@@ -21,12 +21,12 @@ import moment from "moment"
 export default {
   data() {
     return {
-      days: [1,2,3,4,5,6,7],
       schedules: [],
       scheduleDate: moment().utc().format("YYYY-MM-DD"),
       sortBy: 'date',
       sortDesc: false,
       fields: [
+        { key: 'date', sortable: false, label: 'Date'},
         { key: 'line1', sortable: false, label: 'Line 1'},
         { key: 'line2', sortable: false, label: 'Line 2'},
         { key: 'line3', sortable: false, label: 'Line 3'},
@@ -49,6 +49,9 @@ export default {
           console.log("API error: "+e);
         });
     },
+    formatDate(date){
+        return moment(date).utc().format("YYYY-MM-DD");
+    }
   },
   mounted() {
      this.getSchedules();

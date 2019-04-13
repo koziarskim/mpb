@@ -5,8 +5,13 @@ import java.net.URISyntaxException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -27,6 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.itextpdf.text.DocumentException;
+import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.entity.Schedule;
 import com.noovitec.mpb.repo.ScheduleRepo;
 
@@ -49,10 +55,29 @@ class ScheduleRest {
 
 	@GetMapping("/schedule/date/{date}")
 	Collection<Schedule> findByDate(@PathVariable(name = "date") @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
-		LocalDateTime localDateTime = date.toInstant().atZone(ZoneOffset.UTC).toLocalDateTime();
-		localDateTime.plusDays(7);
-		Date dateTo = Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
-		Collection<Schedule> result = scheduleRepo.findByRange(date, dateTo);
+		int days = 7;
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		cal.add(Calendar.DATE, days);
+		Date dateTo = cal.getTime();
+		Collection<Schedule> schedules = scheduleRepo.findByRange(date, dateTo);
+		Map<Date, Schedule> scheduleMap = new HashMap<Date, Schedule>();
+		Collection<Schedule> result = new HashSet<Schedule>();
+		for(Schedule schedule : schedules) {
+			scheduleMap.put(schedule.getDate(), schedule);
+		}
+		for (int day=1; day<=days; day++){
+			Calendar c = Calendar.getInstance();
+			c.setTime(date);
+			c.add(Calendar.DATE, day);
+			Date d = c.getTime();
+			Schedule s = scheduleMap.get(d);
+			if(s == null) {
+				s = new Schedule();
+				s.setDate(d);
+			}
+			result.add(s);
+		}
 		return result;
 	}
 
