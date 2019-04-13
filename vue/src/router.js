@@ -23,6 +23,7 @@ import ReceivingEdit from "./components/ReceivingEdit";
 import Users from "./components/Users";
 import Login from "./components/Login";
 import Production from "./components/Production";
+import Schedule from "./components/Schedule";
 import AccessDenied from "./components/AccessDenied";
 
 Vue.use(Router);
@@ -154,6 +155,11 @@ const router = new Router({
       path: "/Production",
       name: "Production",
       component: Production
+    },
+    {
+      path: "/Schedule",
+      name: "Schedule",
+      component: Schedule
     },
     {
       path: "/AccessDenied",
