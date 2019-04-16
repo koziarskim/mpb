@@ -10,8 +10,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.noovitec.mpb.dto.ItemDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -32,5 +34,4 @@ public class Schedule { //Daily Schedule.
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "schedule_id")
 	private Collection<ScheduleItem> scheduleItems = new HashSet<ScheduleItem>();
-
 }

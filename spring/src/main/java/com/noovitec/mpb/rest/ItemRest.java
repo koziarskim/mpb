@@ -118,6 +118,7 @@ class ItemRest {
 
 	@GetMapping("/item/eta/{date}")
 	Collection<ItemDto> getAllByEta(@PathVariable @DateTimeFormat(pattern="yyyy-MM-dd") Date date) {
+		log.info("Getting Items by Date: "+date);
 		Collection<ItemDto> dtos = new HashSet<ItemDto>();
 		Map<Long, Long> transitComponents = new HashMap<Long, Long>();
 		List<KeyValueDto> tcs = receivingRepo.findReceivingByEta(date);
@@ -138,8 +139,10 @@ class ItemRest {
 					itemsReady = totalUnits;
 				}
 			}
-			dto.setUnitsReady(itemsReady);
-			dtos.add(dto);
+			if(itemsReady>0) {
+				dto.setUnitsReady(itemsReady);
+				dtos.add(dto);
+			}
 		}
 		return dtos;
 	}
