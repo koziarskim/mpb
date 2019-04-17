@@ -2,6 +2,7 @@ package com.noovitec.mpb.rest;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
@@ -58,23 +59,17 @@ class ScheduleRest {
 	}
 
 	@GetMapping("/schedule/date/{date}")
-	Collection<Schedule> findByDate(@PathVariable(name = "date") @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
-		int days = 7;
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(date);
-		cal.add(Calendar.DATE, days);
-		Date dateTo = cal.getTime();
+	Collection<Schedule> findByDate(@PathVariable(name = "date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
+		int days = 6;
+		LocalDate dateTo = date.plusDays(days);
 		Collection<Schedule> schedules = scheduleRepo.findByRange(date, dateTo);
-		Map<Date, Schedule> scheduleMap = new HashMap<Date, Schedule>();
+		Map<LocalDate, Schedule> scheduleMap = new HashMap<LocalDate, Schedule>();
 		Collection<Schedule> result = new HashSet<Schedule>();
 		for(Schedule schedule : schedules) {
 			scheduleMap.put(schedule.getDate(), schedule);
 		}
-		for (int day=1; day<=days; day++){
-			Calendar c = Calendar.getInstance();
-			c.setTime(date);
-			c.add(Calendar.DATE, day);
-			Date d = c.getTime();
+		for (int day=0; day<=days; day++){
+			LocalDate d = date.plusDays(day);
 			Schedule s = scheduleMap.get(d);
 			if(s == null) {
 				s = new Schedule();

@@ -33,7 +33,7 @@ public class ScheduleItem {
 	@JoinColumn(name = "line_id", referencedColumnName = "id")
 	private Line line;
 
-	@JsonIgnoreProperties(value = { "scheduleItems" }, allowSetters = true)
+	@JsonIgnoreProperties(value = { "scheduleItems", "itemComponents", "saleItems" }, allowSetters = true)
 	@ManyToOne()
 	@JoinColumn(name = "item_id", referencedColumnName = "id")
 	private Item item;

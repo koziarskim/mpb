@@ -15,7 +15,8 @@
       </template>
     </b-table>
     <b-modal centered v-model="modalShow" ok-title="Save" @ok="saveModal">
-        <span>Schedule ID: {{modalData.schedule.id}}</span>
+      <span>Schedule ID: {{modalData.schedule.id}}</span>
+      <input type="time" v-model="modalData.schedule.time">
       <span>Date: {{modalData.schedule.date}}</span>
       <b-select option-value="id" option-text="number" :list="modalData.availableLines" v-model="modalData.selectedLine"></b-select>
       <b-select option-value="id" option-text="number" :list="modalData.availableItems" v-model="modalData.selectedItem"></b-select>
@@ -31,7 +32,13 @@ export default {
   data() {
     return {
       schedules: [{ id: 1 }],
-      modalData: { schedule: {}, availableItems: [], selectedItem: {}, availableLines:[], selectedLine: {}},
+      modalData: {
+        schedule: {},
+        availableItems: [],
+        selectedItem: {},
+        availableLines: [],
+        selectedLine: {}
+      },
       modalShow: false,
       scheduleDate: moment()
         .utc()
@@ -64,10 +71,18 @@ export default {
         });
     },
     saveSchedule(schedule) {
-      http
+      return http
         .post("/schedule", schedule)
         .then(response => {
-          console.log("Saved..."+ response.data.id);
+          let schedule = this.schedules.find(s => {
+            return s.date === response.data.date;
+          });
+          this.schedules.splice(
+            this.schedules.indexOf(schedule),
+            1,
+            response.data
+          );
+          return response;
         })
         .catch(e => {
           console.log("API error: " + e);
@@ -104,8 +119,16 @@ export default {
       return http
         .get("/item/eta/" + date)
         .then(response => {
-          return [{id: 1, number: 1}, {id: 2, number: 2}, {id: 3, number: 3}, {id: 4, number: 4}, {id: 5, number: 5},
-          {id: 6, number: 6}, {id: 7, number: 7}, {id: 8, number: 8}];
+          return [
+            { id: 1, number: 1 },
+            { id: 2, number: 2 },
+            { id: 3, number: 3 },
+            { id: 4, number: 4 },
+            { id: 5, number: 5 },
+            { id: 6, number: 6 },
+            { id: 7, number: 7 },
+            { id: 8, number: 8 }
+          ];
         })
         .catch(e => {
           console.log("API error: " + e);
@@ -123,11 +146,23 @@ export default {
       this.modalData.schedule = row.item;
       this.modalShow = !this.modalShow;
     },
+    validateModal(){
+      if (!this.modalData.schedule.time || !this.modalData.selectedLine || !this.modalData.selectedItem) {
+        alert("Time, Line and Item must be selected");
+        return;
+      }
+    },
     saveModal(e) {
-        // console.log(this.modalData.selectedItem.id)
-        // console.log(this.modalData.selectedLine.id)
-        console.log(this.modalData.schedule);
+      this.validateModal();
+      this.saveSchedule(this.modalData.schedule).then(r =>{
+        this.modalData.schedule.scheduleItems.push({
+            line: { id: this.modalData.selectedLine.id},
+            schedule: {id: r.data.id},
+            item: {id: this.modalData.selectedItem.id}
+        });
         this.saveSchedule(this.modalData.schedule);
+      });
+
     },
     addScheduleItem(row) {
       console.log(row);
