@@ -121,7 +121,11 @@ public class Component {
 	public void addUnitsOnStack(int units) {
 		this.unitsOnStack += units;
 	}
-	
+
+	public void subtractUnitsOnStack(int units) {
+		this.unitsOnStack -= units;
+	}
+
 	public void updateUnits() {
 		int unitsOrdered = 0;
 		int unitsInTransit = 0;
