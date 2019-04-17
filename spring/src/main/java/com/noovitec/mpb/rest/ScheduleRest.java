@@ -3,15 +3,9 @@ package com.noovitec.mpb.rest;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.util.Calendar;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -28,13 +22,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.itextpdf.text.DocumentException;
-import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.entity.Schedule;
 import com.noovitec.mpb.repo.ItemRepo;
 import com.noovitec.mpb.repo.ScheduleRepo;
@@ -65,13 +57,13 @@ class ScheduleRest {
 		Collection<Schedule> schedules = scheduleRepo.findByRange(date, dateTo);
 		Map<LocalDate, Schedule> scheduleMap = new HashMap<LocalDate, Schedule>();
 		Collection<Schedule> result = new HashSet<Schedule>();
-		for(Schedule schedule : schedules) {
+		for (Schedule schedule : schedules) {
 			scheduleMap.put(schedule.getDate(), schedule);
 		}
-		for (int day=0; day<=days; day++){
+		for (int day = 0; day <= days; day++) {
 			LocalDate d = date.plusDays(day);
 			Schedule s = scheduleMap.get(d);
-			if(s == null) {
+			if (s == null) {
 				s = new Schedule();
 				s.setDate(d);
 			}

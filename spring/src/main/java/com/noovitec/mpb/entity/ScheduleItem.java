@@ -1,6 +1,6 @@
 package com.noovitec.mpb.entity;
 
-import java.util.Date;
+import java.time.LocalTime;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -25,8 +25,8 @@ public class ScheduleItem {
 	private Long id;
 	Long unitsScheduled;
 	Long unitsProduced;
-	Date startTime;
-	Date finishTime;
+	LocalTime startTime;
+	LocalTime finishTime;
 
 	@JsonIgnoreProperties(value = { "scheduleItems" }, allowSetters = true)
 	@ManyToOne()
