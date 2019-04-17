@@ -28,6 +28,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.itextpdf.text.DocumentException;
 import com.noovitec.mpb.entity.Schedule;
+import com.noovitec.mpb.entity.ScheduleItem;
 import com.noovitec.mpb.repo.ItemRepo;
 import com.noovitec.mpb.repo.ScheduleRepo;
 
@@ -84,6 +85,9 @@ class ScheduleRest {
 			throws URISyntaxException, JsonParseException, JsonMappingException, IOException, DocumentException {
 		if (schedule == null) {
 			schedule = new Schedule();
+		}
+		for(ScheduleItem si : schedule.getScheduleItems()) {
+			si.setSchedule(schedule);
 		}
 		Schedule result = scheduleRepo.save(schedule);
 		return ResponseEntity.ok().body(result);

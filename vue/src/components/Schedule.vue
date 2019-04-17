@@ -6,7 +6,9 @@
     <b-table :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="schedules" :fields="fields">
       <template slot="line1" slot-scope="row">
         <div v-for="scheduleItem in getScheduleItemsByLine(row.field.key, row.item.scheduleItems)" :key="scheduleItem.id">
-            <span @click="showModal(row.item, scheduleItem)">{{scheduleItem.item.number}} {{scheduleItem.startTime}}  {{scheduleItem.unitsScheduled}} {{scheduleItem.unitsProduced}}</span>
+          <span
+            @click="showModal(row.item, scheduleItem)"
+          >{{scheduleItem.item.number}} {{formatTime(scheduleItem.startTime)}} {{scheduleItem.unitsScheduled}} {{scheduleItem.unitsProduced}}</span>
         </div>
       </template>
       <template slot="date" slot-scope="row">
@@ -16,13 +18,53 @@
         <b-button @click="showModal(row.item, null)">+</b-button>
       </template>
     </b-table>
-    <b-modal centered v-model="modalShow" ok-title="Save" @ok="saveModal">
-      <span>Schedule ID: {{modalData.schedule.id}}</span>
-      <span>ScheduleLine ID: {{modalData.scheduleLine.id}}</span>
-      <input type="time" v-model="modalData.scheduleLine.startTime">
-      <span>Date: {{modalData.schedule.date}}</span>
-      <b-select option-value="id" option-text="number" :list="modalData.availableLines" v-model="modalData.selectedLine"></b-select>
-      <b-select option-value="id" option-text="number" :list="modalData.availableItems" v-model="modalData.selectedItem"></b-select>
+    <b-modal centered v-model="modalVisible" :title="modalData.title" :hide-header="true" :hide-footer="true">
+      <b-row>
+        <b-col>
+            <span>Schedule for: {{modalData.schedule.date}}</span>
+        </b-col>
+        <b-col>
+          <div style="text-align: right;">
+            <b-button v-if="modalData.scheduleItem.id" style="margin: 0 2px 0 2px" @click="deleteModal()">Delete</b-button>
+            <b-button style="margin: 0 2px 0 2px" @click="closeModal()">Close</b-button>
+            <b-button style="margin: 0 2px 0 2px" @click="saveModal()" variant="success">Save</b-button>
+          </div>
+        </b-col>
+      </b-row>
+      <div style="text-align: left;" v-if="!modalData.scheduleItem.id">
+        <b-row>
+          <b-col cols="4">
+            <label class="top-label">Line:</label>
+            <b-select option-value="id" option-text="number" :list="modalData.availableLines" v-model="modalData.selectedLine"></b-select>
+          </b-col>
+          <b-col cols="4">
+            <label class="top-label">Item:</label>
+            <b-select option-value="id" option-text="number" :list="modalData.availableItems" v-model="modalData.selectedItem"></b-select>
+          </b-col>
+        </b-row>
+        <b-row>
+          <b-col cols="4">
+            <label class="top-label">Start:</label>
+            <input class="form-control" type="time" v-model="modalData.scheduleItem.startTime">
+          </b-col>
+          <b-col cols="4">
+            <label class="top-label">Units Scheduled:</label>
+            <input class="form-control" type="tel" v-model="modalData.scheduleItem.unitsScheduled">
+          </b-col>
+        </b-row>
+        <b-row>
+          <b-col cols="4">
+            <label class="top-label">Finish:</label>
+            <input class="form-control" type="time" v-model="modalData.scheduleItem.finishTime">
+          </b-col>
+          <b-col cols="4">
+            <label class="top-label">Units Produced:</label>
+            <input class="form-control" type="tel" v-model="modalData.scheduleItem.unitsProduced">
+          </b-col>
+        </b-row>
+      </div>
+      <div v-if="modalData.scheduleItem.id">
+          {{modalData.scheduleItem.id}}</div>
     </b-modal>
   </b-container>
 </template>
@@ -36,14 +78,14 @@ export default {
     return {
       schedules: [{ id: 1 }],
       modalData: {
-        scheduleLine: {},
+        scheduleItem: {},
         schedule: {},
         availableItems: [],
         selectedItem: {},
         availableLines: [],
         selectedLine: {}
       },
-      modalShow: false,
+      modalVisible: false,
       scheduleDate: moment()
         .utc()
         .format("YYYY-MM-DD"),
@@ -78,14 +120,7 @@ export default {
       return http
         .post("/schedule", schedule)
         .then(response => {
-          let schedule = this.schedules.find(s => {
-            return s.date === response.data.date;
-          });
-          this.schedules.splice(
-            this.schedules.indexOf(schedule),
-            1,
-            response.data
-          );
+          this.getSchedules();
           return response;
         })
         .catch(e => {
@@ -96,7 +131,9 @@ export default {
       var lineScheduleItems = [];
       if (scheduleItems) {
         scheduleItems.forEach(scheduleItem => {
-          if (scheduleItem.line.number == parseInt(lineNumber.replace("line",""))) {
+          if (
+            scheduleItem.line.number == parseInt(lineNumber.replace("line", ""))
+          ) {
             lineScheduleItems.push(scheduleItem);
           }
         });
@@ -138,31 +175,56 @@ export default {
     showModal(schedule, scheduleItem) {
       this.getAvailableItems(schedule.date).then(itemDtos => {
         this.modalData.availableItems = itemDtos;
-        this.modalData.selectedItem = {};
+        this.modalData.selectedItem = scheduleItem ? scheduleItem.item : {};
       });
       this.getAvailableLines().then(lines => {
         this.modalData.availableLines = lines;
-        this.modalData.selectedLine = {};
+        this.modalData.selectedLine = scheduleItem ? scheduleItem.line : {};
       });
+      this.modalData.title = "Schedule for: " + schedule.date;
       this.modalData.schedule = schedule;
-      this.modalShow = !this.modalShow;
+      this.modalData.scheduleItem = scheduleItem
+        ? scheduleItem
+        : { startTime: "06:00:00", finishTime: "06:00:00" };
+      this.modalVisible = !this.modalVisible;
     },
-    validateModal(){
-      if (!this.modalData.scheduleLine.startTime || !this.modalData.selectedLine || !this.modalData.selectedItem) {
+    validateModal() {
+      if (
+        !this.modalData.scheduleItem.startTime ||
+        !this.modalData.selectedLine ||
+        !this.modalData.selectedItem
+      ) {
         alert("Time, Line and Item must be selected");
         return;
       }
     },
     saveModal(e) {
       this.validateModal();
-      this.saveSchedule(this.modalData.schedule).then(r =>{
-          this.modalData.scheduleLine.line = {id: this.modalData.selectedLine.id};
-          this.modalData.scheduleLine.item = {id: this.modalData.selectedItem.id};
-        //   this.modalData.scheduleLine.schedule = {id: r.data.id};
-        this.modalData.schedule.scheduleItems.push(this.modalData.scheduleLine);
-        this.saveSchedule(this.modalData.schedule);
+      this.saveSchedule(this.modalData.schedule).then(r => {
+        this.modalData.scheduleItem.line = {
+          id: this.modalData.selectedLine.id
+        };
+        this.modalData.scheduleItem.item = {
+          id: this.modalData.selectedItem.id
+        };
+        r.data.scheduleItems.push(this.modalData.scheduleItem);
+        this.saveSchedule(r.data);
+        this.modalVisible = false;
       });
-
+    },
+    closeModal() {
+      this.modalVisible = false;
+    },
+    deleteModal() {
+      var si = this.modalData.schedule.scheduleItems.find(
+        it => it.id == this.modalData.scheduleItem.id
+      );
+      this.modalData.schedule.scheduleItems.splice(
+        this.modalData.schedule.scheduleItems.indexOf(si),
+        1
+      );
+      this.saveSchedule(this.modalData.schedule);
+      this.modalVisible = false;
     },
     addScheduleItem(row) {
       console.log(row);
@@ -171,6 +233,14 @@ export default {
       return moment(date)
         .utc()
         .format("YYYY-MM-DD");
+    },
+    formatTime(time) {
+      if (!time) {
+        return "";
+      }
+      var hours = time.split(":")[0];
+      var mins = time.split(":")[1];
+      return hours + ":" + mins;
     }
   },
   mounted() {
