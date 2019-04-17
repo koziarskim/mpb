@@ -81,8 +81,7 @@ class ScheduleRest {
 
 	// Save and update.
 	@PostMapping("/schedule")
-	ResponseEntity<Schedule> post(@RequestBody(required = false) Schedule schedule)
-			throws URISyntaxException, JsonParseException, JsonMappingException, IOException, DocumentException {
+	ResponseEntity<Schedule> post(@RequestBody Schedule schedule) {
 		if (schedule == null) {
 			schedule = new Schedule();
 		}

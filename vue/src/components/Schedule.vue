@@ -127,6 +127,27 @@ export default {
           console.log("API error: " + e);
         });
     },
+    saveScheduleItem(scheduleItem) {
+      return http
+        .post("/scheduleItem", scheduleItem)
+        .then(response => {
+          this.getSchedules();
+          return response;
+        })
+        .catch(e => {
+          console.log("API error: " + e);
+        });
+    },
+    deleteScheduleItem(scheduleItem_id) {
+      http
+        .delete("/scheduleItem/"+scheduleItem_id)
+        .then(response => {
+          this.getSchedules();
+        })
+        .catch(e => {
+          console.log("Error post");
+        });
+    },
     getScheduleItemsByLine(lineNumber, scheduleItems) {
       var lineScheduleItems = [];
       if (scheduleItems) {
@@ -207,8 +228,10 @@ export default {
         this.modalData.scheduleItem.item = {
           id: this.modalData.selectedItem.id
         };
-        r.data.scheduleItems.push(this.modalData.scheduleItem);
-        this.saveSchedule(r.data);
+        this.modalData.scheduleItem.schedule = {
+          id: r.data.id
+        };
+        this.saveScheduleItem(this.modalData.scheduleItem);
         this.modalVisible = false;
       });
     },
@@ -219,11 +242,7 @@ export default {
       var si = this.modalData.schedule.scheduleItems.find(
         it => it.id == this.modalData.scheduleItem.id
       );
-      this.modalData.schedule.scheduleItems.splice(
-        this.modalData.schedule.scheduleItems.indexOf(si),
-        1
-      );
-      this.saveSchedule(this.modalData.schedule);
+      this.deleteScheduleItem(si.id);
       this.modalVisible = false;
     },
     addScheduleItem(row) {
