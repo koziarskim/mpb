@@ -58,19 +58,7 @@
             <span><br/>{{maxItems}}</span>
           </b-col>
         </b-row>
-        <!-- <b-row>
-          <b-col cols="4">
-            <label class="top-label">Finish:</label>
-            <input class="form-control" type="time" v-model="modalData.scheduleItem.finishTime">
-          </b-col>
-          <b-col cols="4">
-            <label class="top-label">Units Produced:</label>
-            <input class="form-control" type="tel" v-model="modalData.scheduleItem.unitsProduced">
-          </b-col>
-        </b-row> -->
       </div>
-      <div v-if="modalData.scheduleItem.id">
-          {{modalData.scheduleItem.id}}</div>
     </b-modal>
   </b-container>
 </template>
