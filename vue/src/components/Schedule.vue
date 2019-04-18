@@ -230,7 +230,7 @@ export default {
       this.modalData.title = "Schedule for: " + schedule.date;
       this.modalData.schedule = schedule;
       this.modalData.scheduleItem = scheduleItem
-        ? scheduleItem
+        ? {...scheduleItem}
         : { startTime: "06:00:00" };
       this.modalData.tempUnitsScheduled = this.modalData.scheduleItem.unitsScheduled
       this.modalVisible = !this.modalVisible;
