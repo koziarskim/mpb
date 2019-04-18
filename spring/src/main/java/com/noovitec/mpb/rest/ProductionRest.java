@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -15,9 +16,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
+import com.noovitec.mpb.entity.Component;
+import com.noovitec.mpb.entity.ItemComponent;
 import com.noovitec.mpb.entity.Production;
+import com.noovitec.mpb.entity.ScheduleItem;
+import com.noovitec.mpb.repo.ComponentRepo;
 import com.noovitec.mpb.repo.ProductionRepo;
+import com.noovitec.mpb.repo.ScheduleItemRepo;
 
 @CrossOrigin
 @RestController
@@ -26,6 +33,10 @@ class ProductionRest {
 
 	private final Logger log = LoggerFactory.getLogger(ProductionRest.class);
 	private ProductionRepo productionRepo;
+	@Autowired
+	private ScheduleItemRepo scheduleItemRepo;
+	@Autowired
+	private ComponentRepo componentRepo;
 
 	public ProductionRest(ProductionRepo productionRepo) {
 		this.productionRepo = productionRepo;
@@ -49,6 +60,23 @@ class ProductionRest {
 			production = new Production();
 		}
 		Production result = productionRepo.save(production);
+		ScheduleItem scheduleItem = scheduleItemRepo.getOne(result.getScheduleItem().getId());
+		//update component.unitsReserved then component.unitsOnStack
+		for(ItemComponent ic : scheduleItem.getItem().getItemComponents()) {
+			Long componentUnits = result.getUnitsProduced() * ic.getUnits();
+			Component component = ic.getComponent();
+			//Subtract
+			Long extraUnits = component.addUnitsReserved(componentUnits * (-1));
+			if(extraUnits > 0) {
+				throw new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED, "Units produced exceeded units reserved.");
+			}
+			//Subtract
+			extraUnits = component.addUnitsOnStack(componentUnits * (-1));
+			if(extraUnits > 0) {
+				throw new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED, "Units produced exceeded units on stack.");
+			}
+			componentRepo.save(component);
+		}
 		return ResponseEntity.ok().body(result);
 	}
 

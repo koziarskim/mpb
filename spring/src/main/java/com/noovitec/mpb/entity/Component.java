@@ -119,15 +119,30 @@ public class Component {
 //	}
 
 	//Helper methods
-	public void addUnitsOnStack(Long units) {
+	//Returns extra units.
+	public Long addUnitsOnStack(Long units) {
+		Long extraUnits = 0L;
 		this.unitsOnStack += units;
+		if(this.unitsOnStack < 0) {
+			extraUnits = Long.valueOf(this.unitsOnStack) * (-1);
+			this.unitsOnStack = 0;
+			return Long.valueOf(extraUnits);
+		}
+		return 0L;
 	}
 
-	public void addUnitsReserved(Long units) {
+	public Long addUnitsReserved(Long units) {
 		if(this.unitsReserved==null) {
 			this.unitsReserved=0L;
 		}
+		Long extraUnits = 0L;
 		this.unitsReserved += units;
+		if(this.unitsReserved < 0) {
+			extraUnits = Long.valueOf(this.unitsReserved) * (-1);
+			this.unitsReserved = 0L;
+			return Long.valueOf(extraUnits);
+		}
+		return 0L;
 	}
 
 	public void updateUnits() {
