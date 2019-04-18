@@ -180,13 +180,14 @@ export default {
                 finishTime: this.modalData.newProduction.finishTime
             }
         this.saveProduction(production).then(r=>{
+            this.modalData.scheduleItem.totalProduced += +this.modalData.newProduction.unitsProduced;
             this.modalData.scheduleItem.productions.push(r.data);
             this.modalData.scheduleItem.productions.sort(function(a, b){  
                 if (a.finishTime < b.finishTime) {return 1;}
                 if (a.finishTime > b.finishTime) {return -1;}
                 return 0;});
             this.modalData.newProduction = {unitsProduced: (+this.modalData.scheduleItem.unitsScheduled - +this.modalData.scheduleItem.totalProduced),
-            finishTime : "18:00:00"};
+            finishTime : this.modalData.newProduction.finishTime};
         });
     },
     getSchedules() {
