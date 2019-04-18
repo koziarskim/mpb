@@ -58,7 +58,7 @@ public class ScheduleItem {
 	public Long getTotalProduced() {
 		Long units = 0L;
 		for (Production production : this.getProductions()) {
-			units += production.getUnitsProduced();
+			units += production.getUnitsProduced()==null?0:production.getUnitsProduced();
 		}
 		return units;
 	}

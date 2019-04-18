@@ -6,16 +6,18 @@
     <b-table :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="schedules" :fields="fields">
       <template slot="line1" slot-scope="row">
         <div v-for="scheduleItem in getScheduleItemsByLine(row.field.key, row.item.scheduleItems)" :key="scheduleItem.id">
-          <span
-            @click="showModal(row.item, scheduleItem)"
-          >{{scheduleItem.item.number}} {{formatTime(scheduleItem.startTime)}} {{scheduleItem.unitsScheduled}} {{scheduleItem.totalProduced}}</span>
+          <span>
+              <a href="#" @click="showModal(row.item, scheduleItem, false)">{{scheduleItem.item.number}}</a> 
+              {{formatTime(scheduleItem.startTime)}} {{scheduleItem.unitsScheduled}} 
+              <a href="#" @click="showModal(row.item, scheduleItem, true)">{{scheduleItem.totalProduced}}</a>
+            </span>
         </div>
       </template>
       <template slot="date" slot-scope="row">
         <span>{{formatDate(row.item.date)}}</span>
       </template>
       <template slot="action" slot-scope="row">
-        <b-button @click="showModal(row.item, null)">+</b-button>
+        <b-button @click="showModal(row.item, null, false)">+</b-button>
       </template>
     </b-table>
     <b-modal centered v-model="modalVisible" :title="modalData.title" :hide-header="true" :hide-footer="true">
@@ -25,68 +27,71 @@
         </b-col>
         <b-col>
           <div style="text-align: right;">
-            <b-button v-if="modalData.scheduleItem.id" style="margin: 0 2px 0 2px" @click="deleteModal()">Delete</b-button>
+            <b-button v-if="!modalData.productionMode && modalData.scheduleItem.id" style="margin: 0 2px 0 2px" @click="deleteModal()">Delete</b-button>
             <b-button style="margin: 0 2px 0 2px" @click="closeModal()">Close</b-button>
-            <b-button style="margin: 0 2px 0 2px" @click="saveModal()" variant="success">Save</b-button>
+            <b-button v-if="!modalData.productionMode" style="margin: 0 2px 0 2px" @click="saveModal()" variant="success">Save</b-button>
           </div>
         </b-col>
       </b-row>
       <div style="text-align: left;">
-        <b-row>
-          <b-col cols="4">
-            <label class="top-label">Line:</label>
-            <b-select v-if="!modalData.scheduleItem.id" option-value="id" option-text="number" :list="modalData.availableLines" v-model="modalData.selectedLine"></b-select>
-            <span v-if="modalData.scheduleItem.id">
-              <br>
-              {{modalData.selectedLine.number}}
-            </span>
-          </b-col>
-          <b-col cols="4">
-            <label class="top-label">Item:</label>
-            <b-select
-              v-if="!modalData.scheduleItem.id"
-              option-value="id"
-              option-text="number"
-              @change="itemChanged()"
-              :list="modalData.availableItems"
-              v-model="modalData.selectedItem"
-            ></b-select>
-            <span v-if="modalData.scheduleItem.id">
-              <br>
-              {{modalData.selectedItem.number}}
-            </span>
-          </b-col>
-        </b-row>
-        <b-row>
-          <b-col cols="4">
-            <label class="top-label">Start:</label>
-            <input class="form-control" type="time" v-model="modalData.scheduleItem.startTime">
-          </b-col>
-          <b-col cols="4">
-            <label class="top-label">Units Scheduled:</label>
-            <input class="form-control" type="number" min="0" :max="maxItems" v-model="modalData.scheduleItem.unitsScheduled">
-          </b-col>
-          <b-col cols="4">
-            <label class="top-label">Units Available:</label>
-            <span>
-              <br>
-              {{maxItems}}
-            </span>
-          </b-col>
-        </b-row>
-        <br/>
-        <div class="d-flex flex-row">
-          <span>Produced:</span>
-          <input style="width:135px" class="form-control" type="tel" @keydown="validateUnitsProduced()" v-model="modalData.newProduction.unitsProduced" />
-          <label>@</label>
-          <input style="width:135px" class="form-control" type="time" v-model="modalData.newProduction.finishTime" />
-          <a href="#" @click="addProduction()">(+)</a>
+          <div v-if="!modalData.productionMode">
+            <b-row>
+                <b-col cols="4">
+                    <label class="top-label">Line:</label>
+                    <b-select v-if="!modalData.scheduleItem.id" option-value="id" option-text="number" :list="modalData.availableLines" v-model="modalData.selectedLine"></b-select>
+                    <span v-if="modalData.scheduleItem.id">
+                    <br>
+                    {{modalData.selectedLine.number}}
+                    </span>
+                </b-col>
+                <b-col cols="4">
+                    <label class="top-label">Item:</label>
+                    <b-select
+                    v-if="!modalData.scheduleItem.id"
+                    option-value="id"
+                    option-text="number"
+                    @change="itemChanged()"
+                    :list="modalData.availableItems"
+                    v-model="modalData.selectedItem"
+                    ></b-select>
+                    <span v-if="modalData.scheduleItem.id">
+                    <br>
+                    {{modalData.selectedItem.number}}
+                    </span>
+                </b-col>
+            </b-row>
+            <b-row>
+                <b-col cols="4">
+                    <label class="top-label">Start:</label>
+                    <input class="form-control" type="time" v-model="modalData.scheduleItem.startTime">
+                </b-col>
+                <b-col cols="4">
+                    <label class="top-label">Units Scheduled:</label>
+                    <input class="form-control" type="number" min="0" :max="maxItems" v-model="modalData.scheduleItem.unitsScheduled">
+                </b-col>
+                <b-col cols="4">
+                    <label class="top-label">Units Available:</label>
+                    <span>
+                    <br>
+                    {{maxItems}}
+                    </span>
+                </b-col>
+            </b-row>
         </div>
-        <b-row v-for="production in modalData.scheduleItem.productions" :key="production.id">
-          <b-col>
-            <span>Production: {{production.id}}</span>
-          </b-col>
-        </b-row>
+        <div v-if="modalData.productionMode">
+            <span>Line: {{modalData.scheduleItem.line.number}}, Item: {{modalData.scheduleItem.item.number}}, Scheduled: {{modalData.scheduleItem.unitsScheduled}}</span>
+            <br/><br/>
+            <div class="d-flex flex-row">
+                <span>Produced:</span>
+                <input style="width:135px" class="form-control" type="tel" @keydown="validateUnitsProduced()" v-model="modalData.newProduction.unitsProduced" />
+                <label>@</label>
+                <input style="width:135px" class="form-control" type="time" v-model="modalData.newProduction.finishTime" />
+                <a href="#" @click="addProduction()">(+)</a>
+            </div>
+            <span v-for="production in modalData.scheduleItem.productions" :key="production.id">
+                <span>Produced: {{production.unitsProduced}} @ {{production.finishTime}}</span><br/>
+            </span>
+        </div>
       </div>
     </b-modal>
   </b-container>
@@ -107,7 +112,8 @@ export default {
         selectedItem: {},
         availableLines: [],
         selectedLine: {},
-        newProduction: {}
+        newProduction: {},
+        productionMode: false,
       },
       modalVisible: false,
       scheduleDate: moment()
@@ -162,16 +168,15 @@ export default {
         // this.modalData.scheduleItem.unitsScheduled='';
     },
     addProduction(){
-        console.log(this.modalData.newProduction)
-        this.modalData.scheduleItem.schedule = {id: this.modalData.schedule.id}
-        this.modalData.scheduleItem.productions.push(
-            {unitsProduced: this.modalData.newProduction.unitsProduced,
-            finishTime: this.modalData.newProduction.finishTime}
-        )
-        this.saveScheduleItem(this.modalData.scheduleItem).then(r=>{
-            this.modalData.scheduleItem = r.data;
+        var production = {
+                scheduleItem: {id: this.modalData.scheduleItem.id},
+                unitsProduced: this.modalData.newProduction.unitsProduced,
+                finishTime: this.modalData.newProduction.finishTime
+            }
+        this.saveProduction(production).then(r=>{
+            this.modalData.scheduleItem.productions.push(r.data);
+            // this.modalData.newProduction = {};
         });
-        this.modalData.newProduction = {};
     },
     getSchedules() {
       http
@@ -188,6 +193,16 @@ export default {
         .post("/schedule", schedule)
         .then(response => {
           this.getSchedules();
+          return response;
+        })
+        .catch(e => {
+          console.log("API error: " + e);
+        });
+    },
+    saveProduction(production) {
+      return http
+        .post("/production", production)
+        .then(response => {
           return response;
         })
         .catch(e => {
@@ -260,7 +275,7 @@ export default {
           console.log("API error: " + e);
         });
     },
-    showModal(schedule, scheduleItem) {
+    showModal(schedule, scheduleItem, productionMode) {
       this.getAvailableItems(schedule.date).then(itemDtos => {
         this.modalData.availableItems = itemDtos;
         this.modalData.selectedItem = scheduleItem ? scheduleItem.item : {};
@@ -275,6 +290,7 @@ export default {
         ? JSON.parse(JSON.stringify(scheduleItem))
         : { startTime: "06:00:00" };
       this.modalData.tempUnitsScheduled = this.modalData.scheduleItem.unitsScheduled;
+      this.modalData.productionMode = productionMode;
       this.modalVisible = !this.modalVisible;
     },
     validateModal() {
@@ -312,6 +328,7 @@ export default {
     },
     closeModal() {
       this.modalVisible = false;
+      this.getSchedules();
     },
     deleteModal() {
       var si = this.modalData.schedule.scheduleItems.find(
