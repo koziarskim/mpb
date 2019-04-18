@@ -79,11 +79,13 @@
             </b-row>
         </div>
         <div v-if="modalData.productionMode">
-            <span>Line: {{modalData.scheduleItem.line.number}}, Item: {{modalData.scheduleItem.item.number}}, Scheduled: {{modalData.scheduleItem.unitsScheduled}}</span>
+            <span>Line: {{modalData.scheduleItem.line.number}}, Item: {{modalData.scheduleItem.item.number}}, 
+                Scheduled: {{modalData.scheduleItem.unitsScheduled}}, Produced: {{modalData.scheduleItem.totalProduced}}, 
+                Still to produce: {{modalData.scheduleItem.unitsScheduled-modalData.scheduleItem.totalProduced}}</span>
             <br/><br/>
             <div class="d-flex flex-row">
                 <span>Produced:</span>
-                <input style="width:135px" class="form-control" type="tel" @keydown="validateUnitsProduced()" v-model="modalData.newProduction.unitsProduced" />
+                <input style="width:135px" class="form-control" type="tel" @input="validateUnitsProduced()" v-model="modalData.newProduction.unitsProduced"/>
                 <label>@</label>
                 <input style="width:135px" class="form-control" type="time" v-model="modalData.newProduction.finishTime" />
                 <a href="#" @click="addProduction()">(+)</a>
@@ -112,7 +114,7 @@ export default {
         selectedItem: {},
         availableLines: [],
         selectedLine: {},
-        newProduction: {},
+        newProduction: {unitsProduced: 0},
         productionMode: false,
       },
       modalVisible: false,
@@ -164,10 +166,14 @@ export default {
         // this.modalData.scheduleItem.unitsScheduled='';
     },
     validateUnitsProduced(){
-        // console.log(this.modalData.scheduleItem.unitsScheduled)
-        // this.modalData.scheduleItem.unitsScheduled='';
+        if(this.modalData.newProduction.unitsProduced<0 || (+this.modalData.scheduleItem.totalProduced + +this.modalData.newProduction.unitsProduced) > this.modalData.scheduleItem.unitsScheduled){
+            this.modalData.newProduction.unitsProduced='';
+        }
     },
     addProduction(){
+        if(!this.modalData.newProduction.unitsProduced || this.modalData.newProduction.unitsProduced <=0){
+            return;
+        }
         var production = {
                 scheduleItem: {id: this.modalData.scheduleItem.id},
                 unitsProduced: this.modalData.newProduction.unitsProduced,
@@ -175,7 +181,12 @@ export default {
             }
         this.saveProduction(production).then(r=>{
             this.modalData.scheduleItem.productions.push(r.data);
-            // this.modalData.newProduction = {};
+            this.modalData.scheduleItem.productions.sort(function(a, b){  
+                if (a.finishTime < b.finishTime) {return 1;}
+                if (a.finishTime > b.finishTime) {return -1;}
+                return 0;});
+            this.modalData.newProduction = {unitsProduced: (+this.modalData.scheduleItem.unitsScheduled - +this.modalData.scheduleItem.totalProduced),
+            finishTime : "18:00:00"};
         });
     },
     getSchedules() {
@@ -292,6 +303,14 @@ export default {
       this.modalData.tempUnitsScheduled = this.modalData.scheduleItem.unitsScheduled;
       this.modalData.productionMode = productionMode;
       this.modalVisible = !this.modalVisible;
+      if(scheduleItem){
+        this.modalData.newProduction.unitsProduced = +this.modalData.scheduleItem.unitsScheduled - +this.modalData.scheduleItem.totalProduced;
+        this.modalData.newProduction.finishTime = "18:00:00";
+      }
+      this.modalData.scheduleItem.productions.sort(function(a, b){  
+                if (a.finishTime < b.finishTime) {return 1;}
+                if (a.finishTime > b.finishTime) {return -1;}
+                return 0;});
     },
     validateModal() {
       if (
