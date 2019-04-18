@@ -31,15 +31,17 @@
           </div>
         </b-col>
       </b-row>
-      <div style="text-align: left;" v-if="!modalData.scheduleItem.id">
+      <div style="text-align: left;">
         <b-row>
           <b-col cols="4">
             <label class="top-label">Line:</label>
-            <b-select option-value="id" option-text="number" :list="modalData.availableLines" v-model="modalData.selectedLine"></b-select>
+            <b-select v-if="!modalData.scheduleItem.id" option-value="id" option-text="number" :list="modalData.availableLines" v-model="modalData.selectedLine"></b-select>
+            <span v-if="modalData.scheduleItem.id"><br/>{{modalData.selectedLine.number}}</span>
           </b-col>
           <b-col cols="4">
             <label class="top-label">Item:</label>
-            <b-select option-value="id" option-text="number" @change="itemChanged()" :list="modalData.availableItems" v-model="modalData.selectedItem"></b-select>
+            <b-select v-if="!modalData.scheduleItem.id" option-value="id" option-text="number" @change="itemChanged()" :list="modalData.availableItems" v-model="modalData.selectedItem"></b-select>
+            <span v-if="modalData.scheduleItem.id"><br/>{{modalData.selectedItem.number}}</span>          
           </b-col>
         </b-row>
         <b-row>
@@ -49,7 +51,11 @@
           </b-col>
           <b-col cols="4">
             <label class="top-label">Units Scheduled:</label>
-            <input class="form-control" type="tel" v-model="modalData.scheduleItem.unitsScheduled">
+            <input class="form-control" type="number" min=0 :max="maxItems" v-model="modalData.scheduleItem.unitsScheduled">
+          </b-col>
+          <b-col cols="4">
+            <label class="top-label">Units Available:</label>
+            <span><br/>{{maxItems}}</span>
           </b-col>
         </b-row>
         <!-- <b-row>
@@ -83,7 +89,7 @@ export default {
         availableItems: [],
         selectedItem: {},
         availableLines: [],
-        selectedLine: {}
+        selectedLine: {},
       },
       modalVisible: false,
       scheduleDate: moment()
@@ -105,13 +111,23 @@ export default {
       ]
     };
   },
+  computed: {
+      maxItems: function(){
+          if(this.modalData.scheduleItem.id){
+              var sidto = this.modalData.availableItems.find(dto=> dto.id == this.modalData.scheduleItem.item.id);
+              return +this.modalData.tempUnitsScheduled + +(sidto?sidto.unitsReady:0);
+          }
+          return this.modalData.selectedItem.unitsReady;
+      }
+  },
   watch: {
       'modalData.selectedItem': function(new_value, old_value){
           if(!new_value.id || new_value.id == old_value.id){
               return;
           }
-          this.modalData.scheduleItem.unitsScheduled = new_value.unitsReady
-          console.log(new_value)
+          if(!this.modalData.scheduleItem.id){
+            this.modalData.scheduleItem.unitsScheduled = new_value.unitsReady
+          }
       },
   },
   methods: {
@@ -216,6 +232,7 @@ export default {
       this.modalData.scheduleItem = scheduleItem
         ? scheduleItem
         : { startTime: "06:00:00" };
+      this.modalData.tempUnitsScheduled = this.modalData.scheduleItem.unitsScheduled
       this.modalVisible = !this.modalVisible;
     },
     validateModal() {
@@ -230,7 +247,15 @@ export default {
     },
     saveModal(e) {
       this.validateModal();
-      this.saveSchedule(this.modalData.schedule).then(r => {
+      if(this.modalData.schedule.id){
+          this.bindToData(this.modalData.schedule)
+      }else{
+        this.saveSchedule(this.modalData.schedule).then(r => {
+            this.bindToData(r.data);
+        });
+      }
+    },
+    bindToData(schedule){
         this.modalData.scheduleItem.line = {
           id: this.modalData.selectedLine.id
         };
@@ -238,11 +263,10 @@ export default {
           id: this.modalData.selectedItem.id
         };
         this.modalData.scheduleItem.schedule = {
-          id: r.data.id
+          id: schedule.id
         };
         this.saveScheduleItem(this.modalData.scheduleItem);
         this.modalVisible = false;
-      });
     },
     closeModal() {
       this.modalVisible = false;
