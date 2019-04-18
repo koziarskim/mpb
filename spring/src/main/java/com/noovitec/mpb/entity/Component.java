@@ -47,6 +47,7 @@ public class Component {
 	private BigDecimal otherCost = BigDecimal.ZERO;
 	private BigDecimal totalLandedCost = BigDecimal.ZERO;
 	private int unitsOnStack = 0;
+	private Long unitsReserved = 0L;
 	private int unitsOrdered = 0; //All Purchases.
 	private int unitsInTransit = 0; //All Purchases.
 	private int unitsReceived = 0; //All Purchases.
@@ -120,6 +121,13 @@ public class Component {
 	//Helper methods
 	public void addUnitsOnStack(Long units) {
 		this.unitsOnStack += units;
+	}
+
+	public void addUnitsReserved(Long units) {
+		if(this.unitsReserved==null) {
+			this.unitsReserved=0L;
+		}
+		this.unitsReserved += units;
 	}
 
 	public void updateUnits() {

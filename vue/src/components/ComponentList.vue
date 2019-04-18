@@ -38,6 +38,7 @@ export default {
         { key: "name", label: "Name", sortable: true },
         { key: "units", label: "Awaiting/Transit", sortable: true },
         { key: "unitsOnStack", label: "On Stack", sortable: true },
+        { key: "unitsReserved", label: "Reserved", sortable: true },
         { key: "category.name", label: "Category", sortable: true },
         { key: "supplier.name", label: "Supplier", sortable: true },
         { key: "action", label: "Action", sortable: false }

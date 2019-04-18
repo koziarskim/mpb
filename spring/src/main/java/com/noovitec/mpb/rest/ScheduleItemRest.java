@@ -64,15 +64,13 @@ class ScheduleItemRest {
 		if (result.getUnitsScheduled() != null) {
 			Item item = itemRepo.getOne(result.getItem().getId());
 			//Positive or negative
-			Long itemUnits = (existingUnitsScheduled==null?0L:existingUnitsScheduled) - result.getUnitsScheduled();
+			Long itemUnits = result.getUnitsScheduled() - (existingUnitsScheduled==null?0L:existingUnitsScheduled);
 			for (ItemComponent ic : item.getItemComponents()) {
 				//Positive or negative
 				Long componentUnits = ic.getUnits() * itemUnits;
 				Component component = ic.getComponent();
 				//Add/Substract based on positive or negative value.
-				if (componentUnits < 0) {
-					component.addUnitsOnStack(componentUnits);
-				}
+				component.addUnitsReserved(componentUnits);
 				componentRepo.save(component);
 			}
 		}
@@ -88,7 +86,7 @@ class ScheduleItemRest {
 				Long componentUnits = ic.getUnits() * scheduleItem.getUnitsScheduled();
 				Component component = ic.getComponent();
 				// Subtract
-				component.addUnitsOnStack(componentUnits);
+				component.addUnitsReserved(componentUnits * (-1));
 				componentRepo.save(component);
 			}
 		}

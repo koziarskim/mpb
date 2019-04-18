@@ -131,10 +131,11 @@ class ItemRest {
 			dto.setNumber(item.getNumber());
 			int itemsReady = 0;
 			for(ItemComponent ic : item.getItemComponents()) {
-				int unitsOnStack = ic.getComponent().getUnitsOnStack();
+				int unitsReserved = ic.getComponent().getUnitsReserved()==null?0:ic.getComponent().getUnitsReserved().intValue();
+				int unitsAvailable = ic.getComponent().getUnitsOnStack() - unitsReserved;
 				Long key = transitComponents.get(ic.getComponent().getId());
 				int unitsInTransit = (int) (key==null?0:key);
-				int totalUnits = (unitsOnStack + unitsInTransit)/ic.getUnits();
+				int totalUnits = (unitsAvailable + unitsInTransit)/ic.getUnits();
 				if(itemsReady == 0 || totalUnits < itemsReady) {
 					itemsReady = totalUnits;
 				}

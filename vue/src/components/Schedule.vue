@@ -39,7 +39,7 @@
           </b-col>
           <b-col cols="4">
             <label class="top-label">Item:</label>
-            <b-select option-value="id" option-text="number" :list="modalData.availableItems" v-model="modalData.selectedItem"></b-select>
+            <b-select option-value="id" option-text="number" @change="itemChanged()" :list="modalData.availableItems" v-model="modalData.selectedItem"></b-select>
           </b-col>
         </b-row>
         <b-row>
@@ -104,6 +104,15 @@ export default {
         { key: "action", sortable: false, label: "Action" }
       ]
     };
+  },
+  watch: {
+      'modalData.selectedItem': function(new_value, old_value){
+          if(!new_value.id || new_value.id == old_value.id){
+              return;
+          }
+          this.modalData.scheduleItem.unitsScheduled = new_value.unitsReady
+          console.log(new_value)
+      },
   },
   methods: {
     getSchedules() {
