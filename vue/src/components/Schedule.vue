@@ -8,7 +8,7 @@
         <div v-for="scheduleItem in getScheduleItemsByLine(row.field.key, row.item.scheduleItems)" :key="scheduleItem.id">
           <span
             @click="showModal(row.item, scheduleItem)"
-          >{{scheduleItem.item.number}} {{formatTime(scheduleItem.startTime)}} {{scheduleItem.unitsScheduled}} {{scheduleItem.unitsProduced}}</span>
+          >{{scheduleItem.item.number}} {{formatTime(scheduleItem.startTime)}} {{scheduleItem.unitsScheduled}} {{scheduleItem.totalProduced}}</span>
         </div>
       </template>
       <template slot="date" slot-scope="row">
@@ -52,7 +52,7 @@
             <input class="form-control" type="tel" v-model="modalData.scheduleItem.unitsScheduled">
           </b-col>
         </b-row>
-        <b-row>
+        <!-- <b-row>
           <b-col cols="4">
             <label class="top-label">Finish:</label>
             <input class="form-control" type="time" v-model="modalData.scheduleItem.finishTime">
@@ -61,7 +61,7 @@
             <label class="top-label">Units Produced:</label>
             <input class="form-control" type="tel" v-model="modalData.scheduleItem.unitsProduced">
           </b-col>
-        </b-row>
+        </b-row> -->
       </div>
       <div v-if="modalData.scheduleItem.id">
           {{modalData.scheduleItem.id}}</div>
@@ -206,7 +206,7 @@ export default {
       this.modalData.schedule = schedule;
       this.modalData.scheduleItem = scheduleItem
         ? scheduleItem
-        : { startTime: "06:00:00", finishTime: "06:00:00" };
+        : { startTime: "06:00:00" };
       this.modalVisible = !this.modalVisible;
     },
     validateModal() {

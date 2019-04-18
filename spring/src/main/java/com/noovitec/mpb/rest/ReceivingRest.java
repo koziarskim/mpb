@@ -89,7 +89,7 @@ class ReceivingRest {
 			Component component = componentRepo.getOne(receiving.getPurchaseComponent().getComponent().getId());
 			component.updateUnits();
 			if (receiving.getReceivedDate()!=null) {
-				component.addUnitsOnStack(receiving.getUnits());
+				component.addUnitsOnStack(Long.valueOf(receiving.getUnits()));
 			}
 			componentRepo.save(component);
 		}

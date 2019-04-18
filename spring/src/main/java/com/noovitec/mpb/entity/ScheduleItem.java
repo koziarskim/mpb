@@ -1,12 +1,16 @@
 package com.noovitec.mpb.entity;
 
 import java.time.LocalTime;
+import java.util.Collection;
+import java.util.HashSet;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -24,9 +28,7 @@ public class ScheduleItem {
 	@GeneratedValue
 	private Long id;
 	Long unitsScheduled;
-	Long unitsProduced;
 	LocalTime startTime;
-	LocalTime finishTime;
 
 	@JsonIgnoreProperties(value = { "scheduleItems" }, allowSetters = true)
 	@ManyToOne()
@@ -42,4 +44,22 @@ public class ScheduleItem {
 	@ManyToOne()
 	@JoinColumn(name = "schedule_id", referencedColumnName = "id")
 	private Schedule schedule;
+
+	@JsonIgnoreProperties(value = { "scheduleItem" }, allowSetters = true)
+	@OneToMany() // Don't allow cascade so updates to production happens only through
+					// ProductionRest
+	@JoinColumn(name = "schedule_item_id")
+	private Collection<Production> productions = new HashSet<Production>();
+
+	// Transient
+	@Transient
+	Long totalProduced;
+
+	public Long getTotalProduced() {
+		Long units = 0L;
+		for (Production production : this.getProductions()) {
+			units += production.getUnitsProduced();
+		}
+		return units;
+	}
 }

@@ -118,12 +118,8 @@ public class Component {
 //	}
 
 	//Helper methods
-	public void addUnitsOnStack(int units) {
+	public void addUnitsOnStack(Long units) {
 		this.unitsOnStack += units;
-	}
-
-	public void subtractUnitsOnStack(int units) {
-		this.unitsOnStack -= units;
 	}
 
 	public void updateUnits() {

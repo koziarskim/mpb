@@ -58,20 +58,21 @@ class ScheduleItemRest {
 		if (scheduleItem == null) {
 			scheduleItem = new ScheduleItem();
 		}
-		boolean newEntity = scheduleItem.getId()==null;
+		//Get this before calling save.
+		Long existingUnitsScheduled = scheduleItemRepo.getScheduledUnits(scheduleItem.getId());
 		ScheduleItem result = scheduleItemRepo.save(scheduleItem);
-		//Update components on stack only on creating new scheduleItem (not when updating). To update, it has to deleted first.
-		if (newEntity && result.getUnitsScheduled() != null) {
+		if (result.getUnitsScheduled() != null) {
 			Item item = itemRepo.getOne(result.getItem().getId());
-			Long itemUnits = result.getUnitsScheduled() - (result.getUnitsProduced() == null ? 0L : result.getUnitsProduced());
+			//Positive or negative
+			Long itemUnits = (existingUnitsScheduled==null?0L:existingUnitsScheduled) - result.getUnitsScheduled();
 			for (ItemComponent ic : item.getItemComponents()) {
+				//Positive or negative
 				Long componentUnits = ic.getUnits() * itemUnits;
 				Component component = ic.getComponent();
-				// Add already subtracted items if produced more that scheduled.
+				//Add/Substract based on positive or negative value.
 				if (componentUnits < 0) {
-					component.addUnitsOnStack(componentUnits.intValue() * (-1));
+					component.addUnitsOnStack(componentUnits);
 				}
-				component.subtractUnitsOnStack(componentUnits.intValue());
 				componentRepo.save(component);
 			}
 		}
@@ -83,15 +84,11 @@ class ScheduleItemRest {
 		ScheduleItem scheduleItem = scheduleItemRepo.getOne(id);
 		if (scheduleItem.getUnitsScheduled() != null) {
 			Item item = itemRepo.getOne(scheduleItem.getItem().getId());
-			Long itemUnits = scheduleItem.getUnitsScheduled() - (scheduleItem.getUnitsProduced() == null ? 0L : scheduleItem.getUnitsProduced());
 			for (ItemComponent ic : item.getItemComponents()) {
-				Long componentUnits = ic.getUnits() * itemUnits;
+				Long componentUnits = ic.getUnits() * scheduleItem.getUnitsScheduled();
 				Component component = ic.getComponent();
-				// Add already subtracted items if produced more that scheduled.
-				if (componentUnits < 0) {
-					component.addUnitsOnStack(componentUnits.intValue() * (-1));
-				}
-				component.subtractUnitsOnStack(componentUnits.intValue());
+				// Subtract
+				component.addUnitsOnStack(componentUnits);
 				componentRepo.save(component);
 			}
 		}
