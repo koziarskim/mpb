@@ -21,7 +21,7 @@
     <b-modal centered v-model="modalVisible" :title="modalData.title" :hide-header="true" :hide-footer="true">
       <b-row>
         <b-col>
-            <span>Schedule for: {{modalData.schedule.date}}</span>
+          <span>Schedule for: {{modalData.schedule.date}}</span>
         </b-col>
         <b-col>
           <div style="text-align: right;">
@@ -36,12 +36,25 @@
           <b-col cols="4">
             <label class="top-label">Line:</label>
             <b-select v-if="!modalData.scheduleItem.id" option-value="id" option-text="number" :list="modalData.availableLines" v-model="modalData.selectedLine"></b-select>
-            <span v-if="modalData.scheduleItem.id"><br/>{{modalData.selectedLine.number}}</span>
+            <span v-if="modalData.scheduleItem.id">
+              <br>
+              {{modalData.selectedLine.number}}
+            </span>
           </b-col>
           <b-col cols="4">
             <label class="top-label">Item:</label>
-            <b-select v-if="!modalData.scheduleItem.id" option-value="id" option-text="number" @change="itemChanged()" :list="modalData.availableItems" v-model="modalData.selectedItem"></b-select>
-            <span v-if="modalData.scheduleItem.id"><br/>{{modalData.selectedItem.number}}</span>          
+            <b-select
+              v-if="!modalData.scheduleItem.id"
+              option-value="id"
+              option-text="number"
+              @change="itemChanged()"
+              :list="modalData.availableItems"
+              v-model="modalData.selectedItem"
+            ></b-select>
+            <span v-if="modalData.scheduleItem.id">
+              <br>
+              {{modalData.selectedItem.number}}
+            </span>
           </b-col>
         </b-row>
         <b-row>
@@ -51,11 +64,27 @@
           </b-col>
           <b-col cols="4">
             <label class="top-label">Units Scheduled:</label>
-            <input class="form-control" type="number" min=0 :max="maxItems" v-model="modalData.scheduleItem.unitsScheduled">
+            <input class="form-control" type="number" min="0" :max="maxItems" v-model="modalData.scheduleItem.unitsScheduled">
           </b-col>
           <b-col cols="4">
             <label class="top-label">Units Available:</label>
-            <span><br/>{{maxItems}}</span>
+            <span>
+              <br>
+              {{maxItems}}
+            </span>
+          </b-col>
+        </b-row>
+        <br/>
+        <div class="d-flex flex-row">
+          <span>Produced:</span>
+          <input style="width:135px" class="form-control" type="tel" @keydown="validateUnitsProduced()" v-model="modalData.newProduction.unitsProduced" />
+          <label>@</label>
+          <input style="width:135px" class="form-control" type="time" v-model="modalData.newProduction.finishTime" />
+          <a href="#" @click="addProduction()">(+)</a>
+        </div>
+        <b-row v-for="production in modalData.scheduleItem.productions" :key="production.id">
+          <b-col>
+            <span>Production: {{production.id}}</span>
           </b-col>
         </b-row>
       </div>
@@ -78,6 +107,7 @@ export default {
         selectedItem: {},
         availableLines: [],
         selectedLine: {},
+        newProduction: {}
       },
       modalVisible: false,
       scheduleDate: moment()
@@ -100,25 +130,49 @@ export default {
     };
   },
   computed: {
-      maxItems: function(){
-          if(this.modalData.scheduleItem.id){
-              var sidto = this.modalData.availableItems.find(dto=> dto.id == this.modalData.scheduleItem.item.id);
-              return +this.modalData.tempUnitsScheduled + +(sidto?sidto.unitsReady:0);
-          }
-          return this.modalData.selectedItem.unitsReady;
+    maxItems: function() {
+      if (this.modalData.scheduleItem.id) {
+        var sidto = this.modalData.availableItems.find(
+          dto => dto.id == this.modalData.scheduleItem.item.id
+        );
+        return (
+          +this.modalData.tempUnitsScheduled + +(sidto ? sidto.unitsReady : 0)
+        );
       }
+      return this.modalData.selectedItem.unitsReady;
+    }
   },
   watch: {
-      'modalData.selectedItem': function(new_value, old_value){
-          if(!new_value.id || new_value.id == old_value.id){
-              return;
-          }
-          if(!this.modalData.scheduleItem.id){
-            this.modalData.scheduleItem.unitsScheduled = new_value.unitsReady
-          }
-      },
+    "modalData.selectedItem": function(new_value, old_value) {
+      if (!new_value.id || new_value.id == old_value.id) {
+        return;
+      }
+      if (!this.modalData.scheduleItem.id) {
+        this.modalData.scheduleItem.unitsScheduled = new_value.unitsReady;
+      }
+    }
   },
   methods: {
+    validateUnitsScheduled(){
+        // console.log(this.modalData.scheduleItem.unitsScheduled)
+        // this.modalData.scheduleItem.unitsScheduled='';
+    },
+    validateUnitsProduced(){
+        // console.log(this.modalData.scheduleItem.unitsScheduled)
+        // this.modalData.scheduleItem.unitsScheduled='';
+    },
+    addProduction(){
+        console.log(this.modalData.newProduction)
+        this.modalData.scheduleItem.schedule = {id: this.modalData.schedule.id}
+        this.modalData.scheduleItem.productions.push(
+            {unitsProduced: this.modalData.newProduction.unitsProduced,
+            finishTime: this.modalData.newProduction.finishTime}
+        )
+        this.saveScheduleItem(this.modalData.scheduleItem).then(r=>{
+            this.modalData.scheduleItem = r.data;
+        });
+        this.modalData.newProduction = {};
+    },
     getSchedules() {
       http
         .get("/schedule/date/" + this.scheduleDate)
@@ -153,7 +207,7 @@ export default {
     },
     deleteScheduleItem(scheduleItem_id) {
       http
-        .delete("/scheduleItem/"+scheduleItem_id)
+        .delete("/scheduleItem/" + scheduleItem_id)
         .then(response => {
           this.getSchedules();
         })
@@ -218,9 +272,9 @@ export default {
       this.modalData.title = "Schedule for: " + schedule.date;
       this.modalData.schedule = schedule;
       this.modalData.scheduleItem = scheduleItem
-        ? {...scheduleItem}
+        ? JSON.parse(JSON.stringify(scheduleItem))
         : { startTime: "06:00:00" };
-      this.modalData.tempUnitsScheduled = this.modalData.scheduleItem.unitsScheduled
+      this.modalData.tempUnitsScheduled = this.modalData.scheduleItem.unitsScheduled;
       this.modalVisible = !this.modalVisible;
     },
     validateModal() {
@@ -235,26 +289,26 @@ export default {
     },
     saveModal(e) {
       this.validateModal();
-      if(this.modalData.schedule.id){
-          this.bindToData(this.modalData.schedule)
-      }else{
+      if (this.modalData.schedule.id) {
+        this.bindToData(this.modalData.schedule);
+      } else {
         this.saveSchedule(this.modalData.schedule).then(r => {
-            this.bindToData(r.data);
+          this.bindToData(r.data);
         });
       }
     },
-    bindToData(schedule){
-        this.modalData.scheduleItem.line = {
-          id: this.modalData.selectedLine.id
-        };
-        this.modalData.scheduleItem.item = {
-          id: this.modalData.selectedItem.id
-        };
-        this.modalData.scheduleItem.schedule = {
-          id: schedule.id
-        };
-        this.saveScheduleItem(this.modalData.scheduleItem);
-        this.modalVisible = false;
+    bindToData(schedule) {
+      this.modalData.scheduleItem.line = {
+        id: this.modalData.selectedLine.id
+      };
+      this.modalData.scheduleItem.item = {
+        id: this.modalData.selectedItem.id
+      };
+      this.modalData.scheduleItem.schedule = {
+        id: schedule.id
+      };
+      this.saveScheduleItem(this.modalData.scheduleItem);
+      this.modalVisible = false;
     },
     closeModal() {
       this.modalVisible = false;

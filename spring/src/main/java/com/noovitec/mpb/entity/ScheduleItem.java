@@ -4,6 +4,7 @@ import java.time.LocalTime;
 import java.util.Collection;
 import java.util.HashSet;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -46,8 +47,7 @@ public class ScheduleItem {
 	private Schedule schedule;
 
 	@JsonIgnoreProperties(value = { "scheduleItem" }, allowSetters = true)
-	@OneToMany() // Don't allow cascade so updates to production happens only through
-					// ProductionRest
+	@OneToMany(cascade=CascadeType.ALL)
 	@JoinColumn(name = "schedule_item_id")
 	private Collection<Production> productions = new HashSet<Production>();
 

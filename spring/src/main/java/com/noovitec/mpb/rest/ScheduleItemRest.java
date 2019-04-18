@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.noovitec.mpb.entity.Component;
 import com.noovitec.mpb.entity.Item;
 import com.noovitec.mpb.entity.ItemComponent;
+import com.noovitec.mpb.entity.Production;
 import com.noovitec.mpb.entity.ScheduleItem;
 import com.noovitec.mpb.repo.ComponentRepo;
 import com.noovitec.mpb.repo.ItemRepo;
@@ -57,6 +58,9 @@ class ScheduleItemRest {
 	ResponseEntity<ScheduleItem> post(@RequestBody ScheduleItem scheduleItem) {
 		if (scheduleItem == null) {
 			scheduleItem = new ScheduleItem();
+		}
+		for(Production production: scheduleItem.getProductions()) {
+			production.setScheduleItem(scheduleItem);
 		}
 		//Get this before calling save.
 		Long existingUnitsScheduled = scheduleItemRepo.getScheduledUnits(scheduleItem.getId());
