@@ -67,7 +67,7 @@
                 </b-col>
                 <b-col cols="4">
                     <label class="top-label">Units Scheduled:</label>
-                    <input class="form-control" type="number" min="0" :max="maxItems" v-model="modalData.scheduleItem.unitsScheduled">
+                    <input class="form-control" type="tel" @input="validateUnitsScheduled()" v-model="modalData.scheduleItem.unitsScheduled">
                 </b-col>
                 <b-col cols="4">
                     <label class="top-label">Units Available:</label>
@@ -162,8 +162,9 @@ export default {
   },
   methods: {
     validateUnitsScheduled(){
-        // console.log(this.modalData.scheduleItem.unitsScheduled)
-        // this.modalData.scheduleItem.unitsScheduled='';
+        if(this.modalData.scheduleItem.unitsScheduled < 0 || this.modalData.scheduleItem.unitsScheduled > this.maxItems){
+            this.modalData.scheduleItem.unitsScheduled = '';
+        }
     },
     validateUnitsProduced(){
         if(this.modalData.newProduction.unitsProduced<0 || (+this.modalData.scheduleItem.totalProduced + +this.modalData.newProduction.unitsProduced) > this.modalData.scheduleItem.unitsScheduled){
