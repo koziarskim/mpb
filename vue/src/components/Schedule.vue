@@ -14,10 +14,7 @@
         </div>
       </template>
       <template slot="date" slot-scope="row">
-        <span>{{formatDate(row.item.date)}}</span>
-      </template>
-      <template slot="action" slot-scope="row">
-        <b-button @click="showModal(row.item, null, false)">+</b-button>
+          <b-button size="sm" @click.stop="showModal(row.item, null, false)" variant="link">{{formatDate(row.item.date)}}</b-button>
       </template>
     </b-table>
     <b-modal centered v-model="modalVisible" :title="modalData.title" :hide-header="true" :hide-footer="true">
@@ -46,18 +43,9 @@
                 </b-col>
                 <b-col cols="4">
                     <label class="top-label">Item:</label>
-                    <b-select
-                    v-if="!modalData.scheduleItem.id"
-                    option-value="id"
-                    option-text="number"
-                    @change="itemChanged()"
-                    :list="modalData.availableItems"
-                    v-model="modalData.selectedItem"
-                    ></b-select>
-                    <span v-if="modalData.scheduleItem.id">
-                    <br>
-                    {{modalData.selectedItem.number}}
-                    </span>
+                    <b-select v-if="!modalData.scheduleItem.id" option-value="id" option-text="number" @change="itemChanged()"
+                    :list="modalData.availableItems" v-model="modalData.selectedItem"></b-select>
+                    <span v-if="modalData.scheduleItem.id"><br>{{modalData.selectedItem.number}}</span>
                 </b-col>
             </b-row>
             <b-row>
@@ -133,7 +121,6 @@ export default {
         { key: "line6", sortable: false, label: "Line 6" },
         { key: "line7", sortable: false, label: "Line 7" },
         { key: "line8", sortable: false, label: "Line 8" },
-        { key: "action", sortable: false, label: "Action" }
       ]
     };
   },
@@ -188,7 +175,7 @@ export default {
                 if (a.finishTime > b.finishTime) {return -1;}
                 return 0;});
             this.modalData.newProduction = {unitsProduced: (+this.modalData.scheduleItem.unitsScheduled - +this.modalData.scheduleItem.totalProduced),
-            finishTime : this.modalData.newProduction.finishTime};
+            finishTime : moment().format("hh:mm")};
         });
     },
     getSchedules() {
@@ -307,7 +294,7 @@ export default {
       this.modalVisible = !this.modalVisible;
       if(scheduleItem){
         this.modalData.newProduction.unitsProduced = +this.modalData.scheduleItem.unitsScheduled - +this.modalData.scheduleItem.totalProduced;
-        this.modalData.newProduction.finishTime = "18:00:00";
+        this.modalData.newProduction.finishTime = moment().format("hh:mm");
       }
       this.modalData.scheduleItem.productions.sort(function(a, b){  
                 if (a.finishTime < b.finishTime) {return 1;}
