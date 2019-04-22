@@ -74,7 +74,7 @@
             <br/><br/>
             <div class="d-flex flex-row">
                 <span>Produced:</span>
-                <input style="width:135px" class="form-control" type="tel" @input="validateUnitsProduced()" v-model="modalData.newProduction.unitsProduced"/>
+                <input style="width:135px" class="form-control" type="tel" v-model="modalData.newProduction.unitsProduced"/>
                 <label>@</label>
                 <input style="width:135px" class="form-control" type="time" v-model="modalData.newProduction.finishTime" />
                 <a href="#" @click="addProduction()">(+)</a>
@@ -151,6 +151,11 @@ export default {
   methods: {
     addProduction(){
         if(!this.modalData.newProduction.unitsProduced || this.modalData.newProduction.unitsProduced <=0){
+            alert("Units produced must be positive");
+            return;
+        }
+        if(this.modalData.newProduction.unitsProduced<0 || (+this.modalData.scheduleItem.totalProduced + +this.modalData.newProduction.unitsProduced) > this.modalData.scheduleItem.unitsScheduled){
+            alert("Units produced cannot be more that scheduled");
             return;
         }
         var production = {
@@ -300,16 +305,6 @@ export default {
                 if (a.finishTime < b.finishTime) {return 1;}
                 if (a.finishTime > b.finishTime) {return -1;}
                 return 0;});
-    },
-    validateUnitsScheduled(){
-        if(this.modalData.scheduleItem.unitsScheduled < 0 || this.modalData.scheduleItem.unitsScheduled > this.maxItems){
-            this.modalData.scheduleItem.unitsScheduled = '';
-        }
-    },
-    validateUnitsProduced(){
-        if(this.modalData.newProduction.unitsProduced<0 || (+this.modalData.scheduleItem.totalProduced + +this.modalData.newProduction.unitsProduced) > this.modalData.scheduleItem.unitsScheduled){
-            this.modalData.newProduction.unitsProduced='';
-        }
     },
     validateModal() {
         if (!this.modalData.scheduleItem.startTime || !this.modalData.selectedLine || !this.modalData.selectedItem) {
