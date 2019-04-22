@@ -17,7 +17,7 @@
           <b-button size="sm" @click.stop="showModal(row.item, null, false)" variant="link">{{formatDate(row.item.date)}}</b-button>
       </template>
     </b-table>
-    <a href="#" @click="previousDays()"><< Previous 7 days</a> | <a href="#" @click="nextDays()">Next 7 days >></a>
+    <a href="#" @click="previousDays()">Previous 7 days</a> | <a href="#" @click="nextDays()">Next 7 days</a>
     <b-modal centered v-model="modalVisible" :title="modalData.title" :hide-header="true" :hide-footer="true">
       <b-row>
         <b-col>
@@ -192,6 +192,10 @@ export default {
         });
     },
     deleteScheduleItem(scheduleItem_id) {
+      if(this.modalData.scheduleItem.productions.length > 0){
+          alert("Already in production")
+          return;
+      }
       http
         .delete("/scheduleItem/" + scheduleItem_id)
         .then(response => {

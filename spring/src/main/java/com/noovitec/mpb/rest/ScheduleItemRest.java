@@ -95,6 +95,9 @@ class ScheduleItemRest {
 				component.addUnitsReserved(componentUnits * (-1));
 				componentRepo.save(component);
 			}
+			item.addUnitsScheduled(scheduleItem.getUnitsScheduled() * (-1));
+			itemRepo.save(item);
+
 		}
 		scheduleItemRepo.deleteById(id);
 		return ResponseEntity.ok().build();
