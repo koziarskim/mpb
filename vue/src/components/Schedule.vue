@@ -56,7 +56,7 @@
                 </b-col>
                 <b-col cols="4">
                     <label class="top-label">Units Scheduled:</label>
-                    <input class="form-control" type="tel" @input="validateUnitsScheduled()" v-model="modalData.scheduleItem.unitsScheduled">
+                    <input class="form-control" type="tel" v-model="modalData.scheduleItem.unitsScheduled">
                 </b-col>
                 <b-col cols="4">
                     <label class="top-label">Units Available:</label>
@@ -149,16 +149,6 @@ export default {
     }
   },
   methods: {
-    validateUnitsScheduled(){
-        if(this.modalData.scheduleItem.unitsScheduled < 0 || this.modalData.scheduleItem.unitsScheduled > this.maxItems){
-            this.modalData.scheduleItem.unitsScheduled = '';
-        }
-    },
-    validateUnitsProduced(){
-        if(this.modalData.newProduction.unitsProduced<0 || (+this.modalData.scheduleItem.totalProduced + +this.modalData.newProduction.unitsProduced) > this.modalData.scheduleItem.unitsScheduled){
-            this.modalData.newProduction.unitsProduced='';
-        }
-    },
     addProduction(){
         if(!this.modalData.newProduction.unitsProduced || this.modalData.newProduction.unitsProduced <=0){
             return;
@@ -297,7 +287,8 @@ export default {
       this.modalData.schedule = schedule;
       this.modalData.scheduleItem = scheduleItem
         ? JSON.parse(JSON.stringify(scheduleItem))
-        : { startTime: "06:00:00" };
+        : { startTime: "06:00:00",
+          productions: [] };
       this.modalData.tempUnitsScheduled = this.modalData.scheduleItem.unitsScheduled;
       this.modalData.productionMode = productionMode;
       this.modalVisible = !this.modalVisible;
@@ -310,25 +301,46 @@ export default {
                 if (a.finishTime > b.finishTime) {return -1;}
                 return 0;});
     },
+    validateUnitsScheduled(){
+        if(this.modalData.scheduleItem.unitsScheduled < 0 || this.modalData.scheduleItem.unitsScheduled > this.maxItems){
+            this.modalData.scheduleItem.unitsScheduled = '';
+        }
+    },
+    validateUnitsProduced(){
+        if(this.modalData.newProduction.unitsProduced<0 || (+this.modalData.scheduleItem.totalProduced + +this.modalData.newProduction.unitsProduced) > this.modalData.scheduleItem.unitsScheduled){
+            this.modalData.newProduction.unitsProduced='';
+        }
+    },
     validateModal() {
-      if (
-        !this.modalData.scheduleItem.startTime ||
-        !this.modalData.selectedLine ||
-        !this.modalData.selectedItem
-      ) {
-        alert("Time, Line and Item must be selected");
-        return;
-      }
+        if (!this.modalData.scheduleItem.startTime || !this.modalData.selectedLine || !this.modalData.selectedItem) {
+            alert("Time, Line and Item must be selected");
+            return;
+        }
+        if(this.modalData.scheduleItem.unitsScheduled < 0 || this.modalData.scheduleItem.unitsScheduled > this.maxItems){
+            alert("Units scheduled cannot exceed available");
+            return;
+        }
+        if(this.modalData.scheduleItem.totalProduced > 0 && this.modalData.scheduleItem.unitsScheduled < this.modalData.scheduleItem.totalProduced){
+            alert("Units scheduled cannot be less that total produced");
+            return;
+        }
+        return true;
     },
     saveModal(e) {
-      this.validateModal();
-      if (this.modalData.schedule.id) {
-        this.bindToData(this.modalData.schedule);
-      } else {
-        this.saveSchedule(this.modalData.schedule).then(r => {
-          this.bindToData(r.data);
-        });
-      }
+        if(!this.validateModal()){
+            return;
+        }
+        if (this.modalData.schedule.id) {
+            this.bindToData(this.modalData.schedule);
+            this.saveScheduleItem(this.modalData.scheduleItem);
+            this.modalVisible = false;
+        } else {
+            this.saveSchedule(this.modalData.schedule).then(r => {
+            this.bindToData(r.data);
+            this.saveScheduleItem(this.modalData.scheduleItem);
+            this.modalVisible = false;
+            });
+        }
     },
     bindToData(schedule) {
       this.modalData.scheduleItem.line = {
@@ -340,8 +352,6 @@ export default {
       this.modalData.scheduleItem.schedule = {
         id: schedule.id
       };
-      this.saveScheduleItem(this.modalData.scheduleItem);
-      this.modalVisible = false;
     },
     closeModal() {
       this.modalVisible = false;
