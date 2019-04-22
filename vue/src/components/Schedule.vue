@@ -255,6 +255,10 @@ export default {
             alert("Units produced cannot be more that scheduled");
             return;
         }
+        if(!this.modalData.newProduction.finishTime){
+            alert("Enter time");
+            return;
+        }
         var production = {
                 scheduleItem: {id: this.modalData.scheduleItem.id},
                 unitsProduced: this.modalData.newProduction.unitsProduced,
