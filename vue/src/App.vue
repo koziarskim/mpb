@@ -12,7 +12,7 @@
           <b-nav-item v-on:click="goTo('/purchaseList')" v-if="getUserContext().hasRole('POADMIN')">Purchase</b-nav-item>
           <b-nav-item v-on:click="goTo('/receivingList')" v-if="getUserContext().hasRole('INVENTORY')">Receiving</b-nav-item>
           <b-nav-item v-on:click="goTo('/schedule')">Schedule</b-nav-item>
-          <b-nav-item v-on:click="goTo('/production')">Production</b-nav-item>
+          <!-- <b-nav-item v-on:click="goTo('/production')">Production</b-nav-item> -->
         </b-navbar-nav>
         <b-navbar-nav class="ml-auto">
           <span v-if="hideNavBar()" style="color: white; margin-right: 455px; padding-top: 7px;">Marketplace Brands</span>
