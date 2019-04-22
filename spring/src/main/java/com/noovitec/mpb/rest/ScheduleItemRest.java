@@ -69,6 +69,8 @@ class ScheduleItemRest {
 			Item item = itemRepo.getOne(result.getItem().getId());
 			//Positive or negative
 			Long itemUnits = result.getUnitsScheduled() - (existingUnitsScheduled==null?0L:existingUnitsScheduled);
+			item.addUnitsScheduled(itemUnits);
+			itemRepo.save(item);
 			for (ItemComponent ic : item.getItemComponents()) {
 				//Positive or negative
 				Long componentUnits = ic.getUnits() * itemUnits;

@@ -19,10 +19,12 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.noovitec.mpb.entity.Component;
+import com.noovitec.mpb.entity.Item;
 import com.noovitec.mpb.entity.ItemComponent;
 import com.noovitec.mpb.entity.Production;
 import com.noovitec.mpb.entity.ScheduleItem;
 import com.noovitec.mpb.repo.ComponentRepo;
+import com.noovitec.mpb.repo.ItemRepo;
 import com.noovitec.mpb.repo.ProductionRepo;
 import com.noovitec.mpb.repo.ScheduleItemRepo;
 
@@ -37,6 +39,8 @@ class ProductionRest {
 	private ScheduleItemRepo scheduleItemRepo;
 	@Autowired
 	private ComponentRepo componentRepo;
+	@Autowired
+	private ItemRepo itemRepo;
 
 	public ProductionRest(ProductionRepo productionRepo) {
 		this.productionRepo = productionRepo;
@@ -77,6 +81,10 @@ class ProductionRest {
 			}
 			componentRepo.save(component);
 		}
+		//update item.unitsOnStack, item.unitsInProduction, item.unitsScheduled
+		Item item = itemRepo.getOne(scheduleItem.getItem().getId());
+		item.addUnitsOnStack(result.getUnitsProduced());
+		itemRepo.save(item);
 		return ResponseEntity.ok().body(result);
 	}
 
