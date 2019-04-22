@@ -149,39 +149,6 @@ export default {
     }
   },
   methods: {
-    addProduction(){
-        if(!this.modalData.newProduction.unitsProduced || this.modalData.newProduction.unitsProduced <=0){
-            alert("Units produced must be positive");
-            return;
-        }
-        if(this.modalData.newProduction.unitsProduced<0 || (+this.modalData.scheduleItem.totalProduced + +this.modalData.newProduction.unitsProduced) > this.modalData.scheduleItem.unitsScheduled){
-            alert("Units produced cannot be more that scheduled");
-            return;
-        }
-        var production = {
-                scheduleItem: {id: this.modalData.scheduleItem.id},
-                unitsProduced: this.modalData.newProduction.unitsProduced,
-                finishTime: this.modalData.newProduction.finishTime
-            }
-        this.saveProduction(production).then(r=>{
-            this.modalData.scheduleItem.totalProduced += +this.modalData.newProduction.unitsProduced;
-            this.modalData.scheduleItem.productions.push(r.data);
-            this.modalData.scheduleItem.productions.sort(function(a, b){  
-                if (a.finishTime < b.finishTime) {return 1;}
-                if (a.finishTime > b.finishTime) {return -1;}
-                return 0;});
-            this.modalData.newProduction = {unitsProduced: (+this.modalData.scheduleItem.unitsScheduled - +this.modalData.scheduleItem.totalProduced),
-            finishTime : moment().format("hh:mm")};
-        });
-    },
-    nextDays(){
-         this.scheduleDate = moment(this.scheduleDate).add(7, 'days').utc().format("YYYY-MM-DD");
-         this.getSchedules();
-    },
-    previousDays(){
-         this.scheduleDate = moment(this.scheduleDate).subtract(7, 'days').utc().format("YYYY-MM-DD");
-         this.getSchedules();
-    },
     getSchedules() {
       http
         .get("/schedule/date/" + this.scheduleDate)
@@ -279,6 +246,31 @@ export default {
           console.log("API error: " + e);
         });
     },
+    addProduction(){
+        if(!this.modalData.newProduction.unitsProduced || this.modalData.newProduction.unitsProduced <=0){
+            alert("Units produced must be positive");
+            return;
+        }
+        if(this.modalData.newProduction.unitsProduced<0 || (+this.modalData.scheduleItem.totalProduced + +this.modalData.newProduction.unitsProduced) > this.modalData.scheduleItem.unitsScheduled){
+            alert("Units produced cannot be more that scheduled");
+            return;
+        }
+        var production = {
+                scheduleItem: {id: this.modalData.scheduleItem.id},
+                unitsProduced: this.modalData.newProduction.unitsProduced,
+                finishTime: this.modalData.newProduction.finishTime
+            }
+        this.saveProduction(production).then(r=>{
+            this.modalData.scheduleItem.totalProduced += +this.modalData.newProduction.unitsProduced;
+            this.modalData.scheduleItem.productions.push(r.data);
+            this.modalData.scheduleItem.productions.sort(function(a, b){  
+                if (a.finishTime < b.finishTime) {return 1;}
+                if (a.finishTime > b.finishTime) {return -1;}
+                return 0;});
+            this.modalData.newProduction = {unitsProduced: (+this.modalData.scheduleItem.unitsScheduled - +this.modalData.scheduleItem.totalProduced),
+            finishTime : moment().format("hh:mm")};
+        });
+    },
     showModal(schedule, scheduleItem, productionMode) {
       this.getAvailableItems(schedule.date).then(itemDtos => {
         this.modalData.availableItems = itemDtos;
@@ -290,10 +282,7 @@ export default {
       });
       this.modalData.title = "Schedule for: " + schedule.date;
       this.modalData.schedule = schedule;
-      this.modalData.scheduleItem = scheduleItem
-        ? JSON.parse(JSON.stringify(scheduleItem))
-        : { startTime: "06:00:00",
-          productions: [] };
+      this.modalData.scheduleItem = scheduleItem ? JSON.parse(JSON.stringify(scheduleItem)) : { startTime: "06:00:00", productions: [] };
       this.modalData.tempUnitsScheduled = this.modalData.scheduleItem.unitsScheduled;
       this.modalData.productionMode = productionMode;
       this.modalVisible = !this.modalVisible;
@@ -321,6 +310,17 @@ export default {
         }
         return true;
     },
+    bindToData(schedule) {
+      this.modalData.scheduleItem.line = {
+        id: this.modalData.selectedLine.id
+      };
+      this.modalData.scheduleItem.item = {
+        id: this.modalData.selectedItem.id
+      };
+      this.modalData.scheduleItem.schedule = {
+        id: schedule.id
+      };
+    },
     saveModal(e) {
         if(!this.validateModal()){
             return;
@@ -337,17 +337,6 @@ export default {
             });
         }
     },
-    bindToData(schedule) {
-      this.modalData.scheduleItem.line = {
-        id: this.modalData.selectedLine.id
-      };
-      this.modalData.scheduleItem.item = {
-        id: this.modalData.selectedItem.id
-      };
-      this.modalData.scheduleItem.schedule = {
-        id: schedule.id
-      };
-    },
     closeModal() {
       this.modalVisible = false;
       this.getSchedules();
@@ -359,8 +348,13 @@ export default {
       this.deleteScheduleItem(si.id);
       this.modalVisible = false;
     },
-    addScheduleItem(row) {
-      console.log(row);
+    nextDays(){
+         this.scheduleDate = moment(this.scheduleDate).add(7, 'days').utc().format("YYYY-MM-DD");
+         this.getSchedules();
+    },
+    previousDays(){
+         this.scheduleDate = moment(this.scheduleDate).subtract(7, 'days').utc().format("YYYY-MM-DD");
+         this.getSchedules();
     },
     formatDate(date) {
       return moment(date)
