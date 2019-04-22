@@ -3,7 +3,7 @@
     <div class="d-flex justify-content-between align-items-center">
       <span style="text-align: left; font-size: 18px; font-weight: bold">Scheduling</span>
     </div>
-    <b-table :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="schedules" :fields="fields">
+    <b-table class="table table-bordered" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="schedules" :fields="fields">
       <template slot="line1" slot-scope="row">
         <div v-for="scheduleItem in getScheduleItemsByLine(row.field.key, row.item.scheduleItems)" :key="scheduleItem.id">
           <span>
@@ -14,7 +14,7 @@
         </div>
       </template>
       <template slot="date" slot-scope="row">
-          <b-button size="sm" @click.stop="showModal(row.item, null, false)" variant="link">{{formatDate(row.item.date)}}</b-button>
+          <span>{{formatDate(row.item.date)}}</span><b-button size="sm" @click.stop="showModal(row.item, null, false)" variant="link"> (+)</b-button>
       </template>
     </b-table>
     <a href="#" @click="previousDays()"><< Previous 7 days</a> | <a href="#" @click="nextDays()">Next 7 days >></a>
@@ -80,7 +80,7 @@
                 <a href="#" @click="addProduction()">(+)</a>
             </div>
             <span v-for="production in modalData.scheduleItem.productions" :key="production.id">
-                <span>Produced: {{production.unitsProduced}} @ {{production.finishTime}}</span><br/>
+                <span>Produced: {{production.unitsProduced}} @ {{formatTime(production.finishTime)}}</span><br/>
             </span>
         </div>
       </div>
