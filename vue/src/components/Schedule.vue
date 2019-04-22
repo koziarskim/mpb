@@ -7,8 +7,8 @@
       <template slot="line1" slot-scope="row">
         <div v-for="scheduleItem in getScheduleItemsByLine(row.field.key, row.item.scheduleItems)" :key="scheduleItem.id">
           <span>
-              <a href="#" @click="showModal(row.item, scheduleItem, false)">{{scheduleItem.item.number}}</a> 
-              {{formatTime(scheduleItem.startTime)}} {{scheduleItem.unitsScheduled}} 
+              {{scheduleItem.item.number}}
+              <a href="#" @click="showModal(row.item, scheduleItem, false)">{{formatTime(scheduleItem.startTime)}}</a> {{scheduleItem.unitsScheduled}} 
               <a href="#" @click="showModal(row.item, scheduleItem, true)">{{scheduleItem.totalProduced}}</a>
             </span>
         </div>
@@ -17,6 +17,7 @@
           <b-button size="sm" @click.stop="showModal(row.item, null, false)" variant="link">{{formatDate(row.item.date)}}</b-button>
       </template>
     </b-table>
+    <a href="#" @click="previousDays()"><< Previous 7 days</a> | <a href="#" @click="nextDays()">Next 7 days >></a>
     <b-modal centered v-model="modalVisible" :title="modalData.title" :hide-header="true" :hide-footer="true">
       <b-row>
         <b-col>
@@ -177,6 +178,14 @@ export default {
             this.modalData.newProduction = {unitsProduced: (+this.modalData.scheduleItem.unitsScheduled - +this.modalData.scheduleItem.totalProduced),
             finishTime : moment().format("hh:mm")};
         });
+    },
+    nextDays(){
+         this.scheduleDate = moment(this.scheduleDate).add(7, 'days').utc().format("YYYY-MM-DD");
+         this.getSchedules();
+    },
+    previousDays(){
+         this.scheduleDate = moment(this.scheduleDate).subtract(7, 'days').utc().format("YYYY-MM-DD");
+         this.getSchedules();
     },
     getSchedules() {
       http
