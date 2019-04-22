@@ -17,13 +17,17 @@ public class ItemDto {
 	private String status;
 	private int unitsReady = 0;
 	private int unitsInTransit = 0;
+	private int unitsOnStack = 0;
+	private int unitsScheduled = 0;
 	
-	public ItemDto(Long id, String number, String name, String brand, String category, String status) {
+	public ItemDto(Long id, String number, String name, String brand, String category, String status, Long unitsOnStack, Long unitsScheduled) {
 		this.id = id;
 		this.number = number;
 		this.name = name;
 		this.brand = brand;
 		this.category = category;
 		this.status = status;
+		this.unitsOnStack = unitsOnStack==null?0:unitsOnStack.intValue();
+		this.unitsScheduled = unitsScheduled==null?0:unitsScheduled.intValue();
 	}
 }

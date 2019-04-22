@@ -84,6 +84,7 @@ class ProductionRest {
 		//update item.unitsOnStack, item.unitsInProduction, item.unitsScheduled
 		Item item = itemRepo.getOne(scheduleItem.getItem().getId());
 		item.addUnitsOnStack(result.getUnitsProduced());
+		item.addUnitsScheduled(result.getUnitsProduced() * (-1));
 		itemRepo.save(item);
 		return ResponseEntity.ok().body(result);
 	}
