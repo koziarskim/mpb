@@ -137,7 +137,6 @@ class ItemRest {
 				Long key = transitComponents.get(ic.getComponent().getId());
 				int currentItemsInTransit = (int) (key==null?0:key);
 				int currentItemsReady = (unitsAvailable + currentItemsInTransit)/ic.getUnits();
-//				int totalUnitsInTransit = 
 				if(itemsReady == 0 || currentItemsReady < itemsReady) {
 					itemsReady = currentItemsReady;
 				}

@@ -13,6 +13,15 @@
             </span>
         </div>
       </template>
+      <template slot="line2" slot-scope="row">
+        <div v-for="scheduleItem in getScheduleItemsByLine(row.field.key, row.item.scheduleItems)" :key="scheduleItem.id">
+          <span>
+              {{scheduleItem.item.number}}
+              <a href="#" @click="showModal(row.item, scheduleItem, false)">{{formatTime(scheduleItem.startTime)}}</a> {{scheduleItem.unitsScheduled}} 
+              <a href="#" @click="showModal(row.item, scheduleItem, true)">{{scheduleItem.totalProduced}}</a>
+            </span>
+        </div>
+      </template>
       <template slot="date" slot-scope="row">
           <b-button size="sm" @click.stop="showModal(row.item, null, false)" variant="link">{{formatDate(row.item.date)}}</b-button>
       </template>
@@ -47,10 +56,10 @@
                     <b-select v-if="!modalData.scheduleItem.id" option-value="id" option-text="number" :list="modalData.availableItems" v-model="modalData.selectedItem"></b-select>
                     <span v-if="modalData.scheduleItem.id"><br>{{modalData.selectedItem.number}}</span>
                 </b-col>
-                <b-col cols="4">
+                <!-- <b-col cols="4">
                     <label class="top-label">Units Transit:</label>
                     <span><br>{{this.modalData.scheduleItem.unitsInTransit}}</span>
-                </b-col>
+                </b-col> -->
             </b-row>
             <b-row>
                 <b-col cols="4">
@@ -62,7 +71,7 @@
                     <input class="form-control" type="tel" v-model="modalData.scheduleItem.unitsScheduled">
                 </b-col>
                 <b-col cols="4">
-                    <label class="top-label">Units Available:</label>
+                    <label class="top-label">Ready To Schedule:</label>
                     <span><br>{{maxItems}}</span>
                 </b-col>
             </b-row>
