@@ -44,9 +44,12 @@
                 </b-col>
                 <b-col cols="4">
                     <label class="top-label">Item:</label>
-                    <b-select v-if="!modalData.scheduleItem.id" option-value="id" option-text="number" @change="itemChanged()"
-                    :list="modalData.availableItems" v-model="modalData.selectedItem"></b-select>
+                    <b-select v-if="!modalData.scheduleItem.id" option-value="id" option-text="number" :list="modalData.availableItems" v-model="modalData.selectedItem"></b-select>
                     <span v-if="modalData.scheduleItem.id"><br>{{modalData.selectedItem.number}}</span>
+                </b-col>
+                <b-col cols="4">
+                    <label class="top-label">Units Transit:</label>
+                    <span><br>{{this.modalData.scheduleItem.unitsInTransit}}</span>
                 </b-col>
             </b-row>
             <b-row>
@@ -60,10 +63,7 @@
                 </b-col>
                 <b-col cols="4">
                     <label class="top-label">Units Available:</label>
-                    <span>
-                    <br>
-                    {{maxItems}}
-                    </span>
+                    <span><br>{{maxItems}}</span>
                 </b-col>
             </b-row>
         </div>
@@ -131,9 +131,7 @@ export default {
         var sidto = this.modalData.availableItems.find(
           dto => dto.id == this.modalData.scheduleItem.item.id
         );
-        return (
-          +this.modalData.tempUnitsScheduled + +(sidto ? sidto.unitsReady : 0)
-        );
+        return (+this.modalData.tempUnitsScheduled + +(sidto ? sidto.unitsReady : 0));
       }
       return this.modalData.selectedItem.unitsReady;
     }
@@ -145,6 +143,7 @@ export default {
       }
       if (!this.modalData.scheduleItem.id) {
         this.modalData.scheduleItem.unitsScheduled = new_value.unitsReady;
+        this.modalData.scheduleItem.unitsInTransit = new_value.unitsInTransit;
       }
     }
   },
