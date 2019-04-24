@@ -8,8 +8,8 @@
         <div v-for="scheduleItem in getScheduleItemsByLine(row.field.key, row.item.scheduleItems)" :key="scheduleItem.id">
           <span>
               {{scheduleItem.item.number}}
-              <a href="#" @click="showEditModal(row.item, scheduleItem, false)">{{formatTime(scheduleItem.startTime)}}</a> {{scheduleItem.unitsScheduled}} 
-              <a href="#" @click="showEditModal(row.item, scheduleItem, true)">{{scheduleItem.totalProduced}}</a>
+              <a href="#" @click="showEditModal(row.item, scheduleItem)">{{formatTime(scheduleItem.startTime)}}</a> {{scheduleItem.unitsScheduled}} 
+              <a href="#" @click="showEditModal(row.item, scheduleItem)">{{scheduleItem.totalProduced}}</a>
             </span>
         </div>
       </template>
@@ -17,8 +17,8 @@
         <div v-for="scheduleItem in getScheduleItemsByLine(row.field.key, row.item.scheduleItems)" :key="scheduleItem.id">
           <span>
               {{scheduleItem.item.number}}
-              <a href="#" @click="showEditModal(row.item, scheduleItem, false)">{{formatTime(scheduleItem.startTime)}}</a> {{scheduleItem.unitsScheduled}} 
-              <a href="#" @click="showEditModal(row.item, scheduleItem, true)">{{scheduleItem.totalProduced}}</a>
+              <a href="#" @click="showEditModal(row.item, scheduleItem)">{{formatTime(scheduleItem.startTime)}}</a> {{scheduleItem.unitsScheduled}} 
+              <a href="#" @click="showEditModal(row.item, scheduleItem)">{{scheduleItem.totalProduced}}</a>
             </span>
         </div>
       </template>
@@ -28,10 +28,10 @@
     </b-table>
     <a href="#" @click="previousDays()">Previous 7 days</a> | <a href="#" @click="nextDays()">Next 7 days</a>
     <div v-if="scheduleModalVisible">
-        <schedule-modal v-on:closeModal="closeScheduleModal()" :scheduleItem="scheduleItem"></schedule-modal>
+        <schedule-modal v-on:closeModal="closeScheduleModal()" :schedule="schedule" :scheduleItem="scheduleItem"></schedule-modal>
     </div>
     <div v-if="productionModalVisible">
-        <schedule-modal v-on:closeModal="closeProductionModal()" :scheduleItem="scheduleItem"></schedule-modal>
+        <schedule-modal v-on:closeModal="closeProductionModal()" :schedule="schedule" :scheduleItem="scheduleItem"></schedule-modal>
     </div>
   </b-container>
 </template>
@@ -44,6 +44,7 @@ export default {
   data() {
     return {
       scheduleItem: {},
+      schedule: {},
       schedules: [{ id: 1 }],
       scheduleModalVisible: false,
       productionModalVisible: false,
@@ -143,23 +144,24 @@ export default {
             finishTime : moment().format("hh:mm")};
         });
     },
-    showNewModal(schedule){
-        this.scheduleItem = {schedule: schedule},
+    showModal(){
         this.scheduleModalVisible = true;
     },
-    showEditModal(scheduleItem, productionMode) {
-      this.getAvailableItems(schedule.date).then(itemDtos => {
-        this.modalData.availableItems = itemDtos;
-        this.modalData.selectedItem = scheduleItem ? scheduleItem.item : {};
-      });
-      this.getAvailableLines().then(lines => {
-        this.modalData.availableLines = lines;
-        this.modalData.selectedLine = scheduleItem ? scheduleItem.line : {};
-      });
-      this.getAvailableSales(scheduleItem?scheduleItem.item.id:null).then(sales => {
-        this.modalData.availableSales = sales;
-        this.modalData.selectedSale = scheduleItem ? scheduleItem.sale : {};
-      });
+    showNewModal(schedule){
+        if(!schedule.id){
+            this.saveSchedule(schedule).then(r=>{
+                this.schedule = r.data;
+                this.showModal();
+            })
+        }else{
+            this.schedule = schedule;
+            this.showModal();
+        }
+    },
+    showEditModal(schedule, scheduleItem) {
+        this.schedule = schedule;
+        this.scheduleItem = scheduleItem;
+        this.showModal();
     //   this.modalData.title = "Schedule for: " + schedule.date;
     //   this.modalData.schedule = schedule;
     //   this.modalData.scheduleItem = scheduleItem ? JSON.parse(JSON.stringify(scheduleItem)) : { startTime: "06:00:00", productions: [] };
@@ -212,7 +214,18 @@ export default {
             });
         }
     },
+    saveSchedule(schedule) {
+      return http
+        .post("/schedule", schedule)
+        .then(response => {
+          return response;
+        })
+        .catch(e => {
+          console.log("API error: " + e);
+        });
+    },
     closeScheduleModal() {
+      this.scheduleItem = {},
       this.scheduleModalVisible = false;
       this.getSchedules();
     },

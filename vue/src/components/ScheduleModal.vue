@@ -3,7 +3,7 @@
     <b-modal centered size="lg" v-model="visible" :hide-header="true" :hide-footer="true">
       <b-row>
         <b-col>
-          <span>Schedule for: {{scheduleItem.schedule.date}}</span>
+          <span>Schedule for: {{schedule.date}}</span>
         </b-col>
         <b-col>
           <div style="text-align: right;">
@@ -54,6 +54,7 @@ export default {
   name: "schedule-modal",
   props: {
     scheduleItem: Object,
+    schedule: Object
   },
   data() {
     return {
@@ -69,14 +70,14 @@ export default {
   },
   computed: {},
   watch: {
-      item(new_value, old_value){
-        if (!new_value.id || new_value.id == old_value.id) {
-            return;
-        }
-        if (this.item.id) {
-            this.getAvailableSaleItems(this.item.id);
-        }
+    item(new_value, old_value) {
+      if (!new_value || !new_value.id || new_value.id == old_value.id) {
+        return;
       }
+      if (this.item.id) {
+        this.getAvailableSaleItems(this.item.id);
+      }
+    }
   },
   methods: {
     getAvailableSaleItems(item_id) {
@@ -87,6 +88,7 @@ export default {
         .get("/saleItem/item/" + item_id)
         .then(response => {
           this.availableSaleItems = response.data;
+          this.saleItem = this.scheduleItem.saleItem;
         })
         .catch(e => {
           console.log("API error: " + e);
@@ -97,6 +99,7 @@ export default {
         .get("/item/eta/" + date)
         .then(response => {
           this.availableItems = response.data;
+          this.item = this.scheduleItem.item;
         })
         .catch(e => {
           console.log("API error: " + e);
@@ -116,16 +119,7 @@ export default {
             { id: 7, number: 7 },
             { id: 8, number: 8 }
           ];
-        })
-        .catch(e => {
-          console.log("API error: " + e);
-        });
-    },
-    saveSchedule(schedule) {
-      return http
-        .post("/schedule", schedule)
-        .then(response => {
-          return response;
+          this.line = this.scheduleItem.line;
         })
         .catch(e => {
           console.log("API error: " + e);
@@ -141,39 +135,26 @@ export default {
           console.log("API error: " + e);
         });
     },
-    bindToModel(){
-      this.scheduleItem.line = {id: this.line.id, number: this.line.number};
-      this.scheduleItem.item = {id: this.item.id};
-      this.scheduleItem.saleItem = {id: this.saleItem.id};
-    },
     saveModal() {
-      if(!this.scheduleItem.schedule.id){
-          this.saveSchedule({date: this.scheduleItem.schedule.date}).then(r=>{
-              this.scheduleItem.schedule = {id: r.data.id};
-              this.bindToModel();
-              this.saveScheduleItem();
-          })
-      }else{
-          this.bindToModel();
-          this.saveScheduleItem();
-      }
-    },
-    saveScheduleItem(){
-        http
+      this.scheduleItem.line = { id: this.line.id, number: this.line.number };
+      this.scheduleItem.item = { id: this.item.id };
+      this.scheduleItem.saleItem = { id: this.saleItem.id };
+      this.scheduleItem.schedule = { id: this.schedule.id };
+      http
         .post("/scheduleItem", this.scheduleItem)
         .then(response => {
-            this.closeModal();
+          this.closeModal();
         })
         .catch(e => {
           console.log("API error: " + e);
         });
-    },    
+    },
     closeModal() {
       this.$emit("closeModal");
     }
   },
   mounted() {
-    this.getAvailableItems(this.scheduleItem.schedule.date);
+    this.getAvailableItems(this.schedule.date);
     this.getAvailableLines();
   }
 };
