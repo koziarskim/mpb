@@ -7,7 +7,7 @@
         </b-col>
         <b-col>
           <div style="text-align: right;">
-            <b-button style="margin: 0 2px 0 2px" @click="deleteModal()">Delete</b-button>
+            <b-button v-if="this.scheduleItem.id" style="margin: 0 2px 0 2px" @click="deleteModal()">Delete</b-button>
             <b-button style="margin: 0 2px 0 2px" @click="closeModal()">Close</b-button>
             <b-button style="margin: 0 2px 0 2px" @click="saveModal()" variant="success">Save</b-button>
           </div>
@@ -147,6 +147,16 @@ export default {
         })
         .catch(e => {
           console.log("API error: " + e);
+        });
+    },
+    deleteModal() {
+      http
+        .delete("/scheduleItem/" + this.scheduleItem.id)
+        .then(response => {
+          this.closeModal();
+        })
+        .catch(e => {
+          console.log("Error post");
         });
     },
     closeModal() {

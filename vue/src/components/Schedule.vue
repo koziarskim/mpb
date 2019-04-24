@@ -89,21 +89,6 @@ export default {
           console.log("API error: " + e);
         });
     },
-
-    deleteScheduleItem(scheduleItem_id) {
-      if(this.modalData.scheduleItem.productions.length > 0){
-          alert("Already in production")
-          return;
-      }
-      http
-        .delete("/scheduleItem/" + scheduleItem_id)
-        .then(response => {
-          this.getSchedules();
-        })
-        .catch(e => {
-          console.log("Error post");
-        });
-    },
     getScheduleItemsByLine(lineNumber, scheduleItems) {
       var lineScheduleItems = [];
       if (scheduleItems) {
@@ -144,38 +129,21 @@ export default {
             finishTime : moment().format("hh:mm")};
         });
     },
-    showModal(){
-        this.scheduleModalVisible = true;
-    },
     showNewModal(schedule){
         if(!schedule.id){
             this.saveSchedule(schedule).then(r=>{
                 this.schedule = r.data;
-                this.showModal();
+                this.scheduleModalVisible = true;
             })
         }else{
             this.schedule = schedule;
-            this.showModal();
+            this.scheduleModalVisible = true;
         }
     },
     showEditModal(schedule, scheduleItem) {
         this.schedule = schedule;
         this.scheduleItem = scheduleItem;
-        this.showModal();
-    //   this.modalData.title = "Schedule for: " + schedule.date;
-    //   this.modalData.schedule = schedule;
-    //   this.modalData.scheduleItem = scheduleItem ? JSON.parse(JSON.stringify(scheduleItem)) : { startTime: "06:00:00", productions: [] };
-    //   this.modalData.tempUnitsScheduled = this.modalData.scheduleItem.unitsScheduled;
-    //   this.modalData.productionMode = productionMode;
-    //   this.scheduleModalVisible = !this.scheduleModalVisible;
-    //   if(scheduleItem){
-    //     this.modalData.newProduction.unitsProduced = +this.modalData.scheduleItem.unitsScheduled - +this.modalData.scheduleItem.totalProduced;
-    //     this.modalData.newProduction.finishTime = moment().format("hh:mm");
-    //   }
-    //   this.modalData.scheduleItem.productions.sort(function(a, b){  
-    //             if (a.finishTime < b.finishTime) {return 1;}
-    //             if (a.finishTime > b.finishTime) {return -1;}
-    //             return 0;});
+        this.scheduleModalVisible = true;
     },
     validateModal() {
         if (!this.modalData.scheduleItem.startTime || !this.modalData.selectedLine || !this.modalData.selectedItem) {
@@ -191,28 +159,6 @@ export default {
             return;
         }
         return true;
-    },
-    bindToData(schedule) {
-      this.modalData.scheduleItem.line = {id: this.modalData.selectedLine.id};
-      this.modalData.scheduleItem.item = {id: this.modalData.selectedItem.id};
-      this.modalData.scheduleItem.sale = {id: this.modalData.selectedSale.id}
-      this.modalData.scheduleItem.schedule = {id: schedule.id};
-    },
-    saveModal(e) {
-        if(!this.validateModal()){
-            return;
-        }
-        if (this.modalData.schedule.id) {
-            this.bindToData(this.modalData.schedule);
-            this.saveScheduleItem(this.modalData.scheduleItem);
-            this.scheduleModalVisible = false;
-        } else {
-            this.saveSchedule(this.modalData.schedule).then(r => {
-                this.bindToData(r.data);
-                this.saveScheduleItem(this.modalData.scheduleItem);
-                this.scheduleModalVisible = false;
-            });
-        }
     },
     saveSchedule(schedule) {
       return http
