@@ -5,9 +5,9 @@
     </div>
     <b-table class="table table-bordered" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="schedules" :fields="fields">
       <template slot="line1" slot-scope="row">
-        <div v-for="scheduleItem in getScheduleItemsByLine(row.field.key, row.item.scheduleItems)" :key="scheduleItem.id">
+        <div v-for="scheduleItem in getScheduleItemsByLine(row.field.key, row.item.scheduleItems)" :key="scheduleItem.id" :style="getColor(scheduleItem.unitsShort)">
           <span>
-              {{scheduleItem.shortUnits}}
+              {{scheduleItem.unitsShort}}
               {{scheduleItem.item.number}}
               <a href="#" @click="showEditModal(row.item, scheduleItem)">{{formatTime(scheduleItem.startTime)}}</a> {{scheduleItem.unitsScheduled}} 
               <a href="#" @click="showEditModal(row.item, scheduleItem)">{{scheduleItem.totalProduced}}</a>
@@ -80,6 +80,12 @@ export default {
   },
   watch: {},
   methods: {
+    getColor(units){
+        if(units<0){
+            return "background-color: #f9b3ae"
+        }
+        return "";
+    },
     getSchedules() {
       http
         .get("/schedule/date/" + this.scheduleDate)
@@ -109,7 +115,7 @@ export default {
             itemDtos.forEach(itemDto=>{
                 schedule.scheduleItems.forEach(scheduleItem=> {
                     if(scheduleItem.item.id == itemDto.id){
-                        scheduleItem.shortUnits = itemDto.unitsReady;
+                        scheduleItem.unitsShort = itemDto.unitsReady;
                     }
                 })
             })

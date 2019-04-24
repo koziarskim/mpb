@@ -60,7 +60,7 @@ public class ScheduleItem {
 	@Transient
 	Long totalProduced;
 	@Transient
-	int shortUnits = 0;
+	int unitsShort = 0;
 
 	public Long getTotalProduced() {
 		Long units = 0L;
