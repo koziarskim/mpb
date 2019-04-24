@@ -51,6 +51,11 @@ public class ScheduleItem {
 	@JoinColumn(name = "schedule_item_id")
 	private Collection<Production> productions = new HashSet<Production>();
 
+	@JsonIgnoreProperties(value = { "saleItems", "purchaseSales" }, allowSetters = true)
+	@ManyToOne()
+	@JoinColumn(name = "sale_item_id", referencedColumnName = "id")
+	private SaleItem saleItem;
+
 	// Transient
 	@Transient
 	Long totalProduced;

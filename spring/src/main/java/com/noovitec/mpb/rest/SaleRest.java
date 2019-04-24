@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.noovitec.mpb.dto.SaleDto;
+import com.noovitec.mpb.dto.SaleItemDto;
 import com.noovitec.mpb.entity.Sale;
 import com.noovitec.mpb.entity.SaleItem;
 import com.noovitec.mpb.repo.SaleRepo;
@@ -49,6 +51,12 @@ class SaleRest {
 	@GetMapping("/sale/purchase/{purchase_id}")
 	Collection<SaleDto> getAllByPurchase(@PathVariable Long purchase_id) {
 		Collection<SaleDto> saleDtos = saleRepo.findAllSalesAndPurchaseSales(purchase_id);
+		return saleDtos;
+	}
+
+	@GetMapping("/saleItem/item/{item_id}")
+	Collection<SaleItemDto> getAllByItem(@PathVariable Long item_id) {
+		Collection<SaleItemDto> saleDtos = saleRepo.findAllByItem(item_id);
 		return saleDtos;
 	}
 

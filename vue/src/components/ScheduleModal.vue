@@ -1,0 +1,183 @@
+<template>
+  <b-container fluid>
+    <b-modal centered size="lg" v-model="visible" :hide-header="true" :hide-footer="true">
+      <b-row>
+        <b-col>
+          <span>Schedule for: {{scheduleItem.schedule.date}}</span>
+        </b-col>
+        <b-col>
+          <div style="text-align: right;">
+            <b-button style="margin: 0 2px 0 2px" @click="deleteModal()">Delete</b-button>
+            <b-button style="margin: 0 2px 0 2px" @click="closeModal()">Close</b-button>
+            <b-button style="margin: 0 2px 0 2px" @click="saveModal()" variant="success">Save</b-button>
+          </div>
+        </b-col>
+      </b-row>
+      <b-col style="text-align: left;">
+        <b-row>
+          <b-col cols="2">
+            <label class="top-label">Line:</label>
+            <b-select option-value="id" option-text="number" :list="availableLines" v-model="line"></b-select>
+          </b-col>
+          <b-col cols="3">
+            <label class="top-label">Item:</label>
+            <b-select option-value="id" option-text="number" :list="availableItems" v-model="item"></b-select>
+          </b-col>
+          <b-col cols="5">
+            <label class="top-label">Sale:</label>
+            <b-select option-value="id" option-text="label" :list="availableSaleItems" v-model="saleItem"></b-select>
+          </b-col>
+        </b-row>
+        <b-row>
+          <b-col cols="4">
+            <label class="top-label">Start:</label>
+            <input class="form-control" type="time" v-model="scheduleItem.startTime">
+          </b-col>
+          <b-col cols="4">
+            <label class="top-label">Units Scheduled:</label>
+            <input class="form-control" type="tel" v-model="scheduleItem.unitsScheduled">
+          </b-col>
+          <b-col cols="4">
+            <label class="top-label">Ready To Schedule:</label>
+          </b-col>
+        </b-row>
+      </b-col>
+    </b-modal>
+  </b-container>
+</template>
+
+<script>
+import http from "../http-common";
+import router from "../router";
+
+export default {
+  name: "schedule-modal",
+  props: {
+    scheduleItem: Object,
+  },
+  data() {
+    return {
+      title: "Testing title",
+      visible: true,
+      availableSaleItems: [], //SaleItemDto
+      saleItem: {},
+      availableItems: [],
+      item: {},
+      availableLines: [],
+      line: {}
+    };
+  },
+  computed: {},
+  watch: {
+      item(new_value, old_value){
+        if (!new_value.id || new_value.id == old_value.id) {
+            return;
+        }
+        if (this.item.id) {
+            this.getAvailableSaleItems(this.item.id);
+        }
+      }
+  },
+  methods: {
+    getAvailableSaleItems(item_id) {
+      if (!item_id) {
+        this.modalData.availableSales = [];
+      }
+      http
+        .get("/saleItem/item/" + item_id)
+        .then(response => {
+          this.availableSaleItems = response.data;
+        })
+        .catch(e => {
+          console.log("API error: " + e);
+        });
+    },
+    getAvailableItems(date) {
+      http
+        .get("/item/eta/" + date)
+        .then(response => {
+          this.availableItems = response.data;
+        })
+        .catch(e => {
+          console.log("API error: " + e);
+        });
+    },
+    getAvailableLines() {
+      http
+        .get("/item")
+        .then(response => {
+          this.availableLines = [
+            { id: 1, number: 1 },
+            { id: 2, number: 2 },
+            { id: 3, number: 3 },
+            { id: 4, number: 4 },
+            { id: 5, number: 5 },
+            { id: 6, number: 6 },
+            { id: 7, number: 7 },
+            { id: 8, number: 8 }
+          ];
+        })
+        .catch(e => {
+          console.log("API error: " + e);
+        });
+    },
+    saveSchedule(schedule) {
+      return http
+        .post("/schedule", schedule)
+        .then(response => {
+          return response;
+        })
+        .catch(e => {
+          console.log("API error: " + e);
+        });
+    },
+    saveProduction(production) {
+      return http
+        .post("/production", production)
+        .then(response => {
+          return response;
+        })
+        .catch(e => {
+          console.log("API error: " + e);
+        });
+    },
+    bindToModel(){
+      this.scheduleItem.line = {id: this.line.id, number: this.line.number};
+      this.scheduleItem.item = {id: this.item.id};
+      this.scheduleItem.saleItem = {id: this.saleItem.id};
+    },
+    saveModal() {
+      if(!this.scheduleItem.schedule.id){
+          this.saveSchedule({date: this.scheduleItem.schedule.date}).then(r=>{
+              this.scheduleItem.schedule = {id: r.data.id};
+              this.bindToModel();
+              this.saveScheduleItem();
+          })
+      }else{
+          this.bindToModel();
+          this.saveScheduleItem();
+      }
+    },
+    saveScheduleItem(){
+        http
+        .post("/scheduleItem", this.scheduleItem)
+        .then(response => {
+            this.closeModal();
+        })
+        .catch(e => {
+          console.log("API error: " + e);
+        });
+    },    
+    closeModal() {
+      this.$emit("closeModal");
+    }
+  },
+  mounted() {
+    this.getAvailableItems(this.scheduleItem.schedule.date);
+    this.getAvailableLines();
+  }
+};
+</script>
+
+<style>
+</style>
