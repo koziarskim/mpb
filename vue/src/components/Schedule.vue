@@ -56,10 +56,10 @@
                     <b-select v-if="!modalData.scheduleItem.id" option-value="id" option-text="number" :list="modalData.availableItems" v-model="modalData.selectedItem"></b-select>
                     <span v-if="modalData.scheduleItem.id"><br>{{modalData.selectedItem.number}}</span>
                 </b-col>
-                <!-- <b-col cols="4">
+                <b-col cols="4">
                     <label class="top-label">Units Transit:</label>
                     <span><br>{{this.modalData.scheduleItem.unitsInTransit}}</span>
-                </b-col> -->
+                </b-col>
             </b-row>
             <b-row>
                 <b-col cols="4">
@@ -217,9 +217,7 @@ export default {
       var lineScheduleItems = [];
       if (scheduleItems) {
         scheduleItems.forEach(scheduleItem => {
-          if (
-            scheduleItem.line.number == parseInt(lineNumber.replace("line", ""))
-          ) {
+          if (scheduleItem.line.number == parseInt(lineNumber.replace("line", ""))) {
             lineScheduleItems.push(scheduleItem);
           }
         });
