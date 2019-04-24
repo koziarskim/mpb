@@ -7,6 +7,7 @@
       <template slot="line1" slot-scope="row">
         <div v-for="scheduleItem in getScheduleItemsByLine(row.field.key, row.item.scheduleItems)" :key="scheduleItem.id">
           <span>
+              {{scheduleItem.shortUnits}}
               {{scheduleItem.item.number}}
               <a href="#" @click="showEditModal(row.item, scheduleItem)">{{formatTime(scheduleItem.startTime)}}</a> {{scheduleItem.unitsScheduled}} 
               <a href="#" @click="showEditModal(row.item, scheduleItem)">{{scheduleItem.totalProduced}}</a>
@@ -84,10 +85,35 @@ export default {
         .get("/schedule/date/" + this.scheduleDate)
         .then(response => {
           this.schedules = response.data;
+          response.data.forEach(schedule=>{
+            this.setRescheduledItems(schedule);
+          })
+          
         })
         .catch(e => {
           console.log("API error: " + e);
         });
+    },
+    getItemsToReschedule(date){
+     return http
+        .get("/item/eta/" + date+"?negativeOnly=true")
+        .then(response => {
+          return response.data;
+        })
+        .catch(e => {
+          console.log("API error: " + e);
+        });
+    },
+    setRescheduledItems(schedule){
+        this.getItemsToReschedule(schedule.date).then(itemDtos=>{
+            itemDtos.forEach(itemDto=>{
+                schedule.scheduleItems.forEach(scheduleItem=> {
+                    if(scheduleItem.item.id == itemDto.id){
+                        scheduleItem.shortUnits = itemDto.unitsReady;
+                    }
+                })
+            })
+        })
     },
     getScheduleItemsByLine(lineNumber, scheduleItems) {
       var lineScheduleItems = [];

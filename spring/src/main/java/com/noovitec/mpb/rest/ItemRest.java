@@ -117,7 +117,7 @@ class ItemRest {
 	}
 
 	@GetMapping("/item/eta/{date}")
-	Collection<ItemDto> getAllByEta(@PathVariable @DateTimeFormat(pattern="yyyy-MM-dd") Date date) {
+	Collection<ItemDto> getAllByEta(@PathVariable @DateTimeFormat(pattern="yyyy-MM-dd") Date date, @RequestParam(name="negativeOnly", required=false) boolean negativeOnly) {
 		log.info("Getting Items by Date: "+date);
 		Collection<ItemDto> dtos = new HashSet<ItemDto>();
 		Map<Long, Long> transitComponents = new HashMap<Long, Long>();
@@ -146,7 +146,15 @@ class ItemRest {
 			}
 			dto.setUnitsReady(itemsReady);
 			dto.setUnitsInTransit(itemsInTransit);
-			dtos.add(dto);
+			if(negativeOnly) {
+				if(itemsReady<0) {
+					dtos.add(dto);
+				}
+			}else {
+				dtos.add(dto);
+			}
+
+
 		}
 		return dtos;
 	}
