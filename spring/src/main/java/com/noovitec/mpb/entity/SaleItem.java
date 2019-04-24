@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -37,4 +38,16 @@ public class SaleItem {
 	@ManyToOne()
 	@JoinColumn(name = "item_id", referencedColumnName = "id")
 	private Item item;
+	
+	@Transient
+	private String label;
+	
+	public String getLabel() {
+		if(this.getSale()!=null) {
+			this.label = this.getSale().getNumber() + " - " + this.getSale().getCustomer().getName();
+		}else {
+			this.label = "";
+		}
+		return this.label;
+	}
 }

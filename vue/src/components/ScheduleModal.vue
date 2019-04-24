@@ -7,7 +7,7 @@
         </b-col>
         <b-col>
           <div style="text-align: right;">
-            <b-button v-if="this.scheduleItem.id" style="margin: 0 2px 0 2px" @click="deleteModal()">Delete</b-button>
+            <b-button v-if="scheduleItem.id" style="margin: 0 2px 0 2px" @click="deleteModal()">Delete</b-button>
             <b-button style="margin: 0 2px 0 2px" @click="closeModal()">Close</b-button>
             <b-button style="margin: 0 2px 0 2px" @click="saveModal()" variant="success">Save</b-button>
           </div>
@@ -21,11 +21,13 @@
           </b-col>
           <b-col cols="3">
             <label class="top-label">Item:</label>
-            <b-select option-value="id" option-text="number" :list="availableItems" v-model="item"></b-select>
+            <b-select v-if="!scheduleItem.id" option-value="id" option-text="number" :list="availableItems" v-model="item"></b-select>
+            <span v-if="scheduleItem.id"><br/>{{item.number}}</span>
           </b-col>
           <b-col cols="5">
             <label class="top-label">Sale:</label>
-            <b-select option-value="id" option-text="label" :list="availableSaleItems" v-model="saleItem"></b-select>
+            <b-select v-if="!scheduleItem.id" option-value="id" option-text="label" :list="availableSaleItems" v-model="saleItem"></b-select>
+            <span v-if="scheduleItem.id"><br/>{{saleItem.label}}</span>
           </b-col>
         </b-row>
         <b-row>
@@ -71,7 +73,7 @@ export default {
   computed: {},
   watch: {
     item(new_value, old_value) {
-      if (!new_value || !new_value.id || new_value.id == old_value.id) {
+      if (!new_value || new_value.id == old_value.id) {
         return;
       }
       if (this.item.id) {
@@ -88,7 +90,7 @@ export default {
         .get("/saleItem/item/" + item_id)
         .then(response => {
           this.availableSaleItems = response.data;
-          this.saleItem = this.scheduleItem.saleItem;
+          this.saleItem = this.scheduleItem.saleItem?this.scheduleItem.saleItem:{};
         })
         .catch(e => {
           console.log("API error: " + e);
@@ -99,7 +101,7 @@ export default {
         .get("/item/eta/" + date)
         .then(response => {
           this.availableItems = response.data;
-          this.item = this.scheduleItem.item;
+          this.item = this.scheduleItem.item?this.scheduleItem.item:{};
         })
         .catch(e => {
           console.log("API error: " + e);
@@ -119,7 +121,7 @@ export default {
             { id: 7, number: 7 },
             { id: 8, number: 8 }
           ];
-          this.line = this.scheduleItem.line;
+          this.line = this.scheduleItem.line?this.scheduleItem.line:{};
         })
         .catch(e => {
           console.log("API error: " + e);
