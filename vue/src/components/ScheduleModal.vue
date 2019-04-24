@@ -22,12 +22,18 @@
           <b-col cols="3">
             <label class="top-label">Item:</label>
             <b-select v-if="!scheduleItem.id" option-value="id" option-text="number" :list="availableItems" v-model="item"></b-select>
-            <span v-if="scheduleItem.id"><br/>{{item.number}}</span>
+            <span v-if="scheduleItem.id">
+              <br>
+              {{item.number}}
+            </span>
           </b-col>
           <b-col cols="5">
             <label class="top-label">Sale:</label>
             <b-select v-if="!scheduleItem.id" option-value="id" option-text="label" :list="availableSaleItems" v-model="saleItem"></b-select>
-            <span v-if="scheduleItem.id"><br/>{{saleItem.label}}</span>
+            <span v-if="scheduleItem.id">
+              <br>
+              {{saleItem.label}}
+            </span>
           </b-col>
         </b-row>
         <b-row>
@@ -40,7 +46,8 @@
             <input class="form-control" type="tel" v-model="scheduleItem.unitsScheduled">
           </b-col>
           <b-col cols="4">
-            <label class="top-label">Ready To Schedule:</label>
+            <label class="top-label">Total Sold: {{totalSold}}</label><br/>
+            <label class="top-label">Available: {{availableToSchedule}}</label>
           </b-col>
         </b-row>
       </b-col>
@@ -65,9 +72,12 @@ export default {
       availableSaleItems: [], //SaleItemDto
       saleItem: {},
       availableItems: [],
+      allItems: [],
       item: {},
       availableLines: [],
-      line: {}
+      line: {},
+      totalSold: 0,
+      availableToSchedule: 0,
     };
   },
   computed: {},
@@ -77,8 +87,16 @@ export default {
         return;
       }
       if (this.item.id) {
+        var itemDto = this.allItems.find(dto => dto.id == this.item.id)
+        this.availableToSchedule = itemDto.unitsReady;
         this.getAvailableSaleItems(this.item.id);
       }
+    },
+    saleItem(new_value, old_value) {
+      if (!new_value || new_value.id == old_value.id) {
+        return;
+      }
+      this.totalSold = this.saleItem.units;
     }
   },
   methods: {
@@ -90,7 +108,9 @@ export default {
         .get("/saleItem/item/" + item_id)
         .then(response => {
           this.availableSaleItems = response.data;
-          this.saleItem = this.scheduleItem.saleItem?this.scheduleItem.saleItem:{};
+          this.saleItem = this.scheduleItem.saleItem
+            ? this.scheduleItem.saleItem
+            : {};
         })
         .catch(e => {
           console.log("API error: " + e);
@@ -100,8 +120,9 @@ export default {
       http
         .get("/item/eta/" + date)
         .then(response => {
-          this.availableItems = response.data;
-          this.item = this.scheduleItem.item?this.scheduleItem.item:{};
+          this.allItems = response.data;
+          this.availableItems = response.data.filter(dto=> dto.unitsReady > 0);
+          this.item = this.scheduleItem.item ? this.scheduleItem.item : {};
         })
         .catch(e => {
           console.log("API error: " + e);
@@ -121,7 +142,7 @@ export default {
             { id: 7, number: 7 },
             { id: 8, number: 8 }
           ];
-          this.line = this.scheduleItem.line?this.scheduleItem.line:{};
+          this.line = this.scheduleItem.line ? this.scheduleItem.line : {};
         })
         .catch(e => {
           console.log("API error: " + e);

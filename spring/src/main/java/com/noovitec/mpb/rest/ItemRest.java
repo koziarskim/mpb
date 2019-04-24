@@ -144,11 +144,9 @@ class ItemRest {
 					itemsInTransit = currentItemsInTransit;
 				}
 			}
-			if(itemsReady>0) {
-				dto.setUnitsReady(itemsReady);
-				dto.setUnitsInTransit(itemsInTransit);
-				dtos.add(dto);
-			}
+			dto.setUnitsReady(itemsReady);
+			dto.setUnitsInTransit(itemsInTransit);
+			dtos.add(dto);
 		}
 		return dtos;
 	}
