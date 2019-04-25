@@ -13,42 +13,43 @@
           </div>
         </b-col>
       </b-row>
-        <b-row>
-          <b-col cols="2">
-            <label class="top-label">Line:</label>
-            <b-select option-value="id" option-text="number" :list="availableLines" v-model="line"></b-select>
-          </b-col>
-          <b-col cols="3">
-            <label class="top-label">Item:</label>
-            <b-select v-if="!scheduleItem.id" option-value="id" option-text="number" :list="availableItems" v-model="item"></b-select>
-            <span v-if="scheduleItem.id">
-              <br>
-              {{item.number}}
-            </span>
-          </b-col>
-          <b-col cols="5">
-            <label class="top-label">Sale:</label>
-            <b-select v-if="!scheduleItem.id" option-value="id" option-text="label" :list="availableSaleItems" v-model="saleItem"></b-select>
-            <span v-if="scheduleItem.id">
-              <br>
-              {{saleItem.label}}
-            </span>
-          </b-col>
-        </b-row>
-        <b-row>
-          <b-col cols="4">
-            <label class="top-label">Start:</label>
-            <input class="form-control" type="time" v-model="scheduleItem.startTime">
-          </b-col>
-          <b-col cols="4">
-            <label class="top-label">Units Scheduled:</label>
-            <input class="form-control" type="tel" v-model="scheduleItem.unitsScheduled">
-          </b-col>
-          <b-col cols="4">
-            <label class="top-label">Total Sold: {{totalSold}}</label><br/>
-            <label class="top-label">Still available: {{stillAvailable}}</label>
-          </b-col>
-        </b-row>
+      <b-row>
+        <b-col cols="2">
+          <label class="top-label">Line:</label>
+          <b-select option-value="id" option-text="number" :list="availableLines" v-model="line"></b-select>
+        </b-col>
+        <b-col cols="3">
+          <label class="top-label">Item:</label>
+          <b-select v-if="!scheduleItem.id" option-value="id" option-text="number" :list="availableItems" v-model="item"></b-select>
+          <span v-if="scheduleItem.id">
+            <br>
+            {{item.number}}
+          </span>
+        </b-col>
+        <b-col cols="5">
+          <label class="top-label">Sale:</label>
+          <b-select v-if="!scheduleItem.id" option-value="id" option-text="label" :list="availableSaleItems" v-model="saleItem"></b-select>
+          <span v-if="scheduleItem.id">
+            <br>
+            {{saleItem.label}}
+          </span>
+        </b-col>
+      </b-row>
+      <b-row>
+        <b-col cols="4">
+          <label class="top-label">Start:</label>
+          <input class="form-control" type="time" v-model="scheduleItem.startTime">
+        </b-col>
+        <b-col cols="4">
+          <label class="top-label">Units Scheduled:</label>
+          <input class="form-control" type="tel" v-model="scheduleItem.unitsScheduled">
+        </b-col>
+        <b-col cols="4">
+          <label class="top-label">Total Sold: {{totalSold}}</label>
+          <br>
+          <label class="top-label">Still available: {{stillAvailable}}</label>
+        </b-col>
+      </b-row>
     </b-modal>
   </b-container>
 </template>
@@ -76,14 +77,19 @@ export default {
       line: {},
       totalSold: 0,
       availableToSchedule: 0,
-      previousScheduled: 0,
+      itemsReady: 0,
+      itemsInTransit: 0,
+      previousScheduled: 0
     };
   },
   computed: {
-      stillAvailable(){
-          this.scheduleItem.unitsScheduled = this.scheduleItem.unitsScheduled?this.scheduleItem.unitsScheduled:0;
-          return +this.previousScheduled - +this.scheduleItem.unitsScheduled + +this.availableToSchedule;
-      }
+    stillAvailable() {
+      return (
+        +this.previousScheduled -
+        +this.scheduleItem.unitsScheduled +
+        +this.availableToSchedule
+      );
+    }
   },
   watch: {
     item(new_value, old_value) {
@@ -91,8 +97,10 @@ export default {
         return;
       }
       if (this.item.id) {
-        var itemDto = this.allItems.find(dto => dto.id == this.item.id)
+        var itemDto = this.allItems.find(dto => dto.id == this.item.id);
+        this.itemsInTransit = itemDto.unitsInTransit;
         this.availableToSchedule = itemDto.unitsReady;
+
         this.getAvailableSaleItems(this.item.id);
       }
     },
@@ -125,7 +133,7 @@ export default {
         .get("/item/eta/" + date)
         .then(response => {
           this.allItems = response.data;
-          this.availableItems = response.data.filter(dto=> dto.unitsReady > 0);
+          this.availableItems = response.data.filter(dto => dto.unitsReady > 0);
           this.item = this.scheduleItem.item ? this.scheduleItem.item : {};
         })
         .catch(e => {
@@ -162,25 +170,31 @@ export default {
           console.log("API error: " + e);
         });
     },
-    validate(){
-        if(!this.line || !this.item || !this.saleItem || !this.scheduleItem.startTime || this.scheduleItem.unitsScheduled <=0){
-            alert("Make sure all items are entered");
-            return false;
-        }
-        if(+this.scheduleItem.unitsScheduled - +this.previousScheduled > +this.availableToSchedule){
-            alert("Units scheduled cannot exceed available");
-            return false;
-        }
-        if(this.scheduleItem.unitsScheduled > this.totalSold){
-            alert("Units scheduled cannot exceed sold");
-            return false;
-        }
-        return true;
+    validate() {
+      if (
+        !this.line ||
+        !this.item ||
+        !this.saleItem ||
+        !this.scheduleItem.startTime ||
+        this.scheduleItem.unitsScheduled <= 0
+      ) {
+        alert("Make sure all fields are entered");
+        return false;
+      }
+      if (this.stillAvailable<0){
+        alert("Units scheduled cannot exceed available");
+        return false;
+      }
+      if (this.scheduleItem.unitsScheduled > this.totalSold) {
+        alert("Units scheduled cannot exceed sold");
+        return false;
+      }
+      return true;
     },
     saveModal() {
-        if(!this.validate()){
-            return;
-        }
+      if (!this.validate()) {
+        return;
+      }
       this.scheduleItem.line = { id: this.line.id, number: this.line.number };
       this.scheduleItem.item = { id: this.item.id };
       this.scheduleItem.saleItem = { id: this.saleItem.id };

@@ -133,12 +133,26 @@ class ItemRest {
 			int itemsReady = 0;
 			int itemsInTransit = 0;
 			for(ItemComponent ic : item.getItemComponents()) {
-				int componentUnitsReserved = ic.getComponent().getUnitsReserved()==null?0:ic.getComponent().getUnitsReserved().intValue();
-				int componentUnitsAvailable = ic.getComponent().getUnitsOnStack() - componentUnitsReserved;
+				//Transit
 				Long key = transitComponents.get(ic.getComponent().getId());
 				int componentsInTransit = (int) (key==null?0:key);
+				float currentItemsInTransitFloat = componentsInTransit/ic.getUnits();
+				int currentItemsInTransit = 0;
+				//Ready
+				int componentUnitsReserved = ic.getComponent().getUnitsReserved()==null?0:ic.getComponent().getUnitsReserved().intValue();
+				int componentUnitsAvailable = ic.getComponent().getUnitsOnStack() - componentUnitsReserved;
 				float currentItemsReadyFloat = (componentUnitsAvailable + componentsInTransit)/ic.getUnits();
 				int currentItemsReady = 0;
+				//Transit
+				if(currentItemsInTransitFloat>0) {
+					currentItemsInTransit = new BigDecimal(currentItemsInTransitFloat).setScale(0, RoundingMode.DOWN).intValue();
+				}else {
+					currentItemsInTransit = new BigDecimal(currentItemsInTransitFloat).setScale(0, RoundingMode.UP).intValue();
+				}
+				if(itemsInTransit == 0 || currentItemsInTransit < itemsInTransit) {
+					itemsInTransit = currentItemsInTransit;
+				}
+				//Ready
 				if(currentItemsReadyFloat>0) {
 					currentItemsReady = new BigDecimal(currentItemsReadyFloat).setScale(0, RoundingMode.DOWN).intValue();
 				}else {
@@ -147,6 +161,7 @@ class ItemRest {
 				if(itemsReady == 0 || currentItemsReady < itemsReady) {
 					itemsReady = currentItemsReady;
 				}
+
 			}
 			dto.setUnitsReady(itemsReady);
 			dto.setUnitsInTransit(itemsInTransit);

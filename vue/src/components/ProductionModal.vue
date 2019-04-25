@@ -21,7 +21,7 @@
             <input style="width:135px" class="form-control" type="time" v-model="newProduction.finishTime">
           </b-row>
           <b-row>
-            <span>Total Production Output: {{scheduleItem.totalProduced}}</span>
+            <span>Total Production Output: {{totalProduced}}</span>
           </b-row>
           <b-row v-for="production in scheduleItem.productions" :key="production.id">
             <span>Units: {{production.unitsProduced}} @ {{production.finishTime}}</span>
@@ -36,7 +36,7 @@
           <br>
           <label class="top-label">Still available: {{availableToSchedule}}</label>
           <br>
-          <label class="top-label">Total Sold: {{totalSold}}</label>
+          <label class="top-label">Still to produce: {{stillToProduce}}</label>
           <br>
           <label class="top-label">Scheduled: {{scheduleItem.unitsScheduled}}</label>
         </b-col>
@@ -67,10 +67,21 @@ export default {
       line: {},
       totalSold: 0,
       availableToSchedule: 0,
-      newProduction: {}
+      newProduction: { unitsProduced: 0 }
     };
   },
-  computed: {},
+  computed: {
+    stillToProduce() {
+      return (
+        +this.scheduleItem.unitsScheduled -
+        +this.scheduleItem.totalProduced -
+        +this.newProduction.unitsProduced
+      );
+    },
+    totalProduced(){
+        return +this.scheduleItem.totalProduced + +this.newProduction.unitsProduced;
+    }
+  },
   watch: {
     item(new_value, old_value) {
       if (!new_value || new_value.id == old_value.id) {
@@ -138,7 +149,24 @@ export default {
           console.log("API error: " + e);
         });
     },
+    validate() {
+      if (
+        this.newProduction.unitsProduced <= 0 ||
+        !this.newProduction.finishTime
+      ) {
+        alert("Make sure all fields are entered");
+        return false;
+      }
+      if (this.stillToProduce < 0) {
+        alert("Total produced cannot exceed scheduled");
+        return false;
+      }
+      return true;
+    },
     saveModal() {
+      if (!this.validate()) {
+        return;
+      }
       var production = {
         scheduleItem: { id: this.scheduleItem.id },
         unitsProduced: this.newProduction.unitsProduced,

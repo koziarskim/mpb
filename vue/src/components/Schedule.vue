@@ -41,7 +41,7 @@ export default {
   data() {
     return {
       numberOfLines: 8,
-      scheduleItem: {},
+      scheduleItem: {unitsScheduled: 0},
       schedule: {},
       schedules: [{ id: 1 }],
       scheduleModalVisible: false,
@@ -104,53 +104,6 @@ export default {
       }
       return lineScheduleItems;
     },
-    addProduction() {
-      if (
-        !this.modalData.newProduction.unitsProduced ||
-        this.modalData.newProduction.unitsProduced <= 0
-      ) {
-        alert("Units produced must be positive");
-        return;
-      }
-      if (
-        this.modalData.newProduction.unitsProduced < 0 ||
-        +this.modalData.scheduleItem.totalProduced +
-          +this.modalData.newProduction.unitsProduced >
-          this.modalData.scheduleItem.unitsScheduled
-      ) {
-        alert("Units produced cannot be more that scheduled");
-        return;
-      }
-      if (!this.modalData.newProduction.finishTime) {
-        alert("Enter time");
-        return;
-      }
-      var production = {
-        scheduleItem: { id: this.modalData.scheduleItem.id },
-        unitsProduced: this.modalData.newProduction.unitsProduced,
-        finishTime: this.modalData.newProduction.finishTime
-      };
-      this.saveProduction(production).then(r => {
-        this.modalData.scheduleItem.totalProduced += +this.modalData
-          .newProduction.unitsProduced;
-        this.modalData.scheduleItem.productions.push(r.data);
-        this.modalData.scheduleItem.productions.sort(function(a, b) {
-          if (a.finishTime < b.finishTime) {
-            return 1;
-          }
-          if (a.finishTime > b.finishTime) {
-            return -1;
-          }
-          return 0;
-        });
-        this.modalData.newProduction = {
-          unitsProduced:
-            +this.modalData.scheduleItem.unitsScheduled -
-            +this.modalData.scheduleItem.totalProduced,
-          finishTime: moment().format("hh:mm")
-        };
-      });
-    },
     newSchedule(schedule) {
       if (!schedule.id) {
         this.saveSchedule(schedule).then(r => {
@@ -158,6 +111,7 @@ export default {
           this.scheduleModalVisible = true;
         });
       } else {
+        this.scheduleItem = {unitsScheduled: 0};
         this.schedule = schedule;
         this.scheduleModalVisible = true;
       }
@@ -209,7 +163,6 @@ export default {
         });
     },
     closeScheduleModal() {
-      this.scheduleItem = {};
       this.scheduleModalVisible = false;
       this.getSchedules();
     },
