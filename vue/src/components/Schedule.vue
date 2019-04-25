@@ -4,20 +4,21 @@
       <!-- <span style="text-align: left; font-size: 18px; font-weight: bold">Scheduling</span> -->
     </div>
     <b-row class="n-row" style="border-top: 1px solid black;">
-      <div class="n-cell">Date</div>
+      <div class="n-cell" style="width:7%">Date</div>
       <div class="n-cell" v-for="line in numberOfLines" :key="line">
         <div>Line {{line}}</div>
       </div>
     </b-row>
     <b-row class="n-row" style="height: 75px" v-for="s in schedules" :key="s.date">
-      <div class="n-cell">
-        <a href="#" @click="newSchedule(s)">{{formatDate(s.date)}}</a>
+      <div class="n-cell" style="width: 7%">
+        <div>{{dayOfWeek(s.date)}}</div>
+        <span>{{formatDate(s.date)}}</span>
+        <a style="padding-left: 15%" href="#" @click="newSchedule(s)">(+)</a>
       </div>
       <div class="n-cell" v-for="line in numberOfLines" :key="line">
-        <div :style="getColor(si.unitsShort)" v-for="si in getScheduleItemsByLine(line, s.scheduleItems)" :key="si.id">
-          <a href="#" @click="editSchedule(s, si)">{{si.item.number}}: {{si.saleItem.sale?si.saleItem.sale.customer.name:''}}</a>
-          {{si.unitsScheduled}}
-          <a href="#" @click="editProduction(s, si)">{{si.totalProduced}}</a>
+        <div :style="getColor(si)" v-for="si in getScheduleItemsByLine(line, s.scheduleItems)" :key="si.id">
+          <a href="#" @click="editSchedule(s, si)">{{si.item.number}}: </a>
+          <a href="#" @click="editProduction(s, si)">{{si.saleItem.sale?si.saleItem.sale.customer.name:''}}</a>
         </div>
       </div>
     </b-row>
@@ -240,7 +241,7 @@ export default {
     formatDate(date) {
       return moment(date)
         .utc()
-        .format("YYYY-MM-DD");
+        .format("MM/DD");
     },
     formatTime(time) {
       if (!time) {
@@ -250,9 +251,18 @@ export default {
       var mins = time.split(":")[1];
       return hours + ":" + mins;
     },
-    getColor(units) {
-      if (units < 0) {
+    dayOfWeek(date){
+        if(!date){
+            return "";
+        }
+        return moment(date).utc().format("dddd");
+    },
+    getColor(si) {
+      if (si.unitsShort < 0) {
         return "background-color: #f9b3ae";
+      }
+      if (si.unitsScheduled == si.totalProduced){
+          return "background-color: #c2f5c4"
       }
       return "";
     }
@@ -265,7 +275,7 @@ export default {
 
 <style lang="scss">
 .n-cell {
-  width: 11.11%;
+  width: 11.62%;
   border-right: 1px solid black;
   height: 100%;
 }

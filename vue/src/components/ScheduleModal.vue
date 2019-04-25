@@ -46,7 +46,7 @@
           </b-col>
           <b-col cols="4">
             <label class="top-label">Total Sold: {{totalSold}}</label><br/>
-            <label class="top-label">Still available: {{availableToSchedule}}</label>
+            <label class="top-label">Still available: {{stillAvailable}}</label>
           </b-col>
         </b-row>
     </b-modal>
@@ -76,9 +76,15 @@ export default {
       line: {},
       totalSold: 0,
       availableToSchedule: 0,
+      previousScheduled: 0,
     };
   },
-  computed: {},
+  computed: {
+      stillAvailable(){
+          this.scheduleItem.unitsScheduled = this.scheduleItem.unitsScheduled?this.scheduleItem.unitsScheduled:0;
+          return +this.previousScheduled - +this.scheduleItem.unitsScheduled + +this.availableToSchedule;
+      }
+  },
   watch: {
     item(new_value, old_value) {
       if (!new_value || new_value.id == old_value.id) {
@@ -156,7 +162,25 @@ export default {
           console.log("API error: " + e);
         });
     },
+    validate(){
+        if(!this.line || !this.item || !this.saleItem || !this.scheduleItem.startTime || this.scheduleItem.unitsScheduled <=0){
+            alert("Make sure all items are entered");
+            return false;
+        }
+        if(+this.scheduleItem.unitsScheduled - +this.previousScheduled > +this.availableToSchedule){
+            alert("Units scheduled cannot exceed available");
+            return false;
+        }
+        if(this.scheduleItem.unitsScheduled > this.totalSold){
+            alert("Units scheduled cannot exceed sold");
+            return false;
+        }
+        return true;
+    },
     saveModal() {
+        if(!this.validate()){
+            return;
+        }
       this.scheduleItem.line = { id: this.line.id, number: this.line.number };
       this.scheduleItem.item = { id: this.item.id };
       this.scheduleItem.saleItem = { id: this.saleItem.id };
@@ -187,6 +211,7 @@ export default {
   mounted() {
     this.getAvailableItems(this.schedule.date);
     this.getAvailableLines();
+    this.previousScheduled = this.scheduleItem.unitsScheduled;
   }
 };
 </script>

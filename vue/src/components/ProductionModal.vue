@@ -21,7 +21,7 @@
             <input style="width:135px" class="form-control" type="time" v-model="newProduction.finishTime">
           </b-row>
           <b-row>
-            <span>Production Output</span>
+            <span>Total Production Output: {{scheduleItem.totalProduced}}</span>
           </b-row>
           <b-row v-for="production in scheduleItem.productions" :key="production.id">
             <span>Units: {{production.unitsProduced}} @ {{production.finishTime}}</span>

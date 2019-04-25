@@ -133,11 +133,11 @@ class ItemRest {
 			int itemsReady = 0;
 			int itemsInTransit = 0;
 			for(ItemComponent ic : item.getItemComponents()) {
-				int unitsReserved = ic.getComponent().getUnitsReserved()==null?0:ic.getComponent().getUnitsReserved().intValue();
-				int unitsAvailable = ic.getComponent().getUnitsOnStack() - unitsReserved;
+				int componentUnitsReserved = ic.getComponent().getUnitsReserved()==null?0:ic.getComponent().getUnitsReserved().intValue();
+				int componentUnitsAvailable = ic.getComponent().getUnitsOnStack() - componentUnitsReserved;
 				Long key = transitComponents.get(ic.getComponent().getId());
-				float currentItemsInTransitFloat = key==null?0:(key/ic.getUnits());
-				float currentItemsReadyFloat = (unitsAvailable + currentItemsInTransitFloat)/ic.getUnits();
+				int componentsInTransit = (int) (key==null?0:key);
+				float currentItemsReadyFloat = (componentUnitsAvailable + componentsInTransit)/ic.getUnits();
 				int currentItemsReady = 0;
 				if(currentItemsReadyFloat>0) {
 					currentItemsReady = new BigDecimal(currentItemsReadyFloat).setScale(0, RoundingMode.DOWN).intValue();
