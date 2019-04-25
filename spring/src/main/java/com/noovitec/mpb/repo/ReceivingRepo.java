@@ -20,7 +20,7 @@ public interface ReceivingRepo extends JpaRepository<Receiving, Long> {
 		and r.received_date is null
 		group by pc.component_id
 	 */
-	@Query("select new com.noovitec.mpb.dto.KeyValueDto(pc.component.id, sum(r.units - r.unitsReserved)) "
+	@Query("select new com.noovitec.mpb.dto.KeyValueDto(pc.component.id, sum(r.units)) "
 			+ "from Receiving r "
 			+ "join r.purchaseComponent pc "
 			+ "where r.etaDate <= :date and r.receivedDate is null "
