@@ -1,6 +1,8 @@
 package com.noovitec.mpb.rest;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collection;
@@ -134,13 +136,16 @@ class ItemRest {
 				int unitsReserved = ic.getComponent().getUnitsReserved()==null?0:ic.getComponent().getUnitsReserved().intValue();
 				int unitsAvailable = ic.getComponent().getUnitsOnStack() - unitsReserved;
 				Long key = transitComponents.get(ic.getComponent().getId());
-				int currentItemsInTransit = (int) (key==null?0:(key/ic.getUnits()));
-				int currentItemsReady = (unitsAvailable/ic.getUnits()) + currentItemsInTransit;
+				float currentItemsInTransitFloat = key==null?0:(key/ic.getUnits());
+				float currentItemsReadyFloat = (unitsAvailable + currentItemsInTransitFloat)/ic.getUnits();
+				int currentItemsReady = 0;
+				if(currentItemsReadyFloat>0) {
+					currentItemsReady = new BigDecimal(currentItemsReadyFloat).setScale(0, RoundingMode.DOWN).intValue();
+				}else {
+					currentItemsReady = new BigDecimal(currentItemsReadyFloat).setScale(0, RoundingMode.UP).intValue();
+				}
 				if(itemsReady == 0 || currentItemsReady < itemsReady) {
 					itemsReady = currentItemsReady;
-				}
-				if(itemsInTransit == 0 || currentItemsInTransit < itemsInTransit) {
-					itemsInTransit = currentItemsInTransit;
 				}
 			}
 			dto.setUnitsReady(itemsReady);

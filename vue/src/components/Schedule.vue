@@ -4,15 +4,21 @@
       <!-- <span style="text-align: left; font-size: 18px; font-weight: bold">Scheduling</span> -->
     </div>
     <b-row class="n-row" style="border-top: 1px solid black;">
-      <div class="n-cell">Date</div><div class="n-cell" v-for="line in numberOfLines" :key="line"><div>Line {{line}}</div></div>
+      <div class="n-cell">Date</div>
+      <div class="n-cell" v-for="line in numberOfLines" :key="line">
+        <div>Line {{line}}</div>
+      </div>
     </b-row>
     <b-row class="n-row" style="height: 75px" v-for="s in schedules" :key="s.date">
-      <div class="n-cell"><a href="#" @click="showNewModal(s)">{{formatDate(s.date)}}</a></div>
+      <div class="n-cell">
+        <a href="#" @click="showNewModal(s)">{{formatDate(s.date)}}</a>
+      </div>
       <div class="n-cell" v-for="line in numberOfLines" :key="line">
-          <div :style="getColor(si.unitsShort)" v-for="si in getScheduleItemsByLine(line, s.scheduleItems)" :key="si.id">
-              {{si.unitsShort}} {{si.item.number}}
-              <a href="#" @click="showEditModal(s, si)">{{formatTime(si.startTime)}}</a> {{si.unitsScheduled}} 
-              <a href="#" @click="showEditModal(s, si)">{{si.totalProduced}}</a>
+        <div :style="getColor(si.unitsShort)" v-for="si in getScheduleItemsByLine(line, s.scheduleItems)" :key="si.id">
+          {{si.unitsShort}} {{si.item.number}}
+          <a href="#" @click="showEditModal(s, si)">{{formatTime(si.startTime)}}</a>
+          {{si.unitsScheduled}}
+          <a href="#" @click="showEditModal(s, si)">{{si.totalProduced}}</a>
         </div>
       </div>
     </b-row>
@@ -42,43 +48,12 @@ export default {
       productionModalVisible: false,
       scheduleDate: moment()
         .utc()
-        .format("YYYY-MM-DD"),
-      sortBy: "date",
-      sortDesc: false,
-      fields: [
-        { key: "date", sortable: false, label: "Date" },
-        { key: "line1", sortable: false, label: "Line 1" },
-        { key: "line2", sortable: false, label: "Line 2" },
-        { key: "line3", sortable: false, label: "Line 3" },
-        { key: "line4", sortable: false, label: "Line 4" },
-        { key: "line5", sortable: false, label: "Line 5" },
-        { key: "line6", sortable: false, label: "Line 6" },
-        { key: "line7", sortable: false, label: "Line 7" },
-        { key: "line8", sortable: false, label: "Line 8" }
-      ]
+        .format("YYYY-MM-DD")
     };
   },
-  computed: {
-    maxItems: function() {
-      if (this.modalData.scheduleItem.id) {
-        var sidto = this.modalData.availableItems.find(
-          dto => dto.id == this.modalData.scheduleItem.item.id
-        );
-        return (
-          +this.modalData.tempUnitsScheduled + +(sidto ? sidto.unitsReady : 0)
-        );
-      }
-      return this.modalData.selectedItem.unitsReady;
-    }
-  },
+  computed: {},
   watch: {},
   methods: {
-    getColor(units) {
-      if (units < 0) {
-        return "background-color: #f9b3ae";
-      }
-      return "";
-    },
     getSchedules() {
       http
         .get("/schedule/date/" + this.scheduleDate)
@@ -269,6 +244,12 @@ export default {
       var hours = time.split(":")[0];
       var mins = time.split(":")[1];
       return hours + ":" + mins;
+    },
+    getColor(units) {
+      if (units < 0) {
+        return "background-color: #f9b3ae";
+      }
+      return "";
     }
   },
   mounted() {
@@ -278,13 +259,13 @@ export default {
 </script>
 
 <style lang="scss">
-.n-cell{
-    width:11.11%;
-    border-right: 1px solid black;
-    height:100%;
+.n-cell {
+  width: 11.11%;
+  border-right: 1px solid black;
+  height: 100%;
 }
-.n-row{
-   border-bottom: 1px solid black; 
-   border-left: 1px solid black 
+.n-row {
+  border-bottom: 1px solid black;
+  border-left: 1px solid black;
 }
 </style>

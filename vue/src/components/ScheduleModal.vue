@@ -47,7 +47,7 @@
           </b-col>
           <b-col cols="4">
             <label class="top-label">Total Sold: {{totalSold}}</label><br/>
-            <label class="top-label">Available: {{availableToSchedule}}</label>
+            <label class="top-label">Still available: {{availableToSchedule}}</label>
           </b-col>
         </b-row>
       </b-col>
