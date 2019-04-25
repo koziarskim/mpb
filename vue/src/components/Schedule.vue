@@ -11,14 +11,13 @@
     </b-row>
     <b-row class="n-row" style="height: 75px" v-for="s in schedules" :key="s.date">
       <div class="n-cell">
-        <a href="#" @click="showNewModal(s)">{{formatDate(s.date)}}</a>
+        <a href="#" @click="newSchedule(s)">{{formatDate(s.date)}}</a>
       </div>
       <div class="n-cell" v-for="line in numberOfLines" :key="line">
         <div :style="getColor(si.unitsShort)" v-for="si in getScheduleItemsByLine(line, s.scheduleItems)" :key="si.id">
-          {{si.unitsShort}} {{si.item.number}}
-          <a href="#" @click="showEditModal(s, si)">{{formatTime(si.startTime)}}</a>
+          <a href="#" @click="editSchedule(s, si)">{{si.item.number}}: {{si.saleItem.sale.customer.name}}</a>
           {{si.unitsScheduled}}
-          <a href="#" @click="showEditModal(s, si)">{{si.totalProduced}}</a>
+          <a href="#" @click="editProduction(s, si)">{{si.totalProduced}}</a>
         </div>
       </div>
     </b-row>
@@ -28,7 +27,7 @@
       <schedule-modal v-on:closeModal="closeScheduleModal()" :schedule="schedule" :scheduleItem="scheduleItem"></schedule-modal>
     </div>
     <div v-if="productionModalVisible">
-      <schedule-modal v-on:closeModal="closeProductionModal()" :schedule="schedule" :scheduleItem="scheduleItem"></schedule-modal>
+      <production-modal v-on:closeModal="closeProductionModal()" :schedule="schedule" :scheduleItem="scheduleItem"></production-modal>
     </div>
   </b-container>
 </template>
@@ -151,7 +150,7 @@ export default {
         };
       });
     },
-    showNewModal(schedule) {
+    newSchedule(schedule) {
       if (!schedule.id) {
         this.saveSchedule(schedule).then(r => {
           this.schedule = r.data;
@@ -162,10 +161,15 @@ export default {
         this.scheduleModalVisible = true;
       }
     },
-    showEditModal(schedule, scheduleItem) {
+    editSchedule(schedule, scheduleItem) {
       this.schedule = schedule;
       this.scheduleItem = scheduleItem;
       this.scheduleModalVisible = true;
+    },
+    editProduction(schedule, scheduleItem) {
+      this.schedule = schedule;
+      this.scheduleItem = scheduleItem;
+      this.productionModalVisible = true;
     },
     validateModal() {
       if (
