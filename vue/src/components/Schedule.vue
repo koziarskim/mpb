@@ -15,7 +15,7 @@
       </div>
       <div class="n-cell" v-for="line in numberOfLines" :key="line">
         <div :style="getColor(si.unitsShort)" v-for="si in getScheduleItemsByLine(line, s.scheduleItems)" :key="si.id">
-          <a href="#" @click="editSchedule(s, si)">{{si.item.number}}: {{si.saleItem.sale.customer.name}}</a>
+          <a href="#" @click="editSchedule(s, si)">{{si.item.number}}: {{si.saleItem.sale?si.saleItem.sale.customer.name:''}}</a>
           {{si.unitsScheduled}}
           <a href="#" @click="editProduction(s, si)">{{si.totalProduced}}</a>
         </div>
@@ -208,7 +208,8 @@ export default {
         });
     },
     closeScheduleModal() {
-      (this.scheduleItem = {}), (this.scheduleModalVisible = false);
+      this.scheduleItem = {};
+      this.scheduleModalVisible = false;
       this.getSchedules();
     },
     closeProductionModal() {

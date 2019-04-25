@@ -13,7 +13,6 @@
           </div>
         </b-col>
       </b-row>
-      <b-col style="text-align: left;">
         <b-row>
           <b-col cols="2">
             <label class="top-label">Line:</label>
@@ -50,7 +49,6 @@
             <label class="top-label">Still available: {{availableToSchedule}}</label>
           </b-col>
         </b-row>
-      </b-col>
     </b-modal>
   </b-container>
 </template>
