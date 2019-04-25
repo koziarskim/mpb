@@ -1,14 +1,14 @@
 <template>
   <b-container fluid>
     <div class="d-flex justify-content-between align-items-center">
-      <span style="text-align: left; font-size: 18px; font-weight: bold">Scheduling</span>
+      <!-- <span style="text-align: left; font-size: 18px; font-weight: bold">Scheduling</span> -->
     </div>
     <b-row class="n-row" style="border-top: 1px solid black;">
-      <div class="n-cell" v-for="line in numberOfLines" :key="line"><div>Line {{line}}</div></div>
+      <div class="n-cell">Date</div><div class="n-cell" v-for="line in numberOfLines" :key="line"><div>Line {{line}}</div></div>
     </b-row>
     <b-row class="n-row" style="height: 75px" v-for="s in schedules" :key="s.date">
       <div class="n-cell"><a href="#" @click="showNewModal(s)">{{formatDate(s.date)}}</a></div>
-      <div class="n-cell" v-for="line in numberOfRows" :key="line">
+      <div class="n-cell" v-for="line in numberOfLines" :key="line">
           <div :style="getColor(si.unitsShort)" v-for="si in getScheduleItemsByLine(line, s.scheduleItems)" :key="si.id">
               {{si.unitsShort}} {{si.item.number}}
               <a href="#" @click="showEditModal(s, si)">{{formatTime(si.startTime)}}</a> {{si.unitsScheduled}} 
@@ -35,7 +35,6 @@ export default {
   data() {
     return {
       numberOfLines: 8,
-      numberOfRows: 7,
       scheduleItem: {},
       schedule: {},
       schedules: [{ id: 1 }],
@@ -280,7 +279,7 @@ export default {
 
 <style lang="scss">
 .n-cell{
-    width:12.5%;
+    width:11.11%;
     border-right: 1px solid black;
     height:100%;
 }
