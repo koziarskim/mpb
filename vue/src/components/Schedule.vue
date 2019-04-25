@@ -90,7 +90,7 @@ export default {
             return dateA - dateB;
           });
           response.data.forEach(schedule => {
-            this.setRescheduledItems(schedule);
+            this.markItemsToReschedule(schedule);
           });
         })
         .catch(e => {
@@ -107,7 +107,7 @@ export default {
           console.log("API error: " + e);
         });
     },
-    setRescheduledItems(schedule) {
+    markItemsToReschedule(schedule) {
       this.getItemsToReschedule(schedule.date).then(itemDtos => {
         itemDtos.forEach(itemDto => {
           schedule.scheduleItems.forEach(scheduleItem => {

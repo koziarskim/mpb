@@ -118,7 +118,6 @@ class ItemRest {
 
 	@GetMapping("/item/eta/{date}")
 	Collection<ItemDto> getAllByEta(@PathVariable @DateTimeFormat(pattern="yyyy-MM-dd") Date date, @RequestParam(name="negativeOnly", required=false) boolean negativeOnly) {
-		log.info("Getting Items by Date: "+date);
 		Collection<ItemDto> dtos = new HashSet<ItemDto>();
 		Map<Long, Long> transitComponents = new HashMap<Long, Long>();
 		List<KeyValueDto> tcs = receivingRepo.findReceivingByEta(date);
