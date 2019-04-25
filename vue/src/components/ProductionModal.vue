@@ -34,7 +34,7 @@
           <br>
           <label class="top-label">Line: {{line.number}} @ {{formatTime(scheduleItem.startTime)}}</label>
           <br>
-          <label class="top-label">Still available: {{availableToSchedule}}</label>
+          <label class="top-label">Available to schedule: {{availableToSchedule}}</label>
           <br>
           <label class="top-label">Still to produce: {{stillToProduce}}</label>
           <br>

@@ -1,6 +1,6 @@
 
 --
--- TOC entry 2278 (class 0 OID 713725)
+-- TOC entry 2286 (class 0 OID 825523)
 -- Dependencies: 182
 -- Data for Name: address; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -14,7 +14,7 @@ INSERT INTO public.address (id, city, dc, state, street, zip) VALUES (55, 'Chica
 
 
 --
--- TOC entry 2279 (class 0 OID 713733)
+-- TOC entry 2287 (class 0 OID 825531)
 -- Dependencies: 183
 -- Data for Name: attachment; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -26,7 +26,7 @@ INSERT INTO public.attachment (id, data, name, type) VALUES (121, '\x255044462d3
 
 
 --
--- TOC entry 2280 (class 0 OID 713741)
+-- TOC entry 2288 (class 0 OID 825539)
 -- Dependencies: 184
 -- Data for Name: brand; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -46,7 +46,7 @@ INSERT INTO public.brand (id, name) VALUES (12, 'Other');
 
 
 --
--- TOC entry 2281 (class 0 OID 713746)
+-- TOC entry 2289 (class 0 OID 825544)
 -- Dependencies: 185
 -- Data for Name: category; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -65,8 +65,8 @@ INSERT INTO public.category (id, name, prefix, type) VALUES (11, 'Other', '900',
 
 
 --
--- TOC entry 2298 (class 0 OID 713853)
--- Dependencies: 202
+-- TOC entry 2307 (class 0 OID 825656)
+-- Dependencies: 203
 -- Data for Name: supplier; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -76,19 +76,19 @@ INSERT INTO public.supplier (id, account, city, contact_name, email, email2, fre
 
 
 --
--- TOC entry 2282 (class 0 OID 713754)
+-- TOC entry 2290 (class 0 OID 825552)
 -- Dependencies: 186
 -- Data for Name: component; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public.component (id, case_pack, container_cost, delivery_cost, depth, description, duty_percentage, height, name, number, other_cost, supplier_stock_number, total_landed_cost, unit_cost, units_in_transit, units_on_stack, units_ordered, units_per_container, units_received, weight, width, attachment_id, category_id, supplier_id) VALUES (4, 1, 2.00, 2.00, 10, NULL, 1.00, 10, '22', '1004', 0.00, NULL, 3.75, 1.75, 0, 0, 1, 1, 0, 4.00, 10, NULL, 1, 2);
-INSERT INTO public.component (id, case_pack, container_cost, delivery_cost, depth, description, duty_percentage, height, name, number, other_cost, supplier_stock_number, total_landed_cost, unit_cost, units_in_transit, units_on_stack, units_ordered, units_per_container, units_received, weight, width, attachment_id, category_id, supplier_id) VALUES (3, 1, 2.00, 2.00, 3, NULL, 2.00, 5, '11', '1003', 0.00, NULL, 4.10, 2.10, 0, 23, 0, 1, 6, 4.00, 4, NULL, 1, 32);
-INSERT INTO public.component (id, case_pack, container_cost, delivery_cost, depth, description, duty_percentage, height, name, number, other_cost, supplier_stock_number, total_landed_cost, unit_cost, units_in_transit, units_on_stack, units_ordered, units_per_container, units_received, weight, width, attachment_id, category_id, supplier_id) VALUES (5, 1, 3.00, 3.00, 3, NULL, 3.00, 10, '005', '1005', 1.00, NULL, 6.00, 2.00, 1, 30, 1, 1, 0, 4.00, 6, NULL, 1, 1);
-INSERT INTO public.component (id, case_pack, container_cost, delivery_cost, depth, description, duty_percentage, height, name, number, other_cost, supplier_stock_number, total_landed_cost, unit_cost, units_in_transit, units_on_stack, units_ordered, units_per_container, units_received, weight, width, attachment_id, category_id, supplier_id) VALUES (33, 1, 0.50, 0.50, 6, NULL, 1.00, 3, '0033', '10033', 1.00, NULL, 2.10, 0.60, 1, 1, 0, 1, 1, 6.00, 4, NULL, 1, 1);
+INSERT INTO public.component (id, case_pack, container_cost, delivery_cost, depth, description, duty_percentage, height, name, number, other_cost, supplier_stock_number, total_landed_cost, unit_cost, units_in_transit, units_on_stack, units_ordered, units_per_container, units_received, units_reserved, weight, width, attachment_id, category_id, supplier_id) VALUES (4, 1, 2.00, 2.00, 10, NULL, 1.00, 10, '22', '1004', 0.00, NULL, 3.75, 1.75, 0, 0, 1, 1, 0, NULL, 4.00, 10, NULL, 1, 2);
+INSERT INTO public.component (id, case_pack, container_cost, delivery_cost, depth, description, duty_percentage, height, name, number, other_cost, supplier_stock_number, total_landed_cost, unit_cost, units_in_transit, units_on_stack, units_ordered, units_per_container, units_received, units_reserved, weight, width, attachment_id, category_id, supplier_id) VALUES (3, 1, 2.00, 2.00, 3, NULL, 2.00, 5, '11', '1003', 0.00, NULL, 4.10, 2.10, 0, 23, 0, 1, 6, NULL, 4.00, 4, NULL, 1, 32);
+INSERT INTO public.component (id, case_pack, container_cost, delivery_cost, depth, description, duty_percentage, height, name, number, other_cost, supplier_stock_number, total_landed_cost, unit_cost, units_in_transit, units_on_stack, units_ordered, units_per_container, units_received, units_reserved, weight, width, attachment_id, category_id, supplier_id) VALUES (33, 1, 0.50, 0.50, 6, NULL, 1.00, 3, '0033', '10033', 1.00, NULL, 2.10, 0.60, 1, 1, 0, 1, 1, NULL, 6.00, 4, NULL, 1, 1);
+INSERT INTO public.component (id, case_pack, container_cost, delivery_cost, depth, description, duty_percentage, height, name, number, other_cost, supplier_stock_number, total_landed_cost, unit_cost, units_in_transit, units_on_stack, units_ordered, units_per_container, units_received, units_reserved, weight, width, attachment_id, category_id, supplier_id) VALUES (5, 1, 3.00, 3.00, 3, NULL, 3.00, 10, '005', '1005', 1.00, NULL, 6.00, 2.00, 10, 30, 0, 1, 0, NULL, 4.00, 6, NULL, 1, 1);
 
 
 --
--- TOC entry 2283 (class 0 OID 713762)
+-- TOC entry 2291 (class 0 OID 825560)
 -- Dependencies: 187
 -- Data for Name: customer; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -98,7 +98,7 @@ INSERT INTO public.customer (id, account, contact_name, email, email2, freight_t
 
 
 --
--- TOC entry 2284 (class 0 OID 713770)
+-- TOC entry 2292 (class 0 OID 825568)
 -- Dependencies: 188
 -- Data for Name: customer_address; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -110,8 +110,8 @@ INSERT INTO public.customer_address (customer_id, address_id) VALUES (53, 55);
 
 
 --
--- TOC entry 2297 (class 0 OID 713845)
--- Dependencies: 201
+-- TOC entry 2306 (class 0 OID 825648)
+-- Dependencies: 202
 -- Data for Name: season; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -126,8 +126,8 @@ INSERT INTO public.season (id, name, prefix) VALUES (8, 'Other', 'O');
 
 
 --
--- TOC entry 2300 (class 0 OID 713869)
--- Dependencies: 204
+-- TOC entry 2309 (class 0 OID 825672)
+-- Dependencies: 205
 -- Data for Name: upc; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -1631,19 +1631,19 @@ INSERT INTO public.upc (id, assigned, code) VALUES (1497, false, '810015649992')
 
 
 --
--- TOC entry 2285 (class 0 OID 713773)
+-- TOC entry 2293 (class 0 OID 825571)
 -- Dependencies: 189
 -- Data for Name: item; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public.item (id, case_depth, case_height, case_pack, case_weight, case_width, depth, description, height, hi, labor_cost, name, number, other_cost, package_cost, status, ti, total_cost, warehouse_cost, weight, width, attachment_id, brand_id, case_upc_id, category_id, season_id, upc_id) VALUES (8, 0, 0, 1, 0.00, 0, 0, NULL, 0, 1, 0.00, '22', 'C8', 0.00, 12.00, 'DYNAMIC', 1, 35.95, 12.00, 0.00, 0, NULL, 3, 521, 5, 1, 521);
-INSERT INTO public.item (id, case_depth, case_height, case_pack, case_weight, case_width, depth, description, height, hi, labor_cost, name, number, other_cost, package_cost, status, ti, total_cost, warehouse_cost, weight, width, attachment_id, brand_id, case_upc_id, category_id, season_id, upc_id) VALUES (11, 0, 0, 1, 0.00, 0, 0, NULL, 0, 1, 0.00, '11', 'C11', 0.00, 12.00, 'DYNAMIC', 1, 36.00, 12.00, 0.00, 0, NULL, 3, 522, 5, 1, 522);
-INSERT INTO public.item (id, case_depth, case_height, case_pack, case_weight, case_width, depth, description, height, hi, labor_cost, name, number, other_cost, package_cost, status, ti, total_cost, warehouse_cost, weight, width, attachment_id, brand_id, case_upc_id, category_id, season_id, upc_id) VALUES (36, 0, 0, 1, 0.00, 0, 0, NULL, 0, 1, 0.00, '36', 'C36', 0.00, 12.00, 'DYNAMIC', 1, 30.30, 12.00, 0.00, 0, NULL, 1, 523, 7, 1, 523);
-INSERT INTO public.item (id, case_depth, case_height, case_pack, case_weight, case_width, depth, description, height, hi, labor_cost, name, number, other_cost, package_cost, status, ti, total_cost, warehouse_cost, weight, width, attachment_id, brand_id, case_upc_id, category_id, season_id, upc_id) VALUES (6, 0, 0, 1, 0.00, 0, 0, NULL, 0, 1, 0.00, '66', 'C6', 0.00, 12.00, 'DYNAMIC', 1, 32.20, 12.00, 0.00, 0, NULL, 2, 520, 5, 1, 520);
+INSERT INTO public.item (id, case_depth, case_height, case_pack, case_weight, case_width, depth, description, height, hi, labor_cost, name, number, other_cost, package_cost, status, ti, total_cost, units_on_stack, units_scheduled, warehouse_cost, weight, width, attachment_id, brand_id, case_upc_id, category_id, season_id, upc_id) VALUES (8, 0, 0, 1, 0.00, 0, 0, NULL, 0, 1, 0.00, '22', 'C8', 0.00, 12.00, 'DYNAMIC', 1, 35.95, NULL, NULL, 12.00, 0.00, 0, NULL, 3, 521, 5, 1, 521);
+INSERT INTO public.item (id, case_depth, case_height, case_pack, case_weight, case_width, depth, description, height, hi, labor_cost, name, number, other_cost, package_cost, status, ti, total_cost, units_on_stack, units_scheduled, warehouse_cost, weight, width, attachment_id, brand_id, case_upc_id, category_id, season_id, upc_id) VALUES (11, 0, 0, 1, 0.00, 0, 0, NULL, 0, 1, 0.00, '11', 'C11', 0.00, 12.00, 'DYNAMIC', 1, 36.00, NULL, NULL, 12.00, 0.00, 0, NULL, 3, 522, 5, 1, 522);
+INSERT INTO public.item (id, case_depth, case_height, case_pack, case_weight, case_width, depth, description, height, hi, labor_cost, name, number, other_cost, package_cost, status, ti, total_cost, units_on_stack, units_scheduled, warehouse_cost, weight, width, attachment_id, brand_id, case_upc_id, category_id, season_id, upc_id) VALUES (36, 0, 0, 1, 0.00, 0, 0, NULL, 0, 1, 0.00, '36', 'C36', 0.00, 12.00, 'DYNAMIC', 1, 30.30, NULL, NULL, 12.00, 0.00, 0, NULL, 1, 523, 7, 1, 523);
+INSERT INTO public.item (id, case_depth, case_height, case_pack, case_weight, case_width, depth, description, height, hi, labor_cost, name, number, other_cost, package_cost, status, ti, total_cost, units_on_stack, units_scheduled, warehouse_cost, weight, width, attachment_id, brand_id, case_upc_id, category_id, season_id, upc_id) VALUES (6, 0, 0, 1, 0.00, 0, 0, NULL, 0, 1, 0.00, '66', 'C6', 0.00, 12.00, 'DYNAMIC', 1, 32.20, NULL, NULL, 12.00, 0.00, 0, NULL, 2, 520, 5, 1, 520);
 
 
 --
--- TOC entry 2286 (class 0 OID 713781)
+-- TOC entry 2294 (class 0 OID 825579)
 -- Dependencies: 190
 -- Data for Name: item_component; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1656,7 +1656,7 @@ INSERT INTO public.item_component (id, units, component_id, item_id) VALUES (7, 
 
 
 --
--- TOC entry 2287 (class 0 OID 713786)
+-- TOC entry 2295 (class 0 OID 825584)
 -- Dependencies: 191
 -- Data for Name: line; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1672,34 +1672,8 @@ INSERT INTO public.line (id, name, number) VALUES (8, 'Eight Line', 8);
 
 
 --
--- TOC entry 2288 (class 0 OID 713791)
--- Dependencies: 192
--- Data for Name: purchase; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-INSERT INTO public.purchase (id, date, expected_date, number, submitted, total_price, attachment_id, address_id, supplier_id) VALUES (6, '2019-04-04 19:00:00', NULL, '22', true, 24.60, 94, NULL, 32);
-INSERT INTO public.purchase (id, date, expected_date, number, submitted, total_price, attachment_id, address_id, supplier_id) VALUES (28, '2019-04-04 19:00:00', NULL, '33', true, 3.75, 101, NULL, 2);
-INSERT INTO public.purchase (id, date, expected_date, number, submitted, total_price, attachment_id, address_id, supplier_id) VALUES (103, '2019-04-07 19:00:00', NULL, '103', true, 18.30, 121, NULL, 1);
-INSERT INTO public.purchase (id, date, expected_date, number, submitted, total_price, attachment_id, address_id, supplier_id) VALUES (24, '2019-04-04 19:00:00', NULL, '11', false, 668621.70, NULL, NULL, 1);
-
-
---
--- TOC entry 2289 (class 0 OID 713796)
--- Dependencies: 193
--- Data for Name: purchase_component; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-INSERT INTO public.purchase_component (id, units, units_in_transit, units_ordered, units_received, component_id, purchase_id) VALUES (100, 1, 0, 1, 0, 4, 28);
-INSERT INTO public.purchase_component (id, units, units_in_transit, units_ordered, units_received, component_id, purchase_id) VALUES (91, 6, 0, 6, 6, 3, 6);
-INSERT INTO public.purchase_component (id, units, units_in_transit, units_ordered, units_received, component_id, purchase_id) VALUES (118, 2, 1, 2, 0, 5, 103);
-INSERT INTO public.purchase_component (id, units, units_in_transit, units_ordered, units_received, component_id, purchase_id) VALUES (119, 2, 1, 2, 1, 33, 103);
-INSERT INTO public.purchase_component (id, units, units_in_transit, units_ordered, units_received, component_id, purchase_id) VALUES (125, 79938, 0, 0, 0, 5, 24);
-INSERT INTO public.purchase_component (id, units, units_in_transit, units_ordered, units_received, component_id, purchase_id) VALUES (126, 89997, 0, 0, 0, 33, 24);
-
-
---
--- TOC entry 2293 (class 0 OID 713822)
--- Dependencies: 197
+-- TOC entry 2302 (class 0 OID 825625)
+-- Dependencies: 198
 -- Data for Name: sale; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -1710,8 +1684,71 @@ INSERT INTO public.sale (id, date, expected_date, freight_terms, number, payment
 
 
 --
--- TOC entry 2290 (class 0 OID 713801)
+-- TOC entry 2303 (class 0 OID 825633)
+-- Dependencies: 199
+-- Data for Name: sale_item; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+INSERT INTO public.sale_item (id, total_unit_price, unit_price, units, item_id, sale_id) VALUES (16, 21000.00, 21.00, 1000, 6, 15);
+INSERT INTO public.sale_item (id, total_unit_price, unit_price, units, item_id, sale_id) VALUES (18, 4400.00, 22.00, 200, 8, 17);
+INSERT INTO public.sale_item (id, total_unit_price, unit_price, units, item_id, sale_id) VALUES (19, 480000.00, 1200.00, 400, 6, 17);
+INSERT INTO public.sale_item (id, total_unit_price, unit_price, units, item_id, sale_id) VALUES (39, 360000.00, 12.00, 30000, 36, 38);
+INSERT INTO public.sale_item (id, total_unit_price, unit_price, units, item_id, sale_id) VALUES (91, 630000.00, 15.75, 40000, 11, 90);
+
+
+--
+-- TOC entry 2304 (class 0 OID 825638)
+-- Dependencies: 200
+-- Data for Name: schedule; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+
+
+--
+-- TOC entry 2305 (class 0 OID 825643)
+-- Dependencies: 201
+-- Data for Name: schedule_item; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+
+
+--
+-- TOC entry 2296 (class 0 OID 825589)
+-- Dependencies: 192
+-- Data for Name: production; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+
+
+--
+-- TOC entry 2297 (class 0 OID 825594)
+-- Dependencies: 193
+-- Data for Name: purchase; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+INSERT INTO public.purchase (id, date, expected_date, number, submitted, total_price, attachment_id, address_id, supplier_id) VALUES (6, '2019-04-04 19:00:00', NULL, '22', true, 24.60, 94, NULL, 32);
+INSERT INTO public.purchase (id, date, expected_date, number, submitted, total_price, attachment_id, address_id, supplier_id) VALUES (28, '2019-04-04 19:00:00', NULL, '33', true, 3.75, 101, NULL, 2);
+INSERT INTO public.purchase (id, date, expected_date, number, submitted, total_price, attachment_id, address_id, supplier_id) VALUES (103, '2019-04-07 19:00:00', NULL, '103', true, 18.30, 121, NULL, 1);
+INSERT INTO public.purchase (id, date, expected_date, number, submitted, total_price, attachment_id, address_id, supplier_id) VALUES (24, '2019-04-04 19:00:00', NULL, '11', false, 668621.70, NULL, NULL, 1);
+
+
+--
+-- TOC entry 2298 (class 0 OID 825599)
 -- Dependencies: 194
+-- Data for Name: purchase_component; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+INSERT INTO public.purchase_component (id, units, units_in_transit, units_ordered, units_received, component_id, purchase_id) VALUES (100, 1, 0, 1, 0, 4, 28);
+INSERT INTO public.purchase_component (id, units, units_in_transit, units_ordered, units_received, component_id, purchase_id) VALUES (91, 6, 0, 6, 6, 3, 6);
+INSERT INTO public.purchase_component (id, units, units_in_transit, units_ordered, units_received, component_id, purchase_id) VALUES (119, 2, 1, 2, 1, 33, 103);
+INSERT INTO public.purchase_component (id, units, units_in_transit, units_ordered, units_received, component_id, purchase_id) VALUES (125, 79938, 0, 0, 0, 5, 24);
+INSERT INTO public.purchase_component (id, units, units_in_transit, units_ordered, units_received, component_id, purchase_id) VALUES (126, 89997, 0, 0, 0, 33, 24);
+INSERT INTO public.purchase_component (id, units, units_in_transit, units_ordered, units_received, component_id, purchase_id) VALUES (118, 2, 10, 2, 0, 5, 103);
+
+
+--
+-- TOC entry 2299 (class 0 OID 825604)
+-- Dependencies: 195
 -- Data for Name: purchase_sale; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -1730,21 +1767,22 @@ INSERT INTO public.purchase_sale (id, units, purchase_id, sale_id) VALUES (111, 
 
 
 --
--- TOC entry 2291 (class 0 OID 713806)
--- Dependencies: 195
+-- TOC entry 2300 (class 0 OID 825609)
+-- Dependencies: 196
 -- Data for Name: receiving; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public.receiving (id, container, eta_date, number, received_date, shipped_date, units, purchase_component_id) VALUES (98, NULL, NULL, '98', '2019-04-04 19:00:00', NULL, 3, 91);
-INSERT INTO public.receiving (id, container, eta_date, number, received_date, shipped_date, units, purchase_component_id) VALUES (122, NULL, '2019-04-09 19:00:00', '122', NULL, '2019-04-04 19:00:00', 1, 118);
-INSERT INTO public.receiving (id, container, eta_date, number, received_date, shipped_date, units, purchase_component_id) VALUES (123, NULL, '2019-04-07 19:00:00', '123', '2019-04-09 19:00:00', '2019-04-04 19:00:00', 1, 119);
-INSERT INTO public.receiving (id, container, eta_date, number, received_date, shipped_date, units, purchase_component_id) VALUES (124, NULL, '2019-04-09 19:00:00', '124', NULL, '2019-04-04 19:00:00', 1, 119);
-INSERT INTO public.receiving (id, container, eta_date, number, received_date, shipped_date, units, purchase_component_id) VALUES (102, NULL, '2019-04-07 19:00:00', '102', '2019-04-07 19:00:00', '2019-04-07 19:00:00', 3, 91);
+INSERT INTO public.receiving (id, container, eta_date, number, received_date, shipped_date, units, units_reserved, purchase_component_id) VALUES (98, NULL, NULL, '98', '2019-04-04 19:00:00', NULL, 3, 0, 91);
+INSERT INTO public.receiving (id, container, eta_date, number, received_date, shipped_date, units, units_reserved, purchase_component_id) VALUES (123, NULL, '2019-04-07 19:00:00', '123', '2019-04-09 19:00:00', '2019-04-04 19:00:00', 1, 0, 119);
+INSERT INTO public.receiving (id, container, eta_date, number, received_date, shipped_date, units, units_reserved, purchase_component_id) VALUES (124, NULL, '2019-04-09 19:00:00', '124', NULL, '2019-04-04 19:00:00', 1, 0, 119);
+INSERT INTO public.receiving (id, container, eta_date, number, received_date, shipped_date, units, units_reserved, purchase_component_id) VALUES (102, NULL, '2019-04-07 19:00:00', '102', '2019-04-07 19:00:00', '2019-04-07 19:00:00', 3, 0, 91);
+INSERT INTO public.receiving (id, container, eta_date, number, received_date, shipped_date, units, units_reserved, purchase_component_id) VALUES (122, NULL, '2019-04-25 19:00:00', '122', NULL, '2019-04-04 19:00:00', 6, 4, 118);
+INSERT INTO public.receiving (id, container, eta_date, number, received_date, shipped_date, units, units_reserved, purchase_component_id) VALUES (127, NULL, '2019-04-26 19:00:00', '127', NULL, '2019-04-25 19:00:00', 4, 2, 118);
 
 
 --
--- TOC entry 2292 (class 0 OID 713814)
--- Dependencies: 196
+-- TOC entry 2301 (class 0 OID 825617)
+-- Dependencies: 197
 -- Data for Name: role; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -1754,37 +1792,8 @@ INSERT INTO public.role (id, code, description, name) VALUES (3, 'INVENTORY', 'C
 
 
 --
--- TOC entry 2294 (class 0 OID 713830)
--- Dependencies: 198
--- Data for Name: sale_item; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-INSERT INTO public.sale_item (id, total_unit_price, unit_price, units, item_id, sale_id) VALUES (16, 21000.00, 21.00, 1000, 6, 15);
-INSERT INTO public.sale_item (id, total_unit_price, unit_price, units, item_id, sale_id) VALUES (18, 4400.00, 22.00, 200, 8, 17);
-INSERT INTO public.sale_item (id, total_unit_price, unit_price, units, item_id, sale_id) VALUES (19, 480000.00, 1200.00, 400, 6, 17);
-INSERT INTO public.sale_item (id, total_unit_price, unit_price, units, item_id, sale_id) VALUES (39, 360000.00, 12.00, 30000, 36, 38);
-INSERT INTO public.sale_item (id, total_unit_price, unit_price, units, item_id, sale_id) VALUES (91, 630000.00, 15.75, 40000, 11, 90);
-
-
---
--- TOC entry 2295 (class 0 OID 713835)
--- Dependencies: 199
--- Data for Name: schedule; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-
-
---
--- TOC entry 2296 (class 0 OID 713840)
--- Dependencies: 200
--- Data for Name: schedule_item; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-
-
---
--- TOC entry 2299 (class 0 OID 713861)
--- Dependencies: 203
+-- TOC entry 2308 (class 0 OID 825664)
+-- Dependencies: 204
 -- Data for Name: system_user; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -1794,8 +1803,8 @@ INSERT INTO public.system_user (id, first_name, last_name, number, password, use
 
 
 --
--- TOC entry 2301 (class 0 OID 713874)
--- Dependencies: 205
+-- TOC entry 2310 (class 0 OID 825677)
+-- Dependencies: 206
 -- Data for Name: user_role; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -1810,9 +1819,9 @@ INSERT INTO public.user_role (role_id, user_id) VALUES (3, 87);
 
 
 --
--- TOC entry 2308 (class 0 OID 0)
+-- TOC entry 2317 (class 0 OID 0)
 -- Dependencies: 181
 -- Name: hibernate_sequence; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.hibernate_sequence', 126, true);
+SELECT pg_catalog.setval('public.hibernate_sequence', 127, true);

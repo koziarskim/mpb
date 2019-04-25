@@ -27,6 +27,7 @@ public class Receiving {
 	private String number;
 	private String container;
 	private int units;
+	private int unitsReserved;
 	private Date shippedDate;
 	private Date etaDate;
 	private Date receivedDate;
