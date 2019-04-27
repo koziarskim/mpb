@@ -7,7 +7,7 @@
         </b-col>
         <b-col>
           <div style="text-align: right;">
-            <b-button v-if="scheduleItem.id" style="margin: 0 2px 0 2px" @click="deleteModal()">Delete</b-button>
+            <b-button v-if="scheduleItem.id || (!scheduleItem.productions || scheduleItem.productions.length<=0)" style="margin: 0 2px 0 2px" @click="deleteModal()">Delete</b-button>
             <b-button style="margin: 0 2px 0 2px" @click="closeModal()">Close</b-button>
             <b-button style="margin: 0 2px 0 2px" @click="saveModal()" variant="success">Save</b-button>
           </div>
@@ -85,7 +85,7 @@ export default {
   computed: {
     stillAvailable() {
       return (
-        +this.availableToSchedule
+        +this.availableToSchedule + +this.previousScheduled - +this.scheduleItem.unitsScheduled
       );
     }
   },

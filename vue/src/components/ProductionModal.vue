@@ -89,7 +89,7 @@ export default {
       }
       if (this.item.id) {
         var itemDto = this.allItems.find(dto => dto.id == this.item.id);
-        this.availableToSchedule = itemDto.unitsReady;
+        this.availableToSchedule = itemDto.unitsAvailable;
         this.getAvailableSaleItems(this.item.id);
       }
     },

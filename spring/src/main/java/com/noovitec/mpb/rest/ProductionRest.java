@@ -1,5 +1,7 @@
 package com.noovitec.mpb.rest;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -67,7 +69,8 @@ class ProductionRest {
 		ScheduleItem scheduleItem = scheduleItemRepo.getOne(result.getScheduleItem().getId());
 		//update component.unitsReserved then component.unitsOnStack
 		for(ItemComponent ic : scheduleItem.getItem().getItemComponents()) {
-			Long componentUnits = result.getUnitsProduced() * ic.getUnits();
+			float componentUnitsFloat = result.getUnitsProduced() * ic.getUnits();
+			Long componentUnits = (long) new BigDecimal(componentUnitsFloat).setScale(0, RoundingMode.DOWN).intValue();
 			Component component = ic.getComponent();
 			//Subtract
 			Long extraUnits = component.addUnitsReserved(componentUnits * (-1));

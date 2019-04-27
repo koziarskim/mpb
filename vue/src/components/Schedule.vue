@@ -17,7 +17,7 @@
       </div>
       <div class="n-cell" v-for="line in numberOfLines" :key="line">
         <div :style="getColor(si)" v-for="si in getScheduleItemsByLine(line, s.scheduleItems)" :key="si.id">
-          <a href="#" @click="editSchedule(s, si)">{{si.item.number}}: </a>
+          <a href="#" @click="editSchedule(s, si)">{{si.item.number}}:</a>
           <a href="#" @click="editProduction(s, si)">{{si.saleItem.sale?si.saleItem.sale.customer.name:''}}</a>
         </div>
       </div>
@@ -41,7 +41,7 @@ export default {
   data() {
     return {
       numberOfLines: 8,
-      scheduleItem: {unitsScheduled: 0},
+      scheduleItem: { unitsScheduled: 0 },
       schedule: {},
       schedules: [{ id: 1 }],
       scheduleModalVisible: false,
@@ -59,14 +59,15 @@ export default {
       http
         .get("/schedule/date/" + this.scheduleDate)
         .then(response => {
-          this.schedules = response.data;
-          this.schedules.sort(function(a, b) {
-            var dateA = new Date(a.date),
-              dateB = new Date(b.date);
-            return dateA - dateB;
-          });
           response.data.forEach(schedule => {
-            this.markItemsToReschedule(schedule);
+            this.markItemsToReschedule(schedule).then(r => {
+              this.schedules = response.data;
+              this.schedules.sort(function(a, b) {
+                var dateA = new Date(a.date),
+                  dateB = new Date(b.date);
+                return dateA - dateB;
+              });
+            });
           });
         })
         .catch(e => {
@@ -85,7 +86,7 @@ export default {
         });
     },
     markItemsToReschedule(schedule) {
-      this.getItemsToReschedule(schedule.date).then(itemDtos => {
+      return this.getItemsToReschedule(schedule.date).then(itemDtos => {
         itemDtos.forEach(itemDto => {
           schedule.scheduleItems.forEach(scheduleItem => {
             if (scheduleItem.item.id == itemDto.id) {
@@ -94,6 +95,7 @@ export default {
             }
           });
         });
+        return "";
       });
     },
     getScheduleItemsByLine(lineNumber, scheduleItems) {
@@ -114,7 +116,7 @@ export default {
           this.scheduleModalVisible = true;
         });
       } else {
-        this.scheduleItem = {unitsScheduled: 0, unitsAvailable: 0};
+        this.scheduleItem = { unitsScheduled: 0, unitsAvailable: 0, productions: []};
         this.schedule = schedule;
         this.scheduleModalVisible = true;
       }
@@ -207,18 +209,20 @@ export default {
       var mins = time.split(":")[1];
       return hours + ":" + mins;
     },
-    dayOfWeek(date){
-        if(!date){
-            return "";
-        }
-        return moment(date).utc().format("dddd");
+    dayOfWeek(date) {
+      if (!date) {
+        return "";
+      }
+      return moment(date)
+        .utc()
+        .format("dddd");
     },
     getColor(si) {
-      if (si.unitsShort < 0) {
-        return "background-color: #f9b3ae";
+      if (si.unitsScheduled == si.totalProduced) {
+        return "background-color: #c2f5c4";
       }
-      if (si.unitsScheduled == si.totalProduced){
-          return "background-color: #c2f5c4"
+      if (si.unitsAvailable < 0) {
+        return "background-color: #f9b3ae";
       }
       return "";
     }
