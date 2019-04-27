@@ -29,6 +29,7 @@ public class ScheduleItem {
 	@GeneratedValue
 	private Long id;
 	Long unitsScheduled;
+	Long unitsTransitScheduled;
 	LocalTime startTime;
 
 	@JsonIgnoreProperties(value = { "scheduleItems" }, allowSetters = true)

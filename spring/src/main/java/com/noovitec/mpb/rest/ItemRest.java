@@ -121,52 +121,81 @@ class ItemRest {
 	@GetMapping("/item/eta/{date}")
 	Collection<ItemDto> getAllByEta(@PathVariable @DateTimeFormat(pattern="yyyy-MM-dd") Date date, @RequestParam(name="negativeOnly", required=false) boolean negativeOnly) {
 		Collection<ItemDto> dtos = new HashSet<ItemDto>();
-		Map<Long, Long> transitComponents = new HashMap<Long, Long>();
-		List<KeyValueDto> tcs = receivingRepo.findReceivingByEta(date);
-		for(KeyValueDto keyValueDto : tcs) {
-			transitComponents.put(keyValueDto.getKey(), (Long) keyValueDto.getValue());
+		Map<Long, Long> pastComponents = new HashMap<Long, Long>();
+		Map<Long, Long> futureComponents = new HashMap<Long, Long>();
+
+		List<KeyValueDto> pc = receivingRepo.findReceivingPastEta(date);
+		List<KeyValueDto> fc = receivingRepo.findReceivingFutureEta(date);
+		
+		for(KeyValueDto keyValueDto : pc) {
+			pastComponents.put(keyValueDto.getKey(), (Long) keyValueDto.getValue());
 		}
+		for(KeyValueDto keyValueDto : fc) {
+			futureComponents.put(keyValueDto.getKey(), (Long) keyValueDto.getValue());
+		}
+
+		
 		for(Item item : itemRepo.findAll()) {
 			ItemDto dto = new ItemDto();
 			dto.setId(item.getId());
 			dto.setNumber(item.getNumber());
-			int itemsReady = 0;
-			int itemsInTransit = 0;
+			dto.setUnitsScheduled(item.getUnitsScheduled()==null?0:item.getUnitsScheduled().intValue());
+			int itemsPastTransit = 0;
+			int itemsFutureTransit = 0;
+//			int itemsInTransit = 0;
 			for(ItemComponent ic : item.getItemComponents()) {
 				//Transit
-				Long key = transitComponents.get(ic.getComponent().getId());
-				int componentsInTransit = (int) (key==null?0:key);
-				float currentItemsInTransitFloat = componentsInTransit/ic.getUnits();
-				int currentItemsInTransit = 0;
+				Long pastCompUnits = pastComponents.get(ic.getComponent().getId());
+				Long futureCompUnits = futureComponents.get(ic.getComponent().getId());
+
+//				int componentsInTransit = (int) (pastCompUnits==null?0:pastCompUnits);
+//				float currentItemsInTransitFloat = componentsInTransit/ic.getUnits();
+//				int currentItemsInTransit = 0;
 				//Ready
-				int componentUnitsReserved = ic.getComponent().getUnitsReserved()==null?0:ic.getComponent().getUnitsReserved().intValue();
-				int componentUnitsAvailable = ic.getComponent().getUnitsOnStack() - componentUnitsReserved;
-				float currentItemsReadyFloat = (componentUnitsAvailable + componentsInTransit)/ic.getUnits();
-				int currentItemsReady = 0;
+//				int componentUnitsReserved = ic.getComponent().getUnitsReserved()==null?0:ic.getComponent().getUnitsReserved().intValue();
+//				int componentUnitsAvailable = ic.getComponent().getUnitsOnStack();
+				float currentItemsPastFloat = (ic.getComponent().getUnitsOnStack() + (pastCompUnits==null?0:pastCompUnits))/ic.getUnits();
+				int currentItemsPast = 0;
+
+				float currentItemsFutureFloat = (futureCompUnits==null?0:futureCompUnits)/ic.getUnits();
+				int currentItemsFuture = 0;
+
+				
 				//Transit
-				if(currentItemsInTransitFloat>0) {
-					currentItemsInTransit = new BigDecimal(currentItemsInTransitFloat).setScale(0, RoundingMode.DOWN).intValue();
+//				if(currentItemsInTransitFloat>0) {
+//					currentItemsInTransit = new BigDecimal(currentItemsInTransitFloat).setScale(0, RoundingMode.DOWN).intValue();
+//				}else {
+//					currentItemsInTransit = new BigDecimal(currentItemsInTransitFloat).setScale(0, RoundingMode.UP).intValue();
+//				}
+//				if(itemsInTransit == 0 || currentItemsInTransit < itemsInTransit) {
+//					itemsInTransit = currentItemsInTransit;
+//				}
+				//Past
+				if(currentItemsPastFloat>0) {
+					currentItemsPast = new BigDecimal(currentItemsPastFloat).setScale(0, RoundingMode.DOWN).intValue();
 				}else {
-					currentItemsInTransit = new BigDecimal(currentItemsInTransitFloat).setScale(0, RoundingMode.UP).intValue();
+					currentItemsPast = new BigDecimal(currentItemsPastFloat).setScale(0, RoundingMode.UP).intValue();
 				}
-				if(itemsInTransit == 0 || currentItemsInTransit < itemsInTransit) {
-					itemsInTransit = currentItemsInTransit;
+				if(itemsPastTransit == 0 || currentItemsPast < itemsPastTransit) {
+					itemsPastTransit = currentItemsPast;
 				}
-				//Ready
-				if(currentItemsReadyFloat>0) {
-					currentItemsReady = new BigDecimal(currentItemsReadyFloat).setScale(0, RoundingMode.DOWN).intValue();
+				//Future
+				if(currentItemsFutureFloat>0) {
+					currentItemsFuture = new BigDecimal(currentItemsFutureFloat).setScale(0, RoundingMode.DOWN).intValue();
 				}else {
-					currentItemsReady = new BigDecimal(currentItemsReadyFloat).setScale(0, RoundingMode.UP).intValue();
+					currentItemsFuture = new BigDecimal(currentItemsFutureFloat).setScale(0, RoundingMode.UP).intValue();
 				}
-				if(itemsReady == 0 || currentItemsReady < itemsReady) {
-					itemsReady = currentItemsReady;
+				if(itemsFutureTransit == 0 || currentItemsFuture < itemsFutureTransit) {
+					itemsFutureTransit = currentItemsFuture;
 				}
 
 			}
-			dto.setUnitsReady(itemsReady);
-			dto.setUnitsInTransit(itemsInTransit);
+			dto.setUnitsReady(itemsPastTransit);
+			dto.setUnitsPastTransit(itemsPastTransit);
+			dto.setUnitsFutureTransit(itemsFutureTransit);
+//			dto.setUnitsInTransit(itemsInTransit);
 			if(negativeOnly) {
-				if(itemsReady<0) {
+				if(itemsPastTransit<0) {
 					dtos.add(dto);
 				}
 			}else {

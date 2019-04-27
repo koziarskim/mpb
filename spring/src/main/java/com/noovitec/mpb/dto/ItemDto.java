@@ -19,6 +19,10 @@ public class ItemDto {
 	private int unitsInTransit = 0;
 	private int unitsOnStack = 0;
 	private int unitsScheduled = 0;
+	private int unitsPastTransit = 0;
+	private int unitsFutureTransit = 0;
+	private int unitsShort = 0;
+	private int unitsAvailable = 0;
 	
 	public ItemDto(Long id, String number, String name, String brand, String category, String status, Long unitsOnStack, Long unitsScheduled) {
 		this.id = id;
@@ -29,5 +33,16 @@ public class ItemDto {
 		this.status = status;
 		this.unitsOnStack = unitsOnStack==null?0:unitsOnStack.intValue();
 		this.unitsScheduled = unitsScheduled==null?0:unitsScheduled.intValue();
+	}
+	
+	public int getUnitsShort() {
+		int units = this.getUnitsFutureTransit() - this.getUnitsScheduled();
+		this.unitsShort = units<0?units:0;
+		return this.unitsShort * (-1);
+	}
+	
+	public int getUnitsAvailable() {
+		this.unitsAvailable = this.getUnitsPastTransit() - this.getUnitsShort();
+		return this.unitsAvailable;
 	}
 }

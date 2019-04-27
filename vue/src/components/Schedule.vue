@@ -46,6 +46,7 @@ export default {
       schedules: [{ id: 1 }],
       scheduleModalVisible: false,
       productionModalVisible: false,
+      itemDtos: [],
       scheduleDate: moment()
         .utc()
         .format("YYYY-MM-DD")
@@ -74,8 +75,9 @@ export default {
     },
     getItemsToReschedule(date) {
       return http
-        .get("/item/eta/" + date + "?negativeOnly=true")
+        .get("/item/eta/" + date)
         .then(response => {
+          this.itemDtos = response.data;
           return response.data;
         })
         .catch(e => {
@@ -87,7 +89,8 @@ export default {
         itemDtos.forEach(itemDto => {
           schedule.scheduleItems.forEach(scheduleItem => {
             if (scheduleItem.item.id == itemDto.id) {
-              scheduleItem.unitsShort = itemDto.unitsReady;
+              scheduleItem.unitsShort = itemDto.unitsShort;
+              scheduleItem.unitsAvailable = itemDto.unitsAvailable;
             }
           });
         });
@@ -111,7 +114,7 @@ export default {
           this.scheduleModalVisible = true;
         });
       } else {
-        this.scheduleItem = {unitsScheduled: 0};
+        this.scheduleItem = {unitsScheduled: 0, unitsAvailable: 0};
         this.schedule = schedule;
         this.scheduleModalVisible = true;
       }

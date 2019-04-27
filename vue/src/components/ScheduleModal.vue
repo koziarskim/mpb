@@ -85,8 +85,6 @@ export default {
   computed: {
     stillAvailable() {
       return (
-        +this.previousScheduled -
-        +this.scheduleItem.unitsScheduled +
         +this.availableToSchedule
       );
     }
@@ -99,7 +97,7 @@ export default {
       if (this.item.id) {
         var itemDto = this.allItems.find(dto => dto.id == this.item.id);
         this.itemsInTransit = itemDto.unitsInTransit;
-        this.availableToSchedule = itemDto.unitsReady;
+        this.availableToSchedule = itemDto.unitsAvailable;
 
         this.getAvailableSaleItems(this.item.id);
       }
@@ -199,6 +197,8 @@ export default {
       this.scheduleItem.item = { id: this.item.id };
       this.scheduleItem.saleItem = { id: this.saleItem.id };
       this.scheduleItem.schedule = { id: this.schedule.id };
+    //   this.scheduleItem.unitsTransitScheduled = 
+
       http
         .post("/scheduleItem", this.scheduleItem)
         .then(response => {

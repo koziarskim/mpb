@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.itextpdf.text.DocumentException;
+import com.noovitec.mpb.entity.ItemComponent;
 import com.noovitec.mpb.entity.Schedule;
 import com.noovitec.mpb.entity.ScheduleItem;
 import com.noovitec.mpb.repo.ItemRepo;

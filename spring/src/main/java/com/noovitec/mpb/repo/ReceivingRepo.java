@@ -25,6 +25,16 @@ public interface ReceivingRepo extends JpaRepository<Receiving, Long> {
 			+ "join r.purchaseComponent pc "
 			+ "where r.etaDate <= :date and r.receivedDate is null "
 			+ "group by pc.component.id")
-	List<KeyValueDto> findReceivingByEta(@Param("date") @DateTimeFormat(pattern = "yyyy-MM-dd") Date date);
+	List<KeyValueDto> findReceivingPastEta(@Param("date") @DateTimeFormat(pattern = "yyyy-MM-dd") Date date);
+
+	@Query("select new com.noovitec.mpb.dto.KeyValueDto(pc.component.id, sum(r.units)) "
+			+ "from Receiving r "
+			+ "join r.purchaseComponent pc "
+			+ "where r.etaDate > :date and r.receivedDate is null "
+			+ "group by pc.component.id")
+	List<KeyValueDto> findReceivingFutureEta(@Param("date") @DateTimeFormat(pattern = "yyyy-MM-dd") Date date);
+
+	@Query("select r from Receiving r where r.receivedDate is null")
+	List<Receiving> findReceivingInTransit();
 
 }
