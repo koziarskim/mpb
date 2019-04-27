@@ -19,9 +19,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@MappedSuperclass
 @Entity
-public class BaseEntity extends Object {
+public abstract class BaseEntity extends Object {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
