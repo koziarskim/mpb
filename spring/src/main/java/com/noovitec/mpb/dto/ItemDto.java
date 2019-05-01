@@ -16,7 +16,7 @@ public class ItemDto {
 	private String category;
 	private String status;
 	private int unitsOnStack = 0; //This is the stack of Item not components.
-	private int totalScheduled = 0; //Total Items scheduled
+	private int totalScheduled = 0; //Total Items scheduled not produced yet. Produced units are subtracted.
 	private int unitsReadyProduction = 0; //Items ready for production (all components are on stack).
 	private int unitsReadySchedule = 0; //Items ready to be scheduled (some components might be in transit).
 

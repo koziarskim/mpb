@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -45,6 +46,7 @@ import com.noovitec.mpb.entity.Upc;
 import com.noovitec.mpb.repo.AttachmentRepo;
 import com.noovitec.mpb.repo.ItemRepo;
 import com.noovitec.mpb.repo.ReceivingRepo;
+import com.noovitec.mpb.repo.ScheduleItemRepo;
 import com.noovitec.mpb.repo.SeasonRepo;
 import com.noovitec.mpb.repo.UpcRepo;
 
@@ -63,6 +65,8 @@ class ItemRest {
 	UpcRepo upcRepo;
 	@Autowired
 	ReceivingRepo receivingRepo;
+	@Autowired
+	ScheduleItemRepo scheduleItemRepo;
 
 	private final Logger log = LoggerFactory.getLogger(ItemRest.class);
 	private ItemRepo itemRepo;
@@ -118,8 +122,17 @@ class ItemRest {
 		return this.itemToDto(itemRepo.getPurchaseItems(purchase_id));
 	}
 
+	@GetMapping("/item/{item_id}/eta/{date}")
+	Collection<ItemDto> getItemByEta(@PathVariable @DateTimeFormat(pattern="yyyy-MM-dd") Date date, @PathVariable Long item_id) {
+		return this.getByEta(date, item_id, true);
+	}
+	
 	@GetMapping("/item/eta/{date}")
 	Collection<ItemDto> getAllByEta(@PathVariable @DateTimeFormat(pattern="yyyy-MM-dd") Date date, @RequestParam(name="includeAll", required=false) boolean includeAll) {
+		return this.getByEta(date, null, includeAll);
+	}
+	
+	private Collection<ItemDto> getByEta(Date date, Long item_id, boolean includeAll){
 		Collection<ItemDto> dtos = new HashSet<ItemDto>();
 		Map<Long, Long> componentsInTransitToDate = new HashMap<Long, Long>();
 
@@ -129,11 +142,17 @@ class ItemRest {
 			componentsInTransitToDate.put(keyValueDto.getKey(), (Long) keyValueDto.getValue());
 		}
 		
-		for(Item item : itemRepo.findAll()) {
+		Collection<Item> items = new HashSet<Item>();
+		if(item_id==null) {
+			items.addAll(itemRepo.findAll());
+		}else {
+			items.add(itemRepo.getOne(item_id));
+		}
+		
+		for(Item item : items) {
 			ItemDto dto = new ItemDto();
 			dto.setId(item.getId());
 			dto.setNumber(item.getNumber());
-			dto.setTotalScheduled(item.getUnitsScheduled()==null?0:item.getUnitsScheduled().intValue());
 			int itemsReadySchedule = 0;
 			int itemsReadyProduction = 0;
 			for(ItemComponent ic : item.getItemComponents()) {
@@ -152,10 +171,12 @@ class ItemRest {
 					itemsReadySchedule = icReadySchedule;
 				}
 			}
+			Long unitsScheduledFromToday = scheduleItemRepo.getUnitsScheduled(LocalDate.now(), item.getId());
+			dto.setTotalScheduled(unitsScheduledFromToday==null?0:unitsScheduledFromToday.intValue());
+			dto.setUnitsReadySchedule(itemsReadySchedule - dto.getTotalScheduled());
 			dto.setUnitsReadyProduction(itemsReadyProduction);
-			dto.setUnitsReadySchedule(itemsReadySchedule);
 			if(!includeAll) {
-				if(itemsReadySchedule>0 && dto.getTotalScheduled()<dto.getUnitsReadySchedule()) {
+				if(dto.getUnitsReadySchedule()>0) {
 					dtos.add(dto);
 				}
 			}else {

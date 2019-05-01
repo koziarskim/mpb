@@ -47,9 +47,7 @@
         <b-col cols="4">
           <label class="top-label">Total Sold: {{saleItem.units}}</label>
           <br>
-          <label class="top-label">Total Scheduled: {{totalScheduledCalc}}</label>
-          <br>
-          <label class="top-label">Ready to schedule: {{readyScheduleCalc}}</label>
+          <label class="top-label">Available to schedule: {{item.unitsReadySchedule}}</label>
           <br>
           <label class="top-label">Ready for production: {{item.unitsReadyProduction}}</label>
         </b-col>
@@ -75,19 +73,13 @@ export default {
       availableSaleItems: [], //SaleItemDto
       saleItem: {}, //SaleItemDto
       availableItems: [], //ItemDto
-      item: {totalScheduled: 0}, //ItemDto
+      item: {}, //ItemDto
       availableLines: [],
       line: {},
       initScheduled: 0
     };
   },
   computed: {
-      totalScheduledCalc(){
-          return +this.item.totalScheduled - +this.initScheduled + +this.scheduleItem.unitsScheduled;
-      },
-      readyScheduleCalc(){
-          return +this.item.unitsReadySchedule - +this.totalScheduledCalc;
-      }
   },
   watch: {
     item(new_value, old_value) {
@@ -116,14 +108,18 @@ export default {
           console.log("API error: " + e);
         });
     },
-    getAvailableItems(date) {
+    getAvailableItems(date, item_id) {
       var query = "";
       //TODO: This could query only single item instead of all.
       if(this.scheduleItem.id){
           query = "?includeAll=true"
       }
+      var url = "/item/eta/" + date+query;
+      if(item_id){
+          url = "/item/"+item_id+"/eta/" + date
+      }
       http
-        .get("/item/eta/" + date+query)
+        .get(url)
         .then(response => {
           this.availableItems = response.data;
           if(this.scheduleItem.item){
@@ -175,7 +171,7 @@ export default {
         alert("Make sure all fields are entered");
         return false;
       }
-      if (this.totalScheduledCalc > this.item.unitsReadySchedule){
+      if (this.scheduleItem.unitScheduled > this.item.unitsReadySchedule){
         alert("Cannot schedule more that ready to schedule");
         return false;
       }

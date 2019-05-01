@@ -103,13 +103,8 @@ export default {
         });
     },
     getAvailableItems(date) {
-      var query = "";
-      //TODO: This could query only single item instead of all.
-      if (this.scheduleItem.id) {
-        query = "?includeAll=true";
-      }
       http
-        .get("/item/eta/" + date+query)
+        .get("/item/"+this.scheduleItem.item.id+"/eta/" + date)
         .then(response => {
             this.item = response.data.find(itemDto=> itemDto.id == this.scheduleItem.item.id)
             })
