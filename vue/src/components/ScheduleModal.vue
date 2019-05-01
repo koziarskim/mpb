@@ -48,7 +48,10 @@
           <label class="top-label">Total Sold: {{totalSold}}</label>
           <br>
           <label class="top-label">Available to schedule: {{stillAvailable}}</label>
+          <br/>
+          <label class="top-label">Available for production: {{scheduleItem.unitsReadyProduction}}</label>        
         </b-col>
+        
       </b-row>
     </b-modal>
   </b-container>
@@ -84,9 +87,7 @@ export default {
   },
   computed: {
     stillAvailable() {
-      return (
-        +this.availableToSchedule + +this.previousScheduled - +this.scheduleItem.unitsScheduled
-      );
+      return +this.availableToSchedule - +this.scheduleItem.totalUnitsScheduled;
     }
   },
   watch: {
@@ -97,7 +98,8 @@ export default {
       if (this.item.id) {
         var itemDto = this.allItems.find(dto => dto.id == this.item.id);
         this.itemsInTransit = itemDto.unitsInTransit;
-        this.availableToSchedule = itemDto.unitsAvailable;
+        this.availableToSchedule = itemDto.unitsReady;
+        this.scheduleItem.totalUnitsScheduled = itemDto.unitsScheduled;
 
         this.getAvailableSaleItems(this.item.id);
       }
@@ -131,7 +133,7 @@ export default {
         .get("/item/eta/" + date)
         .then(response => {
           this.allItems = response.data;
-          this.availableItems = response.data.filter(dto => dto.unitsReady > 0);
+          this.availableItems = response.data.filter(dto => dto.unitsAvailable > 0);
           this.item = this.scheduleItem.item ? this.scheduleItem.item : {};
         })
         .catch(e => {
@@ -223,9 +225,9 @@ export default {
     }
   },
   mounted() {
+    this.previousScheduled = this.scheduleItem.unitsScheduled;
     this.getAvailableItems(this.schedule.date);
     this.getAvailableLines();
-    this.previousScheduled = this.scheduleItem.unitsScheduled;
   }
 };
 </script>

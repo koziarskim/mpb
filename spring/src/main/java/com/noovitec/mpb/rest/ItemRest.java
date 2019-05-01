@@ -142,58 +142,34 @@ class ItemRest {
 			dto.setUnitsScheduled(item.getUnitsScheduled()==null?0:item.getUnitsScheduled().intValue());
 			int itemsPastTransit = 0;
 			int itemsFutureTransit = 0;
-//			int itemsInTransit = 0;
+			int itemsReadyProduction = 0;
 			for(ItemComponent ic : item.getItemComponents()) {
-				//Transit
 				Long pastCompUnits = pastComponents.get(ic.getComponent().getId());
 				Long futureCompUnits = futureComponents.get(ic.getComponent().getId());
 
-//				int componentsInTransit = (int) (pastCompUnits==null?0:pastCompUnits);
-//				float currentItemsInTransitFloat = componentsInTransit/ic.getUnits();
-//				int currentItemsInTransit = 0;
-				//Ready
-//				int componentUnitsReserved = ic.getComponent().getUnitsReserved()==null?0:ic.getComponent().getUnitsReserved().intValue();
-//				int componentUnitsAvailable = ic.getComponent().getUnitsOnStack();
+				float currentItemsReadyProductionFloat = ic.getComponent().getUnitsOnStack()/ic.getUnits();
 				float currentItemsPastFloat = (ic.getComponent().getUnitsOnStack() + (pastCompUnits==null?0:pastCompUnits))/ic.getUnits();
-				int currentItemsPast = 0;
-
 				float currentItemsFutureFloat = (futureCompUnits==null?0:futureCompUnits)/ic.getUnits();
-				int currentItemsFuture = 0;
-
-				
-				//Transit
-//				if(currentItemsInTransitFloat>0) {
-//					currentItemsInTransit = new BigDecimal(currentItemsInTransitFloat).setScale(0, RoundingMode.DOWN).intValue();
-//				}else {
-//					currentItemsInTransit = new BigDecimal(currentItemsInTransitFloat).setScale(0, RoundingMode.UP).intValue();
-//				}
-//				if(itemsInTransit == 0 || currentItemsInTransit < itemsInTransit) {
-//					itemsInTransit = currentItemsInTransit;
-//				}
-				//Past
-				if(currentItemsPastFloat>0) {
-					currentItemsPast = new BigDecimal(currentItemsPastFloat).setScale(0, RoundingMode.DOWN).intValue();
-				}else {
-					currentItemsPast = new BigDecimal(currentItemsPastFloat).setScale(0, RoundingMode.UP).intValue();
+				//Stack
+				int currentItemsProduction = this.convertToInt(currentItemsReadyProductionFloat);
+				if(itemsReadyProduction == 0 || currentItemsProduction < itemsReadyProduction) {
+					itemsReadyProduction = currentItemsProduction;
 				}
+				//Past
+				int currentItemsPast = this.convertToInt(currentItemsPastFloat);
 				if(itemsPastTransit == 0 || currentItemsPast < itemsPastTransit) {
 					itemsPastTransit = currentItemsPast;
 				}
 				//Future
-				if(currentItemsFutureFloat>0) {
-					currentItemsFuture = new BigDecimal(currentItemsFutureFloat).setScale(0, RoundingMode.DOWN).intValue();
-				}else {
-					currentItemsFuture = new BigDecimal(currentItemsFutureFloat).setScale(0, RoundingMode.UP).intValue();
-				}
+				int currentItemsFuture = this.convertToInt(currentItemsFutureFloat);
 				if(itemsFutureTransit == 0 || currentItemsFuture < itemsFutureTransit) {
 					itemsFutureTransit = currentItemsFuture;
 				}
-
 			}
 			dto.setUnitsReady(itemsPastTransit);
+			dto.setUnitsReadyProduction(itemsReadyProduction);
 			dto.setUnitsPastTransit(itemsPastTransit);
 			dto.setUnitsFutureTransit(itemsFutureTransit);
-//			dto.setUnitsInTransit(itemsInTransit);
 			if(negativeOnly) {
 				if(itemsPastTransit<0) {
 					dtos.add(dto);
@@ -205,6 +181,16 @@ class ItemRest {
 
 		}
 		return dtos;
+	}
+	
+	private int convertToInt(float unitsFloat) {
+		int units = 0;
+		if(unitsFloat>0) {
+			units = new BigDecimal(unitsFloat).setScale(0, RoundingMode.DOWN).intValue();
+		}else {
+			units = new BigDecimal(unitsFloat).setScale(0, RoundingMode.UP).intValue();
+		}
+		return units;
 	}
 
 	/*

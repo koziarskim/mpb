@@ -92,6 +92,8 @@ export default {
             if (scheduleItem.item.id == itemDto.id) {
               scheduleItem.unitsShort = itemDto.unitsShort;
               scheduleItem.unitsAvailable = itemDto.unitsAvailable;
+              scheduleItem.unitsReadyProduction = itemDto.unitsReadyProduction;
+              scheduleItem.totalUnitsScheduled = itemDto.unitsScheduled;
             }
           });
         });
@@ -116,7 +118,7 @@ export default {
           this.scheduleModalVisible = true;
         });
       } else {
-        this.scheduleItem = { unitsScheduled: 0, unitsAvailable: 0, productions: []};
+        this.scheduleItem = { unitsScheduled: 0, unitsAvailable: 0, totalUnitsScheduled: 0, productions: []};
         this.schedule = schedule;
         this.scheduleModalVisible = true;
       }
@@ -218,11 +220,17 @@ export default {
         .format("dddd");
     },
     getColor(si) {
+      //Green - production is done.
       if (si.unitsScheduled == si.totalProduced) {
         return "background-color: #c2f5c4";
       }
+      //Red - too much scheduled. Needs to reschedule.
       if (si.unitsAvailable < 0) {
         return "background-color: #f9b3ae";
+      }
+      //Yellow - 
+      if (si.unitsReadyProduction < si.unitsScheduled) {
+        return "background-color: yellow";
       }
       return "";
     }

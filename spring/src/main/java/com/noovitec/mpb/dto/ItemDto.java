@@ -18,6 +18,7 @@ public class ItemDto {
 	private int unitsReady = 0;
 	private int unitsInTransit = 0;
 	private int unitsOnStack = 0;
+	private int unitsReadyProduction = 0;
 	private int unitsScheduled = 0;
 	private int unitsPastTransit = 0;
 	private int unitsFutureTransit = 0;
@@ -41,6 +42,7 @@ public class ItemDto {
 		return this.unitsShort * (-1);
 	}
 	
+	//Available to schedule.
 	public int getUnitsAvailable() {
 		this.unitsAvailable = this.getUnitsPastTransit() - this.getUnitsShort();
 		return this.unitsAvailable;
