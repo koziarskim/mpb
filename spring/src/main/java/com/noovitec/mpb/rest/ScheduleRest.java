@@ -3,9 +3,13 @@ package com.noovitec.mpb.rest;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -71,7 +75,10 @@ class ScheduleRest {
 			}
 			result.add(s);
 		}
-		return result;
+		//Convert to List and sort.
+		List<Schedule> list = new ArrayList<Schedule>(result);
+		list.sort(Comparator.comparing(o -> o.getDate()));
+		return list;
 	}
 
 	@GetMapping("/schedule/{id}")

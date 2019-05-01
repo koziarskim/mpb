@@ -119,71 +119,53 @@ class ItemRest {
 	}
 
 	@GetMapping("/item/eta/{date}")
-	Collection<ItemDto> getAllByEta(@PathVariable @DateTimeFormat(pattern="yyyy-MM-dd") Date date, @RequestParam(name="negativeOnly", required=false) boolean negativeOnly) {
+	Collection<ItemDto> getAllByEta(@PathVariable @DateTimeFormat(pattern="yyyy-MM-dd") Date date, @RequestParam(name="includeAll", required=false) boolean includeAll) {
 		Collection<ItemDto> dtos = new HashSet<ItemDto>();
-		Map<Long, Long> pastComponents = new HashMap<Long, Long>();
-		Map<Long, Long> futureComponents = new HashMap<Long, Long>();
+		Map<Long, Long> componentsInTransitToDate = new HashMap<Long, Long>();
 
-		List<KeyValueDto> pc = receivingRepo.findReceivingPastEta(date);
-		List<KeyValueDto> fc = receivingRepo.findReceivingFutureEta(date);
+		List<KeyValueDto> componentsInTransitToDateList = receivingRepo.findComponentsInTransitToDate(date);
 		
-		for(KeyValueDto keyValueDto : pc) {
-			pastComponents.put(keyValueDto.getKey(), (Long) keyValueDto.getValue());
+		for(KeyValueDto keyValueDto : componentsInTransitToDateList) {
+			componentsInTransitToDate.put(keyValueDto.getKey(), (Long) keyValueDto.getValue());
 		}
-		for(KeyValueDto keyValueDto : fc) {
-			futureComponents.put(keyValueDto.getKey(), (Long) keyValueDto.getValue());
-		}
-
 		
 		for(Item item : itemRepo.findAll()) {
 			ItemDto dto = new ItemDto();
 			dto.setId(item.getId());
 			dto.setNumber(item.getNumber());
-			dto.setUnitsScheduled(item.getUnitsScheduled()==null?0:item.getUnitsScheduled().intValue());
-			int itemsPastTransit = 0;
-			int itemsFutureTransit = 0;
+			dto.setTotalScheduled(item.getUnitsScheduled()==null?0:item.getUnitsScheduled().intValue());
+			int itemsReadySchedule = 0;
 			int itemsReadyProduction = 0;
 			for(ItemComponent ic : item.getItemComponents()) {
-				Long pastCompUnits = pastComponents.get(ic.getComponent().getId());
-				Long futureCompUnits = futureComponents.get(ic.getComponent().getId());
+				Long componentUnitsInTransit = componentsInTransitToDate.get(ic.getComponent().getId());
 
-				float currentItemsReadyProductionFloat = ic.getComponent().getUnitsOnStack()/ic.getUnits();
-				float currentItemsPastFloat = (ic.getComponent().getUnitsOnStack() + (pastCompUnits==null?0:pastCompUnits))/ic.getUnits();
-				float currentItemsFutureFloat = (futureCompUnits==null?0:futureCompUnits)/ic.getUnits();
-				//Stack
-				int currentItemsProduction = this.convertToInt(currentItemsReadyProductionFloat);
-				if(itemsReadyProduction == 0 || currentItemsProduction < itemsReadyProduction) {
-					itemsReadyProduction = currentItemsProduction;
+				float icReadyProductionFloat = ic.getComponent().getUnitsOnStack()/ic.getUnits();
+				float icReadyScheduleFloat = (ic.getComponent().getUnitsOnStack() + (componentUnitsInTransit==null?0:componentUnitsInTransit))/ic.getUnits();
+				//Production
+				int icReadyProduction = this.roundToInt(icReadyProductionFloat);
+				if(itemsReadyProduction == 0 || icReadyProduction < itemsReadyProduction) {
+					itemsReadyProduction = icReadyProduction;
 				}
-				//Past
-				int currentItemsPast = this.convertToInt(currentItemsPastFloat);
-				if(itemsPastTransit == 0 || currentItemsPast < itemsPastTransit) {
-					itemsPastTransit = currentItemsPast;
-				}
-				//Future
-				int currentItemsFuture = this.convertToInt(currentItemsFutureFloat);
-				if(itemsFutureTransit == 0 || currentItemsFuture < itemsFutureTransit) {
-					itemsFutureTransit = currentItemsFuture;
+				//Schedule
+				int icReadySchedule = this.roundToInt(icReadyScheduleFloat);
+				if(itemsReadySchedule == 0 || icReadySchedule < itemsReadySchedule) {
+					itemsReadySchedule = icReadySchedule;
 				}
 			}
-			dto.setUnitsReady(itemsPastTransit);
 			dto.setUnitsReadyProduction(itemsReadyProduction);
-			dto.setUnitsPastTransit(itemsPastTransit);
-			dto.setUnitsFutureTransit(itemsFutureTransit);
-			if(negativeOnly) {
-				if(itemsPastTransit<0) {
+			dto.setUnitsReadySchedule(itemsReadySchedule);
+			if(!includeAll) {
+				if(itemsReadySchedule>0) {
 					dtos.add(dto);
 				}
 			}else {
 				dtos.add(dto);
 			}
-
-
 		}
 		return dtos;
 	}
 	
-	private int convertToInt(float unitsFloat) {
+	private int roundToInt(float unitsFloat) {
 		int units = 0;
 		if(unitsFloat>0) {
 			units = new BigDecimal(unitsFloat).setScale(0, RoundingMode.DOWN).intValue();

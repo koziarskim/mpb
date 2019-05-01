@@ -15,17 +15,12 @@ public class ItemDto {
 	private String brand;
 	private String category;
 	private String status;
-	private int unitsReady = 0;
-	private int unitsInTransit = 0;
-	private int unitsOnStack = 0;
-	private int unitsReadyProduction = 0;
-	private int unitsScheduled = 0;
-	private int unitsPastTransit = 0;
-	private int unitsFutureTransit = 0;
-	private int unitsShort = 0;
-	private int unitsAvailable = 0;
-	
-	public ItemDto(Long id, String number, String name, String brand, String category, String status, Long unitsOnStack, Long unitsScheduled) {
+	private int unitsOnStack = 0; //This is the stack of Item not components.
+	private int totalScheduled = 0; //Total Items scheduled
+	private int unitsReadyProduction = 0; //Items ready for production (all components are on stack).
+	private int unitsReadySchedule = 0; //Items ready to be scheduled (some components might be in transit).
+
+	public ItemDto(Long id, String number, String name, String brand, String category, String status, Long unitsOnStack, Long totalScheduled) {
 		this.id = id;
 		this.number = number;
 		this.name = name;
@@ -33,18 +28,6 @@ public class ItemDto {
 		this.category = category;
 		this.status = status;
 		this.unitsOnStack = unitsOnStack==null?0:unitsOnStack.intValue();
-		this.unitsScheduled = unitsScheduled==null?0:unitsScheduled.intValue();
-	}
-	
-	public int getUnitsShort() {
-		int units = this.getUnitsFutureTransit() - this.getUnitsScheduled();
-		this.unitsShort = units<0?units:0;
-		return this.unitsShort * (-1);
-	}
-	
-	//Available to schedule.
-	public int getUnitsAvailable() {
-		this.unitsAvailable = this.getUnitsPastTransit() - this.getUnitsShort();
-		return this.unitsAvailable;
+		this.totalScheduled = totalScheduled==null?0:totalScheduled.intValue();
 	}
 }

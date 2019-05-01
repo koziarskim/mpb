@@ -7,7 +7,7 @@
         </b-col>
         <b-col>
           <div style="text-align: right;">
-            <b-button v-if="scheduleItem.id || (!scheduleItem.productions || scheduleItem.productions.length<=0)" style="margin: 0 2px 0 2px" @click="deleteModal()">Delete</b-button>
+            <b-button v-if="scheduleItem.id && (!scheduleItem.productions || scheduleItem.productions.length<=0)" style="margin: 0 2px 0 2px" @click="deleteModal()">Delete</b-button>
             <b-button style="margin: 0 2px 0 2px" @click="closeModal()">Close</b-button>
             <b-button style="margin: 0 2px 0 2px" @click="saveModal()" variant="success">Save</b-button>
           </div>
@@ -45,13 +45,14 @@
           <input class="form-control" type="tel" v-model="scheduleItem.unitsScheduled">
         </b-col>
         <b-col cols="4">
-          <label class="top-label">Total Sold: {{totalSold}}</label>
+          <label class="top-label">Total Sold: {{saleItem.units}}</label>
           <br>
-          <label class="top-label">Available to schedule: {{stillAvailable}}</label>
-          <br/>
-          <label class="top-label">Available for production: {{scheduleItem.unitsReadyProduction}}</label>        
+          <label class="top-label">Total Scheduled: {{item.totalScheduled}}</label>
+          <br>
+          <label class="top-label">Ready to schedule: {{item.unitsReadySchedule}}</label>
+          <br>
+          <label class="top-label">Ready for production: {{item.unitsReadyProduction}}</label>
         </b-col>
-        
       </b-row>
     </b-modal>
   </b-container>
@@ -72,43 +73,22 @@ export default {
       title: "Testing title",
       visible: true,
       availableSaleItems: [], //SaleItemDto
-      saleItem: {},
-      availableItems: [],
-      allItems: [],
-      item: {},
+      saleItem: {}, //SaleItemDto
+      availableItems: [], //ItemDto
+      item: {}, //ItemDto
       availableLines: [],
-      line: {},
-      totalSold: 0,
-      availableToSchedule: 0,
-      itemsReady: 0,
-      itemsInTransit: 0,
-      previousScheduled: 0
+      line: {}
     };
   },
-  computed: {
-    stillAvailable() {
-      return +this.availableToSchedule - +this.scheduleItem.totalUnitsScheduled;
-    }
-  },
+  computed: {},
   watch: {
     item(new_value, old_value) {
       if (!new_value || new_value.id == old_value.id) {
         return;
       }
       if (this.item.id) {
-        var itemDto = this.allItems.find(dto => dto.id == this.item.id);
-        this.itemsInTransit = itemDto.unitsInTransit;
-        this.availableToSchedule = itemDto.unitsReady;
-        this.scheduleItem.totalUnitsScheduled = itemDto.unitsScheduled;
-
         this.getAvailableSaleItems(this.item.id);
       }
-    },
-    saleItem(new_value, old_value) {
-      if (!new_value || new_value.id == old_value.id) {
-        return;
-      }
-      this.totalSold = this.saleItem.units;
     }
   },
   methods: {
@@ -129,12 +109,18 @@ export default {
         });
     },
     getAvailableItems(date) {
+      var query = "";
+      //TODO: This could query only single item instead of all.
+      if(this.scheduleItem.id){
+          query = "?includeAll=true"
+      }
       http
-        .get("/item/eta/" + date)
+        .get("/item/eta/" + date+query)
         .then(response => {
-          this.allItems = response.data;
-          this.availableItems = response.data.filter(dto => dto.unitsAvailable > 0);
-          this.item = this.scheduleItem.item ? this.scheduleItem.item : {};
+          this.availableItems = response.data;
+          if(this.scheduleItem.item){
+              this.item = response.data.find(itemDto=> itemDto.id == this.scheduleItem.item.id);
+          }
         })
         .catch(e => {
           console.log("API error: " + e);
@@ -181,25 +167,16 @@ export default {
         alert("Make sure all fields are entered");
         return false;
       }
-      if (this.stillAvailable<0){
-        alert("Units scheduled cannot exceed available");
-        return false;
-      }
-      if (this.scheduleItem.unitsScheduled > this.totalSold) {
-        alert("Units scheduled cannot exceed sold");
-        return false;
-      }
       return true;
     },
     saveModal() {
       if (!this.validate()) {
         return;
       }
-      this.scheduleItem.line = { id: this.line.id, number: this.line.number };
+      this.scheduleItem.line = { id: this.line.id };
       this.scheduleItem.item = { id: this.item.id };
       this.scheduleItem.saleItem = { id: this.saleItem.id };
       this.scheduleItem.schedule = { id: this.schedule.id };
-    //   this.scheduleItem.unitsTransitScheduled = 
 
       http
         .post("/scheduleItem", this.scheduleItem)
@@ -225,7 +202,6 @@ export default {
     }
   },
   mounted() {
-    this.previousScheduled = this.scheduleItem.unitsScheduled;
     this.getAvailableItems(this.schedule.date);
     this.getAvailableLines();
   }

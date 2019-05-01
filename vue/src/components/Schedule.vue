@@ -1,7 +1,6 @@
 <template>
   <b-container fluid>
     <div class="d-flex justify-content-between align-items-center">
-      <!-- <span style="text-align: left; font-size: 18px; font-weight: bold">Scheduling</span> -->
     </div>
     <b-row class="n-row" style="border-top: 1px solid black;">
       <div class="n-cell" style="width:7%">Date</div>
@@ -59,47 +58,48 @@ export default {
       http
         .get("/schedule/date/" + this.scheduleDate)
         .then(response => {
-          response.data.forEach(schedule => {
-            this.markItemsToReschedule(schedule).then(r => {
-              this.schedules = response.data;
-              this.schedules.sort(function(a, b) {
-                var dateA = new Date(a.date),
-                  dateB = new Date(b.date);
-                return dateA - dateB;
-              });
-            });
-          });
+            this.schedules = response.data;
+        //   response.data.forEach(schedule => {
+        //     this.markItemsToReschedule(schedule).then(r => {
+        //       this.schedules = response.data;
+        //       this.schedules.sort(function(a, b) {
+        //         var dateA = new Date(a.date),
+        //           dateB = new Date(b.date);
+        //         return dateA - dateB;
+        //       });
+        //     });
+        //   });
         })
         .catch(e => {
           console.log("API error: " + e);
         });
     },
-    getItemsToReschedule(date) {
-      return http
-        .get("/item/eta/" + date)
-        .then(response => {
-          this.itemDtos = response.data;
-          return response.data;
-        })
-        .catch(e => {
-          console.log("API error: " + e);
-        });
-    },
-    markItemsToReschedule(schedule) {
-      return this.getItemsToReschedule(schedule.date).then(itemDtos => {
-        itemDtos.forEach(itemDto => {
-          schedule.scheduleItems.forEach(scheduleItem => {
-            if (scheduleItem.item.id == itemDto.id) {
-              scheduleItem.unitsShort = itemDto.unitsShort;
-              scheduleItem.unitsAvailable = itemDto.unitsAvailable;
-              scheduleItem.unitsReadyProduction = itemDto.unitsReadyProduction;
-              scheduleItem.totalUnitsScheduled = itemDto.unitsScheduled;
-            }
-          });
-        });
-        return "";
-      });
-    },
+    // getItemsToReschedule(date) {
+    //   return http
+    //     .get("/item/eta/" + date)
+    //     .then(response => {
+    //       this.itemDtos = response.data;
+    //       return response.data;
+    //     })
+    //     .catch(e => {
+    //       console.log("API error: " + e);
+    //     });
+    // },
+    // markItemsToReschedule(schedule) {
+    //   return this.getItemsToReschedule(schedule.date).then(itemDtos => {
+    //     itemDtos.forEach(itemDto => {
+    //       schedule.scheduleItems.forEach(scheduleItem => {
+    //         if (scheduleItem.item.id == itemDto.id) {
+    //           scheduleItem.unitsShort = itemDto.unitsShort;
+    //           scheduleItem.unitsAvailable = itemDto.unitsAvailable;
+    //           scheduleItem.unitsReadyProduction = itemDto.unitsReadyProduction;
+    //           scheduleItem.totalUnitsScheduled = itemDto.unitsScheduled;
+    //         }
+    //       });
+    //     });
+    //     return "";
+    //   });
+    // },
     getScheduleItemsByLine(lineNumber, scheduleItems) {
       var lineScheduleItems = [];
       if (scheduleItems) {
@@ -118,7 +118,7 @@ export default {
           this.scheduleModalVisible = true;
         });
       } else {
-        this.scheduleItem = { unitsScheduled: 0, unitsAvailable: 0, totalUnitsScheduled: 0, productions: []};
+        this.scheduleItem = {};
         this.schedule = schedule;
         this.scheduleModalVisible = true;
       }
