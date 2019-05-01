@@ -21,7 +21,7 @@
             <input style="width:135px" class="form-control" type="time" v-model="newProduction.finishTime">
           </b-row>
           <b-row>
-            <span>Total Production Output: {{totalProduced}}</span>
+            <span>Total Production Output: {{scheduleItem.totalProduced}}</span>
           </b-row>
           <b-row v-for="production in scheduleItem.productions" :key="production.id">
             <span>Units: {{production.unitsProduced}} @ {{production.finishTime}}</span>
@@ -140,8 +140,8 @@ export default {
         alert("Make sure all fields are entered");
         return false;
       }
-      if (this.totalProduced > this.item.unitsReadyProduction) {
-        alert("Total produced cannot exceed ready for production");
+      if (this.newProduction.unitsProduced > this.item.unitsReadyProduction) {
+        alert("Units cannot exceed ready for production");
         return false;
       }
       return true;
