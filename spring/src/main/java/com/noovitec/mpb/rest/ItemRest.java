@@ -173,7 +173,7 @@ class ItemRest {
 			}
 			Long unitsScheduledFromToday = scheduleItemRepo.getUnitsScheduled(LocalDate.now(), item.getId());
 			dto.setTotalScheduled(unitsScheduledFromToday==null?0:unitsScheduledFromToday.intValue());
-			dto.setUnitsReadySchedule(itemsReadySchedule - dto.getTotalScheduled());
+			dto.setUnitsReadySchedule(itemsReadySchedule);
 			dto.setUnitsReadyProduction(itemsReadyProduction);
 			if(!includeAll) {
 				if(dto.getUnitsReadySchedule()>0) {
