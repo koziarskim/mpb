@@ -27,7 +27,7 @@
           </span>
         </b-col>
         <b-col cols="5">
-          <label class="top-label">Sale:</label>
+          <label class="top-label">Sale/S.O.:</label>
           <b-select v-if="!scheduleItem.id" option-value="id" option-text="label" :list="availableSaleItems" v-model="saleItem"></b-select>
           <span v-if="scheduleItem.id">
             <br>

@@ -40,7 +40,7 @@ export default {
   data() {
     return {
       numberOfLines: 8,
-      scheduleItem: {},
+      scheduleItem: { unitsScheduled: 0 },
       schedule: {},
       schedules: [{ id: 1 }],
       scheduleModalVisible: false,
@@ -170,7 +170,7 @@ export default {
         });
     },
     closeScheduleModal() {
-      this.scheduleItem = {};
+      this.scheduleItem = {unitsScheduled: 0 };
       this.schedule = {};
       this.scheduleModalVisible = false;
       this.getSchedules();

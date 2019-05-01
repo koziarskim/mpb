@@ -3,7 +3,7 @@
     <b-modal centered size="lg" v-model="visible" :hide-header="true" :hide-footer="true">
       <b-row>
         <b-col>
-          <span>Schedule for: {{schedule.date}}</span>
+          <span>Production: {{schedule.date}} @ {{formatTime(scheduleItem.startTime)}}, </span>
         </b-col>
         <b-col>
           <div style="text-align: right;">
@@ -32,13 +32,13 @@
           <br>
           <label class="top-label">S.O.: {{saleItem.label}}</label>
           <br>
-          <label class="top-label">Line: {{line.number}} @ {{formatTime(scheduleItem.startTime)}}</label>
+          <label class="top-label">Line: {{line.number}}</label>
           <br>
-          <label class="top-label">Available to schedule: {{availableToSchedule}}</label>
+          <label class="top-label">Scheduled for production: {{scheduleItem.unitsScheduled}}</label>
           <br>
           <label class="top-label">Still to produce: {{stillToProduce}}</label>
           <br>
-          <label class="top-label">Scheduled: {{scheduleItem.unitsScheduled}}</label>
+          <label class="top-label">Ready for production: {{item.unitsReadyProduction}}</label>
         </b-col>
       </b-row>
     </b-modal>
@@ -78,28 +78,13 @@ export default {
         +this.newProduction.unitsProduced
       );
     },
-    totalProduced(){
-        return +this.scheduleItem.totalProduced + +this.newProduction.unitsProduced;
+    totalProduced() {
+      return (
+        +this.scheduleItem.totalProduced + +this.newProduction.unitsProduced
+      );
     }
   },
-  watch: {
-    item(new_value, old_value) {
-      if (!new_value || new_value.id == old_value.id) {
-        return;
-      }
-      if (this.item.id) {
-        var itemDto = this.allItems.find(dto => dto.id == this.item.id);
-        this.availableToSchedule = itemDto.unitsAvailable;
-        this.getAvailableSaleItems(this.item.id);
-      }
-    },
-    saleItem(new_value, old_value) {
-      if (!new_value || new_value.id == old_value.id) {
-        return;
-      }
-      this.totalSold = this.saleItem.units;
-    }
-  },
+  watch: {},
   methods: {
     getAvailableSaleItems(item_id) {
       if (!item_id) {
@@ -118,13 +103,16 @@ export default {
         });
     },
     getAvailableItems(date) {
+      var query = "";
+      //TODO: This could query only single item instead of all.
+      if (this.scheduleItem.id) {
+        query = "?includeAll=true";
+      }
       http
-        .get("/item/eta/" + date)
+        .get("/item/eta/" + date+query)
         .then(response => {
-          this.allItems = response.data;
-          this.availableItems = response.data.filter(dto => dto.unitsReady > 0);
-          this.item = this.scheduleItem.item ? this.scheduleItem.item : {};
-        })
+            this.item = response.data.find(itemDto=> itemDto.id == this.scheduleItem.item.id)
+            })
         .catch(e => {
           console.log("API error: " + e);
         });
@@ -157,8 +145,8 @@ export default {
         alert("Make sure all fields are entered");
         return false;
       }
-      if (this.stillToProduce < 0) {
-        alert("Total produced cannot exceed scheduled");
+      if (this.totalProduced > this.item.unitsReadyProduction) {
+        alert("Total produced cannot exceed ready for production");
         return false;
       }
       return true;
