@@ -40,7 +40,7 @@ export default {
   data() {
     return {
       numberOfLines: 8,
-      scheduleItem: { unitsScheduled: 0 },
+      scheduleItem: {},
       schedule: {},
       schedules: [{ id: 1 }],
       scheduleModalVisible: false,
@@ -118,7 +118,7 @@ export default {
           this.scheduleModalVisible = true;
         });
       } else {
-        this.scheduleItem = {};
+        this.scheduleItem = {unitsScheduled:0};
         this.schedule = schedule;
         this.scheduleModalVisible = true;
       }
@@ -170,6 +170,8 @@ export default {
         });
     },
     closeScheduleModal() {
+      this.scheduleItem = {};
+      this.schedule = {};
       this.scheduleModalVisible = false;
       this.getSchedules();
     },

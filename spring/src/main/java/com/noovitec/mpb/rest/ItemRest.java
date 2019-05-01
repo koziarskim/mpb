@@ -155,7 +155,7 @@ class ItemRest {
 			dto.setUnitsReadyProduction(itemsReadyProduction);
 			dto.setUnitsReadySchedule(itemsReadySchedule);
 			if(!includeAll) {
-				if(itemsReadySchedule>0) {
+				if(itemsReadySchedule>0 && dto.getTotalScheduled()<dto.getUnitsReadySchedule()) {
 					dtos.add(dto);
 				}
 			}else {

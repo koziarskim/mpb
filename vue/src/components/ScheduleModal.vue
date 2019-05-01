@@ -47,9 +47,9 @@
         <b-col cols="4">
           <label class="top-label">Total Sold: {{saleItem.units}}</label>
           <br>
-          <label class="top-label">Total Scheduled: {{item.totalScheduled}}</label>
+          <label class="top-label">Total Scheduled: {{totalScheduledCalc}}</label>
           <br>
-          <label class="top-label">Ready to schedule: {{item.unitsReadySchedule}}</label>
+          <label class="top-label">Ready to schedule: {{readyScheduleCalc}}</label>
           <br>
           <label class="top-label">Ready for production: {{item.unitsReadyProduction}}</label>
         </b-col>
@@ -75,12 +75,20 @@ export default {
       availableSaleItems: [], //SaleItemDto
       saleItem: {}, //SaleItemDto
       availableItems: [], //ItemDto
-      item: {}, //ItemDto
+      item: {totalScheduled: 0}, //ItemDto
       availableLines: [],
-      line: {}
+      line: {},
+      initScheduled: 0
     };
   },
-  computed: {},
+  computed: {
+      totalScheduledCalc(){
+          return +this.item.totalScheduled - +this.initScheduled + +this.scheduleItem.unitsScheduled;
+      },
+      readyScheduleCalc(){
+          return +this.item.unitsReadySchedule - +this.totalScheduledCalc;
+      }
+  },
   watch: {
     item(new_value, old_value) {
       if (!new_value || new_value.id == old_value.id) {
@@ -167,6 +175,14 @@ export default {
         alert("Make sure all fields are entered");
         return false;
       }
+      if (this.totalScheduledCalc > this.item.unitsReadySchedule){
+        alert("Cannot schedule more that ready to schedule");
+        return false;
+      }
+      if (this.scheduleItem.unitsScheduled > this.saleItem.units) {
+        alert("Units scheduled cannot exceed sold");
+        return false;
+      }
       return true;
     },
     saveModal() {
@@ -202,6 +218,9 @@ export default {
     }
   },
   mounted() {
+    if(this.scheduleItem.id){
+        this.initScheduled = this.scheduleItem.unitsScheduled;
+    }
     this.getAvailableItems(this.schedule.date);
     this.getAvailableLines();
   }
