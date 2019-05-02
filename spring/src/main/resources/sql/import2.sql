@@ -1816,12 +1816,3 @@ INSERT INTO public.user_role (role_id, user_id) VALUES (2, 95);
 INSERT INTO public.user_role (role_id, user_id) VALUES (1, 87);
 INSERT INTO public.user_role (role_id, user_id) VALUES (2, 87);
 INSERT INTO public.user_role (role_id, user_id) VALUES (3, 87);
-
-
---
--- TOC entry 2317 (class 0 OID 0)
--- Dependencies: 181
--- Name: hibernate_sequence; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
-SELECT pg_catalog.setval('public.hibernate_sequence', 127, true);
