@@ -265,6 +265,10 @@ export default {
     },
     uploadImage(e){
         this.image = e.target.files[0] || e.dataTransfer.files[0];
+        if(this.image.size > 1048576){ //1MB
+            alert("File size (" + (+this.image.size/1024/1024).toFixed(2) + "MB ) cannot exeed 1MB");
+            return;
+        }
         this.saveAndUpload();
     },
     saveAndUpload() {
