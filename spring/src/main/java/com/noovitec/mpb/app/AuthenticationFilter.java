@@ -30,45 +30,44 @@ class AuthenticationFilter extends UrlBasedCorsConfigurationSource implements Fi
 
 	@Override
 	public void doFilter(ServletRequest servletRrequest, ServletResponse servletResponse, FilterChain chain) throws IOException, ServletException {
-//		HttpServletRequest request = (HttpServletRequest) servletRrequest;
-//		HttpServletResponse response = (HttpServletResponse) servletResponse;
-//		// Skip OPTIONS for CORS preflight handshake.
-//		if ("OPTIONS".equals(request.getMethod())) {
-//			response.setStatus(HttpServletResponse.SC_ACCEPTED);
-//			return;
-//		} else {
-//			if (!request.getRequestURI().contains("api/user/login")) {
-//				if (request.getCookies() == null) {
-//					log.info("Cookie not found");
-//					response.sendError(HttpStatus.UNAUTHORIZED.value(), "Cookie not found");
-//					return;
-//				}
-//				String sid = null;
-//				for (Cookie cookie : request.getCookies()) {
-//					if (cookie.getName().equals("SID")) {
-//						sid = cookie.getValue();
-//					}
-//				}
-//				if (sid == null) {
-//					log.info("SID cookie not found");
-//					response.sendError(HttpStatus.UNAUTHORIZED.value(), "SID cookie not found");
-//					return;
-//				}
-//				if (!mpbAuthenticationContext.hasSid(sid)) {
-//					log.info("SID not matched");
-//					response.sendError(HttpStatus.UNAUTHORIZED.value(), "SID not matched");
-//					return;
-//				}
-//			}
-//			chain.doFilter(servletRrequest, servletResponse);
-//		}
-		chain.doFilter(servletRrequest, servletResponse);
-	}
-	
-	@Override
-	public void init(FilterConfig filterConfig) throws ServletException {
-		
+		HttpServletRequest request = (HttpServletRequest) servletRrequest;
+		HttpServletResponse response = (HttpServletResponse) servletResponse;
+		// Skip OPTIONS for CORS preflight handshake.
+		if ("OPTIONS".equals(request.getMethod())) {
+			response.setStatus(HttpServletResponse.SC_ACCEPTED);
+			return;
+		} else {
+			if (!request.getRequestURI().contains("api/user/login")) {
+				if (request.getCookies() == null) {
+					log.info("Cookie not found");
+					response.sendError(HttpStatus.UNAUTHORIZED.value(), "Cookie not found");
+					return;
+				}
+				String sid = null;
+				for (Cookie cookie : request.getCookies()) {
+					if (cookie.getName().equals("SID")) {
+						sid = cookie.getValue();
+					}
+				}
+				if (sid == null) {
+					log.info("SID cookie not found");
+					response.sendError(HttpStatus.UNAUTHORIZED.value(), "SID cookie not found");
+					return;
+				}
+				if (!mpbAuthenticationContext.hasSid(sid)) {
+					log.info("SID not matched");
+					response.sendError(HttpStatus.UNAUTHORIZED.value(), "SID not matched");
+					return;
+				}
+			}
+			chain.doFilter(servletRrequest, servletResponse);
+		}
+//		chain.doFilter(servletRrequest, servletResponse);
 	}
 
+	@Override
+	public void init(FilterConfig filterConfig) throws ServletException {
+
+	}
 
 }
