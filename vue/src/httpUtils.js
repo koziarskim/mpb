@@ -1,7 +1,7 @@
 import router from "./router";
 
 export default {
-  baseUrl: "http://marcin/mpb-api/api/", //This has to in sync with domain for CORS and Cookie to work.
+  baseUrl: "http://mpb.noovitec.com/mpb-api/api/", //"http://marcin/mpb-api/api/"
   goTo: function(view) {
     return router.push(view);
   }
