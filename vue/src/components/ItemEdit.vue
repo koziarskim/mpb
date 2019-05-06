@@ -426,12 +426,10 @@ export default {
     },
     uploadImage(e) {
       this.image = e.target.files[0] || e.dataTransfer.files[0];
-      //1MB
-      if (this.image.size > 1048576) {
-        alert("File size (" +(+this.image.size / 1024 / 1024).toFixed(2) +"MB ) cannot exeed 1MB");
-        return;
-      }
-      this.saveAndUpload();
+        if(this.image.size > 204800){ //200KB
+            alert("File size (" + (+this.image.size/1024).toFixed(2) + "KB ) cannot exeed 1MB");
+            return;
+        }      this.saveAndUpload();
     },
     saveAndUpload() {
       this.item.totalCost = this.totalCost;

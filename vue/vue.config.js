@@ -3,8 +3,7 @@ module.exports = {
     port: 8081,
     disableHostCheck: true
   },
-  //   publicPath: "/mpb-static", //publicPath has to be in sync with nginx location path.
-  publicPath: "/mpb/static", //publicPath has to be in sync with nginx location path.
+  publicPath: process.env.VUE_APP_STATIC_BASE_PATH, //publicPath has to be in sync with nginx location path.
   outputDir: undefined,
   assetsDir: undefined,
   runtimeCompiler: undefined,
