@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.noovitec.mpb.entity.Attachment;
 import com.noovitec.mpb.repo.AttachmentRepo;
 
-@CrossOrigin
+
 @RestController
 @RequestMapping("/api")
 class AttachmentRest {

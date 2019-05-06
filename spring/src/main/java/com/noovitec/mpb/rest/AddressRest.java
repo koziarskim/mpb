@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.noovitec.mpb.entity.Address;
 import com.noovitec.mpb.repo.AddressRepo;
 
-@CrossOrigin
+
 @RestController
 @RequestMapping("/api")
 class AddressRest {

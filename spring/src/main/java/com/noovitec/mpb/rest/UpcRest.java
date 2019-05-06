@@ -32,7 +32,7 @@ import com.google.zxing.common.BitMatrix;
 import com.noovitec.mpb.entity.Upc;
 import com.noovitec.mpb.repo.UpcRepo;
 
-@CrossOrigin
+
 @RestController
 @RequestMapping("/api")
 class UpcRest {

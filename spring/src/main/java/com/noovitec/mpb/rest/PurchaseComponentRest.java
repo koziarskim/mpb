@@ -27,7 +27,7 @@ import com.noovitec.mpb.repo.PurchaseComponentRepo;
 import com.noovitec.mpb.repo.PurchaseRepo;
 import com.noovitec.mpb.repo.ReceivingRepo;
 
-@CrossOrigin
+
 @RestController
 @RequestMapping("/api")
 class PurchaseComponentRest {

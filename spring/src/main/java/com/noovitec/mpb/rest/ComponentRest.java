@@ -34,7 +34,7 @@ import com.noovitec.mpb.repo.AttachmentRepo;
 import com.noovitec.mpb.repo.CategoryRepo;
 import com.noovitec.mpb.repo.ComponentRepo;
 
-@CrossOrigin
+
 @RestController
 @RequestMapping("/api")
 class ComponentRest {

@@ -26,7 +26,7 @@ import com.noovitec.mpb.app.MpbAuthenticationContext;
 import com.noovitec.mpb.entity.User;
 import com.noovitec.mpb.repo.UserRepo;
 
-@CrossOrigin
+
 @RestController
 @RequestMapping("/api")
 class UserRest {

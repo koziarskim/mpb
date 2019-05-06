@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.noovitec.mpb.entity.Role;
 import com.noovitec.mpb.repo.RoleRepo;
 
-@CrossOrigin
+
 @RestController
 @RequestMapping("/api")
 class RoleRest {

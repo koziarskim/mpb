@@ -30,7 +30,7 @@ import com.noovitec.mpb.repo.ItemRepo;
 import com.noovitec.mpb.repo.ProductionRepo;
 import com.noovitec.mpb.repo.ScheduleItemRepo;
 
-@CrossOrigin
+
 @RestController
 @RequestMapping("/api")
 class ProductionRest {

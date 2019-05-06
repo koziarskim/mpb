@@ -17,7 +17,7 @@ import com.noovitec.mpb.entity.Category;
 import com.noovitec.mpb.entity.Component;
 import com.noovitec.mpb.repo.CategoryRepo;
 
-@CrossOrigin
+
 @RestController
 @RequestMapping("/api")
 class CategoryRest {

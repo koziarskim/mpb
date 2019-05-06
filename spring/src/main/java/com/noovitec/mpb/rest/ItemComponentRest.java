@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.noovitec.mpb.entity.ItemComponent;
 import com.noovitec.mpb.repo.ItemComponentRepo;
 
-@CrossOrigin
+
 @RestController
 @RequestMapping("/api")
 class ItemComponentRest {

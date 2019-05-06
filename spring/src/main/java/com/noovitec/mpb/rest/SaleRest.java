@@ -24,7 +24,7 @@ import com.noovitec.mpb.entity.Sale;
 import com.noovitec.mpb.entity.SaleItem;
 import com.noovitec.mpb.repo.SaleRepo;
 
-@CrossOrigin
+
 @RestController
 @RequestMapping("/api")
 class SaleRest {

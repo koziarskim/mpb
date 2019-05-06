@@ -18,7 +18,7 @@ import com.noovitec.mpb.entity.Season;
 import com.noovitec.mpb.repo.CategoryRepo;
 import com.noovitec.mpb.repo.SeasonRepo;
 
-@CrossOrigin
+
 @RestController
 @RequestMapping("/api")
 class SeasonRest {

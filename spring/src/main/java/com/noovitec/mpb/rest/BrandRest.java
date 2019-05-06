@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.noovitec.mpb.entity.Brand;
 import com.noovitec.mpb.repo.BrandRepo;
 
-@CrossOrigin
+
 @RestController
 @RequestMapping("/api")
 class BrandRest {

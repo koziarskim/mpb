@@ -22,7 +22,7 @@ import com.noovitec.mpb.entity.Customer;
 import com.noovitec.mpb.entity.ItemComponent;
 import com.noovitec.mpb.repo.CustomerRepo;
 
-@CrossOrigin
+
 @RestController
 @RequestMapping("/api")
 class CustomerRest {

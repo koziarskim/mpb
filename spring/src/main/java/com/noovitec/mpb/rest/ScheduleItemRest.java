@@ -26,7 +26,7 @@ import com.noovitec.mpb.repo.ComponentRepo;
 import com.noovitec.mpb.repo.ItemRepo;
 import com.noovitec.mpb.repo.ScheduleItemRepo;
 
-@CrossOrigin
+
 @RestController
 @RequestMapping("/api")
 class ScheduleItemRest {

@@ -20,7 +20,7 @@ import com.noovitec.mpb.dto.SupplierDto;
 import com.noovitec.mpb.entity.Supplier;
 import com.noovitec.mpb.repo.SupplierRepo;
 
-@CrossOrigin
+
 @RestController
 @RequestMapping("/api")
 class SupplierRest {
