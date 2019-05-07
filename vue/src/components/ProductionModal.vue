@@ -144,6 +144,10 @@ export default {
         alert("Units cannot exceed ready for production");
         return false;
       }
+      if((+this.scheduleItem.totalProduced + +this.newProduction.unitsProduced) > this.scheduleItem.unitsScheduled){
+          alert("Total units cannot exceed scheduled");
+          return false;
+      }
       return true;
     },
     saveModal() {
