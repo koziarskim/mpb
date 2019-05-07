@@ -33,13 +33,9 @@ public class Attachment {
 	private LocalDateTime updated;
 	private String name;
 	private String type;
+	@JsonIgnore // Don't send it to client.
 	@Lob
 	@Type(type = "org.hibernate.type.BinaryType")
 	private byte[] data;
-
-	@JsonIgnore // Don't send it to client.
-	public byte[] getDate() {
-		return this.data;
-	}
 
 }
