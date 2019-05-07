@@ -122,9 +122,9 @@ export default {
       sortBy: "id",
       sortDesc: false,
       columns: [
-        { key: "item.number", label: "Item", sortable: true },
-        { key: "item.totalCost", label: "Cost", sortable: true },
-        { key: "units", label: "Units", sortable: true },
+        { key: "item.number", label: "Item", sortable: false },
+        { key: "item.totalCost", label: "Cost", sortable: false },
+        { key: "units", label: "Units", sortable: false },
         { key: "unitPrice", label: "Unit Price", sortable: false },
         { key: "totalUnitPrice", label: "Total", sortable: false },
         { key: "action", label: "Action", sortable: false }

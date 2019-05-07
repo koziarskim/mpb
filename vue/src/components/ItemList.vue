@@ -34,13 +34,13 @@ export default {
       sortBy: 'number',
       sortDesc: false,
       fields: [
-        { key: 'number', sortable: true, label: 'Item #'},
-        { key: 'name', sortable: true, label: 'Name'},
-        { key: 'brand', sortable: true, label: 'Brand'},
-        { key: 'category', sortable: true, label: 'Category'},
-        { key: 'components', sortable: true, label: 'Components'},
-        { key: 'unitsOnStack', sortable: true, label: 'Stack'},
-        { key: 'totalScheduled', sortable: true, label: 'Scheduled'},
+        { key: 'number', sortable: false, label: 'Item #'},
+        { key: 'name', sortable: false, label: 'Name'},
+        { key: 'brand', sortable: false, label: 'Brand'},
+        { key: 'category', sortable: false, label: 'Category'},
+        { key: 'components', sortable: false, label: 'Components'},
+        { key: 'unitsOnStack', sortable: false, label: 'Stack'},
+        { key: 'totalScheduled', sortable: false, label: 'Scheduled'},
         { key: 'action', sortable: false}
       ],
       items: []

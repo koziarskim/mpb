@@ -24,6 +24,7 @@
 <script>
 import http from "../http-common";
 import router from "../router";
+import moment from "moment";
 
 export default {
   name: "edit-component",
@@ -34,13 +35,13 @@ export default {
       sortBy: "age",
       sortDesc: false,
       fields: [
-        { key: "number", label: "Component #", sortable: true },
-        { key: "name", label: "Name", sortable: true },
-        { key: "units", label: "Awaiting/Transit", sortable: true },
-        { key: "unitsOnStack", label: "On Stack", sortable: true },
-        { key: "unitsReserved", label: "Reserved", sortable: true },
-        { key: "category.name", label: "Category", sortable: true },
-        { key: "supplier.name", label: "Supplier", sortable: true },
+        { key: "number", label: "Component #", sortable: false },
+        { key: "name", label: "Name", sortable: false },
+        { key: "units", label: "Awaiting/Transit", sortable: false },
+        { key: "unitsOnStack", label: "On Stack", sortable: false },
+        { key: "unitsReserved", label: "Reserved", sortable: false },
+        { key: "category.name", label: "Category", sortable: false },
+        { key: "supplier.name", label: "Supplier", sortable: false },
         { key: "action", label: "Action", sortable: false }
       ],
       components: []
@@ -51,10 +52,12 @@ export default {
       (this.alertSecs = 3), (this.alertMessage = message);
     },
     getComponentsData() {
+      var apiCounter = new Date().getTime();
       http
         .get("/component")
         .then(response => {
           this.components = response.data;
+          console.log(new Date().getTime() - apiCounter);
           console.log("Success getting component data");
         })
         .catch(e => {

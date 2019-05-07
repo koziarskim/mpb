@@ -49,9 +49,9 @@ export default {
       sortBy: "id",
       sortDesc: false,
       columns: [
-        { key: "number", label: "S.O.", sortable: true },
-        { key: "customerName", label: "Customer", sortable: true },
-        { key: "date", label: "Date", sortable: true },
+        { key: "number", label: "S.O.", sortable: false },
+        { key: "customerName", label: "Customer", sortable: false },
+        { key: "date", label: "Date", sortable: false },
         { key: "dc", label: "Distribution", sortable: false },
         { key: "action", label: "Action", sortable: false }
       ],

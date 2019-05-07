@@ -67,12 +67,12 @@ export default {
       sortBy: "id",
       sortDesc: false,
       columns: [
-        { key: "number", label: "Component #", sortable: true },
-        { key: "name", label: "Name", sortable: true },
-        { key: "units", label: "Units", sortable: true },
-        { key: "unitPrice", label: "Unit Cost", sortable: true },
-        { key: "totalPrice", label: "Amount", sortable: true },
-        { key: "action", label: "Action", sortable: true }
+        { key: "number", label: "Component #", sortable: false },
+        { key: "name", label: "Name", sortable: false },
+        { key: "units", label: "Units", sortable: false },
+        { key: "unitPrice", label: "Unit Cost", sortable: false },
+        { key: "totalPrice", label: "Amount", sortable: false },
+        { key: "action", label: "Action", sortable: false }
       ],
       expectedDate: ""
     };

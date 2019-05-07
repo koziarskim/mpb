@@ -21,8 +21,13 @@ public class ComponentDto {
 	private Long unitsOnStack;
 	private Long units;
 	private Long unitsReceived; //For this PO.
-	private BigDecimal unitPrice;
+	private BigDecimal unitPrice = BigDecimal.ZERO;
 	private boolean selected;
+	
+	public ComponentDto(Long id, String number) {
+		this.id = id;
+		this.number = number;
+	}
 	
 	public ComponentDto(Long id, String number, String name, Long unitsNeeded, int unitsOnStack, Long units, Long unitsReceived, BigDecimal unitPrice, boolean selected) {
 		this.id = id;

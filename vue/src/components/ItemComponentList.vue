@@ -34,11 +34,11 @@ export default {
       sortBy: "number",
       sortDesc: false,
       columns: [
-        { key: "component", label: "Component #", sortable: true },
-        { key: "units", label: "Units", sortable: true },
-        { key: "component.unitsOnStack", label: "On Stack", sortable: true },
-        { key: "component.unitsOrdered", label: "Ordered", sortable: true },
-        { key: "component.unitsInTransit", label: "In Transit", sortable: true },
+        { key: "component", label: "Component #", sortable: false },
+        { key: "units", label: "Units", sortable: false },
+        { key: "component.unitsOnStack", label: "On Stack", sortable: false },
+        { key: "component.unitsOrdered", label: "Ordered", sortable: false },
+        { key: "component.unitsInTransit", label: "In Transit", sortable: false },
       ],
     };
   },

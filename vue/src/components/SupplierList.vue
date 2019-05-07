@@ -31,10 +31,10 @@ export default {
       sortBy: "account",
       sortDesc: false,
       fields: [
-        { key: "account", label: "Account", sortable: true },
-        { key: "name", label: "Name", sortable: true },
-        { key: "city", label: "City", sortable: true },
-        { key: "phone", label: "Phone", sortable: true },
+        { key: "account", label: "Account", sortable: false },
+        { key: "name", label: "Name", sortable: false },
+        { key: "city", label: "City", sortable: false },
+        { key: "phone", label: "Phone", sortable: false },
         { key: "action", label: "Action", sortable: false }
       ],
       suppliers: []

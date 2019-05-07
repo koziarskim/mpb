@@ -30,11 +30,11 @@ export default {
       sortBy: "componentId",
       sortDesc: false,
       fields: [
-        { key: "componentNumber", label: "Component #", sortable: true },
-        { key: "componentName", label: "Name", sortable: true },
-        { key: "supplierName", label: "Supplier", sortable: true },
-        { key: "unitsOnStack", label: "On Stack", sortable: true },
-        { key: "unitsOrdered", label: "Ordered", sortable: true }
+        { key: "componentNumber", label: "Component #", sortable: false },
+        { key: "componentName", label: "Name", sortable: false },
+        { key: "supplierName", label: "Supplier", sortable: false },
+        { key: "unitsOnStack", label: "On Stack", sortable: false },
+        { key: "unitsOrdered", label: "Ordered", sortable: false }
       ],
       inventories: [],
       filterComponent: "",

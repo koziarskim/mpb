@@ -65,13 +65,13 @@ export default {
       sortBy: "id",
       sortDesc: false,
       fields: [
-        { key: "number", label: "P.O. #", sortable: true },
-        { key: "supplier.name", label: "Supplier", sortable: true },
-        { key: "date", label: "Date", sortable: true },
-        { key: "expectedDate", label: "Expected", sortable: true },
-        { key: "submitted", label: "Submitted", sortable: true },
-        { key: "received", label: "Received", sortable: true },
-        { key: "pdf", label: "PDF", sortable: true },
+        { key: "number", label: "P.O. #", sortable: false },
+        { key: "supplier.name", label: "Supplier", sortable: false },
+        { key: "date", label: "Date", sortable: false },
+        { key: "expectedDate", label: "Expected", sortable: false },
+        { key: "submitted", label: "Submitted", sortable: false },
+        { key: "received", label: "Received", sortable: false },
+        { key: "pdf", label: "PDF", sortable: false },
         { key: "action", label: "Action", sortable: false }
       ],
       availableComponents: [

@@ -60,6 +60,11 @@ class ComponentRest {
 		return componentRepo.findAll();
 	}
 
+	@GetMapping("/component/dto")
+	Collection<ComponentDto> getAllDto() {
+		return componentRepo.getAllDto();
+	}
+
 	@GetMapping("/component/{id}")
 	ResponseEntity<?> get(@PathVariable Long id) {
 		Optional<Component> component = componentRepo.findById(id);

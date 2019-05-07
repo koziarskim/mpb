@@ -36,10 +36,10 @@ export default {
       sortBy: 'id',
       sortDesc: false,
       fields: [
-        { key: "number", label: "S.O. #", sortable: true },
-        { key: "customer.name", label: "Customer", sortable: true },
-        { key: "date", label: "Date", sortable: true },
-        { key: "shippingAddress.dc", label: "Distribution", sortable: true },
+        { key: "number", label: "S.O. #", sortable: false },
+        { key: "customer.name", label: "Customer", sortable: false },
+        { key: "date", label: "Date", sortable: false },
+        { key: "shippingAddress.dc", label: "Distribution", sortable: false },
         { key: "action", label: "Action", sortable: false}
       ],
       sales: []

@@ -29,4 +29,9 @@ public interface ComponentRepo extends JpaRepository<Component, Long> {
 			+ "group by c.id, pc.id")
 	List<ComponentDto> getComponentsForPurchaseAndSupplier(@Param("purchase_id") Long purchase_id, @Param("supplier_id") Long supplier_id);
 
+	@Query("select distinct new com.noovitec.mpb.dto.ComponentDto(" 
+			+ "c.id, c.number) "
+			+ "from Component c "
+			+ "order by c.number asc")
+	List<ComponentDto> getAllDto();
 }

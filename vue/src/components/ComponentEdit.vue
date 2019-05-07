@@ -164,9 +164,9 @@ export default {
       sortBy: "id",
       sortDesc: false,
       columns: [
-        { key: "item.number", label: "Item #", sortable: true },
-        { key: "item.name", label: "Name", sortable: true },
-        { key: "item.brand.name", label: "Brand", sortable: true },
+        { key: "item.number", label: "Item #", sortable: false },
+        { key: "item.name", label: "Name", sortable: false },
+        { key: "item.brand.name", label: "Brand", sortable: false },
       ]
     };
   },

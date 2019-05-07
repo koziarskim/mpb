@@ -37,13 +37,13 @@ export default {
       sortBy: "purchase.number",
       sortDesc: false,
       columns: [
-        { key: "purchase", label: "Purchase #", sortable: true },
-        { key: "unitsOrdered", label: "Ordered", sortable: true },
-        { key: "unitsAwaiting", label: "Awaiting", sortable: true },
-        { key: "unitsInTransit", label: "In Transit", sortable: true },
-        { key: "unitsReceived", label: "Received", sortable: true },
-        { key: "status", label: "Status", sortable: true },
-        { key: "action", label: "Action", sortable: true }
+        { key: "purchase", label: "Purchase #", sortable: false },
+        { key: "unitsOrdered", label: "Ordered", sortable: false },
+        { key: "unitsAwaiting", label: "Awaiting", sortable: false },
+        { key: "unitsInTransit", label: "In Transit", sortable: false },
+        { key: "unitsReceived", label: "Received", sortable: false },
+        { key: "status", label: "Status", sortable: false },
+        { key: "action", label: "Action", sortable: false }
       ],
       expectedDate: ""
     };

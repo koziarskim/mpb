@@ -68,8 +68,8 @@ export default {
       sortBy: "id",
       sortDesc: false,
       fields: [
-        { key: "number", label: "Account", sortable: true },
-        { key: "fullName", label: "Name", sortable: true },
+        { key: "number", label: "Account", sortable: false },
+        { key: "fullName", label: "Name", sortable: false },
         { key: "action", label: "Action", sortable: false }
       ],
       users: [],

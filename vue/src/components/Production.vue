@@ -30,11 +30,11 @@ export default {
       sortBy: 'number',
       sortDesc: false,
       fields: [
-        { key: 'number', sortable: true, label: 'Item #'},
-        { key: 'name', sortable: true, label: 'Name'},
-        { key: 'brand', sortable: true, label: 'Brand'},
-        { key: 'category', sortable: true, label: 'Category'},
-        { key: 'status', sortable: true, label: 'Status'},
+        { key: 'number', sortable: false, label: 'Item #'},
+        { key: 'name', sortable: false, label: 'Name'},
+        { key: 'brand', sortable: false, label: 'Brand'},
+        { key: 'category', sortable: false, label: 'Category'},
+        { key: 'status', sortable: false, label: 'Status'},
         { key: 'action', sortable: false}
       ],
       items: []
