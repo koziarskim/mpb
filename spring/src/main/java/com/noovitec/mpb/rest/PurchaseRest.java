@@ -153,14 +153,14 @@ class PurchaseRest {
 		Purchase result = purchaseRepo.save(purchase);
 		for (PurchaseComponent pc : result.getPurchaseComponents()) {
 				pc.updateUnits();
-				Component component = componentRepo.getOne(pc.getComponent().getId());
+				Component component = componentRepo.findById(pc.getComponent().getId()).get();
 				component.updateUnits();
 				componentRepo.save(component);
 
 		}
 		result = purchaseRepo.save(result);
 		for (PurchaseComponent pc : result.getPurchaseComponents()) {
-			Component component = componentRepo.getOne(pc.getComponent().getId());
+			Component component = componentRepo.findById(pc.getComponent().getId()).get();
 			component.updateUnits();
 			componentRepo.save(component);
 

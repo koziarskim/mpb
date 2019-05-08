@@ -10,9 +10,10 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,7 +34,6 @@ import com.noovitec.mpb.entity.Component;
 import com.noovitec.mpb.repo.AttachmentRepo;
 import com.noovitec.mpb.repo.CategoryRepo;
 import com.noovitec.mpb.repo.ComponentRepo;
-
 
 @RestController
 @RequestMapping("/api")
@@ -56,8 +56,14 @@ class ComponentRest {
 //	GET methods.
 
 	@GetMapping("/component")
-	Collection<Component> getAll() {
+	Iterable<Component> getAll() {
 		return componentRepo.findAll();
+	}
+
+	@GetMapping("/component/pageable")
+	Page<Component> getAllPageable(@RequestParam(name = "pageable", required = false) Pageable pageable) {
+		Page<Component> all = componentRepo.findAll(pageable);
+		return all;
 	}
 
 	@GetMapping("/component/dto")
@@ -117,7 +123,7 @@ class ComponentRest {
 
 	@DeleteMapping("/component/{id}")
 	public ResponseEntity<?> delete(@PathVariable Long id) {
-		Component component = componentRepo.getOne(id);
+		Component component = componentRepo.findById(id).get();
 		if (component.isLocked()) {
 			return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(Collections.singletonMap("message", "Component is currently locked"));
 		}

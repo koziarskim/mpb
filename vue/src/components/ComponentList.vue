@@ -7,7 +7,7 @@
       </div>
     </div>
     <div v-if="components.length==0">Not found any components...</div>
-    <b-table v-if="components.length>0" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="components" :fields="fields">
+    <b-table v-if="components.length>0" no-local-sorting @sort-changed="sorted" :items="components" :fields="fields">
       <template slot="number" slot-scope="row">
         <b-button size="sm" @click.stop="goToComponent(row.item.id)" variant="link">{{row.item.number}}</b-button>
       </template>
@@ -18,6 +18,12 @@
         <b-button size="sm" @click.stop="deleteComponent(row.item.id)" :disabled="row.item.locked" >x</b-button>
       </template>
     </b-table>
+    <b-pagination
+      v-model="pageable.currentPage"
+      :per-page= "pageable.perPage"
+      :total-rows="pageable.totalElements"
+      @change="paginationChange"
+    ></b-pagination>
     <b-alert :show="alertSecs" dismissible variant="warning" @dismiss-count-down="(secs) => { alertSecs = secs }">{{alertMessage}}</b-alert>
   </b-container>
 </template>
@@ -30,35 +36,47 @@ export default {
   name: "edit-component",
   data() {
     return {
+      pageable: {totalElements: 100, currentPage: 1, perPage: 7, sortBy: 'number', sortDesc: false},
+      limit: 6,
       alertSecs: 0,
       alertMessage: "",
       sortBy: "age",
       sortDesc: false,
       fields: [
-        { key: "number", label: "Component #", sortable: false },
-        { key: "name", label: "Name", sortable: false },
+        { key: "number", label: "Component #", sortable: true },
+        { key: "name", label: "Name", sortable: true },
         { key: "units", label: "Awaiting/Transit", sortable: false },
         { key: "unitsOnStack", label: "On Stack", sortable: false },
         { key: "unitsReserved", label: "Reserved", sortable: false },
-        { key: "category.name", label: "Category", sortable: false },
-        { key: "supplier.name", label: "Supplier", sortable: false },
+        { key: "category.name", label: "Category", sortable: true },
+        { key: "supplier.name", label: "Supplier", sortable: true },
         { key: "action", label: "Action", sortable: false }
       ],
       components: []
     };
   },
   methods: {
+    sorted(e){
+        if(!e.sortBy){ return }
+        this.pageable.sortBy = e.sortBy;
+        this.pageable.sortDesc = e.sortDesc;
+        this.getComponentsData();
+    },
+    paginationChange(page){
+        this.pageable.currentPage = page;
+        this.getComponentsData();
+    },
     showAlert(message) {
       (this.alertSecs = 3), (this.alertMessage = message);
     },
     getComponentsData() {
       var apiCounter = new Date().getTime();
       http
-        .get("/component")
+        .get("/component/pageable", {params: {pageable: this.pageable}})
         .then(response => {
-          this.components = response.data;
+          this.components = response.data.content;
+          this.pageable.totalElements = response.data.totalElements;
           console.log(new Date().getTime() - apiCounter);
-          console.log("Success getting component data");
         })
         .catch(e => {
           console.log("API error: " + e);
