@@ -18,7 +18,7 @@
         <b-button size="sm" @click.stop="deleteComponent(row.item.id)" :disabled="row.item.locked" >x</b-button>
       </template>
     </b-table>
-    <b-pagination
+    <b-pagination v-if="components.length>pageable.perPage"
       v-model="pageable.currentPage"
       :per-page= "pageable.perPage"
       :total-rows="pageable.totalElements"
