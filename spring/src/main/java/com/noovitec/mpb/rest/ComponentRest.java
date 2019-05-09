@@ -28,6 +28,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.noovitec.mpb.dto.ComponentDto;
+import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.entity.Attachment;
 import com.noovitec.mpb.entity.Category;
 import com.noovitec.mpb.entity.Component;
@@ -69,6 +70,11 @@ class ComponentRest {
 	@GetMapping("/component/dto")
 	Collection<ComponentDto> getAllDto() {
 		return componentRepo.getAllDto();
+	}
+
+	@GetMapping("/component/keyValue")
+	Collection<KeyValueDto> getAllKeyValue() {
+		return componentRepo.getAllKeyValue();
 	}
 
 	@GetMapping("/component/{id}")

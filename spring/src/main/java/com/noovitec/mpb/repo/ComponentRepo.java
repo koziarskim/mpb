@@ -7,6 +7,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
 import com.noovitec.mpb.dto.ComponentDto;
+import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.entity.Component;
 
 public interface ComponentRepo extends PagingAndSortingRepository<Component, Long> {
@@ -30,4 +31,8 @@ public interface ComponentRepo extends PagingAndSortingRepository<Component, Lon
 
 	@Query("select distinct new com.noovitec.mpb.dto.ComponentDto(" + "c.id, c.number) " + "from Component c " + "order by c.number asc")
 	List<ComponentDto> getAllDto();
+
+	@Query("select new com.noovitec.mpb.dto.KeyValueDto(id, concat(number, '-', name)) from Component")
+	List<KeyValueDto> getAllKeyValue();
+
 }

@@ -9,7 +9,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class KeyValueDto {
 
+	private Long id;
+	//Deprecated use id instead.
 	private Long key;
 	private Object value;
 
+	public KeyValueDto(Long id, Object value) {
+		this.id = id;
+		this.key = id;
+		this.value = value;
+	}
 }

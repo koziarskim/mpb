@@ -11,6 +11,7 @@ import { ModelListSelect } from "vue-search-select";
 import { CustomMask } from "./directives/CustomMask";
 import ScheduleModal from "./components/ScheduleModal";
 import ProductionModal from "./components/ProductionModal";
+import VueBootstrapTypeahead from 'vue-bootstrap-typeahead'
 
 Vue.use(BootstrapVue, {
   prefix: "b"
@@ -19,6 +20,7 @@ Vue.directive("mask", CustomMask);
 Vue.component("b-select", ModelListSelect);
 Vue.component("schedule-modal", ScheduleModal);
 Vue.component("production-modal", ProductionModal);
+Vue.component("b-type", VueBootstrapTypeahead);
 Vue.config.productionTip = false;
 Vue.filter("formatDate", function(value) {
   if (value) {

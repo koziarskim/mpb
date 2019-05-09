@@ -37,7 +37,7 @@
             <b-row>
               <b-col cols="4">
                 <label class="top-label">Category:</label>
-                <b-select option-value="id" option-text="name" :list="availableItemCs" v-model="category" placeholder="Select category"></b-select>
+                <b-select option-value="id" option-text="value" :list="availableItemCs" v-model="category" placeholder="Select category"></b-select>
               </b-col>
               <b-col cols="4">
                 <label class="top-label">Brand:</label>
@@ -145,13 +145,14 @@
         <b-row>
           <b-col cols="12">
             <label class="top-label">Components:</label>
-            <b-select option-value="id" option-text="label" :list="availableComponents" v-model="component" placeholder="Select component"></b-select>
+            <b-select option-value="id" option-text="value" :list="availableComponents" v-model="component" placeholder="Select component"></b-select>
+            <!-- <b-type :data="availableComp" v-model="query" @hit="selectedComp" :serializer="item => item.value + item.key"/> -->
           </b-col>
         </b-row>
         <b-row>
           <b-col cols="12">
             <div v-for="category in availableComponentCs" v-bind:key="category.id">
-              <div style="color: #91c959; font-style: italic; font-weight: bold" v-if="getComponentsById(category.id).length>0">{{category.name}}</div>
+              <div style="color: #91c959; font-style: italic; font-weight: bold" v-if="getComponentsById(category.id).length>0">{{category.value}}</div>
               <div style="display: flex; border-bottom: 1px solid #ced4da" v-for="ic in getComponentsById(category.id)" v-bind:key="ic.id">
                 <div style="width:100%">
                   <input size="sm" style="border: 0px; width: 25px" min="1" max="9" v-model="ic.units" type="number">
@@ -178,6 +179,9 @@ export default {
   name: "edit-component",
   data() {
     return {
+      availableComp: [],
+      query: "",
+      selectedComp: null,
       item: {
         itemComponents: [],
         number: 0,
@@ -280,14 +284,21 @@ export default {
   watch: {
     component: function(new_component, old_component) {
       if (new_component.id) {
-        var found = this.item.itemComponents.some(function(ic) {
-          return ic.component.id === new_component.id;
-        });
+        var found = this.item.itemComponents.find(
+          ic => ic.component.id === new_component.id
+        );
         if (!found) {
-          this.item.itemComponents.push({
-            units: 1, //Default value
-            component: new_component
-          });
+          http
+            .get("/component/" + new_component.id)
+            .then(response => {
+              this.item.itemComponents.push({
+                units: 1, //Default value
+                component: response.data
+              });
+            })
+            .catch(e => {
+              console.log("API error: " + e);
+            });
         }
       }
     },
@@ -336,7 +347,7 @@ export default {
     },
     getComponentsData() {
       http
-        .get("/component")
+        .get("/component/keyValue")
         .then(response => {
           this.availableComponents = response.data;
         })
@@ -388,17 +399,21 @@ export default {
     },
     getAvailableCategories() {
       http
-        .get("/category")
+        .get("/category/item/keyValue")
         .then(response => {
           response.data.forEach(category => {
-            if (category.type == "CMP") {
-              this.availableComponentCs.push(category);
-            }
-            if (category.type == "ITM") {
-              this.availableItemCs.push(category);
-            }
+            this.availableItemCs.push(category);
           });
-          //   this.availableItemCs = response.data;
+        })
+        .catch(e => {
+          console.log("API error: " + e);
+        });
+      http
+        .get("/category/component/keyValue")
+        .then(response => {
+          response.data.forEach(category => {
+            this.availableComponentCs.push(category);
+          });
         })
         .catch(e => {
           console.log("API error: " + e);
@@ -426,10 +441,16 @@ export default {
     },
     uploadImage(e) {
       this.image = e.target.files[0] || e.dataTransfer.files[0];
-        if(this.image.size > 204800){ //200KB
-            alert("File size (" + (+this.image.size/1024).toFixed(2) + "KB ) cannot exeed 1MB");
-            return;
-        }      this.saveAndUpload();
+      if (this.image.size > 204800) {
+        //200KB
+        alert(
+          "File size (" +
+            (+this.image.size / 1024).toFixed(2) +
+            "KB ) cannot exeed 1MB"
+        );
+        return;
+      }
+      this.saveAndUpload();
     },
     saveAndUpload() {
       this.item.totalCost = this.totalCost;
