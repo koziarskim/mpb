@@ -16,6 +16,7 @@ import javax.persistence.OneToMany;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.AllArgsConstructor;
@@ -56,6 +57,7 @@ public class Supplier {
 	@JoinColumn(name = "address_id", referencedColumnName = "id")
 	private Address address;
 
+	@JsonIgnore
 	@JsonIgnoreProperties(value = { "supplier" }, allowSetters = true)
 	@OneToMany()
 	@JoinColumn(name = "supplier_id")
