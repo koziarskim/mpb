@@ -88,7 +88,7 @@ class ItemRest {
 	private Collection<ItemDto> itemToDto(Collection<Item> items) {
 		Collection<ItemDto> dtos = new HashSet<ItemDto>();
 		for (Item item : items) {
-			ItemDto dto = new ItemDto(item.getId(), item.getNumber(), item.getName(), item.getBrand().getName(), item.getCategory().getName(),
+			ItemDto dto = new ItemDto(item.getId(), item.getNumber(), item.getName(), item.getBrand()==null?null:item.getBrand().getName(), item.getCategory()==null?null:item.getCategory().getName(),
 					item.getStatus(), item.getUnitsOnStack(), item.getUnitsScheduled());
 			dtos.add(dto);
 		}
