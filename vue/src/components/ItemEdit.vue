@@ -452,7 +452,22 @@ export default {
       }
       this.saveAndUpload();
     },
+    validate(){
+        if(!this.item.name){
+            alert("Item name is required");
+            return false;
+        }
+        if(!this.item.season || !this.item.season.id){
+            alert("Season is required");
+            return false;
+        }
+
+        return true;
+    },
     saveAndUpload() {
+        if(!this.validate()){
+            return Promise.reject();
+        }
       this.item.totalCost = this.totalCost;
       let formData = new FormData();
       formData.append("image", this.image);
