@@ -171,7 +171,7 @@ export default {
         alert("Make sure all fields are entered");
         return false;
       }
-      if (this.scheduleItem.unitScheduled > this.item.unitsReadySchedule){
+      if (this.scheduleItem.unitsScheduled > this.item.unitsReadySchedule){
         alert("Cannot schedule more that ready to schedule");
         return false;
       }
