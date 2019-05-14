@@ -16,7 +16,7 @@
                     </b-col>
                     <b-col cols=5>
                         <label class="top-label">Account #:</label>
-                        <input class="form-control" type="text" v-model="customer.account" placeholder="Account #"/>
+                        <input class="form-control" disabled type="text" v-model="customer.account" placeholder="Account #"/>
                     </b-col>
                 </b-row>
                 <b-row>

@@ -51,13 +51,9 @@ class CustomerRest {
 		if (customer == null) {
 			customer = new Customer();
 		}
-		//TODO: if parent is not set, the all children are deleted.
-//		for (Address address : customer.getAddresses()) {
-//			if (address.getCustomer() == null) {
-//				address.setCustomer(customer);
-//			}
-//		}
 		Customer result = customerRepo.save(customer);
+		result.setAccount(result.getId().toString());
+		result = customerRepo.save(customer);
 		return ResponseEntity.ok().body(result);
 	}
 

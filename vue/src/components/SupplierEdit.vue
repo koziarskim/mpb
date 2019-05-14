@@ -14,7 +14,7 @@
             </b-col>
             <b-col cols=3>
                 <label class="top-label">Account #:</label>
-                <input class="form-control" type="text" v-model="supplier.account" placeholder="Account #"/>
+                <input class="form-control" disabled type="text" v-model="supplier.account" placeholder="Account #"/>
             </b-col>
             <b-col cols=2>
                 <label class="top-label">Pay Terms:</label>

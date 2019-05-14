@@ -56,6 +56,8 @@ class SupplierRest {
 			supplier = new Supplier();
 		}
 		Supplier result = supplierRepo.save(supplier);
+		result.setAccount(result.getId().toString());
+		result = supplierRepo.save(supplier);
 		return ResponseEntity.ok().body(result);
 	}
 
