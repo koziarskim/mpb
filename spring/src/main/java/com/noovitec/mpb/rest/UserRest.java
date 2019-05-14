@@ -77,6 +77,7 @@ class UserRest {
 		mpbAuthenticationContext.addSid(sid);
 		Cookie cookie = new Cookie("SID", sid);
 		cookie.setPath("/");
+		cookie.setMaxAge(900); //15 mins.
 		response.addCookie(cookie);
 		return ResponseEntity.ok().body(result);
 	}
