@@ -72,7 +72,7 @@ export default {
         { key: "number", label: "Receiving #", sortable: false },
         { key: "container", label: "Container", sortable: false },
         { key: "units", label: "Units", sortable: false },
-        { key: "unitsReserved", label: "Reserved", sortable: false },
+        // { key: "unitsReserved", label: "Reserved", sortable: false },
         { key: "shippedDate", label: "Shipped", sortable: false },
         { key: "etaDate", label: "ETA", sortable: false },
         { key: "receivedDate", label: "Received", sortable: false },
