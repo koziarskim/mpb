@@ -82,6 +82,9 @@
           <template slot="item.number" slot-scope="row">
             <b-button size="sm" @click.stop="goToItem(row.item.item.id)" variant="link">{{row.item.item.number}}</b-button>
           </template>
+          <template slot="components" slot-scope="row">
+            <b-button size="sm" variant="link" @click.stop="gotToItemComponentList(row.item.item.id)">View</b-button>
+          </template>
           <template slot="units" slot-scope="row">
             <input class="form-control" style="width:100px" type="tel" v-model="row.item.units">
           </template>
@@ -123,6 +126,7 @@ export default {
       sortDesc: false,
       columns: [
         { key: "item.number", label: "Item", sortable: false },
+        { key: "components", label: "Components", sortable: false },
         { key: "item.totalCost", label: "Cost", sortable: false },
         { key: "units", label: "Units", sortable: false },
         { key: "unitPrice", label: "Unit Price", sortable: false },
@@ -220,6 +224,9 @@ export default {
     },
     goToItem(item_id) {
       router.push("/itemEdit/" + item_id);
+    },
+    gotToItemComponentList(item_id){
+        router.push('/itemComponentList/'+item_id);
     },
     deleteItem(item_id) {
       var item = this.sale.saleItems.find(it => it.item.id == item_id);
