@@ -12,11 +12,14 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.noovitec.mpb.dto.ItemAvailabilityDto;
+import com.noovitec.mpb.dto.ItemDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -41,4 +44,7 @@ public class Schedule {
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "schedule_id")
 	private Collection<ScheduleItem> scheduleItems = new HashSet<ScheduleItem>();
+	
+	@Transient
+	private Collection<ItemDto> items = new HashSet<ItemDto>();
 }

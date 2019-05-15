@@ -38,12 +38,12 @@ public class SaleItem {
 	private BigDecimal unitPrice = BigDecimal.ZERO;
 	private BigDecimal totalUnitPrice = BigDecimal.ZERO;
 
-	@JsonIgnoreProperties(value={ "saleItems" }, allowSetters=true)
+	@JsonIgnoreProperties(value={ "saleItems", "purchaseSales" }, allowSetters=true)
 	@ManyToOne()
 	@JoinColumn(name = "sale_id", referencedColumnName = "id")
 	private Sale sale;
 
-	@JsonIgnoreProperties(value={ "saleItems" }, allowSetters=true)
+	@JsonIgnoreProperties(value={ "saleItems", "itemComponents" }, allowSetters=true)
 	@ManyToOne()
 	@JoinColumn(name = "item_id", referencedColumnName = "id")
 	private Item item;
