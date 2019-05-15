@@ -50,6 +50,8 @@
           <label class="top-label">Available to schedule: {{item.unitsReadySchedule}}</label>
           <br>
           <label class="top-label">Ready for production: {{item.unitsReadyProduction}}</label>
+          <!-- <br> -->
+          <!-- <label class="top-label">Total Item scheduled: {{item.totalItemScheduled}}</label> -->
         </b-col>
       </b-row>
     </b-modal>

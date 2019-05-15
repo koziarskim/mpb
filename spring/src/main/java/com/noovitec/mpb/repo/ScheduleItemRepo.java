@@ -38,6 +38,13 @@ public interface ScheduleItemRepo extends JpaRepository<ScheduleItem, Long> {
 			+ "where si.schedule.date >= :date "
 			+ "and si.item.id = :item_id "
 			+ "group by si.item.id")
-	public Long getUnitsScheduled(@Param("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date, @Param("item_id") Long item_id);
+	public Long getTotalItemScheduled(@Param("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date, @Param("item_id") Long item_id);
+
+	@Query("select sum(si.unitsScheduled) from ScheduleItem si "
+			+ "where si.schedule.date >= :date "
+			+ "and si.item.id = :item_id "
+			+ "and si.saleItem.sale.id = :sale_id "
+			+ "group by si.item.id")
+	public Long getTotalItemAndSaleScheduled(@Param("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date, @Param("item_id") Long item_id, @Param("sale_id") Long sale_id);
 
 }

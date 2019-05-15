@@ -171,8 +171,8 @@ class ItemRest {
 					itemsReadySchedule = icReadySchedule;
 				}
 			}
-			Long unitsScheduledFromToday = scheduleItemRepo.getUnitsScheduled(LocalDate.now(), item.getId());
-			dto.setTotalScheduled(unitsScheduledFromToday==null?0:unitsScheduledFromToday.intValue());
+			Long totalItemSchedule = scheduleItemRepo.getTotalItemScheduled(LocalDate.now(), item.getId());
+			dto.setTotalItemScheduled(totalItemSchedule==null?0:totalItemSchedule.intValue());
 			dto.setUnitsReadySchedule(itemsReadySchedule);
 			dto.setUnitsReadyProduction(itemsReadyProduction);
 			if(!includeAll) {
