@@ -21,6 +21,7 @@ public class ComponentDto {
 	private Long unitsOnStack;
 	private Long units;
 	private Long unitsReceived; //For this PO.
+	private Long unitsInTransit;
 	private BigDecimal unitPrice = BigDecimal.ZERO;
 	private boolean selected;
 	
@@ -29,7 +30,7 @@ public class ComponentDto {
 		this.number = number;
 	}
 	
-	public ComponentDto(Long id, String number, String name, Long unitsNeeded, int unitsOnStack, Long units, Long unitsReceived, BigDecimal unitPrice, boolean selected) {
+	public ComponentDto(Long id, String number, String name, Long unitsNeeded, int unitsOnStack, Long units, Long unitsReceived, Long unitsInTransit, BigDecimal unitPrice, boolean selected) {
 		this.id = id;
 		this.number = number;
 		this.name = name;
@@ -39,6 +40,7 @@ public class ComponentDto {
 		this.unitPrice = unitPrice;
 		this.selected = selected;
 		this.unitsReceived = unitsReceived==null?0L:unitsReceived;
+		this.unitsInTransit = unitsInTransit==null?0L:unitsInTransit;
 	}
 	
 	@Transient

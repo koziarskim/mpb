@@ -69,7 +69,9 @@ export default {
       columns: [
         { key: "number", label: "Component #", sortable: false },
         { key: "name", label: "Name", sortable: false },
-        { key: "units", label: "Units", sortable: false },
+        { key: "units", label: "Ordered", sortable: false },
+        { key: "unitsInTransit", label: "Transit", sortable: false },
+        { key: "unitsReceived", label: "Received", sortable: false },
         { key: "unitPrice", label: "Unit Cost", sortable: false },
         { key: "totalPrice", label: "Amount", sortable: false },
         { key: "action", label: "Action", sortable: false }

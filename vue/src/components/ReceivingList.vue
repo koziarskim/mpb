@@ -12,11 +12,10 @@
         <label class="top-label">Component:</label>
         <b-select option-value="id" option-text="componentNumber" :list="availablePurchaseComponents" v-model="purchaseComponent"></b-select>
       </b-col>
-      <b-col cols="2" style="margin-top: -12px">
+      <!-- <b-col cols="2" style="margin-top: -12px">
         <label class="top-label">Search:</label>
         <input class="form-control" type="text" v-model="keyword" placeholder="Type to search">
-      </b-col>
-
+      </b-col> -->
       <b-col>
         <div style="text-align: right;">
           <b-button type="submit" variant="primary" @click="goToReceiving('')">New Receiving</b-button>

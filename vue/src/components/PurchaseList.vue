@@ -8,10 +8,10 @@
         <label class="top-label">Component:</label>
         <b-select option-value="id" option-text="number" :list="availableComponents" v-model="component"></b-select>
       </b-col>
-      <b-col cols="2" style="margin-top: -12px">
+      <!-- <b-col cols="2" style="margin-top: -12px">
         <label class="top-label">Search:</label>
         <input class="form-control" type="text" v-model="keyword" placeholder="Type to search">
-      </b-col>
+      </b-col> -->
       <b-col cols="2" style="margin-top: 16px">
         <b-form-checkbox @change="showAllChange()" v-model="showAll">Show All</b-form-checkbox>
       </b-col>
