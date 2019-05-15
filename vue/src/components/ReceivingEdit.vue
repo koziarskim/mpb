@@ -49,11 +49,11 @@
           Ordered: {{purchaseComponent.unitsOrdered}}<br/>
           In Transit: {{purchaseComponent.unitsInTransit}}<br/>
           Received: {{purchaseComponent.unitsReceived}}<br/>
-          <br/>
+          <!-- <br/>
           All P.O.s<br/>
           Ordered: {{purchaseComponent.component.unitsOrdered}}<br/>
           In Transit: {{purchaseComponent.component.unitsInTransit}}<br/>
-          Received: {{purchaseComponent.component.unitsReceived}}<br/>
+          Received: {{purchaseComponent.component.unitsReceived}}<br/> -->
       </b-row>
     </b-col>
     </b-row>
