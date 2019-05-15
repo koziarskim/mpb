@@ -118,35 +118,6 @@ public class Item{
 		this.status = "DYNAMIC";
 	}
 
-	public String getStatus() {
-		this.status = this.calculateStatus();
-		return this.status;
-	}
-
-	public String calculateStatus() {
-		Set<String> status = new HashSet<String>();
-		for (ItemComponent ic : this.getItemComponents()) {
-			Component c = ic.getComponent();
-			if (c.getUnitsOnStack() >= ic.getUnits()) {
-				status.add("READY");
-			} else if (c.getUnitsInTransit() > 0) {
-				status.add("TRANSIT");
-			} else if (c.getUnitsOrdered() > 0) {
-				status.add("ORDERED");
-			}
-		}
-		if (status.contains("READY")) {
-			this.status = "READY";
-		}
-		if (status.contains("TRANSIT")) {
-			this.status = "TRANSIT";
-		}
-		if (status.contains("ORDERED")) {
-			this.status = "ORDERED";
-		}
-		return this.status == null ? "SHORT" : this.status;
-	}
-	
 	public void addUnitsOnStack(Long units) {
 		if(this.unitsOnStack==null) {
 			this.unitsOnStack = 0L;

@@ -108,16 +108,13 @@ export default {
           console.log("API error: " + e);
         });
     },
-    getAvailableItems(date, item_id) {
+    getAvailableItems(date) {
       var query = "";
       //TODO: This could query only single item instead of all.
       if(this.scheduleItem.id){
           query = "?includeAll=true"
       }
       var url = "/item/eta/" + date+query;
-      if(item_id){
-          url = "/item/"+item_id+"/eta/" + date
-      }
       http
         .get(url)
         .then(response => {
