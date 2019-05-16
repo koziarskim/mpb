@@ -3,7 +3,7 @@
     <b-modal centered size="lg" v-model="visible" :hide-header="true" :hide-footer="true">
       <b-row>
         <b-col>
-          <span>Production: {{schedule.date}} @ {{formatTime(scheduleItem.startTime)}}, </span>
+          <span>Production: {{schedule.date}} @ {{formatTime(scheduleEvent.startTime)}}, </span>
         </b-col>
         <b-col>
           <div style="text-align: right;">
@@ -21,9 +21,9 @@
             <input style="width:135px" class="form-control" type="time" v-model="newProduction.finishTime">
           </b-row>
           <b-row>
-            <span>Total Production Output: {{scheduleItem.totalProduced}}</span>
+            <span>Total Production Output: {{scheduleEvent.totalProduced}}</span>
           </b-row>
-          <b-row v-for="production in scheduleItem.productions" :key="production.id">
+          <b-row v-for="production in scheduleEvent.productions" :key="production.id">
             <span>Units: {{production.unitsProduced}} @ {{production.finishTime}}</span>
           </b-row>
         </b-col>
@@ -34,7 +34,7 @@
           <br>
           <label class="top-label">Line: {{line.number}}</label>
           <br>
-          <label class="top-label">Scheduled for production: {{scheduleItem.unitsScheduled}}</label>
+          <label class="top-label">Scheduled for production: {{scheduleEvent.unitsScheduled}}</label>
           <br>
           <label class="top-label">Still to produce: {{stillToProduce}}</label>
           <br>
@@ -52,7 +52,7 @@ import router from "../router";
 export default {
   name: "schedule-modal",
   props: {
-    scheduleItem: Object,
+    scheduleEvent: Object,
     schedule: Object
   },
   data() {
@@ -73,14 +73,14 @@ export default {
   computed: {
     stillToProduce() {
       return (
-        +this.scheduleItem.unitsScheduled -
-        +this.scheduleItem.totalProduced -
+        +this.scheduleEvent.unitsScheduled -
+        +this.scheduleEvent.totalProduced -
         +this.newProduction.unitsProduced
       );
     },
     totalProduced() {
       return (
-        +this.scheduleItem.totalProduced + +this.newProduction.unitsProduced
+        +this.scheduleEvent.totalProduced + +this.newProduction.unitsProduced
       );
     }
   },
@@ -94,8 +94,8 @@ export default {
         .get("/saleItem/item/" + item_id)
         .then(response => {
           this.availableSaleItems = response.data;
-          this.saleItem = this.scheduleItem.saleItem
-            ? this.scheduleItem.saleItem
+          this.saleItem = this.scheduleEvent.saleItem
+            ? this.scheduleEvent.saleItem
             : {};
         })
         .catch(e => {
@@ -104,9 +104,9 @@ export default {
     },
     getAvailableItems(date) {
       http
-        .get("/item/"+this.scheduleItem.item.id+"/eta/" + date)
+        .get("/item/"+this.scheduleEvent.item.id+"/eta/" + date)
         .then(response => {
-            this.item = response.data.find(itemDto=> itemDto.id == this.scheduleItem.item.id)
+            this.item = response.data.find(itemDto=> itemDto.id == this.scheduleEvent.item.id)
             })
         .catch(e => {
           console.log("API error: " + e);
@@ -126,7 +126,7 @@ export default {
             { id: 7, number: 7 },
             { id: 8, number: 8 }
           ];
-          this.line = this.scheduleItem.line ? this.scheduleItem.line : {};
+          this.line = this.scheduleEvent.line ? this.scheduleEvent.line : {};
         })
         .catch(e => {
           console.log("API error: " + e);
@@ -144,7 +144,7 @@ export default {
         alert("Units cannot exceed ready for production");
         return false;
       }
-      if((+this.scheduleItem.totalProduced + +this.newProduction.unitsProduced) > this.scheduleItem.unitsScheduled){
+      if((+this.scheduleEvent.totalProduced + +this.newProduction.unitsProduced) > this.scheduleEvent.unitsScheduled){
           alert("Total units cannot exceed scheduled");
           return false;
       }
@@ -155,7 +155,7 @@ export default {
         return;
       }
       var production = {
-        scheduleItem: { id: this.scheduleItem.id },
+        scheduleEvent: { id: this.scheduleEvent.id },
         unitsProduced: this.newProduction.unitsProduced,
         finishTime: this.newProduction.finishTime
       };
@@ -170,7 +170,7 @@ export default {
     },
     deleteModal() {
       http
-        .delete("/scheduleItem/" + this.scheduleItem.id)
+        .delete("/scheduleEvent/" + this.scheduleEvent.id)
         .then(response => {
           this.closeModal();
         })

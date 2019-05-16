@@ -15,7 +15,7 @@
         <a style="padding-left: 15%" href="#" @click="newSchedule(s)">(+)</a>
       </div>
       <div class="n-cell" v-for="line in numberOfLines" :key="line">
-        <div :style="getColor(si)" v-for="si in getScheduleItemsByLine(line, s.scheduleItems)" :key="si.id">
+        <div :style="getColor(si)" v-for="si in getScheduleEventsByLine(line, s.scheduleEvents)" :key="si.id">
           <a href="#" @click="editSchedule(s, si)">{{si.item.number}}:</a>
           <a href="#" @click="editProduction(s, si)">{{si.saleItem.sale?si.saleItem.sale.customer.name:''}}</a>
         </div>
@@ -24,10 +24,10 @@
     <a href="#" @click="previousDays()">Previous 7 days</a> |
     <a href="#" @click="nextDays()">Next 7 days</a>
     <div v-if="scheduleModalVisible">
-      <schedule-modal v-on:closeModal="closeScheduleModal()" :schedule="schedule" :scheduleItem="scheduleItem"></schedule-modal>
+      <schedule-modal v-on:closeModal="closeScheduleModal()" :schedule="schedule" :scheduleEvent="scheduleEvent"></schedule-modal>
     </div>
     <div v-if="productionModalVisible">
-      <production-modal v-on:closeModal="closeProductionModal()" :schedule="schedule" :scheduleItem="scheduleItem"></production-modal>
+      <production-modal v-on:closeModal="closeProductionModal()" :schedule="schedule" :scheduleEvent="scheduleEvent"></production-modal>
     </div>
   </b-container>
 </template>
@@ -40,7 +40,7 @@ export default {
   data() {
     return {
       numberOfLines: 8,
-      scheduleItem: { unitsScheduled: 0 },
+      scheduleEvent: { unitsScheduled: 0 },
       schedule: {},
       schedules: [{ id: 1 }],
       scheduleModalVisible: false,
@@ -88,28 +88,28 @@ export default {
     // markItemsToReschedule(schedule) {
     //   return this.getItemsToReschedule(schedule.date).then(itemDtos => {
     //     itemDtos.forEach(itemDto => {
-    //       schedule.scheduleItems.forEach(scheduleItem => {
-    //         if (scheduleItem.item.id == itemDto.id) {
-    //           scheduleItem.unitsShort = itemDto.unitsShort;
-    //           scheduleItem.unitsAvailable = itemDto.unitsAvailable;
-    //           scheduleItem.unitsReadyProduction = itemDto.unitsReadyProduction;
-    //           scheduleItem.totalUnitsScheduled = itemDto.unitsScheduled;
+    //       schedule.scheduleEvents.forEach(scheduleEvent => {
+    //         if (scheduleEvent.item.id == itemDto.id) {
+    //           scheduleEvent.unitsShort = itemDto.unitsShort;
+    //           scheduleEvent.unitsAvailable = itemDto.unitsAvailable;
+    //           scheduleEvent.unitsReadyProduction = itemDto.unitsReadyProduction;
+    //           scheduleEvent.totalUnitsScheduled = itemDto.unitsScheduled;
     //         }
     //       });
     //     });
     //     return "";
     //   });
     // },
-    getScheduleItemsByLine(lineNumber, scheduleItems) {
-      var lineScheduleItems = [];
-      if (scheduleItems) {
-        scheduleItems.forEach(scheduleItem => {
-          if (scheduleItem.line.number == lineNumber) {
-            lineScheduleItems.push(scheduleItem);
+    getScheduleEventsByLine(lineNumber, scheduleEvents) {
+      var lineScheduleEvents = [];
+      if (scheduleEvents) {
+        scheduleEvents.forEach(scheduleEvent => {
+          if (scheduleEvent.line.number == lineNumber) {
+            lineScheduleEvents.push(scheduleEvent);
           }
         });
       }
-      return lineScheduleItems;
+      return lineScheduleEvents;
     },
     newSchedule(schedule) {
       if (!schedule.id) {
@@ -118,24 +118,24 @@ export default {
           this.scheduleModalVisible = true;
         });
       } else {
-        this.scheduleItem = {unitsScheduled:0};
+        this.scheduleEvent = {unitsScheduled:0};
         this.schedule = schedule;
         this.scheduleModalVisible = true;
       }
     },
-    editSchedule(schedule, scheduleItem) {
+    editSchedule(schedule, scheduleEvent) {
       this.schedule = schedule;
-      this.scheduleItem = scheduleItem;
+      this.scheduleEvent = scheduleEvent;
       this.scheduleModalVisible = true;
     },
-    editProduction(schedule, scheduleItem) {
+    editProduction(schedule, scheduleEvent) {
       this.schedule = schedule;
-      this.scheduleItem = scheduleItem;
+      this.scheduleEvent = scheduleEvent;
       this.productionModalVisible = true;
     },
     validateModal() {
       if (
-        !this.modalData.scheduleItem.startTime ||
+        !this.modalData.scheduleEvent.startTime ||
         !this.modalData.selectedLine ||
         !this.modalData.selectedItem
       ) {
@@ -143,16 +143,16 @@ export default {
         return;
       }
       if (
-        this.modalData.scheduleItem.unitsScheduled < 0 ||
-        this.modalData.scheduleItem.unitsScheduled > this.maxItems
+        this.modalData.scheduleEvent.unitsScheduled < 0 ||
+        this.modalData.scheduleEvent.unitsScheduled > this.maxItems
       ) {
         alert("Units scheduled cannot exceed available");
         return;
       }
       if (
-        this.modalData.scheduleItem.totalProduced > 0 &&
-        this.modalData.scheduleItem.unitsScheduled <
-          this.modalData.scheduleItem.totalProduced
+        this.modalData.scheduleEvent.totalProduced > 0 &&
+        this.modalData.scheduleEvent.unitsScheduled <
+          this.modalData.scheduleEvent.totalProduced
       ) {
         alert("Units scheduled cannot be less that total produced");
         return;
@@ -170,7 +170,7 @@ export default {
         });
     },
     closeScheduleModal() {
-      this.scheduleItem = {unitsScheduled: 0 };
+      this.scheduleEvent = {unitsScheduled: 0 };
       this.schedule = {};
       this.scheduleModalVisible = false;
       this.getSchedules();
@@ -180,10 +180,10 @@ export default {
       this.getSchedules();
     },
     deleteModal() {
-      var si = this.modalData.schedule.scheduleItems.find(
-        it => it.id == this.modalData.scheduleItem.id
+      var si = this.modalData.schedule.scheduleEvents.find(
+        it => it.id == this.modalData.scheduleEvent.id
       );
-      this.deleteScheduleItem(si.id);
+      this.deleteScheduleEvent(si.id);
       this.scheduleModalVisible = false;
     },
     nextDays() {

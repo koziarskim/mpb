@@ -7,7 +7,7 @@
         </b-col>
         <b-col>
           <div style="text-align: right;">
-            <b-button v-if="scheduleItem.id && (!scheduleItem.productions || scheduleItem.productions.length<=0)" style="margin: 0 2px 0 2px" @click="deleteModal()">Delete</b-button>
+            <b-button v-if="scheduleEvent.id && (!scheduleEvent.productions || scheduleEvent.productions.length<=0)" style="margin: 0 2px 0 2px" @click="deleteModal()">Delete</b-button>
             <b-button style="margin: 0 2px 0 2px" @click="closeModal()">Close</b-button>
             <b-button style="margin: 0 2px 0 2px" @click="saveModal()" variant="success">Save</b-button>
           </div>
@@ -20,16 +20,16 @@
         </b-col>
         <b-col cols="3">
           <label class="top-label">Item:</label>
-          <b-select v-if="!scheduleItem.id" option-value="id" option-text="number" :list="availableItems" v-model="item"></b-select>
-          <span v-if="scheduleItem.id">
+          <b-select v-if="!scheduleEvent.id" option-value="id" option-text="number" :list="availableItems" v-model="item"></b-select>
+          <span v-if="scheduleEvent.id">
             <br>
             {{item.number}}
           </span>
         </b-col>
         <b-col cols="5">
           <label class="top-label">Sale/S.O.:</label>
-          <b-select v-if="!scheduleItem.id" option-value="id" option-text="label" :list="availableSaleItems" v-model="saleItem"></b-select>
-          <span v-if="scheduleItem.id">
+          <b-select v-if="!scheduleEvent.id" option-value="id" option-text="label" :list="availableSaleItems" v-model="saleItem"></b-select>
+          <span v-if="scheduleEvent.id">
             <br>
             {{saleItem.label}}
           </span>
@@ -38,11 +38,11 @@
       <b-row>
         <b-col cols="4">
           <label class="top-label">Start:</label>
-          <input class="form-control" type="time" v-model="scheduleItem.startTime">
+          <input class="form-control" type="time" v-model="scheduleEvent.startTime">
         </b-col>
         <b-col cols="4">
           <label class="top-label">Units Scheduled:</label>
-          <input class="form-control" type="tel" v-model="scheduleItem.unitsScheduled">
+          <input class="form-control" type="tel" v-model="scheduleEvent.unitsScheduled">
         </b-col>
         <b-col cols="4">
           <label class="top-label">Total Sold: {{saleItem.units}}</label>
@@ -65,7 +65,7 @@ import router from "../router";
 export default {
   name: "schedule-modal",
   props: {
-    scheduleItem: Object,
+    scheduleEvent: Object,
     schedule: Object
   },
   data() {
@@ -102,8 +102,8 @@ export default {
         .get("/saleItem/item/" + item_id)
         .then(response => {
           this.availableSaleItems = response.data;
-          this.saleItem = this.scheduleItem.saleItem
-            ? this.scheduleItem.saleItem
+          this.saleItem = this.scheduleEvent.saleItem
+            ? this.scheduleEvent.saleItem
             : {};
         })
         .catch(e => {
@@ -113,7 +113,7 @@ export default {
     getAvailableItems(date) {
       var query = "";
       //TODO: This could query only single item instead of all.
-      if(this.scheduleItem.id){
+      if(this.scheduleEvent.id){
           query = "?includeAll=true"
       }
       var url = "/item/eta/" + date+query;
@@ -121,8 +121,8 @@ export default {
         .get(url)
         .then(response => {
           this.availableItems = response.data;
-          if(this.scheduleItem.item){
-              this.item = response.data.find(itemDto=> itemDto.id == this.scheduleItem.item.id);
+          if(this.scheduleEvent.item){
+              this.item = response.data.find(itemDto=> itemDto.id == this.scheduleEvent.item.id);
           }
         })
         .catch(e => {
@@ -143,7 +143,7 @@ export default {
             { id: 7, number: 7 },
             { id: 8, number: 8 }
           ];
-          this.line = this.scheduleItem.line ? this.scheduleItem.line : {};
+          this.line = this.scheduleEvent.line ? this.scheduleEvent.line : {};
         })
         .catch(e => {
           console.log("API error: " + e);
@@ -164,17 +164,17 @@ export default {
         !this.line ||
         !this.item ||
         !this.saleItem ||
-        !this.scheduleItem.startTime ||
-        this.scheduleItem.unitsScheduled <= 0
+        !this.scheduleEvent.startTime ||
+        this.scheduleEvent.unitsScheduled <= 0
       ) {
         alert("Make sure all fields are entered");
         return false;
       }
-      if (this.scheduleItem.unitsScheduled > this.item.unitsReadySchedule){
+      if (this.scheduleEvent.unitsScheduled > this.item.unitsReadySchedule){
         alert("Cannot schedule more that ready to schedule");
         return false;
       }
-      if (this.scheduleItem.unitsScheduled > this.saleItem.units) {
+      if (this.scheduleEvent.unitsScheduled > this.saleItem.units) {
         alert("Units scheduled cannot exceed sold");
         return false;
       }
@@ -184,13 +184,13 @@ export default {
       if (!this.validate()) {
         return;
       }
-      this.scheduleItem.line = { id: this.line.id };
-      this.scheduleItem.item = { id: this.item.id };
-      this.scheduleItem.saleItem = { id: this.saleItem.id };
-      this.scheduleItem.schedule = { id: this.schedule.id };
+      this.scheduleEvent.line = { id: this.line.id };
+      this.scheduleEvent.item = { id: this.item.id };
+      this.scheduleEvent.saleItem = { id: this.saleItem.id };
+      this.scheduleEvent.schedule = { id: this.schedule.id };
 
       http
-        .post("/scheduleItem", this.scheduleItem)
+        .post("/scheduleEvent", this.scheduleEvent)
         .then(response => {
           this.closeModal();
         })
@@ -200,7 +200,7 @@ export default {
     },
     deleteModal() {
       http
-        .delete("/scheduleItem/" + this.scheduleItem.id)
+        .delete("/scheduleEvent/" + this.scheduleEvent.id)
         .then(response => {
           this.closeModal();
         })
@@ -213,8 +213,8 @@ export default {
     }
   },
   mounted() {
-    if(this.scheduleItem.id){
-        this.initScheduled = this.scheduleItem.unitsScheduled;
+    if(this.scheduleEvent.id){
+        this.initScheduled = this.scheduleEvent.unitsScheduled;
     }
     this.getAvailableItems(this.schedule.date);
     this.getAvailableLines();
