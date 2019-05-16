@@ -18,20 +18,20 @@
           <label class="top-label">Line:</label>
           <b-select option-value="id" option-text="number" :list="availableLines" v-model="line"></b-select>
         </b-col>
-        <b-col cols="3">
-          <label class="top-label">Item:</label>
-          <b-select v-if="!scheduleEvent.id" option-value="id" option-text="number" :list="availableItems" v-model="item"></b-select>
-          <span v-if="scheduleEvent.id">
-            <br>
-            {{item.number}}
-          </span>
-        </b-col>
         <b-col cols="5">
           <label class="top-label">Sale/S.O.:</label>
-          <b-select v-if="!scheduleEvent.id" option-value="id" option-text="label" :list="availableSaleItems" v-model="saleItem"></b-select>
+          <b-select v-if="!scheduleEvent.id" option-value="id" option-text="value" :list="availableSales" v-model="sale"></b-select>
           <span v-if="scheduleEvent.id">
             <br>
             {{saleItem.label}}
+          </span>
+        </b-col>
+        <b-col cols="3">
+          <label class="top-label">Item:</label>
+          <b-select v-if="!scheduleEvent.id" option-value="id" option-text="value" :list="availableSaleItems" v-model="saleItem"></b-select>
+          <span v-if="scheduleEvent.id">
+            <br>
+            {{item.number}}
           </span>
         </b-col>
       </b-row>
@@ -70,8 +70,9 @@ export default {
   },
   data() {
     return {
-      title: "Testing title",
       visible: true,
+      availableSales: [],
+      sale: {},
       availableSaleItems: [], //SaleItemDto
       saleItem: {}, //SaleItemDto
       availableItems: [], //ItemDto
@@ -91,38 +92,40 @@ export default {
       if (this.item.id) {
         this.getAvailableSaleItems(this.item.id);
       }
+    },
+    sale(new_value, old_value) {
+      if (!new_value || new_value.id == old_value.id) {
+        return;
+      }
+      if (this.sale.id) {
+        this.getAvailableSaleItems(this.sale.id);
+      }
     }
   },
   methods: {
-    getAvailableSaleItems(item_id) {
-      if (!item_id) {
+    getAvailableSaleItems(sale_id) {
+      if (!sale_id) {
         this.modalData.availableSales = [];
       }
       http
-        .get("/saleItem/item/" + item_id)
+        .get("/saleItem/sale/"+sale_id)
         .then(response => {
           this.availableSaleItems = response.data;
-          this.saleItem = this.scheduleEvent.saleItem
-            ? this.scheduleEvent.saleItem
-            : {};
+          if(this.scheduleEvent.id){
+              this.saleItem = response.data.find(kvDto=> kvDto.id == this.scheduleEvent.saleItem.id);
+          }
         })
         .catch(e => {
           console.log("API error: " + e);
         });
     },
-    getAvailableItems(date) {
-      var query = "";
-      //TODO: This could query only single item instead of all.
-      if(this.scheduleEvent.id){
-          query = "?includeAll=true"
-      }
-      var url = "/item/eta/" + date+query;
+    getAvailableSales() {
       http
-        .get(url)
+        .get("/sale/available")
         .then(response => {
-          this.availableItems = response.data;
-          if(this.scheduleEvent.item){
-              this.item = response.data.find(itemDto=> itemDto.id == this.scheduleEvent.item.id);
+          this.availableSales = response.data;
+          if(this.scheduleEvent.id){
+              this.sale = response.data.find(kvDto=> kvDto.id == this.scheduleEvent.saleItem.sale.id);
           }
         })
         .catch(e => {
@@ -216,7 +219,7 @@ export default {
     if(this.scheduleEvent.id){
         this.initScheduled = this.scheduleEvent.unitsScheduled;
     }
-    this.getAvailableItems(this.schedule.date);
+    this.getAvailableSales();
     this.getAvailableLines();
   }
 };

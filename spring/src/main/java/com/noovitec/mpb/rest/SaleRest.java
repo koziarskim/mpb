@@ -6,10 +6,8 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,12 +16,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.dto.SaleDto;
-import com.noovitec.mpb.dto.SaleItemDto;
 import com.noovitec.mpb.entity.Sale;
 import com.noovitec.mpb.entity.SaleItem;
 import com.noovitec.mpb.repo.SaleRepo;
-
 
 @RestController
 @RequestMapping("/api")
@@ -41,11 +38,15 @@ class SaleRest {
 		return saleRepo.findAll();
 	}
 
+	@GetMapping("/sale/available")
+	Collection<KeyValueDto> getAvailableFoSchedule() {
+		return saleRepo.findAvailableForSchedule();
+	}
+
 	@GetMapping("/sale/{id}")
 	ResponseEntity<Sale> get(@PathVariable Long id) {
 		Optional<Sale> result = saleRepo.findById(id);
-		return result.map(response -> ResponseEntity.ok().body(response))
-				.orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+		return result.map(response -> ResponseEntity.ok().body(response)).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
 	}
 
 	@GetMapping("/sale/purchase/{purchase_id}")
@@ -54,9 +55,9 @@ class SaleRest {
 		return saleDtos;
 	}
 
-	@GetMapping("/saleItem/item/{item_id}")
-	Collection<SaleItemDto> getAllByItem(@PathVariable Long item_id) {
-		Collection<SaleItemDto> saleDtos = saleRepo.findAllByItem(item_id);
+	@GetMapping("/saleItem/sale/{sale_id}")
+	Collection<KeyValueDto> getAllByItem(@PathVariable Long sale_id) {
+		Collection<KeyValueDto> saleDtos = saleRepo.findSaleItemsBySale(sale_id);
 		return saleDtos;
 	}
 

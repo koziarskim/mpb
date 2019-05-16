@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.dto.SaleDto;
 import com.noovitec.mpb.dto.SaleItemDto;
 import com.noovitec.mpb.entity.Sale;
@@ -25,5 +26,14 @@ public interface SaleRepo extends JpaRepository<Sale, Long> {
 			+ "join s.customer c "
 			+ "where si.item.id = :item_id")
 	public List<SaleItemDto> findAllByItem(@Param("item_id") Long item_id);
+
+	@Query(value="select new com.noovitec.mpb.dto.KeyValueDto(s.id, concat(s.number, '-', s.customer.name)) "
+			+ "from Sale s")
+	public List<KeyValueDto> findAvailableForSchedule();
+
+	@Query(value="select new com.noovitec.mpb.dto.KeyValueDto(si.id, si.item.number) "
+			+ "from SaleItem si "
+			+ "where si.sale.id = :sale_id")
+	public List<KeyValueDto> findSaleItemsBySale(@Param("sale_id") Long sale_id);
 
 }
