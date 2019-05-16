@@ -21,7 +21,7 @@ public interface ScheduleEventRepo extends JpaRepository<ScheduleEvent, Long> {
 	 * ic.component_id where s.date >= '2019-04-26' and c.id = '3'
 	 */
 	@Query("select se from ScheduleEvent se "
-			+ "join se.item i "
+			+ "join se.saleItem.item i "
 			+ "join i.itemComponents ic "
 			+ "where se.schedule.date <= :date "
 			+ "and ic.component.id = :component_id")
@@ -36,15 +36,15 @@ public interface ScheduleEventRepo extends JpaRepository<ScheduleEvent, Long> {
 	 */
 	@Query("select sum(se.unitsScheduled) from ScheduleEvent se "
 			+ "where se.schedule.date >= :date "
-			+ "and se.item.id = :item_id "
-			+ "group by se.item.id")
+			+ "and se.saleItem.item.id = :item_id "
+			+ "group by se.saleItem.item.id")
 	public Long getTotalItemScheduled(@Param("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date, @Param("item_id") Long item_id);
 
 	@Query("select sum(se.unitsScheduled) from ScheduleEvent se "
 			+ "where se.schedule.date >= :date "
-			+ "and se.item.id = :item_id "
+			+ "and se.saleItem.item.id = :item_id "
 			+ "and se.saleItem.sale.id = :sale_id "
-			+ "group by se.item.id")
+			+ "group by se.saleItem.item.id")
 	public Long getTotalItemAndSaleScheduled(@Param("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date, @Param("item_id") Long item_id, @Param("sale_id") Long sale_id);
 
 }

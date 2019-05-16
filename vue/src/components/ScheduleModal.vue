@@ -31,7 +31,7 @@
           <b-select v-if="!scheduleEvent.id" option-value="id" option-text="value" :list="availableSaleItems" v-model="saleItem"></b-select>
           <span v-if="scheduleEvent.id">
             <br>
-            {{item.number}}
+            {{scheduleEvent.saleItem.item.number}}
           </span>
         </b-col>
       </b-row>
@@ -152,20 +152,10 @@ export default {
           console.log("API error: " + e);
         });
     },
-    saveProduction(production) {
-      return http
-        .post("/production", production)
-        .then(response => {
-          return response;
-        })
-        .catch(e => {
-          console.log("API error: " + e);
-        });
-    },
     validate() {
       if (
         !this.line ||
-        !this.item ||
+        !this.sale ||
         !this.saleItem ||
         !this.scheduleEvent.startTime ||
         this.scheduleEvent.unitsScheduled <= 0
@@ -188,7 +178,6 @@ export default {
         return;
       }
       this.scheduleEvent.line = { id: this.line.id };
-      this.scheduleEvent.item = { id: this.item.id };
       this.scheduleEvent.saleItem = { id: this.saleItem.id };
       this.scheduleEvent.schedule = { id: this.schedule.id };
 

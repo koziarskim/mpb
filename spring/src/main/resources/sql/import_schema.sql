@@ -811,7 +811,6 @@ CREATE TABLE public.schedule_event (
     units_scheduled bigint,
     units_transit_scheduled bigint,
     updated timestamp without time zone,
-    item_id bigint,
     line_id bigint,
     sale_item_id bigint,
     schedule_id bigint

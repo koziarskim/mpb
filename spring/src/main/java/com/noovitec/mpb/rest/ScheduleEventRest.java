@@ -61,23 +61,23 @@ class ScheduleEventRest {
 			production.setScheduleEvent(scheduleEvent);
 		}
 		// Get this before calling save.
-		Long existingUnitsScheduled = scheduleEventRepo.getScheduledUnits(scheduleEvent.getId());
+//		Long existingUnitsScheduled = scheduleEventRepo.getScheduledUnits(scheduleEvent.getId());
 		ScheduleEvent result = scheduleEventRepo.save(scheduleEvent);
-		if (result.getUnitsScheduled() != null) {
-			Item item = itemRepo.getOne(result.getItem().getId());
-			// Positive or negative
-			Long itemUnits = result.getUnitsScheduled() - (existingUnitsScheduled == null ? 0L : existingUnitsScheduled);
-			item.addUnitsScheduled(itemUnits);
-			itemRepo.save(item);
-			for (ItemComponent ic : item.getItemComponents()) {
-				// Positive or negative
-				Long componentUnits = ic.getUnits() * itemUnits;
-				Component component = ic.getComponent();
-				// Add/Substract based on positive or negative value.
-				component.addUnitsReserved(componentUnits);
-				componentRepo.save(component);
-			}
-		}
+//		if (result.getUnitsScheduled() != null) {
+//			Item item = itemRepo.getOne(result.getItem().getId());
+//			// Positive or negative
+//			Long itemUnits = result.getUnitsScheduled() - (existingUnitsScheduled == null ? 0L : existingUnitsScheduled);
+//			item.addUnitsScheduled(itemUnits);
+//			itemRepo.save(item);
+//			for (ItemComponent ic : item.getItemComponents()) {
+//				// Positive or negative
+//				Long componentUnits = ic.getUnits() * itemUnits;
+//				Component component = ic.getComponent();
+//				// Add/Substract based on positive or negative value.
+//				component.addUnitsReserved(componentUnits);
+//				componentRepo.save(component);
+//			}
+//		}
 		return ResponseEntity.ok().body(result);
 	}
 
@@ -85,7 +85,7 @@ class ScheduleEventRest {
 	public ResponseEntity<?> delete(@PathVariable Long id) {
 		ScheduleEvent scheduleEvent = scheduleEventRepo.getOne(id);
 		if (scheduleEvent.getUnitsScheduled() != null) {
-			Item item = itemRepo.getOne(scheduleEvent.getItem().getId());
+			Item item = itemRepo.getOne(scheduleEvent.getSaleItem().getItem().getId());
 			for (ItemComponent ic : item.getItemComponents()) {
 				Long componentUnits = ic.getUnits() * scheduleEvent.getUnitsScheduled();
 				Component component = ic.getComponent();

@@ -66,7 +66,7 @@ class ProductionRest {
 		Production result = productionRepo.save(production);
 		ScheduleEvent scheduleEvent = scheduleEventRepo.getOne(result.getScheduleEvent().getId());
 		// update component.unitsReserved then component.unitsOnStack
-		for (ItemComponent ic : scheduleEvent.getItem().getItemComponents()) {
+		for (ItemComponent ic : scheduleEvent.getSaleItem().getItem().getItemComponents()) {
 			float componentUnitsFloat = result.getUnitsProduced() * ic.getUnits();
 			Long componentUnits = (long) new BigDecimal(componentUnitsFloat).setScale(0, RoundingMode.DOWN).intValue();
 			Component component = ic.getComponent();
@@ -83,7 +83,7 @@ class ProductionRest {
 			componentRepo.save(component);
 		}
 		// update item.unitsOnStack, item.unitsInProduction, item.unitsScheduled
-		Item item = itemRepo.getOne(scheduleEvent.getItem().getId());
+		Item item = itemRepo.getOne(scheduleEvent.getSaleItem().getItem().getId());
 		item.addUnitsOnStack(result.getUnitsProduced());
 		item.addUnitsScheduled(result.getUnitsProduced() * (-1));
 		itemRepo.save(item);
