@@ -1,6 +1,7 @@
 import axios from "axios";
 import httpUtils from "./httpUtils";
 import router from "./router";
+import NProgress from 'nprogress';
 
 const http = axios.create({
   baseURL: httpUtils.baseUrl
@@ -16,6 +17,7 @@ const http = axios.create({
 
 http.interceptors.request.use(
   config => {
+    NProgress.start();
     return config;
   },
   error => {
@@ -26,6 +28,7 @@ http.interceptors.request.use(
 
 http.interceptors.response.use(
   response => {
+    NProgress.done();
     return response;
   },
   error => {

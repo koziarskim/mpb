@@ -7,11 +7,13 @@ import store from "./store";
 import "./registerServiceWorker";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
+import '../node_modules/nprogress/nprogress.css'
 import { ModelListSelect } from "vue-search-select";
 import { CustomMask } from "./directives/CustomMask";
 import ScheduleModal from "./components/ScheduleModal";
 import ProductionModal from "./components/ProductionModal";
 import VueBootstrapTypeahead from 'vue-bootstrap-typeahead'
+
 
 Vue.use(BootstrapVue, {
   prefix: "b"

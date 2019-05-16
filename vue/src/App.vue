@@ -141,4 +141,17 @@ export default {
   margin-bottom: 0px;
   font-size: 12px;
 }
+#nprogress .spinner {
+    padding-left: 50%;
+    padding-right: 50%;
+    padding-top: 10%;
+    padding-bottom: 30%;
+}
+#nprogress .spinner-icon {
+  width: 40px !important;
+  height: 40px !important;
+}
+#nprogress .bar {
+    height: 5px !important;
+}
 </style>
