@@ -27,16 +27,16 @@ import com.noovitec.mpb.repo.ScheduleEventRepo;
 
 @RestController
 @RequestMapping("/api")
-class ScheduleItemRest {
+class ScheduleEventRest {
 
-	private final Logger log = LoggerFactory.getLogger(ScheduleItemRest.class);
+	private final Logger log = LoggerFactory.getLogger(ScheduleEventRest.class);
 	private ScheduleEventRepo scheduleEventRepo;
 	@Autowired
 	private ComponentRepo componentRepo;
 	@Autowired
 	private ItemRepo itemRepo;
 
-	public ScheduleItemRest(ScheduleEventRepo scheduleEventRepo) {
+	public ScheduleEventRest(ScheduleEventRepo scheduleEventRepo) {
 		this.scheduleEventRepo = scheduleEventRepo;
 	}
 

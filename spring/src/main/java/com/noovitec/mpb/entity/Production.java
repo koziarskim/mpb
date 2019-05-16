@@ -35,6 +35,6 @@ public class Production {
 	private Long unitsProduced;
 
 	@ManyToOne()
-	@JoinColumn(name = "schedule_item_id", referencedColumnName = "id")
+	@JoinColumn(name = "schedule_event_id", referencedColumnName = "id")
 	private ScheduleEvent scheduleEvent;
 }

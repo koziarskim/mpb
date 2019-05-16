@@ -41,24 +41,24 @@ public class ScheduleEvent {
 	Long unitsTransitScheduled;
 	LocalTime startTime;
 
-	@JsonIgnoreProperties(value = { "scheduleItems" }, allowSetters = true)
+	@JsonIgnoreProperties(value = { "scheduleEvents" }, allowSetters = true)
 	@ManyToOne()
 	@JoinColumn(name = "line_id", referencedColumnName = "id")
 	private Line line;
 
-	@JsonIgnoreProperties(value = { "scheduleItems", "itemComponents", "saleItems" }, allowSetters = true)
+	@JsonIgnoreProperties(value = { "scheduleEvents", "itemComponents", "saleItems" }, allowSetters = true)
 	@ManyToOne()
 	@JoinColumn(name = "item_id", referencedColumnName = "id")
 	private Item item;
 
-	@JsonIgnoreProperties(value = { "scheduleItems" }, allowSetters = true)
+	@JsonIgnoreProperties(value = { "scheduleEvents" }, allowSetters = true)
 	@ManyToOne()
 	@JoinColumn(name = "schedule_id", referencedColumnName = "id")
 	private Schedule schedule;
 
-	@JsonIgnoreProperties(value = { "scheduleItem" }, allowSetters = true)
+	@JsonIgnoreProperties(value = { "scheduleEvent" }, allowSetters = true)
 	@OneToMany(cascade=CascadeType.ALL)
-	@JoinColumn(name = "schedule_item_id")
+	@JoinColumn(name = "schedule_event_id")
 	private Collection<Production> productions = new HashSet<Production>();
 
 	@JsonIgnoreProperties(value = { "saleItems", "purchaseSales" }, allowSetters = true)
