@@ -28,7 +28,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class ScheduleItem {
+public class ScheduleEvent {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

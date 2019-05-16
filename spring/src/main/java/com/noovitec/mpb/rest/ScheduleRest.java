@@ -1,13 +1,10 @@
 package com.noovitec.mpb.rest;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
@@ -22,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,20 +27,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.itextpdf.text.DocumentException;
 import com.noovitec.mpb.dto.ItemDto;
 import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.entity.Item;
 import com.noovitec.mpb.entity.ItemComponent;
 import com.noovitec.mpb.entity.Schedule;
-import com.noovitec.mpb.entity.ScheduleItem;
+import com.noovitec.mpb.entity.ScheduleEvent;
 import com.noovitec.mpb.repo.ItemRepo;
 import com.noovitec.mpb.repo.ReceivingRepo;
-import com.noovitec.mpb.repo.ScheduleItemRepo;
+import com.noovitec.mpb.repo.ScheduleEventRepo;
 import com.noovitec.mpb.repo.ScheduleRepo;
-
 
 @RestController
 @RequestMapping("/api")
@@ -55,7 +47,7 @@ class ScheduleRest {
 	@Autowired
 	private ItemRepo itemRepo;
 	@Autowired
-	private ScheduleItemRepo scheduleItemRepo;
+	private ScheduleEventRepo scheduleEventRepo;
 	@Autowired
 	private ReceivingRepo receivingRepo;
 
@@ -85,75 +77,76 @@ class ScheduleRest {
 				s = new Schedule();
 				s.setDate(d);
 			}
-			//Get all items that are available to schedule based on receiving.
+			// Get all items that are available to schedule based on receiving.
 			s.setItems(this.getByEta(java.sql.Date.valueOf(s.getDate()), null, false));
 			result.add(s);
 		}
-		//Convert to List and sort.
+		// Convert to List and sort.
 		List<Schedule> list = new ArrayList<Schedule>(result);
 		list.sort(Comparator.comparing(o -> o.getDate()));
 		return list;
 	}
 
-	private Collection<ItemDto> getByEta(Date date, Long item_id, boolean includeAll){
+	private Collection<ItemDto> getByEta(Date date, Long item_id, boolean includeAll) {
 		Collection<ItemDto> dtos = new HashSet<ItemDto>();
 		Map<Long, Long> componentsInTransitToDate = new HashMap<Long, Long>();
 
 		List<KeyValueDto> componentsInTransitToDateList = receivingRepo.findComponentsInTransitToDate(date);
-		
-		for(KeyValueDto keyValueDto : componentsInTransitToDateList) {
+
+		for (KeyValueDto keyValueDto : componentsInTransitToDateList) {
 			componentsInTransitToDate.put(keyValueDto.getKey(), (Long) keyValueDto.getValue());
 		}
-		
+
 		Collection<Item> items = new HashSet<Item>();
-		if(item_id==null) {
+		if (item_id == null) {
 			items.addAll(itemRepo.findAll());
-		}else {
+		} else {
 			items.add(itemRepo.getOne(item_id));
 		}
-		
-		for(Item item : items) {
+
+		for (Item item : items) {
 			ItemDto dto = new ItemDto();
 			dto.setId(item.getId());
 			dto.setNumber(item.getNumber());
 			int itemsReadySchedule = 0;
 			int itemsReadyProduction = 0;
-			for(ItemComponent ic : item.getItemComponents()) {
+			for (ItemComponent ic : item.getItemComponents()) {
 				Long componentUnitsInTransit = componentsInTransitToDate.get(ic.getComponent().getId());
 
-				float icReadyProductionFloat = ic.getComponent().getUnitsOnStack()/ic.getUnits();
-				float icReadyScheduleFloat = (ic.getComponent().getUnitsOnStack() + (componentUnitsInTransit==null?0:componentUnitsInTransit))/ic.getUnits();
-				//Production
+				float icReadyProductionFloat = ic.getComponent().getUnitsOnStack() / ic.getUnits();
+				float icReadyScheduleFloat = (ic.getComponent().getUnitsOnStack() + (componentUnitsInTransit == null ? 0 : componentUnitsInTransit))
+						/ ic.getUnits();
+				// Production
 				int icReadyProduction = this.roundToInt(icReadyProductionFloat);
-				if(itemsReadyProduction == 0 || icReadyProduction < itemsReadyProduction) {
+				if (itemsReadyProduction == 0 || icReadyProduction < itemsReadyProduction) {
 					itemsReadyProduction = icReadyProduction;
 				}
-				//Schedule
+				// Schedule
 				int icReadySchedule = this.roundToInt(icReadyScheduleFloat);
-				if(itemsReadySchedule == 0 || icReadySchedule < itemsReadySchedule) {
+				if (itemsReadySchedule == 0 || icReadySchedule < itemsReadySchedule) {
 					itemsReadySchedule = icReadySchedule;
 				}
 			}
-			Long totalItemSchedule = scheduleItemRepo.getTotalItemScheduled(LocalDate.now(), item.getId());
-			dto.setTotalItemScheduled(totalItemSchedule==null?0:totalItemSchedule.intValue());
+			Long totalItemSchedule = scheduleEventRepo.getTotalItemScheduled(LocalDate.now(), item.getId());
+			dto.setTotalItemScheduled(totalItemSchedule == null ? 0 : totalItemSchedule.intValue());
 			dto.setUnitsReadySchedule(itemsReadySchedule);
 			dto.setUnitsReadyProduction(itemsReadyProduction);
-			if(!includeAll) {
-				if(dto.getUnitsReadySchedule()>0) {
+			if (!includeAll) {
+				if (dto.getUnitsReadySchedule() > 0) {
 					dtos.add(dto);
 				}
-			}else {
+			} else {
 				dtos.add(dto);
 			}
 		}
 		return dtos;
 	}
-	
+
 	private int roundToInt(float unitsFloat) {
 		int units = 0;
-		if(unitsFloat>0) {
+		if (unitsFloat > 0) {
 			units = new BigDecimal(unitsFloat).setScale(0, RoundingMode.DOWN).intValue();
-		}else {
+		} else {
 			units = new BigDecimal(unitsFloat).setScale(0, RoundingMode.UP).intValue();
 		}
 		return units;
@@ -171,8 +164,8 @@ class ScheduleRest {
 		if (schedule == null) {
 			schedule = new Schedule();
 		}
-		for(ScheduleItem si : schedule.getScheduleItems()) {
-			si.setSchedule(schedule);
+		for (ScheduleEvent se : schedule.getScheduleEvents()) {
+			se.setSchedule(schedule);
 		}
 		Schedule result = scheduleRepo.save(schedule);
 		return ResponseEntity.ok().body(result);

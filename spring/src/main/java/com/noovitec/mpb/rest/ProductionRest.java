@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,12 +23,11 @@ import com.noovitec.mpb.entity.Component;
 import com.noovitec.mpb.entity.Item;
 import com.noovitec.mpb.entity.ItemComponent;
 import com.noovitec.mpb.entity.Production;
-import com.noovitec.mpb.entity.ScheduleItem;
+import com.noovitec.mpb.entity.ScheduleEvent;
 import com.noovitec.mpb.repo.ComponentRepo;
 import com.noovitec.mpb.repo.ItemRepo;
 import com.noovitec.mpb.repo.ProductionRepo;
-import com.noovitec.mpb.repo.ScheduleItemRepo;
-
+import com.noovitec.mpb.repo.ScheduleEventRepo;
 
 @RestController
 @RequestMapping("/api")
@@ -38,7 +36,7 @@ class ProductionRest {
 	private final Logger log = LoggerFactory.getLogger(ProductionRest.class);
 	private ProductionRepo productionRepo;
 	@Autowired
-	private ScheduleItemRepo scheduleItemRepo;
+	private ScheduleEventRepo scheduleEventRepo;
 	@Autowired
 	private ComponentRepo componentRepo;
 	@Autowired
@@ -66,25 +64,25 @@ class ProductionRest {
 			production = new Production();
 		}
 		Production result = productionRepo.save(production);
-		ScheduleItem scheduleItem = scheduleItemRepo.getOne(result.getScheduleItem().getId());
-		//update component.unitsReserved then component.unitsOnStack
-		for(ItemComponent ic : scheduleItem.getItem().getItemComponents()) {
+		ScheduleEvent scheduleItem = scheduleEventRepo.getOne(result.getScheduleEvent().getId());
+		// update component.unitsReserved then component.unitsOnStack
+		for (ItemComponent ic : scheduleItem.getItem().getItemComponents()) {
 			float componentUnitsFloat = result.getUnitsProduced() * ic.getUnits();
 			Long componentUnits = (long) new BigDecimal(componentUnitsFloat).setScale(0, RoundingMode.DOWN).intValue();
 			Component component = ic.getComponent();
-			//Subtract
+			// Subtract
 			Long extraUnits = component.addUnitsReserved(componentUnits * (-1));
-			if(extraUnits > 0) {
+			if (extraUnits > 0) {
 				throw new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED, "Units produced exceeded units reserved.");
 			}
-			//Subtract
+			// Subtract
 			extraUnits = component.addUnitsOnStack(componentUnits * (-1));
-			if(extraUnits > 0) {
+			if (extraUnits > 0) {
 				throw new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED, "Units produced exceeded units on stack.");
 			}
 			componentRepo.save(component);
 		}
-		//update item.unitsOnStack, item.unitsInProduction, item.unitsScheduled
+		// update item.unitsOnStack, item.unitsInProduction, item.unitsScheduled
 		Item item = itemRepo.getOne(scheduleItem.getItem().getId());
 		item.addUnitsOnStack(result.getUnitsProduced());
 		item.addUnitsScheduled(result.getUnitsProduced() * (-1));

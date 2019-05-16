@@ -14,7 +14,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -46,10 +44,9 @@ import com.noovitec.mpb.entity.Upc;
 import com.noovitec.mpb.repo.AttachmentRepo;
 import com.noovitec.mpb.repo.ItemRepo;
 import com.noovitec.mpb.repo.ReceivingRepo;
-import com.noovitec.mpb.repo.ScheduleItemRepo;
+import com.noovitec.mpb.repo.ScheduleEventRepo;
 import com.noovitec.mpb.repo.SeasonRepo;
 import com.noovitec.mpb.repo.UpcRepo;
-
 
 @RestController
 @RequestMapping("/api")
@@ -66,7 +63,7 @@ class ItemRest {
 	@Autowired
 	ReceivingRepo receivingRepo;
 	@Autowired
-	ScheduleItemRepo scheduleItemRepo;
+	ScheduleEventRepo scheduleEventRepo;
 
 	private final Logger log = LoggerFactory.getLogger(ItemRest.class);
 	private ItemRepo itemRepo;
@@ -88,8 +85,8 @@ class ItemRest {
 	private Collection<ItemDto> itemToDto(Collection<Item> items) {
 		Collection<ItemDto> dtos = new HashSet<ItemDto>();
 		for (Item item : items) {
-			ItemDto dto = new ItemDto(item.getId(), item.getNumber(), item.getName(), item.getBrand()==null?null:item.getBrand().getName(), item.getCategory()==null?null:item.getCategory().getName(),
-					item.getStatus(), item.getUnitsOnStack(), item.getUnitsScheduled());
+			ItemDto dto = new ItemDto(item.getId(), item.getNumber(), item.getName(), item.getBrand() == null ? null : item.getBrand().getName(),
+					item.getCategory() == null ? null : item.getCategory().getName(), item.getStatus(), item.getUnitsOnStack(), item.getUnitsScheduled());
 			dtos.add(dto);
 		}
 		return dtos;
@@ -123,74 +120,76 @@ class ItemRest {
 	}
 
 	@GetMapping("/item/{item_id}/eta/{date}")
-	Collection<ItemDto> getItemByEta(@PathVariable @DateTimeFormat(pattern="yyyy-MM-dd") Date date, @PathVariable Long item_id) {
+	Collection<ItemDto> getItemByEta(@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") Date date, @PathVariable Long item_id) {
 		return this.getByEta(date, item_id, true);
 	}
-	
+
 	@GetMapping("/item/eta/{date}")
-	Collection<ItemDto> getAllByEta(@PathVariable @DateTimeFormat(pattern="yyyy-MM-dd") Date date, @RequestParam(name="includeAll", required=false) boolean includeAll) {
+	Collection<ItemDto> getAllByEta(@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") Date date,
+			@RequestParam(name = "includeAll", required = false) boolean includeAll) {
 		return this.getByEta(date, null, includeAll);
 	}
-	
-	private Collection<ItemDto> getByEta(Date date, Long item_id, boolean includeAll){
+
+	private Collection<ItemDto> getByEta(Date date, Long item_id, boolean includeAll) {
 		Collection<ItemDto> dtos = new HashSet<ItemDto>();
 		Map<Long, Long> componentsInTransitToDate = new HashMap<Long, Long>();
 
 		List<KeyValueDto> componentsInTransitToDateList = receivingRepo.findComponentsInTransitToDate(date);
-		
-		for(KeyValueDto keyValueDto : componentsInTransitToDateList) {
+
+		for (KeyValueDto keyValueDto : componentsInTransitToDateList) {
 			componentsInTransitToDate.put(keyValueDto.getKey(), (Long) keyValueDto.getValue());
 		}
-		
+
 		Collection<Item> items = new HashSet<Item>();
-		if(item_id==null) {
+		if (item_id == null) {
 			items.addAll(itemRepo.findAll());
-		}else {
+		} else {
 			items.add(itemRepo.getOne(item_id));
 		}
-		
-		for(Item item : items) {
+
+		for (Item item : items) {
 			ItemDto dto = new ItemDto();
 			dto.setId(item.getId());
 			dto.setNumber(item.getNumber());
 			int itemsReadySchedule = 0;
 			int itemsReadyProduction = 0;
-			for(ItemComponent ic : item.getItemComponents()) {
+			for (ItemComponent ic : item.getItemComponents()) {
 				Long componentUnitsInTransit = componentsInTransitToDate.get(ic.getComponent().getId());
 
-				float icReadyProductionFloat = ic.getComponent().getUnitsOnStack()/ic.getUnits();
-				float icReadyScheduleFloat = (ic.getComponent().getUnitsOnStack() + (componentUnitsInTransit==null?0:componentUnitsInTransit))/ic.getUnits();
-				//Production
+				float icReadyProductionFloat = ic.getComponent().getUnitsOnStack() / ic.getUnits();
+				float icReadyScheduleFloat = (ic.getComponent().getUnitsOnStack() + (componentUnitsInTransit == null ? 0 : componentUnitsInTransit))
+						/ ic.getUnits();
+				// Production
 				int icReadyProduction = this.roundToInt(icReadyProductionFloat);
-				if(itemsReadyProduction == 0 || icReadyProduction < itemsReadyProduction) {
+				if (itemsReadyProduction == 0 || icReadyProduction < itemsReadyProduction) {
 					itemsReadyProduction = icReadyProduction;
 				}
-				//Schedule
+				// Schedule
 				int icReadySchedule = this.roundToInt(icReadyScheduleFloat);
-				if(itemsReadySchedule == 0 || icReadySchedule < itemsReadySchedule) {
+				if (itemsReadySchedule == 0 || icReadySchedule < itemsReadySchedule) {
 					itemsReadySchedule = icReadySchedule;
 				}
 			}
-			Long totalItemSchedule = scheduleItemRepo.getTotalItemScheduled(LocalDate.now(), item.getId());
-			dto.setTotalItemScheduled(totalItemSchedule==null?0:totalItemSchedule.intValue());
+			Long totalItemSchedule = scheduleEventRepo.getTotalItemScheduled(LocalDate.now(), item.getId());
+			dto.setTotalItemScheduled(totalItemSchedule == null ? 0 : totalItemSchedule.intValue());
 			dto.setUnitsReadySchedule(itemsReadySchedule);
 			dto.setUnitsReadyProduction(itemsReadyProduction);
-			if(!includeAll) {
-				if(dto.getUnitsReadySchedule()>0) {
+			if (!includeAll) {
+				if (dto.getUnitsReadySchedule() > 0) {
 					dtos.add(dto);
 				}
-			}else {
+			} else {
 				dtos.add(dto);
 			}
 		}
 		return dtos;
 	}
-	
+
 	private int roundToInt(float unitsFloat) {
 		int units = 0;
-		if(unitsFloat>0) {
+		if (unitsFloat > 0) {
 			units = new BigDecimal(unitsFloat).setScale(0, RoundingMode.DOWN).intValue();
-		}else {
+		} else {
 			units = new BigDecimal(unitsFloat).setScale(0, RoundingMode.UP).intValue();
 		}
 		return units;

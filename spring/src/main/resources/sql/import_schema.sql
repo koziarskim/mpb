@@ -459,7 +459,7 @@ CREATE TABLE public.production (
     finish_time time without time zone,
     units_produced bigint,
     updated timestamp without time zone,
-    schedule_item_id bigint
+    schedule_event_id bigint
 );
 
 
@@ -801,10 +801,10 @@ ALTER SEQUENCE public.schedule_id_seq OWNED BY public.schedule.id;
 
 
 --
--- Name: schedule_item; Type: TABLE; Schema: public; Owner: postgres
+-- Name: schedule_event; Type: TABLE; Schema: public; Owner: postgres
 --
 
-CREATE TABLE public.schedule_item (
+CREATE TABLE public.schedule_event (
     id bigint NOT NULL,
     created timestamp without time zone,
     start_time time without time zone,
@@ -818,13 +818,13 @@ CREATE TABLE public.schedule_item (
 );
 
 
-ALTER TABLE public.schedule_item OWNER TO postgres;
+ALTER TABLE public.schedule_event OWNER TO postgres;
 
 --
--- Name: schedule_item_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- Name: schedule_event_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
-CREATE SEQUENCE public.schedule_item_id_seq
+CREATE SEQUENCE public.schedule_event_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -832,13 +832,13 @@ CREATE SEQUENCE public.schedule_item_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.schedule_item_id_seq OWNER TO postgres;
+ALTER TABLE public.schedule_event_id_seq OWNER TO postgres;
 
 --
--- Name: schedule_item_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+-- Name: schedule_event_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
-ALTER SEQUENCE public.schedule_item_id_seq OWNED BY public.schedule_item.id;
+ALTER SEQUENCE public.schedule_event_id_seq OWNED BY public.schedule_event.id;
 
 
 --
@@ -1146,10 +1146,10 @@ ALTER TABLE ONLY public.schedule ALTER COLUMN id SET DEFAULT nextval('public.sch
 
 
 --
--- Name: schedule_item id; Type: DEFAULT; Schema: public; Owner: postgres
+-- Name: schedule_event id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.schedule_item ALTER COLUMN id SET DEFAULT nextval('public.schedule_item_id_seq'::regclass);
+ALTER TABLE ONLY public.schedule_event ALTER COLUMN id SET DEFAULT nextval('public.schedule_event_id_seq'::regclass);
 
 
 --
@@ -1325,11 +1325,11 @@ ALTER TABLE ONLY public.sale
 
 
 --
--- Name: schedule_item schedule_item_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: schedule_event schedule_event_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.schedule_item
-    ADD CONSTRAINT schedule_item_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY public.schedule_event
+    ADD CONSTRAINT schedule_event_pkey PRIMARY KEY (id);
 
 
 --
@@ -1532,10 +1532,10 @@ ALTER TABLE ONLY public.purchase
 
 
 --
--- Name: schedule_item fkbvyurn8adalpn8nj9rr966xm0; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: schedule_event fkbvyurn8adalpn8nj9rr966xm0; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.schedule_item
+ALTER TABLE ONLY public.schedule_event
     ADD CONSTRAINT fkbvyurn8adalpn8nj9rr966xm0 FOREIGN KEY (schedule_id) REFERENCES public.schedule(id);
 
 
@@ -1544,7 +1544,7 @@ ALTER TABLE ONLY public.schedule_item
 --
 
 ALTER TABLE ONLY public.production
-    ADD CONSTRAINT fkc2m4i7dq9kahofotw4qe6bhtc FOREIGN KEY (schedule_item_id) REFERENCES public.schedule_item(id);
+    ADD CONSTRAINT fkc2m4i7dq9kahofotw4qe6bhtc FOREIGN KEY (schedule_event_id) REFERENCES public.schedule_event(id);
 
 
 --
@@ -1564,10 +1564,10 @@ ALTER TABLE ONLY public.purchase_sale
 
 
 --
--- Name: schedule_item fkes5alqa8kgpr72r8m61wqoqlp; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: schedule_event fkes5alqa8kgpr72r8m61wqoqlp; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.schedule_item
+ALTER TABLE ONLY public.schedule_event
     ADD CONSTRAINT fkes5alqa8kgpr72r8m61wqoqlp FOREIGN KEY (item_id) REFERENCES public.item(id);
 
 
@@ -1580,10 +1580,10 @@ ALTER TABLE ONLY public.item
 
 
 --
--- Name: schedule_item fkit8ag8lu439ynjauqm34odbbw; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: schedule_event fkit8ag8lu439ynjauqm34odbbw; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.schedule_item
+ALTER TABLE ONLY public.schedule_event
     ADD CONSTRAINT fkit8ag8lu439ynjauqm34odbbw FOREIGN KEY (sale_item_id) REFERENCES public.sale_item(id);
 
 
@@ -1604,10 +1604,10 @@ ALTER TABLE ONLY public.sale
 
 
 --
--- Name: schedule_item fkmkoe84n864gf1g99kpns6rdd9; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: schedule_event fkmkoe84n864gf1g99kpns6rdd9; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.schedule_item
+ALTER TABLE ONLY public.schedule_event
     ADD CONSTRAINT fkmkoe84n864gf1g99kpns6rdd9 FOREIGN KEY (line_id) REFERENCES public.line(id);
 
 

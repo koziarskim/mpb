@@ -7,12 +7,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import com.noovitec.mpb.entity.ScheduleItem;
+import com.noovitec.mpb.entity.ScheduleEvent;
 
-public interface ScheduleItemRepo extends JpaRepository<ScheduleItem, Long> {
+public interface ScheduleEventRepo extends JpaRepository<ScheduleEvent, Long> {
 
-	@Query(value = "select unitsScheduled from ScheduleItem where id = :schedule_item_id")
-	public Long getScheduledUnits(@Param("schedule_item_id") Long schedule_item_id);
+	@Query(value = "select unitsScheduled from ScheduleEvent where id = :schedule_event_id")
+	public Long getScheduledUnits(@Param("schedule_event_id") Long schedule_event_id);
 
 	/*
 	 * select si.id, s.date, si.units_scheduled, si.item_id from Schedule_Item si
@@ -20,10 +20,10 @@ public interface ScheduleItemRepo extends JpaRepository<ScheduleItem, Long> {
 	 * join item_component ic on ic.item_id = i.id join component c on c.id =
 	 * ic.component_id where s.date >= '2019-04-26' and c.id = '3'
 	 */
-	@Query("select si from ScheduleItem si "
-			+ "join si.item i "
+	@Query("select se from ScheduleEvent se "
+			+ "join se.item i "
 			+ "join i.itemComponents ic "
-			+ "where si.schedule.date <= :date "
+			+ "where se.schedule.date <= :date "
 			+ "and ic.component.id = :component_id")
 	public Long getByScheduleDateAndComponent(@Param("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date, @Param("component_id") Long component_id);
 
@@ -34,17 +34,17 @@ public interface ScheduleItemRepo extends JpaRepository<ScheduleItem, Long> {
 		and s.date >= '2019-03-02'
 		group by si.item_id; 
 	 */
-	@Query("select sum(si.unitsScheduled) from ScheduleItem si "
-			+ "where si.schedule.date >= :date "
-			+ "and si.item.id = :item_id "
-			+ "group by si.item.id")
+	@Query("select sum(se.unitsScheduled) from ScheduleEvent se "
+			+ "where se.schedule.date >= :date "
+			+ "and se.item.id = :item_id "
+			+ "group by se.item.id")
 	public Long getTotalItemScheduled(@Param("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date, @Param("item_id") Long item_id);
 
-	@Query("select sum(si.unitsScheduled) from ScheduleItem si "
-			+ "where si.schedule.date >= :date "
-			+ "and si.item.id = :item_id "
-			+ "and si.saleItem.sale.id = :sale_id "
-			+ "group by si.item.id")
+	@Query("select sum(se.unitsScheduled) from ScheduleEvent se "
+			+ "where se.schedule.date >= :date "
+			+ "and se.item.id = :item_id "
+			+ "and se.saleItem.sale.id = :sale_id "
+			+ "group by se.item.id")
 	public Long getTotalItemAndSaleScheduled(@Param("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date, @Param("item_id") Long item_id, @Param("sale_id") Long sale_id);
 
 }

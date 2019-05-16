@@ -36,5 +36,5 @@ public class Production {
 
 	@ManyToOne()
 	@JoinColumn(name = "schedule_item_id", referencedColumnName = "id")
-	private ScheduleItem scheduleItem;
+	private ScheduleEvent scheduleEvent;
 }

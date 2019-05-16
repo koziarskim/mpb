@@ -42,7 +42,7 @@ public class Schedule {
 	@JsonIgnoreProperties(value = { "schedule" }, allowSetters = true)
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "schedule_id")
-	private Collection<ScheduleItem> scheduleItems = new HashSet<ScheduleItem>();
+	private Collection<ScheduleEvent> scheduleEvents = new HashSet<ScheduleEvent>();
 	
 	@Transient
 	private Collection<ItemDto> items = new HashSet<ItemDto>();

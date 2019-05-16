@@ -105,7 +105,7 @@ public class Item{
 	@JsonIgnore
 	@OneToMany()
 	@JoinColumn(name = "item_id")
-	private Collection<ScheduleItem> scheduleItems = new HashSet<ScheduleItem>();
+	private Collection<ScheduleEvent> scheduleEvents = new HashSet<ScheduleEvent>();
 
 	@Transient
 	private String label;

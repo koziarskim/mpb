@@ -1,11 +1,11 @@
 @echo off
 SETLOCAL
 
-set import=false
+set import=true
 set host=localhost
 set port=5432
 set user=postgres
-set dbname=mpb3
+set dbname=mpb
 set PGPASSWORD=s3cret
 
 :initial
