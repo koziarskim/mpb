@@ -18,7 +18,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.noovitec.mpb.dto.ItemAvailabilityDto;
 import com.noovitec.mpb.dto.ItemDto;
 
 import lombok.AllArgsConstructor;
