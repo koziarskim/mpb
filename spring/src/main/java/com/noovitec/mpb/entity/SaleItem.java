@@ -2,7 +2,10 @@ package com.noovitec.mpb.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.HashSet;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -10,11 +13,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.AllArgsConstructor;
@@ -48,8 +53,17 @@ public class SaleItem {
 	@JoinColumn(name = "item_id", referencedColumnName = "id")
 	private Item item;
 	
+	@JsonIgnore
+	@OneToMany()
+	@JoinColumn(name = "sale_item_id")
+	private Collection<ScheduleEvent> scheduleEvents = new HashSet<ScheduleEvent>();
+	
 	@Transient
 	private String label;
+	@Transient
+	private Long unitsScheduled = 0L; //This is total units scheduled (including all schedule events). Updated when saving ScheduleEvent (ScheduleEvent.unitsScheduled)
+	@Transient
+	private Long unitsProduced = 0L; //This should be updated on Production save/post (Production.unitsProduced)
 	
 	public String getLabel() {
 		if(this.getSale()!=null) {
@@ -59,4 +73,21 @@ public class SaleItem {
 		}
 		return this.label;
 	}
+	
+	public Long getUnitsScheduled() {
+		for(ScheduleEvent se: this.getScheduleEvents()) {
+			this.unitsScheduled += se.getUnitsScheduled();
+		}
+		return this.unitsScheduled;
+	}
+	
+	public Long getUnitsProduced() {
+		for(ScheduleEvent se: this.getScheduleEvents()) {
+			for(Production p: se.getProductions()) {
+				this.unitsProduced += p.getUnitsProduced();
+			}
+		}
+		return this.unitsProduced;
+	}
+	
 }
