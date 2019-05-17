@@ -23,7 +23,7 @@
           <b-select v-if="!scheduleEvent.id" option-value="id" option-text="value" :list="availableSales" v-model="sale"></b-select>
           <span v-if="scheduleEvent.id">
             <br>
-            {{saleItem.label}}
+            {{sale.value}}
           </span>
         </b-col>
         <b-col cols="3">
@@ -31,7 +31,7 @@
           <b-select v-if="!scheduleEvent.id" option-value="id" option-text="value" :list="availableSaleItems" v-model="saleItem"></b-select>
           <span v-if="scheduleEvent.id">
             <br>
-            {{scheduleEvent.saleItem.item.number}}
+            {{saleItem.value}}
           </span>
         </b-col>
       </b-row>

@@ -699,7 +699,8 @@ CREATE TABLE public.sale (
     total_price numeric(19,2),
     updated timestamp without time zone,
     customer_id bigint,
-    address_id bigint
+    address_id bigint,
+	produced boolean default false
 );
 
 

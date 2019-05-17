@@ -28,12 +28,13 @@ public interface SaleRepo extends JpaRepository<Sale, Long> {
 	public List<SaleItemDto> findAllByItem(@Param("item_id") Long item_id);
 
 	@Query(value="select new com.noovitec.mpb.dto.KeyValueDto(s.id, concat(s.number, '-', s.customer.name)) "
-			+ "from Sale s")
+			+ "from Sale s "
+			+ "where s.produced = false")
 	public List<KeyValueDto> findAvailableForSchedule();
 
 	@Query(value="select new com.noovitec.mpb.dto.KeyValueDto(si.id, si.item.number) "
 			+ "from SaleItem si "
-			+ "where si.sale.id = :sale_id")
+			+ "where si.sale.id = :sale_id ")
 	public List<KeyValueDto> findSaleItemsBySale(@Param("sale_id") Long sale_id);
 
 }

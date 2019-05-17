@@ -45,6 +45,7 @@ public class Sale {
 	private String freightTerms;
 	private Date expectedDate;
 	private BigDecimal totalPrice = BigDecimal.ZERO;
+	private boolean produced;
 
 	@JsonIgnoreProperties(value={ "sales" }, allowSetters=true)
 	@ManyToOne()
