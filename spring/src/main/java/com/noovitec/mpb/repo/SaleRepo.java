@@ -1,6 +1,7 @@
 package com.noovitec.mpb.repo;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -10,6 +11,7 @@ import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.dto.SaleDto;
 import com.noovitec.mpb.dto.SaleItemDto;
 import com.noovitec.mpb.entity.Sale;
+import com.noovitec.mpb.entity.SaleItem;
 
 public interface SaleRepo extends JpaRepository<Sale, Long> {
 
@@ -36,5 +38,10 @@ public interface SaleRepo extends JpaRepository<Sale, Long> {
 			+ "from SaleItem si "
 			+ "where si.sale.id = :sale_id ")
 	public List<KeyValueDto> findSaleItemsBySale(@Param("sale_id") Long sale_id);
+
+	@Query(value="select si "
+			+ "from SaleItem si "
+			+ "where si.id = :sale_item_id ")
+	public Optional<SaleItem> getSaleItemById(@Param("sale_item_id") Long sale_item_id);
 
 }

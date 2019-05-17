@@ -38,7 +38,6 @@ public class ScheduleEvent {
 	@UpdateTimestamp
 	private LocalDateTime updated;
 	Long unitsScheduled;
-	Long unitsTransitScheduled;
 	LocalTime startTime;
 
 	@JsonIgnoreProperties(value = { "scheduleEvents" }, allowSetters = true)

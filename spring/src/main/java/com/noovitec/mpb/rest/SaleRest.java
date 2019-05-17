@@ -55,6 +55,12 @@ class SaleRest {
 		return saleDtos;
 	}
 
+	@GetMapping("/saleItem/{id}")
+	ResponseEntity<SaleItem> getSaleItem(@PathVariable Long id) {
+		Optional<SaleItem> result = saleRepo.getSaleItemById(id);
+		return result.map(response -> ResponseEntity.ok().body(response)).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+	}
+
 	@GetMapping("/saleItem/sale/{sale_id}")
 	Collection<KeyValueDto> getAllByItem(@PathVariable Long sale_id) {
 		Collection<KeyValueDto> saleDtos = saleRepo.findSaleItemsBySale(sale_id);

@@ -20,18 +20,18 @@
         </b-col>
         <b-col cols="5">
           <label class="top-label">Sale/S.O.:</label>
-          <b-select v-if="!scheduleEvent.id" option-value="id" option-text="value" :list="availableSales" v-model="sale"></b-select>
+          <b-select v-if="!scheduleEvent.id" option-value="id" option-text="value" :list="availableSales" v-model="kvSale"></b-select>
           <span v-if="scheduleEvent.id">
             <br>
-            {{sale.value}}
+            {{kvSale.value}}
           </span>
         </b-col>
         <b-col cols="3">
           <label class="top-label">Item:</label>
-          <b-select v-if="!scheduleEvent.id" option-value="id" option-text="value" :list="availableSaleItems" v-model="saleItem"></b-select>
+          <b-select v-if="!scheduleEvent.id" option-value="id" option-text="value" :list="availableSaleItems" v-model="kvSaleItem"></b-select>
           <span v-if="scheduleEvent.id">
             <br>
-            {{saleItem.value}}
+            {{kvSaleItem.value}}
           </span>
         </b-col>
       </b-row>
@@ -72,9 +72,10 @@ export default {
     return {
       visible: true,
       availableSales: [],
-      sale: {},
+      kvSale: {},
       availableSaleItems: [], //SaleItemDto
-      saleItem: {}, //SaleItemDto
+      kvSaleItem: {}, //SaleItemDto
+      saleItem: {},
       availableItems: [], //ItemDto
       item: {}, //ItemDto
       availableLines: [],
@@ -85,20 +86,20 @@ export default {
   computed: {
   },
   watch: {
-    item(new_value, old_value) {
+    kvSaleItem(new_value, old_value) {
       if (!new_value || new_value.id == old_value.id) {
         return;
       }
-      if (this.item.id) {
-        this.getAvailableSaleItems(this.item.id);
+      if (this.kvSaleItem.id) {
+        this.getAvailableSaleItem(this.kvSaleItem.id);
       }
     },
-    sale(new_value, old_value) {
+    kvSale(new_value, old_value) {
       if (!new_value || new_value.id == old_value.id) {
         return;
       }
-      if (this.sale.id) {
-        this.getAvailableSaleItems(this.sale.id);
+      if (this.kvSale.id) {
+        this.getAvailableSaleItems(this.kvSale.id);
       }
     }
   },
@@ -112,7 +113,7 @@ export default {
         .then(response => {
           this.availableSaleItems = response.data;
           if(this.scheduleEvent.id){
-              this.saleItem = response.data.find(kvDto=> kvDto.id == this.scheduleEvent.saleItem.id);
+              this.kvSaleItem = response.data.find(kvDto=> kvDto.id == this.scheduleEvent.saleItem.id);
           }
         })
         .catch(e => {
@@ -125,7 +126,7 @@ export default {
         .then(response => {
           this.availableSales = response.data;
           if(this.scheduleEvent.id){
-              this.sale = response.data.find(kvDto=> kvDto.id == this.scheduleEvent.saleItem.sale.id);
+              this.kvSale = response.data.find(kvDto=> kvDto.id == this.scheduleEvent.saleItem.sale.id);
           }
         })
         .catch(e => {
@@ -152,10 +153,19 @@ export default {
           console.log("API error: " + e);
         });
     },
+    getAvailableSaleItem(saleItemId) {
+      http
+        .get("/saleItem/"+saleItemId)
+        .then(response => {
+          this.saleItem = response.data;
+        })
+        .catch(e => {
+          console.log("API error: " + e);
+        });
+    },
     validate() {
       if (
         !this.line ||
-        !this.sale ||
         !this.saleItem ||
         !this.scheduleEvent.startTime ||
         this.scheduleEvent.unitsScheduled <= 0
