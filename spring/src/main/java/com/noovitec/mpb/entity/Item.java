@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -31,7 +30,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Item{
+public class Item {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -119,14 +118,14 @@ public class Item{
 	}
 
 	public void addUnitsOnStack(Long units) {
-		if(this.unitsOnStack==null) {
+		if (this.unitsOnStack == null) {
 			this.unitsOnStack = 0L;
 		}
 		this.unitsOnStack += units;
 	}
-	
+
 	public void addUnitsScheduled(Long units) {
-		if(this.unitsScheduled == null) {
+		if (this.unitsScheduled == null) {
 			this.unitsScheduled = 0L;
 		}
 		this.unitsScheduled += units;

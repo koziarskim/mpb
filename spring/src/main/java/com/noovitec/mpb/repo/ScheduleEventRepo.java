@@ -14,6 +14,9 @@ public interface ScheduleEventRepo extends JpaRepository<ScheduleEvent, Long> {
 	@Query(value = "select unitsScheduled from ScheduleEvent where id = :schedule_event_id")
 	public Long getScheduledUnits(@Param("schedule_event_id") Long schedule_event_id);
 
+	@Query(value = "select se.saleItem.item.id from ScheduleEvent se where se.id = :schedule_event_id")
+	public Long getItemIdByScheduleEvent(@Param("schedule_event_id") Long schedule_event_id);
+
 	/*
 	 * select si.id, s.date, si.units_scheduled, si.item_id from Schedule_Item si
 	 * join schedule s on s.id = si.schedule_id join item i on i.id = si.item_id

@@ -78,7 +78,7 @@ class ScheduleRest {
 				s.setDate(d);
 			}
 			// Get all items that are available to schedule based on receiving.
-			s.setItems(this.getByEta(java.sql.Date.valueOf(s.getDate()), null, false));
+//			s.setItems(this.getByEta(java.sql.Date.valueOf(s.getDate()), null, false));
 			result.add(s);
 		}
 		// Convert to List and sort.

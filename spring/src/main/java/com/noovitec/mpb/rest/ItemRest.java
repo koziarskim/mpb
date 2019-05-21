@@ -36,6 +36,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.noovitec.mpb.dto.ItemDto;
 import com.noovitec.mpb.dto.KeyValueDto;
+import com.noovitec.mpb.dto.projection.ItemAvailabilityProjection;
 import com.noovitec.mpb.entity.Attachment;
 import com.noovitec.mpb.entity.Item;
 import com.noovitec.mpb.entity.ItemComponent;
@@ -117,6 +118,16 @@ class ItemRest {
 	@GetMapping("/item/purchase/{purchase_id}")
 	Collection<ItemDto> getAll(@PathVariable Long purchase_id) {
 		return this.itemToDto(itemRepo.getPurchaseItems(purchase_id));
+	}
+
+	@GetMapping("/item/available/eta/{date}")
+	Collection<ItemAvailabilityProjection> getAvailableItems(@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
+			@RequestParam(name = "itemIds", required = false) Long[] itemIds) {
+		if (itemIds == null) {
+			return itemRepo.getItemsAvailability(date);
+		} else {
+			return itemRepo.getItemsAvailabilityFiltered(date, itemIds);
+		}
 	}
 
 	@GetMapping("/item/{item_id}/eta/{date}")
