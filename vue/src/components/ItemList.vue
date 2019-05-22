@@ -15,11 +15,11 @@
                 <template slot="number" slot-scope="row">
                     <b-button size="sm" variant="link" @click.stop="updateItem(row.item.id)">{{row.item.number}}</b-button>
                 </template>
-                <template slot="components" slot-scope="row">
-                    <b-button size="sm" variant="link" @click.stop="gotToItemComponentList(row.item.id)">View</b-button>
+                <template slot="unitsOnStack" slot-scope="row">
+                    <b-button size="sm" variant="link" @click.stop="gotToItemComponentList(row.item.id)">{{row.item.unitsOnStack}}</b-button>
                 </template>
-                <template slot="sales" slot-scope="row">
-                    <b-button size="sm" variant="link" @click.stop="gotToItemSaleList(row.item.id)">View</b-button>
+                <template slot="totalItemScheduled" slot-scope="row">
+                    <b-button size="sm" variant="link" @click.stop="gotToItemSaleList(row.item.id)">{{row.item.totalItemScheduled}}</b-button>
                 </template>
                 <template slot="action" slot-scope="row">
                     <b-button size="sm" @click.stop="deleteItem(row.item.id)">x</b-button>
@@ -41,10 +41,8 @@ export default {
         { key: 'name', sortable: false, label: 'Name'},
         { key: 'brand', sortable: false, label: 'Brand'},
         { key: 'category', sortable: false, label: 'Category'},
-        { key: 'components', sortable: false, label: 'Inventory'},
-        { key: 'sales', sortable: false, label: 'Sales'},
         { key: 'unitsOnStack', sortable: false, label: 'Stack'},
-        { key: 'totalScheduled', sortable: false, label: 'Scheduled'},
+        { key: 'totalItemScheduled', sortable: false, label: 'Scheduled'},
         { key: 'action', sortable: false}
       ],
       items: []
