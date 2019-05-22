@@ -47,11 +47,11 @@
         <b-col cols="4">
           <label class="top-label">Total Sold: {{saleItem.units}}</label>
           <br>
-          <label class="top-label">Available to schedule: {{item.unitsReadySchedule}}</label>
+          <label class="top-label">Available to schedule: {{itemAvailability.unitsToSchedule}}</label>
           <br>
-          <label class="top-label">Ready for production: {{item.unitsReadyProduction}}</label>
-          <!-- <br> -->
-          <!-- <label class="top-label">Total Item scheduled: {{item.totalItemScheduled}}</label> -->
+          <label class="top-label">Ready for production: {{itemAvailability.unitsToProduction}}</label>
+          <br>
+          <label class="top-label">Total Item scheduled: {{itemAvailability.unitsScheduled}}</label>
         </b-col>
       </b-row>
     </b-modal>
@@ -78,6 +78,7 @@ export default {
       saleItem: {},
       availableItems: [], //ItemDto
       item: {}, //ItemDto
+      itemAvailability: {},
       availableLines: [],
       line: {},
       initScheduled: 0
@@ -86,20 +87,20 @@ export default {
   computed: {
   },
   watch: {
-    kvSaleItem(new_value, old_value) {
-      if (!new_value || new_value.id == old_value.id) {
-        return;
-      }
-      if (this.kvSaleItem.id) {
-        this.getAvailableSaleItem(this.kvSaleItem.id);
-      }
-    },
     kvSale(new_value, old_value) {
       if (!new_value || new_value.id == old_value.id) {
         return;
       }
       if (this.kvSale.id) {
         this.getAvailableSaleItems(this.kvSale.id);
+      }
+    },
+    kvSaleItem(new_value, old_value) {
+      if (!new_value || new_value.id == old_value.id) {
+        return;
+      }
+      if (this.kvSaleItem.id) {
+        this.getSaleItem(this.kvSaleItem.id);
       }
     }
   },
@@ -153,11 +154,22 @@ export default {
           console.log("API error: " + e);
         });
     },
-    getAvailableSaleItem(saleItemId) {
+    getSaleItem(saleItemId) {
       http
         .get("/saleItem/"+saleItemId)
         .then(response => {
           this.saleItem = response.data;
+          this.getItemAvailability(response.data.item.id);
+        })
+        .catch(e => {
+          console.log("API error: " + e);
+        });
+    },
+    getItemAvailability(itemId) {
+      http
+        .get("/item/available/eta/"+this.schedule.date, {params: {itemIds: itemId}})
+        .then(response => {
+          this.itemAvailability = response.data[0];
         })
         .catch(e => {
           console.log("API error: " + e);
