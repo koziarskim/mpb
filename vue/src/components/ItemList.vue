@@ -18,6 +18,9 @@
                 <template slot="components" slot-scope="row">
                     <b-button size="sm" variant="link" @click.stop="gotToItemComponentList(row.item.id)">View</b-button>
                 </template>
+                <template slot="sales" slot-scope="row">
+                    <b-button size="sm" variant="link" @click.stop="gotToItemSaleList(row.item.id)">View</b-button>
+                </template>
                 <template slot="action" slot-scope="row">
                     <b-button size="sm" @click.stop="deleteItem(row.item.id)">x</b-button>
                 </template>
@@ -39,6 +42,7 @@ export default {
         { key: 'brand', sortable: false, label: 'Brand'},
         { key: 'category', sortable: false, label: 'Category'},
         { key: 'components', sortable: false, label: 'Inventory'},
+        { key: 'sales', sortable: false, label: 'Sales'},
         { key: 'unitsOnStack', sortable: false, label: 'Stack'},
         { key: 'totalScheduled', sortable: false, label: 'Scheduled'},
         { key: 'action', sortable: false}
@@ -83,6 +87,9 @@ export default {
     },
     gotToItemComponentList(item_id){
         router.push('./itemComponentList/'+item_id);
+    },
+    gotToItemSaleList(item_id){
+        router.push('./itemSaleList/'+item_id);
     }
   },
   mounted() {

@@ -24,6 +24,7 @@ import Users from "./components/Users";
 import Login from "./components/Login";
 import Production from "./components/Production";
 import Schedule from "./components/Schedule";
+import ItemSaleList from "./components/ItemSaleList";
 import AccessDenied from "./components/AccessDenied";
 
 Vue.use(Router);
@@ -114,6 +115,11 @@ const router = new Router({
       path: "/purchaseEdit/:purchase_id",
       name: "PurchaseEdit",
       component: PurchaseEdit
+    },
+    {
+      path: "/itemSaleList/:item_id",
+      name: "ItemSaleList",
+      component: ItemSaleList
     },
     {
       path: "/PurchaseComponent/:purchase_id",
