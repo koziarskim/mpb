@@ -6,6 +6,7 @@ import java.math.RoundingMode;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -122,12 +123,12 @@ class ItemRest {
 
 	@GetMapping("/item/available/eta/{date}")
 	Collection<ItemAvailabilityProjection> getAvailableItems(@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
-			@RequestParam(name = "itemIds", required = false) Long[] itemIds) {
+			@RequestParam(name = "itemIds", required = false) List<Long> itemIds) {
 		if (itemIds == null) {
-			return itemRepo.getItemsAvailability(date);
-		} else {
-			return itemRepo.getItemsAvailabilityFiltered(date, itemIds);
+			itemIds = new ArrayList<Long>();
+			itemIds.add(0L);
 		}
+		return itemRepo.getItemsAvailabilityFiltered(date, itemIds);
 	}
 
 	@GetMapping("/item/{item_id}/eta/{date}")

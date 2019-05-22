@@ -33,34 +33,21 @@ public interface ItemRepo extends JpaRepository<Item, Long> {
 		order by i.id asc) as tmp
 	group by tmp.i_id
 	 */
-	@Query(value = "select tmp.i_id as id, tmp.us as unitsScheduled, (min(tmp.unitsToSchedule) - max(tmp.us)) as unitsToSchedule, (min(tmp.unitsToProduction) - max(tmp.us)) as unitsToProduction "
-			+ "from (select i.id as i_id, i.units_scheduled as us, "
-			+ "((c.units_on_stack + sum(case when r.units is null then 0 else r.units end))/max(ic.units)) as unitsToSchedule, "
-			+ "(c.units_on_stack/max(ic.units)) as unitsToProduction "
-			+ "from item i "
-			+ "join item_component ic on ic.item_id = i.id "
-			+ "join component c on c.id = ic.component_id "
-			+ "left join purchase_component pc on pc.component_id = c.id "
-			+ "left join receiving r on r.purchase_component_id = pc.id and r.received_date is null and r.eta_date <= :date "
-			+ "where i.id in (:itemIds) "
-			+ "group by c.id, i.id "
-			+ "order by i.id asc) as tmp "
+	@Query(value = ""
+			+ "select tmp.i_id as id, tmp.us as unitsScheduled, (min(tmp.unitsToSchedule) - max(tmp.us)) as unitsToSchedule, (min(tmp.unitsToProduction) - max(tmp.us)) as unitsToProduction "
+				+ "from (select i.id as i_id, i.units_scheduled as us, "
+				+ "((c.units_on_stack + sum(case when r.units is null then 0 else r.units end))/max(ic.units)) as unitsToSchedule, "
+				+ "(c.units_on_stack/max(ic.units)) as unitsToProduction "
+				+ "from item i "
+				+ "join item_component ic on ic.item_id = i.id "
+				+ "join component c on c.id = ic.component_id "
+				+ "left join purchase_component pc on pc.component_id = c.id "
+				+ "left join receiving r on r.purchase_component_id = pc.id and r.received_date is null and r.eta_date <= :date "
+				+ "where "
+				+ "(case when 0 in :itemIds then true else i.id in :itemIds end) "
+				+ "group by c.id, i.id "
+				+ "order by i.id asc) as tmp "
 			+ "group by tmp.i_id, tmp.us", nativeQuery = true)
-	List<ItemAvailabilityProjection> getItemsAvailabilityFiltered(@Param("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date, @Param("itemIds") Long[] itemIds);
-	
-	@Query(value = "select tmp.i_id as id, tmp.us as unitsScheduled, (min(tmp.unitsToSchedule) - max(tmp.us)) as unitsToSchedule, (min(tmp.unitsToProduction) - max(tmp.us)) as unitsToProduction "
-			+ "from (select i.id as i_id, i.units_scheduled as us, "
-			+ "((c.units_on_stack + sum(case when r.units is null then 0 else r.units end))/max(ic.units)) as unitsToSchedule, "
-			+ "(c.units_on_stack/max(ic.units)) as unitsToProduction "
-			+ "from item i "
-			+ "join item_component ic on ic.item_id = i.id "
-			+ "join component c on c.id = ic.component_id "
-			+ "left join purchase_component pc on pc.component_id = c.id "
-			+ "left join receiving r on r.purchase_component_id = pc.id and r.received_date is null and r.eta_date <= :date "
-			+ "group by c.id, i.id "
-			+ "order by i.id asc) as tmp "
-			+ "group by tmp.i_id, tmp.us", nativeQuery = true)
-			List<ItemAvailabilityProjection> getItemsAvailability(@Param("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date);
-
+	List<ItemAvailabilityProjection> getItemsAvailabilityFiltered(@Param("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date, @Param("itemIds") List<Long> itemIds);
 	
 }
