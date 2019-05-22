@@ -38,7 +38,7 @@ export default {
         { key: 'name', sortable: false, label: 'Name'},
         { key: 'brand', sortable: false, label: 'Brand'},
         { key: 'category', sortable: false, label: 'Category'},
-        { key: 'components', sortable: false, label: 'Components'},
+        { key: 'components', sortable: false, label: 'Inventory'},
         { key: 'unitsOnStack', sortable: false, label: 'Stack'},
         { key: 'totalScheduled', sortable: false, label: 'Scheduled'},
         { key: 'action', sortable: false}
