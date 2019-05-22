@@ -86,10 +86,10 @@
             <b-button size="sm" variant="link" @click.stop="gotToItemComponentList(row.item.item.id)">View</b-button>
           </template>
           <template slot="units" slot-scope="row">
-            <input class="form-control" style="width:100px" type="tel" v-model="row.item.units">
+            <input class="form-control" style="width:100px" type="tel" :disabled="locked" v-model="row.item.units">
           </template>
           <template slot="unitPrice" slot-scope="row">
-            <input class="form-control" style="width:100px" type="tel" v-model="row.item.unitPrice">
+            <input class="form-control" style="width:100px" type="tel" :disabled="locked" v-model="row.item.unitPrice">
           </template>
           <template slot="totalUnitPrice" slot-scope="row">
             <span>${{row.item.totalUnitPrice = (+row.item.unitPrice * +row.item.units).toFixed(2)}}</span>
@@ -110,6 +110,7 @@ import router from "../router";
 export default {
   data() {
     return {
+      locked: false,
       sale: {
         saleItems: [],
         customer: {},
@@ -164,6 +165,9 @@ export default {
         .get("/sale/" + id)
         .then(response => {
           this.sale = response.data;
+          if(response.data.purchaseSales.length > 0){
+              this.locked = true;
+          }
           if (response.data.customer) {
             this.customer = response.data.customer;
           }
