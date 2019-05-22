@@ -126,7 +126,9 @@ export default {
       sortDesc: false,
       columns: [
         { key: "item.number", label: "Item", sortable: false },
-        { key: "components", label: "Components", sortable: false },
+        { key: "components", label: "Intentory", sortable: false },
+        { key: "unitsScheduled", label: "Scheduled", sortable: false },
+        { key: "unitsProduced", label: "Produced", sortable: false },
         { key: "item.totalCost", label: "Cost", sortable: false },
         { key: "units", label: "Units", sortable: false },
         { key: "unitPrice", label: "Unit Price", sortable: false },
