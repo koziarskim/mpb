@@ -19,6 +19,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.noovitec.mpb.dto.ItemDto;
+import com.noovitec.mpb.dto.projection.ItemAvailabilityProjection;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -45,5 +46,5 @@ public class Schedule {
 	private Collection<ScheduleEvent> scheduleEvents = new HashSet<ScheduleEvent>();
 	
 	@Transient
-	private Collection<ItemDto> items = new HashSet<ItemDto>();
+	private Collection<ItemAvailabilityProjection> items = new HashSet<ItemAvailabilityProjection>();
 }

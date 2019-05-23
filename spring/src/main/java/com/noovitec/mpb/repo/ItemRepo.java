@@ -50,4 +50,10 @@ public interface ItemRepo extends JpaRepository<Item, Long> {
 			+ "group by tmp.i_id, tmp.us", nativeQuery = true)
 	List<ItemAvailabilityProjection> getItemsAvailabilityFiltered(@Param("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date, @Param("itemIds") List<Long> itemIds);
 	
+	@Query("select distinct i.id from Item i "
+			+ "join i.saleItems si "
+			+ "join si.scheduleEvents se "
+			+ "where se.schedule.id = :schedule_id")
+	List<Long> getItemsScheduled(@Param("schedule_id") Long schedule_id);
+	
 }

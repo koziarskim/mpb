@@ -47,15 +47,17 @@
         <b-col cols="4">
           <label class="top-label">Total Sold: {{saleItem.units}}</label>
           <br>
-          <label class="top-label">Still available to schedule: {{unitsToSchedule}}</label>
+          <label class="top-label">Available to schedule: {{unitsToSchedule}}</label>
           <br>
-          <label class="top-label">Ready for production: {{itemAvailability.unitsToProduction}}</label>
+          <label class="top-label">Ready for production: {{unitsReadyProduction}}</label>
           <br>
-          <label class="top-label">Already scheduled for sale: {{saleItem.unitsScheduled}}</label>
+          <label class="top-label">Already scheduled for sale: {{unitsAlreadyScheduled}}</label>
           <br>
           <label class="top-label">Already produced for sale: {{saleItem.unitsProduced}}</label>
           <!-- <br>
           <label class="top-label">Total scheduled: {{itemAvailability.unitsScheduled}}</label> -->
+          <br>
+          <label class="top-label">Diff: {{unitsDiff}}</label>
         </b-col>
       </b-row>
     </b-modal>
@@ -90,7 +92,24 @@ export default {
   },
   computed: {
       unitsToSchedule(){
-          return +this.itemAvailability.unitsToSchedule + +this.initScheduled - +this.scheduleEvent.unitsScheduled;
+          var units = +this.itemAvailability.unitsToSchedule;
+          if(units > this.saleItem.units){
+              units = this.saleItem.units;
+          }
+          return units - +this.saleItem.unitsScheduled - +this.unitsDiff;
+      },
+      unitsReadyProduction(){
+          var units = +this.itemAvailability.unitsToProduction + +this.initScheduled;
+          if(units > this.saleItem.units){
+              units = this.saleItem.units;
+          }
+          return units;
+      },
+      unitsAlreadyScheduled(){
+          return +this.saleItem.unitsScheduled + +this.unitsDiff;
+      },
+      unitsDiff(){
+          return +this.scheduleEvent.unitsScheduled - +this.initScheduled;
       }
   },
   watch: {
@@ -192,7 +211,7 @@ export default {
         alert("Make sure all fields are entered");
         return false;
       }
-      if (this.unitsToSchedule < 0){
+      if (+this.unitsToSchedule + +this.initScheduled - +this.scheduleEvent.unitsScheduled < 0){
         alert("Cannot schedule more that ready to schedule");
         return false;
       }

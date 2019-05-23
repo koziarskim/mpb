@@ -79,6 +79,13 @@ class ScheduleRest {
 			}
 			// Get all items that are available to schedule based on receiving.
 //			s.setItems(this.getByEta(java.sql.Date.valueOf(s.getDate()), null, false));
+			List<Long> items = new ArrayList<Long>();
+			if(s.getId()!=null) {
+				items.addAll(itemRepo.getItemsScheduled(s.getId()));
+			}
+			if(!items.isEmpty()) {
+				s.setItems(itemRepo.getItemsAvailabilityFiltered(s.getDate(), items));
+			}
 			result.add(s);
 		}
 		// Convert to List and sort.
@@ -87,70 +94,70 @@ class ScheduleRest {
 		return list;
 	}
 
-	private Collection<ItemDto> getByEta(Date date, Long item_id, boolean includeAll) {
-		Collection<ItemDto> dtos = new HashSet<ItemDto>();
-		Map<Long, Long> componentsInTransitToDate = new HashMap<Long, Long>();
-
-		List<KeyValueDto> componentsInTransitToDateList = receivingRepo.findComponentsInTransitToDate(date);
-
-		for (KeyValueDto keyValueDto : componentsInTransitToDateList) {
-			componentsInTransitToDate.put(keyValueDto.getKey(), (Long) keyValueDto.getValue());
-		}
-
-		Collection<Item> items = new HashSet<Item>();
-		if (item_id == null) {
-			items.addAll(itemRepo.findAll());
-		} else {
-			items.add(itemRepo.getOne(item_id));
-		}
-
-		for (Item item : items) {
-			ItemDto dto = new ItemDto();
-			dto.setId(item.getId());
-			dto.setNumber(item.getNumber());
-			int itemsReadySchedule = 0;
-			int itemsReadyProduction = 0;
-			for (ItemComponent ic : item.getItemComponents()) {
-				Long componentUnitsInTransit = componentsInTransitToDate.get(ic.getComponent().getId());
-
-				float icReadyProductionFloat = ic.getComponent().getUnitsOnStack() / ic.getUnits();
-				float icReadyScheduleFloat = (ic.getComponent().getUnitsOnStack() + (componentUnitsInTransit == null ? 0 : componentUnitsInTransit))
-						/ ic.getUnits();
-				// Production
-				int icReadyProduction = this.roundToInt(icReadyProductionFloat);
-				if (itemsReadyProduction == 0 || icReadyProduction < itemsReadyProduction) {
-					itemsReadyProduction = icReadyProduction;
-				}
-				// Schedule
-				int icReadySchedule = this.roundToInt(icReadyScheduleFloat);
-				if (itemsReadySchedule == 0 || icReadySchedule < itemsReadySchedule) {
-					itemsReadySchedule = icReadySchedule;
-				}
-			}
-			Long totalItemSchedule = scheduleEventRepo.getTotalItemScheduled(LocalDate.now(), item.getId());
-			dto.setTotalItemScheduled(totalItemSchedule == null ? 0 : totalItemSchedule.intValue());
-			dto.setUnitsReadySchedule(itemsReadySchedule);
-			dto.setUnitsReadyProduction(itemsReadyProduction);
-			if (!includeAll) {
-				if (dto.getUnitsReadySchedule() > 0) {
-					dtos.add(dto);
-				}
-			} else {
-				dtos.add(dto);
-			}
-		}
-		return dtos;
-	}
-
-	private int roundToInt(float unitsFloat) {
-		int units = 0;
-		if (unitsFloat > 0) {
-			units = new BigDecimal(unitsFloat).setScale(0, RoundingMode.DOWN).intValue();
-		} else {
-			units = new BigDecimal(unitsFloat).setScale(0, RoundingMode.UP).intValue();
-		}
-		return units;
-	}
+//	private Collection<ItemDto> getByEta(Date date, Long item_id, boolean includeAll) {
+//		Collection<ItemDto> dtos = new HashSet<ItemDto>();
+//		Map<Long, Long> componentsInTransitToDate = new HashMap<Long, Long>();
+//
+//		List<KeyValueDto> componentsInTransitToDateList = receivingRepo.findComponentsInTransitToDate(date);
+//
+//		for (KeyValueDto keyValueDto : componentsInTransitToDateList) {
+//			componentsInTransitToDate.put(keyValueDto.getKey(), (Long) keyValueDto.getValue());
+//		}
+//
+//		Collection<Item> items = new HashSet<Item>();
+//		if (item_id == null) {
+//			items.addAll(itemRepo.findAll());
+//		} else {
+//			items.add(itemRepo.getOne(item_id));
+//		}
+//
+//		for (Item item : items) {
+//			ItemDto dto = new ItemDto();
+//			dto.setId(item.getId());
+//			dto.setNumber(item.getNumber());
+//			int itemsReadySchedule = 0;
+//			int itemsReadyProduction = 0;
+//			for (ItemComponent ic : item.getItemComponents()) {
+//				Long componentUnitsInTransit = componentsInTransitToDate.get(ic.getComponent().getId());
+//
+//				float icReadyProductionFloat = ic.getComponent().getUnitsOnStack() / ic.getUnits();
+//				float icReadyScheduleFloat = (ic.getComponent().getUnitsOnStack() + (componentUnitsInTransit == null ? 0 : componentUnitsInTransit))
+//						/ ic.getUnits();
+//				// Production
+//				int icReadyProduction = this.roundToInt(icReadyProductionFloat);
+//				if (itemsReadyProduction == 0 || icReadyProduction < itemsReadyProduction) {
+//					itemsReadyProduction = icReadyProduction;
+//				}
+//				// Schedule
+//				int icReadySchedule = this.roundToInt(icReadyScheduleFloat);
+//				if (itemsReadySchedule == 0 || icReadySchedule < itemsReadySchedule) {
+//					itemsReadySchedule = icReadySchedule;
+//				}
+//			}
+//			Long totalItemSchedule = scheduleEventRepo.getTotalItemScheduled(LocalDate.now(), item.getId());
+//			dto.setTotalItemScheduled(totalItemSchedule == null ? 0 : totalItemSchedule.intValue());
+//			dto.setUnitsReadySchedule(itemsReadySchedule);
+//			dto.setUnitsReadyProduction(itemsReadyProduction);
+//			if (!includeAll) {
+//				if (dto.getUnitsReadySchedule() > 0) {
+//					dtos.add(dto);
+//				}
+//			} else {
+//				dtos.add(dto);
+//			}
+//		}
+//		return dtos;
+//	}
+//
+//	private int roundToInt(float unitsFloat) {
+//		int units = 0;
+//		if (unitsFloat > 0) {
+//			units = new BigDecimal(unitsFloat).setScale(0, RoundingMode.DOWN).intValue();
+//		} else {
+//			units = new BigDecimal(unitsFloat).setScale(0, RoundingMode.UP).intValue();
+//		}
+//		return units;
+//	}
 
 	@GetMapping("/schedule/{id}")
 	ResponseEntity<Schedule> get(@PathVariable Long id) {

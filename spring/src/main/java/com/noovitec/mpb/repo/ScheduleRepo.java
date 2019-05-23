@@ -12,7 +12,7 @@ import com.noovitec.mpb.entity.Schedule;
 
 public interface ScheduleRepo extends JpaRepository<Schedule, Long> {
 
-	@Query("select s from Schedule s where s.date >= :dateFrom and s.date < :dateTo")
+	@Query("select s from Schedule s where s.date >= :dateFrom and s.date <= :dateTo")
 	List<Schedule> findByRange(@Param("dateFrom") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dateFrom,
 			@Param("dateTo") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dateTo);
 
