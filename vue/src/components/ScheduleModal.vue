@@ -47,11 +47,15 @@
         <b-col cols="4">
           <label class="top-label">Total Sold: {{saleItem.units}}</label>
           <br>
-          <label class="top-label">Available to schedule: {{itemAvailability.unitsToSchedule}}</label>
+          <label class="top-label">Still available to schedule: {{unitsToSchedule}}</label>
           <br>
           <label class="top-label">Ready for production: {{itemAvailability.unitsToProduction}}</label>
           <br>
-          <label class="top-label">Total Item scheduled: {{itemAvailability.unitsScheduled}}</label>
+          <label class="top-label">Already scheduled for sale: {{saleItem.unitsScheduled}}</label>
+          <br>
+          <label class="top-label">Already produced for sale: {{saleItem.unitsProduced}}</label>
+          <!-- <br>
+          <label class="top-label">Total scheduled: {{itemAvailability.unitsScheduled}}</label> -->
         </b-col>
       </b-row>
     </b-modal>
@@ -85,6 +89,9 @@ export default {
     };
   },
   computed: {
+      unitsToSchedule(){
+          return +this.itemAvailability.unitsToSchedule + +this.initScheduled - +this.scheduleEvent.unitsScheduled;
+      }
   },
   watch: {
     kvSale(new_value, old_value) {
@@ -185,7 +192,7 @@ export default {
         alert("Make sure all fields are entered");
         return false;
       }
-      if (this.scheduleEvent.unitsScheduled > this.item.unitsReadySchedule){
+      if (this.unitsToSchedule < 0){
         alert("Cannot schedule more that ready to schedule");
         return false;
       }

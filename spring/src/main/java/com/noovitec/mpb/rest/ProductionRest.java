@@ -71,12 +71,7 @@ class ProductionRest {
 			Long componentUnits = (long) new BigDecimal(componentUnitsFloat).setScale(0, RoundingMode.DOWN).intValue();
 			Component component = ic.getComponent();
 			// Subtract
-			Long extraUnits = component.addUnitsReserved(componentUnits * (-1));
-			if (extraUnits > 0) {
-				throw new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED, "Units produced exceeded units reserved.");
-			}
-			// Subtract
-			extraUnits = component.addUnitsOnStack(componentUnits * (-1));
+			Long extraUnits = component.addUnitsOnStack(componentUnits * (-1));
 			if (extraUnits > 0) {
 				throw new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED, "Units produced exceeded units on stack.");
 			}
