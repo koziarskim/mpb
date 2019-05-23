@@ -162,7 +162,8 @@ export default {
     },
     getAvailableLines() {
       http
-        .get("/item")
+        // TODO: Need to change it to line url.
+        .get("/item/1")
         .then(response => {
           this.availableLines = [
             { id: 1, number: 1 },
