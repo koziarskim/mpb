@@ -101,10 +101,10 @@ public class Item {
 	@JoinColumn(name = "item_id")
 	private Collection<SaleItem> saleItems = new HashSet<SaleItem>();
 
-	@JsonIgnore
-	@OneToMany()
-	@JoinColumn(name = "item_id")
-	private Collection<ScheduleEvent> scheduleEvents = new HashSet<ScheduleEvent>();
+//	@JsonIgnore
+//	@OneToMany()
+//	@JoinColumn(name = "item_id")
+//	private Collection<ScheduleEvent> scheduleEvents = new HashSet<ScheduleEvent>();
 
 	@Transient
 	private String label;
