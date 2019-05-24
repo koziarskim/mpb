@@ -28,17 +28,17 @@
           </b-row>
         </b-col>
         <b-col>
-          <label class="top-label">Item: {{item.number}}</label>
+          <label class="top-label">Item: {{scheduleEvent.saleItem.item.number}}</label>
           <br>
-          <label class="top-label">S.O.: {{saleItem.label}}</label>
+          <label class="top-label">S.O.: {{scheduleEvent.saleItem.label}}</label>
           <br>
-          <label class="top-label">Line: {{line.number}}</label>
+          <label class="top-label">Line: {{scheduleEvent.line.number}}</label>
           <br>
           <label class="top-label">Scheduled for production: {{scheduleEvent.unitsScheduled}}</label>
           <br>
           <label class="top-label">Still to produce: {{stillToProduce}}</label>
           <br>
-          <label class="top-label">Ready for production: {{item.unitsReadyProduction}}</label>
+          <label class="top-label">Ready for production: {{unitsToProduction}}</label>
         </b-col>
       </b-row>
     </b-modal>
@@ -65,12 +65,21 @@ export default {
       item: {},
       availableLines: [],
       line: {},
+      itemAvailability: {},
       totalSold: 0,
       availableToSchedule: 0,
       newProduction: { unitsProduced: 0 }
     };
   },
   computed: {
+    unitsToProduction(){
+        var units = this.itemAvailability.unitsToProduction;
+        if(units > this.stillToProduce){
+            return this.stillToProduce;
+        }else{
+            return units;
+        }
+    },
     stillToProduce() {
       return (
         +this.scheduleEvent.unitsScheduled -
@@ -86,47 +95,11 @@ export default {
   },
   watch: {},
   methods: {
-    getAvailableSaleItems(item_id) {
-      if (!item_id) {
-        this.modalData.availableSales = [];
-      }
+    getItemAvailability(itemId) {
       http
-        .get("/saleItem/item/" + item_id)
+        .get("/item/available/eta/"+this.schedule.date, {params: {itemIds: itemId}})
         .then(response => {
-          this.availableSaleItems = response.data;
-          this.saleItem = this.scheduleEvent.saleItem
-            ? this.scheduleEvent.saleItem
-            : {};
-        })
-        .catch(e => {
-          console.log("API error: " + e);
-        });
-    },
-    getAvailableItems(date) {
-      http
-        .get("/item/"+this.scheduleEvent.item.id+"/eta/" + date)
-        .then(response => {
-            this.item = response.data.find(itemDto=> itemDto.id == this.scheduleEvent.item.id)
-            })
-        .catch(e => {
-          console.log("API error: " + e);
-        });
-    },
-    getAvailableLines() {
-      http
-        .get("/item")
-        .then(response => {
-          this.availableLines = [
-            { id: 1, number: 1 },
-            { id: 2, number: 2 },
-            { id: 3, number: 3 },
-            { id: 4, number: 4 },
-            { id: 5, number: 5 },
-            { id: 6, number: 6 },
-            { id: 7, number: 7 },
-            { id: 8, number: 8 }
-          ];
-          this.line = this.scheduleEvent.line ? this.scheduleEvent.line : {};
+          this.itemAvailability = response.data[0];
         })
         .catch(e => {
           console.log("API error: " + e);
@@ -140,13 +113,9 @@ export default {
         alert("Make sure all fields are entered");
         return false;
       }
-      if (this.newProduction.unitsProduced > this.item.unitsReadyProduction) {
+      if (this.unitsToProduction < 0) {
         alert("Units cannot exceed ready for production");
         return false;
-      }
-      if((+this.scheduleEvent.totalProduced + +this.newProduction.unitsProduced) > this.scheduleEvent.unitsScheduled){
-          alert("Total units cannot exceed scheduled");
-          return false;
       }
       return true;
     },
@@ -191,8 +160,8 @@ export default {
     }
   },
   mounted() {
-    this.getAvailableItems(this.schedule.date);
-    this.getAvailableLines();
+    this.getItemAvailability(this.scheduleEvent.saleItem.item.id);
+    // this.getAvailableLines();
   }
 };
 </script>

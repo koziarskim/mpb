@@ -45,19 +45,19 @@
           <input class="form-control" type="tel" v-model="scheduleEvent.unitsScheduled">
         </b-col>
         <b-col cols="4">
-          <label class="top-label">Total Sold: {{saleItem.units}}</label>
-          <br>
           <label class="top-label">Available to schedule: {{unitsToSchedule}}</label>
           <br>
           <label class="top-label">Ready for production: {{unitsReadyProduction}}</label>
           <br>
-          <label class="top-label">Already scheduled for sale: {{unitsAlreadyScheduled}}</label>
+          <label class="top-label">Total Sold: {{saleItem.units}}</label>
           <br>
-          <label class="top-label">Already produced for sale: {{saleItem.unitsProduced}}</label>
+          <label class="top-label">Total scheduled: {{unitsAlreadyScheduled}}</label>
+          <br>
+          <label class="top-label">Total produced: {{saleItem.unitsProduced}}</label>
           <!-- <br>
           <label class="top-label">Total scheduled: {{itemAvailability.unitsScheduled}}</label> -->
-          <br>
-          <label class="top-label">Diff: {{unitsDiff}}</label>
+          <!-- <br>
+          <label class="top-label">Diff: {{unitsDiff}}</label> -->
         </b-col>
       </b-row>
     </b-modal>
@@ -212,8 +212,8 @@ export default {
         alert("Make sure all fields are entered");
         return false;
       }
-      if (+this.unitsToSchedule + +this.initScheduled - +this.scheduleEvent.unitsScheduled < 0){
-        alert("Cannot schedule more that ready to schedule");
+      if (this.unitsToSchedule < 0){
+        alert("Cannot schedule more that available to schedule");
         return false;
       }
       if (this.scheduleEvent.unitsScheduled > this.saleItem.units) {
