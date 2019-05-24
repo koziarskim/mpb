@@ -16,9 +16,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.noovitec.mpb.entity.Component;
 import com.noovitec.mpb.entity.Item;
+import com.noovitec.mpb.entity.ItemComponent;
 import com.noovitec.mpb.entity.Production;
 import com.noovitec.mpb.entity.ScheduleEvent;
+import com.noovitec.mpb.repo.ComponentRepo;
 import com.noovitec.mpb.repo.ItemRepo;
 import com.noovitec.mpb.repo.ScheduleEventRepo;
 
@@ -30,6 +33,8 @@ class ScheduleEventRest {
 	private ScheduleEventRepo scheduleEventRepo;
 	@Autowired
 	private ItemRepo itemRepo;
+	@Autowired
+	private ComponentRepo componentRepo;
 
 	public ScheduleEventRest(ScheduleEventRepo scheduleEventRepo) {
 		this.scheduleEventRepo = scheduleEventRepo;
@@ -58,11 +63,21 @@ class ScheduleEventRest {
 		// Get this before calling save.
 		Long existingUnitsScheduled = scheduleEventRepo.getScheduledUnits(scheduleEvent.getId());
 		ScheduleEvent result = scheduleEventRepo.save(scheduleEvent);
+		Long itemUnits = result.getUnitsScheduled() - (existingUnitsScheduled == null ? 0L : existingUnitsScheduled);
 		// TODO: Why following is null? result.getSaleItem().getItem().getId();
 		Long item_id = scheduleEventRepo.getItemIdByScheduleEvent(scheduleEvent.getId());
 		Item item = itemRepo.getOne(item_id);
-		item.addUnitsScheduled(result.getUnitsScheduled() - (existingUnitsScheduled == null ? 0L : existingUnitsScheduled));
+
+		item.addUnitsScheduled(itemUnits);
 		itemRepo.save(item);
+		for (ItemComponent ic : item.getItemComponents()) {
+			// Positive or negative
+			Long componentUnits = ic.getUnits() * itemUnits;
+			Component component = ic.getComponent();
+			// Add/Substract based on positive or negative value.
+			component.addUnitsReserved(componentUnits);
+			componentRepo.save(component);
+		}
 		return ResponseEntity.ok().body(result);
 	}
 
