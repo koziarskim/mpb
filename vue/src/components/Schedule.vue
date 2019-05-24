@@ -221,17 +221,17 @@ export default {
         .utc()
         .format("dddd");
     },
-    getColor(si) {
+    getColor(se) {
       //Green - production is done.
-      if (si.unitsScheduled == si.totalProduced) {
+      if (se.unitsScheduled == se.totalProduced) {
         return "background-color: #c2f5c4";
       }
       //Red - too much scheduled. Needs to reschedule.
-      if (si.unitsAvailable < 0) {
+      if (se.unitsAvailable < 0) {
         return "background-color: #f9b3ae";
       }
       //Yellow - 
-      if (si.unitsReadyProduction < si.unitsScheduled) {
+      if (se.unitsReadyProduction < se.unitsScheduled) {
         return "background-color: yellow";
       }
       return "";

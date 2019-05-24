@@ -64,6 +64,8 @@ public class SaleItem {
 	private Long unitsScheduled = 0L; //This is total units scheduled (including all schedule events). Updated when saving ScheduleEvent (ScheduleEvent.unitsScheduled)
 	@Transient
 	private Long unitsProduced = 0L; //This should be updated on Production save/post (Production.unitsProduced)
+	@Transient
+	boolean produced = false;
 	
 	public String getLabel() {
 		if(this.getSale()!=null) {
@@ -88,6 +90,13 @@ public class SaleItem {
 			}
 		}
 		return this.unitsProduced;
+	}
+	
+	public boolean isProduced() {
+		if(this.getUnitsScheduled() <= this.getUnitsProduced()) {
+			this.produced = true;
+		}
+		return this.produced;
 	}
 	
 }

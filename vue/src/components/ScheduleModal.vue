@@ -99,9 +99,9 @@ export default {
           return units - +this.saleItem.unitsScheduled - +this.unitsDiff;
       },
       unitsReadyProduction(){
-          var units = +this.itemAvailability.unitsToProduction + +this.initScheduled;
-          if(units > this.saleItem.units){
-              units = this.saleItem.units;
+          var units = +this.itemAvailability.unitsToProduction - +this.unitsDiff;
+          if(units > this.unitsToSchedule){
+              units = this.unitsToSchedule;
           }
           return units;
       },
