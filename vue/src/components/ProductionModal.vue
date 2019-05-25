@@ -68,17 +68,17 @@ export default {
       itemAvailability: {},
       totalSold: 0,
       availableToSchedule: 0,
+      initScheduled: 0,
       newProduction: { unitsProduced: 0 }
     };
   },
   computed: {
     unitsToProduction(){
-        var units = this.itemAvailability.unitsToProduction;
+        var units = this.itemAvailability.unitsToProduction - this.unitsDiff;
         if(units > this.stillToProduce){
-            return this.stillToProduce;
-        }else{
-            return units;
+            units = this.stillToProduce;
         }
+        return units < 0?0:units;
     },
     stillToProduce() {
       return (
@@ -91,6 +91,9 @@ export default {
       return (
         +this.scheduleEvent.totalProduced + +this.newProduction.unitsProduced
       );
+    },
+    unitsDiff() {
+      return +this.scheduleEvent.unitsScheduled - +this.initScheduled;
     }
   },
   watch: {},
@@ -160,6 +163,7 @@ export default {
     }
   },
   mounted() {
+    this.initScheduled = this.scheduleEvent.unitsScheduled;
     this.getItemAvailability(this.scheduleEvent.saleItem.item.id);
     // this.getAvailableLines();
   }

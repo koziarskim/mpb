@@ -42,7 +42,7 @@ export default {
         { key: 'brand', sortable: false, label: 'Brand'},
         { key: 'category', sortable: false, label: 'Category'},
         { key: 'unitsOnStack', sortable: false, label: 'Stack'},
-        { key: 'totalItemScheduled', sortable: false, label: 'Sales'},
+        { key: 'totalItemScheduled', sortable: false, label: 'Sale/Schedule'},
         { key: 'action', sortable: false}
       ],
       items: []

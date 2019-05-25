@@ -44,20 +44,21 @@
           <label class="top-label">Units Scheduled:</label>
           <input class="form-control" type="tel" v-model="scheduleEvent.unitsScheduled">
         </b-col>
-        <b-col cols="4">
-          <label class="top-label">Available to schedule: {{unitsToSchedule}}</label>
-          <br>
-          <label class="top-label">Ready for production: {{unitsReadyProduction}}</label>
-          <br>
+        <b-col cols="4" v-if="itemAvailability.id">
           <label class="top-label">Total Sold: {{saleItem.units}}</label>
           <br>
           <label class="top-label">Total scheduled: {{unitsAlreadyScheduled}}</label>
           <br>
           <label class="top-label">Total produced: {{saleItem.unitsProduced}}</label>
+          <br>
+          <label class="top-label">Available to schedule: {{unitsToSchedule}}</label>
+          <br>
+          <label class="top-label">Ready for production: {{unitsReadyProduction}}</label>
+
           <!-- <br>
-          <label class="top-label">Total scheduled: {{itemAvailability.unitsScheduled}}</label> -->
+          <label class="top-label">Total scheduled: {{itemAvailability.unitsScheduled}}</label>-->
           <!-- <br>
-          <label class="top-label">Diff: {{unitsDiff}}</label> -->
+          <label class="top-label">Diff: {{unitsDiff}}</label>-->
         </b-col>
       </b-row>
     </b-modal>
@@ -91,26 +92,26 @@ export default {
     };
   },
   computed: {
-      unitsToSchedule(){
-          var units = +this.itemAvailability.unitsToSchedule;
-          if(units > this.saleItem.units){
-              units = this.saleItem.units;
-          }
-          return units - +this.saleItem.unitsScheduled - +this.unitsDiff;
-      },
-      unitsReadyProduction(){
-          var units = +this.itemAvailability.unitsToProduction - +this.unitsDiff;
-          if(units > this.unitsToSchedule){
-              units = this.unitsToSchedule;
-          }
-          return units;
-      },
-      unitsAlreadyScheduled(){
-          return +this.saleItem.unitsScheduled + +this.unitsDiff;
-      },
-      unitsDiff(){
-          return +this.scheduleEvent.unitsScheduled - +this.initScheduled;
+    unitsToSchedule() {
+      var units = +this.itemAvailability.unitsToSchedule;
+      if (units > this.saleItem.units) {
+        units = this.saleItem.units;
       }
+      return units - +this.saleItem.unitsScheduled - +this.unitsDiff;
+    },
+    unitsReadyProduction() {
+      var units = +this.itemAvailability.unitsToProduction - +this.unitsDiff;
+      if (units > this.unitsToSchedule) {
+        units = this.unitsToSchedule;
+      }
+      return units;
+    },
+    unitsAlreadyScheduled() {
+      return +this.saleItem.unitsScheduled + +this.unitsDiff;
+    },
+    unitsDiff() {
+      return +this.scheduleEvent.unitsScheduled - +this.initScheduled;
+    }
   },
   watch: {
     kvSale(new_value, old_value) {
@@ -136,11 +137,13 @@ export default {
         this.modalData.availableSales = [];
       }
       http
-        .get("/saleItem/sale/"+sale_id)
+        .get("/saleItem/sale/" + sale_id)
         .then(response => {
           this.availableSaleItems = response.data;
-          if(this.scheduleEvent.id){
-              this.kvSaleItem = response.data.find(kvDto=> kvDto.id == this.scheduleEvent.saleItem.id);
+          if (this.scheduleEvent.id) {
+            this.kvSaleItem = response.data.find(
+              kvDto => kvDto.id == this.scheduleEvent.saleItem.id
+            );
           }
         })
         .catch(e => {
@@ -152,8 +155,10 @@ export default {
         .get("/sale/available")
         .then(response => {
           this.availableSales = response.data;
-          if(this.scheduleEvent.id){
-              this.kvSale = response.data.find(kvDto=> kvDto.id == this.scheduleEvent.saleItem.sale.id);
+          if (this.scheduleEvent.id) {
+            this.kvSale = response.data.find(
+              kvDto => kvDto.id == this.scheduleEvent.saleItem.sale.id
+            );
           }
         })
         .catch(e => {
@@ -183,7 +188,7 @@ export default {
     },
     getSaleItem(saleItemId) {
       http
-        .get("/saleItem/"+saleItemId)
+        .get("/saleItem/" + saleItemId)
         .then(response => {
           this.saleItem = response.data;
           this.getItemAvailability(response.data.item.id);
@@ -194,7 +199,9 @@ export default {
     },
     getItemAvailability(itemId) {
       http
-        .get("/item/available/eta/"+this.schedule.date, {params: {itemIds: itemId}})
+        .get("/item/available/eta/" + this.schedule.date, {
+          params: { itemIds: itemId }
+        })
         .then(response => {
           this.itemAvailability = response.data[0];
         })
@@ -212,7 +219,7 @@ export default {
         alert("Make sure all fields are entered");
         return false;
       }
-      if (this.unitsToSchedule < 0){
+      if (this.unitsToSchedule < 0) {
         alert("Cannot schedule more that available to schedule");
         return false;
       }
@@ -254,8 +261,8 @@ export default {
     }
   },
   mounted() {
-    if(this.scheduleEvent.id){
-        this.initScheduled = this.scheduleEvent.unitsScheduled;
+    if (this.scheduleEvent.id) {
+      this.initScheduled = this.scheduleEvent.unitsScheduled;
     }
     this.getAvailableSales();
     this.getAvailableLines();
