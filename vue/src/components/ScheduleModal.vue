@@ -54,11 +54,10 @@
           <label class="top-label">Still ready to schedule: {{unitsReadyToSchedule}}</label>
           <br>
           <label class="top-label">Still ready for production: {{unitsReadyForProduction}}</label>
-
-          <!-- <br>
-          <label class="top-label">Total scheduled: {{itemAvailability.unitsScheduled}}</label>-->
           <br>
-          <label class="top-label">Diff: {{unitsDiff}}</label>
+          <label class="top-label">This produced: {{scheduleEvent.totalProduced}}</label>
+          <!-- <br>
+          <label class="top-label">Diff: {{unitsDiff}}</label> -->
         </b-col>
       </b-row>
     </b-modal>
