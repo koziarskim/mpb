@@ -21,7 +21,7 @@
             <input style="width:135px" class="form-control" type="time" v-model="newProduction.finishTime">
           </b-row>
           <b-row>
-            <span>Total Production Output: {{scheduleEvent.totalProduced}}</span>
+            <span>Total Production Output: {{totalProduced}}</span>
           </b-row>
           <b-row v-for="production in scheduleEvent.productions" :key="production.id">
             <span>Units: {{production.unitsProduced}} @ {{production.finishTime}}</span>
@@ -36,9 +36,7 @@
           <br>
           <label class="top-label">Scheduled for production: {{scheduleEvent.unitsScheduled}}</label>
           <br>
-          <label class="top-label">Still to produce: {{stillToProduce}}</label>
-          <br>
-          <label class="top-label">Ready for production: {{unitsToProduction}}</label>
+          <label class="top-label">Still ready for production: {{unitsReadyForProduction}}</label>
         </b-col>
       </b-row>
     </b-modal>
@@ -73,19 +71,8 @@ export default {
     };
   },
   computed: {
-    unitsToProduction(){
-        var units = this.itemAvailability.unitsToProduction - this.unitsDiff;
-        if(units > this.stillToProduce){
-            units = this.stillToProduce;
-        }
-        return units < 0?0:units;
-    },
-    stillToProduce() {
-      return (
-        +this.scheduleEvent.unitsScheduled -
-        +this.scheduleEvent.totalProduced -
-        +this.newProduction.unitsProduced
-      );
+    unitsReadyForProduction(){
+        return this.itemAvailability.unitsToProduction - +this.newProduction.unitsProduced;
     },
     totalProduced() {
       return (
@@ -116,7 +103,7 @@ export default {
         alert("Make sure all fields are entered");
         return false;
       }
-      if (this.unitsToProduction < 0) {
+      if (+this.itemAvailability.unitsToProduction - +this.totalProduced < 0) {
         alert("Units cannot exceed ready for production");
         return false;
       }

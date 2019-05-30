@@ -42,7 +42,7 @@ export default {
         { key: "unitsAwaiting", label: "Awaiting", sortable: false },
         { key: "unitsInTransit", label: "In Transit", sortable: false },
         { key: "unitsReceived", label: "Received", sortable: false },
-        { key: "status", label: "Status", sortable: false },
+        // { key: "status", label: "Status", sortable: false },
         { key: "action", label: "Action", sortable: false }
       ],
       expectedDate: ""

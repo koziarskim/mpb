@@ -47,18 +47,18 @@
         <b-col cols="4" v-if="itemAvailability.id">
           <label class="top-label">Total Sold: {{saleItem.units}}</label>
           <br>
-          <label class="top-label">Total scheduled: {{unitsAlreadyScheduled}}</label>
+          <label class="top-label">Total scheduled: {{unitsTotalScheduled}}</label>
           <br>
           <label class="top-label">Total produced: {{saleItem.unitsProduced}}</label>
           <br>
-          <label class="top-label">Available to schedule: {{unitsToSchedule}}</label>
+          <label class="top-label">Still ready to schedule: {{unitsReadyToSchedule}}</label>
           <br>
-          <label class="top-label">Ready for production: {{unitsReadyProduction}}</label>
+          <label class="top-label">Still ready for production: {{unitsReadyForProduction}}</label>
 
           <!-- <br>
           <label class="top-label">Total scheduled: {{itemAvailability.unitsScheduled}}</label>-->
-          <!-- <br>
-          <label class="top-label">Diff: {{unitsDiff}}</label>-->
+          <br>
+          <label class="top-label">Diff: {{unitsDiff}}</label>
         </b-col>
       </b-row>
     </b-modal>
@@ -92,21 +92,13 @@ export default {
     };
   },
   computed: {
-    unitsToSchedule() {
-      var units = +this.itemAvailability.unitsToSchedule;
-      if (units > this.saleItem.units) {
-        units = this.saleItem.units;
-      }
-      return units - +this.saleItem.unitsScheduled - +this.unitsDiff;
+    unitsReadyToSchedule() {
+       return +this.itemAvailability.unitsToSchedule - +this.unitsDiff;
     },
-    unitsReadyProduction() {
-      var units = +this.itemAvailability.unitsToProduction - +this.unitsDiff;
-      if (units > this.unitsToSchedule) {
-        units = this.unitsToSchedule;
-      }
-      return units;
+    unitsReadyForProduction() {
+      return +this.itemAvailability.unitsToProduction;
     },
-    unitsAlreadyScheduled() {
+    unitsTotalScheduled() {
       return +this.saleItem.unitsScheduled + +this.unitsDiff;
     },
     unitsDiff() {
@@ -219,12 +211,12 @@ export default {
         alert("Make sure all fields are entered");
         return false;
       }
-      if (this.unitsToSchedule < 0) {
-        alert("Cannot schedule more that available to schedule");
-        return false;
-      }
       if (this.scheduleEvent.unitsScheduled > this.saleItem.units) {
         alert("Units scheduled cannot exceed sold");
+        return false;
+      }
+      if (this.scheduleEvent.unitsScheduled > this.unitsReadyToSchedule) {
+        alert("Cannot schedule more that available to schedule");
         return false;
       }
       return true;

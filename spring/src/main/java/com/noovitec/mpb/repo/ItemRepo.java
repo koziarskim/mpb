@@ -34,10 +34,10 @@ public interface ItemRepo extends JpaRepository<Item, Long> {
 	group by tmp.i_id
 	 */
 	@Query(value = ""
-			+ "select tmp.i_id as id, tmp.us as unitsScheduled, (min(tmp.unitsToSchedule) - max(tmp.us)) as unitsToSchedule, (min(tmp.unitsToProduction) - max(tmp.us)) as unitsToProduction "
+			+ "select tmp.i_id as id, tmp.us as unitsScheduled, min(tmp.unitsToSchedule) as unitsToSchedule, min(tmp.unitsToProduction) as unitsToProduction "
 				+ "from (select i.id as i_id, i.units_scheduled as us, "
 				+ "((c.units_on_stack - c.units_reserved + sum(case when r.units is null then 0 else r.units end))/max(ic.units)) as unitsToSchedule, "
-				+ "((c.units_on_stack - c.units_reserved)/max(ic.units)) as unitsToProduction "
+				+ "((c.units_on_stack)/max(ic.units)) as unitsToProduction "
 				+ "from item i "
 				+ "join item_component ic on ic.item_id = i.id "
 				+ "join component c on c.id = ic.component_id "
