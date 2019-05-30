@@ -15,7 +15,7 @@
         <a style="padding-left: 15%" href="#" @click="newSchedule(s)">(+)</a>
       </div>
       <div class="n-cell" v-for="line in numberOfLines" :key="line">
-        <div :style="getColor(se)" v-for="se in getScheduleEventsByLine(line, s.scheduleEvents)" :key="se.id">
+        <div :style="getColor(se, s)" v-for="se in getScheduleEventsByLine(line, s.scheduleEvents)" :key="se.id">
           <a href="#" @click="editSchedule(s, se)">{{se.saleItem.item.number}}:</a>
           <a href="#" @click="editProduction(s, se)">{{se.saleItem.sale?se.saleItem.sale.customer.name:''}}</a>
         </div>
@@ -221,17 +221,18 @@ export default {
         .utc()
         .format("dddd");
     },
-    getColor(se) {
+    getColor(se, s) {
       //Green - production is done.
       if (se.unitsScheduled == se.totalProduced) {
         return "background-color: #c2f5c4";
       }
+      var item = s.items.find(i => i.id == se.saleItem.item.id)
       //Red - too much scheduled. Needs to reschedule.
-      if (se.unitsAvailable < 0) {
+      if (item.unitsToSchedule < se.unitsScheduled - se.totalProduced) {
         return "background-color: #f9b3ae";
       }
-      //Yellow - 
-      if (se.unitsReadyProduction < se.unitsScheduled) {
+      //Yellow - not ready for production.
+      if (item.unitsToProduction < se.unitsScheduled - se.totalProduced) {
         return "background-color: yellow";
       }
       return "";
