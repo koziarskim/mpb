@@ -103,7 +103,11 @@ export default {
         alert("Make sure all fields are entered");
         return false;
       }
-      if (+this.itemAvailability.unitsToProduction - +this.totalProduced < 0) {
+      if (this.totalProduced > this.scheduleEvent.unitsScheduled) {
+        alert("Units cannot exceed scheduled for production");
+        return false;
+      }
+      if (this.unitsReadyForProduction < 0) {
         alert("Units cannot exceed ready for production");
         return false;
       }

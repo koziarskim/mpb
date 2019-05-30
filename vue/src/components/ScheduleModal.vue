@@ -215,8 +215,8 @@ export default {
         alert("Units scheduled cannot exceed sold");
         return false;
       }
-      if (this.scheduleEvent.unitsScheduled > this.unitsReadyToSchedule) {
-        alert("Cannot schedule more that available to schedule");
+      if (this.unitsReadyToSchedule < 0) {
+        alert("Cannot schedule more that ready to schedule");
         return false;
       }
       return true;
