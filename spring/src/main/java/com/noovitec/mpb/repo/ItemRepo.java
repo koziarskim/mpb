@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.noovitec.mpb.dto.ItemAvailabilityDto;
 import com.noovitec.mpb.dto.projection.ItemAvailabilityProjection;
 import com.noovitec.mpb.entity.Item;
 
@@ -36,7 +37,7 @@ public interface ItemRepo extends JpaRepository<Item, Long> {
 	@Query(value = ""
 			+ "select tmp.i_id as id, tmp.us as unitsScheduled, min(tmp.unitsToSchedule) as unitsToSchedule, min(tmp.unitsToProduction) as unitsToProduction "
 				+ "from (select i.id as i_id, i.units_scheduled as us, "
-				+ "((c.units_on_stack - c.units_reserved + sum(case when r.units is null then 0 else r.units end))/max(ic.units)) as unitsToSchedule, "
+				+ "((c.units_on_stack + sum(case when r.units is null then 0 else r.units end))/max(ic.units)) as unitsToSchedule, "
 				+ "((c.units_on_stack)/max(ic.units)) as unitsToProduction "
 				+ "from item i "
 				+ "join item_component ic on ic.item_id = i.id "
@@ -55,5 +56,12 @@ public interface ItemRepo extends JpaRepository<Item, Long> {
 			+ "join si.scheduleEvents se "
 			+ "where se.schedule.id = :schedule_id")
 	List<Long> getItemsScheduled(@Param("schedule_id") Long schedule_id);
+	
+	@Query(value = "select sum(se.unitsScheduled) from ScheduleEvent se "
+			+ "where se.schedule.date <= :date "
+			+ "and se.saleItem.item.id = :item_id "
+//			+ "and se.eventCompleted = false "
+			+ "group by se.saleItem.item.id")
+	Long getItemsScheduledToDate(@Param("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date, @Param("item_id") Long item_id);
 	
 }

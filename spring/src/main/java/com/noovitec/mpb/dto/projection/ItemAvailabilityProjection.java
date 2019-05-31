@@ -6,4 +6,6 @@ public interface ItemAvailabilityProjection {
 	Long getUnitsScheduled();
 	Long getUnitsToSchedule();
 	Long getUnitsToProduction();
+	
+	void setUnitsScheduled(Long units);
 }

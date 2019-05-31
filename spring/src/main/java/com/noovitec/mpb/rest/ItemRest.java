@@ -35,6 +35,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.noovitec.mpb.dto.ItemAvailabilityDto;
 import com.noovitec.mpb.dto.ItemDto;
 import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.dto.projection.ItemAvailabilityProjection;
@@ -122,13 +123,26 @@ class ItemRest {
 	}
 
 	@GetMapping("/item/available/eta/{date}")
-	Collection<ItemAvailabilityProjection> getAvailableItems(@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
+	Collection<ItemAvailabilityDto> getAvailableItems(@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
 			@RequestParam(name = "itemIds", required = false) List<Long> itemIds) {
 		if (itemIds == null) {
 			itemIds = new ArrayList<Long>();
 			itemIds.add(0L);
 		}
-		return itemRepo.getItemsAvailabilityFiltered(date, itemIds);
+		List<ItemAvailabilityDto> dtos = new ArrayList<ItemAvailabilityDto>();
+		for(ItemAvailabilityProjection iap : itemRepo.getItemsAvailabilityFiltered(date, itemIds)) {
+			ItemAvailabilityDto dto = new ItemAvailabilityDto();
+			dto.setId(iap.getId());
+			dto.setUnitsToProduction(iap.getUnitsToProduction());
+			Long itemUnits = itemRepo.getItemsScheduledToDate(date, iap.getId());
+			if(itemUnits==null) {
+				itemUnits = 0L;
+			}
+			dto.setUnitsScheduled(itemUnits);
+			dto.setUnitsToSchedule(iap.getUnitsToSchedule() - itemUnits);
+			dtos.add(dto);
+		}
+		return dtos;
 	}
 
 	@GetMapping("/item/{item_id}/eta/{date}")

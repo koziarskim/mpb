@@ -27,8 +27,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.noovitec.mpb.dto.ItemAvailabilityDto;
 import com.noovitec.mpb.dto.ItemDto;
 import com.noovitec.mpb.dto.KeyValueDto;
+import com.noovitec.mpb.dto.projection.ItemAvailabilityProjection;
 import com.noovitec.mpb.entity.Item;
 import com.noovitec.mpb.entity.ItemComponent;
 import com.noovitec.mpb.entity.Schedule;
@@ -78,13 +80,20 @@ class ScheduleRest {
 				s.setDate(d);
 			}
 			// Get all items that are available to schedule based on receiving.
-//			s.setItems(this.getByEta(java.sql.Date.valueOf(s.getDate()), null, false));
 			List<Long> items = new ArrayList<Long>();
 			if(s.getId()!=null) {
 				items.addAll(itemRepo.getItemsScheduled(s.getId()));
 			}
 			if(!items.isEmpty()) {
-				s.setItems(itemRepo.getItemsAvailabilityFiltered(s.getDate(), items));
+				for(ItemAvailabilityProjection iap : itemRepo.getItemsAvailabilityFiltered(s.getDate(), items)) {
+					ItemAvailabilityDto dto = new ItemAvailabilityDto();
+					dto.setId(iap.getId());
+					dto.setUnitsToProduction(iap.getUnitsToProduction());
+					dto.setUnitsToSchedule(iap.getUnitsToSchedule());
+					Long itemUnits = itemRepo.getItemsScheduledToDate(s.getDate(), iap.getId());
+					dto.setUnitsScheduled(itemUnits==null?0L:itemUnits);
+					s.getItems().add(dto);
+				}
 			}
 			result.add(s);
 		}

@@ -62,7 +62,7 @@ public class ScheduleEvent {
 
 	// Transient
 	@Transient
-	Long totalProduced;
+	Long totalProduced = 0L;
 	@Transient
 	int unitsShort = 0;
 	@Transient

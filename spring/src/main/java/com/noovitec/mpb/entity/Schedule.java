@@ -18,6 +18,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.noovitec.mpb.dto.ItemAvailabilityDto;
 import com.noovitec.mpb.dto.ItemDto;
 import com.noovitec.mpb.dto.projection.ItemAvailabilityProjection;
 
@@ -46,5 +47,5 @@ public class Schedule {
 	private Collection<ScheduleEvent> scheduleEvents = new HashSet<ScheduleEvent>();
 	
 	@Transient
-	private Collection<ItemAvailabilityProjection> items = new HashSet<ItemAvailabilityProjection>();
+	private Collection<ItemAvailabilityDto> items = new HashSet<ItemAvailabilityDto>();
 }
