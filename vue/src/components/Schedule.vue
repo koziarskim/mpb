@@ -229,11 +229,11 @@ export default {
       var item = s.items.find(i => i.id == se.saleItem.item.id)
       //Red - too much scheduled. Needs to reschedule.
       if (item.unitsToSchedule < se.unitsScheduled - se.totalProduced) {
-        return "background-color: #f9b3ae";
+        return "background-color: yellow";
       }
       //Yellow - not ready for production.
       if (item.unitsToProduction < se.unitsScheduled - se.totalProduced) {
-        return "background-color: yellow";
+        return "background-color: #f9b3ae";
       }
       return "";
     }
