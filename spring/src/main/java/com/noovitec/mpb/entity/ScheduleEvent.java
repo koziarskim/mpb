@@ -65,6 +65,8 @@ public class ScheduleEvent {
 	Long totalProduced;
 	@Transient
 	int unitsShort = 0;
+	@Transient
+	boolean eventCompleted = false;
 
 	public Long getTotalProduced() {
 		Long units = 0L;
@@ -72,5 +74,9 @@ public class ScheduleEvent {
 			units += production.getUnitsProduced()==null?0:production.getUnitsProduced();
 		}
 		return units;
+	}
+	
+	public boolean isEventCompleted() {
+		return this.getTotalProduced() >= this.getUnitsScheduled();
 	}
 }

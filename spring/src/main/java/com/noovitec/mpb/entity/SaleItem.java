@@ -65,7 +65,7 @@ public class SaleItem {
 	@Transient
 	private Long unitsProduced = 0L; //This should be updated on Production save/post (Production.unitsProduced)
 	@Transient
-	boolean produced = false;
+	boolean itemCompleted = false;
 	
 	public String getLabel() {
 		if(this.getSale()!=null) {
@@ -92,11 +92,8 @@ public class SaleItem {
 		return this.unitsProduced;
 	}
 	
-	public boolean isProduced() {
-		if(this.getUnitsScheduled() <= this.getUnitsProduced()) {
-			this.produced = true;
-		}
-		return this.produced;
+	public boolean isItemProduced() {
+		return this.getUnitsScheduled() <= this.getUnitsProduced();
 	}
 	
 }

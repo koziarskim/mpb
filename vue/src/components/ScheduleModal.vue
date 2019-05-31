@@ -43,6 +43,7 @@
         <b-col cols="4">
           <label class="top-label">Units Scheduled:</label>
           <input class="form-control" type="tel" v-model="scheduleEvent.unitsScheduled">
+          <label class="top-label">This produced: {{scheduleEvent.totalProduced}}</label>
         </b-col>
         <b-col cols="4" v-if="itemAvailability.id">
           <label class="top-label">Total Sold: {{saleItem.units}}</label>
@@ -54,10 +55,15 @@
           <label class="top-label">Still ready to schedule: {{unitsReadyToSchedule}}</label>
           <br>
           <label class="top-label">Still ready for production: {{unitsReadyForProduction}}</label>
-          <br>
-          <label class="top-label">This produced: {{scheduleEvent.totalProduced}}</label>
           <!-- <br>
-          <label class="top-label">Diff: {{unitsDiff}}</label> -->
+          <label class="top-label">Diff: {{unitsDiff}}</label>-->
+        </b-col>
+      </b-row>
+      <b-row>
+        <b-col>
+          <label class="top-label" v-if="scheduleEvent.eventCompleted">Production done for this schedule. There might be other sales/items in progress.</label>
+          <label class="top-label" v-if="itemAvailability.unitsToSchedule < scheduleEvent.unitsScheduled - scheduleEvent.totalProduced">Scheduled more that components in stock + transit.</label>
+          <label class="top-label" v-else-if="itemAvailability.unitsToProduction < scheduleEvent.unitsScheduled - scheduleEvent.totalProduced">Scheduled more that could produce. Not enough components in stock.</label>
         </b-col>
       </b-row>
     </b-modal>
@@ -92,7 +98,7 @@ export default {
   },
   computed: {
     unitsReadyToSchedule() {
-       return +this.itemAvailability.unitsToSchedule - +this.unitsDiff;
+      return +this.itemAvailability.unitsToSchedule - +this.unitsDiff;
     },
     unitsReadyForProduction() {
       return +this.itemAvailability.unitsToProduction;
