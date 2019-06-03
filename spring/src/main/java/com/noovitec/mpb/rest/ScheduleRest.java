@@ -89,9 +89,12 @@ class ScheduleRest {
 					ItemAvailabilityDto dto = new ItemAvailabilityDto();
 					dto.setId(iap.getId());
 					dto.setUnitsToProduction(iap.getUnitsToProduction());
-					dto.setUnitsToSchedule(iap.getUnitsToSchedule());
 					Long itemUnits = itemRepo.getItemsScheduledToDate(s.getDate(), iap.getId());
-					dto.setUnitsScheduled(itemUnits==null?0L:itemUnits);
+					if(itemUnits==null) {
+						itemUnits = 0L;
+					}
+					dto.setUnitsScheduled(itemUnits);
+					dto.setUnitsToSchedule(iap.getUnitsToSchedule() - itemUnits);
 					s.getItems().add(dto);
 				}
 			}
