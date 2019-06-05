@@ -169,7 +169,7 @@ const router = new Router({
       component: AccessDenied
     },
     {
-      path: "/ShipmentEdit",
+      path: "/ShipmentEdit/:shipment_id?",
       name: "ShipmentEdit",
       component: ShipmentEdit
     },

@@ -39,6 +39,12 @@ public class Shipment {
 	@UpdateTimestamp
 	private LocalDateTime updated;
 	private String number;
+	
+	@JsonIgnoreProperties(value={ "sales" }, allowSetters=true)
+	@ManyToOne()
+	@JoinColumn(name = "customer_id", referencedColumnName = "id")
+	private Customer customer;
+
 
 	@JsonIgnoreProperties(value = { "shipment" }, allowSetters = true)
 	@OneToMany()

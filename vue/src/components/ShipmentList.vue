@@ -1,22 +1,22 @@
 <template>
     <b-container fluid>
         <div class="d-flex justify-content-between align-items-center">
-            <span style="text-align: left; font-size: 18px; font-weight: bold">Suppliers</span>
+            <span style="text-align: left; font-size: 18px; font-weight: bold">Shipments</span>
             <div style="text-align: right;">
-                <b-button type="submit" variant="primary" @click="goToSupplier('')">New Supplier</b-button>
+                <b-button type="submit" variant="primary" @click="goToShipment('')">New Shipment</b-button>
             </div>
         </div>
-        <div v-if="suppliers.length==0">Not found any data...</div>
-        <b-table v-if="suppliers.length>0"
+        <div v-if="shipments.length==0">Not found any data...</div>
+        <b-table v-if="shipments.length>0"
                 :sort-by.sync="sortBy"
                 :sort-desc.sync="sortDesc"
-                :items="suppliers"
+                :items="shipments"
                 :fields="fields">
-                <template slot="account" slot-scope="row">
-                    <b-button size="sm" @click.stop="goToSupplier(row.item.id)" variant="link">{{row.item.account}}</b-button>
+                <template slot="number" slot-scope="row">
+                    <b-button size="sm" @click.stop="goToShipment(row.item.id)" variant="link">{{row.item.number}}</b-button>
                 </template>
                 <template slot="action" slot-scope="row">
-                    <b-button size="sm" @click.stop="deleteSupplier(row.item.id)">x</b-button>
+                    <b-button size="sm" @click.stop="deleteShipment(row.item.id)">x</b-button>
                 </template>
         </b-table>
     </b-container>
@@ -28,47 +28,45 @@ import router from "../router";
 export default {
   data() {
     return {
-      sortBy: "account",
+      sortBy: "number",
       sortDesc: false,
       fields: [
-        { key: "account", label: "Account", sortable: false },
-        { key: "name", label: "Name", sortable: false },
-        { key: "city", label: "City", sortable: false },
-        { key: "phone", label: "Phone", sortable: false },
+        { key: "number", label: "Account", sortable: false },
+        { key: "customer.name", label: "Customer", sortable: false },
         { key: "action", label: "Action", sortable: false }
       ],
-      suppliers: []
+      shipments: []
     };
   },
   methods: {
-    getSuppliers() {
+    getShipments() {
       http
-        .get("/supplier")
+        .get("/shipment")
         .then(response => {
-          this.suppliers = response.data;
+          this.shipments = response.data;
         })
         .catch(e => {
           console.log("API error: " + e);
         });
     },
-    deleteSupplier(id) {
+    deleteShipment(id) {
       http
-        .delete("/supplier/" + id)
+        .delete("/shipment/" + id)
         .then(() => {
-          this.getSuppliers();
+          this.getShipments();
         })
         .catch(e => {
           console.log("API Error: " + e);
         });
     },
-    goToSupplier(id) {
+    goToShipment(id) {
       if (id) {
-        router.push("/supplierEdit/" + id);
+        router.push("/shipmentEdit/" + id);
       } else {
         http
-          .post("/supplier")
+          .post("/shipment")
           .then(response => {
-            router.push("/supplierEdit/" + response.data.id);
+            router.push("/shipmentEdit/" + response.data.id);
           })
           .catch(e => {
             console.log("API Error: " + e);
@@ -77,7 +75,7 @@ export default {
     }
   },
   mounted() {
-    this.getSuppliers();
+    this.getShipments();
   }
 };
 </script>
