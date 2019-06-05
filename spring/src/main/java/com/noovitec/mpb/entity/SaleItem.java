@@ -58,6 +58,11 @@ public class SaleItem {
 	@JoinColumn(name = "sale_item_id")
 	private Collection<ScheduleEvent> scheduleEvents = new HashSet<ScheduleEvent>();
 	
+	@JsonIgnoreProperties(value = { "shipment" }, allowSetters = true)
+	@OneToMany()
+	@JoinColumn(name = "shipment_id")
+	private Collection<ShipmentItem> shipmentItems = new HashSet<ShipmentItem>();
+	
 	@Transient
 	private String label;
 	@Transient
