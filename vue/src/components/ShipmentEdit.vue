@@ -4,6 +4,8 @@
       <b-col cols="2">
         <span style="text-align: left; font-size: 18px; font-weight: bold">Shipment: {{shipment.number}}</span>
       </b-col>
+      </b-row>
+      <b-row>
       <b-col cols="3">
         <b-select option-value="id" option-text="name" :list="availableCustomers" v-model="customer"></b-select>
       </b-col>
@@ -13,7 +15,11 @@
       <b-col cols="3">
         <b-select option-value="id" option-text="label" :list="availableSaleItems" v-model="saleItem"></b-select>
       </b-col>
+      <b-col cols="1">
+        <b-button variant="link" @click="addItem()">(+)</b-button>
+      </b-col>
     </b-row>
+    <br/>
     <b-row>
       <b-col>
         <label class="top-label">Sale Items</label>
@@ -90,6 +96,16 @@ export default {
           console.log("API error: " + e);
         });
     },
+    saveShipmentItem(shipmentItem) {
+      return http
+        .post("/shipmentItem", shipmentItem)
+        .then(response => {
+            return Promise.resolve();
+        })
+        .catch(e => {
+          console.log("API error: " + e);
+        });
+    },
     saveAndClose() {
       this.saveShipment().then(r => {
         router.push("/purchaseList");
@@ -115,6 +131,15 @@ export default {
           console.log("API error: " + e);
         });
     },
+    addItem(){
+        var shipmentItem = {
+            shipment: {id: this.shipment.id},
+            saleItem: {id: this.saleItem.id}
+        }
+        this.saveShipmentItem(shipmentItem).then(r=>{
+            this.getShipment(this.shipment.id);
+        })
+    }
   },
   mounted() {
     var id = this.$route.params.shipment_id;

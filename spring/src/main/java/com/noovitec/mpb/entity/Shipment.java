@@ -47,7 +47,7 @@ public class Shipment {
 
 
 	@JsonIgnoreProperties(value = { "shipment" }, allowSetters = true)
-	@OneToMany()
+	@OneToMany(cascade=CascadeType.ALL, orphanRemoval=true)
 	@JoinColumn(name = "shipment_id")
 	private Collection<ShipmentItem> shipmentItems = new HashSet<ShipmentItem>();
 

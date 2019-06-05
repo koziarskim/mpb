@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.noovitec.mpb.entity.SaleItem;
 import com.noovitec.mpb.entity.Shipment;
+import com.noovitec.mpb.entity.ShipmentItem;
 import com.noovitec.mpb.repo.ShipmentRepo;
 
 @RestController
