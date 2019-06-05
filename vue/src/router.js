@@ -22,10 +22,11 @@ import ReceivingList from "./components/ReceivingList";
 import ReceivingEdit from "./components/ReceivingEdit";
 import Users from "./components/Users";
 import Login from "./components/Login";
-import Production from "./components/Production";
 import Schedule from "./components/Schedule";
 import ItemSaleList from "./components/ItemSaleList";
 import AccessDenied from "./components/AccessDenied";
+import ShipmentEdit from "./components/ShipmentEdit";
+import ShipmentList from "./components/ShipmentList";
 
 Vue.use(Router);
 
@@ -158,11 +159,6 @@ const router = new Router({
       component: Login
     },
     {
-      path: "/Production",
-      name: "Production",
-      component: Production
-    },
-    {
       path: "/Schedule",
       name: "Schedule",
       component: Schedule
@@ -171,7 +167,17 @@ const router = new Router({
       path: "/AccessDenied",
       name: "AccessDenied",
       component: AccessDenied
-    }
+    },
+    {
+      path: "/ShipmentEdit",
+      name: "ShipmentEdit",
+      component: ShipmentEdit
+    },
+    {
+      path: "/ShipmentList",
+      name: "ShipmentList",
+      component: ShipmentList
+    },
   ]
 });
 
