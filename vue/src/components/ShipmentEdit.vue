@@ -63,7 +63,10 @@ export default {
   watch: {
     customer(new_value, old_value) {
       if (new_value.id != old_value.id) {
-        this.shipment.customer = new_value;
+          if(this.shipment.customer == null || this.shipment.customer.id!=new_value.id){
+            this.shipment.customer = new_value;
+            this.saveShipment();
+          }
         this.getAvailableSales();
       }
     },
@@ -82,6 +85,9 @@ export default {
         .get("/shipment/" + id)
         .then(response => {
           this.shipment = response.data;
+          if(response.data.customer){
+              this.customer = response.data.customer;
+          }
         })
         .catch(e => {
           console.log("API error: " + e);

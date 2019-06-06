@@ -49,6 +49,17 @@ class ShipmentRest {
 			shipment = new Shipment();
 		}
 		Shipment result = shipmentRepo.save(shipment);
+		if(result.getNumber()==null) {
+			String number = result.getId().toString();
+			if(number.length()==1) {
+				number = "00"+number;
+			}
+			if(number.length() == 2) {
+				number = "0"+number;
+			}
+			result.setNumber(number);
+			shipmentRepo.save(result);			
+		}
 		return ResponseEntity.ok().body(result);
 	}
 
