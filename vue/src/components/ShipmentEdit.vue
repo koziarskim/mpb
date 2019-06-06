@@ -84,6 +84,12 @@
           <template slot="unitsShipped" slot-scope="row">
             <span>{{(+row.item.saleItem.unitsShipped - +row.item.existingUnits + +row.item.units)}}</span>
           </template>
+          <template slot="cases" slot-scope="row">
+            <span>{{row.item.cases = Math.ceil(+row.item.units / +row.item.saleItem.item.casePack)}}</span>
+          </template>
+          <template slot="pallets" slot-scope="row">
+            <span>{{row.item.pallets = Math.ceil(+row.item.cases / (+row.item.saleItem.item.ti * +row.item.saleItem.item.hi))}}</span>
+          </template>
           <template slot="action" slot-scope="row">
             <b-button size="sm" @click.stop="deleteItem(row.item.id)">x</b-button>
           </template>
@@ -120,6 +126,9 @@ export default {
         { key: "saleItem.units", label: "Sold", sortable: false },
         { key: "unitsShipped", label: "Shipped", sortable: false },
         { key: "units", label: "Units", sortable: false },
+        { key: "saleItem.item.casePack", label: "Case Pack", sortable: false },
+        { key: "cases", label: "Cases", sortable: false },
+        { key: "pallets", label: "Pallets", sortable: false },
         { key: "action", label: "Action", sortable: false }
       ]
     };
