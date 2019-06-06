@@ -1,11 +1,21 @@
 <template>
   <b-container fluid>
-    <div style="border: 0px" class="d-flex justify-content-between align-items-center">
-      <h4 style="text-align: left;">Shipment: {{shipment.number}}</h4>
-      <div style="text-align: right;">
+    <b-row style="padding-bottom: 4px;">
+      <b-col cols="2">
+        <span style="text-align: left; font-size: 18px; font-weight: bold">Shipment: {{shipment.number}}</span>
+      </b-col>
+      <b-col cols="2">
+        <input class="form-control" type="date" :value="formatDate(shipment.date)">
+      </b-col>
+      <b-col cols="2">
+        <input class="form-control" type="tel" v-model="shipment.bolNumber" placeholder="BOL #">
+      </b-col>
+      <b-col>
+        <div style="text-align: right;">
         <b-button type="reset" variant="success" @click="saveAndClose">Save & Close</b-button>
-      </div>
-    </div>
+        </div>
+      </b-col>
+    </b-row>
     <b-row>
       <b-col cols="3">
         <label class="top-label">Customer:</label>
@@ -26,6 +36,32 @@
         <label v-if="customer.billingAddress">{{customer.billingAddress.street}}</label><br/>
         <label v-if="customer.billingAddress">{{customer.billingAddress.city}}, {{customer.billingAddress.state}} {{customer.billingAddress.zip}}</label>
       </b-col>
+    </b-row>
+    <b-row>
+        <b-col cols=2>
+            <label class="top-label">P.O. No.:</label><br/>
+            <input class="form-control" type="tel" v-model="shipment.poNumber">
+        </b-col>
+        <b-col cols=2>
+            <label class="top-label">Ship Date:</label><br/>
+            <input class="form-control" type="date" v-model="shipment.shipDate">
+        </b-col>
+        <b-col cols=2>
+            <label class="top-label">Via:</label><br/>
+            <input class="form-control" type="tel" v-model="shipment.via">
+        </b-col>
+        <b-col cols=2>
+            <label class="top-label">FOB:</label><br/>
+            <input class="form-control" type="tel" v-model="shipment.fob">
+        </b-col>
+        <b-col cols=2>
+            <label class="top-label">Freight Class</label><br/>
+            <input class="form-control" type="tel" v-model="shipment.freight">
+        </b-col>
+        <b-col cols=2>
+            <label class="top-label">CS No.:</label><br/>
+            <input class="form-control" type="tel" v-model="shipment.csNumber">
+        </b-col>
     </b-row>
     <b-row>
       <b-col cols="3">
@@ -203,7 +239,10 @@ export default {
         .catch(e => {
           console.log("API error: " + e);
         });
-    }
+    },
+    formatDate(date){
+        return date ? moment(date).utc().format("YYYY-MM-DD"): "";
+    },
   },
   mounted() {
     var id = this.$route.params.shipment_id;
