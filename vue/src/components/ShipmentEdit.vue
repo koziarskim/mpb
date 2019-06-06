@@ -24,6 +24,9 @@
       <b-col>
         <label class="top-label">Sale Items</label>
         <b-table v-if="shipment.shipmentItems.length>0" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="shipment.shipmentItems" :fields="columns">
+          <template slot="units" slot-scope="row">
+            <input class="form-control" style="width:100px" type="tel" :disabled="locked" v-model="row.item.units">
+          </template>
           <template slot="action" slot-scope="row">
             <b-button size="sm" @click.stop="deleteItem(row.item.id)">x</b-button>
           </template>
@@ -41,6 +44,7 @@ import moment from "moment";
 export default {
   data() {
     return {
+      locked: false,
       shipment: { shipmentItems: [] },
       availableCustomers: [],
       customer: {},
@@ -53,7 +57,8 @@ export default {
       columns: [
         { key: "id", label: "#", sortable: false },
         { key: "saleItem.item.number", label: "Item", sortable: false },
-        { key: "sale", label: "Sale", sortable: false },
+        { key: "saleItem.sale.number", label: "Sale", sortable: false },
+        { key: "saleItem.units", label: "Units Sold", sortable: false },
         { key: "units", label: "Units", sortable: false },
         { key: "action", label: "Action", sortable: false }
       ]
@@ -159,7 +164,7 @@ export default {
         .catch(e => {
           console.log("API error: " + e);
         });
-    }
+    },
   },
   mounted() {
     var id = this.$route.params.shipment_id;

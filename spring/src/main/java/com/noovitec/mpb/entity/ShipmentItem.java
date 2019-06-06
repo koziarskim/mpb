@@ -38,7 +38,7 @@ public class ShipmentItem {
 	private LocalDateTime created;
 	@UpdateTimestamp
 	private LocalDateTime updated;
-	private Long units;
+	private Long units = 0L;
 
 	@JsonIgnoreProperties(value = { "shipmentItems" }, allowSetters = true)
 	@ManyToOne()
