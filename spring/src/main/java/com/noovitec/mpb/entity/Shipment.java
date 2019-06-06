@@ -1,5 +1,6 @@
 package com.noovitec.mpb.entity;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
@@ -39,6 +40,13 @@ public class Shipment {
 	@UpdateTimestamp
 	private LocalDateTime updated;
 	private String number;
+	private LocalDate date;
+	private String poNumber;
+	private LocalDate shipDate;
+	private String via;
+	private String fob;
+	private Long freight;
+	private String csNumber;
 	
 	@JsonIgnoreProperties(value={ "sales" }, allowSetters=true)
 	@ManyToOne()

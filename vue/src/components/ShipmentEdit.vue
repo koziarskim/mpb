@@ -5,10 +5,7 @@
         <span style="text-align: left; font-size: 18px; font-weight: bold">Shipment: {{shipment.number}}</span>
       </b-col>
       <b-col cols="2">
-        <input class="form-control" type="date" :value="formatDate(shipment.date)">
-      </b-col>
-      <b-col cols="2">
-        <input class="form-control" type="tel" v-model="shipment.bolNumber" placeholder="BOL #">
+        <input class="form-control" type="date" v-model="shipment.date">
       </b-col>
       <b-col>
         <div style="text-align: right;">
@@ -73,7 +70,7 @@
         <b-select option-value="id" option-text="label" :list="availableSaleItems" v-model="saleItem"></b-select>
       </b-col>
       <b-col cols="1">
-        <b-button style="padding-top: 20px" variant="link" @click="addItem()">(+)</b-button>
+        <b-button style="padding-top: 30px; padding-left: 0px" variant="link" @click="addItem()">(+)</b-button>
       </b-col>
     </b-row>
     <br>
@@ -217,18 +214,20 @@ export default {
         });
     },
     addItem() {
-      var shipmentItem = {
-        shipment: { id: this.shipment.id },
-        saleItem: { id: this.saleItem.id }
-      };
-      http
-        .post("/shipmentItem", shipmentItem)
-        .then(response => {
-          this.getShipment(this.shipment.id);
-        })
-        .catch(e => {
-          console.log("API error: " + e);
-        });
+      this.saveShipment().then(r=>{
+        var shipmentItem = {
+            shipment: { id: this.shipment.id },
+            saleItem: { id: this.saleItem.id }
+        };
+        http
+            .post("/shipmentItem", shipmentItem)
+            .then(response => {
+            this.getShipment(this.shipment.id);
+            })
+            .catch(e => {
+            console.log("API error: " + e);
+            });
+      })
     },
     deleteItem(shipmentItemId) {
       http
