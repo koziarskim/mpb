@@ -45,6 +45,9 @@ public class Shipment {
 	@JoinColumn(name = "customer_id", referencedColumnName = "id")
 	private Customer customer;
 
+	@ManyToOne()
+	@JoinColumn(name = "address_id", referencedColumnName = "id")
+	private Address shippingAddress;
 
 	@JsonIgnoreProperties(value = { "shipment" }, allowSetters = true)
 	@OneToMany(cascade=CascadeType.ALL, orphanRemoval=true)

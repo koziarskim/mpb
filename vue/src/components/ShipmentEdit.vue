@@ -1,24 +1,43 @@
 <template>
   <b-container fluid>
-      <div style="border: 0px" class="d-flex justify-content-between align-items-center">
-            <h4 style="text-align: left;">Shipment: {{shipment.number}}</h4>
-            <div style="text-align: right;">
-                <b-button type="reset" variant="success" @click="saveAndClose">Save & Close</b-button>
-            </div>
-        </div>
+    <div style="border: 0px" class="d-flex justify-content-between align-items-center">
+      <h4 style="text-align: left;">Shipment: {{shipment.number}}</h4>
+      <div style="text-align: right;">
+        <b-button type="reset" variant="success" @click="saveAndClose">Save & Close</b-button>
+      </div>
+    </div>
     <b-row>
       <b-col cols="3">
+        <label class="top-label">Customer:</label>
         <b-select v-if="shipment.shipmentItems.length==0" option-value="id" option-text="name" :list="availableCustomers" v-model="customer"></b-select>
-        <span v-if="shipment.shipmentItems.length>0">{{customer.name}}</span>
+        <br/><span v-if="shipment.shipmentItems.length>0">{{customer.name}}</span>
       </b-col>
       <b-col cols="3">
+        <label class="top-label">Distribution:</label>
+        <b-select option-value="id" option-text="label" :list="shippingAddresses" v-model="shippingAddress"></b-select>
+      </b-col>
+      <b-col cols="3">
+        <label class="top-label">Ship To:</label><br/>
+        <label>{{shippingAddress.street}}</label><br/>
+        <label>{{shippingAddress.city}}, {{shippingAddress.state}} {{shippingAddress.zip}}</label>
+      </b-col>
+      <b-col cols="3">
+        <label class="top-label">Bill To:</label><br/>
+        <label v-if="customer.billingAddress">{{customer.billingAddress.street}}</label><br/>
+        <label v-if="customer.billingAddress">{{customer.billingAddress.city}}, {{customer.billingAddress.state}} {{customer.billingAddress.zip}}</label>
+      </b-col>
+    </b-row>
+    <b-row>
+      <b-col cols="3">
+        <label class="top-label">Sale:</label>
         <b-select option-value="id" option-text="number" :list="availableSales" v-model="sale"></b-select>
       </b-col>
-      <b-col cols="3">
+      <b-col cols="2">
+        <label class="top-label">Item:</label>
         <b-select option-value="id" option-text="label" :list="availableSaleItems" v-model="saleItem"></b-select>
       </b-col>
       <b-col cols="1">
-        <b-button variant="link" @click="addItem()">(+)</b-button>
+        <b-button style="padding-top: 20px" variant="link" @click="addItem()">(+)</b-button>
       </b-col>
     </b-row>
     <br>
@@ -30,9 +49,8 @@
             <input class="form-control" style="width:100px" type="tel" :disabled="locked" v-model="row.item.units">
           </template>
           <template slot="unitsShipped" slot-scope="row">
-          <span>{{(+row.item.saleItem.unitsShipped - +row.item.existingUnits + +row.item.units)}}</span>
+            <span>{{(+row.item.saleItem.unitsShipped - +row.item.existingUnits + +row.item.units)}}</span>
           </template>
-
           <template slot="action" slot-scope="row">
             <b-button size="sm" @click.stop="deleteItem(row.item.id)">x</b-button>
           </template>
@@ -54,6 +72,8 @@ export default {
       shipment: { shipmentItems: [] },
       availableCustomers: [],
       customer: {},
+      shippingAddresses: [],
+      shippingAddress: {},
       availableSales: [],
       sale: {},
       availableSaleItems: [],
@@ -74,13 +94,16 @@ export default {
   computed: {},
   watch: {
     customer(new_value, old_value) {
-      if (new_value.id != old_value.id) {
-          if(this.shipment.customer == null || this.shipment.customer.id!=new_value.id){
-            this.shipment.customer = new_value;
-            this.saveShipment();
-          }
-        this.getAvailableSales();
+      if (new_value.id == old_value.id) {
+        return;
       }
+      this.shippingAddresses = new_value.addresses;
+      if (this.shipment.customer == null || this.shipment.customer.id != new_value.id) {
+        this.shippingAddress = {};
+        this.shipment.customer = new_value;
+        this.saveShipment();
+      }
+      this.getAvailableSales();
     },
     sale(new_value, old_value) {
       if (new_value.id != old_value.id) {
@@ -96,20 +119,25 @@ export default {
       http
         .get("/shipment/" + id)
         .then(response => {
-          response.data.shipmentItems.forEach(si=>{
-              si.existingUnits = si.units;
-          })
+          response.data.shipmentItems.forEach(si => {
+            si.existingUnits = si.units;
+          });
           this.shipment = response.data;
-          if(response.data.customer){
-              this.customer = response.data.customer;
+          if (response.data.customer) {
+            this.customer = response.data.customer;
           }
-          
+          if(response.data.shippingAddress){
+            this.shippingAddress = response.data.shippingAddress;
+          }
         })
         .catch(e => {
           console.log("API error: " + e);
         });
     },
     saveShipment() {
+      if(this.shippingAddress.id){
+          this.shipment.shippingAddress = {id: this.shippingAddress.id}
+      }
       return http
         .post("/shipment", this.shipment)
         .then(response => {})
@@ -168,14 +196,14 @@ export default {
     },
     deleteItem(shipmentItemId) {
       http
-        .delete("/shipmentItem/"+shipmentItemId)
+        .delete("/shipmentItem/" + shipmentItemId)
         .then(response => {
           this.getShipment(this.shipment.id);
         })
         .catch(e => {
           console.log("API error: " + e);
         });
-    },
+    }
   },
   mounted() {
     var id = this.$route.params.shipment_id;
