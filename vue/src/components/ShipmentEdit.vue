@@ -4,8 +4,15 @@
       <b-col cols="2">
         <span style="text-align: left; font-size: 18px; font-weight: bold">Shipment: {{shipment.number}}</span>
       </b-col>
+      <b-col cols="3">
+        <b-select v-if="shipment.shipmentItems.length==0" option-value="id" option-text="name" :list="availableCustomers" v-model="customer" placeholder="Select Customer"></b-select>
+        <span v-if="shipment.shipmentItems.length>0">{{customer.name}}</span>
+      </b-col>
       <b-col cols="2">
         <input class="form-control" type="date" v-model="shipment.date">
+      </b-col>
+      <b-col cols="3">
+        <b-select option-value="id" option-text="label" :list="shippingAddresses" v-model="shippingAddress" placeholder="Select Distribution"></b-select>
       </b-col>
       <b-col>
         <div style="text-align: right;">
@@ -15,15 +22,6 @@
     </b-row>
     <b-row>
       <b-col cols="3">
-        <label class="top-label">Customer:</label>
-        <b-select v-if="shipment.shipmentItems.length==0" option-value="id" option-text="name" :list="availableCustomers" v-model="customer"></b-select>
-        <br/><span v-if="shipment.shipmentItems.length>0">{{customer.name}}</span>
-      </b-col>
-      <b-col cols="3">
-        <label class="top-label">Distribution:</label>
-        <b-select option-value="id" option-text="label" :list="shippingAddresses" v-model="shippingAddress"></b-select>
-      </b-col>
-      <b-col cols="3">
         <label class="top-label">Ship To:</label><br/>
         <label>{{shippingAddress.street}}</label><br/>
         <label>{{shippingAddress.city}}, {{shippingAddress.state}} {{shippingAddress.zip}}</label>
@@ -32,6 +30,9 @@
         <label class="top-label">Bill To:</label><br/>
         <label v-if="customer.billingAddress">{{customer.billingAddress.street}}</label><br/>
         <label v-if="customer.billingAddress">{{customer.billingAddress.city}}, {{customer.billingAddress.state}} {{customer.billingAddress.zip}}</label>
+      </b-col>
+      <b-col>
+          <b-form-textarea type="text" :rows=3 v-model="shipment.instructions" placeholder="Special Instructions"></b-form-textarea>
       </b-col>
     </b-row>
     <b-row>

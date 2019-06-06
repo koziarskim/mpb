@@ -41,6 +41,7 @@ public class ShipmentItem {
 	private Long units = 0L;
 	private Long cases = 0L;
 	private Long pallets = 0L;
+	private String instructions;
 
 	@JsonIgnoreProperties(value = { "shipmentItems" }, allowSetters = true)
 	@ManyToOne()
