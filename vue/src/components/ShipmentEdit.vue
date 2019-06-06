@@ -4,8 +4,8 @@
       <b-col cols="2">
         <span style="text-align: left; font-size: 18px; font-weight: bold">Shipment: {{shipment.number}}</span>
       </b-col>
-      </b-row>
-      <b-row>
+    </b-row>
+    <b-row>
       <b-col cols="3">
         <b-select option-value="id" option-text="name" :list="availableCustomers" v-model="customer"></b-select>
       </b-col>
@@ -19,14 +19,14 @@
         <b-button variant="link" @click="addItem()">(+)</b-button>
       </b-col>
     </b-row>
-    <br/>
+    <br>
     <b-row>
       <b-col>
         <label class="top-label">Sale Items</label>
         <b-table v-if="shipment.shipmentItems.length>0" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="shipment.shipmentItems" :fields="columns">
-          <!-- <template slot="action" slot-scope="row">
-            <b-form-checkbox v-model="row.item.selected" @input="rowSelect(row.item, row.item.id, row.item.selected)"></b-form-checkbox>
-          </template> -->
+          <template slot="action" slot-scope="row">
+            <b-button size="sm" @click.stop="deleteItem(row.item.id)">x</b-button>
+          </template>
         </b-table>
       </b-col>
     </b-row>
@@ -41,7 +41,7 @@ import moment from "moment";
 export default {
   data() {
     return {
-      shipment: {shipmentItems: []},
+      shipment: { shipmentItems: [] },
       availableCustomers: [],
       customer: {},
       availableSales: [],
@@ -56,7 +56,7 @@ export default {
         { key: "sale", label: "Sale", sortable: false },
         { key: "units", label: "Units", sortable: false },
         { key: "action", label: "Action", sortable: false }
-      ],
+      ]
     };
   },
   computed: {},
@@ -69,12 +69,12 @@ export default {
     },
     sale(new_value, old_value) {
       if (new_value.id != old_value.id) {
-        new_value.saleItems.forEach(si =>{
-            si.label = si.item.number;
-            this.availableSaleItems.push(si)
-        })
+        new_value.saleItems.forEach(si => {
+          si.label = si.item.number;
+          this.availableSaleItems.push(si);
+        });
       }
-    },
+    }
   },
   methods: {
     getShipment(id) {
@@ -90,8 +90,7 @@ export default {
     saveShipment() {
       return http
         .post("/shipment", this.shipment)
-        .then(response => {
-        })
+        .then(response => {})
         .catch(e => {
           console.log("API error: " + e);
         });
@@ -100,7 +99,7 @@ export default {
       return http
         .post("/shipmentItem", shipmentItem)
         .then(response => {
-            return Promise.resolve();
+          return Promise.resolve();
         })
         .catch(e => {
           console.log("API error: " + e);
@@ -131,14 +130,29 @@ export default {
           console.log("API error: " + e);
         });
     },
-    addItem(){
-        var shipmentItem = {
-            shipment: {id: this.shipment.id},
-            saleItem: {id: this.saleItem.id}
-        }
-        this.saveShipmentItem(shipmentItem).then(r=>{
-            this.getShipment(this.shipment.id);
+    addItem() {
+      var shipmentItem = {
+        shipment: { id: this.shipment.id },
+        saleItem: { id: this.saleItem.id }
+      };
+      http
+        .post("/shipmentItem", shipmentItem)
+        .then(response => {
+          this.getShipment(this.shipment.id);
         })
+        .catch(e => {
+          console.log("API error: " + e);
+        });
+    },
+    deleteItem(shipmentItemId) {
+      http
+        .delete("/shipmentItem/"+shipmentItemId)
+        .then(response => {
+          this.getShipment(this.shipment.id);
+        })
+        .catch(e => {
+          console.log("API error: " + e);
+        });
     }
   },
   mounted() {
