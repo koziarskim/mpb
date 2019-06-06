@@ -11,9 +11,6 @@
       <b-col cols="2">
         <input class="form-control" type="date" v-model="shipment.date">
       </b-col>
-      <b-col cols="3">
-        <b-select option-value="id" option-text="label" :list="shippingAddresses" v-model="shippingAddress" placeholder="Select Distribution"></b-select>
-      </b-col>
       <b-col>
         <div style="text-align: right;">
         <b-button type="reset" variant="success" @click="saveAndClose">Save & Close</b-button>
@@ -23,7 +20,7 @@
     <b-row>
       <b-col cols="3">
         <label class="top-label">Ship To:</label><br/>
-        <label>{{shippingAddress.street}}</label><br/>
+        <b-select option-value="id" option-text="label" :list="shippingAddresses" v-model="shippingAddress" placeholder="Select Distribution"></b-select>
         <label>{{shippingAddress.city}}, {{shippingAddress.state}} {{shippingAddress.zip}}</label>
       </b-col>
       <b-col cols="3">
@@ -72,6 +69,9 @@
       </b-col>
       <b-col cols="1">
         <b-button style="padding-top: 30px; padding-left: 0px" variant="link" @click="addItem()">(+)</b-button>
+      </b-col>
+      <b-col>
+          <br/><b>Total units:</b> {{totalUnits}}, <b>Total cases:</b> {{totalCases}}, <b>Total pallets:</b> {{totalPallets}}
       </b-col>
     </b-row>
     <br>
@@ -134,7 +134,29 @@ export default {
       ]
     };
   },
-  computed: {},
+  computed: {
+    totalUnits(){
+          var total = 0;
+          this.shipment.shipmentItems.forEach(si=> {
+              total += +si.units;
+          })
+          return total;
+      },
+    totalCases(){
+          var total = 0;
+          this.shipment.shipmentItems.forEach(si=> {
+              total += +si.cases;
+          })
+          return total;
+      },
+    totalPallets(){
+          var total = 0;
+          this.shipment.shipmentItems.forEach(si=> {
+              total += +si.pallets;
+          })
+          return total;
+      }
+  },
   watch: {
     customer(new_value, old_value) {
       if (new_value.id == old_value.id) {
