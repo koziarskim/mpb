@@ -48,6 +48,9 @@ class ShipmentRest {
 		if (shipment == null) {
 			shipment = new Shipment();
 		}
+		for(ShipmentItem si: shipment.getShipmentItems()) {
+			si.setShipment(shipment);
+		}
 		Shipment result = shipmentRepo.save(shipment);
 		if(result.getNumber()==null) {
 			String number = result.getId().toString();

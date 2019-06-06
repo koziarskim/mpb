@@ -1,13 +1,15 @@
 <template>
   <b-container fluid>
-    <b-row>
-      <b-col cols="2">
-        <span style="text-align: left; font-size: 18px; font-weight: bold">Shipment: {{shipment.number}}</span>
-      </b-col>
-    </b-row>
+      <div style="border: 0px" class="d-flex justify-content-between align-items-center">
+            <h4 style="text-align: left;">Shipment: {{shipment.number}}</h4>
+            <div style="text-align: right;">
+                <b-button type="reset" variant="success" @click="saveAndClose">Save & Close</b-button>
+            </div>
+        </div>
     <b-row>
       <b-col cols="3">
-        <b-select option-value="id" option-text="name" :list="availableCustomers" v-model="customer"></b-select>
+        <b-select v-if="shipment.shipmentItems.length==0" option-value="id" option-text="name" :list="availableCustomers" v-model="customer"></b-select>
+        <span v-if="shipment.shipmentItems.length>0">{{customer.name}}</span>
       </b-col>
       <b-col cols="3">
         <b-select option-value="id" option-text="number" :list="availableSales" v-model="sale"></b-select>
@@ -27,6 +29,10 @@
           <template slot="units" slot-scope="row">
             <input class="form-control" style="width:100px" type="tel" :disabled="locked" v-model="row.item.units">
           </template>
+          <template slot="unitsShipped" slot-scope="row">
+          <span>{{(+row.item.saleItem.unitsShipped - +row.item.existingUnits + +row.item.units)}}</span>
+          </template>
+
           <template slot="action" slot-scope="row">
             <b-button size="sm" @click.stop="deleteItem(row.item.id)">x</b-button>
           </template>
@@ -58,7 +64,8 @@ export default {
         { key: "id", label: "#", sortable: false },
         { key: "saleItem.item.number", label: "Item", sortable: false },
         { key: "saleItem.sale.number", label: "Sale", sortable: false },
-        { key: "saleItem.units", label: "Units Sold", sortable: false },
+        { key: "saleItem.units", label: "Sold", sortable: false },
+        { key: "unitsShipped", label: "Shipped", sortable: false },
         { key: "units", label: "Units", sortable: false },
         { key: "action", label: "Action", sortable: false }
       ]
@@ -89,10 +96,14 @@ export default {
       http
         .get("/shipment/" + id)
         .then(response => {
+          response.data.shipmentItems.forEach(si=>{
+              si.existingUnits = si.units;
+          })
           this.shipment = response.data;
           if(response.data.customer){
               this.customer = response.data.customer;
           }
+          
         })
         .catch(e => {
           console.log("API error: " + e);
@@ -118,7 +129,7 @@ export default {
     },
     saveAndClose() {
       this.saveShipment().then(r => {
-        router.push("/purchaseList");
+        router.push("/shipmentList");
       });
     },
     getAvailableCustomers() {

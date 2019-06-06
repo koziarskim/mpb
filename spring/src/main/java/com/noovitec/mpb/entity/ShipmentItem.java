@@ -47,7 +47,7 @@ public class ShipmentItem {
 
 	@JsonIgnoreProperties(value = { "shipmentItems" }, allowSetters = true)
 	@ManyToOne()
-	@JoinColumn(name = "saleItem_id", referencedColumnName = "id")
+	@JoinColumn(name = "sale_item_id", referencedColumnName = "id")
 	private SaleItem saleItem;
 
 }

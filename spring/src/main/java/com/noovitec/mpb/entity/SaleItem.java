@@ -60,7 +60,7 @@ public class SaleItem {
 	
 	@JsonIgnoreProperties(value = { "shipment" }, allowSetters = true)
 	@OneToMany()
-	@JoinColumn(name = "shipment_id")
+	@JoinColumn(name = "sale_item_id")
 	private Collection<ShipmentItem> shipmentItems = new HashSet<ShipmentItem>();
 	
 	@Transient
@@ -71,6 +71,8 @@ public class SaleItem {
 	private Long unitsProduced = 0L; //This should be updated on Production save/post (Production.unitsProduced)
 	@Transient
 	boolean itemCompleted = false;
+	@Transient
+	private Long unitsShipped = 0L;
 	
 	public String getLabel() {
 		if(this.getSale()!=null) {
@@ -99,6 +101,13 @@ public class SaleItem {
 	
 	public boolean isItemProduced() {
 		return this.getUnitsScheduled() <= this.getUnitsProduced();
+	}
+	
+	public Long getUnitsShipped() {
+		for(ShipmentItem si: this.getShipmentItems()) {
+			this.unitsShipped += si.getUnits();
+		}
+		return this.unitsShipped;
 	}
 	
 }
