@@ -41,13 +41,17 @@ public class Shipment {
 	private LocalDateTime updated;
 	private String number;
 	private LocalDate date;
+	private String notes;
 	private String poNumber;
-	private LocalDate shipDate;
+	private LocalDate shippingDate;
 	private String via;
 	private String fob;
 	private Long freight;
 	private String csNumber;
 	private boolean submitted;
+	private Long totalUnits = 0L;
+	private Long totalCases = 0L;
+	private Long totalPallets = 0L;
 	
 	@JsonIgnoreProperties(value={ "sales" }, allowSetters=true)
 	@ManyToOne()

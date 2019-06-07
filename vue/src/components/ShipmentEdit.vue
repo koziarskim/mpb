@@ -15,9 +15,7 @@
         <div style="text-align: right;">
           <b-button type="reset" variant="primary" @click="saveAndClose">Save & Close</b-button>
           <b-button :disabled="shipment.submitted" style="margin: 2px;" type="reset" variant="success" @click="submitShipment()">Submit</b-button>
-          <a :href="pdfUrl()" target="_blank">
-            <img style="margin: 2px;" src="../assets/pdf-download.png" width="25px">
-          </a>
+          <img @click="openPdf()" style="margin: 2px;" src="../assets/pdf-download.png" width="25px">
         </div>
       </b-col>
     </b-row>
@@ -36,7 +34,7 @@
         <label v-if="customer.billingAddress">{{customer.billingAddress.city}}, {{customer.billingAddress.state}} {{customer.billingAddress.zip}}</label>
       </b-col>
       <b-col>
-        <b-form-textarea type="text" :rows="3" v-model="shipment.instructions" placeholder="Special Instructions"></b-form-textarea>
+        <b-form-textarea type="text" :rows="3" v-model="shipment.notes" placeholder="Special Notes"></b-form-textarea>
       </b-col>
     </b-row>
     <b-row>
@@ -48,7 +46,7 @@
       <b-col cols="2">
         <label class="top-label">Ship Date:</label>
         <br>
-        <input class="form-control" type="date" v-model="shipment.shipDate">
+        <input class="form-control" type="date" v-model="shipment.shippingDate">
       </b-col>
       <b-col cols="2">
         <label class="top-label">Via:</label>
@@ -232,6 +230,9 @@ export default {
       if (this.shippingAddress.id) {
         this.shipment.shippingAddress = { id: this.shippingAddress.id };
       }
+      this.shipment.totalUnits = this.totalUnits;
+      this.shipment.totalCases = this.totalCases;
+      this.shipment.totalPallets = this.totalPallets;
       return http
         .post("/shipment", this.shipment)
         .then(response => {})
@@ -321,8 +322,11 @@ export default {
       this.shipment.submitted = true;
       this.saveShipment();
     },
-    pdfUrl: function() {
-      return httpUtils.baseUrl + "/shipment/" + this.shipment.id + "/pdf";
+    openPdf(){
+        this.saveShipment().then(r=>{
+            var url = httpUtils.baseUrl + "/shipment/" + this.shipment.id + "/pdf";
+            window.open(url, "_blank","")
+        })
     }
   },
   mounted() {

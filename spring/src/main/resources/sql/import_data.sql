@@ -1811,8 +1811,8 @@ INSERT INTO public.role (id, code, created, description, name, updated) VALUES (
 -- Data for Name: shipment; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public.shipment (id, created, cs_number, date, fob, freight, number, po_number, ship_date, updated, via, customer_id, address_id, submitted) VALUES (1, '2019-06-07 09:07:24.036724', '0004555', '2019-06-07', 'Illinois', 30, '001', 'Multiple', '2019-06-13', '2019-06-07 09:09:09.540742', 'Unyson', 1, 2, false);
-INSERT INTO public.shipment (id, created, cs_number, date, fob, freight, number, po_number, ship_date, updated, via, customer_id, address_id, submitted) VALUES (2, '2019-06-07 09:17:32.198517', '001111', '2019-06-08', 'Chicago', 30, '002', 'Multiple', '2019-06-10', '2019-06-07 09:18:28.395718', 'Whatever', 1, 1, false);
+INSERT INTO public.shipment (id, created, cs_number, date, fob, freight, number, po_number, shipping_date, updated, via, customer_id, address_id, submitted) VALUES (1, '2019-06-07 09:07:24.036724', '0004555', '2019-06-07', 'Illinois', 30, '001', 'Multiple', '2019-06-13', '2019-06-07 09:09:09.540742', 'Unyson', 1, 2, false);
+INSERT INTO public.shipment (id, created, cs_number, date, fob, freight, number, po_number, shipping_date, updated, via, customer_id, address_id, submitted) VALUES (2, '2019-06-07 09:17:32.198517', '001111', '2019-06-08', 'Chicago', 30, '002', 'Multiple', '2019-06-10', '2019-06-07 09:18:28.395718', 'Whatever', 1, 1, false);
 
 
 --

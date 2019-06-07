@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -81,7 +82,7 @@ class ShipmentRest {
 		}
 		HttpHeaders header = new HttpHeaders();
 		header.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-		String fileName = shipment.getAttachment() != null ? shipment.getAttachment().getName() : "PO" + shipment.getNumber() + "-Draft.pdf";
+		String fileName = shipment.getAttachment() != null ? shipment.getAttachment().getName() : "BOL" + shipment.getNumber() + "-Draft.pdf";
 		header.set("Content-Disposition", "inline; filename=" + fileName);
 		header.setContentLength(data.length);
 		return new HttpEntity<byte[]>(data, header);
@@ -118,39 +119,42 @@ class ShipmentRest {
 	
 	private byte[] generatePdf(Shipment shipment, boolean submitted) throws IOException, DocumentException {
 		NumberFormat currencyFormat = NumberFormat.getCurrencyInstance();
-		String componentName = "";
-		String componentDescription = "";
-		String componentUnits = "";
-		String componentPrice = "";
-		String componentTotalPrice = "";
-		List<ComponentDto> dtos = new ArrayList<ComponentDto>();
-		for (ComponentDto dto : dtos) {
-			if (dto.isSelected()) {
-				componentName += dto.getNumber() + "\n";
-				componentDescription += dto.getName() + "\n";
-				componentUnits += dto.getUnits() + "\n";
-				componentPrice += currencyFormat.format(dto.getUnitPrice()) + "\n";
-				componentTotalPrice += currencyFormat.format(dto.getTotalPrice()) + "\n";
-			}
+		String itemQuantity = "";
+		String itemDescription = "";
+		String itemCases = "";
+		String itemPallets = "";
+		for (ShipmentItem si : shipment.getShipmentItems()) {
+			itemQuantity += si.getUnits() + "\n";
+			itemDescription += si.getSaleItem().getItem().getNumber() + " - " +si.getSaleItem().getItem().getName() + "\n";
+			itemCases += si.getCases() + "\n";
+			itemPallets += si.getPallets() + "\n";
 		}
-		InputStream in = this.getClass().getClassLoader().getResourceAsStream("pdf/PO-Template.pdf");
+		InputStream in = this.getClass().getClassLoader().getResourceAsStream("pdf/BOL-Template.pdf");
 		PdfReader pdfTemplate = new PdfReader(in);
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		PdfStamper stamper = new PdfStamper(pdfTemplate, baos);
 		stamper.setFormFlattening(true);
-		SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyy");
-		stamper.getAcroFields().setField("date", dateFormat.format(new Date()));
-//		stamper.getAcroFields().setField("number", purchase.getNumber());
-//		stamper.getAcroFields().setField("supplierName", purchase.getSupplier().getName());
-//		stamper.getAcroFields().setField("paymentTerms", purchase.getSupplier().getPaymentTerms());
-//		stamper.getAcroFields().setField("expectedDate", purchase.getExpectedDate() != null ? dateFormat.format(purchase.getExpectedDate()) : "");
-//		stamper.getAcroFields().setField("freighTerms", purchase.getSupplier().getFreightTerms());
-		stamper.getAcroFields().setField("componentName", componentName);
-		stamper.getAcroFields().setField("componentDescription", componentDescription);
-		stamper.getAcroFields().setField("componentUnits", componentUnits);
-		stamper.getAcroFields().setField("componentPrice", componentPrice);
-		stamper.getAcroFields().setField("componentTotalPrice", componentTotalPrice);
-//		stamper.getAcroFields().setField("totalPrice", currencyFormat.format(purchase.getTotalPrice()));
+		stamper.getAcroFields().setField("date", shipment.getDate().format(DateTimeFormatter.ofPattern("MM/dd/yyy")));
+		stamper.getAcroFields().setField("number", shipment.getNumber());
+		stamper.getAcroFields().setField("poNumber", shipment.getPoNumber());
+		stamper.getAcroFields().setField("shippingDate", shipment.getShippingDate().format(DateTimeFormatter.ofPattern("MM/dd/yyy")));
+		stamper.getAcroFields().setField("via", shipment.getVia());
+		stamper.getAcroFields().setField("fob", shipment.getFob());
+		stamper.getAcroFields().setField("freight", shipment.getFreight().toString());
+		stamper.getAcroFields().setField("csNumber", shipment.getCsNumber());
+
+		stamper.getAcroFields().setField("itemQuantity", itemQuantity);
+		stamper.getAcroFields().setField("itemDescription", itemDescription);
+		stamper.getAcroFields().setField("itemCases", itemCases);
+		stamper.getAcroFields().setField("itemPallets", itemPallets);
+		String shippingAddress = shipment.getShippingAddress().getStreet() + "\n" +shipment.getShippingAddress().getCity() + ", "+ shipment.getShippingAddress().getState() + " "+shipment.getShippingAddress().getZip();
+		stamper.getAcroFields().setField("shippingAddress", shippingAddress);
+		String billingAddress = shipment.getCustomer().getBillingAddress().getStreet() + "\n" +shipment.getCustomer().getBillingAddress().getCity() + ", "+ shipment.getCustomer().getBillingAddress().getState() + " "+shipment.getCustomer().getBillingAddress().getZip();		
+		stamper.getAcroFields().setField("billingAddress", billingAddress);
+		stamper.getAcroFields().setField("notes", shipment.getNotes());
+		stamper.getAcroFields().setField("totalUnits", shipment.getTotalUnits().toString());
+		stamper.getAcroFields().setField("totalCases", shipment.getTotalCases().toString());
+		stamper.getAcroFields().setField("totalPallets", shipment.getTotalPallets().toString());
 		if (!submitted) {
 			PdfContentByte under = stamper.getUnderContent(1);
 			PdfGState gs1 = new PdfGState();
