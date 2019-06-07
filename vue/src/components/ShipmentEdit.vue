@@ -195,6 +195,7 @@ export default {
     },
     sale(new_value, old_value) {
       if (new_value.id != old_value.id) {
+        this.availableSaleItems = [];
         new_value.saleItems.forEach(si => {
           si.label = si.item.number;
           this.availableSaleItems.push(si);
