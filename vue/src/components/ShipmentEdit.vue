@@ -13,7 +13,11 @@
       </b-col>
       <b-col>
         <div style="text-align: right;">
-          <b-button type="reset" variant="success" @click="saveAndClose">Save & Close</b-button>
+          <b-button type="reset" variant="primary" @click="saveAndClose">Save & Close</b-button>
+          <b-button :disabled="shipment.submitted" style="margin: 2px;" type="reset" variant="success" @click="submitShipment()">Submit</b-button>
+          <a :href="pdfUrl()" target="_blank">
+            <img style="margin: 2px;" src="../assets/pdf-download.png" width="25px">
+          </a>
         </div>
       </b-col>
     </b-row>
@@ -122,6 +126,7 @@
 
 <script>
 import http from "../http-common";
+import httpUtils from "../httpUtils";
 import router from "../router";
 import moment from "moment";
 
@@ -307,6 +312,17 @@ export default {
             .utc()
             .format("YYYY-MM-DD")
         : "";
+    },
+    submitShipment() {
+      if (this.shipment.shipmentItems.length == 0) {
+        alert("No Items selected!!!");
+        return Promise.resolve();
+      }
+      this.shipment.submitted = true;
+      this.saveShipment();
+    },
+    pdfUrl: function() {
+      return httpUtils.baseUrl + "/shipment/" + this.shipment.id + "/pdf";
     }
   },
   mounted() {
