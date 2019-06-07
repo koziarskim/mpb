@@ -31,8 +31,9 @@ export default {
       sortBy: "number",
       sortDesc: false,
       fields: [
-        { key: "number", label: "Account", sortable: false },
+        { key: "number", label: "Shipment #", sortable: false },
         { key: "customer.name", label: "Customer", sortable: false },
+        { key: "date", label: "Date", sortable: false },
         { key: "action", label: "Action", sortable: false }
       ],
       shipments: []

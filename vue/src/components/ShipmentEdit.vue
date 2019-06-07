@@ -13,50 +13,59 @@
       </b-col>
       <b-col>
         <div style="text-align: right;">
-        <b-button type="reset" variant="success" @click="saveAndClose">Save & Close</b-button>
+          <b-button type="reset" variant="success" @click="saveAndClose">Save & Close</b-button>
         </div>
       </b-col>
     </b-row>
     <b-row>
       <b-col cols="3">
-        <label class="top-label">Ship To:</label><br/>
+        <label class="top-label">Ship To:</label>
+        <br>
         <b-select option-value="id" option-text="label" :list="shippingAddresses" v-model="shippingAddress" placeholder="Select Distribution"></b-select>
         <label>{{shippingAddress.city}}, {{shippingAddress.state}} {{shippingAddress.zip}}</label>
       </b-col>
       <b-col cols="3">
-        <label class="top-label">Bill To:</label><br/>
-        <label v-if="customer.billingAddress">{{customer.billingAddress.street}}</label><br/>
+        <label class="top-label">Bill To:</label>
+        <br>
+        <label v-if="customer.billingAddress">{{customer.billingAddress.street}}</label>
+        <br>
         <label v-if="customer.billingAddress">{{customer.billingAddress.city}}, {{customer.billingAddress.state}} {{customer.billingAddress.zip}}</label>
       </b-col>
       <b-col>
-          <b-form-textarea type="text" :rows=3 v-model="shipment.instructions" placeholder="Special Instructions"></b-form-textarea>
+        <b-form-textarea type="text" :rows="3" v-model="shipment.instructions" placeholder="Special Instructions"></b-form-textarea>
       </b-col>
     </b-row>
     <b-row>
-        <b-col cols=2>
-            <label class="top-label">P.O. No.:</label><br/>
-            <input class="form-control" type="tel" v-model="shipment.poNumber">
-        </b-col>
-        <b-col cols=2>
-            <label class="top-label">Ship Date:</label><br/>
-            <input class="form-control" type="date" v-model="shipment.shipDate">
-        </b-col>
-        <b-col cols=2>
-            <label class="top-label">Via:</label><br/>
-            <input class="form-control" type="tel" v-model="shipment.via">
-        </b-col>
-        <b-col cols=2>
-            <label class="top-label">FOB:</label><br/>
-            <input class="form-control" type="tel" v-model="shipment.fob">
-        </b-col>
-        <b-col cols=2>
-            <label class="top-label">Freight Class</label><br/>
-            <input class="form-control" type="tel" v-model="shipment.freight">
-        </b-col>
-        <b-col cols=2>
-            <label class="top-label">CS No.:</label><br/>
-            <input class="form-control" type="tel" v-model="shipment.csNumber">
-        </b-col>
+      <b-col cols="2">
+        <label class="top-label">P.O. No.:</label>
+        <br>
+        <input class="form-control" type="tel" v-model="shipment.poNumber">
+      </b-col>
+      <b-col cols="2">
+        <label class="top-label">Ship Date:</label>
+        <br>
+        <input class="form-control" type="date" v-model="shipment.shipDate">
+      </b-col>
+      <b-col cols="2">
+        <label class="top-label">Via:</label>
+        <br>
+        <input class="form-control" type="tel" v-model="shipment.via">
+      </b-col>
+      <b-col cols="2">
+        <label class="top-label">FOB:</label>
+        <br>
+        <input class="form-control" type="tel" v-model="shipment.fob">
+      </b-col>
+      <b-col cols="2">
+        <label class="top-label">Freight Class</label>
+        <br>
+        <input class="form-control" type="tel" v-model="shipment.freight">
+      </b-col>
+      <b-col cols="2">
+        <label class="top-label">CS No.:</label>
+        <br>
+        <input class="form-control" type="tel" v-model="shipment.csNumber">
+      </b-col>
     </b-row>
     <b-row>
       <b-col cols="3">
@@ -71,14 +80,25 @@
         <b-button style="padding-top: 30px; padding-left: 0px" variant="link" @click="addItem()">(+)</b-button>
       </b-col>
       <b-col>
-          <br/><b>Total units:</b> {{totalUnits}}, <b>Total cases:</b> {{totalCases}}, <b>Total pallets:</b> {{totalPallets}}
+        <br>
+        <b>Total units:</b>
+        {{totalUnits}},
+        <b>Total cases:</b>
+        {{totalCases}},
+        <b>Total pallets:</b>
+        {{totalPallets}}
       </b-col>
     </b-row>
     <br>
     <b-row>
       <b-col>
-        <label class="top-label">Sale Items</label>
         <b-table v-if="shipment.shipmentItems.length>0" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="shipment.shipmentItems" :fields="columns">
+          <template slot="item" slot-scope="row">
+            <b-button @click.stop="goToItem(row.item.saleItem.item.id)" variant="link">{{row.item.saleItem.item.number}}</b-button>
+          </template>
+          <template slot="sale" slot-scope="row">
+            <b-button @click.stop="goToSale(row.item.saleItem.sale.id)" variant="link">{{row.item.saleItem.sale.number}}</b-button>
+          </template>
           <template slot="units" slot-scope="row">
             <input class="form-control" style="width:100px" type="tel" :disabled="locked" v-model="row.item.units">
           </template>
@@ -122,8 +142,8 @@ export default {
       sortDesc: false,
       columns: [
         { key: "id", label: "#", sortable: false },
-        { key: "saleItem.item.number", label: "Item", sortable: false },
-        { key: "saleItem.sale.number", label: "Sale", sortable: false },
+        { key: "item", label: "Item", sortable: false },
+        { key: "sale", label: "Sale", sortable: false },
         { key: "saleItem.units", label: "Sold", sortable: false },
         { key: "unitsShipped", label: "Shipped", sortable: false },
         { key: "units", label: "Units", sortable: false },
@@ -135,27 +155,27 @@ export default {
     };
   },
   computed: {
-    totalUnits(){
-          var total = 0;
-          this.shipment.shipmentItems.forEach(si=> {
-              total += +si.units;
-          })
-          return total;
-      },
-    totalCases(){
-          var total = 0;
-          this.shipment.shipmentItems.forEach(si=> {
-              total += +si.cases;
-          })
-          return total;
-      },
-    totalPallets(){
-          var total = 0;
-          this.shipment.shipmentItems.forEach(si=> {
-              total += +si.pallets;
-          })
-          return total;
-      }
+    totalUnits() {
+      var total = 0;
+      this.shipment.shipmentItems.forEach(si => {
+        total += +si.units;
+      });
+      return total;
+    },
+    totalCases() {
+      var total = 0;
+      this.shipment.shipmentItems.forEach(si => {
+        total += +si.cases;
+      });
+      return total;
+    },
+    totalPallets() {
+      var total = 0;
+      this.shipment.shipmentItems.forEach(si => {
+        total += +si.pallets;
+      });
+      return total;
+    }
   },
   watch: {
     customer(new_value, old_value) {
@@ -163,7 +183,10 @@ export default {
         return;
       }
       this.shippingAddresses = new_value.addresses;
-      if (this.shipment.customer == null || this.shipment.customer.id != new_value.id) {
+      if (
+        this.shipment.customer == null ||
+        this.shipment.customer.id != new_value.id
+      ) {
         this.shippingAddress = {};
         this.shipment.customer = new_value;
         this.saveShipment();
@@ -191,7 +214,7 @@ export default {
           if (response.data.customer) {
             this.customer = response.data.customer;
           }
-          if(response.data.shippingAddress){
+          if (response.data.shippingAddress) {
             this.shippingAddress = response.data.shippingAddress;
           }
         })
@@ -200,8 +223,8 @@ export default {
         });
     },
     saveShipment() {
-      if(this.shippingAddress.id){
-          this.shipment.shippingAddress = {id: this.shippingAddress.id}
+      if (this.shippingAddress.id) {
+        this.shipment.shippingAddress = { id: this.shippingAddress.id };
       }
       return http
         .post("/shipment", this.shipment)
@@ -246,20 +269,20 @@ export default {
         });
     },
     addItem() {
-      this.saveShipment().then(r=>{
+      this.saveShipment().then(r => {
         var shipmentItem = {
-            shipment: { id: this.shipment.id },
-            saleItem: { id: this.saleItem.id }
+          shipment: { id: this.shipment.id },
+          saleItem: { id: this.saleItem.id }
         };
         http
-            .post("/shipmentItem", shipmentItem)
-            .then(response => {
+          .post("/shipmentItem", shipmentItem)
+          .then(response => {
             this.getShipment(this.shipment.id);
-            })
-            .catch(e => {
+          })
+          .catch(e => {
             console.log("API error: " + e);
-            });
-      })
+          });
+      });
     },
     deleteItem(shipmentItemId) {
       http
@@ -271,9 +294,19 @@ export default {
           console.log("API error: " + e);
         });
     },
-    formatDate(date){
-        return date ? moment(date).utc().format("YYYY-MM-DD"): "";
+    goToItem(item_id) {
+      router.push("/itemEdit/" + item_id);
     },
+    goToSale(sale_id) {
+      router.push("/saleEdit/" + sale_id);
+    },
+    formatDate(date) {
+      return date
+        ? moment(date)
+            .utc()
+            .format("YYYY-MM-DD")
+        : "";
+    }
   },
   mounted() {
     var id = this.$route.params.shipment_id;
