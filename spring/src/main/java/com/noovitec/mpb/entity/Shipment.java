@@ -47,11 +47,17 @@ public class Shipment {
 	private String fob;
 	private Long freight;
 	private String csNumber;
+	private boolean submitted;
 	
 	@JsonIgnoreProperties(value={ "sales" }, allowSetters=true)
 	@ManyToOne()
 	@JoinColumn(name = "customer_id", referencedColumnName = "id")
 	private Customer customer;
+
+	@JsonIgnoreProperties(value = { "data" }, allowSetters = true)
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "attachment_id", referencedColumnName = "id")
+	private Attachment attachment;
 
 	@ManyToOne()
 	@JoinColumn(name = "address_id", referencedColumnName = "id")
