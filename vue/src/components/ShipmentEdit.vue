@@ -261,7 +261,7 @@ export default {
     },
     getAvailableSales() {
       return http
-        .get("/sale/")
+        .get("/sale/customer/" + this.customer.id)
         .then(response => {
           this.availableSales = response.data;
         })

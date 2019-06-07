@@ -55,6 +55,12 @@ class SaleRest {
 		return saleDtos;
 	}
 
+	@GetMapping("/sale/customer/{customer_id}")
+	Collection<Sale> getAllByCustomer(@PathVariable Long customer_id) {
+		Collection<Sale> sales = saleRepo.findSaleByCustomer(customer_id);
+		return sales;
+	}
+
 	@GetMapping("/saleItem/{id}")
 	ResponseEntity<SaleItem> getSaleItem(@PathVariable Long id) {
 		Optional<SaleItem> result = saleRepo.getSaleItemById(id);

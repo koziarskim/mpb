@@ -44,4 +44,7 @@ public interface SaleRepo extends JpaRepository<Sale, Long> {
 			+ "where si.id = :sale_item_id ")
 	public Optional<SaleItem> getSaleItemById(@Param("sale_item_id") Long sale_item_id);
 
+	@Query(value="select s from Sale s where s.customer.id = :customer_id ")
+	public List<Sale> findSaleByCustomer(@Param("customer_id") Long sale_id);
+
 }
