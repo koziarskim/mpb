@@ -52,6 +52,7 @@ public class Shipment {
 	private Long totalUnits = 0L;
 	private Long totalCases = 0L;
 	private Long totalPallets = 0L;
+	private Long totalWeight = 0L;
 	
 	@JsonIgnoreProperties(value={ "sales" }, allowSetters=true)
 	@ManyToOne()

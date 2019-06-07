@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
+import java.sql.Timestamp;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
@@ -89,7 +90,7 @@ class ShipmentRest {
 	}
 
 	@PostMapping("/shipment")
-	ResponseEntity<Shipment> post(@RequestBody(required = false) Shipment shipment) throws URISyntaxException {
+	ResponseEntity<Shipment> post(@RequestBody(required = false) Shipment shipment) throws URISyntaxException, IOException, DocumentException {
 		if (shipment == null) {
 			shipment = new Shipment();
 		}
@@ -108,6 +109,18 @@ class ShipmentRest {
 			result.setNumber(number);
 			shipmentRepo.save(result);			
 		}
+		if (result.isSubmitted() && result.getAttachment() == null) {
+			byte[] data = this.generatePdf(result, true);
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+			Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+			String fileName = "BOL" + result.getNumber() + "-" + sdf.format(timestamp) + ".pdf";
+			Attachment attachment = new Attachment();
+			attachment.setData(data);
+			attachment.setType("BOL");
+			attachment.setName(fileName);
+			result.setAttachment(attachment);
+		}
+		shipmentRepo.save(result);
 		return ResponseEntity.ok().body(result);
 	}
 
@@ -118,7 +131,6 @@ class ShipmentRest {
 	}
 	
 	private byte[] generatePdf(Shipment shipment, boolean submitted) throws IOException, DocumentException {
-		NumberFormat currencyFormat = NumberFormat.getCurrencyInstance();
 		String itemQuantity = "";
 		String itemDescription = "";
 		String itemCases = "";
@@ -155,6 +167,7 @@ class ShipmentRest {
 		stamper.getAcroFields().setField("totalUnits", shipment.getTotalUnits().toString());
 		stamper.getAcroFields().setField("totalCases", shipment.getTotalCases().toString());
 		stamper.getAcroFields().setField("totalPallets", shipment.getTotalPallets().toString());
+		stamper.getAcroFields().setField("totalWeight", shipment.getTotalWeight().toString());
 		if (!submitted) {
 			PdfContentByte under = stamper.getUnderContent(1);
 			PdfGState gs1 = new PdfGState();

@@ -89,6 +89,8 @@
         {{totalCases}},
         <b>Total pallets:</b>
         {{totalPallets}}
+        <b>Total weight:</b>
+        {{totalWeight}}
       </b-col>
     </b-row>
     <br>
@@ -178,6 +180,13 @@ export default {
         total += +si.pallets;
       });
       return total;
+    },
+    totalWeight() {
+      var total = 0;
+      this.shipment.shipmentItems.forEach(si => {
+        total += +si.saleItem.item.weight;
+      });
+      return total * +this.totalUnits;
     }
   },
   watch: {
@@ -233,6 +242,7 @@ export default {
       this.shipment.totalUnits = this.totalUnits;
       this.shipment.totalCases = this.totalCases;
       this.shipment.totalPallets = this.totalPallets;
+      this.shipment.totalWeight = this.totalWeight;
       return http
         .post("/shipment", this.shipment)
         .then(response => {})
