@@ -83,20 +83,7 @@ class ItemRest {
 
 	@GetMapping("/itemListDto")
 	Collection<ItemListDto> getDtos() {
-		Collection<ItemListDto> dtos = new HashSet<ItemListDto>();
-		for (Item item : itemRepo.findAll()) {
-			ItemListDto dto = new ItemListDto();
-			dto.setId(item.getId());
-			dto.setNumber(item.getNumber());
-			dto.setName(item.getName());
-			dto.setBrand(item.getBrand()==null?null:item.getBrand().getName());
-			dto.setCategory(item.getCategory()==null?null:item.getCategory().getName());
-			dto.setUnitsOnStack(item.getUnitsOnStack()==null?0L:item.getUnitsOnStack());
-			dto.setUnitsSold(0L);
-			dto.setUnitsScheduled(item.getUnitsScheduled()==null?0L:item.getUnitsScheduled());
-			dtos.add(dto);
-		}
-		return dtos;
+		return itemRepo.getItemListDto();
 	}
 
 	@GetMapping("/item/{id}")

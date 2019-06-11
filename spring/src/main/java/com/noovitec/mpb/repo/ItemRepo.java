@@ -12,6 +12,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.noovitec.mpb.dto.ItemAvailabilityDto;
+import com.noovitec.mpb.dto.ItemListDto;
 import com.noovitec.mpb.dto.projection.ItemAvailabilityProjection;
 import com.noovitec.mpb.entity.Item;
 
@@ -24,6 +25,14 @@ public interface ItemRepo extends JpaRepository<Item, Long> {
 	@Query("select i " + "from Item i " + "join i.saleItems si " + "join si.sale s " + "join s.purchaseSales ps " + "left join i.brand b "
 			+ "left join i.category c " + "join ps.purchase.purchaseComponents pc " + "where ps.purchase.id = :purchase_id")
 	List<Item> getPurchaseItems(@Param("purchase_id") Long purchase_id);
+
+	@Query("select new com.noovitec.mpb.dto.ItemListDto(i.id, i.number, i.name, b.name, c.name, i.unitsOnStack, sum(si.units), sum(se.unitsScheduled)) from Item i "
+			+ "left join Category c on c.id = i.category.id "
+			+ "left join Brand b on b.id = i.brand.id "
+			+ "left join SaleItem si on si.item.id = i.id "
+			+ "left join ScheduleEvent se on se.saleItem.id = si.id "
+			+ "group by i.id, c.id, b.id")
+	List<ItemListDto> getItemListDto();
 
 	/*
 	select tmp.i_id, min(tmp.units) from (
