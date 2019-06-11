@@ -1,6 +1,7 @@
 package com.noovitec.mpb.repo;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -49,5 +50,9 @@ public interface ScheduleEventRepo extends JpaRepository<ScheduleEvent, Long> {
 			+ "and se.saleItem.sale.id = :sale_id "
 			+ "group by se.saleItem.item.id")
 	public Long getTotalItemAndSaleScheduled(@Param("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date, @Param("item_id") Long item_id, @Param("sale_id") Long sale_id);
+
+	@Query("select se from ScheduleEvent se "
+			+ "where se.saleItem.item.id = :item_id")
+	public List<ScheduleEvent> findByItem(@Param("item_id") Long item_id);
 
 }

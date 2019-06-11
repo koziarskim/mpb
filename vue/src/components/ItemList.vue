@@ -94,7 +94,7 @@ export default {
         router.push('./itemSaleList/'+item_id);
     },
     goToItemScheduleList(item_id){
-        router.push('./itemSaleList/'+item_id);
+        router.push('./scheduleEventList/'+item_id);
     }
   },
   mounted() {

@@ -1,6 +1,7 @@
 package com.noovitec.mpb.rest;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -49,6 +50,12 @@ class ScheduleEventRest {
 	ResponseEntity<ScheduleEvent> get(@PathVariable Long id) {
 		Optional<ScheduleEvent> result = scheduleEventRepo.findById(id);
 		return result.map(response -> ResponseEntity.ok().body(response)).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+	}
+
+	@GetMapping("/scheduleEvent/item/{item_id}")
+	List<ScheduleEvent> getByItem(@PathVariable Long item_id) {
+		List<ScheduleEvent> result = scheduleEventRepo.findByItem(item_id);
+		return result;
 	}
 
 	// Save and update.

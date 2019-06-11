@@ -27,6 +27,7 @@ import ItemSaleList from "./components/ItemSaleList";
 import AccessDenied from "./components/AccessDenied";
 import ShipmentEdit from "./components/ShipmentEdit";
 import ShipmentList from "./components/ShipmentList";
+import ScheduleEventList from "./components/ScheduleEventList";
 
 Vue.use(Router);
 
@@ -177,6 +178,11 @@ const router = new Router({
       path: "/ShipmentList",
       name: "ShipmentList",
       component: ShipmentList
+    },
+    {
+      path: "/ScheduleEventList/:item_id?",
+      name: "ScheduleEventList",
+      component: ScheduleEventList
     },
   ]
 });
