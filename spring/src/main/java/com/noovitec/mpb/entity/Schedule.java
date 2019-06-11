@@ -19,8 +19,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.noovitec.mpb.dto.ItemAvailabilityDto;
-import com.noovitec.mpb.dto.ItemDto;
-import com.noovitec.mpb.dto.projection.ItemAvailabilityProjection;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -45,7 +43,7 @@ public class Schedule {
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "schedule_id")
 	private Collection<ScheduleEvent> scheduleEvents = new HashSet<ScheduleEvent>();
-	
+
 	@Transient
 	private Collection<ItemAvailabilityDto> items = new HashSet<ItemAvailabilityDto>();
 }

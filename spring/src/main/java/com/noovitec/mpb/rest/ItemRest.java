@@ -37,6 +37,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.noovitec.mpb.dto.ItemAvailabilityDto;
 import com.noovitec.mpb.dto.ItemDto;
+import com.noovitec.mpb.dto.ItemListDto;
 import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.dto.projection.ItemAvailabilityProjection;
 import com.noovitec.mpb.entity.Attachment;
@@ -80,16 +81,19 @@ class ItemRest {
 		return itemRepo.findAll();
 	}
 
-	@GetMapping("/itemDto")
-	Collection<ItemDto> getDtos() {
-		return this.itemToDto(itemRepo.findAll());
-	}
-
-	private Collection<ItemDto> itemToDto(Collection<Item> items) {
-		Collection<ItemDto> dtos = new HashSet<ItemDto>();
-		for (Item item : items) {
-			ItemDto dto = new ItemDto(item.getId(), item.getNumber(), item.getName(), item.getBrand() == null ? null : item.getBrand().getName(),
-					item.getCategory() == null ? null : item.getCategory().getName(), item.getStatus(), item.getUnitsOnStack(), item.getUnitsScheduled());
+	@GetMapping("/itemListDto")
+	Collection<ItemListDto> getDtos() {
+		Collection<ItemListDto> dtos = new HashSet<ItemListDto>();
+		for (Item item : itemRepo.findAll()) {
+			ItemListDto dto = new ItemListDto();
+			dto.setId(item.getId());
+			dto.setNumber(item.getNumber());
+			dto.setName(item.getName());
+			dto.setBrand(item.getBrand()==null?null:item.getBrand().getName());
+			dto.setCategory(item.getCategory()==null?null:item.getCategory().getName());
+			dto.setUnitsOnStack(item.getUnitsOnStack()==null?0L:item.getUnitsOnStack());
+			dto.setUnitsSold(0L);
+			dto.setUnitsScheduled(item.getUnitsScheduled()==null?0L:item.getUnitsScheduled());
 			dtos.add(dto);
 		}
 		return dtos;
@@ -119,7 +123,13 @@ class ItemRest {
 
 	@GetMapping("/item/purchase/{purchase_id}")
 	Collection<ItemDto> getAll(@PathVariable Long purchase_id) {
-		return this.itemToDto(itemRepo.getPurchaseItems(purchase_id));
+		Collection<ItemDto> dtos = new HashSet<ItemDto>();
+		for (Item item : itemRepo.getPurchaseItems(purchase_id)) {
+			ItemDto dto = new ItemDto(item.getId(), item.getNumber(), item.getName(), item.getBrand() == null ? null : item.getBrand().getName(),
+					item.getCategory() == null ? null : item.getCategory().getName(), item.getStatus(), item.getUnitsOnStack(), item.getUnitsScheduled());
+			dtos.add(dto);
+		}
+		return dtos;
 	}
 
 	@GetMapping("/item/available/eta/{date}")

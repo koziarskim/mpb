@@ -1,12 +1,9 @@
 package com.noovitec.mpb.rest;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -28,11 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.noovitec.mpb.dto.ItemAvailabilityDto;
-import com.noovitec.mpb.dto.ItemDto;
-import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.dto.projection.ItemAvailabilityProjection;
-import com.noovitec.mpb.entity.Item;
-import com.noovitec.mpb.entity.ItemComponent;
 import com.noovitec.mpb.entity.Schedule;
 import com.noovitec.mpb.entity.ScheduleEvent;
 import com.noovitec.mpb.repo.ItemRepo;
@@ -81,16 +74,16 @@ class ScheduleRest {
 			}
 			// Get all items that are available to schedule based on receiving.
 			List<Long> items = new ArrayList<Long>();
-			if(s.getId()!=null) {
+			if (s.getId() != null) {
 				items.addAll(itemRepo.getItemsScheduled(s.getId()));
 			}
-			if(!items.isEmpty()) {
-				for(ItemAvailabilityProjection iap : itemRepo.getItemsAvailabilityFiltered(s.getDate(), items)) {
+			if (!items.isEmpty()) {
+				for (ItemAvailabilityProjection iap : itemRepo.getItemsAvailabilityFiltered(s.getDate(), items)) {
 					ItemAvailabilityDto dto = new ItemAvailabilityDto();
 					dto.setId(iap.getId());
 					dto.setUnitsToProduction(iap.getUnitsToProduction());
 					Long itemUnits = itemRepo.getItemsScheduledToDate(s.getDate(), iap.getId());
-					if(itemUnits==null) {
+					if (itemUnits == null) {
 						itemUnits = 0L;
 					}
 					dto.setUnitsScheduled(itemUnits);
@@ -105,71 +98,6 @@ class ScheduleRest {
 		list.sort(Comparator.comparing(o -> o.getDate()));
 		return list;
 	}
-
-//	private Collection<ItemDto> getByEta(Date date, Long item_id, boolean includeAll) {
-//		Collection<ItemDto> dtos = new HashSet<ItemDto>();
-//		Map<Long, Long> componentsInTransitToDate = new HashMap<Long, Long>();
-//
-//		List<KeyValueDto> componentsInTransitToDateList = receivingRepo.findComponentsInTransitToDate(date);
-//
-//		for (KeyValueDto keyValueDto : componentsInTransitToDateList) {
-//			componentsInTransitToDate.put(keyValueDto.getKey(), (Long) keyValueDto.getValue());
-//		}
-//
-//		Collection<Item> items = new HashSet<Item>();
-//		if (item_id == null) {
-//			items.addAll(itemRepo.findAll());
-//		} else {
-//			items.add(itemRepo.getOne(item_id));
-//		}
-//
-//		for (Item item : items) {
-//			ItemDto dto = new ItemDto();
-//			dto.setId(item.getId());
-//			dto.setNumber(item.getNumber());
-//			int itemsReadySchedule = 0;
-//			int itemsReadyProduction = 0;
-//			for (ItemComponent ic : item.getItemComponents()) {
-//				Long componentUnitsInTransit = componentsInTransitToDate.get(ic.getComponent().getId());
-//
-//				float icReadyProductionFloat = ic.getComponent().getUnitsOnStack() / ic.getUnits();
-//				float icReadyScheduleFloat = (ic.getComponent().getUnitsOnStack() + (componentUnitsInTransit == null ? 0 : componentUnitsInTransit))
-//						/ ic.getUnits();
-//				// Production
-//				int icReadyProduction = this.roundToInt(icReadyProductionFloat);
-//				if (itemsReadyProduction == 0 || icReadyProduction < itemsReadyProduction) {
-//					itemsReadyProduction = icReadyProduction;
-//				}
-//				// Schedule
-//				int icReadySchedule = this.roundToInt(icReadyScheduleFloat);
-//				if (itemsReadySchedule == 0 || icReadySchedule < itemsReadySchedule) {
-//					itemsReadySchedule = icReadySchedule;
-//				}
-//			}
-//			Long totalItemSchedule = scheduleEventRepo.getTotalItemScheduled(LocalDate.now(), item.getId());
-//			dto.setTotalItemScheduled(totalItemSchedule == null ? 0 : totalItemSchedule.intValue());
-//			dto.setUnitsReadySchedule(itemsReadySchedule);
-//			dto.setUnitsReadyProduction(itemsReadyProduction);
-//			if (!includeAll) {
-//				if (dto.getUnitsReadySchedule() > 0) {
-//					dtos.add(dto);
-//				}
-//			} else {
-//				dtos.add(dto);
-//			}
-//		}
-//		return dtos;
-//	}
-//
-//	private int roundToInt(float unitsFloat) {
-//		int units = 0;
-//		if (unitsFloat > 0) {
-//			units = new BigDecimal(unitsFloat).setScale(0, RoundingMode.DOWN).intValue();
-//		} else {
-//			units = new BigDecimal(unitsFloat).setScale(0, RoundingMode.UP).intValue();
-//		}
-//		return units;
-//	}
 
 	@GetMapping("/schedule/{id}")
 	ResponseEntity<Schedule> get(@PathVariable Long id) {

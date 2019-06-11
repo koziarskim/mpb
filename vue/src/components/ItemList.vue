@@ -18,8 +18,11 @@
                 <template slot="unitsOnStack" slot-scope="row">
                     <b-button size="sm" variant="link" @click.stop="gotToItemComponentList(row.item.id)">{{row.item.unitsOnStack}}</b-button>
                 </template>
-                <template slot="totalItemScheduled" slot-scope="row">
-                    <b-button size="sm" variant="link" @click.stop="gotToItemSaleList(row.item.id)">{{row.item.totalItemScheduled}}</b-button>
+                <template slot="unitsSold" slot-scope="row">
+                    <b-button size="sm" variant="link" @click.stop="goToItemSaleList(row.item.id)">{{row.item.unitsSold}}</b-button>
+                </template>
+                <template slot="unitsScheduled" slot-scope="row">
+                    <b-button size="sm" variant="link" @click.stop="goToItemScheduleList(row.item.id)">{{row.item.unitsScheduled}}</b-button>
                 </template>
                 <template slot="action" slot-scope="row">
                     <b-button size="sm" @click.stop="deleteItem(row.item.id)">x</b-button>
@@ -42,18 +45,19 @@ export default {
         { key: 'brand', sortable: false, label: 'Brand'},
         { key: 'category', sortable: false, label: 'Category'},
         { key: 'unitsOnStack', sortable: false, label: 'Stack'},
-        { key: 'totalItemScheduled', sortable: false, label: 'Sale/Schedule'},
+        { key: 'unitsSold', sortable: false, label: 'Sale'},
+        { key: 'unitsScheduled', sortable: false, label: 'Schedule'},
         { key: 'action', sortable: false}
       ],
-      items: []
+      items: [] //ItemListDto
     };
   },
   methods: {
     getItems() {
       http
-        .get("/itemDto")
+        .get("/itemListDto")
         .then(response => {
-          //ItemDto
+          //ItemListDto
           this.items = response.data;
         })
         .catch(e => {
@@ -86,7 +90,10 @@ export default {
     gotToItemComponentList(item_id){
         router.push('./itemComponentList/'+item_id);
     },
-    gotToItemSaleList(item_id){
+    goToItemSaleList(item_id){
+        router.push('./itemSaleList/'+item_id);
+    },
+    goToItemScheduleList(item_id){
         router.push('./itemSaleList/'+item_id);
     }
   },
