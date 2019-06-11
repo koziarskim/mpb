@@ -1,6 +1,5 @@
 --
---
--- TOC entry 2385 (class 0 OID 989612)
+-- TOC entry 2386 (class 0 OID 1034026)
 -- Dependencies: 182
 -- Data for Name: address; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -15,7 +14,7 @@ INSERT INTO public.address (id, city, created, dc, state, street, updated, zip) 
 
 
 --
--- TOC entry 2387 (class 0 OID 989623)
+-- TOC entry 2388 (class 0 OID 1034037)
 -- Dependencies: 184
 -- Data for Name: attachment; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -25,7 +24,7 @@ INSERT INTO public.attachment (id, created, data, name, type, updated) VALUES (2
 
 
 --
--- TOC entry 2389 (class 0 OID 989634)
+-- TOC entry 2390 (class 0 OID 1034048)
 -- Dependencies: 186
 -- Data for Name: base_entity; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -33,7 +32,7 @@ INSERT INTO public.attachment (id, created, data, name, type, updated) VALUES (2
 
 
 --
--- TOC entry 2391 (class 0 OID 989642)
+-- TOC entry 2392 (class 0 OID 1034056)
 -- Dependencies: 188
 -- Data for Name: brand; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -53,7 +52,7 @@ INSERT INTO public.brand (id, created, name, updated) VALUES (12, NULL, 'Other',
 
 
 --
--- TOC entry 2393 (class 0 OID 989650)
+-- TOC entry 2394 (class 0 OID 1034064)
 -- Dependencies: 190
 -- Data for Name: category; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -72,7 +71,7 @@ INSERT INTO public.category (id, created, name, prefix, type, updated) VALUES (1
 
 
 --
--- TOC entry 2432 (class 0 OID 989832)
+-- TOC entry 2433 (class 0 OID 1034246)
 -- Dependencies: 229
 -- Data for Name: supplier; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -84,7 +83,7 @@ INSERT INTO public.supplier (id, account, city, contact_name, created, email, em
 
 
 --
--- TOC entry 2395 (class 0 OID 989661)
+-- TOC entry 2396 (class 0 OID 1034075)
 -- Dependencies: 192
 -- Data for Name: component; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -96,7 +95,7 @@ INSERT INTO public.component (id, case_pack, container_cost, created, delivery_c
 
 
 --
--- TOC entry 2397 (class 0 OID 989672)
+-- TOC entry 2398 (class 0 OID 1034086)
 -- Dependencies: 194
 -- Data for Name: customer; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -106,7 +105,7 @@ INSERT INTO public.customer (id, account, contact_name, created, email, email2, 
 
 
 --
--- TOC entry 2398 (class 0 OID 989681)
+-- TOC entry 2399 (class 0 OID 1034095)
 -- Dependencies: 195
 -- Data for Name: customer_address; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -117,7 +116,7 @@ INSERT INTO public.customer_address (customer_id, address_id) VALUES (2, 5);
 
 
 --
--- TOC entry 2426 (class 0 OID 989802)
+-- TOC entry 2427 (class 0 OID 1034216)
 -- Dependencies: 223
 -- Data for Name: season; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -133,7 +132,7 @@ INSERT INTO public.season (id, created, name, prefix, updated) VALUES (8, NULL, 
 
 
 --
--- TOC entry 2436 (class 0 OID 989854)
+-- TOC entry 2437 (class 0 OID 1034268)
 -- Dependencies: 233
 -- Data for Name: upc; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1638,7 +1637,7 @@ INSERT INTO public.upc (id, assigned, code, created, updated) VALUES (1497, fals
 
 
 --
--- TOC entry 2400 (class 0 OID 989686)
+-- TOC entry 2401 (class 0 OID 1034100)
 -- Dependencies: 197
 -- Data for Name: item; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1647,12 +1646,12 @@ INSERT INTO public.item (id, case_depth, case_height, case_pack, case_weight, ca
 INSERT INTO public.item (id, case_depth, case_height, case_pack, case_weight, case_width, created, depth, description, height, hi, labor_cost, name, number, other_cost, package_cost, status, ti, total_cost, units_on_stack, units_scheduled, updated, warehouse_cost, weight, width, attachment_id, brand_id, case_upc_id, category_id, season_id, upc_id) VALUES (100, 0, 0, 1, 0.00, 0, NULL, 0, NULL, 0, 1, 0.00, '66', 'C6', 0.00, 12.00, 'DYNAMIC', 1, 32.20, 0, 0, NULL, 12.00, 0.00, 0, NULL, 2, 520, 5, 1, 520);
 INSERT INTO public.item (id, case_depth, case_height, case_pack, case_weight, case_width, created, depth, description, height, hi, labor_cost, name, number, other_cost, package_cost, status, ti, total_cost, units_on_stack, units_scheduled, updated, warehouse_cost, weight, width, attachment_id, brand_id, case_upc_id, category_id, season_id, upc_id) VALUES (4, 0, 0, 1, 0.00, 0, '2019-05-16 15:38:26.079217', 0, NULL, 0, 1, 0.00, 'Item 4', 'E4', 0.00, 12.00, 'DYNAMIC', 1, 24.00, 0, 0, '2019-05-30 09:13:45.614345', 12.00, 0.00, 0, NULL, 1, 523, 5, 3, 523);
 INSERT INTO public.item (id, case_depth, case_height, case_pack, case_weight, case_width, created, depth, description, height, hi, labor_cost, name, number, other_cost, package_cost, status, ti, total_cost, units_on_stack, units_scheduled, updated, warehouse_cost, weight, width, attachment_id, brand_id, case_upc_id, category_id, season_id, upc_id) VALUES (3, 0, 0, 1, 0.00, 0, '2019-05-16 15:37:52.936859', 0, NULL, 0, 1, 0.00, 'Item 3', 'V3', 0.00, 12.00, 'DYNAMIC', 1, 29.00, 0, 0, '2019-05-16 15:38:09.468447', 12.00, 0.00, 0, NULL, 3, 522, 5, 2, 522);
-INSERT INTO public.item (id, case_depth, case_height, case_pack, case_weight, case_width, created, depth, description, height, hi, labor_cost, name, number, other_cost, package_cost, status, ti, total_cost, units_on_stack, units_scheduled, updated, warehouse_cost, weight, width, attachment_id, brand_id, case_upc_id, category_id, season_id, upc_id) VALUES (1, 0, 0, 5, 0.00, 0, '2019-05-16 15:36:58.204393', 0, NULL, 0, 20, 0.00, 'Item 1', 'C1', 0.00, 12.00, 'DYNAMIC', 10, 2.02, 50, 460, '2019-06-07 09:09:28.151608', 12.00, 0.00, 0, NULL, 1, 520, 6, 1, 520);
 INSERT INTO public.item (id, case_depth, case_height, case_pack, case_weight, case_width, created, depth, description, height, hi, labor_cost, name, number, other_cost, package_cost, status, ti, total_cost, units_on_stack, units_scheduled, updated, warehouse_cost, weight, width, attachment_id, brand_id, case_upc_id, category_id, season_id, upc_id) VALUES (2, 0, 0, 10, 0.00, 0, '2019-05-16 15:37:32.873964', 0, NULL, 0, 10, 0.00, 'Item 2', 'C2', 0.00, 12.00, 'DYNAMIC', 5, 4.04, 0, 0, '2019-06-07 09:15:18.051914', 12.00, 0.00, 0, NULL, 1, 521, 7, 1, 521);
+INSERT INTO public.item (id, case_depth, case_height, case_pack, case_weight, case_width, created, depth, description, height, hi, labor_cost, name, number, other_cost, package_cost, status, ti, total_cost, units_on_stack, units_scheduled, updated, warehouse_cost, weight, width, attachment_id, brand_id, case_upc_id, category_id, season_id, upc_id) VALUES (1, 0, 0, 5, 0.00, 0, '2019-05-16 15:36:58.204393', 0, NULL, 0, 20, 0.00, 'Item 1', 'C1', 0.00, 12.00, 'DYNAMIC', 10, 2.02, 50, 0, '2019-06-11 14:50:28.996346', 12.00, 0.00, 0, NULL, 1, 520, 6, 1, 520);
 
 
 --
--- TOC entry 2402 (class 0 OID 989697)
+-- TOC entry 2403 (class 0 OID 1034111)
 -- Dependencies: 199
 -- Data for Name: item_component; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1667,7 +1666,7 @@ INSERT INTO public.item_component (id, created, units, updated, component_id, it
 
 
 --
--- TOC entry 2404 (class 0 OID 989705)
+-- TOC entry 2405 (class 0 OID 1034119)
 -- Dependencies: 201
 -- Data for Name: line; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1683,7 +1682,7 @@ INSERT INTO public.line (id, created, name, number, updated) VALUES (8, NULL, 'E
 
 
 --
--- TOC entry 2418 (class 0 OID 989767)
+-- TOC entry 2419 (class 0 OID 1034181)
 -- Dependencies: 215
 -- Data for Name: sale; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1696,7 +1695,7 @@ INSERT INTO public.sale (id, created, date, expected_date, freight_terms, number
 
 
 --
--- TOC entry 2420 (class 0 OID 989778)
+-- TOC entry 2421 (class 0 OID 1034192)
 -- Dependencies: 217
 -- Data for Name: sale_item; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1709,31 +1708,17 @@ INSERT INTO public.sale_item (id, created, total_unit_price, unit_price, units, 
 INSERT INTO public.sale_item (id, created, total_unit_price, unit_price, units, updated, item_id, sale_id) VALUES (8, '2019-05-22 15:20:20.709456', 1200.00, 12.00, 100, '2019-05-23 09:42:03.434719', 4, 6);
 
 
---
--- TOC entry 2422 (class 0 OID 989786)
--- Dependencies: 219
--- Data for Name: schedule; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-INSERT INTO public.schedule (id, created, date, updated) VALUES (16, '2019-05-31 13:32:54.184428', '2019-06-01', '2019-05-31 13:32:54.184428');
-INSERT INTO public.schedule (id, created, date, updated) VALUES (17, '2019-05-31 13:33:58.062025', '2019-06-03', '2019-05-31 13:33:58.062025');
-INSERT INTO public.schedule (id, created, date, updated) VALUES (18, '2019-05-31 13:36:10.990104', '2019-06-02', '2019-05-31 13:36:10.990104');
-INSERT INTO public.schedule (id, created, date, updated) VALUES (19, '2019-05-31 17:45:42.436063', '2019-06-04', '2019-05-31 17:45:42.436063');
-
 
 --
--- TOC entry 2424 (class 0 OID 989794)
+-- TOC entry 2425 (class 0 OID 1034208)
 -- Dependencies: 221
 -- Data for Name: schedule_event; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public.schedule_event (id, created, start_time, units_scheduled, updated, line_id, sale_item_id, schedule_id) VALUES (58, '2019-05-31 13:59:38.786695', '11:11:00', 100, '2019-05-31 13:59:38.786695', 1, 3, 16);
-INSERT INTO public.schedule_event (id, created, start_time, units_scheduled, updated, line_id, sale_item_id, schedule_id) VALUES (59, '2019-05-31 14:01:35.625272', '11:11:00', 60, '2019-05-31 14:01:35.625272', 1, 3, 17);
-INSERT INTO public.schedule_event (id, created, start_time, units_scheduled, updated, line_id, sale_item_id, schedule_id) VALUES (60, '2019-05-31 17:46:00.545008', '11:11:00', 300, '2019-05-31 17:46:00.545008', 1, 3, 19);
 
 
 --
--- TOC entry 2406 (class 0 OID 989713)
+-- TOC entry 2407 (class 0 OID 1034127)
 -- Dependencies: 203
 -- Data for Name: production; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1741,7 +1726,7 @@ INSERT INTO public.schedule_event (id, created, start_time, units_scheduled, upd
 
 
 --
--- TOC entry 2408 (class 0 OID 989721)
+-- TOC entry 2409 (class 0 OID 1034135)
 -- Dependencies: 205
 -- Data for Name: purchase; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1753,7 +1738,7 @@ INSERT INTO public.purchase (id, created, date, expected_date, number, submitted
 
 
 --
--- TOC entry 2410 (class 0 OID 989729)
+-- TOC entry 2411 (class 0 OID 1034143)
 -- Dependencies: 207
 -- Data for Name: purchase_component; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1767,7 +1752,7 @@ INSERT INTO public.purchase_component (id, created, units, units_in_transit, uni
 
 
 --
--- TOC entry 2412 (class 0 OID 989737)
+-- TOC entry 2413 (class 0 OID 1034151)
 -- Dependencies: 209
 -- Data for Name: purchase_sale; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1783,7 +1768,7 @@ INSERT INTO public.purchase_sale (id, created, units, updated, purchase_id, sale
 
 
 --
--- TOC entry 2414 (class 0 OID 989745)
+-- TOC entry 2415 (class 0 OID 1034159)
 -- Dependencies: 211
 -- Data for Name: receiving; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1795,7 +1780,7 @@ INSERT INTO public.receiving (id, container, created, eta_date, number, received
 
 
 --
--- TOC entry 2416 (class 0 OID 989756)
+-- TOC entry 2417 (class 0 OID 1034170)
 -- Dependencies: 213
 -- Data for Name: role; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1806,29 +1791,29 @@ INSERT INTO public.role (id, code, created, description, name, updated) VALUES (
 
 
 --
--- TOC entry 2428 (class 0 OID 989813)
+-- TOC entry 2429 (class 0 OID 1034227)
 -- Dependencies: 225
 -- Data for Name: shipment; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public.shipment (id, created, cs_number, date, fob, freight, number, po_number, shipping_date, updated, via, customer_id, address_id, submitted) VALUES (1, '2019-06-07 09:07:24.036724', '0004555', '2019-06-07', 'Illinois', 30, '001', 'Multiple', '2019-06-13', '2019-06-07 09:09:09.540742', 'Unyson', 1, 2, false);
-INSERT INTO public.shipment (id, created, cs_number, date, fob, freight, number, po_number, shipping_date, updated, via, customer_id, address_id, submitted) VALUES (2, '2019-06-07 09:17:32.198517', '001111', '2019-06-08', 'Chicago', 30, '002', 'Multiple', '2019-06-10', '2019-06-07 09:18:28.395718', 'Whatever', 1, 1, false);
+INSERT INTO public.shipment (id, created, cs_number, date, fob, freight, notes, number, po_number, shipping_date, submitted, total_cases, total_pallets, total_units, total_weight, updated, via, attachment_id, customer_id, address_id) VALUES (1, '2019-06-07 09:07:24.036724', '0004555', '2019-06-07', 'Illinois', 30, NULL, '001', 'Multiple', '2019-06-13', false, 3, 1, 12, 0, '2019-06-11 14:50:57.207644', 'Unyson', NULL, 1, 2);
+INSERT INTO public.shipment (id, created, cs_number, date, fob, freight, notes, number, po_number, shipping_date, submitted, total_cases, total_pallets, total_units, total_weight, updated, via, attachment_id, customer_id, address_id) VALUES (2, '2019-06-07 09:17:32.198517', '001111', '2019-06-08', 'Chicago', 30, NULL, '002', 'Multiple', '2019-06-10', false, 0, 0, 0, 0, '2019-06-11 14:51:05.614286', 'Whatever', NULL, 1, 1);
 
 
 --
--- TOC entry 2430 (class 0 OID 989824)
+-- TOC entry 2431 (class 0 OID 1034238)
 -- Dependencies: 227
 -- Data for Name: shipment_item; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 INSERT INTO public.shipment_item (id, cases, created, instructions, pallets, units, updated, sale_item_id, shipment_id) VALUES (1, 3, '2019-06-07 09:07:36.861709', NULL, 1, 12, '2019-06-07 09:17:30.474596', 3, 1);
-INSERT INTO public.shipment_item (id, cases, created, instructions, pallets, units, updated, sale_item_id, shipment_id) VALUES (2, 2, '2019-06-07 09:07:43.262174', NULL, 1, 11, '2019-06-07 09:17:30.475594', 4, 1);
-INSERT INTO public.shipment_item (id, cases, created, instructions, pallets, units, updated, sale_item_id, shipment_id) VALUES (14, 2, '2019-06-07 09:25:53.240975', NULL, 1, 12, '2019-06-07 09:26:21.033356', 4, 2);
-INSERT INTO public.shipment_item (id, cases, created, instructions, pallets, units, updated, sale_item_id, shipment_id) VALUES (15, 1, '2019-06-07 09:26:10.105924', NULL, 1, 10, '2019-06-07 09:26:21.034353', 5, 2);
+INSERT INTO public.shipment_item (id, cases, created, instructions, pallets, units, updated, sale_item_id, shipment_id) VALUES (2, 0, '2019-06-07 09:07:43.262174', NULL, 0, 0, '2019-06-11 14:50:57.209641', 4, 1);
+INSERT INTO public.shipment_item (id, cases, created, instructions, pallets, units, updated, sale_item_id, shipment_id) VALUES (14, 0, '2019-06-07 09:25:53.240975', NULL, 0, 0, '2019-06-11 14:51:05.613288', 4, 2);
+INSERT INTO public.shipment_item (id, cases, created, instructions, pallets, units, updated, sale_item_id, shipment_id) VALUES (15, 0, '2019-06-07 09:26:10.105924', NULL, 0, 0, '2019-06-11 14:51:05.615283', 5, 2);
 
 
 --
--- TOC entry 2434 (class 0 OID 989843)
+-- TOC entry 2435 (class 0 OID 1034257)
 -- Dependencies: 231
 -- Data for Name: system_user; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1839,7 +1824,7 @@ INSERT INTO public.system_user (id, created, first_name, last_name, number, pass
 
 
 --
--- TOC entry 2437 (class 0 OID 989860)
+-- TOC entry 2438 (class 0 OID 1034274)
 -- Dependencies: 234
 -- Data for Name: user_role; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1855,7 +1840,7 @@ INSERT INTO public.user_role (role_id, user_id) VALUES (3, 87);
 
 
 --
--- TOC entry 2444 (class 0 OID 0)
+-- TOC entry 2445 (class 0 OID 0)
 -- Dependencies: 181
 -- Name: address_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1864,7 +1849,7 @@ SELECT pg_catalog.setval('public.address_id_seq', 7, true);
 
 
 --
--- TOC entry 2445 (class 0 OID 0)
+-- TOC entry 2446 (class 0 OID 0)
 -- Dependencies: 183
 -- Name: attachment_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1873,7 +1858,7 @@ SELECT pg_catalog.setval('public.attachment_id_seq', 2, true);
 
 
 --
--- TOC entry 2446 (class 0 OID 0)
+-- TOC entry 2447 (class 0 OID 0)
 -- Dependencies: 185
 -- Name: base_entity_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1882,7 +1867,7 @@ SELECT pg_catalog.setval('public.base_entity_id_seq', 1, false);
 
 
 --
--- TOC entry 2447 (class 0 OID 0)
+-- TOC entry 2448 (class 0 OID 0)
 -- Dependencies: 187
 -- Name: brand_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1891,7 +1876,7 @@ SELECT pg_catalog.setval('public.brand_id_seq', 1, false);
 
 
 --
--- TOC entry 2448 (class 0 OID 0)
+-- TOC entry 2449 (class 0 OID 0)
 -- Dependencies: 189
 -- Name: category_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1900,7 +1885,7 @@ SELECT pg_catalog.setval('public.category_id_seq', 1, false);
 
 
 --
--- TOC entry 2449 (class 0 OID 0)
+-- TOC entry 2450 (class 0 OID 0)
 -- Dependencies: 191
 -- Name: component_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1909,7 +1894,7 @@ SELECT pg_catalog.setval('public.component_id_seq', 4, true);
 
 
 --
--- TOC entry 2450 (class 0 OID 0)
+-- TOC entry 2451 (class 0 OID 0)
 -- Dependencies: 193
 -- Name: customer_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1918,7 +1903,7 @@ SELECT pg_catalog.setval('public.customer_id_seq', 2, true);
 
 
 --
--- TOC entry 2451 (class 0 OID 0)
+-- TOC entry 2452 (class 0 OID 0)
 -- Dependencies: 198
 -- Name: item_component_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1927,7 +1912,7 @@ SELECT pg_catalog.setval('public.item_component_id_seq', 14, true);
 
 
 --
--- TOC entry 2452 (class 0 OID 0)
+-- TOC entry 2453 (class 0 OID 0)
 -- Dependencies: 196
 -- Name: item_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1936,7 +1921,7 @@ SELECT pg_catalog.setval('public.item_id_seq', 5, true);
 
 
 --
--- TOC entry 2453 (class 0 OID 0)
+-- TOC entry 2454 (class 0 OID 0)
 -- Dependencies: 200
 -- Name: line_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1945,7 +1930,7 @@ SELECT pg_catalog.setval('public.line_id_seq', 1, false);
 
 
 --
--- TOC entry 2454 (class 0 OID 0)
+-- TOC entry 2455 (class 0 OID 0)
 -- Dependencies: 202
 -- Name: production_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1954,7 +1939,7 @@ SELECT pg_catalog.setval('public.production_id_seq', 17, true);
 
 
 --
--- TOC entry 2455 (class 0 OID 0)
+-- TOC entry 2456 (class 0 OID 0)
 -- Dependencies: 206
 -- Name: purchase_component_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1963,7 +1948,7 @@ SELECT pg_catalog.setval('public.purchase_component_id_seq', 6, true);
 
 
 --
--- TOC entry 2456 (class 0 OID 0)
+-- TOC entry 2457 (class 0 OID 0)
 -- Dependencies: 204
 -- Name: purchase_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1972,7 +1957,7 @@ SELECT pg_catalog.setval('public.purchase_id_seq', 5, true);
 
 
 --
--- TOC entry 2457 (class 0 OID 0)
+-- TOC entry 2458 (class 0 OID 0)
 -- Dependencies: 208
 -- Name: purchase_sale_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1981,7 +1966,7 @@ SELECT pg_catalog.setval('public.purchase_sale_id_seq', 11, true);
 
 
 --
--- TOC entry 2458 (class 0 OID 0)
+-- TOC entry 2459 (class 0 OID 0)
 -- Dependencies: 210
 -- Name: receiving_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1990,7 +1975,7 @@ SELECT pg_catalog.setval('public.receiving_id_seq', 15, true);
 
 
 --
--- TOC entry 2459 (class 0 OID 0)
+-- TOC entry 2460 (class 0 OID 0)
 -- Dependencies: 212
 -- Name: role_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1999,7 +1984,7 @@ SELECT pg_catalog.setval('public.role_id_seq', 1, false);
 
 
 --
--- TOC entry 2460 (class 0 OID 0)
+-- TOC entry 2461 (class 0 OID 0)
 -- Dependencies: 214
 -- Name: sale_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -2008,7 +1993,7 @@ SELECT pg_catalog.setval('public.sale_id_seq', 6, true);
 
 
 --
--- TOC entry 2461 (class 0 OID 0)
+-- TOC entry 2462 (class 0 OID 0)
 -- Dependencies: 216
 -- Name: sale_item_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -2017,7 +2002,7 @@ SELECT pg_catalog.setval('public.sale_item_id_seq', 8, true);
 
 
 --
--- TOC entry 2462 (class 0 OID 0)
+-- TOC entry 2463 (class 0 OID 0)
 -- Dependencies: 220
 -- Name: schedule_event_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -2026,7 +2011,7 @@ SELECT pg_catalog.setval('public.schedule_event_id_seq', 60, true);
 
 
 --
--- TOC entry 2463 (class 0 OID 0)
+-- TOC entry 2464 (class 0 OID 0)
 -- Dependencies: 218
 -- Name: schedule_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -2035,7 +2020,7 @@ SELECT pg_catalog.setval('public.schedule_id_seq', 19, true);
 
 
 --
--- TOC entry 2464 (class 0 OID 0)
+-- TOC entry 2465 (class 0 OID 0)
 -- Dependencies: 222
 -- Name: season_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -2044,7 +2029,7 @@ SELECT pg_catalog.setval('public.season_id_seq', 1, false);
 
 
 --
--- TOC entry 2465 (class 0 OID 0)
+-- TOC entry 2466 (class 0 OID 0)
 -- Dependencies: 224
 -- Name: shipment_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -2053,7 +2038,7 @@ SELECT pg_catalog.setval('public.shipment_id_seq', 2, true);
 
 
 --
--- TOC entry 2466 (class 0 OID 0)
+-- TOC entry 2467 (class 0 OID 0)
 -- Dependencies: 226
 -- Name: shipment_item_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -2062,7 +2047,7 @@ SELECT pg_catalog.setval('public.shipment_item_id_seq', 15, true);
 
 
 --
--- TOC entry 2467 (class 0 OID 0)
+-- TOC entry 2468 (class 0 OID 0)
 -- Dependencies: 228
 -- Name: supplier_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -2071,7 +2056,7 @@ SELECT pg_catalog.setval('public.supplier_id_seq', 4, true);
 
 
 --
--- TOC entry 2468 (class 0 OID 0)
+-- TOC entry 2469 (class 0 OID 0)
 -- Dependencies: 230
 -- Name: system_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -2080,7 +2065,7 @@ SELECT pg_catalog.setval('public.system_user_id_seq', 1, false);
 
 
 --
--- TOC entry 2469 (class 0 OID 0)
+-- TOC entry 2470 (class 0 OID 0)
 -- Dependencies: 232
 -- Name: upc_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -2088,7 +2073,7 @@ SELECT pg_catalog.setval('public.system_user_id_seq', 1, false);
 SELECT pg_catalog.setval('public.upc_id_seq', 1, false);
 
 
--- Completed on 2019-06-07 09:29:21
+-- Completed on 2019-06-11 14:52:16
 
 --
 -- PostgreSQL database dump complete
