@@ -64,7 +64,7 @@ class ComponentRest {
 	@GetMapping("/component/pageable")
 	Page<Component> getAllPageable(@RequestParam(name = "pageable", required = false) Pageable pageable, @RequestParam(name = "nameSearch", required = false) String nameSearch) {
 		Page<Component> all = null;
-		if(nameSearch.isBlank()) {
+		if(nameSearch ==null || nameSearch.trim().length() == 0) {
 			all = componentRepo.findAll(pageable);
 		}else {
 			all = componentRepo.findAll(pageable, nameSearch);
