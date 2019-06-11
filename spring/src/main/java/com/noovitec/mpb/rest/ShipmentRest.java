@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.HttpServerErrorException;
 
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
@@ -42,9 +43,12 @@ import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfStamper;
 import com.noovitec.mpb.dto.ComponentDto;
 import com.noovitec.mpb.entity.Attachment;
+import com.noovitec.mpb.entity.Item;
 import com.noovitec.mpb.entity.Shipment;
 import com.noovitec.mpb.entity.ShipmentItem;
 import com.noovitec.mpb.repo.AttachmentRepo;
+import com.noovitec.mpb.repo.ItemRepo;
+import com.noovitec.mpb.repo.ShipmentItemRepo;
 import com.noovitec.mpb.repo.ShipmentRepo;
 
 @RestController
@@ -55,6 +59,10 @@ class ShipmentRest {
 	private ShipmentRepo shipmentRepo;
 	@Autowired
 	private AttachmentRepo attachmentRepo;
+	@Autowired
+	private ItemRepo itemRepo;
+	@Autowired
+	private ShipmentItemRepo shipmentItemRepo;
 
 	public ShipmentRest(ShipmentRepo shipmentRepo) {
 		this.shipmentRepo = shipmentRepo;
@@ -90,7 +98,7 @@ class ShipmentRest {
 	}
 
 	@PostMapping("/shipment")
-	ResponseEntity<Shipment> post(@RequestBody(required = false) Shipment shipment) throws URISyntaxException, IOException, DocumentException {
+	ResponseEntity<Shipment> post(@RequestBody(required = false) Shipment shipment) throws Exception {
 		if (shipment == null) {
 			shipment = new Shipment();
 		}
@@ -121,6 +129,16 @@ class ShipmentRest {
 			result.setAttachment(attachment);
 		}
 		shipmentRepo.save(result);
+		if(result.isSubmitted()) {
+			for(ShipmentItem si: shipment.getShipmentItems()) {
+				Long units = si.getSaleItem().getItem().getUnitsOnStack();
+				units = units - si.getUnits();
+				if(units < 0) {
+					throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "Cannot ship more that on stock");
+				}
+				itemRepo.updateUnitsOnStock(units, si.getSaleItem().getItem().getId());
+			}
+		}
 		return ResponseEntity.ok().body(result);
 	}
 

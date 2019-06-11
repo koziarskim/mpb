@@ -3,7 +3,10 @@ package com.noovitec.mpb.repo;
 import java.time.LocalDate;
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -64,4 +67,8 @@ public interface ItemRepo extends JpaRepository<Item, Long> {
 			+ "group by se.saleItem.item.id")
 	Long getItemsScheduledToDate(@Param("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date, @Param("item_id") Long item_id);
 	
+	@Modifying
+	@Transactional
+	@Query("update Item i set i.unitsOnStack = :units where i.id = :item_id")
+	void updateUnitsOnStock(@Param("units") Long units, @Param("item_id") Long item_id);
 }

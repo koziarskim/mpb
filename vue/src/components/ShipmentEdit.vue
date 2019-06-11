@@ -13,8 +13,8 @@
       </b-col>
       <b-col>
         <div style="text-align: right;">
-          <b-button type="reset" variant="primary" @click="saveAndClose">Save & Close</b-button>
-          <b-button :disabled="shipment.submitted" style="margin: 2px;" type="reset" variant="success" @click="submitShipment()">Submit</b-button>
+          <b-button :disabled="locked" type="reset" variant="primary" @click="saveAndClose">Save & Close</b-button>
+          <b-button :disabled="locked" style="margin: 2px;" type="reset" variant="success" @click="submitShipment()">Submit</b-button>
           <img @click="openPdf()" style="margin: 2px;" src="../assets/pdf-download.png" width="25px">
         </div>
       </b-col>
@@ -72,14 +72,14 @@
     <b-row>
       <b-col cols="3">
         <label class="top-label">Sale:</label>
-        <b-select option-value="id" option-text="number" :list="availableSales" v-model="sale"></b-select>
+        <b-select v-if="!locked" option-value="id" option-text="number" :list="availableSales" v-model="sale"></b-select>
       </b-col>
       <b-col cols="2">
         <label class="top-label">Item:</label>
-        <b-select option-value="id" option-text="label" :list="availableSaleItems" v-model="saleItem"></b-select>
+        <b-select v-if="!locked" option-value="id" option-text="label" :list="availableSaleItems" v-model="saleItem"></b-select>
       </b-col>
       <b-col cols="1">
-        <b-button style="padding-top: 30px; padding-left: 0px" variant="link" @click="addItem()">(+)</b-button>
+        <b-button v-if="!locked" style="padding-top: 30px; padding-left: 0px" variant="link" @click="addItem()">(+)</b-button>
       </b-col>
       <b-col>
         <br>
@@ -116,7 +116,7 @@
             <span>{{row.item.pallets = Math.ceil(+row.item.cases / (+row.item.saleItem.item.ti * +row.item.saleItem.item.hi))}}</span>
           </template>
           <template slot="action" slot-scope="row">
-            <b-button size="sm" @click.stop="deleteItem(row.item.id)">x</b-button>
+            <b-button :disabled="locked" size="sm" @click.stop="deleteItem(row.item.id)">x</b-button>
           </template>
         </b-table>
       </b-col>
@@ -221,6 +221,7 @@ export default {
       http
         .get("/shipment/" + id)
         .then(response => {
+          this.locked = response.data.submitted;
           response.data.shipmentItems.forEach(si => {
             si.existingUnits = si.units;
           });

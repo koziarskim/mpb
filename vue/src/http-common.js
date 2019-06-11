@@ -33,12 +33,7 @@ http.interceptors.response.use(
   },
   error => {
     console.log("Interceptor Response Error: " + error);
-    console.log(
-      "Interceptor Response: " +
-        error.response.status +
-        ", " +
-        error.response.data
-    );
+    console.log(error.response.data.message);
     if (error.response.data.status === 401) {
       router.push("/login");
     }
