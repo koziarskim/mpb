@@ -84,6 +84,7 @@ public class SaleItem {
 	}
 	
 	public Long getUnitsScheduled() {
+		this.unitsScheduled = 0L;
 		for(ScheduleEvent se: this.getScheduleEvents()) {
 			this.unitsScheduled += se.getUnitsScheduled();
 		}
@@ -91,6 +92,7 @@ public class SaleItem {
 	}
 	
 	public Long getUnitsProduced() {
+		this.unitsProduced = 0L;
 		for(ScheduleEvent se: this.getScheduleEvents()) {
 			for(Production p: se.getProductions()) {
 				this.unitsProduced += p.getUnitsProduced();
@@ -104,6 +106,7 @@ public class SaleItem {
 	}
 	
 	public Long getUnitsShipped() {
+		this.unitsShipped = 0L;
 		for(ShipmentItem si: this.getShipmentItems()) {
 			this.unitsShipped += si.getUnits();
 		}
