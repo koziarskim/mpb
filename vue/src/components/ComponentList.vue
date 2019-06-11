@@ -1,11 +1,21 @@
 <template>
   <b-container fluid>
-    <div class="d-flex justify-content-between align-items-center">
-      <span style="text-align: left; font-size: 18px; font-weight: bold">Components</span>
-      <div style="text-align: right;">
-        <b-button type="submit" variant="primary" @click="goToComponent('')">New Component</b-button>
-      </div>
-    </div>
+      <b-row style="padding-bottom: 4px;">
+      <b-col cols="2">
+        <span style="text-align: left; font-size: 18px; font-weight: bold">Components</span>
+      </b-col>
+      <b-col cols="3">
+        <input class="form-control" type="tel" v-model="nameSearch"/>
+      </b-col>
+      <b-col cols=3>
+          <b-button size="sm" @click="searchByName()" variant="primary">Search</b-button>
+    </b-col>
+      <b-col>
+        <div style="text-align: right;">
+          <b-button type="submit" variant="primary" @click="goToComponent('')">New Component</b-button>
+        </div>
+      </b-col>
+    </b-row>
     <div v-if="components.length==0">Not found any components...</div>
     <b-table v-if="components.length>0" no-local-sorting @sort-changed="sorted" :items="components" :fields="fields">
       <template slot="number" slot-scope="row">
@@ -37,6 +47,7 @@ export default {
   data() {
     return {
       pageable: {totalElements: 100, currentPage: 1, perPage: 7, sortBy: 'number', sortDesc: false},
+      nameSearch: "",
       limit: 6,
       alertSecs: 0,
       alertMessage: "",
@@ -72,7 +83,7 @@ export default {
     getComponentsData() {
       var apiCounter = new Date().getTime();
       http
-        .get("/component/pageable", {params: {pageable: this.pageable}})
+        .get("/component/pageable", {params: {pageable: this.pageable, nameSearch: this.nameSearch}})
         .then(response => {
           this.components = response.data.content;
           this.pageable.totalElements = response.data.totalElements;
@@ -124,6 +135,9 @@ export default {
     },
     goToComponentPurchaseList(component_id) {
       router.push("/ComponentPurchaseList/" + component_id);
+    },
+    searchByName(){
+        this.getComponentsData();
     }
   },
   mounted() {

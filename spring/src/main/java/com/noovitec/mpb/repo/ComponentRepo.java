@@ -2,6 +2,8 @@ package com.noovitec.mpb.repo;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
@@ -12,8 +14,8 @@ import com.noovitec.mpb.entity.Component;
 
 public interface ComponentRepo extends PagingAndSortingRepository<Component, Long> {
 
-//	@Query("select c from Component c where c.category.name != 'Other'")
-//	Page<Component> findAll(Pageable pageable);
+	@Query("select c from Component c where upper(c.name) LIKE CONCAT('%',UPPER(:nameSearch),'%')")
+	Page<Component> findAll(Pageable pageable, String nameSearch);
 
 	Component findByName(String name);
 
