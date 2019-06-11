@@ -66,9 +66,7 @@ class ComponentRest {
 		Page<Component> all = null;
 		if(nameSearch.isBlank()) {
 			all = componentRepo.findAll(pageable);
-			log.info("nameSearch blank: "+nameSearch);
 		}else {
-			log.info("nameSearch not blank: "+nameSearch);
 			all = componentRepo.findAll(pageable, nameSearch);
 		}
 		return all;
