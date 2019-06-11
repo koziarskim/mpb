@@ -104,7 +104,7 @@
             <b-button @click.stop="goToSale(row.item.saleItem.sale.id)" variant="link">{{row.item.saleItem.sale.number}}</b-button>
           </template>
           <template slot="units" slot-scope="row">
-            <input class="form-control" style="width:100px" type="tel" :disabled="locked" v-model="row.item.units">
+            <input class="form-control" style="width:100px" type="tel" :disabled="locked" v-model="row.item.units" @blur="unitsBlur(row.item)">
           </template>
           <template slot="unitsShipped" slot-scope="row">
             <span>{{(+row.item.saleItem.unitsShipped - +row.item.existingUnits + +row.item.units)}}</span>
@@ -150,6 +150,7 @@ export default {
         { key: "item", label: "Item", sortable: false },
         { key: "sale", label: "Sale", sortable: false },
         { key: "saleItem.units", label: "Sold", sortable: false },
+        { key: "saleItem.item.unitsOnStack", label: "Stock", sortable: false },
         { key: "unitsShipped", label: "Shipped", sortable: false },
         { key: "units", label: "Units", sortable: false },
         { key: "saleItem.item.casePack", label: "Case Pack", sortable: false },
@@ -337,6 +338,12 @@ export default {
             var url = httpUtils.baseUrl + "/shipment/" + this.shipment.id + "/pdf";
             window.open(url, "_blank","")
         })
+    },
+    unitsBlur(si){
+        if(si.units > si.saleItem.item.unitsOnStack){
+            alert("Cannot ship more that on stock");
+            si.units = 0;
+        }
     }
   },
   mounted() {

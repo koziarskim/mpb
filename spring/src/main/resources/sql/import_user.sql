@@ -16,9 +16,12 @@ INSERT INTO public.role (id, code, description, name) VALUES (3, 'INVENTORY', 'C
 -- Data for Name: system_user; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public.system_user (id, first_name, last_name, number, password, username) VALUES (88, 'Andy', 'Koziarski', '1112', '1234', 'andy');
-INSERT INTO public.system_user (id, first_name, last_name, number, password, username) VALUES (87, 'Marcin', 'Koziarski', '1111', 'a', 'a');
-INSERT INTO public.system_user (id, first_name, last_name, number, password, username) VALUES (95, 'Hanna', 'Pyzikiewicz', '1113', '1234', 'hanna');
+INSERT INTO public.system_user (id, created, first_name, last_name, number, password, updated, username) VALUES (4, NULL, 'Andy', 'Koziarski', '1112', '1234', NULL, 'andy');
+INSERT INTO public.system_user (id, created, first_name, last_name, number, password, updated, username) VALUES (6, NULL, 'Marcin', 'Koziarski', '1111', 'a', NULL, 'a');
+INSERT INTO public.system_user (id, created, first_name, last_name, number, password, updated, username) VALUES (5, NULL, 'Hanna', 'Pyzikiewicz', '1113', '1234', NULL, 'hanna');
+INSERT INTO public.system_user (id, created, first_name, last_name, number, password, updated, username) VALUES (1, '2019-05-10 16:17:07.317', 'Michal', 'Barwinski', '1114', '1234', '2019-05-10 16:17:34.788', 'michal');
+INSERT INTO public.system_user (id, created, first_name, last_name, number, password, updated, username) VALUES (2, '2019-05-10 16:17:36.8', 'Kasia', 'Zygulska', '1115', '1234', '2019-05-10 16:18:23.051', 'kasia');
+INSERT INTO public.system_user (id, created, first_name, last_name, number, password, updated, username) VALUES (3, '2019-05-13 16:14:26.009', 'Greg', 'Koziarski', '1116', '1234', '2019-05-13 16:14:47.167', 'greg');
 
 
 --
@@ -27,11 +30,21 @@ INSERT INTO public.system_user (id, first_name, last_name, number, password, use
 -- Data for Name: user_role; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public.user_role (role_id, user_id) VALUES (1, 88);
-INSERT INTO public.user_role (role_id, user_id) VALUES (2, 88);
-INSERT INTO public.user_role (role_id, user_id) VALUES (3, 88);
-INSERT INTO public.user_role (role_id, user_id) VALUES (1, 95);
-INSERT INTO public.user_role (role_id, user_id) VALUES (2, 95);
-INSERT INTO public.user_role (role_id, user_id) VALUES (1, 87);
-INSERT INTO public.user_role (role_id, user_id) VALUES (2, 87);
-INSERT INTO public.user_role (role_id, user_id) VALUES (3, 87);
+INSERT INTO public.user_role (role_id, user_id) VALUES (1, 4);
+INSERT INTO public.user_role (role_id, user_id) VALUES (2, 4);
+INSERT INTO public.user_role (role_id, user_id) VALUES (3, 4);
+INSERT INTO public.user_role (role_id, user_id) VALUES (1, 5);
+INSERT INTO public.user_role (role_id, user_id) VALUES (2, 5);
+INSERT INTO public.user_role (role_id, user_id) VALUES (3, 5);
+INSERT INTO public.user_role (role_id, user_id) VALUES (1, 6);
+INSERT INTO public.user_role (role_id, user_id) VALUES (2, 6);
+INSERT INTO public.user_role (role_id, user_id) VALUES (3, 6);
+INSERT INTO public.user_role (role_id, user_id) VALUES (1, 1);
+INSERT INTO public.user_role (role_id, user_id) VALUES (2, 1);
+INSERT INTO public.user_role (role_id, user_id) VALUES (3, 1);
+INSERT INTO public.user_role (role_id, user_id) VALUES (1, 2);
+INSERT INTO public.user_role (role_id, user_id) VALUES (2, 2);
+INSERT INTO public.user_role (role_id, user_id) VALUES (3, 2);
+INSERT INTO public.user_role (role_id, user_id) VALUES (1, 3);
+INSERT INTO public.user_role (role_id, user_id) VALUES (2, 3);
+INSERT INTO public.user_role (role_id, user_id) VALUES (3, 3);
