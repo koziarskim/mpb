@@ -5,11 +5,8 @@
         <span style="text-align: left; font-size: 18px; font-weight: bold">Components</span>
       </b-col>
       <b-col cols="3">
-        <input class="form-control" type="tel" v-model="nameSearch"/>
+        <input class="form-control" type="tel" v-model="nameSearch" @keyup.enter="getComponentsData" placeholder="Search by Name or Supplier"/>
       </b-col>
-      <b-col cols=3>
-          <b-button size="sm" @click="searchByName()" variant="primary">Search</b-button>
-    </b-col>
       <b-col>
         <div style="text-align: right;">
           <b-button type="submit" variant="primary" @click="goToComponent('')">New Component</b-button>
@@ -48,7 +45,6 @@ export default {
     return {
       pageable: {totalElements: 100, currentPage: 1, perPage: 7, sortBy: 'number', sortDesc: false},
       nameSearch: "",
-      limit: 6,
       alertSecs: 0,
       alertMessage: "",
       sortBy: "age",
@@ -81,13 +77,11 @@ export default {
       (this.alertSecs = 3), (this.alertMessage = message);
     },
     getComponentsData() {
-      var apiCounter = new Date().getTime();
       http
         .get("/component/pageable", {params: {pageable: this.pageable, nameSearch: this.nameSearch}})
         .then(response => {
           this.components = response.data.content;
           this.pageable.totalElements = response.data.totalElements;
-          console.log(new Date().getTime() - apiCounter);
         })
         .catch(e => {
           console.log("API error: " + e);
@@ -136,9 +130,6 @@ export default {
     goToComponentPurchaseList(component_id) {
       router.push("/ComponentPurchaseList/" + component_id);
     },
-    searchByName(){
-        this.getComponentsData();
-    }
   },
   mounted() {
     this.getComponentsData();

@@ -1,11 +1,18 @@
 <template>
     <b-container fluid>
-        <div class="d-flex justify-content-between align-items-center">
-            <span style="text-align: left; font-size: 18px; font-weight: bold">Suppliers</span>
-            <div style="text-align: right;">
+        <b-row style="padding-bottom: 4px;">
+            <b-col cols="2">
+                <span style="text-align: left; font-size: 18px; font-weight: bold">Suppliers</span>
+            </b-col>
+            <b-col cols="3">
+                <input class="form-control" type="tel" v-model="searchKey" @keyup.enter="getSuppliers" placeholder="Search by Name"/>
+            </b-col>
+            <b-col>
+                <div style="text-align: right;">
                 <b-button type="submit" variant="primary" @click="goToSupplier('')">New Supplier</b-button>
-            </div>
-        </div>
+                </div>
+            </b-col>
+        </b-row>
         <div v-if="suppliers.length==0">Not found any data...</div>
         <b-table v-if="suppliers.length>0"
                 :sort-by.sync="sortBy"
@@ -19,6 +26,7 @@
                     <b-button size="sm" @click.stop="deleteSupplier(row.item.id)">x</b-button>
                 </template>
         </b-table>
+        <b-pagination v-model="pageable.currentPage" :per-page="pageable.perPage" :total-rows="pageable.totalElements" @change="paginationChange"></b-pagination>
     </b-container>
 </template>
 <script>
@@ -28,6 +36,8 @@ import router from "../router";
 export default {
   data() {
     return {
+      pageable: {totalElements: 100, currentPage: 1, perPage: 7, sortBy: 'name', sortDesc: false},
+      searchKey: "",
       sortBy: "account",
       sortDesc: false,
       fields: [
@@ -41,11 +51,16 @@ export default {
     };
   },
   methods: {
+    paginationChange(page){
+        this.pageable.currentPage = page;
+        this.getSuppliers();
+    },
     getSuppliers() {
       http
-        .get("/supplier")
+        .get("/supplier/pageable", {params: {pageable: this.pageable, searchKey: this.searchKey}})
         .then(response => {
-          this.suppliers = response.data;
+          this.suppliers = response.data.content;
+          this.pageable.totalElements = response.data.totalElements;
         })
         .catch(e => {
           console.log("API error: " + e);

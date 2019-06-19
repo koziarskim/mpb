@@ -2,14 +2,20 @@ package com.noovitec.mpb.repo;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
 import com.noovitec.mpb.dto.SupplierDto;
 import com.noovitec.mpb.entity.Supplier;
 
-public interface SupplierRepo extends JpaRepository<Supplier, Long> {
+public interface SupplierRepo extends PagingAndSortingRepository<Supplier, Long> {
+
+	@Query("select s from Supplier s where upper(s.name) LIKE CONCAT('%',UPPER(:searchKey),'%')")
+	Page<Supplier> findAll(Pageable pageable, String searchKey);
 
 	@Query("select distinct new com.noovitec.mpb.dto.SupplierDto(s.id, s.name, s.account, (ps.id is not null)) "
 			+ "from Supplier s " 

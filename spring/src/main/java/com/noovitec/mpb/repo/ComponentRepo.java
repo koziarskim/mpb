@@ -14,7 +14,7 @@ import com.noovitec.mpb.entity.Component;
 
 public interface ComponentRepo extends PagingAndSortingRepository<Component, Long> {
 
-	@Query("select c from Component c where upper(c.name) LIKE CONCAT('%',UPPER(:nameSearch),'%')")
+	@Query("select c from Component c where upper(c.name) LIKE CONCAT('%',UPPER(:nameSearch),'%') or upper(c.supplier.name) LIKE CONCAT('%',UPPER(:nameSearch),'%')")
 	Page<Component> findAll(Pageable pageable, String nameSearch);
 
 	Component findByName(String name);
