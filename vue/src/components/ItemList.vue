@@ -1,11 +1,18 @@
 <template>
     <b-container fluid>
-        <div class="d-flex justify-content-between align-items-center">
-            <span style="text-align: left; font-size: 18px; font-weight: bold">Items</span>
-            <div style="text-align: right;">
-                <b-button type="submit" variant="primary" @click="createNewItem">New Item</b-button>
-            </div>
-        </div>
+        <b-row style="padding-bottom: 4px;">
+            <b-col cols="2">
+                <span style="text-align: left; font-size: 18px; font-weight: bold">Items</span>
+            </b-col>
+            <b-col cols="3">
+                <input class="form-control" type="tel" v-model="searchKey" @keyup.enter="getItems()" placeholder="Search by Name, Brand or Category"/>
+            </b-col>
+            <b-col>
+                <div style="text-align: right;">
+                <b-button type="submit" variant="primary" @click="createNewItem('')">New Item</b-button>
+                </div>
+            </b-col>
+        </b-row>
         <div v-if="items.length==0">Not found any components...</div>
         <b-table v-if="items.length>0"
                 :sort-by.sync="sortBy"
@@ -28,6 +35,7 @@
                     <b-button size="sm" @click.stop="deleteItem(row.item.id)">x</b-button>
                 </template>
         </b-table>
+        <b-pagination v-model="pageable.currentPage" :per-page="pageable.perPage" :total-rows="pageable.totalElements" @change="paginationChange"></b-pagination>
     </b-container>
 </template>
 <script>
@@ -37,6 +45,8 @@ import router from "../router";
 export default {
   data() {
     return {
+      pageable: {totalElements: 100, currentPage: 1, perPage: 7, sortBy: 'name', sortDesc: false},
+      searchKey: "",
       sortBy: 'number',
       sortDesc: false,
       fields: [
@@ -53,12 +63,17 @@ export default {
     };
   },
   methods: {
+    paginationChange(page){
+        this.pageable.currentPage = page;
+        this.getItems();
+    },
     getItems() {
       http
-        .get("/itemListDto")
+        .get("/item/pageable", {params: {pageable: this.pageable, searchKey: this.searchKey}})
         .then(response => {
           //ItemListDto
-          this.items = response.data;
+          this.items = response.data.content;
+          this.pageable.totalElements = response.data.totalElements;
         })
         .catch(e => {
           console.log("API error: "+e);

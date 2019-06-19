@@ -83,7 +83,7 @@ class ProductionRest {
 			componentRepo.save(component);
 		}
 		// update item.unitsOnStack, item.unitsInProduction, item.unitsScheduled
-		Item item = itemRepo.getOne(scheduleEvent.getSaleItem().getItem().getId());
+		Item item = itemRepo.findById(scheduleEvent.getSaleItem().getItem().getId()).get();
 		item.addUnitsOnStack(result.getUnitsProduced());
 		item.addUnitsScheduled(result.getUnitsProduced() * (-1));
 		itemRepo.save(item);

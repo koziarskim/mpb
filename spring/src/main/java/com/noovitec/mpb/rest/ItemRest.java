@@ -19,6 +19,8 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,6 +46,7 @@ import com.noovitec.mpb.entity.Attachment;
 import com.noovitec.mpb.entity.Item;
 import com.noovitec.mpb.entity.ItemComponent;
 import com.noovitec.mpb.entity.Season;
+import com.noovitec.mpb.entity.Supplier;
 import com.noovitec.mpb.entity.Upc;
 import com.noovitec.mpb.repo.AttachmentRepo;
 import com.noovitec.mpb.repo.ItemRepo;
@@ -78,7 +81,7 @@ class ItemRest {
 
 	@GetMapping("/item")
 	Collection<Item> getAll() {
-		return itemRepo.findAll();
+		return (Collection<Item>) itemRepo.findAll();
 	}
 
 	@GetMapping("/itemListDto")
@@ -86,6 +89,18 @@ class ItemRest {
 		return itemRepo.getItemListDto();
 	}
 
+	@GetMapping("/item/pageable")
+	Page<ItemListDto> getAllPageable(@RequestParam(name = "pageable", required = false) Pageable pageable, @RequestParam(name = "searchKey", required = false) String searchKey) {
+		Page<ItemListDto> all = null;
+		if(searchKey ==null || searchKey.trim().length() == 0) {
+			all = itemRepo.getItemPageable(pageable);
+		}else {
+			all = itemRepo.getItemPageable(pageable, searchKey);
+		}
+		return all;
+	}
+
+	
 	@GetMapping("/item/{id}")
 	ResponseEntity<?> get(@PathVariable Long id) {
 		Optional<Item> item = itemRepo.findById(id);
@@ -165,9 +180,9 @@ class ItemRest {
 
 		Collection<Item> items = new HashSet<Item>();
 		if (item_id == null) {
-			items.addAll(itemRepo.findAll());
+			items.addAll((Collection<? extends Item>) itemRepo.findAll());
 		} else {
-			items.add(itemRepo.getOne(item_id));
+			items.add(itemRepo.findById(item_id).get());
 		}
 
 		for (Item item : items) {

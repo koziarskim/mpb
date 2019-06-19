@@ -73,7 +73,7 @@ class ScheduleEventRest {
 		Long itemUnits = result.getUnitsScheduled() - (existingUnitsScheduled == null ? 0L : existingUnitsScheduled);
 		// TODO: Why following is null? result.getSaleItem().getItem().getId();
 		Long item_id = scheduleEventRepo.getItemIdByScheduleEvent(scheduleEvent.getId());
-		Item item = itemRepo.getOne(item_id);
+		Item item = itemRepo.findById(item_id).get();
 
 		item.addUnitsScheduled(itemUnits);
 		itemRepo.save(item);
@@ -91,7 +91,7 @@ class ScheduleEventRest {
 	@DeleteMapping("/scheduleEvent/{id}")
 	public ResponseEntity<?> delete(@PathVariable Long id) {
 		ScheduleEvent scheduleEvent = scheduleEventRepo.getOne(id);
-		Item item = itemRepo.getOne(scheduleEvent.getSaleItem().getItem().getId());
+		Item item = itemRepo.findById(scheduleEvent.getSaleItem().getItem().getId()).get();
 		item.addUnitsScheduled(scheduleEvent.getUnitsScheduled() * (-1));
 		itemRepo.save(item);
 		scheduleEventRepo.deleteById(id);

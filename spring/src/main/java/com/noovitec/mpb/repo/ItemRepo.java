@@ -5,9 +5,12 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -16,7 +19,7 @@ import com.noovitec.mpb.dto.ItemListDto;
 import com.noovitec.mpb.dto.projection.ItemAvailabilityProjection;
 import com.noovitec.mpb.entity.Item;
 
-public interface ItemRepo extends JpaRepository<Item, Long> {
+public interface ItemRepo extends PagingAndSortingRepository<Item, Long> {
 	Item findByName(String name);
 
 	@Query(value = "select i.* from Item i order by i.id desc limit 1", nativeQuery = true)
@@ -33,6 +36,25 @@ public interface ItemRepo extends JpaRepository<Item, Long> {
 			+ "left join ScheduleEvent se on se.saleItem.id = si.id "
 			+ "group by i.id, c.id, b.id")
 	List<ItemListDto> getItemListDto();
+
+	@Query("select new com.noovitec.mpb.dto.ItemListDto(i.id, i.number, i.name, b.name, c.name, i.unitsOnStack, sum(si.units), sum(se.unitsScheduled)) from Item i "
+			+ "left join Category c on c.id = i.category.id "
+			+ "left join Brand b on b.id = i.brand.id "
+			+ "left join SaleItem si on si.item.id = i.id "
+			+ "left join ScheduleEvent se on se.saleItem.id = si.id "
+			+ "group by i.id, c.id, b.id")
+	Page<ItemListDto> getItemPageable(Pageable pageable);
+
+	@Query("select new com.noovitec.mpb.dto.ItemListDto(i.id, i.number, i.name, b.name, c.name, i.unitsOnStack, sum(si.units), sum(se.unitsScheduled)) from Item i "
+			+ "left join Category c on c.id = i.category.id "
+			+ "left join Brand b on b.id = i.brand.id "
+			+ "left join SaleItem si on si.item.id = i.id "
+			+ "left join ScheduleEvent se on se.saleItem.id = si.id "
+			+ "where upper(i.name) LIKE CONCAT('%',UPPER(:searchKey),'%') "
+			+ "or upper(b.name) LIKE CONCAT('%',UPPER(:searchKey),'%') "
+			+ "or upper(c.name) LIKE CONCAT('%',UPPER(:searchKey),'%') "
+			+ "group by i.id, c.id, b.id")
+	Page<ItemListDto> getItemPageable(Pageable pageable, String searchKey);
 
 	/*
 	select tmp.i_id, min(tmp.units) from (
