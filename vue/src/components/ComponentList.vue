@@ -43,7 +43,7 @@ export default {
   name: "edit-component",
   data() {
     return {
-      pageable: {totalElements: 100, currentPage: 1, perPage: 7, sortBy: 'number', sortDesc: false},
+      pageable: {totalElements: 100, currentPage: 1, perPage: 15, sortBy: 'number', sortDesc: false},
       nameSearch: "",
       alertSecs: 0,
       alertMessage: "",
@@ -97,21 +97,22 @@ export default {
       return component;
     },
     deleteComponent(component_id) {
-      var item = this.getItem(component_id);
-      if (item && item.locked) {
-        this.showAlert(
-          "Component is locked. It may be currently used by Item(s)"
-        );
-        return;
-      }
-      http
-        .delete("/component/" + component_id)
-        .then(response => {
-          this.getComponentsData();
+        this.$bvModal.msgBoxConfirm('Are you sure you want to delete Component?')
+            .then(value => {
+                if(value){
+                    var item = this.getItem(component_id);
+                    if (item && item.locked) {
+                        this.showAlert("Component is locked. It may be currently used by Item(s)");
+                        return;
+                    }
+                    http
+                        .delete("/component/" + component_id)
+                        .then(response => {this.getComponentsData();})
+                        .catch(e => {
+                        console.log("API Error: " + e);
+                        });
+            }
         })
-        .catch(e => {
-          console.log("API Error: " + e);
-        });
     },
     goToComponent(component_id) {
       if (!component_id) {

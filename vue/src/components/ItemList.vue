@@ -15,10 +15,9 @@
         </b-row>
         <div v-if="items.length==0">Not found any components...</div>
         <b-table v-if="items.length>0"
-                :sort-by.sync="sortBy"
-                :sort-desc.sync="sortDesc"
                 :items="items"
-                :fields="fields">
+                :fields="fields"
+                no-local-sorting @sort-changed="sorted">
                 <template slot="number" slot-scope="row">
                     <b-button size="sm" variant="link" @click.stop="updateItem(row.item.id)">{{row.item.number}}</b-button>
                 </template>
@@ -45,15 +44,15 @@ import router from "../router";
 export default {
   data() {
     return {
-      pageable: {totalElements: 100, currentPage: 1, perPage: 7, sortBy: 'name', sortDesc: false},
+      pageable: {totalElements: 100, currentPage: 1, perPage: 15, sortBy: 'name', sortDesc: false},
       searchKey: "",
       sortBy: 'number',
       sortDesc: false,
       fields: [
-        { key: 'number', sortable: false, label: 'Item #'},
-        { key: 'name', sortable: false, label: 'Name'},
-        { key: 'brand', sortable: false, label: 'Brand'},
-        { key: 'category', sortable: false, label: 'Category'},
+        { key: 'number', sortable: true, label: 'Item #'},
+        { key: 'name', sortable: true, label: 'Name'},
+        { key: 'brand', sortable: true, label: 'Brand'},
+        { key: 'category', sortable: true, label: 'Category'},
         { key: 'unitsOnStack', sortable: false, label: 'Stack'},
         { key: 'unitsSold', sortable: false, label: 'Sale'},
         { key: 'unitsScheduled', sortable: false, label: 'Schedule'},
@@ -63,6 +62,12 @@ export default {
     };
   },
   methods: {
+    sorted(e){
+        if(!e.sortBy){ return }
+        this.pageable.sortBy = e.sortBy;
+        this.pageable.sortDesc = e.sortDesc;
+        this.getItems();
+    },
     paginationChange(page){
         this.pageable.currentPage = page;
         this.getItems();
