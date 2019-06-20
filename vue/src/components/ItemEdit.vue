@@ -441,8 +441,7 @@ export default {
     },
     uploadImage(e) {
       this.image = e.target.files[0] || e.dataTransfer.files[0];
-      if (this.image.size > 204800) {
-        //200KB
+      if (this.image.size > 1048575) {
         alert(
           "File size (" +
             (+this.image.size / 1024).toFixed(2) +
