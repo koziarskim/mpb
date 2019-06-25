@@ -37,7 +37,7 @@
                     </b-col>
                     <b-col cols=4>
                         <label class="top-label">Dimension (H x W x D):</label>
-                        <input class="form-control" @blur="onBlur" v-mask="/\d{1,100} x \d{1,100} x \d{1,100}/" v-model="dimension">
+                        <input class="form-control" v-mask="/\d{1,100} x \d{1,100} x \d{1,100}/" v-model="dimension">
                     </b-col>
                 </b-row>
                 <b-row>
@@ -70,8 +70,8 @@
             <b-col cols=4 style="border-left: 1px solid #dededf;">
                 <b-row>
                     <b-col cols=12>
-                        <input type="file" @change="uploadImage" accept="image/png, image/jpeg">
-                        <img width="200px" :src="imageUrl" fluid />
+                        <input type="file" ref="inputFile" @change="uploadImage()" accept="image/png, image/jpeg"><br/>
+                        <img :src="imageUrl">
                     </b-col>
                 </b-row>
             </b-col>
@@ -154,8 +154,8 @@ export default {
           weight: 0,
           itemComponents: [],
       },
+      compressedImage: null,
       dimension: "",
-      image: "",
       supplier: {},
       category: {},
       availableSuppliers: [],
@@ -178,6 +178,9 @@ export default {
           return (+this.component.containerCost / +this.component.unitsPerContainer).toFixed(2);
       },
       imageUrl: function(){
+        if(this.compressedImage){
+            return this.compressedImage;
+        }
         if(this.component.attachment){
             return httpUtils.baseUrl + "/attachment/" + this.component.attachment.id;
         }
@@ -213,9 +216,43 @@ export default {
     }
   },
   methods: {
-      onBlur(){
-          console.log("test blur 2")
-      },
+    uploadImage() {
+        var file = this.$refs.inputFile.files[0];
+        if (file) {
+            var reader = new FileReader();
+            reader.onload = (imgUploadEvent) => {
+                var img = new Image();
+                img.onload = () => {
+                    var oc = document.createElement('canvas');
+                    var octx = oc.getContext('2d');
+                    var maxWidth = 150;
+                    var percentage = (img.width > maxWidth)?(maxWidth/img.width):(img.width/maxWidth);
+                    oc.width = img.width * percentage;
+                    oc.height = img.height * percentage;
+                    octx.drawImage(img, 0, 0, oc.width, oc.height);
+                    this.compressedImage = oc.toDataURL();
+                };
+                img.src = imgUploadEvent.target.result;
+            };
+            reader.readAsDataURL(this.$refs.inputFile.files[0]);
+        }
+    },
+    dataURItoBlob(dataURI) {
+        if(!dataURI){
+            return null;
+        }
+        var byteString;
+        if (dataURI.split(',')[0].indexOf('base64') >= 0)
+            byteString = atob(dataURI.split(',')[1]);
+        else
+            byteString = unescape(dataURI.split(',')[1]);
+        var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+        var ia = new Uint8Array(byteString.length);
+        for (var i = 0; i < byteString.length; i++) {
+            ia[i] = byteString.charCodeAt(i);
+        }
+        return new Blob([ia], {type:mimeString});
+    },
     getComponentData(component_id) {
       http
         .get("/component/" + component_id)
@@ -263,17 +300,9 @@ export default {
           console.log("API error: " + e);
         });
     },
-    uploadImage(e){
-        this.image = e.target.files[0] || e.dataTransfer.files[0];
-        if(this.image.size > 1048575){
-            alert("File size (" + (+this.image.size/1024).toFixed(2) + "KB ) cannot exeed 1MB");
-            return;
-        }
-        this.saveAndUpload();
-    },
     saveAndUpload() {
       let formData = new FormData();
-      formData.append("image", this.image);
+      formData.append("image", this.dataURItoBlob(this.compressedImage));
       formData.append("jsonComponent", JSON.stringify(this.component));
       return axios
         .post(httpUtils.baseUrl + "/component/upload", formData, {
