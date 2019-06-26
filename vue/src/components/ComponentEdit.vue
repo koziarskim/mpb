@@ -6,7 +6,6 @@
                 Component is locked. Changes here will update Item(s) as well.
             </div>
             <div style="text-align: right;">
-                <!-- <b-button type="submit" variant="primary" @click="saveAndUpload">Save</b-button> -->
                 <b-button type="reset" variant="success" @click="saveAndClose">Save & Close</b-button>
             </div>
         </div>
@@ -70,8 +69,7 @@
             <b-col cols=4 style="border-left: 1px solid #dededf;">
                 <b-row>
                     <b-col cols=12>
-                        <input type="file" ref="inputFile" @change="uploadImage()" accept="image/png, image/jpeg"><br/>
-                        <img :src="imageUrl">
+						<upload :on-upload="onUpload" :file-url="getImageUrl()"></upload>
                     </b-col>
                 </b-row>
             </b-col>
@@ -154,7 +152,7 @@ export default {
           weight: 0,
           itemComponents: [],
       },
-      compressedImage: null,
+      uploadedFile: null,
       dimension: "",
       supplier: {},
       category: {},
@@ -176,14 +174,6 @@ export default {
       },
       deliveryCost(){
           return (+this.component.containerCost / +this.component.unitsPerContainer).toFixed(2);
-      },
-      imageUrl: function(){
-        if(this.compressedImage){
-            return this.compressedImage;
-        }
-        if(this.component.attachment){
-            return httpUtils.baseUrl + "/attachment/" + this.component.attachment.id;
-        }
       },
       dutyCost: function(){
         return +this.component.unitCost * +this.component.dutyPercentage;
@@ -216,43 +206,9 @@ export default {
     }
   },
   methods: {
-    uploadImage() {
-        var file = this.$refs.inputFile.files[0];
-        if (file) {
-            var reader = new FileReader();
-            reader.onload = (imgUploadEvent) => {
-                var img = new Image();
-                img.onload = () => {
-                    var oc = document.createElement('canvas');
-                    var octx = oc.getContext('2d');
-                    var maxWidth = 150;
-                    var percentage = (img.width > maxWidth)?(maxWidth/img.width):(img.width/maxWidth);
-                    oc.width = img.width * percentage;
-                    oc.height = img.height * percentage;
-                    octx.drawImage(img, 0, 0, oc.width, oc.height);
-                    this.compressedImage = oc.toDataURL();
-                };
-                img.src = imgUploadEvent.target.result;
-            };
-            reader.readAsDataURL(this.$refs.inputFile.files[0]);
-        }
-    },
-    dataURItoBlob(dataURI) {
-        if(!dataURI){
-            return null;
-        }
-        var byteString;
-        if (dataURI.split(',')[0].indexOf('base64') >= 0)
-            byteString = atob(dataURI.split(',')[1]);
-        else
-            byteString = unescape(dataURI.split(',')[1]);
-        var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
-        var ia = new Uint8Array(byteString.length);
-        for (var i = 0; i < byteString.length; i++) {
-            ia[i] = byteString.charCodeAt(i);
-        }
-        return new Blob([ia], {type:mimeString});
-    },
+	onUpload(file){
+		this.uploadedFile = file;
+	},
     getComponentData(component_id) {
       http
         .get("/component/" + component_id)
@@ -302,7 +258,7 @@ export default {
     },
     saveAndUpload() {
       let formData = new FormData();
-      formData.append("image", this.dataURItoBlob(this.compressedImage));
+      formData.append("image", this.uploadedFile);
       formData.append("jsonComponent", JSON.stringify(this.component));
       return axios
         .post(httpUtils.baseUrl + "/component/upload", formData, {
@@ -324,7 +280,13 @@ export default {
     },
     goToItem(item_id) {
       router.push("/itemEdit/" + item_id);
-    }
+	},
+	getImageUrl(){
+        if(this.component.attachment){
+            return httpUtils.baseUrl + "/attachment/" + this.component.attachment.id;
+		}
+		return null;
+      }
   },
   mounted() {
     var component_id = this.$route.params.component_id;
