@@ -1,18 +1,22 @@
 <template>
-  <div>
-    <input type="file" ref="inputFile" @change="uploadImage()" accept="image/png, image/jpeg">
+  <div style="border: solid 1px #c1c4c7; width: 150px; height:150px;" @click="openFileSelect">
+    <!-- <input type="file" ref="inputFile" @change="uploadImage()" accept="image/png, image/jpeg">
     <br>
-    <img :src="imageUrl">
+    <img :src="imageUrl">-->
+    <a href="#" v-b-popover.hover="'Click to select new image'">
+      <img :src="imageUrl">
+    </a>
   </div>
 </template>
 <script>
 export default {
   inheritAttributes: true,
   props: {
-	fileUrl: {
-		validator: prop => typeof prop === 'string' || prop === null || prop === undefined,
-		required: true
-	},
+    fileUrl: {
+      validator: prop =>
+        typeof prop === "string" || prop === null || prop === undefined,
+      required: true
+    },
     onUpload: {
       type: Function,
       required: true
@@ -21,19 +25,27 @@ export default {
   data() {
     return {
 	  compressedImage: null,
+	  inputElement: null,
     };
   },
-  computed:{
-	imageUrl() {
-        if(this.compressedImage){
-            return this.compressedImage;
-        }
-        return this.fileUrl;
-    },
+  computed: {
+    imageUrl() {
+      if (this.compressedImage) {
+        return this.compressedImage;
+      }
+      return this.fileUrl;
+    }
   },
   methods: {
+	openFileSelect() {
+      this.inputElement = document.createElement("input");
+      this.inputElement.type = "file";
+      this.inputElement.onchange = this.uploadImage;
+	  this.inputElement.accept = "image/png, image/jpeg";
+      this.inputElement.click();
+    },  
     uploadImage() {
-      var file = this.$refs.inputFile.files[0];
+      var file = this.inputElement.files[0];
       if (file) {
         var reader = new FileReader();
         reader.onload = imgUploadEvent => {
@@ -49,12 +61,12 @@ export default {
             oc.width = img.width * percentage;
             oc.height = img.height * percentage;
             octx.drawImage(img, 0, 0, oc.width, oc.height);
-			this.compressedImage = oc.toDataURL();
-			this.onUpload(this.dataURItoBlob(this.compressedImage))
+            this.compressedImage = oc.toDataURL();
+            this.onUpload(this.dataURItoBlob(this.compressedImage));
           };
           img.src = imgUploadEvent.target.result;
         };
-        reader.readAsDataURL(this.$refs.inputFile.files[0]);
+        reader.readAsDataURL(this.inputElement.files[0]);
       }
     },
     dataURItoBlob(dataURI) {
@@ -74,7 +86,7 @@ export default {
         ia[i] = byteString.charCodeAt(i);
       }
       return new Blob([ia], { type: mimeString });
-	},
+    }
   }
 };
 </script>
