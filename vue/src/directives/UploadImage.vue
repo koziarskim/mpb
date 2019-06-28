@@ -1,10 +1,7 @@
 <template>
   <div style="border: solid 1px #c1c4c7; width: 150px; height:150px;" @click="openFileSelect">
-    <!-- <input type="file" ref="inputFile" @change="uploadImage()" accept="image/png, image/jpeg">
-    <br>
-    <img :src="imageUrl">-->
     <a href="#" v-b-popover.hover="'Click to select new image'">
-      <img :src="imageUrl">
+      <img :src="imageUrl" height="100%">
     </a>
   </div>
 </template>
@@ -32,8 +29,11 @@ export default {
     imageUrl() {
       if (this.compressedImage) {
         return this.compressedImage;
-      }
-      return this.fileUrl;
+	  }
+	  if(this.fileUrl){
+		return this.fileUrl;
+	  }
+	  return require("@/assets/image-select.png");
     }
   },
   methods: {

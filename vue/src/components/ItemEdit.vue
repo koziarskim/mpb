@@ -53,9 +53,7 @@
           <b-col cols="3">
             <b-row>
               <b-col>
-                <a href="#" v-b-popover.hover="'Click to select new image'">
-                  <img style="border: solid 1px #c1c4c7" width="150px" height="150px" :src="imageUrl" @click="openFileSelect">
-                </a>
+				<upload :on-upload="onUpload" :file-url="getImageUrl()"></upload>
               </b-col>
             </b-row>
           </b-col>
@@ -146,7 +144,6 @@
           <b-col cols="12">
             <label class="top-label">Components:</label>
             <b-select option-value="id" option-text="value" :list="availableComponents" v-model="component" placeholder="Select component"></b-select>
-            <!-- <b-type :data="availableComp" v-model="query" @hit="selectedComp" :serializer="item => item.value + item.key"/> -->
           </b-col>
         </b-row>
         <b-row>
@@ -210,7 +207,8 @@ export default {
       availableComponents: [],
       availableItemCs: [],
       availableComponentCs: [],
-      availableSeasons: []
+	  availableSeasons: [],
+	  uploadedFile: null
     };
   },
   computed: {
@@ -273,13 +271,6 @@ export default {
         return httpUtils.baseUrl + "/upc/image/" + this.item.caseUpc.code;
       }
     },
-    imageUrl: function() {
-      if (this.item.attachment) {
-        return httpUtils.baseUrl + "/attachment/" + this.item.attachment.id;
-      } else {
-        return require("@/assets/image-select.png");
-      }
-    }
   },
   watch: {
     component: function(new_component, old_component) {
@@ -333,17 +324,13 @@ export default {
     }
   },
   methods: {
+	onUpload(file){
+		this.uploadedFile = file;
+	},
     getComponentsById: function(id) {
       return this.item.itemComponents.filter(ic => {
         return ic.component.category.id == id;
       });
-    },
-    openFileSelect() {
-      var input = document.createElement("input");
-      input.type = "file";
-      input.onchange = this.uploadImage;
-      input.accept = "image/png, image/jpeg";
-      input.click();
     },
     getComponentsData() {
       http
@@ -439,18 +426,6 @@ export default {
           console.log("API error: " + e);
         });
     },
-    uploadImage(e) {
-      this.image = e.target.files[0] || e.dataTransfer.files[0];
-      if (this.image.size > 1048575) {
-        alert(
-          "File size (" +
-            (+this.image.size / 1024).toFixed(2) +
-            "KB ) cannot exeed 1MB"
-        );
-        return;
-      }
-      this.saveAndUpload();
-    },
     validate(){
         if(!this.item.name){
             alert("Item name is required");
@@ -469,7 +444,7 @@ export default {
         }
       this.item.totalCost = this.totalCost;
       let formData = new FormData();
-      formData.append("image", this.image);
+      formData.append("image", this.uploadedFile);
       formData.append("jsonItem", JSON.stringify(this.item));
       return axios
         .post(httpUtils.baseUrl + "/item/upload", formData, {
@@ -501,7 +476,13 @@ export default {
           break;
         }
       }
-    }
+	},
+	getImageUrl(){
+		if(this.item.attachment){
+        	return httpUtils.baseUrl + "/attachment/" + this.item.attachment.id;
+		}
+		return null;
+	}
   },
   mounted() {
     this.getComponentsData();
