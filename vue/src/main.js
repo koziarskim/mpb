@@ -4,7 +4,7 @@ import moment from "moment";
 import App from "./App.vue";
 import router from "./router";
 import store from "./store";
-import babelPolyfill from 'babel-polyfill';
+// import babelPolyfill from 'babel-polyfill';
 import "./registerServiceWorker";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
