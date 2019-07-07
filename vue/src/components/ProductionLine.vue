@@ -1,8 +1,8 @@
 <template>
   <b-container fluid>
     <b-row>
-      <b-col cols="3">
-        <h4 style="text-align: left;">Production {{this.dateStarted}}</h4>
+      <b-col cols="4">
+        <h4 style="text-align: left;">Production Line Output: {{this.dateStarted}}</h4>
       </b-col>
     </b-row>
     <b-row>
@@ -18,6 +18,9 @@
             <b-select v-if="!inProgress() && !isFinished()" option-value="id" option-text="number" :list="availableItems" v-model="item" placeholder="Select item"></b-select>
 			<input v-if="inProgress() || isFinished()" class="form-control" type="tel" readonly :value="productionLine.item.number">
           </b-col>
+		  <b-col cols=3>
+  			<b-button v-if="inProgress() && !isFinished()" type="submit" style="margin-top: 25px" variant="success" @click="addOutput">Add Units Produced</b-button>
+		  </b-col>
           <b-col cols="3">
             <b-button v-if="!inProgress() && !isFinished()" type="submit" style="margin-top: 25px" variant="success" @click="startProduction">Start Production</b-button>
 			<b-button v-if="inProgress() && !isFinished()" type="submit" style="margin-top: 25px" variant="success" @click="finishProduction">Finish Production</b-button>
@@ -125,6 +128,9 @@ export default {
         .catch(e => {
           console.log("API error: " + e);
         });
+	},
+	addOutput(){
+		router.push('/productionOutputEdit/'+this.productionLine.id);
 	},
 	inProgress(){
 		return this.productionLine.dateStarted != null && this.productionLine.dateFinished==null;

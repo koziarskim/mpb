@@ -30,6 +30,7 @@ import ShipmentList from "./components/ShipmentList";
 import ScheduleEventList from "./components/ScheduleEventList";
 import ProductionLine from "./components/ProductionLine";
 import ProductionLineList from "./components/ProductionLineList";
+import ProductionOutputEdit from "./components/ProductionOutputEdit";
 
 Vue.use(Router);
 
@@ -195,6 +196,11 @@ const router = new Router({
       path: "/ProductionLineList",
       name: "ProductionLineList",
       component: ProductionLineList
+    },
+    {
+      path: "/ProductionOutputEdit/:production_line_id",
+      name: "ProductionOutputEdit",
+      component: ProductionOutputEdit
     }
   ]
 });
