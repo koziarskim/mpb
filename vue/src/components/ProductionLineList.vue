@@ -52,9 +52,9 @@ export default {
     }
   },
   methods: {
-    getProductionLines(date) {
+    getProductionLines(dateStarted) {
       http
-        .get("/productionLine")
+        .get("/productionLine/dateStarted/"+dateStarted)
         .then(response => {
           this.productionLines = response.data;
         })
