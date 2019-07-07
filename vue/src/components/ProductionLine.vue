@@ -6,26 +6,29 @@
       </b-col>
     </b-row>
     <b-row>
-      <b-col cols="8">
-        <b-row>
-          <b-col cols="3">
-            <label class="top-label">Line:</label>
-            <b-select v-if="!inProgress() && !isFinished()" option-value="id" option-text="number" :list="availableLines" v-model="line" placeholder="Select line"></b-select>
-			<input v-if="inProgress() || isFinished()" class="form-control" type="tel" readonly :value="productionLine.line.number">
-          </b-col>
-          <b-col cols="3">
-            <label class="top-label">Item:</label>
-            <b-select v-if="!inProgress() && !isFinished()" option-value="id" option-text="number" :list="availableItems" v-model="item" placeholder="Select item"></b-select>
-			<input v-if="inProgress() || isFinished()" class="form-control" type="tel" readonly :value="productionLine.item.number">
-          </b-col>
-		  <b-col cols=3>
-  			<b-button v-if="inProgress() && !isFinished()" type="submit" style="margin-top: 25px" variant="success" @click="addOutput">Add Units Produced</b-button>
-		  </b-col>
-          <b-col cols="3">
-            <b-button v-if="!inProgress() && !isFinished()" type="submit" style="margin-top: 25px" variant="success" @click="startProduction">Start Production</b-button>
-			<b-button v-if="inProgress() && !isFinished()" type="submit" style="margin-top: 25px" variant="success" @click="finishProduction">Finish Production</b-button>
-          </b-col>
-        </b-row>
+      <b-col cols="2">
+        <label class="top-label">Line:</label>
+        <b-select v-if="!inProgress() && !isFinished()" option-value="id" option-text="number" :list="availableLines" v-model="line" placeholder="Select line"></b-select>
+        <input v-if="inProgress() || isFinished()" class="form-control" type="tel" readonly :value="productionLine.line.number">
+      </b-col>
+      <b-col cols="2">
+        <label class="top-label">Item:</label>
+        <b-select v-if="!inProgress() && !isFinished()" option-value="id" option-text="number" :list="availableItems" v-model="item" placeholder="Select item"></b-select>
+        <input v-if="inProgress() || isFinished()" class="form-control" type="tel" readonly :value="productionLine.item.number">
+      </b-col>
+      <b-col cols="2">
+        <b-button v-if="inProgress() && !isFinished()" type="submit" style="margin-top: 25px" variant="success" @click="addOutput">Add Units Produced</b-button>
+      </b-col>
+      <b-col cols="2">
+        <b-button v-if="!inProgress() && !isFinished()" type="submit" style="margin-top: 25px" variant="success" @click="startProduction">Start Production</b-button>
+        <b-button v-if="inProgress() && !isFinished()" type="submit" style="margin-top: 25px" variant="success" @click="finishProduction">Finish Production</b-button>
+      </b-col>
+    </b-row>
+    <b-row>
+      <b-col cols=4>
+        <div v-if="productionLine.productionOutputs.length==0">No lines set for this date</div>
+        <b-table v-if="productionLine.productionOutputs.length>0" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="productionLine.productionOutputs" :fields="fields">
+        </b-table>
       </b-col>
     </b-row>
   </b-container>
@@ -41,12 +44,20 @@ export default {
   name: "edit-component",
   data() {
     return {
-      productionLine: {line: {},item:{}},
+      productionLine: { line: {}, item: {}, productionOutputs: [] },
       availableLines: [],
       line: {},
       availableItems: [],
       item: {},
-      dateStarted: moment().utc().format("YYYY-MM-DD")
+      dateStarted: moment()
+        .utc()
+		.format("YYYY-MM-DD"),
+	  sortBy: "line.number",
+      sortDesc: false,
+      fields: [
+        { key: "timeProduced", label: "Time", sortable: true },
+        { key: "units", label: "Units Produced", sortable: true },
+      ]
     };
   },
   watch: {
@@ -86,58 +97,67 @@ export default {
         .catch(e => {
           console.log("API error: " + e);
         });
-	},
-	validate(){
-		if(!this.line.id){
-			alert("Please select line");
-			return false;
-		}
-		if(!this.item.id){
-			alert("Please select item");
-			return false;
-		}
-		return true;
-	},
-	startProduction() {
-	  if(!this.validate()){
-		  return;
-	  }
+    },
+    validate() {
+      if (!this.line.id) {
+        alert("Please select line");
+        return false;
+      }
+      if (!this.item.id) {
+        alert("Please select item");
+        return false;
+      }
+      return true;
+    },
+    startProduction() {
+      if (!this.validate()) {
+        return;
+      }
       var productionLine = {
-		  line: {id: this.line.id},
-		  item: {id: this.item.id},
-		  dateStarted: this.dateStarted,
-		  timeStarted: moment().utc().format("hh:mm:ss")
-	  };
+        line: { id: this.line.id },
+        item: { id: this.item.id },
+        dateStarted: this.dateStarted,
+        timeStarted: moment()
+          .utc()
+          .format("hh:mm:ss")
+      };
       return http
         .post("/productionLine", productionLine)
         .then(response => {
-          router.push('/productionLineList');
+          router.push("/productionLineList");
         })
         .catch(e => {
           console.log("API error: " + e);
         });
-	},
-	finishProduction() {
-	  this.productionLine.dateFinished = moment().utc().format("YYYY-MM-DD");
-	  this.productionLine.timeFinished = moment().utc().format("hh:mm:ss");
+    },
+    finishProduction() {
+      this.productionLine.dateFinished = moment()
+        .utc()
+        .format("YYYY-MM-DD");
+      this.productionLine.timeFinished = moment()
+        .utc()
+        .format("hh:mm:ss");
       return http
         .post("/productionLine", this.productionLine)
         .then(response => {
-		  router.push('/productionLineList');
+          router.push("/productionLineList");
         })
         .catch(e => {
           console.log("API error: " + e);
         });
-	},
-	addOutput(){
-		router.push('/productionOutputEdit/'+this.productionLine.id);
-	},
-	inProgress(){
-		return this.productionLine.dateStarted != null && this.productionLine.dateFinished==null;
-	},
-	isFinished(){
-		return this.productionLine.dateFinished !=null;
-	}
+    },
+    addOutput() {
+      router.push("/productionOutputEdit/" + this.productionLine.id);
+    },
+    inProgress() {
+      return (
+        this.productionLine.dateStarted != null &&
+        this.productionLine.dateFinished == null
+      );
+    },
+    isFinished() {
+      return this.productionLine.dateFinished != null;
+    }
   },
   mounted() {
     var production_line_id = this.$route.params.production_line_id;
