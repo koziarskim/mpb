@@ -101,7 +101,7 @@ export default {
       return http
         .post("/productionOutput", productionOutput)
         .then(response => {
-          router.push('/productionLine/'+this.productionLine.id);
+          window.history.back();
         })
         .catch(e => {
           console.log("API error: " + e);

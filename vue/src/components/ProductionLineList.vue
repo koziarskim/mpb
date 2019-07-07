@@ -18,6 +18,12 @@
       <template slot="line.number" slot-scope="row">
         <b-button size="sm" @click.stop="goToProductionLine(row.item.id)" variant="link">{{row.item.line.number}}</b-button>
       </template>
+      <template slot="addUnits" slot-scope="row">
+		<b-button size="sm" type="submit" :disabled="row.item.dateFinished!=null" variant="success" @click="addUnits(row.item.id)">Add Units</b-button>
+      </template>
+      <template slot="finishProduction" slot-scope="row">
+		<b-button size="sm" type="submit" :disabled="row.item.dateFinished!=null" variant="success" @click="finishProduction(row.item)">Finish</b-button>
+      </template>
     </b-table>
   </b-container>
 </template>
@@ -42,7 +48,9 @@ export default {
         { key: "item.number", label: "Item", sortable: true },
         { key: "timeStarted", label: "Started", sortable: true },
         { key: "timeFinished", label: "Finished", sortable: true },
-        { key: "totalProduced", label: "Units Produced", sortable: true }
+		{ key: "totalProduced", label: "Total Produced", sortable: true },
+		{ key: "addUnits", label: "Production Output", sortable: true },
+		{ key: "finishProduction", label: "Finish Production", sortable: true },
       ]
     };
   },
@@ -68,7 +76,26 @@ export default {
         return;
       }
       router.push("/productionLine");
-    }
+	},
+	addUnits(production_line_id){
+		router.push("/productionOutputEdit/" + production_line_id);
+	},
+	finishProduction(productionLine){
+      productionLine.dateFinished = moment()
+        .utc()
+        .format("YYYY-MM-DD");
+      productionLine.timeFinished = moment()
+        .utc()
+        .format("hh:mm:ss");
+      return http
+        .post("/productionLine", productionLine)
+        .then(response => {
+          this.getProductionLines(this.date);
+        })
+        .catch(e => {
+          console.log("API error: " + e);
+        });
+	},
   },
   mounted() {
     this.getProductionLines(this.date);
