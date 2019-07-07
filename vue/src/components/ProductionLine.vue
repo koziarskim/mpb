@@ -103,22 +103,24 @@ export default {
 		  line: {id: this.line.id},
 		  item: {id: this.item.id},
 		  dateStarted: this.dateStarted,
+		  timeStarted: moment().utc().format("hh:mm:ss")
 	  };
       return http
         .post("/productionLine", productionLine)
         .then(response => {
-          router.push('/productionLine/'+response.data.id);
+          router.push('/productionLineList');
         })
         .catch(e => {
           console.log("API error: " + e);
         });
 	},
 	finishProduction() {
-      this.productionLine.dateFinished = moment().utc().format("YYYY-MM-DD");
+	  this.productionLine.dateFinished = moment().utc().format("YYYY-MM-DD");
+	  this.productionLine.timeFinished = moment().utc().format("hh:mm:ss");
       return http
         .post("/productionLine", this.productionLine)
         .then(response => {
-          this.productionLine = response.data;
+		  router.push('/productionLineList');
         })
         .catch(e => {
           console.log("API error: " + e);
