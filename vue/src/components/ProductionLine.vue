@@ -16,8 +16,8 @@
         <b-select v-if="!inProgress() && !isFinished()" option-value="id" option-text="number" :list="availableItems" v-model="item" placeholder="Select item"></b-select>
         <input v-if="inProgress() || isFinished()" class="form-control" type="tel" readonly :value="productionLine.item.number">
       </b-col>
-      <b-col cols="2">
-        <b-button v-if="inProgress() && !isFinished()" type="submit" style="margin-top: 25px" variant="success" @click="addOutput">Add Units Produced</b-button>
+      <b-col cols="2" v-if="inProgress() && !isFinished()">
+        <b-button type="submit" style="margin-top: 25px" variant="success" @click="addOutput">Add Units Produced</b-button>
       </b-col>
       <b-col cols="2">
         <b-button v-if="!inProgress() && !isFinished()" type="submit" style="margin-top: 25px" variant="success" @click="startProduction">Start Production</b-button>
@@ -26,7 +26,6 @@
     </b-row>
     <b-row>
       <b-col cols=4>
-        <div v-if="productionLine.productionOutputs.length==0">No lines set for this date</div>
         <b-table v-if="productionLine.productionOutputs.length>0" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="productionLine.productionOutputs" :fields="fields">
         </b-table>
       </b-col>
