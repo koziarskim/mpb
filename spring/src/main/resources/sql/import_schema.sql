@@ -496,6 +496,8 @@ CREATE TABLE public.production_line (
     updated timestamp without time zone,
     date_started date,
 	date_finished date,
+	time_started time without time zone,
+	time_finished time without time zone,
     item_id bigint,
 	line_id bigint
 );

@@ -43,9 +43,7 @@ export default {
       line: {},
       availableItems: [],
       item: {},
-      dateStarted: moment()
-        .utc()
-        .format("YYYY-MM-DD")
+      dateStarted: moment().utc().format("YYYY-MM-DD")
     };
   },
   watch: {
@@ -54,7 +52,7 @@ export default {
     }
   },
   methods: {
-    getProduction(production_line_id) {
+    getProductionLine(production_line_id) {
       http
         .get("/productionLine/" + production_line_id)
         .then(response => {
@@ -136,7 +134,7 @@ export default {
   mounted() {
     var production_line_id = this.$route.params.production_line_id;
     if (production_line_id) {
-      this.getProduction(production_line_id);
+      this.getProductionLine(production_line_id);
     }
     this.getAvailableLines();
   }

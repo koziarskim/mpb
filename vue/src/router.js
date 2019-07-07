@@ -29,6 +29,7 @@ import ShipmentEdit from "./components/ShipmentEdit";
 import ShipmentList from "./components/ShipmentList";
 import ScheduleEventList from "./components/ScheduleEventList";
 import ProductionLine from "./components/ProductionLine";
+import ProductionLineList from "./components/ProductionLineList";
 
 Vue.use(Router);
 
@@ -190,6 +191,11 @@ const router = new Router({
       name: "ProductionLine",
       component: ProductionLine
     },
+    {
+      path: "/ProductionLineList",
+      name: "ProductionLineList",
+      component: ProductionLineList
+    }
   ]
 });
 
