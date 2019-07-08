@@ -15,12 +15,14 @@ import Search from "./directives/Search";
 import UploadImage from "./directives/UploadImage";
 import ScheduleModal from "./components/ScheduleModal";
 import ProductionModal from "./components/ProductionModal";
+import Chart from "./directives/Chart";
 
 
 Vue.use(BootstrapVue, {
   prefix: "b"
 });
 Vue.directive("mask", CustomMask);
+Vue.component("chart", Chart);
 Vue.component("search", Search);
 Vue.component("upload", UploadImage);
 Vue.component("b-select", ModelListSelect);

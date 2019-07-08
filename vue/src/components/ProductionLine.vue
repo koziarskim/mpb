@@ -30,6 +30,9 @@
         </b-table>
       </b-col>
     </b-row>
+	<b-row>
+		<!-- <chart :chartdata="cd" :width="820" :height="300"></chart> -->
+	</b-row>
   </b-container>
 </template>
 
@@ -39,10 +42,25 @@ import router from "../router";
 import httpUtils from "../httpUtils";
 import moment from "moment";
 
+
 export default {
   name: "edit-component",
   data() {
     return {
+	  cd: {
+      labels: ['10:00', '11:15', '12:45', '13:44', '14:12', '16:00', '17:00'],
+      datasets: [
+        {
+          label: 'Data One',
+          backgroundColor: '#f87979',
+          data: [40, 39, 10, 40, 39, 80, 40]
+        }
+      ]
+	},
+	co:{
+		responsive:true,
+		width: "800"
+	},
       productionLine: { line: {}, item: {}, productionOutputs: [] },
       availableLines: [],
       line: {},
