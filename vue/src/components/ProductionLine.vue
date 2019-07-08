@@ -24,14 +24,14 @@
         <b-button v-if="inProgress() && !isFinished()" type="submit" style="margin-top: 25px" variant="success" @click="finishProduction">Finish Production</b-button>
       </b-col>
     </b-row>
-    <b-row>
+    <!-- <b-row>
       <b-col cols=4>
         <b-table v-if="productionLine.productionOutputs.length>0" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="productionLine.productionOutputs" :fields="fields">
         </b-table>
       </b-col>
-    </b-row>
+    </b-row> -->
 	<b-row>
-		<!-- <chart :chartdata="cd" :width="820" :height="300"></chart> -->
+		<chart :chartdata="cd" :options="co" :width="820" :height="300"></chart>
 	</b-row>
   </b-container>
 </template>
@@ -47,20 +47,8 @@ export default {
   name: "edit-component",
   data() {
     return {
-	  cd: {
-      labels: ['10:00', '11:15', '12:45', '13:44', '14:12', '16:00', '17:00'],
-      datasets: [
-        {
-          label: 'Data One',
-          backgroundColor: '#f87979',
-          data: [40, 39, 10, 40, 39, 80, 40]
-        }
-      ]
-	},
-	co:{
-		responsive:true,
-		width: "800"
-	},
+	  cd: {},
+	  co: {legend: {display: false}},
       productionLine: { line: {}, item: {}, productionOutputs: [] },
       availableLines: [],
       line: {},
@@ -87,12 +75,23 @@ export default {
       http
         .get("/productionLine/" + production_line_id)
         .then(response => {
-          this.productionLine = response.data;
+		  this.productionLine = response.data;
+		  this.updateChart();
         })
         .catch(e => {
           console.log("API error: " + e);
         });
-    },
+	},
+	updateChart(){
+		this.cd = {
+			labels: [this.productionLine.timeStarted],
+			datasets: [{data: [0], lineTension: 0}]
+		}
+		this.productionLine.productionOutputs.forEach(output => {
+			this.cd.labels.push(output.timeProduced);
+			this.cd.datasets[0].data.push(output.units);
+		})
+	},
     getAvailableLines() {
       this.availableLines = [
         { id: 1, number: 1 },
