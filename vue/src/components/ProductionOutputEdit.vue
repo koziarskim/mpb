@@ -95,7 +95,7 @@ export default {
       var productionOutput = {
 		  productionLine: {id: this.productionLine.id},
 		  dateProduced: this.productionLine.dateStarted,
-		  timeProduced: moment().utc().format("hh:mm:ss"),
+		  timeProduced: moment().format("HH:mm:ss"),
 		  units: this.unitsProduced
 	  };
       return http

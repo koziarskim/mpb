@@ -4,6 +4,9 @@
       <b-col cols="4">
         <h4 style="text-align: left;">Production Line Output: {{this.dateStarted}}</h4>
       </b-col>
+  	  <b-col cols=2>
+		  <input :disabled="inProgress() || isFinished()" class="form-control" type="time" v-model="timeStarted">
+	  </b-col>
     </b-row>
     <b-row>
       <b-col cols="2">
@@ -16,6 +19,14 @@
         <b-select v-if="!inProgress() && !isFinished()" option-value="id" option-text="number" :list="availableItems" v-model="item" placeholder="Select item"></b-select>
         <input v-if="inProgress() || isFinished()" class="form-control" type="tel" readonly :value="productionLine.item.number">
       </b-col>
+	  <b-col cols=2>
+		  <label class="top-label">Scheduled Units:</label>
+		  <input :disabled="inProgress() || isFinished()" class="form-control" type="tel" v-model="productionLine.unitsScheduled">
+	  </b-col>
+	  <b-col cols=1>
+		  <label class="top-label">People:</label>
+		  <input :disabled="inProgress() || isFinished()" class="form-control" type="tel" v-model="productionLine.people">
+	  </b-col>
       <b-col cols="2" v-if="inProgress() && !isFinished()">
         <b-button type="submit" style="margin-top: 25px" variant="success" @click="addOutput">Add Units Produced</b-button>
       </b-col>
@@ -31,7 +42,7 @@
       </b-col>
     </b-row> -->
 	<b-row>
-		<chart :chartdata="cd" :options="co" :width="820" :height="300"></chart>
+		<chart :chartdata="cd" :options="co" :width="900" :height="300"></chart>
 	</b-row>
   </b-container>
 </template>
@@ -55,8 +66,9 @@ export default {
       availableItems: [],
       item: {},
       dateStarted: moment()
-        .utc()
 		.format("YYYY-MM-DD"),
+	  timeStarted: moment()
+          .format("HH:mm:ss"),
 	  sortBy: "line.number",
       sortDesc: false,
       fields: [
@@ -133,9 +145,9 @@ export default {
         line: { id: this.line.id },
         item: { id: this.item.id },
         dateStarted: this.dateStarted,
-        timeStarted: moment()
-          .utc()
-          .format("hh:mm:ss")
+		timeStarted: this.timeStarted,
+		people: this.productionLine.people,
+		unitsScheduled: this.productionLine.unitsScheduled
       };
       return http
         .post("/productionLine", productionLine)
@@ -148,11 +160,9 @@ export default {
     },
     finishProduction() {
       this.productionLine.dateFinished = moment()
-        .utc()
         .format("YYYY-MM-DD");
       this.productionLine.timeFinished = moment()
-        .utc()
-        .format("hh:mm:ss");
+        .format("HH:mm:ss");
       return http
         .post("/productionLine", this.productionLine)
         .then(response => {

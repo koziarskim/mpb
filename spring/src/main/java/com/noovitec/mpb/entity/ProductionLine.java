@@ -3,6 +3,7 @@ package com.noovitec.mpb.entity;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -42,6 +43,8 @@ public class ProductionLine {
 	private LocalDate dateFinished;
 	private LocalTime timeStarted;
 	private LocalTime timeFinished;
+	private Long people = 0L;
+	private Long unitsScheduled = 0L;
 
 	@JsonIgnoreProperties({ "itemComponents", "saleItems" })
 	@ManyToOne()
@@ -66,5 +69,18 @@ public class ProductionLine {
 			units += po.getUnits();
 		}
 		return units;
+	}
+	
+	@Transient
+	private String totalTime = "0:0:0";
+	
+	public String getTotalTime() {
+		if(this.timeFinished!=null) {
+			Long hours = ChronoUnit.HOURS.between(this.timeFinished, this.timeStarted);
+			Long mins = ChronoUnit.MINUTES.between(this.timeFinished, this.timeStarted);
+			Long secs = ChronoUnit.SECONDS.between(this.timeStarted, this.timeFinished);
+			totalTime = secs/3600+":"+secs/60+":"+secs;
+		}
+		return totalTime.substring(0, totalTime.length() - 1);
 	}
 }

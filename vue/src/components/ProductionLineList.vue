@@ -38,7 +38,6 @@ export default {
   data() {
     return {
       date: moment()
-        .utc()
         .format("YYYY-MM-DD"),
       productionLines: [],
       sortBy: "line.number",
@@ -47,7 +46,8 @@ export default {
         { key: "line.number", label: "Line", sortable: true },
         { key: "item.number", label: "Item", sortable: true },
         { key: "timeStarted", label: "Started", sortable: true },
-        { key: "timeFinished", label: "Finished", sortable: true },
+		{ key: "timeFinished", label: "Finished", sortable: true },
+		{ key: "totalTime", label: "Total Time", sortable: true },
 		{ key: "totalProduced", label: "Total Produced", sortable: true },
 		{ key: "addUnits", label: "Production Output", sortable: true },
 		{ key: "finishProduction", label: "Finish Production", sortable: true },
@@ -82,11 +82,9 @@ export default {
 	},
 	finishProduction(productionLine){
       productionLine.dateFinished = moment()
-        .utc()
         .format("YYYY-MM-DD");
       productionLine.timeFinished = moment()
-        .utc()
-        .format("hh:mm:ss");
+        .format("HH:mm:ss");
       return http
         .post("/productionLine", productionLine)
         .then(response => {

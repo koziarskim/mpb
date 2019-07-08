@@ -498,6 +498,8 @@ CREATE TABLE public.production_line (
 	date_finished date,
 	time_started time without time zone,
 	time_finished time without time zone,
+	people bigint,
+	units_scheduled bigint,
     item_id bigint,
 	line_id bigint
 );
