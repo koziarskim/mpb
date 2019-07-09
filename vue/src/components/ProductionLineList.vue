@@ -2,7 +2,7 @@
   <b-container fluid>
     <b-row style="padding-bottom: 4px;">
       <b-col cols="3">
-        <span style="text-align: left; font-size: 18px; font-weight: bold">Daily Production Status:</span>
+        <span style="font-size: 18px; font-weight: bold">Daily Production Status:</span>
       </b-col>
       <b-col cols="2">
         <input class="form-control" type="date" v-model="date" placeholder="Date">
@@ -18,11 +18,14 @@
       <template slot="line.number" slot-scope="row">
         <b-button size="sm" @click.stop="goToProductionLine(row.item.id)" variant="link">{{row.item.line.number}}</b-button>
       </template>
-      <template slot="addUnits" slot-scope="row">
+      <!-- <template slot="addUnits" slot-scope="row">
 		<b-button size="sm" type="submit" :disabled="row.item.dateFinished!=null" variant="success" @click="addUnits(row.item.id)">Add Units</b-button>
       </template>
       <template slot="finishProduction" slot-scope="row">
 		<b-button size="sm" type="submit" :disabled="row.item.dateFinished!=null" variant="success" @click="finishProduction(row.item)">Finish</b-button>
+      </template> -->
+      <template slot="totalTime" slot-scope="row">
+		  <span>{{formatTime(row.item.totalTime)}}</span>
       </template>
     </b-table>
   </b-container>
@@ -45,12 +48,9 @@ export default {
       fields: [
         { key: "line.number", label: "Line", sortable: true },
         { key: "item.number", label: "Item", sortable: true },
-        { key: "timeStarted", label: "Started", sortable: true },
-		{ key: "timeFinished", label: "Finished", sortable: true },
 		{ key: "totalTime", label: "Total Time", sortable: true },
 		{ key: "totalProduced", label: "Total Produced", sortable: true },
-		{ key: "addUnits", label: "Production Output", sortable: true },
-		{ key: "finishProduction", label: "Finish Production", sortable: true },
+        { key: "unitsPending", label: "Still To Make", sortable: true },
       ]
     };
   },
@@ -60,6 +60,10 @@ export default {
     }
   },
   methods: {
+	formatTime(secs){
+		const duration = moment.duration(secs, 'seconds');
+		return duration.hours()+':'+duration.minutes()+':'+duration.seconds();
+	},
     getProductionLines(dateStarted) {
       http
         .get("/productionLine/dateStarted/"+dateStarted)

@@ -1,5 +1,6 @@
 package com.noovitec.mpb.entity;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -72,15 +73,23 @@ public class ProductionLine {
 	}
 	
 	@Transient
-	private String totalTime = "0:0:0";
+	private Long totalTime = 0L; //In seconds.
 	
-	public String getTotalTime() {
+	public Long getTotalTime() {
 		if(this.timeFinished!=null) {
-			Long hours = ChronoUnit.HOURS.between(this.timeFinished, this.timeStarted);
-			Long mins = ChronoUnit.MINUTES.between(this.timeFinished, this.timeStarted);
-			Long secs = ChronoUnit.SECONDS.between(this.timeStarted, this.timeFinished);
-			totalTime = secs/3600+":"+secs/60+":"+secs;
+			this.totalTime = ChronoUnit.SECONDS.between(this.timeStarted, this.timeFinished);
 		}
-		return totalTime.substring(0, totalTime.length() - 1);
+		return totalTime;
+	}
+	
+	@Transient
+	private Long unitsPending = 0L;
+	
+	public Long getUnitsPending() {
+		Long units = 0L;
+		for(ProductionOutput po: this.productionOutputs) {
+			units += po.getUnits();
+		}
+		return this.unitsScheduled==null?0L:this.unitsScheduled - units;
 	}
 }

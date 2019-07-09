@@ -1,11 +1,13 @@
 <template>
   <b-container fluid>
     <b-row>
-      <b-col cols="4">
-        <h4 style="text-align: left;">Production Line Output: {{this.dateStarted}}</h4>
+      <b-col cols="6">
+        <span style="font-size: 18px; font-weight: bold">Production Line Output </span>
+		<span style="font-size:18px">Started: {{dateStarted}} </span>
+		<span v-if="inProgress() || isFinished()" style="font-size:18px">@: {{timeStarted}} </span>
       </b-col>
   	  <b-col cols=2>
-		  <input :disabled="inProgress() || isFinished()" class="form-control" type="time" v-model="timeStarted">
+		  <input v-if="!inProgress()" class="form-control" type="time" v-model="timeStarted">
 	  </b-col>
     </b-row>
     <b-row>
