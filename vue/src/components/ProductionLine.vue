@@ -29,8 +29,12 @@
 		  <label class="top-label">People:</label>
 		  <input :disabled="inProgress() || isFinished()" class="form-control" type="tel" v-model="productionLine.people">
 	  </b-col>
-      <b-col cols="2" v-if="inProgress() && !isFinished()">
-        <b-button type="submit" style="margin-top: 25px" variant="success" @click="addOutput">Add Units Produced</b-button>
+      <b-col cols="1" v-if="inProgress() && !isFinished()" style="margin-top: 25px">
+        <b-button v-if="!addInProgress" type="submit" variant="success" @click="addOutput">Add</b-button>
+		<b-button v-if="addInProgress" type="submit" variant="success" @click="saveOutput">Save</b-button>
+	</b-col>
+	<b-col cols="1" style="margin-top: 25px">
+		<input v-if="addInProgress" class="form-control"  type="tel" v-model="unitsToAdd">
       </b-col>
       <b-col cols="2">
         <b-button v-if="!inProgress() && !isFinished()" type="submit" style="margin-top: 25px" variant="success" @click="startProduction">Start Production</b-button>
@@ -60,6 +64,8 @@ export default {
   name: "edit-component",
   data() {
     return {
+	  addInProgress: false,
+	  unitsToAdd: 0,
 	  cd: {},
 	  co: {legend: {display: false}},
       productionLine: { line: {}, item: {}, productionOutputs: [] },
@@ -175,8 +181,25 @@ export default {
         });
     },
     addOutput() {
-      router.push("/productionOutputEdit/" + this.productionLine.id);
-    },
+      this.addInProgress = true;
+	},
+	saveOutput(){
+		var productionOutput = {
+		  productionLine: {id: this.productionLine.id},
+		  dateProduced: this.productionLine.dateStarted,
+		  timeProduced: moment().format("HH:mm:ss"),
+		  units: this.unitsToAdd
+	  };
+      return http
+        .post("/productionOutput", productionOutput)
+        .then(response => {
+			this.getProductionLine(this.productionLine.id);
+        })
+        .catch(e => {
+          console.log("API error: " + e);
+        });
+		this.addInProgress = false;
+	},
     inProgress() {
       return (
         this.productionLine.dateStarted != null &&

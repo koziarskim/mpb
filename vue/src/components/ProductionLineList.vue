@@ -9,7 +9,7 @@
       </b-col>
       <b-col>
         <div style="text-align: right;">
-          <b-button type="submit" variant="primary" @click="goToProductionLine('')">Set New Line</b-button>
+          <!-- <b-button type="submit" variant="primary" @click="goToProductionLine('')">Set New Line</b-button> -->
         </div>
       </b-col>
     </b-row>

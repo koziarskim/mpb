@@ -47,14 +47,14 @@
         </b-col>
         <b-col cols="4" v-if="itemAvailability.id">
           <label class="top-label">Total Sold: {{saleItem.units}}</label>
-          <br>
+          <!-- <br>
           <label class="top-label">Total scheduled: {{unitsTotalScheduled}}</label>
           <br>
           <label class="top-label">Total produced: {{saleItem.unitsProduced}}</label>
           <br>
           <label class="top-label">Still ready to schedule: {{unitsReadyToSchedule}}</label>
           <br>
-          <label class="top-label">Still ready for production: {{unitsReadyForProduction}}</label>
+          <label class="top-label">Still ready for production: {{unitsReadyForProduction}}</label> -->
           <!-- <br>
           <label class="top-label">Diff: {{unitsDiff}}</label>-->
         </b-col>
@@ -129,6 +129,27 @@ export default {
     }
   },
   methods: {
+	startProduction() {
+    //   if (!this.validate()) {
+    //     return;
+    //   }
+      var productionLine = {
+        line: { id: this.line.id },
+        item: { id: this.saleItem.item.id },
+        dateStarted: this.schedule.date,
+		timeStarted: this.scheduleEvent.startTime,
+		people: 0,
+		unitsScheduled: this.scheduleEvent.unitsScheduled
+      };
+      return http
+        .post("/productionLine", productionLine)
+        .then(response => {
+          router.push("/productionLineList");
+        })
+        .catch(e => {
+          console.log("API error: " + e);
+        });
+    },
     getAvailableSaleItems(sale_id) {
       if (!sale_id) {
         this.modalData.availableSales = [];
@@ -237,7 +258,8 @@ export default {
       http
         .post("/scheduleEvent", this.scheduleEvent)
         .then(response => {
-          this.closeModal();
+		  this.startProduction();
+        //   this.closeModal();
         })
         .catch(e => {
           console.log("API error: " + e);
