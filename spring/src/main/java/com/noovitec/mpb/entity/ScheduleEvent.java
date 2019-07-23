@@ -2,6 +2,7 @@ package com.noovitec.mpb.entity;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -39,6 +40,7 @@ public class ScheduleEvent {
 	private LocalDateTime updated;
 	Long unitsScheduled;
 	LocalTime startTime;
+	LocalTime finishTime;
 
 	@JsonIgnoreProperties(value = { "scheduleEvents" }, allowSetters = true)
 	@ManyToOne()
@@ -77,6 +79,29 @@ public class ScheduleEvent {
 	}
 	
 	public boolean isEventCompleted() {
-		return this.getTotalProduced() >= this.getUnitsScheduled();
+		Long produced = this.getTotalProduced();
+		Long scheduled = this.getUnitsScheduled()==null?0L:this.getUnitsScheduled();
+		return produced >= scheduled;
+	}
+	
+	@Transient
+	private Long totalTime = 0L; //In seconds.
+	
+	public Long getTotalTime() {
+		if(this.finishTime!=null) {
+			this.totalTime = ChronoUnit.SECONDS.between(this.startTime, this.finishTime);
+		}
+		return totalTime;
+	}
+	
+	@Transient
+	private Long unitsPending = 0L;
+	
+	public Long getUnitsPending() {
+		Long units = 0L;
+		for(Production p: this.getProductions()) {
+			units += p.getUnitsProduced();
+		}
+		return this.unitsScheduled==null?0L:this.unitsScheduled - units;
 	}
 }

@@ -38,7 +38,7 @@
       <b-row>
         <b-col cols="4">
           <label class="top-label">Start:</label>
-          <input class="form-control" type="time" v-model="scheduleEvent.startTime">
+          <input class="form-control" type="time" v-model="scheduleEvent.scheduleTime">
         </b-col>
         <b-col cols="4">
           <label class="top-label">Units Scheduled:</label>
@@ -137,7 +137,7 @@ export default {
         line: { id: this.line.id },
         item: { id: this.saleItem.item.id },
         dateStarted: this.schedule.date,
-		timeStarted: this.scheduleEvent.startTime,
+		timeStarted: this.scheduleEvent.scheduleTime,
 		people: 0,
 		unitsScheduled: this.scheduleEvent.unitsScheduled
       };
@@ -231,7 +231,7 @@ export default {
       if (
         !this.line ||
         !this.saleItem ||
-        !this.scheduleEvent.startTime ||
+        !this.scheduleEvent.scheduleTime ||
         this.scheduleEvent.unitsScheduled <= 0
       ) {
         alert("Make sure all fields are entered");

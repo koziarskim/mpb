@@ -33,6 +33,7 @@ public class Production {
 	private LocalDateTime updated;
 	private LocalTime finishTime;
 	private Long unitsProduced;
+	private Long people;
 
 	@ManyToOne()
 	@JoinColumn(name = "schedule_event_id", referencedColumnName = "id")

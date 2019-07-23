@@ -63,25 +63,25 @@ class ProductionRest {
 		if (production == null) {
 			production = new Production();
 		}
+		ScheduleEvent scheduleEvent = scheduleEventRepo.getOne(production.getScheduleEvent().getId());
 		Production result = productionRepo.save(production);
-		ScheduleEvent scheduleEvent = scheduleEventRepo.getOne(result.getScheduleEvent().getId());
 		// update component.unitsReserved then component.unitsOnStack
-		for (ItemComponent ic : scheduleEvent.getSaleItem().getItem().getItemComponents()) {
-			float componentUnitsFloat = result.getUnitsProduced() * ic.getUnits();
-			Long componentUnits = (long) new BigDecimal(componentUnitsFloat).setScale(0, RoundingMode.DOWN).intValue();
-			Component component = ic.getComponent();
-			// Subtract
-			Long extraUnits = component.addUnitsReserved(componentUnits * (-1));
-			if (extraUnits > 0) {
-				throw new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED, "Units produced exceeded units reserved.");
-			}
-			// Subtract
-			extraUnits = component.addUnitsOnStack(componentUnits * (-1));
-			if (extraUnits > 0) {
-				throw new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED, "Units produced exceeded units on stack.");
-			}
-			componentRepo.save(component);
-		}
+//		for (ItemComponent ic : scheduleEvent.getSaleItem().getItem().getItemComponents()) {
+//			float componentUnitsFloat = result.getUnitsProduced() * ic.getUnits();
+//			Long componentUnits = (long) new BigDecimal(componentUnitsFloat).setScale(0, RoundingMode.DOWN).intValue();
+//			Component component = ic.getComponent();
+//			// Subtract
+//			Long extraUnits = component.addUnitsReserved(componentUnits * (-1));
+//			if (extraUnits > 0) {
+//				throw new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED, "Units produced exceeded units reserved.");
+//			}
+//			// Subtract
+//			extraUnits = component.addUnitsOnStack(componentUnits * (-1));
+//			if (extraUnits > 0) {
+//				throw new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED, "Units produced exceeded units on stack.");
+//			}
+//			componentRepo.save(component);
+//		}
 		// update item.unitsOnStack, item.unitsInProduction, item.unitsScheduled
 		Item item = itemRepo.findById(scheduleEvent.getSaleItem().getItem().getId()).get();
 		item.addUnitsOnStack(result.getUnitsProduced());

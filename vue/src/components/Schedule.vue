@@ -136,7 +136,7 @@ export default {
     },
     validateModal() {
       if (
-        !this.modalData.scheduleEvent.startTime ||
+        !this.modalData.scheduleEvent.scheduleTime ||
         !this.modalData.selectedLine ||
         !this.modalData.selectedItem
       ) {

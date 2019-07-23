@@ -55,6 +55,15 @@ class ScheduleRest {
 		return scheduleRepo.findAll();
 	}
 
+	@GetMapping("/schedule/single/date/{date}")
+	Schedule getByDate(@PathVariable(name = "date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
+		List<Schedule> result = scheduleRepo.findByDate(date);
+		if(result.size()>0) {
+			return result.get(0);
+		}
+		return null;
+	}
+	
 	@GetMapping("/schedule/date/{date}")
 	Collection<Schedule> findByDate(@PathVariable(name = "date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
 		int days = 6;

@@ -188,7 +188,7 @@ const router = new Router({
       component: ScheduleEventList
     },
     {
-      path: "/ProductionLine/:production_line_id?",
+      path: "/ProductionLine/:schedule_event_id?",
       name: "ProductionLine",
       component: ProductionLine
     },

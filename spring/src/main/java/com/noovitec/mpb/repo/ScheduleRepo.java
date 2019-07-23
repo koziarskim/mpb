@@ -16,4 +16,7 @@ public interface ScheduleRepo extends JpaRepository<Schedule, Long> {
 	List<Schedule> findByRange(@Param("dateFrom") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dateFrom,
 			@Param("dateTo") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dateTo);
 
+	@Query("select s from Schedule s where s.date = :date")
+	List<Schedule> findByDate(@Param("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date);
+
 }
