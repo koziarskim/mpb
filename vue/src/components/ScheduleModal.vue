@@ -37,16 +37,17 @@
       </b-row>
       <b-row>
         <b-col cols="4">
-          <label class="top-label">Start:</label>
-          <input class="form-control" type="time" v-model="scheduleEvent.scheduleTime">
+          <label class="top-label">Scheduled to Start:</label>
+          <input class="form-control" type="time" v-model="scheduleEvent.schedule.date">
         </b-col>
         <b-col cols="4">
           <label class="top-label">Units Scheduled:</label>
           <input class="form-control" type="tel" v-model="scheduleEvent.unitsScheduled">
-          <label class="top-label">This produced: {{scheduleEvent.totalProduced}}</label>
         </b-col>
         <b-col cols="4" v-if="itemAvailability.id">
           <label class="top-label">Total Sold: {{saleItem.units}}</label>
+		  <br/>
+		  <label class="top-label">Total Produced: {{scheduleEvent.totalProduced}}</label>
           <!-- <br>
           <label class="top-label">Total scheduled: {{unitsTotalScheduled}}</label>
           <br>
@@ -59,13 +60,13 @@
           <label class="top-label">Diff: {{unitsDiff}}</label>-->
         </b-col>
       </b-row>
-      <b-row>
+      <!-- <b-row>
         <b-col>
           <label class="top-label" v-if="scheduleEvent.eventCompleted">Production done for this schedule. There might be other sales/items in progress.</label>
           <label class="top-label" v-if="itemAvailability.unitsToSchedule < scheduleEvent.unitsScheduled - scheduleEvent.totalProduced">Scheduled more that components in stock + transit.</label>
           <label class="top-label" v-else-if="itemAvailability.unitsToProduction < scheduleEvent.unitsScheduled - scheduleEvent.totalProduced">Scheduled more that could produce. Not enough components in stock.</label>
         </b-col>
-      </b-row>
+      </b-row> -->
     </b-modal>
   </b-container>
 </template>
@@ -129,27 +130,6 @@ export default {
     }
   },
   methods: {
-	startProduction() {
-    //   if (!this.validate()) {
-    //     return;
-    //   }
-      var productionLine = {
-        line: { id: this.line.id },
-        item: { id: this.saleItem.item.id },
-        dateStarted: this.schedule.date,
-		timeStarted: this.scheduleEvent.scheduleTime,
-		people: 0,
-		unitsScheduled: this.scheduleEvent.unitsScheduled
-      };
-      return http
-        .post("/productionLine", productionLine)
-        .then(response => {
-          router.push("/productionLineList");
-        })
-        .catch(e => {
-          console.log("API error: " + e);
-        });
-    },
     getAvailableSaleItems(sale_id) {
       if (!sale_id) {
         this.modalData.availableSales = [];
@@ -237,14 +217,14 @@ export default {
         alert("Make sure all fields are entered");
         return false;
       }
-      if (this.scheduleEvent.unitsScheduled > this.saleItem.units) {
-        alert("Units scheduled cannot exceed sold");
-        return false;
-      }
-      if (this.unitsReadyToSchedule < 0) {
-        alert("Cannot schedule more that ready to schedule");
-        return false;
-      }
+    //   if (this.scheduleEvent.unitsScheduled > this.saleItem.units) {
+    //     alert("Units scheduled cannot exceed sold");
+    //     return false;
+    //   }
+    //   if (this.unitsReadyToSchedule < 0) {
+    //     alert("Cannot schedule more that ready to schedule");
+    //     return false;
+    //   }
       return true;
     },
     saveModal() {
@@ -258,8 +238,7 @@ export default {
       http
         .post("/scheduleEvent", this.scheduleEvent)
         .then(response => {
-		  this.startProduction();
-        //   this.closeModal();
+          this.closeModal();
         })
         .catch(e => {
           console.log("API error: " + e);
