@@ -118,7 +118,7 @@ export default {
           this.scheduleModalVisible = true;
         });
       } else {
-        this.scheduleEvent = {schedule: {}, unitsScheduled:0};
+        this.scheduleEvent = {schedule: {}, line: {}, saleItem:{}, productions: [], unitsScheduled:0};
         this.schedule = schedule;
         this.scheduleModalVisible = true;
       }

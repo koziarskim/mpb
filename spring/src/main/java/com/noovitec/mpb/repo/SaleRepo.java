@@ -34,7 +34,7 @@ public interface SaleRepo extends JpaRepository<Sale, Long> {
 			+ "where s.produced = false")
 	public List<KeyValueDto> findAvailableForSchedule();
 
-	@Query(value="select new com.noovitec.mpb.dto.KeyValueDto(si.id, si.item.number) "
+	@Query(value="select new com.noovitec.mpb.dto.KeyValueDto(si.id, si.item.number, si.item.name) "
 			+ "from SaleItem si "
 			+ "where si.sale.id = :sale_id ")
 	public List<KeyValueDto> findSaleItemsBySale(@Param("sale_id") Long sale_id);

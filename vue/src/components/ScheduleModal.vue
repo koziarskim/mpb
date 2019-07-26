@@ -28,7 +28,7 @@
         </b-col>
         <b-col cols="3">
           <label class="top-label">Item:</label>
-          <b-select v-if="!scheduleEvent.id" option-value="id" option-text="value" :list="availableSaleItems" v-model="kvSaleItem"></b-select>
+          <b-select v-if="!scheduleEvent.id" option-value="id" option-text="name" :list="availableSaleItems" v-model="kvSaleItem"></b-select>
           <span v-if="scheduleEvent.id">
             <br>
             {{kvSaleItem.value}}

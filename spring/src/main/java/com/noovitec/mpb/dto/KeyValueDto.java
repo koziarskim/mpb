@@ -13,10 +13,19 @@ public class KeyValueDto {
 	//Deprecated use id instead.
 	private Long key;
 	private Object value;
+	private String name;
 
 	public KeyValueDto(Long id, Object value) {
 		this.id = id;
 		this.key = id;
 		this.value = value;
 	}
+
+	public KeyValueDto(Long id, Object value, String name) {
+		this.id = id;
+		this.key = id;
+		this.value = value;
+		this.name = name;
+	}
+
 }
