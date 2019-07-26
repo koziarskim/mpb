@@ -7,30 +7,30 @@
             <b-col cols=10>
                 <b-row style="width: 1500px">
                     <b-col cols=2>
-                        <div class="home-box-green" v-on:click="goTo('/supplierList')"><span style="padding-right: 15px">Manage Suppliers</span></div>
+                        <div class="home-box-green" @click="goTo('/supplierList')"><span style="padding-right: 15px">Manage Suppliers</span></div>
                     </b-col>
                     <b-col cols=2>
-                        <div class="home-box-orange"><span style="padding-right: 15px">Add New Component</span></div>
+                        <div class="home-box-orange" @click="goTo('/componentList')"><span style="padding-right: 15px">Components</span></div>
                     </b-col>
                     <b-col cols=2>
-                        <div class="home-box-green"><span style="padding-right: 15px">Add New Item</span></div>
+                        <div class="home-box-green" @click="goTo('/itemList')"><span style="padding-right: 15px">Item List</span></div>
                     </b-col>
                     <b-col cols=2>
-                        <div class="home-box-orange"><span style="padding-right: 15px">Announcements</span></div>
+						<div class="home-box-navy" @click="goTo('/schedule')"><span style="padding-right: 15px">Schedule Production</span></div>
                     </b-col>        
                 </b-row>
                 <b-row style="padding-top: 10px; width: 1500px">
                     <b-col cols=2>
-                        <div class="home-box-green"><span style="padding-right: 15px">Manage Customers</span></div>
+                        <div class="home-box-green" @click="goTo('/customerList')"><span style="padding-right: 15px">Customers</span></div>
                     </b-col>
                     <b-col cols=2>
-                        <div class="home-box-blue"><span style="padding-right: 15px">Create Sales Order</span></div>
+                        <div class="home-box-blue" @click="goTo('/saleList')"><span style="padding-right: 15px">Sale Orders</span></div>
                     </b-col>
                     <b-col cols=2>
-                        <div class="home-box-navy"><span style="padding-right: 15px">Create Purchase Order</span></div>
+                        <div class="home-box-navy" @click="goTo('/saleList')"><span style="padding-right: 15px">Purchase Orders</span></div>
                     </b-col>
                     <b-col cols=2>
-                        <div class="home-box-transparent"><span style="padding-right: 15px"></span></div>
+                        <div class="home-box-orange" @click="goTo('/productionLineList')"><span style="padding-right: 15px">Daily Production Status</span></div>
                     </b-col>        
                 </b-row>
             </b-col>

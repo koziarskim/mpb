@@ -51,7 +51,10 @@ const router = new Router({
     {
       path: "/itemList",
       name: "itemList",
-      component: ItemList
+      component: ItemList,
+      meta: {
+        roles: ["ADMIN"]
+      }
     },
     {
       path: "/itemComponentList/:item_id",
@@ -61,29 +64,41 @@ const router = new Router({
     {
       path: "/componentList",
       name: "componentList",
-      component: ComponentList
+      component: ComponentList,
+      meta: {
+        roles: ["ADMIN"]
+      }
     },
     {
       path: "/supplierList",
       name: "supplierList",
-      component: SupplierList
+      component: SupplierList,
+      meta: {
+        roles: ["ADMIN"]
+      }
     },
     {
       path: "/customerList",
       name: "customerList",
-      component: CustomerList
+      component: CustomerList,
+      meta: {
+        roles: ["ADMIN"]
+      }
     },
     {
       path: "/saleList",
       name: "saleList",
-      component: SaleList
+      component: SaleList,
+      meta: {
+        roles: ["ADMIN"]
+      }
     },
     {
       path: "/purchaseList",
       name: "purchaseList",
       component: PurchaseList,
       meta: {
-        roles: ["POADMIN"]
+        roles: ["ADMIN", "POADMIN"]
       }
     },
     {
@@ -141,7 +156,7 @@ const router = new Router({
       name: "ReceivingList",
       component: ReceivingList,
       meta: {
-        roles: ["INVENTORY"]
+        roles: ["ADMIN", "INVENTORY"]
       }
     },
     {
@@ -165,7 +180,10 @@ const router = new Router({
     {
       path: "/Schedule",
       name: "Schedule",
-      component: Schedule
+      component: Schedule,
+      meta: {
+        roles: ["ADMIN"]
+      }
     },
     {
       path: "/AccessDenied",
@@ -195,7 +213,10 @@ const router = new Router({
     {
       path: "/ProductionLineList",
       name: "ProductionLineList",
-      component: ProductionLineList
+      component: ProductionLineList,
+      meta: {
+        roles: ["ADMIN", "PRODUCTION_LEADER"]
+      }
     },
     {
       path: "/ProductionOutputEdit/:production_line_id",
