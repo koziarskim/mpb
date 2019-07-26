@@ -31,8 +31,9 @@ public interface SaleRepo extends JpaRepository<Sale, Long> {
 
 	@Query(value="select new com.noovitec.mpb.dto.KeyValueDto(s.id, concat(s.number, '-', s.customer.name)) "
 			+ "from Sale s "
-			+ "where s.produced = false")
-	public List<KeyValueDto> findAvailableForSchedule();
+			+ "where s.produced = false "
+			+ "and s.customer.id = :customer_id")
+	public List<KeyValueDto> findSalesForCustomer(@Param("customer_id") Long customer_id);
 
 	@Query(value="select new com.noovitec.mpb.dto.KeyValueDto(si.id, si.item.number, si.item.name) "
 			+ "from SaleItem si "

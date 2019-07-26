@@ -16,8 +16,22 @@
       <b-row>
         <b-col cols="2">
           <label class="top-label">Line:</label>
-          <b-select option-value="id" option-text="number" :list="availableLines" v-model="line"></b-select>
+          <b-select v-if="!scheduleEvent.id" option-value="id" option-text="number" :list="availableLines" v-model="line"></b-select>
+          <span v-if="scheduleEvent.id">
+            <br>
+            {{line.number}}
+          </span>
         </b-col>
+        <b-col cols="5">
+          <label class="top-label">Customer:</label>
+          <b-select v-if="!scheduleEvent.id" option-value="id" option-text="value" :list="availableCustomers" v-model="kvCustomer"></b-select>
+          <span v-if="scheduleEvent.id">
+            <br>
+            {{kvCustomer.value}}
+          </span>
+        </b-col>
+		</b-row>
+		<b-row>
         <b-col cols="5">
           <label class="top-label">Sale/S.O.:</label>
           <b-select v-if="!scheduleEvent.id" option-value="id" option-text="value" :list="availableSales" v-model="kvSale"></b-select>
@@ -38,11 +52,11 @@
       <b-row>
         <b-col cols="4">
           <label class="top-label">Scheduled to Start:</label>
-          <input class="form-control" type="time" v-model="scheduleEvent.schedule.date">
+          <input :disabled="scheduleEvent.id" class="form-control" type="time" v-model="scheduleEvent.scheduleTime">
         </b-col>
         <b-col cols="4">
           <label class="top-label">Units Scheduled:</label>
-          <input class="form-control" type="tel" v-model="scheduleEvent.unitsScheduled">
+          <input :disabled="scheduleEvent.id" class="form-control" type="tel" v-model="scheduleEvent.unitsScheduled">
         </b-col>
         <b-col cols="4" v-if="itemAvailability.id">
           <label class="top-label">Total Sold: {{saleItem.units}}</label>
@@ -83,7 +97,9 @@ export default {
   },
   data() {
     return {
-      visible: true,
+	  visible: true,
+	  availableCustomers: [],
+	  kvCustomer: {},
       availableSales: [],
       kvSale: {},
       availableSaleItems: [], //SaleItemDto
@@ -112,6 +128,14 @@ export default {
     }
   },
   watch: {
+    kvCustomer(new_value, old_value) {
+      if (!new_value || new_value.id == old_value.id) {
+        return;
+      }
+      if (this.kvCustomer.id) {
+        this.getAvailableSales(this.kvCustomer.id);
+      }
+    },
     kvSale(new_value, old_value) {
       if (!new_value || new_value.id == old_value.id) {
         return;
@@ -130,39 +154,6 @@ export default {
     }
   },
   methods: {
-    getAvailableSaleItems(sale_id) {
-      if (!sale_id) {
-        this.modalData.availableSales = [];
-      }
-      http
-        .get("/saleItem/sale/" + sale_id)
-        .then(response => {
-          this.availableSaleItems = response.data;
-          if (this.scheduleEvent.id) {
-            this.kvSaleItem = response.data.find(
-              kvDto => kvDto.id == this.scheduleEvent.saleItem.id
-            );
-          }
-        })
-        .catch(e => {
-          console.log("API error: " + e);
-        });
-    },
-    getAvailableSales() {
-      http
-        .get("/sale/available")
-        .then(response => {
-          this.availableSales = response.data;
-          if (this.scheduleEvent.id) {
-            this.kvSale = response.data.find(
-              kvDto => kvDto.id == this.scheduleEvent.saleItem.sale.id
-            );
-          }
-        })
-        .catch(e => {
-          console.log("API error: " + e);
-        });
-    },
     getAvailableLines() {
       http
         // TODO: Need to change it to line url.
@@ -179,6 +170,54 @@ export default {
             { id: 8, number: 8 }
           ];
           this.line = this.scheduleEvent.line ? this.scheduleEvent.line : {};
+        })
+        .catch(e => {
+          console.log("API error: " + e);
+        });
+    },
+    getAvailableCustomers() {
+      http
+        .get("/customer/kv")
+        .then(response => {
+          this.availableCustomers = response.data;
+          if (this.scheduleEvent.id) {
+            this.kvCustomer = response.data.find(
+              kvDto => kvDto.id == this.scheduleEvent.saleItem.sale.customer.id
+            );
+          }
+        })
+        .catch(e => {
+          console.log("API error: " + e);
+        });
+    },
+    getAvailableSales(customer_id) {
+      http
+        .get("/kv/sale/customer/"+customer_id)
+        .then(response => {
+          this.availableSales = response.data;
+          if (this.scheduleEvent.id) {
+            this.kvSale = response.data.find(
+              kvDto => kvDto.id == this.scheduleEvent.saleItem.sale.id
+            );
+          }
+        })
+        .catch(e => {
+          console.log("API error: " + e);
+        });
+    },
+    getAvailableSaleItems(sale_id) {
+      if (!sale_id) {
+        this.modalData.availableSales = [];
+      }
+      http
+        .get("/saleItem/sale/" + sale_id)
+        .then(response => {
+          this.availableSaleItems = response.data;
+          if (this.scheduleEvent.id) {
+            this.kvSaleItem = response.data.find(
+              kvDto => kvDto.id == this.scheduleEvent.saleItem.id
+            );
+          }
         })
         .catch(e => {
           console.log("API error: " + e);
@@ -209,7 +248,8 @@ export default {
     },
     validate() {
       if (
-        !this.line ||
+		!this.line ||
+		!this.kvCustomer ||
         !this.saleItem ||
         !this.scheduleEvent.scheduleTime ||
         this.scheduleEvent.unitsScheduled <= 0
@@ -262,7 +302,7 @@ export default {
     if (this.scheduleEvent.id) {
       this.initScheduled = this.scheduleEvent.unitsScheduled;
     }
-    this.getAvailableSales();
+    this.getAvailableCustomers();
     this.getAvailableLines();
   }
 };

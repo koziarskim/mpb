@@ -38,9 +38,9 @@ class SaleRest {
 		return saleRepo.findAll();
 	}
 
-	@GetMapping("/sale/available")
-	Collection<KeyValueDto> getAvailableFoSchedule() {
-		return saleRepo.findAvailableForSchedule();
+	@GetMapping("/kv/sale/customer/{customer_id}")
+	Collection<KeyValueDto> getAvailableFoSchedule(@PathVariable Long customer_id) {
+		return saleRepo.findSalesForCustomer(customer_id);
 	}
 
 	@GetMapping("/sale/{id}")

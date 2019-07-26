@@ -39,6 +39,7 @@ public class ScheduleEvent {
 	@UpdateTimestamp
 	private LocalDateTime updated;
 	Long unitsScheduled;
+	LocalTime scheduleTime;
 	LocalTime startTime;
 	LocalTime finishTime;
 
