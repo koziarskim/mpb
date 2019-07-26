@@ -40,7 +40,7 @@
             {{kvSale.value}}
           </span>
         </b-col>
-        <b-col cols="3">
+        <b-col cols="5">
           <label class="top-label">Item:</label>
           <b-select v-if="!scheduleEvent.id" option-value="id" option-text="name" :list="availableSaleItems" v-model="kvSaleItem"></b-select>
           <span v-if="scheduleEvent.id">
