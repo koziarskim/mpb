@@ -40,7 +40,7 @@ export default {
   data() {
     return {
       numberOfLines: 8,
-      scheduleEvent: { unitsScheduled: 0 },
+      scheduleEvent: { schedule:{}, unitsScheduled: 0 },
       schedule: {},
       schedules: [{ id: 1 }],
       scheduleModalVisible: false,
@@ -118,7 +118,7 @@ export default {
           this.scheduleModalVisible = true;
         });
       } else {
-        this.scheduleEvent = {unitsScheduled:0};
+        this.scheduleEvent = {schedule: {}, unitsScheduled:0};
         this.schedule = schedule;
         this.scheduleModalVisible = true;
       }
