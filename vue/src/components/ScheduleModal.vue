@@ -155,25 +155,17 @@ export default {
   },
   methods: {
     getAvailableLines() {
-      http
-        // TODO: Need to change it to line url.
-        .get("/item/1")
-        .then(response => {
-          this.availableLines = [
-            { id: 1, number: 1 },
-            { id: 2, number: 2 },
-            { id: 3, number: 3 },
-            { id: 4, number: 4 },
-            { id: 5, number: 5 },
-            { id: 6, number: 6 },
-            { id: 7, number: 7 },
-            { id: 8, number: 8 }
-          ];
-          this.line = this.scheduleEvent.line ? this.scheduleEvent.line : {};
-        })
-        .catch(e => {
-          console.log("API error: " + e);
-        });
+		this.availableLines = [
+			{ id: 1, number: 1 },
+			{ id: 2, number: 2 },
+			{ id: 3, number: 3 },
+			{ id: 4, number: 4 },
+			{ id: 5, number: 5 },
+			{ id: 6, number: 6 },
+			{ id: 7, number: 7 },
+			{ id: 8, number: 8 }
+		];
+		this.line = this.scheduleEvent.line ? this.scheduleEvent.line : {};
     },
     getAvailableCustomers() {
       http
