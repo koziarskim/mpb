@@ -39,14 +39,14 @@ public class Category {
 	private String type;
 
 //	@JsonIgnore
-	@OneToMany(fetch = FetchType.LAZY)
-	@JoinColumn(name = "category_id")
-	private Collection<Component> components = new HashSet<Component>();
-
-	//Not sure why JsonIgnore is needed here but without it there is error.
-	@JsonIgnore
-	@OneToMany(fetch = FetchType.LAZY)
-	@JoinColumn(name = "category_id")
-	private Collection<Item> items = new HashSet<Item>();
+//	@OneToMany(fetch = FetchType.LAZY)
+//	@JoinColumn(name = "category_id")
+//	private Collection<Component> components = new HashSet<Component>();
+//
+//	//Not sure why JsonIgnore is needed here but without it there is error.
+//	@JsonIgnore
+//	@OneToMany(fetch = FetchType.LAZY)
+//	@JoinColumn(name = "category_id")
+//	private Collection<Item> items = new HashSet<Item>();
 
 }
