@@ -14,7 +14,7 @@
         <b-button size="sm" @click.stop="goToProductionLine(row.item.id)" variant="link">{{row.item.line.number}}</b-button>
       </template>
       <template slot="item" slot-scope="row">
-		  <span>{{row.item.saleItem.item.number}} ({{row.item.saleItem.sale.number}} - {{row.item.saleItem.sale.customer.name}})</span>
+		  <span>{{row.item.saleItem.item.name}} ({{row.item.saleItem.sale.number}} - {{row.item.saleItem.sale.customer.name}})</span>
       </template>
       <template slot="totalTime" slot-scope="row">
 		  <span>{{formatTime(row.item.totalTime)}}</span>

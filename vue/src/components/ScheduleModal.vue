@@ -45,7 +45,7 @@
           <b-select v-if="!scheduleEvent.id" option-value="id" option-text="name" :list="availableSaleItems" v-model="kvSaleItem"></b-select>
           <span v-if="scheduleEvent.id">
             <br>
-            {{kvSaleItem.value}}
+            {{kvSaleItem.name}}
           </span>
         </b-col>
       </b-row>

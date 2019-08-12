@@ -80,7 +80,7 @@
         <label class="top-label"></label>
         <b-table v-if="sale.saleItems.length>0" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="sale.saleItems" :fields="columns">
           <template slot="item.number" slot-scope="row">
-            <b-button size="sm" @click.stop="goToItem(row.item.item.id)" variant="link">{{row.item.item.number}}</b-button>
+            <b-button size="sm" @click.stop="goToItem(row.item.item.id)" variant="link">{{row.item.item.name}}</b-button>
           </template>
           <template slot="components" slot-scope="row">
             <b-button size="sm" variant="link" @click.stop="gotToItemComponentList(row.item.item.id)">View</b-button>

@@ -17,7 +17,7 @@
       <div class="n-cell" v-for="line in numberOfLines" :key="line">
         <!-- <div :style="getColor(se, s)" v-for="se in getScheduleEventsByLine(line, s.scheduleEvents)" :key="se.id"> -->
         <div v-for="se in getScheduleEventsByLine(line, s.scheduleEvents)" :key="se.id">
-          <a href="#" @click="editSchedule(s, se)">{{se.saleItem.item.number}}:{{se.saleItem.sale?se.saleItem.sale.customer.name:''}}</a>
+          <a href="#" @click="editSchedule(s, se)">{{se.saleItem.item.name}}:{{se.saleItem.sale?se.saleItem.sale.customer.name:''}}</a>
         </div>
       </div>
     </b-row>

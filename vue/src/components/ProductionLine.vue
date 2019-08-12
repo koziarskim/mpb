@@ -39,7 +39,7 @@
 		</b-col>
 		<b-col cols=4>
 			<div style="font-size:18px">Line: {{scheduleEvent.line.number}}</div>
-			<div style="font-size:18px">Item: {{scheduleEvent.saleItem.item.number}}</div>
+			<div style="font-size:18px">Item: {{scheduleEvent.saleItem.item.name}}</div>
 			<div style="font-size:18px">Customer: {{scheduleEvent.saleItem.sale.customer.name}}</div>
 			<div style="font-size:18px">Sale: {{scheduleEvent.saleItem.sale.number}}</div>
 		</b-col>
