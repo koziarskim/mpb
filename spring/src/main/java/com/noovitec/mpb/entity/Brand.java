@@ -34,8 +34,8 @@ public class Brand {
 	private LocalDateTime updated;
 	private String name;
 
-	@OneToMany(fetch = FetchType.LAZY)
-	@JoinColumn(name = "brand_id")
-	private Collection<Item> items;
+//	@OneToMany(fetch = FetchType.LAZY)
+//	@JoinColumn(name = "brand_id")
+//	private Collection<Item> items;
 
 }

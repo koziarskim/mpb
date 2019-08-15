@@ -8,8 +8,8 @@
         <div>Line {{line}}</div>
       </div>
     </b-row>
-    <b-row class="n-row" style="height: 75px" v-for="s in schedules" :key="s.date">
-      <div class="n-cell" style="width: 7%">
+    <b-row class="n-row" style="min-height: 75px" v-for="s in schedules" :key="s.date">
+      <div class="n-cell" style="width: 7%;">
         <div>{{dayOfWeek(s.date)}}</div>
         <span>{{formatDate(s.date)}}</span>
         <a style="padding-left: 15%" href="#" @click="newSchedule(s)">(+)</a>
@@ -243,7 +243,6 @@ export default {
 .n-cell {
   width: 11.62%;
   border-right: 1px solid black;
-  height: 100%;
 }
 .n-row {
   border-bottom: 1px solid black;

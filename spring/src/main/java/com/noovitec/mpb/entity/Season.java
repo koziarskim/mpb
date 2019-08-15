@@ -34,8 +34,8 @@ public class Season {
 	private String name;
 	private String prefix;
 
-	@OneToMany(fetch = FetchType.LAZY)
-	@JoinColumn(name = "season_id")
-	private Collection<Item> items;
+//	@OneToMany(fetch = FetchType.LAZY)
+//	@JoinColumn(name = "season_id")
+//	private Collection<Item> items;
 
 }
