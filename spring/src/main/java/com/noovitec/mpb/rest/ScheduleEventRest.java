@@ -23,10 +23,12 @@ import com.noovitec.mpb.entity.Component;
 import com.noovitec.mpb.entity.Item;
 import com.noovitec.mpb.entity.ItemComponent;
 import com.noovitec.mpb.entity.Production;
+import com.noovitec.mpb.entity.Schedule;
 import com.noovitec.mpb.entity.ScheduleEvent;
 import com.noovitec.mpb.repo.ComponentRepo;
 import com.noovitec.mpb.repo.ItemRepo;
 import com.noovitec.mpb.repo.ScheduleEventRepo;
+import com.noovitec.mpb.repo.ScheduleRepo;
 
 @RestController
 @RequestMapping("/api")
@@ -38,6 +40,8 @@ class ScheduleEventRest {
 	private ItemRepo itemRepo;
 	@Autowired
 	private ComponentRepo componentRepo;
+	@Autowired
+	private ScheduleRepo scheduleRepo;
 
 	public ScheduleEventRest(ScheduleEventRepo scheduleEventRepo) {
 		this.scheduleEventRepo = scheduleEventRepo;
@@ -65,6 +69,12 @@ class ScheduleEventRest {
 	ResponseEntity<ScheduleEvent> post(@RequestBody ScheduleEvent scheduleEvent) {
 		if (scheduleEvent == null) {
 			scheduleEvent = new ScheduleEvent();
+		}
+		if(scheduleEvent.getSchedule().getId()==null) {
+			List<Schedule> exSchedules = scheduleRepo.findByDate(scheduleEvent.getSchedule().getDate());
+			if(exSchedules!=null) {
+				scheduleEvent.setSchedule(exSchedules.get(0));
+			}
 		}
 		for (Production production : scheduleEvent.getProductions()) {
 			production.setScheduleEvent(scheduleEvent);
