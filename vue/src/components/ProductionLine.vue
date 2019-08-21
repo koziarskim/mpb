@@ -111,14 +111,17 @@ export default {
 			labels: [this.scheduleEvent.startTime],
 			datasets: [{data: [0], lineTension: 0}]
 		}
-		var lastTime = this.scheduleEvent.startTime;
-		var lastUnits = 0;
-		var lastHour = moment(this.scheduleEvent.startTime, 'HH:mm:ss').hour();
-		var lastHourUnits = 0;
-		this.scheduleEvent.productions.forEach(production => {
-			var nextHourTime = moment(+lastHour+1+":00:00", 'HH:mm:ss')
+		var lastTime = moment(this.scheduleEvent.startTime, 'HH:mm:ss');
+		var sortedProductions = this.scheduleEvent.productions.sort(function(a, b){
+				return moment(a.finishTime, 'HH:mm:ss').diff(moment(b.finishTime, 'HH:mm:ss'));
+			});
+		sortedProductions.forEach(production => {
+			var currentTime = moment(production.finishTime, 'HH:mm:ss');
+			var diffMins = currentTime.diff(lastTime, 'minutes');
+			var unitsPerMinute = (production.unitsProduced/diffMins)*60;
 			this.cd.labels.push(production.finishTime);
-			this.cd.datasets[0].data.push(production.unitsProduced);
+			this.cd.datasets[0].data.push(unitsPerMinute);
+			lastTime = currentTime;
 		})
 	},
     getAvailableLines() {
