@@ -62,7 +62,17 @@ export default {
 	  unitsToAdd: 0,
 	  people: 0,
 	  cd: {},
-	  co: {legend: {display: false}},
+	  co: {
+			  legend: {display: false},
+			  scales: {
+          		yAxes: [{
+              		scaleLabel: {
+                		display: true,
+                		labelString: 'Units Per Hour'
+              		}
+            	}
+          	]}
+		  },
       availableLines: [],
       line: {},
       availableItems: [],
@@ -108,7 +118,7 @@ export default {
 	},
 	updateChart(){
 		this.cd = {
-			labels: [this.scheduleEvent.startTime],
+			labels: [moment(this.scheduleEvent.startTime,'HH:mm:ss').format('HH:mm')],
 			datasets: [{data: [0], lineTension: 0}]
 		}
 		var lastTime = moment(this.scheduleEvent.startTime, 'HH:mm:ss');
@@ -119,7 +129,7 @@ export default {
 			var currentTime = moment(production.finishTime, 'HH:mm:ss');
 			var diffMins = currentTime.diff(lastTime, 'minutes');
 			var unitsPerMinute = (production.unitsProduced/diffMins)*60;
-			this.cd.labels.push(production.finishTime);
+			this.cd.labels.push(moment(production.finishTime,'HH:mm:ss').format('HH:mm'));
 			this.cd.datasets[0].data.push(unitsPerMinute);
 			lastTime = currentTime;
 		})
