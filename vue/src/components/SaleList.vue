@@ -1,17 +1,23 @@
 <template>
     <b-container fluid>
-        <div class="d-flex justify-content-between align-items-center">
-            <span style="text-align: left; font-size: 18px; font-weight: bold">Sale Orders</span>
-            <div style="text-align: right;">
+        <b-row style="padding-bottom: 4px;">
+            <b-col cols="2">
+                <span style="text-align: left; font-size: 18px; font-weight: bold">Sale Orders</span>
+            </b-col>
+            <b-col cols="3">
+                <input class="form-control" type="tel" v-model="searchKey" @keyup.enter="getSales()" placeholder="Search by Number or Customer"/>
+            </b-col>
+            <b-col>
+                <div style="text-align: right;">
                 <b-button type="submit" variant="primary" @click="goToSale('')">New S.O.</b-button>
-            </div>
-        </div>
+                </div>
+            </b-col>
+        </b-row>
         <div v-if="sales.length==0">Not found any sale orders...</div>
         <b-table v-if="sales.length>0"
-                :sort-by.sync="sortBy"
-                :sort-desc.sync="sortDesc"
                 :items="sales"
-                :fields="fields">
+                :fields="fields"
+				no-local-sorting @sort-changed="sorted">
                 <template slot="number" slot-scope="row">
                     <b-button size="sm" @click.stop=goToSale(row.item.id) variant="link">{{row.item.number}}</b-button>
                 </template>
@@ -19,6 +25,7 @@
                     <b-button size="sm" @click.stop="deleteSale(row.item.id)">x</b-button>
                 </template>
         </b-table>
+		<b-pagination v-model="pageable.currentPage" :per-page="pageable.perPage" :total-rows="pageable.totalElements" @change="paginationChange"></b-pagination>
         <b-alert :show="alertSecs" dismissible variant="warning" @dismiss-count-down="(secs) => { alertSecs = secs }">
                 {{alertMessage}}
         </b-alert>
@@ -33,13 +40,13 @@ export default {
     return {
       alertSecs: 0,
       alertMessage: "",
-      sortBy: 'id',
-      sortDesc: false,
+      pageable: {totalElements: 100, currentPage: 1, perPage: 15, sortBy: 'number', sortDesc: false},
+      searchKey: "",
       fields: [
-        { key: "number", label: "S.O. #", sortable: false },
-        { key: "customer.name", label: "Customer", sortable: false },
-        { key: "date", label: "Date", sortable: false },
-        { key: "shippingAddress.dc", label: "Distribution", sortable: false },
+        { key: "number", label: "S.O. #", sortable: true },
+        { key: "customerName", label: "Customer", sortable: false },
+        { key: "date", label: "Date", sortable: true },
+        { key: "dc", label: "Distribution", sortable: false },
         { key: "action", label: "Action", sortable: false}
       ],
       sales: []
@@ -49,13 +56,24 @@ export default {
     showAlert (message) {
       this.alertSecs = 3,
       this.alertMessage = message
+	},
+	sorted(e){
+        if(!e.sortBy){ return }
+        this.pageable.sortBy = e.sortBy;
+        this.pageable.sortDesc = e.sortDesc;
+        this.getSales();
     },
-    getSalesData() {
+    paginationChange(page){
+        this.pageable.currentPage = page;
+        this.getSales();
+    },
+	getSales() {
       http
-        .get("/sale")
+        .get("/sale/pageable", {params: {pageable: this.pageable, searchKey: this.searchKey}})
         .then(response => {
-          this.sales = response.data;
-          console.log("Success getting component data");
+          //SaleListDto
+          this.sales = response.data.content;
+          this.pageable.totalElements = response.data.totalElements;
         })
         .catch(e => {
           console.log("API error: "+e);
@@ -74,7 +92,7 @@ export default {
       http
         .delete("/sale/"+id)
         .then(response => {
-          this.getSalesData();
+          this.getSales();
         })
         .catch(e => {
             console.log("API Error: "+e);
@@ -96,7 +114,7 @@ export default {
     },
   },
   mounted() {
-     this.getSalesData();
+     this.getSales();
   }
 };
 </script>

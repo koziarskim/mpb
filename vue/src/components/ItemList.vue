@@ -46,8 +46,6 @@ export default {
     return {
       pageable: {totalElements: 100, currentPage: 1, perPage: 15, sortBy: 'name', sortDesc: false},
       searchKey: "",
-      sortBy: 'number',
-      sortDesc: false,
       fields: [
         { key: 'number', sortable: true, label: 'Item #'},
         { key: 'name', sortable: true, label: 'Name'},
