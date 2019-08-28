@@ -14,7 +14,9 @@
         </b-col>
       </b-row>
       <b-row>
-        <b-col cols="2">
+        <b-col cols=8>
+      <b-row>
+        <b-col cols="3">
           <label class="top-label">Line:</label>
           <b-select v-if="!scheduleEvent.id" option-value="id" option-text="number" :list="availableLines" v-model="line"></b-select>
           <span v-if="scheduleEvent.id">
@@ -22,7 +24,7 @@
             {{line.number}}
           </span>
         </b-col>
-        <b-col cols="5">
+        <b-col cols=6 offset=3>
           <label class="top-label">Customer:</label>
           <b-select v-if="!scheduleEvent.id" option-value="id" option-text="value" :list="availableCustomers" v-model="kvCustomer"></b-select>
           <span v-if="scheduleEvent.id">
@@ -32,7 +34,7 @@
         </b-col>
 		</b-row>
 		<b-row>
-        <b-col cols="5">
+        <b-col cols="6">
           <label class="top-label">Sale/S.O.:</label>
           <b-select v-if="!scheduleEvent.id" option-value="id" option-text="value" :list="availableSales" v-model="kvSale"></b-select>
           <span v-if="scheduleEvent.id">
@@ -40,7 +42,7 @@
             {{kvSale.value}}
           </span>
         </b-col>
-        <b-col cols="5">
+        <b-col cols="6">
           <label class="top-label">Item:</label>
           <b-select v-if="!scheduleEvent.id" option-value="id" option-text="name" :list="availableSaleItems" v-model="kvSaleItem"></b-select>
           <span v-if="scheduleEvent.id">
@@ -50,37 +52,31 @@
         </b-col>
       </b-row>
       <b-row>
-        <b-col cols="4">
+        <b-col cols=5>
           <label class="top-label">Scheduled to Start:</label>
           <input :disabled="scheduleEvent.id" class="form-control" type="time" v-model="scheduleEvent.scheduleTime">
         </b-col>
-        <b-col cols="4">
+        <b-col cols=6 offset=1>
           <label class="top-label">Units Scheduled:</label>
           <input :disabled="scheduleEvent.id" class="form-control" type="tel" v-model="scheduleEvent.unitsScheduled">
         </b-col>
-        <b-col cols="4" v-if="itemAvailability.id">
-          <label class="top-label">Total Sold: {{saleItem.units}}</label>
-		  <br/>
-		  <label class="top-label">Total Produced: {{scheduleEvent.totalProduced}}</label>
-          <!-- <br>
-          <label class="top-label">Total scheduled: {{unitsTotalScheduled}}</label>
-          <br>
-          <label class="top-label">Total produced: {{saleItem.unitsProduced}}</label>
-          <br>
-          <label class="top-label">Still ready to schedule: {{unitsReadyToSchedule}}</label>
-          <br>
-          <label class="top-label">Still ready for production: {{unitsReadyForProduction}}</label> -->
-          <!-- <br>
-          <label class="top-label">Diff: {{unitsDiff}}</label>-->
-        </b-col>
       </b-row>
-      <!-- <b-row>
-        <b-col>
-          <label class="top-label" v-if="scheduleEvent.eventCompleted">Production done for this schedule. There might be other sales/items in progress.</label>
-          <label class="top-label" v-if="itemAvailability.unitsToSchedule < scheduleEvent.unitsScheduled - scheduleEvent.totalProduced">Scheduled more that components in stock + transit.</label>
-          <label class="top-label" v-else-if="itemAvailability.unitsToProduction < scheduleEvent.unitsScheduled - scheduleEvent.totalProduced">Scheduled more that could produce. Not enough components in stock.</label>
+      </b-col>
+        <b-col cols="4" v-if="itemAvailability.id">
+          <br/>
+          <label class="top-label">Sold (this sale only): {{saleItem.units}}</label>
+          <br/>
+          <label class="top-label">Scheduled (this sale only): {{saleItem.unitsScheduled}}</label>
+          <br/>
+          <label class="top-label">Produced (this sale only): {{saleItem.unitsProduced}}</label>
+          <br/>
+          <label class="top-label">Total Scheduled (all sales): {{saleItem.item.unitsScheduled}}</label>
+          <br/>
+          <label class="top-label">Total Produced (all sales): {{saleItem.item.unitsProduced}}</label>
         </b-col>
-      </b-row> -->
+      <b-col cols=4>
+      </b-col>
+      </b-row>
     </b-modal>
   </b-container>
 </template>

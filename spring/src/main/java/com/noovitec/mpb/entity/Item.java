@@ -106,6 +106,29 @@ public class Item {
 //	@JoinColumn(name = "item_id")
 //	private Collection<ScheduleEvent> scheduleEvents = new HashSet<ScheduleEvent>();
 
+//	Should we remove this property from DB?	
+//	@Transient
+//	private Long unitsScheduled;
+	
+	public Long getUnitsScheduled() {
+		Long units = 0L;
+		for(SaleItem si : this.getSaleItems()) {
+			units += si.getUnitsScheduled();
+		}
+		return units;
+	}
+	
+	@Transient
+	private Long unitsProduced;
+	
+	public Long getUnitsProduced() {
+		Long units = 0L;
+		for(SaleItem si : this.getSaleItems()) {
+			units += si.getUnitsProduced();
+		}
+		return units;
+	}
+	
 	@Transient
 	private String label;
 
