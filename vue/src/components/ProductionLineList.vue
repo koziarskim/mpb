@@ -26,6 +26,14 @@
 		  <span>{{formatTime(row.item.totalTime)}}</span>
       </template>
     </b-table>
+    <b-row>
+      <b-col cols=2>
+        <span>Total Scheduled: {{totalScheduled}}</span>
+      </b-col>
+      <b-col cols=2>
+        <span>Total Produced: {{totalProduced}}</span>
+      </b-col>
+    </b-row>
   </b-container>
 </template>
 <script>
@@ -54,7 +62,9 @@ export default {
     availableLines: [],
     availableItems: [],
     selectedLine: {},
-    selectedItem: {}
+    selectedItem: {},
+    totalScheduled: 0,
+    totalProduced: 0,
     };
   },
   watch: {
@@ -102,15 +112,18 @@ export default {
         .get("/schedule/single/date/"+date)
         .then(response => {
           this.scheduleEvents = [];
+          this.totalScheduled = 0;
+          this.totalProduced = 0;
           if(response.data){
             response.data.scheduleEvents.forEach(event =>{
-              console.log(this.selectedLine.id)
               if(this.selectedLine.id && event.line.id != this.selectedLine.id){
                 return;
               }
               if(this.selectedItem.id && event.saleItem.item.id != this.selectedItem.id){
                 return;
               }
+              this.totalScheduled += event.unitsScheduled;
+              this.totalProduced += event.totalProduced;
               this.scheduleEvents.push(event)
             })
           }
