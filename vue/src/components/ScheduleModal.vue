@@ -70,6 +70,8 @@
           <br/>
           <label class="top-label">Produced (this sale only): {{saleItem.unitsProduced}}</label>
           <br/>
+          <label class="top-label">Total Sold (all sales): {{saleItem.item.unitsSold}}</label>
+          <br/>
           <label class="top-label">Total Scheduled (all sales): {{saleItem.item.unitsScheduled}}</label>
           <br/>
           <label class="top-label">Total Produced (all sales): {{saleItem.item.unitsProduced}}</label>

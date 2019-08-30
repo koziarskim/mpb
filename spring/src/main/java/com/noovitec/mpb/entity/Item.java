@@ -130,6 +130,17 @@ public class Item {
 	}
 	
 	@Transient
+	private Long unitsSold;
+	
+	public Long getUnitsSold() {
+		Long units = 0L;
+		for(SaleItem si : this.getSaleItems()) {
+			units += si.getUnits();
+		}
+		return units;
+	}
+	
+	@Transient
 	private String label;
 
 	public String getLabel() {
