@@ -20,7 +20,7 @@
 					<input v-if="inProgress() && !isFinished()" class="form-control"  type="tel" v-model="unitsToAdd">
 				</b-col>
 				<b-col cols="2">
-					<label v-if="inProgress() && !isFinished()" class="top-label">People Assiged:</label>
+					<label v-if="inProgress() && !isFinished()" class="top-label">People Assigned:</label>
 					<input v-if="inProgress() && !isFinished()" class="form-control" type="tel" v-model="people">
 				</b-col>
 				<b-col cols="2" v-if="inProgress() && !isFinished()" style="margin-top: 25px">
@@ -35,7 +35,7 @@
 	</b-row>
 	<b-row>
 		<b-col cols=8>
-			<chart :chartdata="cd" :options="co" :width="900" :height="300"></chart>
+			<chart :chartdata="chartData" :options="chartOptions" :width="900" :height="300"></chart>
 		</b-col>
 		<b-col cols=4>
 			<div style="font-size:18px">Line: {{scheduleEvent.line.number}}</div>
@@ -44,6 +44,28 @@
 			<div style="font-size:18px">Sale: {{scheduleEvent.saleItem.sale.number}}</div>
 		</b-col>
 	</b-row>
+	<br/>
+	<b-row>
+		<b-col>
+			<span style="font-size: 18px; font-weight: bold; align:left">Production Output </span>
+		</b-col>
+	</b-row>
+	<br/>
+	<b-row v-for="(production) in scheduleEvent.productions" v-bind:key="production.id">
+		<b-col cols=2>
+			<input class="form-control" type="time" v-model="production.finishTime">
+		</b-col>
+		<b-col cols=2>
+			<input class="form-control" type="tel" v-model="production.unitsProduced">
+		</b-col>
+		<b-col cols=1>
+			<input class="form-control" type="tel" v-model="production.people">
+		</b-col>
+		<b-col cols=2>
+			<b-button size="sm" @click.stop="updateProduction(production)" variant="link">Update</b-button>
+		</b-col>
+	</b-row>
+	<br/>
   </b-container>
 </template>
 
@@ -61,9 +83,11 @@ export default {
 	  addInProgress: false,
 	  unitsToAdd: 0,
 	  people: 0,
-	  cd: {},
-	  co: {
-			  legend: {display: false},
+	  chartData: {},
+	  chartOptions: {
+				legend: {
+					display: false,
+				},
 			  scales: {
           		yAxes: [{
               		scaleLabel: {
@@ -71,8 +95,12 @@ export default {
                 		labelString: 'Units Per Hour'
               		}
             	}
-          	]}
-		  },
+						]},
+				// onClick: (evt, item) => {
+				// 	this.chartClickEvent(evt, item);
+				// }
+			},
+			sortedProductions: [],
       availableLines: [],
       line: {},
       availableItems: [],
@@ -81,12 +109,6 @@ export default {
 		.format("YYYY-MM-DD"),
 	  timeStarted: moment()
           .format("HH:mm:ss"),
-	  sortBy: "line.number",
-      sortDesc: false,
-      fields: [
-        { key: "timeProduced", label: "Time", sortable: true },
-        { key: "units", label: "Units Produced", sortable: true },
-	  ],
 	  scheduleEvent: {
 		  schedule: {},
 		  line: {},
@@ -105,32 +127,43 @@ export default {
     }
   },
   methods: {
+		updateProduction(production){
+			production.scheduleEvent = {id: this.scheduleEvent.id};
+      return http
+        .post("/production", production)
+        .then(response => {
+					this.getScheduleEvent(this.scheduleEvent.id);
+        })
+        .catch(e => {
+          console.log("API error: " + e);
+        });
+		},
     getScheduleEvent(schedule_event_id) {
       http
         .get("/scheduleEvent/" + schedule_event_id)
         .then(response => {
-		  this.scheduleEvent = response.data;
-		  this.updateChart();
+		  		this.scheduleEvent = response.data;
+		  		this.updateChart();
         })
         .catch(e => {
           console.log("API error: " + e);
         });
 	},
 	updateChart(){
-		this.cd = {
+		this.chartData = {
 			labels: [moment(this.scheduleEvent.startTime,'HH:mm:ss').format('HH:mm')],
 			datasets: [{data: [0], lineTension: 0}]
 		}
 		var lastTime = moment(this.scheduleEvent.startTime, 'HH:mm:ss');
-		var sortedProductions = this.scheduleEvent.productions.sort(function(a, b){
+		this.sortedProductions = this.scheduleEvent.productions.sort(function(a, b){
 				return moment(a.finishTime, 'HH:mm:ss').diff(moment(b.finishTime, 'HH:mm:ss'));
 			});
-		sortedProductions.forEach(production => {
+		this.sortedProductions.forEach(production => {
 			var currentTime = moment(production.finishTime, 'HH:mm:ss');
 			var diffMins = currentTime.diff(lastTime, 'minutes');
 			var unitsPerMinute = (production.unitsProduced/diffMins)*60;
-			this.cd.labels.push(moment(production.finishTime,'HH:mm:ss').format('HH:mm'));
-			this.cd.datasets[0].data.push(unitsPerMinute);
+			this.chartData.labels.push(moment(production.finishTime,'HH:mm:ss').format('HH:mm'));
+			this.chartData.datasets[0].data.push(unitsPerMinute);
 			lastTime = currentTime;
 		})
 	},
