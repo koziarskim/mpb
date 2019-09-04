@@ -12,6 +12,17 @@ export default new Vuex.Store({
         this.user.roles.forEach(role => {
           if (role.code === code) {
             roleFound = true;
+            return;
+          }
+        });
+        return roleFound;
+      },
+      hasRoles(roles) {
+        var roleFound = false;
+        roles.forEach(role => {
+          if (this.hasRole(role)) {
+            roleFound = true;
+            return;
           }
         });
         return roleFound;

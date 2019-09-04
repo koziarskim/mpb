@@ -45,6 +45,7 @@
 		</b-col>
 	</b-row>
 	<br/>
+	<div v-if="hasRoles(['PRODUCTION_LEADER'])">
 	<b-row>
 		<b-col>
 			<span style="font-size: 18px; font-weight: bold; align:left">Production Output </span>
@@ -65,6 +66,7 @@
 			<b-button size="sm" @click.stop="updateProduction(production)" variant="link">Update</b-button>
 		</b-col>
 	</b-row>
+	</div>
 	<br/>
   </b-container>
 </template>
@@ -74,7 +76,7 @@ import http from "../http-common";
 import router from "../router";
 import httpUtils from "../httpUtils";
 import moment from "moment";
-
+import store from "../store.js";
 
 export default {
   name: "edit-component",
@@ -127,6 +129,10 @@ export default {
     }
   },
   methods: {
+		hasRoles(roles){
+			var hasRole = this.$store.getters.userContext.hasRoles(['PRODUCTION_ADMIN']);
+			return hasRole;
+		},
 		updateProduction(production){
 			production.scheduleEvent = {id: this.scheduleEvent.id};
       return http
