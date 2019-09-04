@@ -80,6 +80,11 @@ class ProductionRest {
 
 	@DeleteMapping("/production/{id}")
 	public ResponseEntity<?> delete(@PathVariable Long id) {
+		Production existingProduction = productionRepo.getOne(id);
+		Long existingUnitsProduced = existingProduction.getUnitsProduced();
+		ScheduleEvent scheduleEvent = scheduleEventRepo.getOne(existingProduction.getScheduleEvent().getId());
+		Item item = itemRepo.findById(scheduleEvent.getSaleItem().getItem().getId()).get();
+		item.addUnitsOnStack(existingUnitsProduced * (-1));
 		productionRepo.deleteById(id);
 		return ResponseEntity.ok().build();
 	}

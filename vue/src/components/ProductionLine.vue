@@ -64,6 +64,7 @@
 		</b-col>
 		<b-col cols=2>
 			<b-button size="sm" @click.stop="updateProduction(production)" variant="link">Update</b-button>
+			<b-button size="sm" @click.stop="deleteProduction(production.id)" variant="link">Delete</b-button>
 		</b-col>
 	</b-row>
 	</div>
@@ -137,6 +138,16 @@ export default {
 			production.scheduleEvent = {id: this.scheduleEvent.id};
       return http
         .post("/production", production)
+        .then(response => {
+					this.getScheduleEvent(this.scheduleEvent.id);
+        })
+        .catch(e => {
+          console.log("API error: " + e);
+        });
+		},
+		deleteProduction(production_id){
+      return http
+        .delete("/production/"+production_id)
         .then(response => {
 					this.getScheduleEvent(this.scheduleEvent.id);
         })
