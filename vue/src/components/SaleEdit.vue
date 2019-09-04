@@ -14,7 +14,7 @@
       </b-col>
       <b-col cols="2">
         <label class="top-label">Date:</label>
-        <input class="form-control" type="tel" v-model="sale.date" placeholder="Date">
+        <input class="form-control" type="date" v-model="sale.date" placeholder="Date">
       </b-col>
       <b-col cols="2">
         <label class="top-label">Sale Number:</label>
@@ -37,7 +37,7 @@
       </b-col>
       <b-col cols="2" offset="2">
         <label class="top-label">Expected Date:</label>
-        <input class="form-control" type="tel" v-model="sale.expectedDate" placeholder="Date">
+        <input class="form-control" type="date" v-model="sale.expectedDate" placeholder="Date">
       </b-col>
     </b-row>
     <b-row>
