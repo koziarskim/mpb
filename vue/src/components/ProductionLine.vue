@@ -198,6 +198,11 @@ export default {
 			alert("Enter Assigned People!")
 			return;
 		}
+		var totalUnits = +this.scheduleEvent.totalProduced + +this.unitsToAdd;
+		if(totalUnits > this.scheduleEvent.unitsScheduled){
+			alert("Cannot enter more units than scheduled");
+			return;
+		}
 		var production = {
 		  scheduleEvent: {id: this.scheduleEvent.id},
 		  finishTime: moment().format("HH:mm:ss"),
