@@ -46,6 +46,7 @@ export default {
         })
         .catch(e => {
           console.log("API error: " + e);
+          alert(e.response.data)
         });
     },
   },

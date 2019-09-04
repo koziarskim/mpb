@@ -65,11 +65,11 @@ class UserRest {
 		User result = userRepo.getByUsername(user.getUsername());
 		if (result == null) {
 			log.info("Username not found");
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Username not found");
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Wrong username/password combination!");
 		}
 		if (!result.getPassword().equals(user.getPassword())) {
 			log.info("Password is wrong");
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Password is wrong");
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Wrong username/password combination!");
 		}
 		log.info("Setting SID");
 		//TODO: hash username or something....
