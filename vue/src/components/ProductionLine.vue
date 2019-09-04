@@ -45,7 +45,7 @@
 		</b-col>
 	</b-row>
 	<br/>
-	<div v-if="hasRoles(['PRODUCTION_LEADER'])">
+	<div v-if="hasRoles(['PRODUCTION_ADMIN'])">
 	<b-row>
 		<b-col>
 			<span style="font-size: 18px; font-weight: bold; align:left">Production Output </span>
