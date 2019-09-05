@@ -47,7 +47,7 @@ export default {
       productionModalVisible: false,
       itemDtos: [],
       scheduleDate: moment()
-        .utc()
+        .utc().startOf("isoWeek")
         .format("YYYY-MM-DD")
     };
   },
