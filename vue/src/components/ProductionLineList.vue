@@ -97,9 +97,10 @@ export default {
     }
     this.availableItems = [];
     this.scheduleEvents.forEach(event => {
-      if(this.availableItems.find(item => {
+      //Remove duplicates.
+      if(this.availableItems.find(item => 
         item.id == event.saleItem.item.id
-      })){
+      )){
         return;
       }
       this.availableItems.push({
