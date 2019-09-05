@@ -4,16 +4,16 @@
       <b-collapse is-nav id="nav_collapse">
         <b-navbar-nav v-if="!hideNavBar()">
           <b-nav-item v-on:click="goTo('/home')">Home</b-nav-item>
-          <b-nav-item v-on:click="goTo('/supplierList')" v-if="!hasRole(['PRODUCTION_LEADER'])">Supplier</b-nav-item>
-          <b-nav-item v-on:click="goTo('/componentList')" v-if="!hasRole(['PRODUCTION_LEADER'])">Component</b-nav-item>
-          <b-nav-item v-on:click="goTo('/itemList')" v-if="!hasRole(['PRODUCTION_LEADER'])">Item</b-nav-item>
-          <b-nav-item v-on:click="goTo('/customerList')" v-if="!hasRole(['PRODUCTION_LEADER'])">Customer</b-nav-item>
-          <b-nav-item v-on:click="goTo('/saleList')" v-if="!hasRole(['PRODUCTION_LEADER'])">Sale</b-nav-item>
-          <b-nav-item v-on:click="goTo('/purchaseList')" v-if="hasRole(['POADMIN'])">Purchase</b-nav-item>
-          <b-nav-item v-on:click="goTo('/receivingList')" v-if="hasRole(['INVENTORY'])">Receiving</b-nav-item>
-          <b-nav-item v-on:click="goTo('/shipmentList')" v-if="!hasRole(['PRODUCTION_LEADER'])">Shipment</b-nav-item>
-          <b-nav-item v-on:click="goTo('/schedule')" v-if="!hasRole(['PRODUCTION_LEADER'])">Schedule</b-nav-item>
-		  <b-nav-item v-on:click="goTo('/productionLineList')">Production</b-nav-item>
+          <b-nav-item v-on:click="goTo('/supplierList')">Supplier</b-nav-item>
+          <b-nav-item v-on:click="goTo('/componentList')">Component</b-nav-item>
+          <b-nav-item v-on:click="goTo('/itemList')">Item</b-nav-item>
+          <b-nav-item v-on:click="goTo('/customerList')">Customer</b-nav-item>
+          <b-nav-item v-on:click="goTo('/saleList')">Sale</b-nav-item>
+          <b-nav-item v-on:click="goTo('/purchaseList')">Purchase</b-nav-item>
+          <b-nav-item v-on:click="goTo('/receivingList')">Receiving</b-nav-item>
+          <b-nav-item v-on:click="goTo('/shipmentList')">Shipment</b-nav-item>
+          <b-nav-item v-on:click="goTo('/schedule')">Schedule</b-nav-item>
+		      <b-nav-item v-on:click="goTo('/productionLineList')">Production</b-nav-item>
         </b-navbar-nav>
         <b-navbar-nav class="ml-auto">
           <span v-if="hideNavBar()" style="color: white; margin-right: 455px; padding-top: 7px;">Marketplace Brands</span>
@@ -47,11 +47,8 @@ export default {
   },
   computed: {},
   methods: {
-    hideNavBar: function() {
-      if (window.location.pathname.includes("/login")) {
-        return true;
-      }
-      return false;
+    hideNavBar() {
+      return this.$store.getters.userContext.user.id == null;
     },
     getUserContext() {
       return this.$store.getters.userContext

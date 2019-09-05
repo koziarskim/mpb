@@ -30,7 +30,7 @@ import ShipmentList from "./components/ShipmentList";
 import ScheduleEventList from "./components/ScheduleEventList";
 import ProductionLine from "./components/ProductionLine";
 import ProductionLineList from "./components/ProductionLineList";
-import ProductionOutputEdit from "./components/ProductionOutputEdit";
+import DailyStatus from "./components/public/DailyStatus";
 
 Vue.use(Router);
 
@@ -59,7 +59,10 @@ const router = new Router({
     {
       path: "/itemComponentList/:item_id",
       name: "itemComponentList",
-      component: ItemComponentList
+      component: ItemComponentList,
+      meta: {
+        roles: ["ADMIN"]
+      }
     },
     {
       path: "/componentList",
@@ -104,52 +107,82 @@ const router = new Router({
     {
       path: "/componentEdit/:component_id?",
       name: "componentEdit",
-      component: ComponentEdit
+      component: ComponentEdit,
+      meta: {
+        roles: ["ADMIN"]
+      }
     },
     {
       path: "/ComponentPurchaseList/:component_id",
       name: "ComponentPurchaseList",
-      component: ComponentPurchaseList
+      component: ComponentPurchaseList,
+      meta: {
+        roles: ["ADMIN"]
+      }
     },
     {
       path: "/itemEdit/:item_id?",
       name: "itemEdit",
-      component: ItemEdit
+      component: ItemEdit,
+      meta: {
+        roles: ["ADMIN"]
+      }
     },
     {
       path: "/supplierEdit/:supplier_id?",
       name: "SupplierEdit",
-      component: SupplierEdit
+      component: SupplierEdit,
+      meta: {
+        roles: ["ADMIN"]
+      }
     },
     {
       path: "/customerEdit/:customer_id?",
       name: "CustomerEdit",
-      component: CustomerEdit
+      component: CustomerEdit,
+      meta: {
+        roles: ["ADMIN"]
+      }
     },
     {
       path: "/saleEdit/:sale_id?",
       name: "SaleEdit",
-      component: SaleEdit
+      component: SaleEdit,
+      meta: {
+        roles: ["ADMIN"]
+      }
     },
     {
       path: "/purchaseEdit/:purchase_id",
       name: "PurchaseEdit",
-      component: PurchaseEdit
+      component: PurchaseEdit,
+      meta: {
+        roles: ["ADMIN"]
+      }
     },
     {
       path: "/itemSaleList/:item_id",
       name: "ItemSaleList",
-      component: ItemSaleList
+      component: ItemSaleList,
+      meta: {
+        roles: ["ADMIN"]
+      }
     },
     {
       path: "/PurchaseComponent/:purchase_id",
       name: "PurchaseComponent",
-      component: PurchaseComponent
+      component: PurchaseComponent,
+      meta: {
+        roles: ["ADMIN"]
+      }
     },
     {
       path: "/PurchaseItem/:purchase_id",
       name: "PurchaseItem",
-      component: PurchaseItem
+      component: PurchaseItem,
+      meta: {
+        roles: ["ADMIN"]
+      }
     },
     {
       path: "/ReceivingList",
@@ -162,7 +195,10 @@ const router = new Router({
     {
       path: "/ReceivingEdit/:receiving_id",
       name: "ReceivingEdit",
-      component: ReceivingEdit
+      component: ReceivingEdit,
+      meta: {
+        roles: ["ADMIN"]
+      }
     },
     {
       path: "/Users",
@@ -193,35 +229,48 @@ const router = new Router({
     {
       path: "/ShipmentEdit/:shipment_id?",
       name: "ShipmentEdit",
-      component: ShipmentEdit
+      component: ShipmentEdit,
+      meta: {
+        roles: ["ADMIN"]
+      }
     },
     {
       path: "/ShipmentList",
       name: "ShipmentList",
-      component: ShipmentList
+      component: ShipmentList,
+      meta: {
+        roles: ["ADMIN"]
+      }
     },
     {
       path: "/ScheduleEventList/:item_id?",
       name: "ScheduleEventList",
-      component: ScheduleEventList
+      component: ScheduleEventList,
+      meta: {
+        roles: ["ADMIN"]
+      }
     },
     {
       path: "/ProductionLine/:schedule_event_id?",
       name: "ProductionLine",
-      component: ProductionLine
+      component: ProductionLine,
+      meta: {
+        roles: ["ADMIN", "PRODUCTION_LEADER", "PRODUCTION_ADMIN"]
+      }
     },
     {
       path: "/ProductionLineList",
       name: "ProductionLineList",
       component: ProductionLineList,
       meta: {
-        roles: ["ADMIN", "PRODUCTION_LEADER"]
+        roles: ["ADMIN", "PRODUCTION_LEADER", "PRODUCTION_ADMIN"]
       }
     },
+    //public
     {
-      path: "/ProductionOutputEdit/:production_line_id",
-      name: "ProductionOutputEdit",
-      component: ProductionOutputEdit
+      path: "/DailyStatus",
+      name: "DailyStatus",
+      component: DailyStatus
     }
   ]
 });
@@ -233,13 +282,15 @@ router.beforeEach((to, from, next) => {
   }
   var foundRole = false;
   var roles = store.getters.userContext.user.roles;
-  roles.forEach(role => {
-    to.meta.roles.forEach(metaRole => {
-      if (role.code === metaRole) {
-        foundRole = true;
-      }
+  if (roles) {
+    roles.forEach(role => {
+      to.meta.roles.forEach(metaRole => {
+        if (role.code === metaRole) {
+          foundRole = true;
+        }
+      });
     });
-  });
+  }
   if (foundRole) {
     next();
   } else {
