@@ -29,27 +29,30 @@ public interface ItemRepo extends PagingAndSortingRepository<Item, Long> {
 			+ "left join i.category c " + "join ps.purchase.purchaseComponents pc " + "where ps.purchase.id = :purchase_id")
 	List<Item> getPurchaseItems(@Param("purchase_id") Long purchase_id);
 
-	@Query("select new com.noovitec.mpb.dto.ItemListDto(i.id, i.number, i.name, b.name, c.name, i.unitsOnStack, sum(si.units), sum(se.unitsScheduled)) from Item i "
+	@Query("select new com.noovitec.mpb.dto.ItemListDto(i.id, i.number, i.name, b.name, c.name, i.unitsOnStack, sum(si.units), sum(se.unitsScheduled), sum(p.unitsProduced)) from Item i "
 			+ "left join Category c on c.id = i.category.id "
 			+ "left join Brand b on b.id = i.brand.id "
 			+ "left join SaleItem si on si.item.id = i.id "
 			+ "left join ScheduleEvent se on se.saleItem.id = si.id "
+			+ "left join Production p on p.scheduleEvent.id = se.id "
 			+ "group by i.id, c.id, b.id")
 	List<ItemListDto> getItemListDto();
 
-	@Query("select new com.noovitec.mpb.dto.ItemListDto(i.id, i.number, i.name, b.name, c.name, i.unitsOnStack, sum(si.units), sum(se.unitsScheduled)) from Item i "
+	@Query("select new com.noovitec.mpb.dto.ItemListDto(i.id, i.number, i.name, b.name, c.name, i.unitsOnStack, sum(si.units), sum(se.unitsScheduled), sum(p.unitsProduced)) from Item i "
 			+ "left join Category c on c.id = i.category.id "
 			+ "left join Brand b on b.id = i.brand.id "
 			+ "left join SaleItem si on si.item.id = i.id "
 			+ "left join ScheduleEvent se on se.saleItem.id = si.id "
+			+ "left join Production p on p.scheduleEvent.id = se.id "
 			+ "group by i.id, c.id, b.id")
 	Page<ItemListDto> getItemPageable(Pageable pageable);
 
-	@Query("select new com.noovitec.mpb.dto.ItemListDto(i.id, i.number, i.name, b.name, c.name, i.unitsOnStack, sum(si.units), sum(se.unitsScheduled)) from Item i "
+	@Query("select new com.noovitec.mpb.dto.ItemListDto(i.id, i.number, i.name, b.name, c.name, i.unitsOnStack, sum(si.units), sum(se.unitsScheduled), sum(p.unitsProduced)) from Item i "
 			+ "left join Category c on c.id = i.category.id "
 			+ "left join Brand b on b.id = i.brand.id "
 			+ "left join SaleItem si on si.item.id = i.id "
 			+ "left join ScheduleEvent se on se.saleItem.id = si.id "
+			+ "left join Production p on p.scheduleEvent.id = se.id "
 			+ "where upper(i.name) LIKE CONCAT('%',UPPER(:searchKey),'%') "
 			+ "or upper(b.name) LIKE CONCAT('%',UPPER(:searchKey),'%') "
 			+ "or upper(c.name) LIKE CONCAT('%',UPPER(:searchKey),'%') "

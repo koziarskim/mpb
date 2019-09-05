@@ -17,10 +17,11 @@ public class ItemListDto {
 	private Long unitsOnStack = 0L;
 	private Long unitsSold = 0L;
 	private Long unitsScheduled = 0L;
+	private Long unitsProduced = 0L;
 	
 	private boolean none; //Bypass default constructor;
 	
-	public ItemListDto(Long id, String number, String name, String brand, String category, Long unitsOnStack, Long unitsSold, Long unitsScheduled) {
+	public ItemListDto(Long id, String number, String name, String brand, String category, Long unitsOnStack, Long unitsSold, Long unitsScheduled, Long unitsProduced) {
 		this.id = id;
 		this.number = number;
 		this.name = name;
@@ -29,5 +30,6 @@ public class ItemListDto {
 		this.unitsOnStack = unitsOnStack==null?0L:unitsOnStack;
 		this.unitsSold = unitsSold==null?0L:unitsSold;
 		this.unitsScheduled = unitsScheduled==null?0L:unitsScheduled;
+		this.unitsProduced = unitsProduced==null?0L:unitsProduced;
 	}
 }

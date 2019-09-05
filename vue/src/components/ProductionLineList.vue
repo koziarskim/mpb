@@ -97,6 +97,11 @@ export default {
     }
     this.availableItems = [];
     this.scheduleEvents.forEach(event => {
+      if(this.availableItems.find(item => {
+        item.id == event.saleItem.item.id
+      })){
+        return;
+      }
       this.availableItems.push({
         id: event.saleItem.item.id,
         name: event.saleItem.item.name

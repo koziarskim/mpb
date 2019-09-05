@@ -10,7 +10,7 @@
     <b-row>
       <b-col cols="3" offset="5">
         <div>Return to
-          <a href="#" @click="goToHome()">Home</a>
+          <a href="#" @click="goTo('/login')">Login</a>
         </div>
       </b-col>
     </b-row>
@@ -31,8 +31,8 @@ export default {
   computed: {},
   watch: {},
   methods: {
-    goToHome() {
-      router.push("/Home");
+    goTo(view) {
+      router.push(view);
     }
   },
   mounted() {}

@@ -30,6 +30,9 @@
                 <template slot="unitsScheduled" slot-scope="row">
                     <b-button size="sm" variant="link" @click.stop="goToItemScheduleList(row.item.id)">{{row.item.unitsScheduled}}</b-button>
                 </template>
+                <template slot="unitsProduced" slot-scope="row">
+                    <b-button size="sm" variant="link" @click.stop="goToItemScheduleList(row.item.id)">{{row.item.unitsProduced}}</b-button>
+                </template>
                 <template slot="action" slot-scope="row">
                     <b-button size="sm" @click.stop="deleteItem(row.item.id)">x</b-button>
                 </template>
@@ -51,9 +54,10 @@ export default {
         { key: 'name', sortable: true, label: 'Name'},
         { key: 'brand', sortable: true, label: 'Brand'},
         { key: 'category', sortable: true, label: 'Category'},
-        { key: 'unitsOnStack', sortable: false, label: 'Stack'},
-        { key: 'unitsSold', sortable: false, label: 'Sale'},
-        { key: 'unitsScheduled', sortable: false, label: 'Schedule'},
+        { key: 'unitsOnStack', sortable: false, label: 'Stock'},
+        { key: 'unitsSold', sortable: false, label: 'Sold'},
+        { key: 'unitsScheduled', sortable: false, label: 'Scheduled'},
+        { key: 'unitsProduced', sortable: false, label: 'Produced'},
         { key: 'action', sortable: false}
       ],
       items: [] //ItemListDto
