@@ -247,14 +247,6 @@ export default {
         alert("Make sure all fields are entered");
         return false;
       }
-    //   if (this.scheduleEvent.unitsScheduled > this.saleItem.units) {
-    //     alert("Units scheduled cannot exceed sold");
-    //     return false;
-    //   }
-    //   if (this.unitsReadyToSchedule < 0) {
-    //     alert("Cannot schedule more that ready to schedule");
-    //     return false;
-    //   }
       return true;
     },
     saveModal() {

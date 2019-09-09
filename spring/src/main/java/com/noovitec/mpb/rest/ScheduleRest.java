@@ -120,6 +120,12 @@ class ScheduleRest {
 		if (schedule == null) {
 			schedule = new Schedule();
 		}
+		if(schedule.getId() == null && schedule.getDate()!=null) {
+			List<Schedule> existingSchedules = scheduleRepo.findByDate(schedule.getDate());
+			if(existingSchedules !=null && existingSchedules.size()>0) {
+				schedule = existingSchedules.get(0);
+			}
+		}
 		for (ScheduleEvent se : schedule.getScheduleEvents()) {
 			se.setSchedule(schedule);
 		}
