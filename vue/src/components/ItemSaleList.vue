@@ -134,7 +134,17 @@ export default {
           console.log("API error: " + e);
         });
     },
+    validate(){
+      if(!this.scheduleData.date || !this.scheduleData.time || !this.scheduleData.line || !this.scheduleData.units){
+        alert("Please enter all the fields");
+        return false;
+      }
+      return true;
+    },
     saveModal(){
+      if(!this.validate()){
+        return false;
+      }
       this.saveSchedule().then(schedule => {
         var scheduleEvent = {
             line: {id: this.scheduleData.line.id},
