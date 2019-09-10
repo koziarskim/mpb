@@ -80,6 +80,7 @@ export default {
   mounted() {
     var item_id = this.$route.params.item_id;
     this.getScheduleEvents(item_id);
+    this.getItem(item_id);
   }
 };
 </script>
