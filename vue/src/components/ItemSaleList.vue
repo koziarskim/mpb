@@ -13,6 +13,9 @@
           <template slot="sale" slot-scope="row">
             <b-button size="sm" @click.stop="goToSale(row.item.sale.id)" variant="link">{{row.item.sale.number}}</b-button>
           </template>
+          <template slot="unitsScheduled" slot-scope="row">
+            <b-button size="sm" @click.stop="goToScheduled(row.item.sale.id)" variant="link">{{row.item.unitsScheduled}}</b-button>
+          </template>
           <template slot="action" slot-scope="row">
             <b-button size="sm" :disabled="disableSchedule(row.item)" type="submit" variant="primary" @click="toggleModal(row.item)">Schedule</b-button>
           </template>
@@ -191,6 +194,9 @@ export default {
     },
     goToSale(sale_id) {
       router.push("/saleEdit/" + sale_id);
+    },
+    goToScheduled(sale_id) {
+      router.push("/scheduleEventList/" + this.item.id + "/sale/" + sale_id);
     },
   },
   mounted() {

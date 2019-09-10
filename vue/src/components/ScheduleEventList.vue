@@ -1,11 +1,18 @@
 <template>
   <b-container fluid>
-    <div style="border: 0px" class="d-flex justify-content-between align-items-center">
-      <h4 style="text-align: left;">Schedule Items: {{item.number}}</h4>
-      <div style="text-align: right;">
-        <b-button type="reset" variant="success" @click="close">Close</b-button>
-      </div>
-    </div>
+    <b-row style="padding-bottom: 4px;">
+      <b-col cols=3>
+        <span style="font-size: 18px; font-weight: bold">Schedule Items: {{item.number}}</span>
+      </b-col>
+      <b-col cols=3>
+        <b-select option-value="id" option-text="number" :list="availableSales" v-model="selectedSale"></b-select>
+      </b-col>
+      <b-col cols=1 offset=5>
+        <div style="text-align: right;">
+          <b-button type="reset" variant="success" @click="close">Close</b-button>
+        </div>
+      </b-col>
+    </b-row>
     <b-row>
       <b-col>
         <label class="top-label"></label>
@@ -30,6 +37,8 @@ export default {
   data() {
     return {
       scheduleEvents: [],
+      availableSales: [],
+      selectedSale: {},
       item: {},
       sortBy: "id",
       sortDesc: false,
@@ -48,8 +57,17 @@ export default {
   },
 
   computed: {},
-  watch: {},
+  watch: {
+    selectedSale(newValue, oldValue){
+      this.getScheduleEvents(this.item.id);
+    }
+  },
   methods: {
+    setup(item_id, sale_id){
+      this.getSale(sale_id);
+      this.getScheduleEvents(item_id);
+      this.getItem(item_id);
+    },
     close() {
         window.history.back();
     },
@@ -57,7 +75,18 @@ export default {
       http
         .get("scheduleEvent/item/" + item_id)
         .then(response => {
-          this.scheduleEvents = response.data;
+          console.log(this.selectedSale);
+          this.scheduleEvents = [],
+          response.data.forEach(se => {
+            if(this.selectedSale.id == se.saleItem.sale.id || !this.selectedSale.id){
+              this.scheduleEvents.push(se);
+            }
+            //Remove duplicates.
+            if(this.availableSales.find(i => i.id == se.saleItem.sale.id)){
+              return;
+            }
+            this.availableSales.push(se.saleItem.sale);
+          })
         })
         .catch(e => {
           console.log("API error: " + e);
@@ -73,14 +102,24 @@ export default {
           console.log("API error: " + e);
         });
     },
+    getSale(sale_id) {
+      http
+        .get("/sale/" + sale_id)
+        .then(response => {
+          this.selectedSale = response.data;
+        })
+        .catch(e => {
+          console.log("API error: " + e);
+        });
+    },
     goToSale(sale_id) {
       router.push("/saleEdit/" + sale_id);
     },
   },
   mounted() {
     var item_id = this.$route.params.item_id;
-    this.getScheduleEvents(item_id);
-    this.getItem(item_id);
+    var sale_id = parseInt(this.$route.params.sale_id);
+    this.setup(item_id, sale_id);
   }
 };
 </script>

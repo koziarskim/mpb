@@ -243,7 +243,7 @@ const router = new Router({
       }
     },
     {
-      path: "/ScheduleEventList/:item_id?",
+      path: "/ScheduleEventList/:item_id?/:sale?/:sale_id?",
       name: "ScheduleEventList",
       component: ScheduleEventList,
       meta: {
