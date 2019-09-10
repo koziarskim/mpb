@@ -13,8 +13,8 @@
           <template slot="sale" slot-scope="row">
             <b-button size="sm" @click.stop="goToSale(row.item.sale.id)" variant="link">{{row.item.sale.number}}</b-button>
           </template>
-          <template slot="createSchedule" slot-scope="row">
-            <b-button size="sm" type="submit" variant="primary" @click="toggleModal(row.item)">Schedule</b-button>
+          <template slot="action" slot-scope="row">
+            <b-button size="sm" :disabled="disableSchedule(row.item)" type="submit" variant="primary" @click="toggleModal(row.item)">Schedule</b-button>
           </template>
         </b-table>
       </b-col>
@@ -83,13 +83,14 @@ export default {
         { key: "units", label: "Sold", sortable: false },
         { key: "unitsScheduled", label: "Scheduled", sortable: false },
         { key: "unitsProduced", label: "Produced", sortable: false },
-        { key: "createSchedule", label: "Create Schedule", sortable: false },
+        { key: "action", label: "Action", sortable: false },
       ],
       scheduleData: {
         date: moment().utc().format("YYYY-MM-DD"),
         time: "08:00:00",
         line: {id: 1, number: '1'},
         units: 0,
+        maxUnits: 0,
         saleItem: {
           sale: {
             customer: {}
@@ -118,8 +119,12 @@ export default {
     toggleModal(saleItem){
       this.modalShow = !this.modalShow;
       this.scheduleData.units = +saleItem.units - +saleItem.unitsScheduled;
+      this.scheduleData.maxUnits = this.scheduleData.units;
       this.scheduleData.saleItem = saleItem;
       this.scheduleData.item = this.item;
+    },
+    disableSchedule(saleItem){
+      return +saleItem.units - +saleItem.unitsScheduled <=0;
     },
     saveSchedule() {
       var schedule = {
@@ -137,6 +142,10 @@ export default {
     validate(){
       if(!this.scheduleData.date || !this.scheduleData.time || !this.scheduleData.line || !this.scheduleData.units){
         alert("Please enter all the fields");
+        return false;
+      }
+      if(this.scheduleData.units > this.scheduleData.maxUnits){
+        alert("Cannot schedule more that sold");
         return false;
       }
       return true;
