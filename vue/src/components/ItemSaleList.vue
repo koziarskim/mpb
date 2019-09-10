@@ -86,7 +86,7 @@ export default {
         { key: "action", label: "Action", sortable: false },
       ],
       scheduleData: {
-        date: moment().utc().format("YYYY-MM-DD"),
+        date: moment().format("YYYY-MM-DD"),
         time: "08:00:00",
         line: {id: 1, number: '1'},
         units: 0,
