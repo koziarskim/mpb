@@ -1,7 +1,7 @@
 <template>
   <b-container fluid>
     <div style="border: 0px" class="d-flex justify-content-between align-items-center">
-      <h4 style="text-align: left;">Sales for Item: {{item.number}}</h4>
+      <h4 style="text-align: left;">Sales for Item: {{item.name}}</h4>
       <div style="text-align: right;">
         <b-button type="reset" variant="success" @click="close">Close</b-button>
       </div>

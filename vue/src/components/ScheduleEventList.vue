@@ -2,7 +2,7 @@
   <b-container fluid>
     <b-row style="padding-bottom: 4px;">
       <b-col cols=3>
-        <span style="font-size: 18px; font-weight: bold">Schedule Items: {{item.number}}</span>
+        <span style="font-size: 18px; font-weight: bold">Schedule Items: {{item.name}}</span>
       </b-col>
       <b-col cols=3>
         <b-select option-value="id" option-text="number" :list="availableSales" v-model="selectedSale"></b-select>

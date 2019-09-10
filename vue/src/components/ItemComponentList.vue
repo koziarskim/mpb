@@ -2,7 +2,7 @@
   <b-container fluid>
     <b-row>
       <b-col cols="2">
-        <span style="text-align: left; font-size: 18px; font-weight: bold">Item: {{item.number}}</span>
+        <span style="text-align: left; font-size: 18px; font-weight: bold">Item: {{item.name}}</span>
       </b-col>
     </b-row>
     <b-row>
