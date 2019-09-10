@@ -22,7 +22,7 @@
           </template>
           <template slot="eventCompleted" slot-scope="row">
             <span v-if="row.item.eventCompleted">Done</span>
-            <b-button v-if="!row.item.eventCompleted" :disabled="deleteDisabled(row.item)" size="sm" type="submit" variant="primary" @click="deleteScheduleEvent(row.item.id)">Delete</b-button>
+            <b-button v-if="!row.item.eventCompleted" :disabled="deleteDisabled(row.item)" size="sm" type="submit" variant="primary" @click="deleteScheduleEvent(row.item.id)">X</b-button>
           </template>
         </b-table>
       </b-col>
@@ -73,14 +73,15 @@ export default {
       return se.totalProduced > 0;
     },
     deleteScheduleEvent(se_id){
-      http
-      .delete("/scheduleEvent/" + se_id)
-      .then(response => {
-        this.getScheduleEvents(this.item.id);
+      this.$bvModal.msgBoxConfirm('Are you sure you want to delete?').then(value => {
+        if(value){
+          http.delete("/scheduleEvent/" + se_id).then(response => {
+            this.getScheduleEvents(this.item.id);
+          }).catch(e => {
+            console.log("API error: " + e);
+          });
+        }
       })
-      .catch(e => {
-        console.log("API error: " + e);
-      });
     },
     close() {
         window.history.back();

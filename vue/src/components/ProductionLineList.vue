@@ -25,6 +25,9 @@
       <template slot="totalTime" slot-scope="row">
 		  <span>{{formatTime(row.item.totalTime)}}</span>
       </template>
+      <template slot="action" slot-scope="row">
+        <b-button size="sm" :disabled="deleteDisabled(row.item)" @click="deleteScheduleEvent(row.item.id)" variant="primary">X</b-button>
+      </template>
     </b-table>
     <b-row>
       <b-col cols=2>
@@ -56,7 +59,8 @@ export default {
 		    { key: "unitsScheduled", label: "Units Scheduled", sortable: true },
 		    { key: "totalProduced", label: "Total Produced", sortable: true },
         { key: "unitsPending", label: "Still To Make", sortable: true },
-		    { key: "totalTime", label: "Total Time", sortable: true },
+        { key: "totalTime", label: "Total Time", sortable: true },
+        { key: "action", label: "Action", sortable: true },
 	  ],
     scheduleEvents: [],
     availableLines: [],
@@ -79,6 +83,20 @@ export default {
     }
   },
   methods: {
+    deleteDisabled(se){
+      return se.totalProduced > 0;
+    },
+    deleteScheduleEvent(se_id){
+      this.$bvModal.msgBoxConfirm('Are you sure you want to delete?').then(value => {
+        if(value){
+          http.delete("/scheduleEvent/" + se_id).then(response => {
+            this.getScheduleEvents(this.date);
+          }).catch(e => {
+            console.log("API error: " + e);
+          });
+        }
+      })
+    },
   getAvailableLines() {
 		this.availableLines = [
 			{ id: 1, number: 1 },
