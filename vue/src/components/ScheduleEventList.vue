@@ -21,7 +21,8 @@
             <b-button size="sm" @click.stop="goToSale(row.item.saleItem.sale.id)" variant="link">{{row.item.saleItem.sale.number}}</b-button>
           </template>
           <template slot="eventCompleted" slot-scope="row">
-            <span>{{row.item.eventCompleted?"Yes":"No"}}</span>
+            <span v-if="row.item.eventCompleted">Done</span>
+            <b-button v-if="!row.item.eventCompleted" :disabled="deleteDisabled(row.item)" size="sm" type="submit" variant="primary" @click="deleteScheduleEvent(row.item.id)">Delete</b-button>
           </template>
         </b-table>
       </b-col>
@@ -64,9 +65,22 @@ export default {
   },
   methods: {
     setup(item_id, sale_id){
+      this.getItem(item_id);
       this.getSale(sale_id);
       this.getScheduleEvents(item_id);
-      this.getItem(item_id);
+    },
+    deleteDisabled(se){
+      return se.totalProduced > 0;
+    },
+    deleteScheduleEvent(se_id){
+      http
+      .delete("/scheduleEvent/" + se_id)
+      .then(response => {
+        this.getScheduleEvents(this.item.id);
+      })
+      .catch(e => {
+        console.log("API error: " + e);
+      });
     },
     close() {
         window.history.back();
@@ -75,7 +89,6 @@ export default {
       http
         .get("scheduleEvent/item/" + item_id)
         .then(response => {
-          console.log(this.selectedSale);
           this.scheduleEvents = [],
           response.data.forEach(se => {
             if(this.selectedSale.id == se.saleItem.sale.id || !this.selectedSale.id){
@@ -118,7 +131,7 @@ export default {
   },
   mounted() {
     var item_id = this.$route.params.item_id;
-    var sale_id = parseInt(this.$route.params.sale_id);
+    var sale_id = this.$route.params.sale_id;
     this.setup(item_id, sale_id);
   }
 };
