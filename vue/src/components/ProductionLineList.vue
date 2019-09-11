@@ -20,7 +20,8 @@
         <b-button size="sm" @click.stop="goToProductionLine(row.item.id)" variant="link">{{row.item.line.number}}</b-button>
       </template>
       <template slot="item" slot-scope="row">
-		  <span>{{row.item.saleItem.item.name}} ({{row.item.saleItem.sale.number}} - {{row.item.saleItem.sale.customer.name}})</span>
+        <b-button size="sm" @click.stop="navigation.goToItemEdit(row.item.saleItem.item.id)" variant="link">{{row.item.saleItem.item.name}}</b-button>
+		    <span>({{row.item.saleItem.sale.number}} - {{row.item.saleItem.sale.customer.name}})</span>
       </template>
       <template slot="totalTime" slot-scope="row">
 		  <span>{{formatTime(row.item.totalTime)}}</span>
@@ -57,10 +58,12 @@ import httpUtils from "../httpUtils";
 import store from "../store.js";
 import moment from "moment";
 import securite from "../securite";
+import navigation from "../utils/navigation"
 
 export default {
   data() {
     return {
+      navigation: navigation,
       date: moment()
         .format("YYYY-MM-DD"),
       sortBy: "line.number",
@@ -139,41 +142,41 @@ export default {
         }
       })
     },
-  getAvailableLines() {
-		this.availableLines = [
-			{ id: 1, number: 1 },
-			{ id: 2, number: 2 },
-			{ id: 3, number: 3 },
-			{ id: 4, number: 4 },
-			{ id: 5, number: 5 },
-			{ id: 6, number: 6 },
-			{ id: 7, number: 7 },
-			{ id: 8, number: 8 }
-		];
-  },
-  getAvailableItems(){
-    if(this.selectedItem.id){
-      return;
-    }
-    this.availableItems = [];
-    this.scheduleEvents.forEach(event => {
-      //Remove duplicates.
-      if(this.availableItems.find(item => 
-        item.id == event.saleItem.item.id
-      )){
+    getAvailableLines() {
+      this.availableLines = [
+        { id: 1, number: 1 },
+        { id: 2, number: 2 },
+        { id: 3, number: 3 },
+        { id: 4, number: 4 },
+        { id: 5, number: 5 },
+        { id: 6, number: 6 },
+        { id: 7, number: 7 },
+        { id: 8, number: 8 }
+      ];
+    },
+    getAvailableItems(){
+      if(this.selectedItem.id){
         return;
       }
-      this.availableItems.push({
-        id: event.saleItem.item.id,
-        name: event.saleItem.item.name
+      this.availableItems = [];
+      this.scheduleEvents.forEach(event => {
+        //Remove duplicates.
+        if(this.availableItems.find(item => 
+          item.id == event.saleItem.item.id
+        )){
+          return;
+        }
+        this.availableItems.push({
+          id: event.saleItem.item.id,
+          name: event.saleItem.item.name
+        })
       })
-    })
-  },
-	formatTime(secs){
-		const duration = moment.duration(secs, 'seconds');
-		return duration.hours()+':'+duration.minutes()+':'+duration.seconds();
-	},
-	getScheduleEvents(date){
+    },
+	  formatTime(secs){
+		  const duration = moment.duration(secs, 'seconds');
+		  return duration.hours()+':'+duration.minutes()+':'+duration.seconds();
+	  },
+	  getScheduleEvents(date){
       http
         .get("/schedule/single/date/"+date)
         .then(response => {
@@ -200,18 +203,18 @@ export default {
         .catch(e => {
           console.log("API error: " + e);
         });
-	},
+	  },
     goToProductionLine(schedule_event_id) {
       if (schedule_event_id) {
         router.push("/productionLine/" + schedule_event_id);
         return;
       }
       router.push("/productionLine");
-	},
+	  },
   },
   mounted() {
-  this.getScheduleEvents(this.date);
-  this.getAvailableLines();
+    this.getScheduleEvents(this.date);
+    this.getAvailableLines();
   }
 };
 </script>
