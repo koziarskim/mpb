@@ -56,6 +56,7 @@ import router from "../router";
 import httpUtils from "../httpUtils";
 import store from "../store.js";
 import moment from "moment";
+import securite from "../securite";
 
 export default {
   data() {
@@ -97,6 +98,10 @@ export default {
   },
   methods: {
     editScheduleEvent(se){
+      if(!securite.hasRole(['ADMIN', 'PROD_ADMIN'])){
+        alert("You don't have permission for this operation");
+        return;
+      }
       se.edit = true;
     },
     saveScheduleEvent(se){
@@ -120,6 +125,10 @@ export default {
       return se.totalProduced > 0;
     },
     deleteScheduleEvent(se_id){
+      if(!securite.hasRole(['ADMIN', 'PROD_ADMIN'])){
+        alert("You don't have permission for this operation");
+        return;
+      }
       this.$bvModal.msgBoxConfirm('Are you sure you want to delete?').then(value => {
         if(value){
           http.delete("/scheduleEvent/" + se_id).then(response => {

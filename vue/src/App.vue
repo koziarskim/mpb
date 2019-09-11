@@ -23,7 +23,7 @@
               <em>{{getUserContext().user.fullName}}</em>
             </template>
             <b-dropdown-item @click="goTo('/')">Profile</b-dropdown-item>
-            <b-dropdown-item v-if="hasRole(['ADMIN'])" @click="goTo('/users')">Manage Users</b-dropdown-item>
+            <b-dropdown-item v-if="securite.hasRole(['ADMIN'])" @click="goTo('/users')">Manage Users</b-dropdown-item>
             <b-dropdown-item @click="logout()">Signout</b-dropdown-item>
           </b-nav-item-dropdown>
         </b-navbar-nav>
@@ -38,12 +38,15 @@
 <script>
 import http from "./http-common";
 import router from "./router";
-import store from "./store.js";
+import store from "./store";
+import securite from "./securite"
 
 export default {
   name: "app",
   data() {
-    return {};
+    return {
+      securite: securite,
+    };
   },
   computed: {},
   methods: {
@@ -52,15 +55,6 @@ export default {
     },
     getUserContext() {
       return this.$store.getters.userContext
-	},
-	hasRole(roles){
-		var found = false;
-		roles.forEach(role=>{
-			if(this.$store.getters.userContext.hasRole(role)){
-				found = true;
-			}
-		})
-		return found;
 	},
     goTo(view) {
       router.push(view);
