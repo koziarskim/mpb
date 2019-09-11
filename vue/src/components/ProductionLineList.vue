@@ -25,8 +25,19 @@
       <template slot="totalTime" slot-scope="row">
 		  <span>{{formatTime(row.item.totalTime)}}</span>
       </template>
+      <template slot="unitsScheduled" slot-scope="row">
+        <b-button v-if="!row.item.edit" @click="editScheduleEvent(row.item)" variant="light">{{row.item.unitsScheduled}}</b-button>
+        <b-input-group>
+          <b-form-input style="width:100px" v-if="row.item.edit" class="form-control" type="tel" v-model="row.item.unitsScheduled">
+          </b-form-input>
+          <b-input-group-append>
+            <b-button v-if="row.item.edit" style="margin-left: 5px" variant="link" @click="saveScheduleEvent(row.item)">save</b-button>
+          </b-input-group-append>
+        </b-input-group>
+      </template>
       <template slot="action" slot-scope="row">
-        <b-button size="sm" :disabled="deleteDisabled(row.item)" @click="deleteScheduleEvent(row.item.id)" variant="primary">X</b-button>
+        <span v-if="row.item.eventCompleted">Done</span>
+        <b-button v-if="!row.item.eventCompleted" size="sm" :disabled="deleteDisabled(row.item)" @click="deleteScheduleEvent(row.item.id)" variant="primary">X</b-button>
       </template>
     </b-table>
     <b-row>
@@ -56,12 +67,14 @@ export default {
       fields: [
         { key: "line.number", label: "Line", sortable: true },
 		    { key: "item", label: "Item (Sale & Customer)", sortable: true },
-		    { key: "unitsScheduled", label: "Units Scheduled", sortable: true },
-		    { key: "totalProduced", label: "Total Produced", sortable: true },
+		    { key: "saleItem.units", label: "Sold", sortable: true },
+		    { key: "unitsScheduled", label: "Scheduled", sortable: true },
+		    { key: "totalProduced", label: "Produced", sortable: true },
         { key: "unitsPending", label: "Still To Make", sortable: true },
         { key: "totalTime", label: "Total Time", sortable: true },
         { key: "action", label: "Action", sortable: true },
-	  ],
+    ],
+    schedule_id: null,
     scheduleEvents: [],
     availableLines: [],
     availableItems: [],
@@ -83,6 +96,26 @@ export default {
     }
   },
   methods: {
+    editScheduleEvent(se){
+      se.edit = true;
+    },
+    saveScheduleEvent(se){
+      if(se.unitsScheduled > se.saleItem.units){
+        alert("Cannot schedule more that sold");
+        return;
+      }
+      if(se.unitsScheduled < se.totalProduced){
+        alert("Cannot schedule less than produced");
+        return;
+      }
+      se.schedule = {id: this.schedule_id}
+      http.post("/scheduleEvent", se).then(response => {
+        this.getScheduleEvents(this.date)
+      }).catch(e => {
+        console.log("API error: " + e);
+      });
+      se.edit = false;
+    },
     deleteDisabled(se){
       return se.totalProduced > 0;
     },
@@ -139,16 +172,18 @@ export default {
           this.totalScheduled = 0;
           this.totalProduced = 0;
           if(response.data){
-            response.data.scheduleEvents.forEach(event =>{
-              if(this.selectedLine.id && event.line.id != this.selectedLine.id){
+            this.schedule_id = response.data.id;
+            response.data.scheduleEvents.forEach(se =>{
+              se.edit = false;
+              if(this.selectedLine.id && se.line.id != this.selectedLine.id){
                 return;
               }
-              if(this.selectedItem.id && event.saleItem.item.id != this.selectedItem.id){
+              if(this.selectedItem.id && se.saleItem.item.id != this.selectedItem.id){
                 return;
               }
-              this.totalScheduled += event.unitsScheduled;
-              this.totalProduced += event.totalProduced;
-              this.scheduleEvents.push(event)
+              this.totalScheduled += se.unitsScheduled;
+              this.totalProduced += se.totalProduced;
+              this.scheduleEvents.push(se)
             })
           }
           this.getAvailableItems();

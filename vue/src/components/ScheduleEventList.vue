@@ -21,14 +21,14 @@
             <b-button size="sm" @click.stop="goToSale(row.item.saleItem.sale.id)" variant="link">{{row.item.saleItem.sale.number}}</b-button>
           </template>
           <template slot="unitsScheduled" slot-scope="row">
-                <b-button v-if="!row.item.edit" @click="editScheduleEvent(row.item)" variant="light">{{row.item.unitsScheduled}}</b-button>
-                <b-input-group>
-                  <b-form-input style="width:30px" v-if="row.item.edit" class="form-control" type="tel" v-model="row.item.unitsScheduled">
-                  </b-form-input>
-                  <b-input-group-append>
-                    <b-button v-if="row.item.edit" style="margin-left: 5px" variant="link" @click="saveScheduleEvent(row.item)">save</b-button>
-                  </b-input-group-append>
-                </b-input-group>
+            <b-button v-if="!row.item.edit" @click="editScheduleEvent(row.item)" variant="light">{{row.item.unitsScheduled}}</b-button>
+            <b-input-group>
+              <b-form-input style="width:100px" v-if="row.item.edit" class="form-control" type="tel" v-model="row.item.unitsScheduled">
+              </b-form-input>
+              <b-input-group-append>
+                <b-button v-if="row.item.edit" style="margin-left: 5px" variant="link" @click="saveScheduleEvent(row.item)">save</b-button>
+              </b-input-group-append>
+            </b-input-group>
           </template>
           <template slot="action" slot-scope="row">
             <span v-if="row.item.eventCompleted">Done</span>
@@ -47,7 +47,6 @@ import router from "../router";
 export default {
   data() {
     return {
-      editUnitsScheduled: false,
       scheduleEvents: [],
       availableSales: [],
       selectedSale: {},
@@ -84,9 +83,12 @@ export default {
       se.edit = true;
     },
     saveScheduleEvent(se){
-      console.log(se)
       if(se.unitsScheduled > se.saleItem.units){
         alert("Cannot schedule more that sold");
+        return;
+      }
+      if(se.unitsScheduled < se.totalProduced){
+        alert("Cannot schedule less than produced");
         return;
       }
       http.post("/scheduleEvent", se).then(response => {
