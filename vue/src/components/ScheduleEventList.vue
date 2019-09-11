@@ -20,7 +20,17 @@
           <template slot="sale" slot-scope="row">
             <b-button size="sm" @click.stop="goToSale(row.item.saleItem.sale.id)" variant="link">{{row.item.saleItem.sale.number}}</b-button>
           </template>
-          <template slot="eventCompleted" slot-scope="row">
+          <template slot="unitsScheduled" slot-scope="row">
+                <b-button v-if="!row.item.edit" @click="editScheduleEvent(row.item)" variant="light">{{row.item.unitsScheduled}}</b-button>
+                <b-input-group>
+                  <b-form-input style="width:30px" v-if="row.item.edit" class="form-control" type="tel" v-model="row.item.unitsScheduled">
+                  </b-form-input>
+                  <b-input-group-append>
+                    <b-button v-if="row.item.edit" style="margin-left: 5px" variant="link" @click="saveScheduleEvent(row.item)">save</b-button>
+                  </b-input-group-append>
+                </b-input-group>
+          </template>
+          <template slot="action" slot-scope="row">
             <span v-if="row.item.eventCompleted">Done</span>
             <b-button v-if="!row.item.eventCompleted" :disabled="deleteDisabled(row.item)" size="sm" type="submit" variant="primary" @click="deleteScheduleEvent(row.item.id)">X</b-button>
           </template>
@@ -37,6 +47,7 @@ import router from "../router";
 export default {
   data() {
     return {
+      editUnitsScheduled: false,
       scheduleEvents: [],
       availableSales: [],
       selectedSale: {},
@@ -52,7 +63,7 @@ export default {
         { key: "saleItem.units", label: "Sold", sortable: false },
         { key: "unitsScheduled", label: "Scheduled", sortable: false },
         { key: "totalProduced", label: "Produced", sortable: false },
-        { key: "eventCompleted", label: "Completed", sortable: false },
+        { key: "action", label: "Action", sortable: false },
       ]
     };
   },
@@ -68,6 +79,22 @@ export default {
       this.getItem(item_id);
       this.getSale(sale_id);
       this.getScheduleEvents(item_id);
+    },
+    editScheduleEvent(se){
+      se.edit = true;
+    },
+    saveScheduleEvent(se){
+      console.log(se)
+      if(se.unitsScheduled > se.saleItem.units){
+        alert("Cannot schedule more that sold");
+        return;
+      }
+      http.post("/scheduleEvent", se).then(response => {
+        this.getScheduleEvents(this.item.id)
+      }).catch(e => {
+        console.log("API error: " + e);
+      });
+      se.edit = false;
     },
     deleteDisabled(se){
       return se.totalProduced > 0;
@@ -92,6 +119,7 @@ export default {
         .then(response => {
           this.scheduleEvents = [],
           response.data.forEach(se => {
+            se.edit = false;
             if(this.selectedSale.id == se.saleItem.sale.id || !this.selectedSale.id){
               this.scheduleEvents.push(se);
             }
