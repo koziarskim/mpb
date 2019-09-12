@@ -30,6 +30,7 @@ import ShipmentList from "./components/ShipmentList";
 import ScheduleEventList from "./components/ScheduleEventList";
 import ProductionLine from "./components/ProductionLine";
 import ProductionLineList from "./components/ProductionLineList";
+import Profile from "./components/Profile";
 import DailyStatus from "./components/public/DailyStatus";
 
 Vue.use(Router);
@@ -265,6 +266,11 @@ const router = new Router({
       meta: {
         roles: ["ADMIN", "PRODUCTION_LEADER", "PRODUCTION_ADMIN"]
       }
+    },
+    {
+      path: "/Profile",
+      name: "Profile",
+      component: Profile,
     },
     //public
     {

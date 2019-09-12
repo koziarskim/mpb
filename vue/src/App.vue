@@ -22,7 +22,7 @@
             <template slot="button-content">
               <em>{{getUserContext().user.fullName}}</em>
             </template>
-            <b-dropdown-item @click="goTo('/')">Profile</b-dropdown-item>
+            <b-dropdown-item @click="goTo('/Profile')">Profile</b-dropdown-item>
             <b-dropdown-item v-if="securite.hasRole(['ADMIN'])" @click="goTo('/users')">Manage Users</b-dropdown-item>
             <b-dropdown-item @click="logout()">Signout</b-dropdown-item>
           </b-nav-item-dropdown>

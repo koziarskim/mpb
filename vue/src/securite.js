@@ -9,5 +9,8 @@ export default {
       }
     });
     return found;
+  },
+  getUser() {
+    return store.getters.userContext.user;
   }
 };
