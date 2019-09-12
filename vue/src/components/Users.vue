@@ -7,10 +7,9 @@
         <b-button v-if="editMode" type="reset" variant="success" @click="saveAndClose()">Save & Close</b-button>
       </div>
     </div>
-    <!-- <div v-if="users.length==0">Not found any data...</div> -->
     <b-row>
       <b-col cols="5">
-        <b-table v-if="users.length>0" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="users" :fields="fields">
+        <b-table v-if="users.length>0" sticky-header :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="users" :fields="fields">
           <template slot="number" slot-scope="row">
             <b-button size="sm" @click.stop="editUser(row.item)" variant="link">{{row.item.number}}</b-button>
           </template>
@@ -49,7 +48,7 @@
           <div v-for="role in availableRoles" v-bind:key="role.id">
             <b-row>
               <b-col>
-                <b-form-checkbox v-model="role.selected"></b-form-checkbox><label>{{role.name}} - {{role.description}}</label>
+                <b-form-checkbox v-model="role.selected">{{role.name}} - {{role.description}}</b-form-checkbox>
               </b-col>
             </b-row>
           </div>
@@ -155,7 +154,9 @@ export default {
       http
         .get("/role")
         .then(response => {
-          this.availableRoles = response.data;
+          this.availableRoles = response.data.sort(function(a, b){
+				    return a.id - b.id;
+			    });
         })
         .catch(e => {
           console.log("API error: " + e);

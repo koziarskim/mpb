@@ -13,7 +13,7 @@ export default new Vuex.Store({
           return false;
         }
         this.user.roles.forEach(role => {
-          if (role == "ADMIN") {
+          if (role.code == "ADMIN") {
             roleFound = true;
             return;
           }

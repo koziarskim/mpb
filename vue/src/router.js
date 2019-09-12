@@ -1,5 +1,6 @@
 import Vue from "vue";
-import store from "./store.js";
+import store from "./store";
+import securite from "./securite";
 import Router from "vue-router";
 import Home from "./components/Home.vue";
 import ItemEdit from "./components/ItemEdit.vue";
@@ -287,16 +288,7 @@ router.beforeEach((to, from, next) => {
     return;
   }
   var foundRole = false;
-  var roles = store.getters.userContext.user.roles;
-  if (roles) {
-    roles.forEach(role => {
-      to.meta.roles.forEach(metaRole => {
-        if (role.code === metaRole) {
-          foundRole = true;
-        }
-      });
-    });
-  }
+  foundRole = securite.hasRole(to.meta.roles);
   if (foundRole) {
     next();
   } else {
