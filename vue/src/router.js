@@ -54,7 +54,7 @@ const router = new Router({
       name: "itemList",
       component: ItemList,
       meta: {
-        roles: ["ADMIN"]
+        roles: ["SUPER_USER"]
       }
     },
     {
@@ -62,7 +62,7 @@ const router = new Router({
       name: "itemComponentList",
       component: ItemComponentList,
       meta: {
-        roles: ["ADMIN"]
+        roles: ["SUPER_USER"]
       }
     },
     {
@@ -70,7 +70,7 @@ const router = new Router({
       name: "componentList",
       component: ComponentList,
       meta: {
-        roles: ["ADMIN"]
+        roles: ["SUPER_USER"]
       }
     },
     {
@@ -78,7 +78,7 @@ const router = new Router({
       name: "supplierList",
       component: SupplierList,
       meta: {
-        roles: ["ADMIN"]
+        roles: ["SUPER_USER"]
       }
     },
     {
@@ -86,7 +86,7 @@ const router = new Router({
       name: "customerList",
       component: CustomerList,
       meta: {
-        roles: ["ADMIN"]
+        roles: ["SUPER_USER"]
       }
     },
     {
@@ -94,7 +94,7 @@ const router = new Router({
       name: "saleList",
       component: SaleList,
       meta: {
-        roles: ["ADMIN"]
+        roles: ["SUPER_USER"]
       }
     },
     {
@@ -102,7 +102,7 @@ const router = new Router({
       name: "purchaseList",
       component: PurchaseList,
       meta: {
-        roles: ["ADMIN", "POADMIN"]
+        roles: ["SUPER_USER", "POADMIN"]
       }
     },
     {
@@ -110,7 +110,7 @@ const router = new Router({
       name: "componentEdit",
       component: ComponentEdit,
       meta: {
-        roles: ["ADMIN"]
+        roles: ["SUPER_USER"]
       }
     },
     {
@@ -118,7 +118,7 @@ const router = new Router({
       name: "ComponentPurchaseList",
       component: ComponentPurchaseList,
       meta: {
-        roles: ["ADMIN"]
+        roles: ["SUPER_USER"]
       }
     },
     {
@@ -126,7 +126,7 @@ const router = new Router({
       name: "itemEdit",
       component: ItemEdit,
       meta: {
-        roles: ["ADMIN"]
+        roles: ["SUPER_USER"]
       }
     },
     {
@@ -134,7 +134,7 @@ const router = new Router({
       name: "SupplierEdit",
       component: SupplierEdit,
       meta: {
-        roles: ["ADMIN"]
+        roles: ["SUPER_USER"]
       }
     },
     {
@@ -142,7 +142,7 @@ const router = new Router({
       name: "CustomerEdit",
       component: CustomerEdit,
       meta: {
-        roles: ["ADMIN"]
+        roles: ["SUPER_USER"]
       }
     },
     {
@@ -150,7 +150,7 @@ const router = new Router({
       name: "SaleEdit",
       component: SaleEdit,
       meta: {
-        roles: ["ADMIN"]
+        roles: ["SUPER_USER"]
       }
     },
     {
@@ -158,7 +158,7 @@ const router = new Router({
       name: "PurchaseEdit",
       component: PurchaseEdit,
       meta: {
-        roles: ["ADMIN"]
+        roles: ["SUPER_USER"]
       }
     },
     {
@@ -166,7 +166,7 @@ const router = new Router({
       name: "ItemSaleList",
       component: ItemSaleList,
       meta: {
-        roles: ["ADMIN"]
+        roles: ["SUPER_USER"]
       }
     },
     {
@@ -174,7 +174,7 @@ const router = new Router({
       name: "PurchaseComponent",
       component: PurchaseComponent,
       meta: {
-        roles: ["ADMIN"]
+        roles: ["SUPER_USER"]
       }
     },
     {
@@ -182,7 +182,7 @@ const router = new Router({
       name: "PurchaseItem",
       component: PurchaseItem,
       meta: {
-        roles: ["ADMIN"]
+        roles: ["SUPER_USER"]
       }
     },
     {
@@ -190,7 +190,7 @@ const router = new Router({
       name: "ReceivingList",
       component: ReceivingList,
       meta: {
-        roles: ["ADMIN", "INVENTORY"]
+        roles: ["SUPER_USER"]
       }
     },
     {
@@ -198,7 +198,7 @@ const router = new Router({
       name: "ReceivingEdit",
       component: ReceivingEdit,
       meta: {
-        roles: ["ADMIN"]
+        roles: ["SUPER_USER"]
       }
     },
     {
@@ -219,7 +219,7 @@ const router = new Router({
       name: "Schedule",
       component: Schedule,
       meta: {
-        roles: ["ADMIN"]
+        roles: ["SUPER_USER"]
       }
     },
     {
@@ -232,7 +232,7 @@ const router = new Router({
       name: "ShipmentEdit",
       component: ShipmentEdit,
       meta: {
-        roles: ["ADMIN"]
+        roles: ["SUPER_USER"]
       }
     },
     {
@@ -240,7 +240,7 @@ const router = new Router({
       name: "ShipmentList",
       component: ShipmentList,
       meta: {
-        roles: ["ADMIN"]
+        roles: ["SUPER_USER"]
       }
     },
     {
@@ -248,7 +248,7 @@ const router = new Router({
       name: "ScheduleEventList",
       component: ScheduleEventList,
       meta: {
-        roles: ["ADMIN"]
+        roles: ["SUPER_USER"]
       }
     },
     {
@@ -256,7 +256,7 @@ const router = new Router({
       name: "ProductionLine",
       component: ProductionLine,
       meta: {
-        roles: ["ADMIN", "PRODUCTION_LEADER", "PRODUCTION_ADMIN"]
+        roles: ["SUPER_USER", "PRODUCTION_ADMIN", "PRODUCTION_LEADER"]
       }
     },
     {
@@ -264,7 +264,7 @@ const router = new Router({
       name: "ProductionLineList",
       component: ProductionLineList,
       meta: {
-        roles: ["ADMIN", "PRODUCTION_LEADER", "PRODUCTION_ADMIN"]
+        roles: ["SUPER_USER", "PRODUCTION_ADMIN", "PRODUCTION_LEADER"]
       }
     },
     {

@@ -101,7 +101,7 @@ export default {
   },
   methods: {
     editScheduleEvent(se){
-      if(!securite.hasRole(['ADMIN', 'PROD_ADMIN'])){
+      if(!securite.hasRole(['SUPER_USER', 'PROD_ADMIN'])){
         alert("You don't have permission for this operation");
         return;
       }
@@ -128,7 +128,7 @@ export default {
       return se.totalProduced > 0;
     },
     deleteScheduleEvent(se_id){
-      if(!securite.hasRole(['ADMIN', 'PROD_ADMIN'])){
+      if(!securite.hasRole(['SUPER_USER', 'PROD_ADMIN'])){
         alert("You don't have permission for this operation");
         return;
       }
