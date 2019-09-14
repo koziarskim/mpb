@@ -53,7 +53,7 @@ public class SaleItem {
 	@JoinColumn(name = "item_id", referencedColumnName = "id")
 	private Item item;
 	
-	@JsonIgnore
+	@JsonIgnoreProperties(value={ "saleItem"}, allowSetters=true)
 	@OneToMany()
 	@JoinColumn(name = "sale_item_id")
 	private Collection<ScheduleEvent> scheduleEvents = new HashSet<ScheduleEvent>();
