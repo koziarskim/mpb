@@ -51,6 +51,9 @@ export default {
   computed: {},
   methods: {
     hideNavBar() {
+      if(this.$store.getters.userContext.user == null){
+        return true;
+      }
       return this.$store.getters.userContext.user.id == null;
     },
     getUserContext() {
