@@ -10,10 +10,10 @@
     <b-row>
       <b-col cols="5">
         <b-table v-if="users.length>0" sticky-header :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="users" :fields="fields">
-          <template slot="number" slot-scope="row">
+          <template v-slot:cell(number)="row">
             <b-button size="sm" @click.stop="editUser(row.item)" variant="link">{{row.item.number}}</b-button>
           </template>
-          <template slot="action" slot-scope="row">
+          <template v-slot:cell(action)="row">
             <b-button size="sm" @click.stop="deleteUser(row.item.id)">x</b-button>
           </template>
         </b-table>

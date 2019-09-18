@@ -18,22 +18,22 @@
                 :items="items"
                 :fields="fields"
                 no-local-sorting @sort-changed="sorted">
-                <template slot="number" slot-scope="row">
+                <template v-slot:cell(number)="row">
                     <b-button size="sm" variant="link" @click.stop="updateItem(row.item.id)">{{row.item.number}}</b-button>
                 </template>
-                <template slot="unitsOnStack" slot-scope="row">
+                <template v-slot:cell(unitsOnStack)="row">
                     <b-button size="sm" variant="link" @click.stop="gotToItemComponentList(row.item.id)">{{row.item.unitsOnStack}}</b-button>
                 </template>
-                <template slot="unitsSold" slot-scope="row">
+                <template v-slot:cell(unitsSold)="row">
                     <b-button size="sm" variant="link" @click.stop="goToItemSaleList(row.item.id)">{{row.item.unitsSold}}</b-button>
                 </template>
-                <template slot="unitsScheduled" slot-scope="row">
+                <template v-slot:cell(unitsScheduled)="row">
                     <b-button size="sm" variant="link" @click.stop="goToItemScheduleList(row.item.id)">{{row.item.unitsScheduled}}</b-button>
                 </template>
-                <template slot="unitsProduced" slot-scope="row">
+                <template v-slot:cell(unitsProduced)="row">
                     <b-button size="sm" variant="link" @click.stop="goToItemScheduleList(row.item.id)">{{row.item.unitsProduced}}</b-button>
                 </template>
-                <template slot="action" slot-scope="row">
+                <template v-slot:cell(action)="row">
                     <b-button size="sm" @click.stop="deleteItem(row.item.id)">x</b-button>
                 </template>
         </b-table>

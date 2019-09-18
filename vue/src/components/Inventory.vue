@@ -10,10 +10,10 @@
     </b-row>
     <div v-if="filteredInventories.length==0">Not found any purchase orders...</div>
     <b-table v-if="filteredInventories.length>0" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="filteredInventories" :fields="fields">
-      <template slot="componentNumber" slot-scope="row">
+      <template v-slot:cell(componentNumber)="row">
         <b-button size="sm" @click.stop="goToComponent(row.item.componentId)" variant="link">{{row.item.componentNumber}}</b-button>
       </template>
-      <template slot="unitsOrdered" slot-scope="row">
+      <template v-slot:cell(unitsOrdered)="row">
         <b-button size="sm" @click.stop="goToPurchase(row.item.componentId)" variant="link">{{row.item.unitsOrdered?row.item.unitsOrdered:0}}</b-button>
       </template>
     </b-table>

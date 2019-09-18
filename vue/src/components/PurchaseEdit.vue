@@ -21,10 +21,10 @@
       <b-col>
         <label class="top-label">Available Sale Orders:</label>
         <b-table v-if="availableSales.length>0" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="availableSales" :fields="columns">
-          <template slot="number" slot-scope="row">
+          <template v-slot:cell(number)="row">
             <b-button size="sm" @click.stop="goToSale(row.item.id)" variant="link">{{row.item.number}}</b-button>
           </template>
-          <template slot="action" slot-scope="row">
+          <template v-slot:cell(action)="row">
             <b-form-checkbox v-model="row.item.selected" @input="rowSelect(row.item.id, row.item.selected)" :disabled="disabled()"></b-form-checkbox>
           </template>
         </b-table>

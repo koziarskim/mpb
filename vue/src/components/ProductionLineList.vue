@@ -16,17 +16,17 @@
     </b-row>
     <div v-if="scheduleEvents.length==0">No lines set for this date</div>
     <b-table v-if="scheduleEvents.length>0" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="scheduleEvents" :fields="fields">
-      <template slot="line.number" slot-scope="row">
+      <template v-slot:cell(line.number)="row">
         <b-button size="sm" @click.stop="goToProductionLine(row.item.id)" variant="link">{{row.item.line.number}}</b-button>
       </template>
-      <template slot="item" slot-scope="row">
+      <template v-slot:cell(item)="row">
         <b-button size="sm" @click.stop="navigation.goToItemEdit(row.item.saleItem.item.id)" variant="link">{{row.item.saleItem.item.name}}</b-button>
 		    <span>({{row.item.saleItem.sale.number}} - {{row.item.saleItem.sale.customer.name}})</span>
       </template>
-      <template slot="totalTime" slot-scope="row">
+      <template v-slot:cell(totalTime)="row">
 		  <span>{{formatTime(row.item.totalTime)}}</span>
       </template>
-      <template slot="unitsScheduled" slot-scope="row">
+      <template v-slot:cell(unitsScheduled)="row">
         <b-button v-if="!row.item.edit" @click="editScheduleEvent(row.item)" variant="light">{{row.item.unitsScheduled}}</b-button>
         <b-input-group>
           <b-form-input style="width:100px" v-if="row.item.edit" class="form-control" type="tel" v-model="row.item.unitsScheduled">
@@ -36,7 +36,7 @@
           </b-input-group-append>
         </b-input-group>
       </template>
-      <template slot="action" slot-scope="row">
+      <template v-slot:cell(action)="row">
         <span v-if="row.item.eventCompleted">Done</span>
         <b-button v-if="!row.item.eventCompleted" size="sm" :disabled="deleteDisabled(row.item)" @click="deleteScheduleEvent(row.item.id)" variant="primary">X</b-button>
       </template>

@@ -9,10 +9,10 @@
       <b-col>
         <label class="top-label">Components Invetory:</label>
         <b-table v-if="itemComponents.length>0" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="itemComponents" :fields="columns">
-          <template slot="component" slot-scope="row">
+          <template v-slot:cell(component)="row">
             <b-button size="sm" @click.stop="goToComponentEdit(row.item.component.id)" variant="link">{{row.item.component.number}}</b-button>
           </template>
-          <template slot="action" slot-scope="row">
+          <template v-slot:cell(action)="row">
             <b-button size="sm" @click.stop="goToReceiving(row.item.component.id)">Receivings</b-button>
           </template>
         </b-table>

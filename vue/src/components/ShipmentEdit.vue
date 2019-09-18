@@ -97,25 +97,25 @@
     <b-row>
       <b-col>
         <b-table v-if="shipment.shipmentItems.length>0" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="shipment.shipmentItems" :fields="columns">
-          <template slot="item" slot-scope="row">
+          <template v-slot:cell(item)="row">
             <b-button @click.stop="goToItem(row.item.saleItem.item.id)" variant="link">{{row.item.saleItem.item.number}}</b-button>
           </template>
-          <template slot="sale" slot-scope="row">
+          <template v-slot:cell(sale)="row">
             <b-button @click.stop="goToSale(row.item.saleItem.sale.id)" variant="link">{{row.item.saleItem.sale.number}}</b-button>
           </template>
-          <template slot="units" slot-scope="row">
+          <template v-slot:cell(units)="row">
             <input class="form-control" style="width:100px" type="tel" :disabled="locked" v-model="row.item.units" @blur="unitsBlur(row.item)">
           </template>
-          <template slot="unitsShipped" slot-scope="row">
+          <template v-slot:cell(unitsShipped)="row">
             <span>{{(+row.item.saleItem.unitsShipped - +row.item.existingUnits + +row.item.units)}}</span>
           </template>
-          <template slot="cases" slot-scope="row">
+          <template v-slot:cell(cases)="row">
             <span>{{row.item.cases = Math.ceil(+row.item.units / +row.item.saleItem.item.casePack)}}</span>
           </template>
-          <template slot="pallets" slot-scope="row">
+          <template v-slot:cell(pallets)="row">
             <span>{{row.item.pallets = Math.ceil(+row.item.cases / (+row.item.saleItem.item.ti * +row.item.saleItem.item.hi))}}</span>
           </template>
-          <template slot="action" slot-scope="row">
+          <template v-slot:cell(action)="row">
             <b-button :disabled="locked" size="sm" @click.stop="deleteItem(row.item.id)">x</b-button>
           </template>
         </b-table>

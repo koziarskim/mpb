@@ -23,28 +23,28 @@
     </b-row>
     <div v-if="purchases.length==0">Not found any purchase orders...</div>
     <b-table v-if="purchases.length>0" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="items" :fields="fields" :keyword="keyword">
-      <template slot="number" slot-scope="row">
+      <template v-slot:cell(number)="row">
         <b-button size="sm" @click.stop="goToPurchase(row.item.id)" variant="link">{{row.item.number}}</b-button>
       </template>
-      <template slot="submitted" slot-scope="row">
+      <template v-slot:cell(submitted)="row">
         <span>{{row.item.submitted?"Yes":"No"}}</span>
       </template>
-      <template slot="received" slot-scope="row">
+      <template v-slot:cell(received)="row">
         <span>{{row.item.received?"Yes":"No"}}</span>
       </template>
-      <template slot="action" slot-scope="row">
+      <template v-slot:cell(action)="row">
         <b-button size="sm" @click.stop="deletePurchase(row.item.id)" :disabled="disabled(row.item)">x</b-button>&nbsp;
         <b-button size="sm" @click.stop="goToReceiving(row.item.id)" :disabled="!disabled(row.item)">Receivings</b-button>
       </template>
-      <template slot="pdf" slot-scope="row">
+      <template v-slot:cell(pdf)="row">
         <a :href="rowPdfUrl(row.item.id)" target="_blank">
           <img src="../assets/pdf-download.png" width="20px">
         </a>
       </template>
-      <template slot="expectedDate" slot-scope="row">
+      <template v-slot:cell(expectedDate)="row">
         <span>{{row.item.expectedDate | formatDate}}</span>
       </template>
-      <template slot="date" slot-scope="row">
+      <template v-slot:cell(date)="row">
         <span>{{row.item.date | formatDate}}</span>
       </template>
     </b-table>

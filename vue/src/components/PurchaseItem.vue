@@ -28,7 +28,7 @@
       <b-col>
         <label class="top-label">P.O. Items:</label>
         <b-table v-if="availableItems.length>0" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="availableItems" :fields="columns">
-          <template slot="number" slot-scope="row">
+          <template v-slot:cell(number)="row">
             <b-button size="sm" @click.stop="goToItem(row.item.id)" variant="link">{{row.item.number}}</b-button>
           </template>
         </b-table>

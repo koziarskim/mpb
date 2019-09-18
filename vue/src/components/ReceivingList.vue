@@ -24,33 +24,33 @@
     </b-row>
     <div v-if="receivings.length==0">Not found any purchase orders...</div>
     <b-table v-if="receivings.length>0" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="filteredReceivings" :fields="fields">
-      <template slot="number" slot-scope="row">
+      <template v-slot:cell(number)="row">
         <b-button size="sm" @click.stop="goToReceiving(row.item.id)" variant="link">{{row.item.number}}</b-button>
       </template>
-      <template slot="purchase" slot-scope="row">
+      <template v-slot:cell(purchase)="row">
         <b-button
           size="sm"
           @click.stop="goToPurchase(row.item.purchaseComponent.purchase.id)"
           variant="link"
         >{{row.item.purchaseComponent?row.item.purchaseComponent.purchase.number:''}}</b-button>
       </template>
-      <template slot="component" slot-scope="row">
+      <template v-slot:cell(component)="row">
         <b-button
           size="sm"
           @click.stop="goToComponent(row.item.purchaseComponent.component.id)"
           variant="link"
         >{{row.item.purchaseComponent?row.item.purchaseComponent.component.number:''}}</b-button>
       </template>
-      <template slot="shippedDate" slot-scope="row">
+      <template v-slot:cell(shippedDate)="row">
         <span>{{formatDate(row.item.shippedDate)}}</span>
       </template>
-      <template slot="etaDate" slot-scope="row">
+      <template v-slot:cell(etaDate)="row">
         <span>{{formatDate(row.item.etaDate)}}</span>
       </template>
-      <template slot="receivedDate" slot-scope="row">
+      <template v-slot:cell(receivedDate)="row">
         <span>{{formatDate(row.item.receivedDate)}}</span>
       </template>
-      <template slot="action" slot-scope="row">
+      <template v-slot:cell(action)="row">
         <b-button size="sm" @click.stop="deleteReceiving(row.item.id)">x</b-button>
       </template>
     </b-table>

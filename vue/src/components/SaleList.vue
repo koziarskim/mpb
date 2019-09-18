@@ -18,13 +18,13 @@
                 :items="sales"
                 :fields="fields"
 				no-local-sorting @sort-changed="sorted">
-                <template slot="number" slot-scope="row">
+                <template v-slot:cell(number)="row">
                     <b-button size="sm" @click.stop=goToSale(row.item.id) variant="link">{{row.item.number}}</b-button>
                 </template>
-                <template slot="date" slot-scope="row">
+                <template v-slot:cell(date)="row">
                     <span>{{row.item.date | formatDate}}</span>
                 </template>
-                <template slot="action" slot-scope="row">
+                <template v-slot:cell(action)="row">
                     <b-button size="sm" @click.stop="deleteSale(row.item.id)">x</b-button>
                 </template>
         </b-table>

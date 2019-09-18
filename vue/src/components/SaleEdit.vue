@@ -79,22 +79,22 @@
       <b-col>
         <label class="top-label"></label>
         <b-table v-if="sale.saleItems.length>0" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="sale.saleItems" :fields="columns">
-          <template slot="item.number" slot-scope="row">
+          <template v-slot:cell(item.number)="row">
             <b-button size="sm" @click.stop="goToItem(row.item.item.id)" variant="link">{{row.item.item.name}}</b-button>
           </template>
-          <template slot="components" slot-scope="row">
+          <template v-slot:cell(components)="row">
             <b-button size="sm" variant="link" @click.stop="gotToItemComponentList(row.item.item.id)">View</b-button>
           </template>
-          <template slot="units" slot-scope="row">
+          <template v-slot:cell(units)="row">
             <input class="form-control" style="width:100px" type="tel" v-model="row.item.units">
           </template>
-          <template slot="unitPrice" slot-scope="row">
+          <template v-slot:cell(unitPrice)="row">
             <input class="form-control" style="width:100px" type="tel" v-model="row.item.unitPrice">
           </template>
-          <template slot="totalUnitPrice" slot-scope="row">
+          <template v-slot:cell(totalUnitPrice)="row">
             <span>${{row.item.totalUnitPrice = (+row.item.unitPrice * +row.item.units).toFixed(2)}}</span>
           </template>
-          <template slot="action" slot-scope="row">
+          <template v-slot:cell(action)="row">
             <b-button size="sm" @click.stop="deleteItem(row.item.item.id)">x</b-button>
           </template>
         </b-table>

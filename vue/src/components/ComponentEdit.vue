@@ -119,7 +119,7 @@
                     :sort-desc.sync="sortDesc"
                     :items="component.itemComponents"
                     :fields="columns">
-                    <template slot="item.number" slot-scope="row">
+                    <template v-slot:cell(item.number)="row">
                         <b-button size="sm" @click.stop="goToItem(row.item.item.id)" variant="link">{{row.item.item.number}}</b-button>
                     </template>
                 </b-table>

@@ -18,10 +18,7 @@
         <b-navbar-nav class="ml-auto">
           <span v-if="hideNavBar()" style="color: white; margin-right: 455px; padding-top: 7px;">Marketplace Brands</span>
           <img v-if="hideNavBar()" style="width: 40px; height: 40px; margin-right: 650px" src="./assets/mpb-logo.jpg">
-          <b-nav-item-dropdown v-if="!hideNavBar()" right>
-            <template slot="button-content">
-              <em>{{getUserContext().user.fullName}}</em>
-            </template>
+          <b-nav-item-dropdown v-if="!hideNavBar()" right :text="securite.getUser().fullName">
             <b-dropdown-item @click="goTo('/Profile')">Profile</b-dropdown-item>
             <b-dropdown-item v-if="securite.hasRole(['ADMIN'])" @click="goTo('/users')">Manage Users</b-dropdown-item>
             <b-dropdown-item @click="logout()">Signout</b-dropdown-item>
@@ -51,14 +48,11 @@ export default {
   computed: {},
   methods: {
     hideNavBar() {
-      if(this.$store.getters.userContext.user == null){
+      if(this.securite.getUser() == null){
         return true;
       }
-      return this.$store.getters.userContext.user.id == null;
+      return this.securite.getUser().id == null;
     },
-    getUserContext() {
-      return this.$store.getters.userContext
-	},
     goTo(view) {
       router.push(view);
     },
@@ -69,7 +63,7 @@ export default {
     }
   },
   mounted(){
-      if(!this.getUserContext().user){
+      if(!this.securite.getUser()){
           this.goTo("/login");
       }
   }

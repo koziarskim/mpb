@@ -9,13 +9,13 @@
       <b-col>
         <label class="top-label">Purchases (POs):</label>
         <b-table v-if="purchaseComponents.length>0" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="purchaseComponents" :fields="columns">
-          <template slot="purchase" slot-scope="row">
+          <template v-slot:cell(purchase)="row">
             <b-button size="sm" @click.stop="goToPurchaseEdit(row.item.purchase.id)" variant="link">{{row.item.purchase.number}}</b-button>
           </template>
-          <template slot="unitsAwaiting" slot-scope="row">
+          <template v-slot:cell(unitsAwaiting)="row">
             <span>{{calculateAwaiting(row.item)}}</span>
           </template>
-          <template slot="action" slot-scope="row">
+          <template v-slot:cell(action)="row">
             <b-button size="sm" @click.stop="goToReceiving(row.item.purchase.id)" :disabled="!row.item.purchase.submitted || row.item.purchase.received">Receivings</b-button>
           </template>
         </b-table>

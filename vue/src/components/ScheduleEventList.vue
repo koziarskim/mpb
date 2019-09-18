@@ -17,10 +17,10 @@
       <b-col>
         <label class="top-label"></label>
         <b-table v-if="scheduleEvents.length>0" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="scheduleEvents" :fields="columns">
-          <template slot="sale" slot-scope="row">
+          <template v-slot:cell(sale)="row">
             <b-button size="sm" @click.stop="goToSale(row.item.saleItem.sale.id)" variant="link">{{row.item.saleItem.sale.number}}</b-button>
           </template>
-          <template slot="unitsScheduled" slot-scope="row">
+          <template v-slot:cell(unitsScheduled)="row">
             <b-button v-if="!row.item.edit" @click="editScheduleEvent(row.item)" variant="light">{{row.item.unitsScheduled}}</b-button>
             <b-input-group>
               <b-form-input style="width:100px" v-if="row.item.edit" class="form-control" type="tel" v-model="row.item.unitsScheduled">
@@ -30,7 +30,7 @@
               </b-input-group-append>
             </b-input-group>
           </template>
-          <template slot="action" slot-scope="row">
+          <template v-slot:cell(action)="row">
             <span v-if="row.item.eventCompleted">Done</span>
             <b-button v-if="!row.item.eventCompleted" :disabled="deleteDisabled(row.item)" size="sm" type="submit" variant="primary" @click="deleteScheduleEvent(row.item.id)">X</b-button>
           </template>

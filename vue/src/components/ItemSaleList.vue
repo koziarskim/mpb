@@ -10,13 +10,13 @@
       <b-col>
         <label class="top-label"></label>
         <b-table v-if="item.saleItems && item.saleItems.length>0" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="item.saleItems" :fields="columns">
-          <template slot="sale" slot-scope="row">
+          <template v-slot:cell(sale)="row">
             <b-button size="sm" @click.stop="goToSale(row.item.sale.id)" variant="link">{{row.item.sale.number}}</b-button>
           </template>
-          <template slot="unitsScheduled" slot-scope="row">
+          <template v-slot:cell(unitsScheduled)="row">
             <b-button size="sm" @click.stop="goToScheduled(row.item.sale.id)" variant="link">{{row.item.unitsScheduled}}</b-button>
           </template>
-          <template slot="action" slot-scope="row">
+          <template v-slot:cell(action)="row">
             <b-button size="sm" :disabled="disableSchedule(row.item)" type="submit" variant="primary" @click="toggleModal(row.item)">Schedule</b-button>
           </template>
         </b-table>

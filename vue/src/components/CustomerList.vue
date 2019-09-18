@@ -12,10 +12,10 @@
                 :sort-desc.sync="sortDesc"
                 :items="customers"
                 :fields="fields">
-                <template slot="account" slot-scope="row">
+                <template v-slot:cell(account)="row">
                     <b-button size="sm" @click.stop="goTo(row.item.id)" variant="link">{{row.item.id}}</b-button>
                 </template>
-                <template slot="action" slot-scope="row">
+                <template v-slot:cell(action)="row">
                     <b-button size="sm" @click.stop="remove(row.item.id)">x</b-button>
                 </template>
         </b-table>

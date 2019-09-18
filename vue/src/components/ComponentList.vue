@@ -15,13 +15,13 @@
     </b-row>
     <div v-if="components.length==0">Not found any components...</div>
     <b-table v-if="components.length>0" no-local-sorting @sort-changed="sorted" :items="components" :fields="fields">
-      <template slot="number" slot-scope="row">
+      <template v-slot:cell(number)="row">
         <b-button size="sm" @click.stop="goToComponent(row.item.id)" variant="link">{{row.item.number}}</b-button>
       </template>
-      <template slot="units" slot-scope="row">
+      <template v-slot:cell(units)="row">
         <b-button size="sm" @click.stop="goToComponentPurchaseList(row.item.id)" variant="link">{{row.item.unitsOrdered}} / {{row.item.unitsInTransit}}</b-button>
       </template>
-      <template slot="action" slot-scope="row">
+      <template v-slot:cell(action)="row">
         <b-button size="sm" @click.stop="deleteComponent(row.item.id)" :disabled="row.item.locked" >x</b-button>
       </template>
     </b-table>

@@ -28,17 +28,17 @@
       <b-col>
         <label class="top-label">Available Components:</label>
         <b-table v-if="availableComponents.length>0" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="availableComponents" :fields="columns">
-          <template slot="number" slot-scope="row">
+          <template v-slot:cell(number)="row">
             <b-button size="sm" @click.stop="goToComponent(row.item.id)" variant="link">{{row.item.number}}</b-button>
           </template>
-          <template slot="units" slot-scope="row">
+          <template v-slot:cell(units)="row">
             <input v-if="!purchase.submitted" style="width: 100px" v-model="row.item.units" :disabled="!row.item.selected">
             <span v-if="purchase.submitted">{{row.item.units}}</span>
           </template>
-          <template slot="totalPrice" slot-scope="row">
+          <template v-slot:cell(totalPrice)="row">
             <span>${{row.item.totalPrice = (+row.item.units * +row.item.unitPrice).toFixed(2)}}</span>
           </template>
-          <template slot="action" slot-scope="row">
+          <template v-slot:cell(action)="row">
             <b-form-checkbox v-model="row.item.selected" @input="rowSelect(row.item, row.item.id, row.item.selected)" :disabled="disabled()"></b-form-checkbox>
           </template>
         </b-table>
