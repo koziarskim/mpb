@@ -16,7 +16,7 @@
     <b-row>
       <b-col>
         <label class="top-label"></label>
-        <b-table v-if="scheduleEvents.length>0" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="scheduleEvents" :fields="columns">
+        <b-table v-if="scheduleEvents.length>0" :sort-compare="sortCompare" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="scheduleEvents" :fields="columns">
           <template v-slot:cell(sale)="row">
             <b-button size="sm" @click.stop="goToSale(row.item.saleItem.sale.id)" variant="link">{{row.item.saleItem.sale.number}}</b-button>
           </template>
@@ -54,11 +54,11 @@ export default {
       sortBy: "id",
       sortDesc: false,
       columns: [
-        { key: "schedule.date", label: "Date", sortable: false },
+        { key: "schedule.date", label: "Date", sortable: true },
         { key: "startTime", label: "Time", sortable: false },
-        { key: "line.number", label: "Line", sortable: false },
-        { key: "sale", label: "Sale", sortable: false },
-        { key: "saleItem.sale.customer.name", label: "Customer", sortable: false },
+        { key: "line.number", label: "Line", sortable: true },
+        { key: "sale", label: "Sale", sortable: true },
+        { key: "saleItem.sale.customer.name", label: "Customer", sortable: true },
         { key: "saleItem.units", label: "Sold", sortable: false },
         { key: "unitsScheduled", label: "Scheduled", sortable: false },
         { key: "totalProduced", label: "Produced", sortable: false },
@@ -78,6 +78,11 @@ export default {
       this.getItem(item_id);
       this.getSale(sale_id);
       this.getScheduleEvents(item_id);
+    },
+    sortCompare(a, b, key) {
+      if (key === 'sale') {
+        return  a.saleItem.sale.number.localeCompare(b.saleItem.sale.number);
+      }
     },
     editScheduleEvent(se){
       se.edit = true;
