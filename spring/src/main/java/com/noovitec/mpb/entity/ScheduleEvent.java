@@ -74,7 +74,7 @@ public class ScheduleEvent {
 	public Long getTotalProduced() {
 		Long units = 0L;
 		for (Production production : this.getProductions()) {
-			units += production.getUnitsProduced()==null?0:production.getUnitsProduced();
+			units += production.getUnitsProduced()==null?0L:production.getUnitsProduced();
 		}
 		return units;
 	}

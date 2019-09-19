@@ -76,7 +76,9 @@ export default {
   methods: {
     setup(item_id, sale_id){
       this.getItem(item_id);
-      this.getSale(sale_id);
+      if(sale_id){
+        this.getSale(sale_id);
+      }
       this.getScheduleEvents(item_id);
     },
     sortCompare(a, b, key) {
