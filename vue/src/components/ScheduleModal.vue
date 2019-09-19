@@ -219,6 +219,7 @@ export default {
         .then(response => {
           this.saleItem = response.data;
           this.getItemAvailability(response.data.item.id);
+          this.scheduleEvent.unitsScheduled = +this.saleItem.units - +this.saleItem.unitsScheduled;
         })
         .catch(e => {
           console.log("API error: " + e);
@@ -237,14 +238,12 @@ export default {
         });
     },
     validate() {
-      if (
-		!this.line ||
-		!this.kvCustomer ||
-        !this.saleItem ||
-        !this.scheduleEvent.scheduleTime ||
-        this.scheduleEvent.unitsScheduled <= 0
-      ) {
+      if (!this.line || !this.kvCustomer || !this.saleItem || !this.scheduleEvent.scheduleTime || this.scheduleEvent.unitsScheduled <= 0) {
         alert("Make sure all fields are entered");
+        return false;
+      }
+      if ((+this.saleItem.unitsScheduled + +this.scheduleEvent.unitsScheduled) > this.saleItem.units){
+        alert("Cannot schedule more units than sold!")
         return false;
       }
       return true;
