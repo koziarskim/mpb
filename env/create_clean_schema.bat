@@ -5,7 +5,7 @@ set import=true
 set host=localhost
 set port=5432
 set user=postgres
-set dbname=mpb
+set dbname=mpb2
 set PGPASSWORD=s3cret
 
 :initial
@@ -25,7 +25,8 @@ goto initial
 
 if "%import%" == "true" (
 	echo Running psql import_main.sql
-	dropdb --if-exists -h %host% -p %port% -U %user% -w %dbname%
-	createdb -h %host% -p %port% -U %user% -w %dbname%
-	psql -h %host% -p %port% -U %user% -d %dbname% --single-transaction --file=..\spring\src\main\resources\sql\import_main.sql
+	rem dropdb --if-exists -h %host% -p %port% -U %user% -w %dbname%
+	rem createdb -h %host% -p %port% -U %user% -w %dbname%
+	rem psql -h %host% -p %port% -U %user% -d %dbname% --single-transaction --file=schema.sql
+	psql -h %host% -p %port% -U %user% -d %dbname% --single-transaction --file=data.sql
 )
