@@ -21,17 +21,11 @@
                 <template v-slot:cell(number)="row">
                     <b-button size="sm" @click.stop=goToSale(row.item.id) variant="link">{{row.item.number}}</b-button>
                 </template>
-                <template v-slot:cell(date)="row">
-                    <span>{{row.item.date | formatDate}}</span>
-                </template>
                 <template v-slot:cell(action)="row">
                     <b-button size="sm" @click.stop="deleteSale(row.item.id)">x</b-button>
                 </template>
         </b-table>
 		<b-pagination v-model="pageable.currentPage" :per-page="pageable.perPage" :total-rows="pageable.totalElements" @change="paginationChange"></b-pagination>
-        <b-alert :show="alertSecs" dismissible variant="warning" @dismiss-count-down="(secs) => { alertSecs = secs }">
-                {{alertMessage}}
-        </b-alert>
     </b-container>
 </template>
 <script>
@@ -41,25 +35,21 @@ import router from "../router";
 export default {
   data() {
     return {
-      alertSecs: 0,
-      alertMessage: "",
       pageable: {totalElements: 100, currentPage: 1, perPage: 15, sortBy: 'number', sortDesc: false},
       searchKey: "",
       fields: [
         { key: "number", label: "S.O. #", sortable: true },
         { key: "customerName", label: "Customer", sortable: false },
-        { key: "date", label: "Date", sortable: true },
-        { key: "dc", label: "Distribution", sortable: false },
+        { key: "unitsSold", label: "Sold", sortable: true },
+        { key: "unitsScheduled", label: "Scheduled", sortable: true },
+        { key: "unitsProduced", label: "Produced", sortable: true },
+        // { key: "status", label: "Status", sortable: true },
         { key: "action", label: "Action", sortable: false}
       ],
       sales: []
     };
   },
   methods: {
-    showAlert (message) {
-      this.alertSecs = 3,
-      this.alertMessage = message
-	},
 	sorted(e){
         if(!e.sortBy){ return }
         this.pageable.sortBy = e.sortBy;

@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cglib.core.Converter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -45,15 +46,24 @@ class SaleRest {
 	
 	@GetMapping("/sale/pageable")
 	Page<SaleListDto> getAllPageable(@RequestParam(name = "pageable", required = false) Pageable pageable, @RequestParam(name = "searchKey", required = false) String searchKey) {
-		Page<SaleListDto> all = null;
+		Page<Sale> sales = null;
 		if(searchKey ==null || searchKey.trim().length() == 0) {
-			all = saleRepo.getSalePageable(pageable);
+			sales = saleRepo.getSalePageable(pageable);
 		}else {
-			all = saleRepo.getSalePageable(pageable, searchKey);
+			sales = saleRepo.getSalePageable(pageable, searchKey);
 		}
+		Page<SaleListDto> all = sales.map(sale -> {
+			SaleListDto dto = new SaleListDto();
+			dto.setId(sale.getId());
+			dto.setNumber(sale.getNumber());
+			dto.setCustomerName(sale.getCustomer().getName());
+			dto.setUnitsSold(sale.getUnitsSold());
+			dto.setUnitsScheduled(sale.getUnitsScheduled());
+			dto.setUnitsProduced(sale.getUnitsProduced());
+		    return dto;
+		});
 		return all;
 	}
-
 
 	@GetMapping("/kv/sale/customer/{customer_id}")
 	Collection<KeyValueDto> getAvailableFoSchedule(@PathVariable Long customer_id) {

@@ -52,17 +52,27 @@ public interface SaleRepo extends JpaRepository<Sale, Long> {
 	@Query(value="select s from Sale s where s.customer.id = :customer_id ")
 	public List<Sale> findSaleByCustomer(@Param("customer_id") Long sale_id);
 	
-	@Query("select new com.noovitec.mpb.dto.SaleListDto(s.id, s.number, c.name, s.date, a.dc) from Sale s "
-			+ "left join Customer c on c.id = s.customer.id "
-			+ "left join Address a on a.id = s.shippingAddress.id ")
-	Page<SaleListDto> getSalePageable(Pageable pageable);
+//	@Query("select new com.noovitec.mpb.dto.SaleListDto(s.id, s.number, c.name, s.date, a.dc) from Sale s "
+//			+ "left join Customer c on c.id = s.customer.id "
+//			+ "left join Address a on a.id = s.shippingAddress.id ")
+//	Page<SaleListDto> getSaleListDtoPageable(Pageable pageable);
+//
+//	@Query("select new com.noovitec.mpb.dto.SaleListDto(s.id, s.number, c.name, s.date, a.dc) from Sale s "
+//			+ "left join Customer c on c.id = s.customer.id "
+//			+ "left join Address a on a.id = s.shippingAddress.id "
+//			+ "where upper(s.number) LIKE CONCAT('%',UPPER(:searchKey),'%') "
+//			+ "or upper(c.name) LIKE CONCAT('%',UPPER(:searchKey),'%') ")
+//	Page<SaleListDto> getSaleListDtoPageable(Pageable pageable, String searchKey);
 
-	@Query("select new com.noovitec.mpb.dto.SaleListDto(s.id, s.number, c.name, s.date, a.dc) from Sale s "
+	@Query("select s from Sale s")
+	Page<Sale> getSalePageable(Pageable pageable);
+
+	@Query("select s from Sale s "
 			+ "left join Customer c on c.id = s.customer.id "
 			+ "left join Address a on a.id = s.shippingAddress.id "
 			+ "where upper(s.number) LIKE CONCAT('%',UPPER(:searchKey),'%') "
 			+ "or upper(c.name) LIKE CONCAT('%',UPPER(:searchKey),'%') ")
-	Page<SaleListDto> getSalePageable(Pageable pageable, String searchKey);
+	Page<Sale> getSalePageable(Pageable pageable, String searchKey);
 
 
 }

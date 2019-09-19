@@ -16,6 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -66,5 +67,38 @@ public class Sale {
 	@OneToMany()
 	@JoinColumn(name = "sale_id")
 	private Collection<PurchaseSale> purchaseSales = new HashSet<PurchaseSale>();
+	
+	@Transient
+	private Long unitsScheduled;
+	
+	public Long getUnitsScheduled() {
+		this.unitsScheduled = 0L;
+		for(SaleItem si: this.getSaleItems()) {
+			this.unitsScheduled += si.getUnitsScheduled();
+		}
+		return this.unitsScheduled;
+	}
+
+	@Transient
+	private Long unitsProduced;
+	
+	public Long getUnitsProduced() {
+		this.unitsProduced = 0L;
+		for(SaleItem si: this.getSaleItems()) {
+			this.unitsProduced += si.getUnitsProduced();
+		}
+		return this.unitsProduced;
+	}
+
+	@Transient
+	private Long unitsSold;
+	
+	public Long getUnitsSold() {
+		this.unitsSold = 0L;
+		for(SaleItem si: this.getSaleItems()) {
+			this.unitsSold += si.getUnits();
+		}
+		return this.unitsSold;
+	}
 
 }
