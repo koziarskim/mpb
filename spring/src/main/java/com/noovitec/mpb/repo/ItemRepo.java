@@ -45,7 +45,7 @@ public interface ItemRepo extends PagingAndSortingRepository<Item, Long> {
 			+ "left join ScheduleEvent se on se.saleItem.id = si.id "
 			+ "left join Production p on p.scheduleEvent.id = se.id "
 			+ "group by i.id, c.id, b.id")
-	Page<ItemListDto> getItemPageable(Pageable pageable);
+	Page<ItemListDto> getItemListDtoPageable(Pageable pageable);
 
 	@Query("select new com.noovitec.mpb.dto.ItemListDto(i.id, i.number, i.name, b.name, c.name, i.unitsOnStack, sum(si.units), sum(se.unitsScheduled), sum(p.unitsProduced)) from Item i "
 			+ "left join Category c on c.id = i.category.id "
@@ -57,8 +57,19 @@ public interface ItemRepo extends PagingAndSortingRepository<Item, Long> {
 			+ "or upper(b.name) LIKE CONCAT('%',UPPER(:searchKey),'%') "
 			+ "or upper(c.name) LIKE CONCAT('%',UPPER(:searchKey),'%') "
 			+ "group by i.id, c.id, b.id")
-	Page<ItemListDto> getItemPageable(Pageable pageable, String searchKey);
+	Page<ItemListDto> getItemListDtoPageable(Pageable pageable, String searchKey);
 
+	@Query("select i from Item i")
+	Page<Item> getItemsPageable(Pageable pageable);
+
+	@Query("select i from Item i "
+			+ "left join Category c on c.id = i.category.id "
+			+ "left join Brand b on b.id = i.brand.id "
+			+ "where upper(i.name) LIKE CONCAT('%',UPPER(:searchKey),'%') "
+			+ "or upper(b.name) LIKE CONCAT('%',UPPER(:searchKey),'%') "
+			+ "or upper(c.name) LIKE CONCAT('%',UPPER(:searchKey),'%')")
+	Page<Item> getItemsPageable(Pageable pageable, String searchKey);
+	
 	/*
 	select tmp.i_id, min(tmp.units) from (
 		select i.id as i_id,

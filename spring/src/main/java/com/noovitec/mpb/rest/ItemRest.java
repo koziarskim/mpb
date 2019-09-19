@@ -41,6 +41,7 @@ import com.noovitec.mpb.dto.ItemAvailabilityDto;
 import com.noovitec.mpb.dto.ItemDto;
 import com.noovitec.mpb.dto.ItemListDto;
 import com.noovitec.mpb.dto.KeyValueDto;
+import com.noovitec.mpb.dto.SaleListDto;
 import com.noovitec.mpb.dto.projection.ItemAvailabilityProjection;
 import com.noovitec.mpb.entity.Attachment;
 import com.noovitec.mpb.entity.Item;
@@ -91,16 +92,27 @@ class ItemRest {
 
 	@GetMapping("/item/pageable")
 	Page<ItemListDto> getAllPageable(@RequestParam(name = "pageable", required = false) Pageable pageable, @RequestParam(name = "searchKey", required = false) String searchKey) {
-		Page<ItemListDto> all = null;
+		Page<Item> items = null;
 		if(searchKey ==null || searchKey.trim().length() == 0) {
-			all = itemRepo.getItemPageable(pageable);
+			items = itemRepo.getItemsPageable(pageable);
 		}else {
-			all = itemRepo.getItemPageable(pageable, searchKey);
+			items = itemRepo.getItemsPageable(pageable, searchKey);
 		}
-		return all;
+		Page<ItemListDto> dtos = items.map(item -> {
+			ItemListDto dto = new ItemListDto();
+			dto.setId(item.getId());
+			dto.setNumber(item.getNumber());
+			dto.setBrand(item.getBrand()==null?"":item.getBrand().getName());
+			dto.setCategory(item.getCategory()==null?"":item.getCategory().getName());
+			dto.setUnitsOnStack(item.getUnitsOnStack());
+			dto.setUnitsSold(item.getUnitsSold());
+			dto.setUnitsScheduled(item.getUnitsScheduled());
+			dto.setUnitsProduced(item.getUnitsProduced());
+		    return dto;
+		});
+		return dtos;
 	}
 
-	
 	@GetMapping("/item/{id}")
 	ResponseEntity<?> get(@PathVariable Long id) {
 		Optional<Item> item = itemRepo.findById(id);
