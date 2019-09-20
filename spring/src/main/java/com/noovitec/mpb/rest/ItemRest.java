@@ -102,6 +102,7 @@ class ItemRest {
 			ItemListDto dto = new ItemListDto();
 			dto.setId(item.getId());
 			dto.setNumber(item.getNumber());
+			dto.setName(item.getName());
 			dto.setBrand(item.getBrand()==null?"":item.getBrand().getName());
 			dto.setCategory(item.getCategory()==null?"":item.getCategory().getName());
 			dto.setUnitsOnStack(item.getUnitsOnStack());
