@@ -1,5 +1,4 @@
 import Vue from "vue";
-import store from "./store";
 import securite from "./securite";
 import Router from "vue-router";
 import Home from "./components/Home.vue";

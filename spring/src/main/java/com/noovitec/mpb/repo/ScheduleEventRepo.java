@@ -54,5 +54,10 @@ public interface ScheduleEventRepo extends JpaRepository<ScheduleEvent, Long> {
 	@Query("select se from ScheduleEvent se "
 			+ "where se.saleItem.item.id = :item_id")
 	public List<ScheduleEvent> findByItem(@Param("item_id") Long item_id);
+	
+	@Query("select se from ScheduleEvent se "
+			+ "join Schedule s on s.id = se.schedule.id "
+			+ "where s.date = :date")
+	public List<ScheduleEvent> findByDate(@Param("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date);
 
 }
