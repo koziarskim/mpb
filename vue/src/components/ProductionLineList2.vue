@@ -118,87 +118,13 @@ export default {
     selectedItem: {},
     totalScheduled: 0,
     totalProduced: 0,
-    lines: [
-      {
-        id: 1,
-        name: "line 1",
-        show: false,
-        items: [
-          {
-            id: 1,
-            name: "item 1",
-            show: false,
-            sales: [
-              {
-                id: 1,
-                name: "sale 1"
-              },
-              {
-                id: 2,
-                name: "sale 2"
-              }
-            ]
-          },
-          {
-            id: 2,
-            name: "item 2",
-            show: false,
-            sales: [
-              {
-                id: 3,
-                name: "sale 3"
-              },
-              {
-                id: 4,
-                name: "sale 4"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        id: 2,
-        name: "line 2",
-        show: false,
-        items: [
-          {
-            id: 3,
-            name: "item 3",
-            show: false,
-            sales: [
-              {
-                id: 5,
-                name: "sale 5"
-              },
-              {
-                id: 6,
-                name: "sale 6"
-              }
-            ]
-          },
-          {
-            id: 4,
-            name: "item 4",
-            show: false,
-            sales: [
-              {
-                id: 7,
-                name: "sale 7"
-              },
-              {
-                id: 8,
-                name: "sale 8"
-              }
-            ]
-          }
-        ]
-      },
-    ]
+    lines: []
     };
   },
   watch: {
     date(newValue, oldValue) {
       this.getScheduleEvents(newValue);
+      this.getProductionTree(newValue)
     },
     selectedLine(newValue, oldValue){
       this.getScheduleEvents(this.date);
@@ -286,7 +212,14 @@ export default {
 	  formatTime(secs){
 		  const duration = moment.duration(secs, 'seconds');
 		  return duration.hours()+':'+duration.minutes()+':'+duration.seconds();
-	  },
+    },
+    getProductionTree(date){
+      http.get("/production/tree/date/"+date).then(response => {
+        this.lines = response.data;
+      }).catch(e => {
+         console.log("API error: " + e);
+      });
+    },
 	  getScheduleEvents(date){
       http
         .get("/schedule/single/date/"+date)
@@ -324,6 +257,7 @@ export default {
 	  },
   },
   mounted() {
+    this.getProductionTree(this.date);
     this.getScheduleEvents(this.date);
     this.getAvailableLines();
   }
