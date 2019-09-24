@@ -77,7 +77,7 @@ class ComponentRest {
 		return componentRepo.getAllDto();
 	}
 
-	@GetMapping("/component/keyValue")
+	@GetMapping("/component/kv")
 	Collection<KeyValueDto> getAllKeyValue() {
 		return componentRepo.getAllKeyValue();
 	}

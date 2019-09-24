@@ -9,7 +9,6 @@
       </b-col>
       <b-col cols="2" offset="5">
         <div style="text-align: right;">
-          <!-- <b-button type="submit" variant="primary" @click="saveAndUpload">Save</b-button> -->
           <b-button type="reset" variant="success" @click="saveAndClose">Save & Close</b-button>
         </div>
       </b-col>
@@ -334,7 +333,7 @@ export default {
     },
     getComponentsData() {
       http
-        .get("/component/keyValue")
+        .get("/component/kv")
         .then(response => {
           this.availableComponents = response.data;
         })
@@ -396,7 +395,7 @@ export default {
           console.log("API error: " + e);
         });
       http
-        .get("/category/component/keyValue")
+        .get("/category/component/kv")
         .then(response => {
           response.data.forEach(category => {
             this.availableComponentCs.push(category);

@@ -34,7 +34,7 @@ public interface ComponentRepo extends PagingAndSortingRepository<Component, Lon
 	@Query("select distinct new com.noovitec.mpb.dto.ComponentDto(" + "c.id, c.number) " + "from Component c " + "order by c.number asc")
 	List<ComponentDto> getAllDto();
 
-	@Query("select new com.noovitec.mpb.dto.KeyValueDto(id, concat(number, '-', name)) from Component")
+	@Query("select new com.noovitec.mpb.dto.KeyValueDto(c.id, concat(c.number, '-', c.name)) from Component c where c.number is not null")
 	List<KeyValueDto> getAllKeyValue();
 
 }

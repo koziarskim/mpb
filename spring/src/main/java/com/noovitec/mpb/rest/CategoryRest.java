@@ -42,7 +42,7 @@ class CategoryRest {
 		return categoryRepo.getAllForItemKeyValue();
 	}
 
-	@GetMapping("/category/component/keyValue")
+	@GetMapping("/category/component/kv")
 	Collection<KeyValueDto> getAllForComponentKeyValue() {
 		return categoryRepo.getAllForComponentKeyValue();
 	}
