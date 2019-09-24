@@ -19,6 +19,9 @@ public class KeyValueDto {
 		this.id = id;
 		this.key = id;
 		this.value = value;
+		if(value instanceof String) {
+			this.name = value.toString();
+		}
 	}
 
 	public KeyValueDto(Long id, Object value, String name) {

@@ -3,14 +3,13 @@
     <div style="border: 0px" class="d-flex justify-content-between align-items-center">
       <h4 style="text-align: left;">Sale Order:</h4>
       <div style="text-align: right;">
-        <!-- <b-button type="submit" variant="primary" @click="saveSale">Save</b-button> -->
         <b-button type="reset" variant="success" @click="saveAndClose">Save & Close</b-button>
       </div>
     </div>
     <b-row>
       <b-col cols="4">
         <label class="top-label">Customer:</label>
-        <b-select option-value="id" option-text="name" :list="availableCustomers" v-model="customer" placeholder="Customer"></b-select>
+        <b-select option-value="id" option-text="value" :list="availableCustomers" v-model="customerDto" placeholder="Customer"></b-select>
       </b-col>
       <b-col cols="2">
         <label class="top-label">Date:</label>
@@ -66,7 +65,7 @@
     <b-row>
       <b-col cols="4">
         <label class="top-label">Available Items:</label>
-        <b-select option-value="id" option-text="label" :list="availableItems" v-model="item" placeholder="Customer"></b-select>
+        <b-select option-value="id" option-text="name" :list="availableItems" v-model="itemDto" placeholder="Customer"></b-select>
       </b-col>
       <b-col style="padding-top: 30px" cols="1">
         <b-button variant="link" @click="addItem()">(+)</b-button>
@@ -135,7 +134,9 @@ export default {
         { key: "unitPrice", label: "Unit Price", sortable: false },
         { key: "totalUnitPrice", label: "Total", sortable: false },
         { key: "action", label: "Action", sortable: false }
-      ]
+      ],
+      customerDto: {},
+      itemDto: {},
     };
   },
 
@@ -149,17 +150,41 @@ export default {
       }
   },
   watch: {
-    shippingAddress: function(new_value, old_value) {
+    shippingAddress(new_value, old_value) {
       this.sale.shippingAddress = new_value;
     },
-    customer: function(new_value, old_value) {
+    customerDto(new_value, old_value){
+      if(new_value && new_value.id){
+        this.getCustomer(new_value.id);
+      }
+    },
+    customer(new_value, old_value) {
       this.sale.customer = new_value;
       if (old_value.id && new_value.id != old_value.id) {
         this.shippingAddress = {};
       }
+    },
+    itemDto(new_value, old_value){
+      if(new_value && new_value.id){
+        this.getItem(new_value.id)
+      }
     }
   },
   methods: {
+    getCustomer(customer_id){
+      http.get("/customer/"+customer_id).then(response =>{
+        this.customer = response.data;
+      }).catch(e =>{
+        console.log("API error: " + e);
+      })
+    },
+    getItem(item_id){
+      http.get("/item/"+item_id).then(response =>{
+        this.item = response.data;
+      }).catch(e =>{
+        console.log("API error: " + e);
+      })
+    },
     getSaleData(id) {
       http
         .get("/sale/" + id)
@@ -169,7 +194,10 @@ export default {
               this.locked = true;
           }
           if (response.data.customer) {
-            this.customer = response.data.customer;
+            this.customerDto = {
+              id: response.data.customer.id,
+              value: response.data.customer.name
+            }
           }
           if (response.data.shippingAddress) {
             this.shippingAddress = response.data.shippingAddress;
@@ -184,9 +212,10 @@ export default {
       return http
         .post("/sale", this.sale)
         .then(response => {
-          this.getSaleData(response.data.id);
+          return response;
         })
         .catch(e => {
+          alert("There was an error! "+e);
           console.log("API error: " + e);
         });
     },
@@ -197,7 +226,7 @@ export default {
     },
     getAvailableCustomers() {
       http
-        .get("/customer")
+        .get("/customer/kv")
         .then(response => {
           this.availableCustomers = response.data;
         })
@@ -207,7 +236,7 @@ export default {
     },
     getAvailableItems() {
       http
-        .get("/item")
+        .get("/item/kv")
         .then(response => {
           this.availableItems = response.data;
         })
@@ -237,7 +266,9 @@ export default {
     deleteItem(item_id) {
       var item = this.sale.saleItems.find(it => it.item.id == item_id);
       this.sale.saleItems.splice(this.sale.saleItems.indexOf(item), 1);
-      this.saveSale();
+      this.saveSale().then(r=>{
+        this.getSaleData(response.data.id);
+      });
     }
   },
   mounted() {

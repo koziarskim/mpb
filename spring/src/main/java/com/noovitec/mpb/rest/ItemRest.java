@@ -90,6 +90,11 @@ class ItemRest {
 		return itemRepo.getItemListDto();
 	}
 
+	@GetMapping("/item/kv")
+	Collection<KeyValueDto> getAllKeyValueDtos() {
+		return itemRepo.getAllKeyValueDtos();
+	}
+
 	@GetMapping("/item/pageable")
 	Page<ItemListDto> getAllPageable(@RequestParam(name = "pageable", required = false) Pageable pageable, @RequestParam(name = "searchKey", required = false) String searchKey) {
 		Page<Item> items = null;

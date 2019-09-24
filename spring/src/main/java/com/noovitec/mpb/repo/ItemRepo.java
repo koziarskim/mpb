@@ -16,6 +16,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import com.noovitec.mpb.dto.ItemAvailabilityDto;
 import com.noovitec.mpb.dto.ItemListDto;
+import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.dto.projection.ItemAvailabilityProjection;
 import com.noovitec.mpb.entity.Item;
 
@@ -24,6 +25,9 @@ public interface ItemRepo extends PagingAndSortingRepository<Item, Long> {
 
 	@Query(value = "select i.* from Item i order by i.id desc limit 1", nativeQuery = true)
 	Item getLast();
+	
+	@Query(value = "select new com.noovitec.mpb.dto.KeyValueDto(i.id, i.name) " + "from Item i")
+	public List<KeyValueDto> getAllKeyValueDtos();
 
 	@Query("select i " + "from Item i " + "join i.saleItems si " + "join si.sale s " + "join s.purchaseSales ps " + "left join i.brand b "
 			+ "left join i.category c " + "join ps.purchase.purchaseComponents pc " + "where ps.purchase.id = :purchase_id")
