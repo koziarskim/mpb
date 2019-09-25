@@ -15,7 +15,6 @@
         <a style="padding-left: 15%" href="#" @click="newSchedule(s)">(+)</a>
       </div>
       <div class="n-cell" v-for="line in numberOfLines" :key="line">
-        <!-- <div :style="getColor(se, s)" v-for="se in getScheduleEventsByLine(line, s.scheduleEvents)" :key="se.id"> -->
         <div v-for="se in getScheduleEventsByLine(line, s.scheduleEvents)" :key="se.id" style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
           <a href="#" @click="editSchedule(s, se)">{{se.saleItem.item.name}}:{{se.saleItem.sale?se.saleItem.sale.customer.name:''}}</a>
         </div>
@@ -25,9 +24,6 @@
     <a href="#" @click="nextDays()">Next 7 days</a>
     <div v-if="scheduleModalVisible">
       <schedule-modal v-on:closeModal="closeScheduleModal()" :schedule="schedule" :scheduleEvent="scheduleEvent"></schedule-modal>
-    </div>
-    <div v-if="productionModalVisible">
-      <production-modal v-on:closeModal="closeProductionModal()" :schedule="schedule" :scheduleEvent="scheduleEvent"></production-modal>
     </div>
   </b-container>
 </template>
@@ -44,7 +40,6 @@ export default {
       schedule: {},
       schedules: [{ id: 1 }],
       scheduleModalVisible: false,
-      productionModalVisible: false,
       itemDtos: [],
       scheduleDate: moment()
         .utc().startOf("isoWeek")
@@ -59,47 +54,11 @@ export default {
         .get("/schedule/date/" + this.scheduleDate)
         .then(response => {
             this.schedules = response.data;
-        //   response.data.forEach(schedule => {
-        //     this.markItemsToReschedule(schedule).then(r => {
-        //       this.schedules = response.data;
-        //       this.schedules.sort(function(a, b) {
-        //         var dateA = new Date(a.date),
-        //           dateB = new Date(b.date);
-        //         return dateA - dateB;
-        //       });
-        //     });
-        //   });
         })
         .catch(e => {
           console.log("API error: " + e);
         });
     },
-    // getItemsToReschedule(date) {
-    //   return http
-    //     .get("/item/eta/" + date)
-    //     .then(response => {
-    //       this.itemDtos = response.data;
-    //       return response.data;
-    //     })
-    //     .catch(e => {
-    //       console.log("API error: " + e);
-    //     });
-    // },
-    // markItemsToReschedule(schedule) {
-    //   return this.getItemsToReschedule(schedule.date).then(itemDtos => {
-    //     itemDtos.forEach(itemDto => {
-    //       schedule.scheduleEvents.forEach(scheduleEvent => {
-    //         if (scheduleEvent.item.id == itemDto.id) {
-    //           scheduleEvent.unitsShort = itemDto.unitsShort;
-    //           scheduleEvent.unitsAvailable = itemDto.unitsAvailable;
-    //           scheduleEvent.unitsReadyProduction = itemDto.unitsReadyProduction;
-    //           scheduleEvent.totalUnitsScheduled = itemDto.unitsScheduled;
-    //         }
-    //       });
-    //     });
-    //     return "";
-    //   });
-    // },
     getScheduleEventsByLine(lineNumber, scheduleEvents) {
       var lineScheduleEvents = [];
       if (scheduleEvents) {
@@ -170,10 +129,6 @@ export default {
       this.scheduleModalVisible = false;
       this.getSchedules();
     },
-    closeProductionModal() {
-      this.productionModalVisible = false;
-      this.getSchedules();
-    },
     deleteModal() {
       var si = this.modalData.schedule.scheduleEvents.find(
         it => it.id == this.modalData.scheduleEvent.id
@@ -216,22 +171,6 @@ export default {
         .utc()
         .format("dddd");
     },
-    getColor(se, s) {
-      //Green - production is done.
-      if (se.unitsScheduled == se.totalProduced) {
-        return "background-color: #c2f5c4";
-      }
-      var item = s.items.find(i => i.id == se.saleItem.item.id)
-      //Red - too much scheduled. Needs to reschedule.
-      if (item.unitsToSchedule < se.unitsScheduled - se.totalProduced) {
-        return "background-color: yellow";
-      }
-      //Yellow - not ready for production.
-      if (item.unitsToProduction < se.unitsScheduled - se.totalProduced) {
-        return "background-color: #f9b3ae";
-      }
-      return "";
-    }
   },
   mounted() {
     this.getSchedules();

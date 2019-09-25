@@ -62,7 +62,7 @@
         </b-col>
       </b-row>
       </b-col>
-        <b-col cols="4" v-if="itemAvailability.id">
+        <b-col cols="4">
           <br/>
           <label class="top-label">Sold (this sale only): {{saleItem.units}}</label>
           <br/>
@@ -105,25 +105,12 @@ export default {
       saleItem: {},
       availableItems: [], //ItemDto
       item: {}, //ItemDto
-      itemAvailability: {},
       availableLines: [],
       line: {},
       initScheduled: 0
     };
   },
   computed: {
-    unitsReadyToSchedule() {
-      return +this.itemAvailability.unitsToSchedule - +this.unitsDiff;
-    },
-    unitsReadyForProduction() {
-      return +this.itemAvailability.unitsToProduction;
-    },
-    unitsTotalScheduled() {
-      return +this.saleItem.unitsScheduled + +this.unitsDiff;
-    },
-    unitsDiff() {
-      return +this.scheduleEvent.unitsScheduled - +this.initScheduled;
-    }
   },
   watch: {
     kvCustomer(new_value, old_value) {
@@ -218,20 +205,7 @@ export default {
         .get("/saleItem/" + saleItemId)
         .then(response => {
           this.saleItem = response.data;
-          this.getItemAvailability(response.data.item.id);
           this.scheduleEvent.unitsScheduled = +this.saleItem.units - +this.saleItem.unitsScheduled;
-        })
-        .catch(e => {
-          console.log("API error: " + e);
-        });
-    },
-    getItemAvailability(itemId) {
-      http
-        .get("/item/available/eta/" + this.schedule.date, {
-          params: { itemIds: itemId }
-        })
-        .then(response => {
-          this.itemAvailability = response.data[0];
         })
         .catch(e => {
           console.log("API error: " + e);

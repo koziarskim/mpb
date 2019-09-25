@@ -15,10 +15,13 @@ public class ItemDto {
 	private String brand;
 	private String category;
 	private String status;
-	private int unitsOnStack = 0; //This is the stack of Item not components.
-	private int totalItemScheduled = 0; //Total Items scheduled not produced yet. Produced units are subtracted.
-	private int unitsReadyProduction = 0; //Items ready for production (all components are on stack).
-	private int unitsReadySchedule = 0; //Items ready to be scheduled (some components might be in transit).
+	private Long unitsOnStack = 0L; //This is the stack of Item not components.
+	private Long unitsSold = 0L;
+	private Long unitsScheduled = 0L;
+	private Long unitsProduced = 0L;
+//	private int totalItemScheduled = 0; //Total Items scheduled not produced yet. Produced units are subtracted.
+//	private int unitsReadyProduction = 0; //Items ready for production (all components are on stack).
+//	private int unitsReadySchedule = 0; //Items ready to be scheduled (some components might be in transit).
 
 	public ItemDto(Long id, String number, String name, String brand, String category, String status, Long unitsOnStack, Long totalItemScheduled) {
 		this.id = id;
@@ -27,7 +30,7 @@ public class ItemDto {
 		this.brand = brand;
 		this.category = category;
 		this.status = status;
-		this.unitsOnStack = unitsOnStack==null?0:unitsOnStack.intValue();
-		this.totalItemScheduled = totalItemScheduled==null?0:totalItemScheduled.intValue();
+		this.unitsOnStack = unitsOnStack==null?0L:unitsOnStack;
+//		this.totalItemScheduled = totalItemScheduled==null?0:totalItemScheduled.intValue();
 	}
 }

@@ -12,7 +12,6 @@ import { ModelListSelect } from "vue-search-select";
 import { CustomMask } from "./directives/CustomMask";
 import UploadImage from "./directives/UploadImage";
 import ScheduleModal from "./components/ScheduleModal";
-import ProductionModal from "./components/ProductionModal";
 import Chart from "./directives/Chart";
 
 
@@ -24,7 +23,6 @@ Vue.component("chart", Chart);
 Vue.component("upload", UploadImage);
 Vue.component("b-select", ModelListSelect);
 Vue.component("schedule-modal", ScheduleModal);
-Vue.component("production-modal", ProductionModal);
 Vue.config.productionTip = false;
 Vue.filter("formatDate", function(value) {
   if (value) {
