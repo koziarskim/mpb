@@ -146,7 +146,8 @@ class ItemRest {
 		Collection<ItemDto> dtos = new HashSet<ItemDto>();
 		for (Item item : itemRepo.getPurchaseItems(purchase_id)) {
 			ItemDto dto = new ItemDto(item.getId(), item.getNumber(), item.getName(), item.getBrand() == null ? null : item.getBrand().getName(),
-					item.getCategory() == null ? null : item.getCategory().getName(), item.getStatus(), item.getUnitsOnStack(), item.getUnitsScheduled());
+					item.getCategory() == null ? null : item.getCategory().getName(), item.getStatus(), item.getUnitsOnStack(), item.getUnitsSold(),
+							item.getUnitsScheduled(), item.getUnitsProduced());
 			dtos.add(dto);
 		}
 		return dtos;
