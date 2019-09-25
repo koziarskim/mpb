@@ -1,6 +1,7 @@
 package com.noovitec.mpb.entity;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
@@ -101,15 +102,6 @@ public class Item {
 	@JoinColumn(name = "item_id")
 	private Collection<SaleItem> saleItems = new HashSet<SaleItem>();
 
-//	@JsonIgnore
-//	@OneToMany()
-//	@JoinColumn(name = "item_id")
-//	private Collection<ScheduleEvent> scheduleEvents = new HashSet<ScheduleEvent>();
-
-//	Should we remove this property from DB?	
-//	@Transient
-//	private Long unitsScheduled;
-	
 	public Long getUnitsScheduled() {
 		Long units = 0L;
 		for(SaleItem si : this.getSaleItems()) {
@@ -128,6 +120,28 @@ public class Item {
 		}
 		return units;
 	}
+	
+	@JsonIgnore
+	public BigDecimal getAverageProduced() {
+		BigDecimal averageProduced = BigDecimal.ZERO;
+		if(this.getSaleItems().size()==0) {
+			return averageProduced;
+		}
+		BigDecimal avgProduced = BigDecimal.ZERO;
+		int count = 0;
+		for(SaleItem si: this.getSaleItems()) {
+			if(si.getAverageProduced().equals(BigDecimal.ZERO)) {
+				continue;
+			}
+			avgProduced = avgProduced.add(si.getAverageProduced());
+			count++;
+		}
+		if(count>0) {
+			averageProduced = avgProduced.divide(BigDecimal.valueOf(count),2, RoundingMode.HALF_DOWN);
+		}
+		return averageProduced;
+	}
+
 	
 	@Transient
 	private Long unitsSold;

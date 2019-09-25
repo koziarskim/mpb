@@ -19,6 +19,7 @@ import com.noovitec.mpb.dto.ItemListDto;
 import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.dto.projection.ItemAvailabilityProjection;
 import com.noovitec.mpb.entity.Item;
+import com.noovitec.mpb.entity.ScheduleEvent;
 
 public interface ItemRepo extends PagingAndSortingRepository<Item, Long> {
 	Item findByName(String name);

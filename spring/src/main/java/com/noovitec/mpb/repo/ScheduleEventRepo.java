@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.noovitec.mpb.entity.Item;
 import com.noovitec.mpb.entity.ScheduleEvent;
 
 public interface ScheduleEventRepo extends JpaRepository<ScheduleEvent, Long> {

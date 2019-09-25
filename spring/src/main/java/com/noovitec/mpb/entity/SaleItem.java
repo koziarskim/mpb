@@ -1,6 +1,7 @@
 package com.noovitec.mpb.entity;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
@@ -100,7 +101,28 @@ public class SaleItem {
 		}
 		return this.unitsProduced;
 	}
-	
+
+	@JsonIgnore
+	public BigDecimal getAverageProduced() {
+		BigDecimal averageProduced = BigDecimal.ZERO;
+		if(this.getScheduleEvents().size()==0) {
+			return averageProduced;
+		}
+		BigDecimal avgProduced = BigDecimal.ZERO;
+		int count = 0;
+		for(ScheduleEvent se: this.getScheduleEvents()) {
+			if(se.getAverageProduced().equals(BigDecimal.ZERO)) {
+				continue;
+			}
+			avgProduced = avgProduced.add(se.getAverageProduced());
+			count++;
+		}
+		if(count>0) {
+			averageProduced = avgProduced.divide(BigDecimal.valueOf(count),2, RoundingMode.HALF_DOWN);
+		}
+		return averageProduced;
+	}
+
 	public boolean isItemProduced() {
 		return this.getUnitsScheduled() <= this.getUnitsProduced();
 	}

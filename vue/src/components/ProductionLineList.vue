@@ -3,6 +3,7 @@
     <b-row style="padding-bottom: 4px;">
       <b-col cols=3>
         <span style="font-size: 18px; font-weight: bold">Daily Production Status:</span>
+        <b-form-checkbox v-model="itemView">Line View</b-form-checkbox>
       </b-col>
       <b-col cols=2>
         <input class="form-control" type="date" v-model="date" placeholder="Date">
@@ -86,6 +87,7 @@ export default {
     selectedItem: {},
     totalScheduled: 0,
     totalProduced: 0,
+    itemView: false,
     };
   },
   watch: {
@@ -97,6 +99,11 @@ export default {
     },
     selectedItem(newValue, oldValue){
       this.getScheduleEvents(this.date);
+    },
+    itemView(newValue, oldValue){
+      if(newValue==true){
+        navigation.goTo("/productionItemList/"+this.date)
+      }
     }
   },
   methods: {
@@ -213,6 +220,10 @@ export default {
 	  },
   },
   mounted() {
+    var date = this.$route.params.date;
+    if(date){
+      this.date = date;
+    }
     this.getScheduleEvents(this.date);
     this.getAvailableLines();
   }

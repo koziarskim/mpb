@@ -3,52 +3,49 @@
     <b-row style="padding-bottom: 4px;">
       <b-col cols=3>
         <span style="font-size: 18px; font-weight: bold">Daily Production Status:</span>
+        <b-form-checkbox v-model="itemView">Line View</b-form-checkbox>
       </b-col>
       <b-col cols=2>
         <input class="form-control" type="date" v-model="date" placeholder="Date">
       </b-col>
-      <b-col cols=1>
-        <b-select option-value="id" option-text="number" :list="availableLines" v-model="selectedLine"></b-select>
-      </b-col>
-      <b-col cols=3>
-        <b-select option-value="id" option-text="name" :list="availableItems" v-model="selectedItem"></b-select>
-      </b-col>
     </b-row>
-    <div v-if="scheduleEvents.length==0">No lines set for this date</div>
-    <b-table v-if="scheduleEvents.length>0" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="scheduleEvents" :fields="fields">
-      <template v-slot:cell(line.number)="row">
-        <b-button size="sm" @click.stop="goToProductionLine(row.item.id)" variant="link">{{row.item.line.number}}</b-button>
-      </template>
-      <template v-slot:cell(item)="row">
-        <b-button size="sm" @click.stop="navigation.goToItemEdit(row.item.saleItem.item.id)" variant="link">{{row.item.saleItem.item.name}}</b-button>
-		    <span>({{row.item.saleItem.sale.number}} - {{row.item.saleItem.sale.customer.name}})</span>
-      </template>
-      <template v-slot:cell(totalTime)="row">
-		  <span>{{formatTime(row.item.totalTime)}}</span>
-      </template>
-      <template v-slot:cell(unitsScheduled)="row">
-        <b-button v-if="!row.item.edit" @click="editScheduleEvent(row.item)" variant="light">{{row.item.unitsScheduled}}</b-button>
-        <b-input-group>
-          <b-form-input style="width:100px" v-if="row.item.edit" class="form-control" type="tel" v-model="row.item.unitsScheduled">
-          </b-form-input>
-          <b-input-group-append>
-            <b-button v-if="row.item.edit" style="margin-left: 5px" variant="link" @click="saveScheduleEvent(row.item)">save</b-button>
-          </b-input-group-append>
-        </b-input-group>
-      </template>
-      <template v-slot:cell(action)="row">
-        <span v-if="row.item.eventCompleted">Done</span>
-        <b-button v-if="!row.item.eventCompleted" size="sm" :disabled="deleteDisabled(row.item)" @click="deleteScheduleEvent(row.item.id)" variant="primary">X</b-button>
-      </template>
-    </b-table>
-    <b-row>
-      <b-col cols=2>
-        <span>Total Scheduled: {{totalScheduled}}</span>
-      </b-col>
-      <b-col cols=2>
-        <span>Total Produced: {{totalProduced}}</span>
-      </b-col>
+    <br/>
+    <b-row style="font-weight:bold">
+      <b-col cols=5>Item<br/> (Sale - Customer)</b-col>
+      <b-col cols=1>Total<br/>Sold</b-col>
+      <b-col cols=1>Daily<br/>Scheduled</b-col>
+      <b-col cols=1>Daily<br/>Produced</b-col>
+      <b-col cols=1>Total<br/>Average</b-col>
+      <b-col cols=1>Daily<br/>Average</b-col>
+      <b-col cols=1>Line #</b-col>
     </b-row>
+    <div v-for="item in items" v-bind:key="item.id">
+      <b-row>
+        <b-col cols=5>
+          <b-button size="sm" @click="toggleRow(item)" variant="link">{{item.show?'[-]':'[+]'}}</b-button>{{item.name}}
+        </b-col>
+        <b-col cols=1>{{item.unitsSold}}</b-col>
+        <b-col cols=1>{{item.unitsScheduled}}</b-col>
+        <b-col cols=1>{{item.unitsProduced}}</b-col>
+        <b-col cols=1>{{roundNumber(item.averageProduced)}}</b-col>
+        <b-col cols=1>{{getDailyProduced(item)}}</b-col>
+      </b-row>
+        <div v-for="event in item.events" v-bind:key="event.id">
+          <div v-if="item.show">
+          <b-row style="color: gray">
+            <b-col cols=5><div style="padding-left:50px">{{"Line "+event.lineNumber+": ("+event.saleNumber + " - " + event.customerName+")"}}</div></b-col>
+            <b-col cols=1>{{event.unitsSold}}</b-col>
+            <b-col cols=1>{{event.unitsScheduled}}</b-col>
+            <b-col cols=1>
+              <b-button size="sm" @click="goToProductionLine(event.id)" variant="link">{{event.unitsProduced}}</b-button>
+            </b-col>
+            <b-col cols=1></b-col>
+            <b-col cols=1>{{roundNumber(event.averageProduced)}}</b-col>
+            <b-col cols=1>{{event.lineNumber}}</b-col>
+          </b-row>
+        </div>
+      </div>
+    </div>
   </b-container>
 </template>
 <script>
@@ -64,42 +61,54 @@ export default {
   data() {
     return {
       navigation: navigation,
-      date: moment()
-        .format("YYYY-MM-DD"),
-      sortBy: "line.number",
-      sortDesc: false,
-      fields: [
-        { key: "line.number", label: "Line", sortable: true },
-		    { key: "item", label: "Item (Sale & Customer)", sortable: true },
-		    { key: "saleItem.units", label: "Sold", sortable: true },
-		    { key: "unitsScheduled", label: "Scheduled", sortable: true },
-		    { key: "totalProduced", label: "Produced", sortable: true },
-        { key: "unitsPending", label: "Still To Make", sortable: true },
-        { key: "totalTime", label: "Total Time", sortable: true },
-        { key: "action", label: "Action", sortable: true },
-    ],
-    schedule_id: null,
-    scheduleEvents: [],
-    availableLines: [],
-    availableItems: [],
-    selectedLine: {},
-    selectedItem: {},
-    totalScheduled: 0,
-    totalProduced: 0,
+      date: moment().format("YYYY-MM-DD"),
+      schedule_id: null,
+      scheduleEvents: [],
+      availableLines: [],
+      availableItems: [],
+      selectedLine: {},
+      selectedItem: {},
+      totalScheduled: 0,
+      totalProduced: 0,
+      items: [],
+      itemView: true,
     };
   },
   watch: {
     date(newValue, oldValue) {
-      this.getScheduleEvents(newValue);
+      this.getItemTree(newValue);
     },
     selectedLine(newValue, oldValue){
       this.getScheduleEvents(this.date);
     },
     selectedItem(newValue, oldValue){
       this.getScheduleEvents(this.date);
+    },
+    itemView(newValue, oldValue){
+      if(newValue == false){
+        navigation.goTo("/productionLineList/"+this.date)
+      }
     }
   },
   methods: {
+    roundNumber(number){
+      return parseInt(number).toFixed(0);
+    },
+    getDailyProduced(item){
+      var average = 0;
+      var count = 0;
+      item.events.forEach(event =>{
+        if(event.averageProduced == 0){
+          return;
+        }
+        average += +event.averageProduced;
+        count ++;
+      })
+      return (+average / +count).toFixed(0);
+    },
+    toggleRow(row){
+      row.show = !row.show;
+    },
     editScheduleEvent(se){
       if(!securite.hasRole(['SUPER_USER', 'PROD_ADMIN'])){
         alert("You don't have permission for this operation");
@@ -175,7 +184,14 @@ export default {
 	  formatTime(secs){
 		  const duration = moment.duration(secs, 'seconds');
 		  return duration.hours()+':'+duration.minutes()+':'+duration.seconds();
-	  },
+    },
+    getItemTree(date){
+      http.get("/item/production/date/"+date).then(response => {
+        this.items = response.data;
+      }).catch(e => {
+         console.log("API error: " + e);
+      });
+    },
 	  getScheduleEvents(date){
       http
         .get("/schedule/single/date/"+date)
@@ -205,16 +221,17 @@ export default {
         });
 	  },
     goToProductionLine(schedule_event_id) {
-      if (schedule_event_id) {
-        router.push("/productionLine/" + schedule_event_id);
-        return;
-      }
-      router.push("/productionLine");
+      router.push("/productionLine/" + schedule_event_id);
 	  },
   },
   mounted() {
-    this.getScheduleEvents(this.date);
-    this.getAvailableLines();
+    var date = this.$route.params.date;
+    if(date){
+      this.date = date;
+    }
+    this.getItemTree(this.date);
+    // this.getScheduleEvents(this.date);
+    // this.getAvailableLines();
   }
 };
 </script>

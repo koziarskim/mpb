@@ -1,10 +1,14 @@
 package com.noovitec.mpb.entity;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -19,6 +23,7 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.AllArgsConstructor;
@@ -104,5 +109,28 @@ public class ScheduleEvent {
 			units += p.getUnitsProduced();
 		}
 		return this.unitsScheduled==null?0L:this.unitsScheduled - units;
+	}
+	
+	@JsonIgnore
+	public BigDecimal getAverageProduced() {
+		BigDecimal averageProduced = BigDecimal.ZERO;
+		if(this.getStartTime()==null || this.getProductions().size()==0) {
+			return averageProduced;
+		}
+		BigDecimal totalSecs = BigDecimal.ZERO;
+		BigDecimal totalUnits = BigDecimal.ZERO;
+		LocalTime start = null;
+		for(Production p: this.getProductions()) {
+			if(start == null) {
+				start = p.getScheduleEvent().getStartTime();
+			}
+			Long secs = ChronoUnit.SECONDS.between(start, p.getFinishTime());
+			totalSecs = totalSecs.add(BigDecimal.valueOf(secs));
+			totalUnits = totalUnits.add(BigDecimal.valueOf(p.getUnitsProduced()));
+			//Set for next start
+			start = p.getFinishTime();
+		}
+		BigDecimal unitsPerHour = (totalUnits.divide(totalSecs,2, RoundingMode.HALF_DOWN)).multiply(BigDecimal.valueOf(3600));
+		return unitsPerHour;
 	}
 }

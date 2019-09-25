@@ -30,6 +30,7 @@ import ShipmentList from "./components/ShipmentList";
 import ScheduleEventList from "./components/ScheduleEventList";
 import ProductionLine from "./components/ProductionLine";
 import ProductionLineList from "./components/ProductionLineList";
+import ProductionItemList from "./components/ProductionItemList";
 import Profile from "./components/Profile";
 import DailyStatus from "./components/public/DailyStatus";
 
@@ -260,9 +261,17 @@ const router = new Router({
       }
     },
     {
-      path: "/ProductionLineList",
+      path: "/ProductionLineList/:date?",
       name: "ProductionLineList",
       component: ProductionLineList,
+      meta: {
+        roles: ["SUPER_USER", "PRODUCTION_ADMIN", "PRODUCTION_LEADER"]
+      }
+    },
+    {
+      path: "/ProductionItemList/:date?",
+      name: "ProductionItemList",
+      component: ProductionItemList,
       meta: {
         roles: ["SUPER_USER", "PRODUCTION_ADMIN", "PRODUCTION_LEADER"]
       }

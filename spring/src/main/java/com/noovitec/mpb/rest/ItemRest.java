@@ -1,19 +1,14 @@
 package com.noovitec.mpb.rest;
 
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -40,14 +35,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.noovitec.mpb.dto.ItemAvailabilityDto;
 import com.noovitec.mpb.dto.ItemDto;
 import com.noovitec.mpb.dto.ItemListDto;
+import com.noovitec.mpb.dto.ItemTreeDto;
 import com.noovitec.mpb.dto.KeyValueDto;
-import com.noovitec.mpb.dto.SaleListDto;
+import com.noovitec.mpb.dto.ScheduleEventTreeDto;
 import com.noovitec.mpb.dto.projection.ItemAvailabilityProjection;
 import com.noovitec.mpb.entity.Attachment;
 import com.noovitec.mpb.entity.Item;
 import com.noovitec.mpb.entity.ItemComponent;
+import com.noovitec.mpb.entity.ScheduleEvent;
 import com.noovitec.mpb.entity.Season;
-import com.noovitec.mpb.entity.Supplier;
 import com.noovitec.mpb.entity.Upc;
 import com.noovitec.mpb.repo.AttachmentRepo;
 import com.noovitec.mpb.repo.ItemRepo;
@@ -172,6 +168,37 @@ class ItemRest {
 			dto.setUnitsScheduled(itemUnits);
 			dto.setUnitsToSchedule(iap.getUnitsToSchedule() - itemUnits);
 			dtos.add(dto);
+		}
+		return dtos;
+	}
+	
+	@GetMapping("/item/production/date/{date}")
+	Collection<ItemTreeDto> getItemsByDate(@PathVariable(name = "date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
+		List<ItemTreeDto> dtos = new ArrayList<ItemTreeDto>();
+		List<ScheduleEvent> events = scheduleEventRepo.findByDate(date);
+		for(ScheduleEvent se: events) {
+			ItemTreeDto itemDto = dtos.stream().filter(existingDto -> existingDto.getId().equals(se.getSaleItem().getItem().getId())).findAny().orElse(null);
+			if(itemDto == null) {
+				itemDto = new ItemTreeDto();
+				itemDto.setId(se.getSaleItem().getItem().getId());
+				itemDto.setName(se.getSaleItem().getItem().getName());
+				itemDto.setUnitsOnStack(se.getSaleItem().getItem().getUnitsOnStack());
+				itemDto.setUnitsSold(se.getSaleItem().getItem().getUnitsSold());
+				itemDto.setAverageProduced(se.getSaleItem().getItem().getAverageProduced());
+				dtos.add(itemDto);
+			}
+			itemDto.setUnitsScheduled(itemDto.getUnitsScheduled()+se.getUnitsScheduled());
+			itemDto.setUnitsProduced(itemDto.getUnitsProduced()+se.getTotalProduced());
+			ScheduleEventTreeDto eventDto = new ScheduleEventTreeDto();
+			eventDto.setId(se.getId());
+			eventDto.setCustomerName(se.getSaleItem().getSale().getCustomer().getName());
+			eventDto.setSaleNumber(se.getSaleItem().getSale().getNumber());
+			eventDto.setLineNumber(String.valueOf(se.getLine().getNumber()));
+			eventDto.setUnitsSold(se.getSaleItem().getSale().getUnitsSold());
+			eventDto.setUnitsScheduled(se.getUnitsScheduled());
+			eventDto.setUnitsProduced(se.getTotalProduced());
+			eventDto.setAverageProduced(se.getAverageProduced());
+			itemDto.getEvents().add(eventDto);
 		}
 		return dtos;
 	}
