@@ -10,12 +10,13 @@
       </b-col>
     </b-row>
     <br/>
-    <b-row style="font-weight:bold">
+    <b-row style="font-weight:bold; background-color:lightgray">
       <b-col cols=5>Item<br/> (Sale - Customer)</b-col>
       <b-col cols=1>Total<br/>Sold</b-col>
+      <b-col cols=1>Total<br/>Produced</b-col>
+      <b-col cols=1>Total<br/>Average</b-col>
       <b-col cols=1>Daily<br/>Scheduled</b-col>
       <b-col cols=1>Daily<br/>Produced</b-col>
-      <b-col cols=1>Total<br/>Average</b-col>
       <b-col cols=1>Daily<br/>Average</b-col>
       <b-col cols=1>Daily<br/>Duration</b-col>
     </b-row>
@@ -24,23 +25,25 @@
         <b-col cols=5>
           <b-button size="sm" @click="toggleRow(item)" variant="link">{{item.show?'[-]':'[+]'}}</b-button>{{item.name}}
         </b-col>
-        <b-col cols=1>{{item.unitsSold}}</b-col>
+        <b-col cols=1>{{item.totalSold}}</b-col>
+        <b-col cols=1>{{item.totalProduced}}</b-col>
+        <b-col cols=1>{{item.totalAverage}}</b-col>
         <b-col cols=1>{{item.dailyScheduled}}</b-col>
         <b-col cols=1>{{item.dailyProduced}}</b-col>
-        <b-col cols=1>{{roundNumber(item.averageProduced)}}</b-col>
         <b-col cols=1>{{item.dailyAverage}}</b-col>
         <b-col cols=1>{{formatter.secondsToTime(item.dailySeconds)}}</b-col>
       </b-row>
         <div v-for="event in item.events" v-bind:key="event.id">
           <div v-if="item.show">
-          <b-row style="color: gray">
+          <b-row style="color: gray; font-style: italic">
             <b-col cols=5><div style="padding-left:50px">{{"Line "+event.lineNumber+": ("+event.saleNumber + " - " + event.customerName+")"}}</div></b-col>
             <b-col cols=1>{{event.unitsSold}}</b-col>
+            <b-col cols=1>{{event.saleTotalProduced}}</b-col>
+            <b-col cols=1></b-col>
             <b-col cols=1>{{event.dailyScheduled}}</b-col>
             <b-col cols=1>
-              <b-button size="sm" @click="goToProductionLine(event.id)" variant="link">{{event.dailyProduced}}</b-button>
+              <a href="#" @click="goToProductionLine(event.id)">{{event.dailyProduced}}</a>
             </b-col>
-            <b-col cols=1></b-col>
             <b-col cols=1>{{event.dailyAverage}}</b-col>
             <b-col cols=1>{{formatter.secondsToTime(event.dailySeconds)}}</b-col>
           </b-row>

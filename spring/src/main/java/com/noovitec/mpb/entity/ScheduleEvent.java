@@ -136,7 +136,7 @@ public class ScheduleEvent {
 		return unitsPerHour;
 	}
 
-	public Long getTotalSeconds() {
+	public Long getDurationSeconds() {
 		Long totalSecs = 0L;
 		if(this.getStartTime()==null || this.getProductions().size()==0) {
 			return totalSecs;

@@ -141,6 +141,17 @@ public class Item {
 		}
 		return averageProduced;
 	}
+	
+	public Long getDurationSeconds() {
+		Long secs = 0L;
+		for(SaleItem si: this.getSaleItems()) {
+			for(ScheduleEvent se: si.getScheduleEvents()) {
+				secs += se.getDurationSeconds();
+			}
+		}
+		return secs;
+	}
+
 
 	
 	@Transient

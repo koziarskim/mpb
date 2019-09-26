@@ -19,11 +19,11 @@ public class ScheduleEventTreeDto {
 	private String status;
 	private boolean show;
 	private Long unitsSold = 0L;
+	private Long saleTotalProduced = 0L;
 	private Long dailyScheduled = 0L;
 	private Long dailyProduced = 0L;
 	private Long dailyAverage = 0L;
 	private Long dailySeconds = 0L;
-	private BigDecimal averageProduced = BigDecimal.ZERO;
 	
 	public Long getDailyAverage() {
 		if(this.getDailySeconds()==0L) {

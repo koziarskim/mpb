@@ -183,23 +183,24 @@ class ItemRest {
 				itemDto.setId(se.getSaleItem().getItem().getId());
 				itemDto.setName(se.getSaleItem().getItem().getName());
 				itemDto.setUnitsOnStack(se.getSaleItem().getItem().getUnitsOnStack());
-				itemDto.setUnitsSold(se.getSaleItem().getItem().getUnitsSold());
-				itemDto.setAverageProduced(se.getSaleItem().getItem().getAverageProduced());
+				itemDto.setTotalSold(se.getSaleItem().getItem().getUnitsSold());
+				itemDto.setTotalProduced(se.getSaleItem().getItem().getUnitsProduced());
+				itemDto.setTotalSeconds(se.getSaleItem().getItem().getDurationSeconds());
 				dtos.add(itemDto);
 			}
 			itemDto.setDailyScheduled(itemDto.getDailyScheduled()+se.getUnitsScheduled());
 			itemDto.setDailyProduced(itemDto.getDailyProduced()+se.getTotalProduced());
-			itemDto.setDailySeconds(itemDto.getDailySeconds()+se.getTotalSeconds());
+			itemDto.setDailySeconds(itemDto.getDailySeconds()+se.getDurationSeconds());
 			ScheduleEventTreeDto eventDto = new ScheduleEventTreeDto();
 			eventDto.setId(se.getId());
 			eventDto.setCustomerName(se.getSaleItem().getSale().getCustomer().getName());
 			eventDto.setSaleNumber(se.getSaleItem().getSale().getNumber());
 			eventDto.setLineNumber(String.valueOf(se.getLine().getNumber()));
 			eventDto.setUnitsSold(se.getSaleItem().getSale().getUnitsSold());
+			eventDto.setSaleTotalProduced(se.getSaleItem().getSale().getUnitsProduced());
 			eventDto.setDailyScheduled(se.getUnitsScheduled());
 			eventDto.setDailyProduced(se.getTotalProduced());
-			eventDto.setAverageProduced(se.getAverageProduced());
-			eventDto.setDailySeconds(se.getTotalSeconds());
+			eventDto.setDailySeconds(se.getDurationSeconds());
 			itemDto.getEvents().add(eventDto);
 		}
 		return dtos;
