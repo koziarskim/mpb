@@ -30,17 +30,34 @@ public class ItemTreeDto {
 	
 	List<ScheduleEventTreeDto> events = new ArrayList<ScheduleEventTreeDto>();
 	
+//	public Long getDailyAverage() {
+//		if(this.getDailySeconds()==0L || this.getEvents().size()==0) {
+//			return this.dailyAverage;
+//		}
+//		BigDecimal average = BigDecimal.valueOf(this.getDailyProduced())
+//				.divide(BigDecimal.valueOf(this.getDailySeconds()),2, RoundingMode.HALF_DOWN)
+//				.multiply(BigDecimal.valueOf(3600));
+//		this.dailyAverage = average.longValue();
+//		return this.dailyAverage;
+//	}
+
 	public Long getDailyAverage() {
-		if(this.getDailySeconds()==0L || this.getEvents().size()==0) {
-			return this.dailyAverage;
+		Long total = 0L;
+		Long count = 0L;
+		for(ScheduleEventTreeDto event: this.getEvents()) {
+			if(event.getDailyAverage()==0L) {
+				continue;
+			}
+			total+=event.getDailyAverage();
+			count++;
 		}
-		BigDecimal average = BigDecimal.valueOf(this.getDailyProduced())
-				.divide(BigDecimal.valueOf(this.getDailySeconds()),2, RoundingMode.HALF_DOWN)
-				.multiply(BigDecimal.valueOf(3600));
-		this.dailyAverage = average.longValue();
-		return this.dailyAverage;
+		if(count==0L) {
+			return 0L;
+		}
+		Long average = BigDecimal.valueOf(total).divide(BigDecimal.valueOf(count),2,RoundingMode.HALF_DOWN).longValue();
+		return average;
 	}
-	
+
 	public Long getTotalAverage() {
 		if(this.getDailySeconds()==0L || this.getEvents().size()==0) {
 			return this.dailyAverage;
@@ -51,5 +68,4 @@ public class ItemTreeDto {
 		this.totalAverage = average.longValue();
 		return this.totalAverage;
 	}
-
 }

@@ -33,7 +33,7 @@
         <b-col cols=1>{{item.dailyProduced}}</b-col>
         <b-col cols=1>{{formatter.secondsToTime(item.dailySeconds)}}</b-col>
         <b-col cols=1>{{item.totalAverage+"/"+item.dailyAverage}}</b-col>
-        <b-col cols=1>{{item.dailyAverage+"/"+item.totalAverage}}</b-col>
+        <b-col cols=1>{{getPerc(item.dailyAverage,item.totalAverage)}}</b-col>
       </b-row>
         <div v-for="event in item.events" v-bind:key="event.id">
           <div v-if="item.show">
@@ -47,7 +47,7 @@
             </b-col>
             <b-col cols=1>{{formatter.secondsToTime(event.dailySeconds)}}</b-col>
             <b-col cols=1>{{event.dailyAverage}}</b-col>
-            <b-col cols=1>{{event.dailyAverage}}</b-col>
+            <b-col cols=1>{{getPerc(event.dailyAverage,item.totalAverage)}}</b-col>
           </b-row>
         </div>
       </div>
@@ -226,7 +226,13 @@ export default {
 	  },
     goToProductionLine(schedule_event_id) {
       router.push("/productionLine/" + schedule_event_id);
-	  },
+    },
+    getPerc(high, low){
+      if(high==0 || low==0){
+        return "0%"
+      }
+      return (((high - low) / ((high + low)/2)) * 100).toFixed(0)+"%";
+}
   },
   mounted() {
     var date = this.$route.params.date;
