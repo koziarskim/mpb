@@ -3,7 +3,7 @@
     <b-row style="padding-bottom: 4px;">
       <b-col cols=3>
         <span style="font-size: 18px; font-weight: bold">Daily Production Status:</span>
-        <b-form-checkbox v-model="itemView">Line View</b-form-checkbox>
+        <b-form-checkbox v-model="itemView">Item View</b-form-checkbox>
       </b-col>
       <b-col cols=2>
         <input class="form-control" type="date" v-model="date" placeholder="Date">
@@ -25,7 +25,7 @@
 		    <span>({{row.item.saleItem.sale.number}} - {{row.item.saleItem.sale.customer.name}})</span>
       </template>
       <template v-slot:cell(totalTime)="row">
-		  <span>{{formatTime(row.item.totalTime)}}</span>
+		  <span>{{formatter.secondsToTime(row.item.totalTime)}}</span>
       </template>
       <template v-slot:cell(unitsScheduled)="row">
         <b-button v-if="!row.item.edit" @click="editScheduleEvent(row.item)" variant="light">{{row.item.unitsScheduled}}</b-button>
@@ -59,12 +59,14 @@ import httpUtils from "../httpUtils";
 import store from "../store.js";
 import moment from "moment";
 import securite from "../securite";
-import navigation from "../utils/navigation"
+import navigation from "../utils/navigation";
+import formatter from "../utils/formatter"
 
 export default {
   data() {
     return {
       navigation: navigation,
+      formatter: formatter,
       date: moment()
         .format("YYYY-MM-DD"),
       sortBy: "line.number",
@@ -179,10 +181,6 @@ export default {
         })
       })
     },
-	  formatTime(secs){
-		  const duration = moment.duration(secs, 'seconds');
-		  return duration.hours()+':'+duration.minutes()+':'+duration.seconds();
-	  },
 	  getScheduleEvents(date){
       http
         .get("/schedule/single/date/"+date)

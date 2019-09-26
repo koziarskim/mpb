@@ -3,7 +3,7 @@
     <b-row style="padding-bottom: 4px;">
       <b-col cols=3>
         <span style="font-size: 18px; font-weight: bold">Daily Production Status:</span>
-        <b-form-checkbox v-model="itemView">Line View</b-form-checkbox>
+        <b-form-checkbox v-model="itemView">Item View</b-form-checkbox>
       </b-col>
       <b-col cols=2>
         <input class="form-control" type="date" v-model="date" placeholder="Date">
@@ -17,7 +17,7 @@
       <b-col cols=1>Daily<br/>Produced</b-col>
       <b-col cols=1>Total<br/>Average</b-col>
       <b-col cols=1>Daily<br/>Average</b-col>
-      <b-col cols=1>Line #</b-col>
+      <b-col cols=1>Daily<br/>Duration</b-col>
     </b-row>
     <div v-for="item in items" v-bind:key="item.id">
       <b-row>
@@ -25,23 +25,24 @@
           <b-button size="sm" @click="toggleRow(item)" variant="link">{{item.show?'[-]':'[+]'}}</b-button>{{item.name}}
         </b-col>
         <b-col cols=1>{{item.unitsSold}}</b-col>
-        <b-col cols=1>{{item.unitsScheduled}}</b-col>
-        <b-col cols=1>{{item.unitsProduced}}</b-col>
+        <b-col cols=1>{{item.dailyScheduled}}</b-col>
+        <b-col cols=1>{{item.dailyProduced}}</b-col>
         <b-col cols=1>{{roundNumber(item.averageProduced)}}</b-col>
-        <b-col cols=1>{{getDailyProduced(item)}}</b-col>
+        <b-col cols=1>{{item.dailyAverage}}</b-col>
+        <b-col cols=1>{{formatter.secondsToTime(item.dailySeconds)}}</b-col>
       </b-row>
         <div v-for="event in item.events" v-bind:key="event.id">
           <div v-if="item.show">
           <b-row style="color: gray">
             <b-col cols=5><div style="padding-left:50px">{{"Line "+event.lineNumber+": ("+event.saleNumber + " - " + event.customerName+")"}}</div></b-col>
             <b-col cols=1>{{event.unitsSold}}</b-col>
-            <b-col cols=1>{{event.unitsScheduled}}</b-col>
+            <b-col cols=1>{{event.dailyScheduled}}</b-col>
             <b-col cols=1>
-              <b-button size="sm" @click="goToProductionLine(event.id)" variant="link">{{event.unitsProduced}}</b-button>
+              <b-button size="sm" @click="goToProductionLine(event.id)" variant="link">{{event.dailyProduced}}</b-button>
             </b-col>
             <b-col cols=1></b-col>
-            <b-col cols=1>{{roundNumber(event.averageProduced)}}</b-col>
-            <b-col cols=1>{{event.lineNumber}}</b-col>
+            <b-col cols=1>{{event.dailyAverage}}</b-col>
+            <b-col cols=1>{{formatter.secondsToTime(event.dailySeconds)}}</b-col>
           </b-row>
         </div>
       </div>
@@ -56,11 +57,13 @@ import store from "../store.js";
 import moment from "moment";
 import securite from "../securite";
 import navigation from "../utils/navigation"
+import formatter from "../utils/formatter";
 
 export default {
   data() {
     return {
       navigation: navigation,
+      formatter: formatter,
       date: moment().format("YYYY-MM-DD"),
       schedule_id: null,
       scheduleEvents: [],
@@ -180,10 +183,6 @@ export default {
           name: event.saleItem.item.name
         })
       })
-    },
-	  formatTime(secs){
-		  const duration = moment.duration(secs, 'seconds');
-		  return duration.hours()+':'+duration.minutes()+':'+duration.seconds();
     },
     getItemTree(date){
       http.get("/item/production/date/"+date).then(response => {

@@ -120,7 +120,9 @@ public class ScheduleEvent {
 		BigDecimal totalSecs = BigDecimal.ZERO;
 		BigDecimal totalUnits = BigDecimal.ZERO;
 		LocalTime start = null;
-		for(Production p: this.getProductions()) {
+		List<Production> productions = new ArrayList<Production>(this.getProductions());
+		productions.sort((h1, h2) -> h1.getFinishTime().compareTo(h2.getFinishTime()));
+		for(Production p: productions) {
 			if(start == null) {
 				start = p.getScheduleEvent().getStartTime();
 			}
@@ -133,4 +135,24 @@ public class ScheduleEvent {
 		BigDecimal unitsPerHour = (totalUnits.divide(totalSecs,2, RoundingMode.HALF_DOWN)).multiply(BigDecimal.valueOf(3600));
 		return unitsPerHour;
 	}
+
+	public Long getTotalSeconds() {
+		Long totalSecs = 0L;
+		if(this.getStartTime()==null || this.getProductions().size()==0) {
+			return totalSecs;
+		}
+		LocalTime start = null;
+		List<Production> productions = new ArrayList<Production>(this.getProductions());
+		productions.sort((h1, h2) -> h1.getFinishTime().compareTo(h2.getFinishTime()));
+		for(Production p: productions) {
+			if(start == null) {
+				start = p.getScheduleEvent().getStartTime();
+			}
+			totalSecs += ChronoUnit.SECONDS.between(start, p.getFinishTime());
+			//Set for next start
+			start = p.getFinishTime();
+		}
+		return totalSecs;
+	}
+	
 }
