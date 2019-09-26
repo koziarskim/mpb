@@ -14,11 +14,11 @@
       <b-col cols=5>Item<br/> (Sale - Customer)</b-col>
       <b-col cols=1>Total<br/>Sold</b-col>
       <b-col cols=1>Total<br/>Produced</b-col>
-      <b-col cols=1>Total<br/>Average</b-col>
       <b-col cols=1>Daily<br/>Scheduled</b-col>
       <b-col cols=1>Daily<br/>Produced</b-col>
-      <b-col cols=1>Daily<br/>Average</b-col>
       <b-col cols=1>Daily<br/>Duration</b-col>
+      <b-col cols=1>T / D<br/>Average</b-col>
+      <b-col cols=1>Daily<br/>Progress</b-col>
     </b-row>
     <div v-for="item in items" v-bind:key="item.id">
       <b-row>
@@ -26,12 +26,14 @@
           <b-button size="sm" @click="toggleRow(item)" variant="link">{{item.show?'[-]':'[+]'}}</b-button>{{item.name}}
         </b-col>
         <b-col cols=1>{{item.totalSold}}</b-col>
-        <b-col cols=1>{{item.totalProduced}}</b-col>
-        <b-col cols=1>{{item.totalAverage}}</b-col>
+        <b-col cols=1>
+          <a href="#" @click="goToProductionLine(item.id)">{{item.totalProduced}}</a>
+        </b-col>
         <b-col cols=1>{{item.dailyScheduled}}</b-col>
         <b-col cols=1>{{item.dailyProduced}}</b-col>
-        <b-col cols=1>{{item.dailyAverage}}</b-col>
         <b-col cols=1>{{formatter.secondsToTime(item.dailySeconds)}}</b-col>
+        <b-col cols=1>{{item.totalAverage+"/"+item.dailyAverage}}</b-col>
+        <b-col cols=1>{{item.dailyAverage+"/"+item.totalAverage}}</b-col>
       </b-row>
         <div v-for="event in item.events" v-bind:key="event.id">
           <div v-if="item.show">
@@ -39,13 +41,13 @@
             <b-col cols=5><div style="padding-left:50px">{{"Line "+event.lineNumber+": ("+event.saleNumber + " - " + event.customerName+")"}}</div></b-col>
             <b-col cols=1>{{event.unitsSold}}</b-col>
             <b-col cols=1>{{event.saleTotalProduced}}</b-col>
-            <b-col cols=1></b-col>
             <b-col cols=1>{{event.dailyScheduled}}</b-col>
             <b-col cols=1>
               <a href="#" @click="goToProductionLine(event.id)">{{event.dailyProduced}}</a>
             </b-col>
-            <b-col cols=1>{{event.dailyAverage}}</b-col>
             <b-col cols=1>{{formatter.secondsToTime(event.dailySeconds)}}</b-col>
+            <b-col cols=1>{{event.dailyAverage}}</b-col>
+            <b-col cols=1>{{event.dailyAverage}}</b-col>
           </b-row>
         </div>
       </div>
