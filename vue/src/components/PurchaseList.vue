@@ -6,12 +6,8 @@
       </b-col>
       <b-col cols="2" style="margin-top: -12px">
         <label class="top-label">Component:</label>
-        <b-select option-value="id" option-text="number" :list="availableComponents" v-model="component"></b-select>
+        <b-select option-value="id" option-text="name" :list="availableComponents" v-model="component"></b-select>
       </b-col>
-      <!-- <b-col cols="2" style="margin-top: -12px">
-        <label class="top-label">Search:</label>
-        <input class="form-control" type="text" v-model="keyword" placeholder="Type to search">
-      </b-col> -->
       <b-col cols="2" style="margin-top: 16px">
         <b-form-checkbox @change="showAllChange()" v-model="showAll">Show All</b-form-checkbox>
       </b-col>
@@ -74,12 +70,7 @@ export default {
         { key: "pdf", label: "PDF", sortable: false },
         { key: "action", label: "Action", sortable: false }
       ],
-      availableComponents: [
-        { id: 3, number: "1003" },
-        { id: 4, number: "1004" },
-        { id: 5, number: "1005" },
-        { id: 33, number: "10033" }
-      ],
+      availableComponents: [],
       component: {},
       purchases: [],
       keyword: "",
@@ -112,13 +103,6 @@ export default {
         }
       this.getPurchasesData();
     },
-    // showAll(new_value, old_value) {
-    //   if (this.component.id && new_value) {
-    //     this.component = {};
-    //   }
-    //   this.keyword = "";
-    //   this.getPurchasesData();
-    // },
   },
   methods: {
     showAllChange(){
@@ -135,16 +119,11 @@ export default {
     showAlert(message) {
       (this.alertSecs = 3), (this.alertMessage = message);
     },
-    getAvailableComponents(component_id) {
+    getAvailableComponents() {
       http
-        .get("/component/")
+        .get("/component/kv")
         .then(response => {
           this.availableComponents = response.data;
-          if (component_id) {
-            this.component = response.data.filter(
-              it => it.id == component_id
-            )[0];
-          }
           this.getPurchasesData();
         })
         .catch(e => {
@@ -173,7 +152,6 @@ export default {
         .get(url)
         .then(response => {
           this.purchases = response.data;
-          console.log("Success getting component data");
         })
         .catch(e => {
           console.log("API error: " + e);
@@ -215,8 +193,7 @@ export default {
     }
   },
   mounted() {
-    this.getAvailableComponents(parseInt(this.$route.query.component_id));
-    window.history.pushState({}, document.title, window.location.pathname);
+    this.getAvailableComponents();
   }
 };
 </script>
