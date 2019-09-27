@@ -3,7 +3,6 @@ package com.noovitec.mpb.entity;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;

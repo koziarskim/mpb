@@ -29,8 +29,6 @@ import com.noovitec.mpb.dto.projection.ItemAvailabilityProjection;
 import com.noovitec.mpb.entity.Schedule;
 import com.noovitec.mpb.entity.ScheduleEvent;
 import com.noovitec.mpb.repo.ItemRepo;
-import com.noovitec.mpb.repo.ReceivingRepo;
-import com.noovitec.mpb.repo.ScheduleEventRepo;
 import com.noovitec.mpb.repo.ScheduleRepo;
 
 @RestController
@@ -41,10 +39,6 @@ class ScheduleRest {
 	private ScheduleRepo scheduleRepo;
 	@Autowired
 	private ItemRepo itemRepo;
-	@Autowired
-	private ScheduleEventRepo scheduleEventRepo;
-	@Autowired
-	private ReceivingRepo receivingRepo;
 
 	public ScheduleRest(ScheduleRepo scheduleRepo) {
 		this.scheduleRepo = scheduleRepo;

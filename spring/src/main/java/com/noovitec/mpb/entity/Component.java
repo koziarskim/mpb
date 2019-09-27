@@ -86,8 +86,6 @@ public class Component {
 	@JoinColumn(name = "component_id")
 	private Collection<PurchaseComponent> purchaseComponents = new HashSet<PurchaseComponent>();
 
-	// Transient not managed by DB
-
 	@Transient
 	private boolean locked;
 	@Transient
@@ -100,33 +98,6 @@ public class Component {
 	public String getLabel() {
 		return this.getNumber() + " - " + this.getName();
 	}
-
-//	//This is for all purchases.
-//	public int getUnitsOrdered() {
-//		int unitsOrdered = 0;
-//		for (PurchaseComponent pc : this.getPurchaseComponents()) {
-//			unitsOrdered += pc.getUnitsOrdered();
-//		}
-//		return unitsOrdered;
-//	}
-//	
-//	//This is for all purchases.
-//	public int getUnitsInTransit() {
-//		int unitsInTransit = 0;
-//		for (PurchaseComponent pc : this.getPurchaseComponents()) {
-//			unitsInTransit += pc.getUnitsInTransit();
-//		}
-//		return unitsInTransit;
-//	}
-//
-//	//This is for all purchases.
-//	public int getUnitsReceived(String purchase_id) {
-//		int unitsReceived = 0;
-//		for(PurchaseComponent pc : this.getPurchaseComponents()) {
-//			unitsReceived += pc.getUnitsReceived();
-//		}
-//		return unitsReceived;
-//	}
 
 	//Helper methods
 	//Returns extra units.
@@ -141,20 +112,7 @@ public class Component {
 		return 0L;
 	}
 
-	public Long addUnitsReserved(Long units) {
-		if(this.unitsReserved==null) {
-			this.unitsReserved=0L;
-		}
-		Long extraUnits = 0L;
-		this.unitsReserved += units;
-		if(this.unitsReserved < 0) {
-			extraUnits = Long.valueOf(this.unitsReserved) * (-1);
-			this.unitsReserved = 0L;
-			return Long.valueOf(extraUnits);
-		}
-		return 0L;
-	}
-
+	//TODO: Can we delete it?
 	public void updateUnits() {
 		int unitsOrdered = 0;
 		int unitsInTransit = 0;

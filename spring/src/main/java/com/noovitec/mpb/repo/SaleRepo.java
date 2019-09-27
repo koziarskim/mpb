@@ -9,11 +9,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.noovitec.mpb.dto.ItemListDto;
 import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.dto.SaleDto;
 import com.noovitec.mpb.dto.SaleItemDto;
-import com.noovitec.mpb.dto.SaleListDto;
 import com.noovitec.mpb.entity.Sale;
 import com.noovitec.mpb.entity.SaleItem;
 
@@ -52,18 +50,6 @@ public interface SaleRepo extends JpaRepository<Sale, Long> {
 	@Query(value="select s from Sale s where s.customer.id = :customer_id ")
 	public List<Sale> findSaleByCustomer(@Param("customer_id") Long sale_id);
 	
-//	@Query("select new com.noovitec.mpb.dto.SaleListDto(s.id, s.number, c.name, s.date, a.dc) from Sale s "
-//			+ "left join Customer c on c.id = s.customer.id "
-//			+ "left join Address a on a.id = s.shippingAddress.id ")
-//	Page<SaleListDto> getSaleListDtoPageable(Pageable pageable);
-//
-//	@Query("select new com.noovitec.mpb.dto.SaleListDto(s.id, s.number, c.name, s.date, a.dc) from Sale s "
-//			+ "left join Customer c on c.id = s.customer.id "
-//			+ "left join Address a on a.id = s.shippingAddress.id "
-//			+ "where upper(s.number) LIKE CONCAT('%',UPPER(:searchKey),'%') "
-//			+ "or upper(c.name) LIKE CONCAT('%',UPPER(:searchKey),'%') ")
-//	Page<SaleListDto> getSaleListDtoPageable(Pageable pageable, String searchKey);
-
 	@Query("select s from Sale s")
 	Page<Sale> getSalePageable(Pageable pageable);
 

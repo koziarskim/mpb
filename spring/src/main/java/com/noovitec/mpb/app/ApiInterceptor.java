@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
+//TODO: Do we need this?
 public class ApiInterceptor implements HandlerInterceptor {
 
 	private final Logger log = LoggerFactory.getLogger(ApiInterceptor.class);

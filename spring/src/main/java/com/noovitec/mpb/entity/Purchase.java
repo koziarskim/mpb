@@ -69,7 +69,6 @@ public class Purchase {
 	@JoinColumn(name = "purchase_id")
 	private Collection<PurchaseComponent> purchaseComponents = new HashSet<PurchaseComponent>();
 	
-	//Transient not managed by DB
 	@Transient
 	private boolean received;
 	

@@ -1,7 +1,5 @@
 package com.noovitec.mpb.entity;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
@@ -23,7 +21,6 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.AllArgsConstructor;
@@ -68,13 +65,12 @@ public class ScheduleEvent {
 	@JoinColumn(name = "sale_item_id", referencedColumnName = "id")
 	private SaleItem saleItem;
 
-	// Transient
-	@Transient
-	Long totalProduced = 0L;
+	//TODO: Is this used?
 	@Transient
 	int unitsShort = 0;
+
 	@Transient
-	boolean eventCompleted = false;
+	Long totalProduced = 0L;
 
 	public Long getTotalProduced() {
 		Long units = 0L;
@@ -83,7 +79,10 @@ public class ScheduleEvent {
 		}
 		return units;
 	}
-	
+
+	@Transient
+	boolean eventCompleted = false;
+
 	public boolean isEventCompleted() {
 		Long produced = this.getTotalProduced();
 		Long scheduled = this.getUnitsScheduled()==null?0L:this.getUnitsScheduled();
@@ -111,31 +110,6 @@ public class ScheduleEvent {
 		return this.unitsScheduled==null?0L:this.unitsScheduled - units;
 	}
 	
-	@JsonIgnore
-	public BigDecimal getAverageProduced() {
-		BigDecimal averageProduced = BigDecimal.ZERO;
-		if(this.getStartTime()==null || this.getProductions().size()==0) {
-			return averageProduced;
-		}
-		BigDecimal totalSecs = BigDecimal.ZERO;
-		BigDecimal totalUnits = BigDecimal.ZERO;
-		LocalTime start = null;
-		List<Production> productions = new ArrayList<Production>(this.getProductions());
-		productions.sort((h1, h2) -> h1.getFinishTime().compareTo(h2.getFinishTime()));
-		for(Production p: productions) {
-			if(start == null) {
-				start = p.getScheduleEvent().getStartTime();
-			}
-			Long secs = ChronoUnit.SECONDS.between(start, p.getFinishTime());
-			totalSecs = totalSecs.add(BigDecimal.valueOf(secs));
-			totalUnits = totalUnits.add(BigDecimal.valueOf(p.getUnitsProduced()));
-			//Set for next start
-			start = p.getFinishTime();
-		}
-		BigDecimal unitsPerHour = (totalUnits.divide(totalSecs,2, RoundingMode.HALF_DOWN)).multiply(BigDecimal.valueOf(3600));
-		return unitsPerHour;
-	}
-
 	public Long getDurationSeconds() {
 		Long totalSecs = 0L;
 		if(this.getStartTime()==null || this.getProductions().size()==0) {

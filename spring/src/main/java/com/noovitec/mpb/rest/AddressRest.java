@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -56,8 +55,6 @@ class AddressRest {
 	@DeleteMapping("/address/{id}")
 	public ResponseEntity<?> delete(@PathVariable Long id) {
 		Optional<Address> address = addressRepo.findById(id);
-//		address.get().getCustomer().getAddresses().remove(address.get());
-//		addressRepo.saveAndFlush(address.get());
 		addressRepo.delete(address.get());
 		return ResponseEntity.ok().build();
 	}

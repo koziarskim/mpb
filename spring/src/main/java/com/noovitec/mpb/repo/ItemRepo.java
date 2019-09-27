@@ -7,19 +7,16 @@ import javax.transaction.Transactional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import com.noovitec.mpb.dto.ItemAvailabilityDto;
 import com.noovitec.mpb.dto.ItemListDto;
 import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.dto.projection.ItemAvailabilityProjection;
 import com.noovitec.mpb.entity.Item;
-import com.noovitec.mpb.entity.ScheduleEvent;
 
 public interface ItemRepo extends PagingAndSortingRepository<Item, Long> {
 	Item findByName(String name);

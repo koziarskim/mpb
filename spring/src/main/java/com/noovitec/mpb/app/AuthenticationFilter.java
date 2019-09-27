@@ -62,7 +62,6 @@ class AuthenticationFilter extends UrlBasedCorsConfigurationSource implements Fi
 			}
 			chain.doFilter(servletRrequest, servletResponse);
 		}
-//		chain.doFilter(servletRrequest, servletResponse);
 	}
 
 	@Override

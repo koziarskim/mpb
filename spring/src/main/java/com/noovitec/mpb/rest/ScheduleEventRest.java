@@ -1,6 +1,5 @@
 package com.noovitec.mpb.rest;
 
-import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -8,7 +7,6 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,14 +17,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.noovitec.mpb.entity.Component;
-import com.noovitec.mpb.entity.Item;
-import com.noovitec.mpb.entity.ItemComponent;
 import com.noovitec.mpb.entity.Production;
 import com.noovitec.mpb.entity.Schedule;
 import com.noovitec.mpb.entity.ScheduleEvent;
-import com.noovitec.mpb.repo.ComponentRepo;
-import com.noovitec.mpb.repo.ItemRepo;
 import com.noovitec.mpb.repo.ScheduleEventRepo;
 import com.noovitec.mpb.repo.ScheduleRepo;
 
@@ -36,10 +29,6 @@ class ScheduleEventRest {
 
 	private final Logger log = LoggerFactory.getLogger(ScheduleEventRest.class);
 	private ScheduleEventRepo scheduleEventRepo;
-	@Autowired
-	private ItemRepo itemRepo;
-	@Autowired
-	private ComponentRepo componentRepo;
 	@Autowired
 	private ScheduleRepo scheduleRepo;
 
@@ -79,33 +68,12 @@ class ScheduleEventRest {
 		for (Production production : scheduleEvent.getProductions()) {
 			production.setScheduleEvent(scheduleEvent);
 		}
-		// Get this before calling save.
-		Long existingUnitsScheduled = scheduleEventRepo.getScheduledUnits(scheduleEvent.getId());
 		ScheduleEvent result = scheduleEventRepo.save(scheduleEvent);
-		Long itemUnits = result.getUnitsScheduled() - (existingUnitsScheduled == null ? 0L : existingUnitsScheduled);
-		// TODO: Why following is null? result.getSaleItem().getItem().getId();
-		Long item_id = scheduleEventRepo.getItemIdByScheduleEvent(scheduleEvent.getId());
-		Item item = itemRepo.findById(item_id).get();
-
-		item.addUnitsScheduled(itemUnits);
-		itemRepo.save(item);
-		for (ItemComponent ic : item.getItemComponents()) {
-			// Positive or negative
-			Long componentUnits = ic.getUnits() * itemUnits;
-			Component component = ic.getComponent();
-			// Add/Substract based on positive or negative value.
-			component.addUnitsReserved(componentUnits);
-			componentRepo.save(component);
-		}
 		return ResponseEntity.ok().body(result);
 	}
 
 	@DeleteMapping("/scheduleEvent/{id}")
 	public ResponseEntity<?> delete(@PathVariable Long id) {
-		ScheduleEvent scheduleEvent = scheduleEventRepo.getOne(id);
-		Item item = itemRepo.findById(scheduleEvent.getSaleItem().getItem().getId()).get();
-		item.addUnitsScheduled(scheduleEvent.getUnitsScheduled() * (-1));
-		itemRepo.save(item);
 		scheduleEventRepo.deleteById(id);
 		return ResponseEntity.ok().build();
 	}

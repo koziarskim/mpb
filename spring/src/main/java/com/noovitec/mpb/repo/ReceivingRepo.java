@@ -13,13 +13,6 @@ import com.noovitec.mpb.entity.Receiving;
 
 public interface ReceivingRepo extends JpaRepository<Receiving, Long> {
 
-	/*
-		select pc.component_id, sum(r.units) from receiving r
-		join purchase_component pc on pc.id = r.purchase_component_id
-		where r.eta_date <= '2019-05-07 19:00:00'
-		and r.received_date is null
-		group by pc.component_id
-	 */
 	@Query("select new com.noovitec.mpb.dto.KeyValueDto(pc.component.id, sum(r.units)) "
 			+ "from Receiving r "
 			+ "join r.purchaseComponent pc "

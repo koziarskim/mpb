@@ -5,11 +5,9 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -53,7 +51,6 @@ public class Sale {
 	@JoinColumn(name = "customer_id", referencedColumnName = "id")
 	private Customer customer;
 
-//	@JsonIgnoreProperties(value = { "customer" }, allowSetters=true)
 	@ManyToOne()
 	@JoinColumn(name = "address_id", referencedColumnName = "id")
 	private Address shippingAddress;
@@ -67,6 +64,17 @@ public class Sale {
 	@OneToMany()
 	@JoinColumn(name = "sale_id")
 	private Collection<PurchaseSale> purchaseSales = new HashSet<PurchaseSale>();
+	
+	@Transient
+	private Long unitsSold;
+	
+	public Long getUnitsSold() {
+		this.unitsSold = 0L;
+		for(SaleItem si: this.getSaleItems()) {
+			this.unitsSold += si.getUnits();
+		}
+		return this.unitsSold;
+	}
 	
 	@Transient
 	private Long unitsScheduled;
@@ -89,16 +97,4 @@ public class Sale {
 		}
 		return this.unitsProduced;
 	}
-
-	@Transient
-	private Long unitsSold;
-	
-	public Long getUnitsSold() {
-		this.unitsSold = 0L;
-		for(SaleItem si: this.getSaleItems()) {
-			this.unitsSold += si.getUnits();
-		}
-		return this.unitsSold;
-	}
-
 }

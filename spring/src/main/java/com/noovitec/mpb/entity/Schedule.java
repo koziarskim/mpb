@@ -44,6 +44,7 @@ public class Schedule {
 	@JoinColumn(name = "schedule_id")
 	private Collection<ScheduleEvent> scheduleEvents = new HashSet<ScheduleEvent>();
 
+	//TODO: Is this used?
 	@Transient
 	private Collection<ItemAvailabilityDto> items = new HashSet<ItemAvailabilityDto>();
 }

@@ -20,11 +20,11 @@ public class SaleListDto {
 	private Long unitsScheduled;
 	private Long unitsProduced;
 	
+	//TODO: Is this still used?
 	public String getStatus() {
 		if(this.unitsSold==0) {
 			return "No Sale";
 		}
-//		System.out.print("Perc: "+Math.round((this.unitsProduced.doubleValue() * 100)/this.unitsSold.doubleValue()));
 		//TODO: Fix me!!!!
 		return Math.round(this.unitsProduced.doubleValue()/this.unitsSold.doubleValue()*100)+"%";
 	}

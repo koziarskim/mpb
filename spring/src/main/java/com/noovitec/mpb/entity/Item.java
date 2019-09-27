@@ -1,7 +1,6 @@
 package com.noovitec.mpb.entity;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
@@ -20,7 +19,6 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.AllArgsConstructor;
@@ -61,7 +59,6 @@ public class Item {
 	private BigDecimal totalCost = BigDecimal.ZERO;
 	private String status = "NONE"; // This is "DYNAMIC" in DB because it is calculated on the GET.
 	private Long unitsOnStack = 0L;
-	private Long unitsScheduled = 0L;
 
 	@JsonIgnoreProperties(value = { "item" }, allowSetters = true)
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
@@ -102,6 +99,20 @@ public class Item {
 	@JoinColumn(name = "item_id")
 	private Collection<SaleItem> saleItems = new HashSet<SaleItem>();
 
+	@Transient
+	private Long unitsSold;
+	
+	public Long getUnitsSold() {
+		Long units = 0L;
+		for(SaleItem si : this.getSaleItems()) {
+			units += si.getUnits();
+		}
+		return units;
+	}
+
+	@Transient
+	private Long unitsScheduled = 0L;
+
 	public Long getUnitsScheduled() {
 		Long units = 0L;
 		for(SaleItem si : this.getSaleItems()) {
@@ -121,25 +132,15 @@ public class Item {
 		return units;
 	}
 	
-	@JsonIgnore
-	public BigDecimal getAverageProduced() {
-		BigDecimal averageProduced = BigDecimal.ZERO;
-		if(this.getSaleItems().size()==0) {
-			return averageProduced;
-		}
-		BigDecimal avgProduced = BigDecimal.ZERO;
-		int count = 0;
-		for(SaleItem si: this.getSaleItems()) {
-			if(si.getAverageProduced().equals(BigDecimal.ZERO)) {
-				continue;
-			}
-			avgProduced = avgProduced.add(si.getAverageProduced());
-			count++;
-		}
-		if(count>0) {
-			averageProduced = avgProduced.divide(BigDecimal.valueOf(count),2, RoundingMode.HALF_DOWN);
-		}
-		return averageProduced;
+	@Transient
+	private String label;
+
+	public String getLabel() {
+		return this.getNumber() + " - " + this.getName();
+	}
+
+	public void setStatus(String status) {
+		this.status = "DYNAMIC";
 	}
 	
 	public Long getDurationSeconds() {
@@ -152,42 +153,11 @@ public class Item {
 		return secs;
 	}
 
-
-	
-	@Transient
-	private Long unitsSold;
-	
-	public Long getUnitsSold() {
-		Long units = 0L;
-		for(SaleItem si : this.getSaleItems()) {
-			units += si.getUnits();
-		}
-		return units;
-	}
-	
-	@Transient
-	private String label;
-
-	public String getLabel() {
-		return this.getNumber() + " - " + this.getName();
-	}
-
-	public void setStatus(String status) {
-		this.status = "DYNAMIC";
-	}
-
 	public void addUnitsOnStack(Long units) {
 		if (this.unitsOnStack == null) {
 			this.unitsOnStack = 0L;
 		}
 		this.unitsOnStack += units;
-	}
-
-	public void addUnitsScheduled(Long units) {
-		if (this.unitsScheduled == null) {
-			this.unitsScheduled = 0L;
-		}
-		this.unitsScheduled += units;
 	}
 
 }

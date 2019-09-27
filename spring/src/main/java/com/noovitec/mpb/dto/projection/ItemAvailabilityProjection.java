@@ -1,5 +1,6 @@
 package com.noovitec.mpb.dto.projection;
 
+//TODO: Do we need this?
 public interface ItemAvailabilityProjection {
 	
 	Long getId();

@@ -6,7 +6,6 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.cglib.core.Converter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.noovitec.mpb.dto.ItemListDto;
 import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.dto.SaleDto;
 import com.noovitec.mpb.dto.SaleListDto;

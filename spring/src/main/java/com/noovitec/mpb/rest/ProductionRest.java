@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.noovitec.mpb.entity.Item;
 import com.noovitec.mpb.entity.Production;
 import com.noovitec.mpb.entity.ScheduleEvent;
-import com.noovitec.mpb.repo.ComponentRepo;
 import com.noovitec.mpb.repo.ItemRepo;
 import com.noovitec.mpb.repo.ProductionRepo;
 import com.noovitec.mpb.repo.ScheduleEventRepo;
@@ -32,8 +31,6 @@ class ProductionRest {
 	private ProductionRepo productionRepo;
 	@Autowired
 	private ScheduleEventRepo scheduleEventRepo;
-	@Autowired
-	private ComponentRepo componentRepo;
 	@Autowired
 	private ItemRepo itemRepo;
 
@@ -67,7 +64,6 @@ class ProductionRest {
 		Production result = productionRepo.save(production);
 		Item item = itemRepo.findById(scheduleEvent.getSaleItem().getItem().getId()).get();
 		item.addUnitsOnStack(result.getUnitsProduced() - existingUnitsProduced);
-		item.addUnitsScheduled((result.getUnitsProduced() - existingUnitsProduced )* (-1));
 		itemRepo.save(item);
 		return ResponseEntity.ok().body(result);
 	}

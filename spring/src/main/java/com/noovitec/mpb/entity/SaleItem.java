@@ -1,14 +1,11 @@
 package com.noovitec.mpb.entity;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -20,7 +17,6 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.AllArgsConstructor;
@@ -64,16 +60,18 @@ public class SaleItem {
 	@JoinColumn(name = "sale_item_id")
 	private Collection<ShipmentItem> shipmentItems = new HashSet<ShipmentItem>();
 	
-	@Transient
-	private String label;
-	@Transient
-	private Long unitsScheduled = 0L; //This is total units scheduled (including all schedule events). Updated when saving ScheduleEvent (ScheduleEvent.unitsScheduled)
-	@Transient
-	private Long unitsProduced = 0L; //This should be updated on Production save/post (Production.unitsProduced)
+
+	//TODO: Is this used?
 	@Transient
 	boolean itemCompleted = false;
+
+	//TODO: Is this used?
+	public boolean isItemProduced() {
+		return this.getUnitsScheduled() <= this.getUnitsProduced();
+	}
+
 	@Transient
-	private Long unitsShipped = 0L;
+	private String label;
 	
 	public String getLabel() {
 		if(this.getSale()!=null) {
@@ -83,7 +81,10 @@ public class SaleItem {
 		}
 		return this.label;
 	}
-	
+
+	@Transient
+	private Long unitsScheduled = 0L; //This is total units scheduled (including all schedule events). Updated when saving ScheduleEvent (ScheduleEvent.unitsScheduled)
+
 	public Long getUnitsScheduled() {
 		this.unitsScheduled = 0L;
 		for(ScheduleEvent se: this.getScheduleEvents()) {
@@ -91,7 +92,10 @@ public class SaleItem {
 		}
 		return this.unitsScheduled;
 	}
-	
+
+	@Transient
+	private Long unitsProduced = 0L; //This should be updated on Production save/post (Production.unitsProduced)
+
 	public Long getUnitsProduced() {
 		this.unitsProduced = 0L;
 		for(ScheduleEvent se: this.getScheduleEvents()) {
@@ -102,30 +106,8 @@ public class SaleItem {
 		return this.unitsProduced;
 	}
 
-	@JsonIgnore
-	public BigDecimal getAverageProduced() {
-		BigDecimal averageProduced = BigDecimal.ZERO;
-		if(this.getScheduleEvents().size()==0) {
-			return averageProduced;
-		}
-		BigDecimal avgProduced = BigDecimal.ZERO;
-		int count = 0;
-		for(ScheduleEvent se: this.getScheduleEvents()) {
-			if(se.getAverageProduced().equals(BigDecimal.ZERO)) {
-				continue;
-			}
-			avgProduced = avgProduced.add(se.getAverageProduced());
-			count++;
-		}
-		if(count>0) {
-			averageProduced = avgProduced.divide(BigDecimal.valueOf(count),2, RoundingMode.HALF_DOWN);
-		}
-		return averageProduced;
-	}
-
-	public boolean isItemProduced() {
-		return this.getUnitsScheduled() <= this.getUnitsProduced();
-	}
+	@Transient
+	private Long unitsShipped = 0L;
 	
 	public Long getUnitsShipped() {
 		this.unitsShipped = 0L;

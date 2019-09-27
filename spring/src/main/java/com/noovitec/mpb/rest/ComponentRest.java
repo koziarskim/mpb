@@ -54,8 +54,6 @@ class ComponentRest {
 		this.componentRepo = componentRepo;
 	}
 
-//	GET methods.
-
 	@GetMapping("/component")
 	Iterable<Component> getAll() {
 		return componentRepo.findAll();
@@ -104,8 +102,6 @@ class ComponentRest {
 		return dtos;
 	}
 
-//	POST methods.
-
 	@PostMapping("/component")
 	ResponseEntity<Component> post(@RequestBody(required = false) Component component) throws URISyntaxException {
 		if (component == null) {
@@ -129,8 +125,6 @@ class ComponentRest {
 		Component result = componentRepo.save(component);
 		return ResponseEntity.created(new URI("/api/component/" + result.getId())).body(result);
 	}
-
-//	DELETE methods.
 
 	@DeleteMapping("/component/{id}")
 	public ResponseEntity<?> delete(@PathVariable Long id) {

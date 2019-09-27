@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,9 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.noovitec.mpb.dto.CustomerDto;
 import com.noovitec.mpb.dto.KeyValueDto;
-import com.noovitec.mpb.entity.Address;
 import com.noovitec.mpb.entity.Customer;
-import com.noovitec.mpb.entity.ItemComponent;
 import com.noovitec.mpb.repo.CustomerRepo;
 
 

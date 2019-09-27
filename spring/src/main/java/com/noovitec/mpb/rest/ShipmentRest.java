@@ -3,15 +3,10 @@ package com.noovitec.mpb.rest;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URISyntaxException;
 import java.sql.Timestamp;
-import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -41,14 +36,11 @@ import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfGState;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfStamper;
-import com.noovitec.mpb.dto.ComponentDto;
 import com.noovitec.mpb.entity.Attachment;
-import com.noovitec.mpb.entity.Item;
 import com.noovitec.mpb.entity.Shipment;
 import com.noovitec.mpb.entity.ShipmentItem;
 import com.noovitec.mpb.repo.AttachmentRepo;
 import com.noovitec.mpb.repo.ItemRepo;
-import com.noovitec.mpb.repo.ShipmentItemRepo;
 import com.noovitec.mpb.repo.ShipmentRepo;
 
 @RestController
@@ -61,8 +53,6 @@ class ShipmentRest {
 	private AttachmentRepo attachmentRepo;
 	@Autowired
 	private ItemRepo itemRepo;
-	@Autowired
-	private ShipmentItemRepo shipmentItemRepo;
 
 	public ShipmentRest(ShipmentRepo shipmentRepo) {
 		this.shipmentRepo = shipmentRepo;
