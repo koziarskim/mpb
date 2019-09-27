@@ -102,7 +102,7 @@ export default {
       kvSale: {},
       availableSaleItems: [], //SaleItemDto
       kvSaleItem: {}, //SaleItemDto
-      saleItem: {},
+      saleItem: {item: {}},
       availableItems: [], //ItemDto
       item: {}, //ItemDto
       availableLines: [],
@@ -212,7 +212,7 @@ export default {
         });
     },
     validate() {
-      if (!this.line || !this.kvCustomer || !this.saleItem || !this.scheduleEvent.scheduleTime || this.scheduleEvent.unitsScheduled <= 0) {
+      if (!this.line || !this.kvCustomer || !this.saleItem.id || !this.scheduleEvent.scheduleTime || this.scheduleEvent.unitsScheduled <= 0) {
         alert("Make sure all fields are entered");
         return false;
       }
