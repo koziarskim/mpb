@@ -28,7 +28,8 @@
         </b-col>
         <b-col cols=1>{{item.totalSold}}</b-col>
         <b-col cols=1>
-          <a href="#" @click="goToProductionLine(item.id)">{{item.totalProduced}}</a>
+          <!-- <a href="#" @click="goToProductionLine(item.id)">{{item.totalProduced}}</a> -->
+          {{item.totalProduced}}
         </b-col>
         <b-col cols=1>{{percOut(item.totalProduced,item.totalSold)}}</b-col>
         <b-col cols=1>{{item.dailyScheduled+"/"+item.dailyProduced}}</b-col>
@@ -71,14 +72,6 @@ export default {
       navigation: navigation,
       formatter: formatter,
       date: moment().format("YYYY-MM-DD"),
-      schedule_id: null,
-      scheduleEvents: [],
-      availableLines: [],
-      availableItems: [],
-      selectedLine: {},
-      selectedItem: {},
-      totalScheduled: 0,
-      totalProduced: 0,
       items: [],
       itemView: true,
     };
@@ -87,12 +80,6 @@ export default {
     date(newValue, oldValue) {
       this.getItemTree(newValue);
     },
-    selectedLine(newValue, oldValue){
-      this.getScheduleEvents(this.date);
-    },
-    selectedItem(newValue, oldValue){
-      this.getScheduleEvents(this.date);
-    },
     itemView(newValue, oldValue){
       if(newValue == false){
         navigation.goTo("/productionLineList/"+this.date)
@@ -100,95 +87,8 @@ export default {
     }
   },
   methods: {
-    roundNumber(number){
-      return parseInt(number).toFixed(0);
-    },
-    getDailyProduced(item){
-      var average = 0;
-      var count = 0;
-      item.events.forEach(event =>{
-        if(event.averageProduced == 0){
-          return;
-        }
-        average += +event.averageProduced;
-        count ++;
-      })
-      return (+average / +count).toFixed(0);
-    },
     toggleRow(row){
       row.show = !row.show;
-    },
-    editScheduleEvent(se){
-      if(!securite.hasRole(['SUPER_USER', 'PROD_ADMIN'])){
-        alert("You don't have permission for this operation");
-        return;
-      }
-      se.edit = true;
-    },
-    saveScheduleEvent(se){
-      if(se.unitsScheduled > se.saleItem.units){
-        alert("Cannot schedule more that sold");
-        return;
-      }
-      if(se.unitsScheduled < se.totalProduced){
-        alert("Cannot schedule less than produced");
-        return;
-      }
-      se.schedule = {id: this.schedule_id}
-      http.post("/scheduleEvent", se).then(response => {
-        this.getScheduleEvents(this.date)
-      }).catch(e => {
-        console.log("API error: " + e);
-      });
-      se.edit = false;
-    },
-    deleteDisabled(se){
-      return se.totalProduced > 0;
-    },
-    deleteScheduleEvent(se_id){
-      if(!securite.hasRole(['SUPER_USER', 'PROD_ADMIN'])){
-        alert("You don't have permission for this operation");
-        return;
-      }
-      this.$bvModal.msgBoxConfirm('Are you sure you want to delete?').then(value => {
-        if(value){
-          http.delete("/scheduleEvent/" + se_id).then(response => {
-            this.getScheduleEvents(this.date);
-          }).catch(e => {
-            console.log("API error: " + e);
-          });
-        }
-      })
-    },
-    getAvailableLines() {
-      this.availableLines = [
-        { id: 1, number: 1 },
-        { id: 2, number: 2 },
-        { id: 3, number: 3 },
-        { id: 4, number: 4 },
-        { id: 5, number: 5 },
-        { id: 6, number: 6 },
-        { id: 7, number: 7 },
-        { id: 8, number: 8 }
-      ];
-    },
-    getAvailableItems(){
-      if(this.selectedItem.id){
-        return;
-      }
-      this.availableItems = [];
-      this.scheduleEvents.forEach(event => {
-        //Remove duplicates.
-        if(this.availableItems.find(item => 
-          item.id == event.saleItem.item.id
-        )){
-          return;
-        }
-        this.availableItems.push({
-          id: event.saleItem.item.id,
-          name: event.saleItem.item.name
-        })
-      })
     },
     getItemTree(date){
       http.get("/item/production/date/"+date).then(response => {
@@ -197,40 +97,12 @@ export default {
          console.log("API error: " + e);
       });
     },
-	  getScheduleEvents(date){
-      http
-        .get("/schedule/single/date/"+date)
-        .then(response => {
-          this.scheduleEvents = [];
-          this.totalScheduled = 0;
-          this.totalProduced = 0;
-          if(response.data){
-            this.schedule_id = response.data.id;
-            response.data.scheduleEvents.forEach(se =>{
-              se.edit = false;
-              if(this.selectedLine.id && se.line.id != this.selectedLine.id){
-                return;
-              }
-              if(this.selectedItem.id && se.saleItem.item.id != this.selectedItem.id){
-                return;
-              }
-              this.totalScheduled += se.unitsScheduled;
-              this.totalProduced += se.totalProduced;
-              this.scheduleEvents.push(se)
-            })
-          }
-          this.getAvailableItems();
-        })
-        .catch(e => {
-          console.log("API error: " + e);
-        });
-	  },
     goToProductionLine(schedule_event_id) {
       router.push("/productionLine/" + schedule_event_id);
     },
     percPerf(high, low){
       if(high==0 || low==0){
-        return "0%"
+        return "-"
       }
       return (((high - low) / ((high + low)/2)) * 100).toFixed(0)+"%";
     },
@@ -245,8 +117,6 @@ export default {
       this.date = date;
     }
     this.getItemTree(this.date);
-    // this.getScheduleEvents(this.date);
-    // this.getAvailableLines();
   }
 };
 </script>
