@@ -42,7 +42,7 @@ export default {
   methods: {
     getCustomers() {
       http
-        .get("/customer")
+        .get("/customer/dto")
         .then(response => {
           this.customers = response.data;
         })

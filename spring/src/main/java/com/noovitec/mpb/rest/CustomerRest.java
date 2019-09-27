@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.noovitec.mpb.dto.CustomerDto;
 import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.entity.Address;
 import com.noovitec.mpb.entity.Customer;
@@ -38,6 +39,11 @@ class CustomerRest {
 	@GetMapping("/customer")
 	Collection<Customer> getAll() {
 		return customerRepo.findAll();
+	}
+
+	@GetMapping("/customer/dto")
+	Collection<CustomerDto> getAllDtos() {
+		return customerRepo.findAllDtos();
 	}
 
 	@GetMapping("/customer/kv")
