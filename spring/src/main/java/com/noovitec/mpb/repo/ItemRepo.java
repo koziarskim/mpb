@@ -86,7 +86,7 @@ public interface ItemRepo extends PagingAndSortingRepository<Item, Long> {
 	 */
 	@Query(value = ""
 			+ "select tmp.i_id as id, tmp.us as unitsScheduled, min(tmp.unitsToSchedule) as unitsToSchedule, min(tmp.unitsToProduction) as unitsToProduction "
-				+ "from (select i.id as i_id, i.units_scheduled as us, "
+				+ "from (select i.id as i_id, i.units_on_stack as us, "
 				+ "((c.units_on_stack + sum(case when r.units is null then 0 else r.units end))/max(ic.units)) as unitsToSchedule, "
 				+ "((c.units_on_stack)/max(ic.units)) as unitsToProduction "
 				+ "from item i "
