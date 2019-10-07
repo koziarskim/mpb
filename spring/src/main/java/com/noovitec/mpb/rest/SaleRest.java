@@ -54,6 +54,8 @@ class SaleRest {
 			SaleListDto dto = new SaleListDto();
 			dto.setId(sale.getId());
 			dto.setNumber(sale.getNumber());
+			dto.setDc(sale.getShippingAddress()==null?"":sale.getShippingAddress().getDc());
+			dto.setDate(sale.getDate());
 			dto.setCustomerName(sale.getCustomer().getName());
 			dto.setUnitsSold(sale.getUnitsSold());
 			dto.setUnitsScheduled(sale.getUnitsScheduled());

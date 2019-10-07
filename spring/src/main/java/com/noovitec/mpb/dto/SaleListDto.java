@@ -1,5 +1,6 @@
 package com.noovitec.mpb.dto;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 import lombok.AllArgsConstructor;
@@ -14,7 +15,7 @@ public class SaleListDto {
 	private Long id;
 	private String number;
 	private String customerName;
-	private Date date;
+	private LocalDate date;
 	private String dc;
 	private Long unitsSold;
 	private Long unitsScheduled;

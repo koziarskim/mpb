@@ -38,12 +38,13 @@ export default {
       pageable: {totalElements: 100, currentPage: 1, perPage: 15, sortBy: 'number', sortDesc: false},
       searchKey: "",
       fields: [
-        { key: "number", label: "S.O. #", sortable: true },
+        { key: "number", label: "S.O. #", sortable: false },
         { key: "customerName", label: "Customer", sortable: false },
-        { key: "unitsSold", label: "Sold", sortable: true },
-        { key: "unitsScheduled", label: "Scheduled", sortable: true },
-        { key: "unitsProduced", label: "Produced", sortable: true },
-        // { key: "status", label: "Status", sortable: true },
+        { key: "dc", label: "DC", sortable: false },
+        { key: "date", label: "Date", sortable: false },
+        { key: "unitsSold", label: "Sold", sortable: false },
+        { key: "unitsScheduled", label: "Scheduled", sortable: false },
+        { key: "unitsProduced", label: "Produced", sortable: false },
         { key: "action", label: "Action", sortable: false}
       ],
       sales: []

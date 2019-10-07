@@ -1,5 +1,6 @@
 package com.noovitec.mpb.dto;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 import lombok.AllArgsConstructor;
@@ -13,13 +14,13 @@ public class SaleDto {
 	
 	private Long id;
 	private String number;
-	private Date date;
+	private LocalDate date;
 	private String customerName;
 	private String dc;
 	private boolean selected;
 	private String label;
 	
-	public SaleDto(Long id, String number, Date date, String customerName, String dc, boolean selected) {
+	public SaleDto(Long id, String number, LocalDate date, String customerName, String dc, boolean selected) {
 		this.id = id;
 		this.number = number;
 		this.date = date;

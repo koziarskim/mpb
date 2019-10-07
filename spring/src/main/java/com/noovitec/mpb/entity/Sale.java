@@ -1,6 +1,7 @@
 package com.noovitec.mpb.entity;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Date;
@@ -38,11 +39,11 @@ public class Sale {
 	private LocalDateTime created;
 	@UpdateTimestamp
 	private LocalDateTime updated;
-	private Date date;
+	private LocalDate date;
 	private String number;
 	private String paymentTerms;
 	private String freightTerms;
-	private Date expectedDate;
+	private LocalDate expectedDate;
 	private BigDecimal totalPrice = BigDecimal.ZERO;
 	private boolean produced;
 
