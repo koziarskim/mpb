@@ -112,17 +112,30 @@
             </b-col>
         </b-row>
         <b-row>
+          <b-col cols="4">
+            <label class="top-label">Available Items:</label>
+            <b-select option-value="id" option-text="name" :list="availableItems" v-model="item" placeholder="Select Item"></b-select>
+          </b-col>
+          <b-col cols=2 v-if="item.id">
+              <label class="top-label">Units:</label>
+              <input class="form-control" type="number" min=0 v-model="icUnits"/>
+          </b-col>
+          <b-col style="padding-top: 30px" cols="1">
+            <b-button variant="link" @click="addItem()">(+)</b-button>
+          </b-col>
+        </b-row>
+        <b-row>
             <b-col>
-                <label class="top-label">Component is included in following Items:</label>
-                <b-table v-if="component.itemComponents.length>0"
-                    :sort-by.sync="sortBy"
-                    :sort-desc.sync="sortDesc"
-                    :items="component.itemComponents"
-                    :fields="columns">
-                    <template v-slot:cell(item.number)="row">
-                        <b-button size="sm" @click.stop="goToItem(row.item.item.id)" variant="link">{{row.item.item.number}}</b-button>
-                    </template>
-                </b-table>
+              <label class="top-label">Items using this Component:</label>
+              <b-table v-if="component.itemComponents.length>0"
+                  :sort-by.sync="sortBy"
+                  :sort-desc.sync="sortDesc"
+                  :items="component.itemComponents"
+                  :fields="columns">
+                  <template v-slot:cell(item.number)="row">
+                      <b-button size="sm" @click.stop="goToItem(row.item.item.id)" variant="link">{{row.item.item.number}}</b-button>
+                  </template>
+              </b-table>
             </b-col>
         </b-row>
     </b-container>
@@ -159,11 +172,14 @@ export default {
       availableSuppliers: [],
       availableCategories: [],
       availableItems: [],
+      item: {},
+      icUnits: 0,
       sortBy: "id",
       sortDesc: false,
       columns: [
         { key: "item.number", label: "Item #", sortable: false },
         { key: "item.name", label: "Name", sortable: false },
+        { key: "units", label: "Units", sortable: false },
         { key: "item.brand.name", label: "Brand", sortable: false },
       ]
     };
@@ -206,9 +222,27 @@ export default {
     }
   },
   methods: {
-	onUpload(file){
-		this.uploadedFile = file;
-	},
+    addItem(){
+      if (!this.item.id) {
+        return;
+      }
+      var item = this.component.itemComponents.find(it => it.item.id == this.item.id);
+      if (item) {
+        alert("Item already added")
+        return;
+      }
+      this.getItem(this.item.id).then(response =>{
+        this.component.itemComponents.push({
+            item: response.data,
+            units: this.icUnits,
+          })
+        this.item = {};
+        this.icUnits = 0;
+      })
+    },
+    onUpload(file){
+      this.uploadedFile = file;
+    },
     getComponentData(component_id) {
       http
         .get("/component/" + component_id)
@@ -241,6 +275,26 @@ export default {
         .get("/category/type/CMP")
         .then(response => {
           this.availableCategories = response.data;
+        })
+        .catch(e => {
+          console.log("API error: " + e);
+        });
+    },
+    getAvailableItems() {
+      http
+        .get("/item/kv")
+        .then(response => {
+          this.availableItems = response.data;
+        })
+        .catch(e => {
+          console.log("API error: " + e);
+        });
+    },
+    getItem(item_id) {
+      return http
+        .get("/item/"+item_id)
+        .then(response => {
+          return response;
         })
         .catch(e => {
           console.log("API error: " + e);
@@ -295,6 +349,7 @@ export default {
     }
     this.getAvailableSuppliers();
     this.getAvailableCategories();
+    this.getAvailableItems();
   },
 };
 </script>

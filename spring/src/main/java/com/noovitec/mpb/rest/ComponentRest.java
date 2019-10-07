@@ -32,9 +32,11 @@ import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.entity.Attachment;
 import com.noovitec.mpb.entity.Category;
 import com.noovitec.mpb.entity.Component;
+import com.noovitec.mpb.entity.ItemComponent;
 import com.noovitec.mpb.repo.AttachmentRepo;
 import com.noovitec.mpb.repo.CategoryRepo;
 import com.noovitec.mpb.repo.ComponentRepo;
+import com.noovitec.mpb.repo.ItemComponentRepo;
 
 @RestController
 @RequestMapping("/api")
@@ -46,6 +48,8 @@ class ComponentRest {
 	AttachmentRepo attachmentRepo;
 	@Autowired
 	CategoryRepo categoryRepo;
+	@Autowired
+	ItemComponentRepo itemComponentRepo;
 
 	private final Logger log = LoggerFactory.getLogger(ComponentRest.class);
 	private ComponentRepo componentRepo;
@@ -107,6 +111,12 @@ class ComponentRest {
 		if (component == null) {
 			component = new Component();
 		}
+		for(ItemComponent ic: component.getItemComponents()) {
+			//Save transient entity
+			if(ic.getId()==null) {
+				itemComponentRepo.save(ic);
+			}
+		}
 		Component result = componentRepo.save(component);
 		return ResponseEntity.ok().body(result);
 	}
@@ -116,6 +126,12 @@ class ComponentRest {
 	ResponseEntity<Component> postComponentAndAttachment(@RequestParam(value = "image", required = false) MultipartFile image,
 			@RequestParam("jsonComponent") String jsonComponent) throws URISyntaxException, JsonParseException, JsonMappingException, IOException {
 		Component component = objectMapper.readValue(jsonComponent, Component.class);
+		for(ItemComponent ic: component.getItemComponents()) {
+			//Save transient entity
+			if(ic.getId()==null) {
+				itemComponentRepo.save(ic);
+			}
+		}
 		if (image != null) {
 			Attachment attachment = new Attachment();
 			attachment.setData(image.getBytes());
