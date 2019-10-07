@@ -135,6 +135,10 @@
                   <template v-slot:cell(item.number)="row">
                       <b-button size="sm" @click.stop="goToItem(row.item.item.id)" variant="link">{{row.item.item.number}}</b-button>
                   </template>
+                  <template v-slot:cell(action)="row">
+                    <b-button size="sm" @click.stop="deleteItemComponent(row.item.id)">x</b-button>
+                  </template>
+
               </b-table>
             </b-col>
         </b-row>
@@ -181,6 +185,7 @@ export default {
         { key: "item.name", label: "Name", sortable: false },
         { key: "units", label: "Units", sortable: false },
         { key: "item.brand.name", label: "Brand", sortable: false },
+        { key: "action", label: "Action", sortable: false },
       ]
     };
   },
@@ -231,13 +236,17 @@ export default {
         alert("Item already added")
         return;
       }
-      this.getItem(this.item.id).then(response =>{
-        this.component.itemComponents.push({
-            item: response.data,
-            units: this.icUnits,
-          })
+      var ic = {
+        item: {id: this.item.id},
+        component: {id: this.component.id},
+        units: this.icUnits
+      }
+      http.post("/itemComponent", ic).then(response => {
         this.item = {};
         this.icUnits = 0;
+        this.getComponentData(this.component.id)
+      }).catch(e => {
+        console.log("API error: " + e);
       })
     },
     onUpload(file){
@@ -325,6 +334,15 @@ export default {
         })
         .catch(e => {
           console.log("API error: "+e);
+        });
+    },
+    deleteItemComponent(ic_id) {
+      var ic = this.component.itemComponents.find(ic => ic.id == ic_id);
+      http.delete("/itemComponent/"+ic_id).then(response => {
+            this.component.itemComponents.splice(ic, 1)
+        })
+        .catch(e => {
+          console.log("API error: " + e);
         });
     },
     saveAndClose() {
