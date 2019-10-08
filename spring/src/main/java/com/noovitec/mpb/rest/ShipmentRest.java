@@ -123,9 +123,6 @@ class ShipmentRest {
 			for(ShipmentItem si: shipment.getShipmentItems()) {
 				Long units = si.getSaleItem().getItem().getUnitsOnStack();
 				units = units - si.getUnits();
-				if(units < 0) {
-					throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "Cannot ship more that on stock");
-				}
 				itemRepo.updateUnitsOnStock(units, si.getSaleItem().getItem().getId());
 			}
 		}
