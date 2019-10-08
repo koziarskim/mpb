@@ -195,16 +195,19 @@ export default {
       if (new_value.id == old_value.id) {
         return;
       }
-      this.shippingAddresses = new_value.addresses;
-      if (
-        this.shipment.customer == null ||
-        this.shipment.customer.id != new_value.id
-      ) {
-        this.shippingAddress = {};
-        this.shipment.customer = new_value;
-        this.saveShipment();
-      }
-      this.getAvailableSales();
+      this.getCustomer(new_value.id).then(customer =>{
+        this.customer = customer;
+        this.shippingAddresses = customer.addresses;
+        if (
+          this.shipment.customer == null ||
+          this.shipment.customer.id != customer.id
+        ) {
+          this.shippingAddress = {};
+          this.shipment.customer = customer;
+          this.saveShipment();
+        }
+        this.getAvailableSales();
+      })
     },
     sale(new_value, old_value) {
       if (new_value.id != old_value.id) {
@@ -269,11 +272,18 @@ export default {
     },
     getAvailableCustomers() {
       return http
-        .get("/customer/")
+        .get("/customer/kv")
         .then(response => {
           this.availableCustomers = response.data;
         })
         .catch(e => {
+          console.log("API error: " + e);
+        });
+    },
+    getCustomer(customer_id) {
+      return http.get("/customer/"+customer_id).then(r => {
+          return r.data;
+        }).catch(e => {
           console.log("API error: " + e);
         });
     },
