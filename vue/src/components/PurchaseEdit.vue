@@ -137,10 +137,8 @@ export default {
         this.purchase.purchaseSales.push(ps);
       } else {
         ps = this.purchase.purchaseSales.find(ps => ps.sale.id == sale_id);
-        this.purchase.purchaseSales.splice(
-          this.purchase.purchaseSales.indexOf(ps),
-          1
-        );
+        var idx = this.purchase.purchaseSales.findIndex(ps => ps.sale.id == sale_id);
+        this.purchase.purchaseSales.splice(idx, 1);
         var component = null;
         ps.sale.saleItems.forEach(si => {
           si.item.itemComponents.forEach(ic => {
@@ -153,10 +151,8 @@ export default {
           });
         });
         if (component) {
-          this.purchase.purchaseComponents.splice(
-            this.purchase.purchaseComponents.indexOf(component),
-            1
-          );
+          var indx = this.purchase.purchaseComponents.findIndex(pc => pc.component.id == ic.component.id);
+          this.purchase.purchaseComponents.splice(indx, 1);
         }
       }
       this.savePurchase();
@@ -173,7 +169,9 @@ export default {
           pc => pc.component.id == com_id
         );
         this.purchase.purchaseComponents.splice(
-          this.purchase.purchaseComponents.indexOf(pc),
+          this.purchase.purchaseComponents.findIndex(
+          pc => pc.component.id == com_id
+        ),
           1
         );
       }

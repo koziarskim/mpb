@@ -337,9 +337,9 @@ export default {
         });
     },
     deleteItemComponent(ic_id) {
-      var ic = this.component.itemComponents.find(ic => ic.id == ic_id);
+      var idx = this.component.itemComponents.findIndex(ic => ic.id == ic_id);
       http.delete("/itemComponent/"+ic_id).then(response => {
-            this.component.itemComponents.splice(ic, 1)
+            this.component.itemComponents.splice(idx, 1)
         })
         .catch(e => {
           console.log("API error: " + e);

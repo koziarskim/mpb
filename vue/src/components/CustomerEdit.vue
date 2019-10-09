@@ -197,12 +197,9 @@ export default {
     	})
     },
     updateAddress: function(address) {
-      var existingAddress = this.customer.addresses.find(item => item.id == address.id);
-      if (existingAddress) {
-        this.customer.addresses.splice(
-          this.customer.addresses.indexOf(existingAddress),
-          1
-        );
+      var idx = this.customer.addresses.findIndex(item => item.id == address.id);
+      if (idx>-1) {
+        this.customer.addresses.splice(idx,1);
       }
       this.customer.addresses.push(address);
     },

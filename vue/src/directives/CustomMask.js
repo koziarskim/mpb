@@ -59,6 +59,7 @@ function initMask(el, val) {
     });
     let pos = { char: "", type: "pos" };
     arr.splice(get(this), 0, pos);
+    //TODO: Are you sure this works?
     let newVal = [];
     mainLoop: for (let i = 0; i < frame.length; i++) {
       for (let k = 0; k < frame[i].maxLen; k++) {

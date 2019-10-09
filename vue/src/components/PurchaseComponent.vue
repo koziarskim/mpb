@@ -197,10 +197,8 @@ export default {
         pc = this.purchase.purchaseComponents.find(
           pc => pc.component.id == component_id
         );
-        this.purchase.purchaseComponents.splice(
-          this.purchase.purchaseComponents.indexOf(pc),
-          1
-        );
+        var idx = this.purchase.purchaseComponents.findIndex(pc.component.id == component_id)
+        this.purchase.purchaseComponents.splice(idx, 1);
         dto.units = 0;
       }
     },

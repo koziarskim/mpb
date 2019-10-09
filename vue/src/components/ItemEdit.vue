@@ -155,7 +155,7 @@
                   <b-button variant="link" @click="goTo('/componentEdit/'+ic.component.id)">{{ic.component.number}}</b-button>
                   <label>{{" | "+ic.component.name+" | $"+ic.component.totalLandedCost}}</label>
                 </div>
-                <b-button size="sm" type="reset" variant="link" @click="removeItemComponent(ic.component.id)">(x)</b-button>
+                <b-button size="sm" type="reset" variant="link" @click="removeItemComponent(ic.id)">(x)</b-button>
               </div>
             </div>
           </b-col>
@@ -467,14 +467,9 @@ export default {
       this.saveAndUpload();
       httpUtils.goTo(view);
     },
-    removeItemComponent(c_id) {
-      console.log("remove comp");
-      for (var i = 0; i < this.item.itemComponents.length; i++) {
-        if (this.item.itemComponents[i].component.id == c_id) {
-          this.item.itemComponents.splice(i, 1);
-          break;
-        }
-      }
+    removeItemComponent(ic_id) {
+      var idx = this.item.itemComponents.findIndex(ic => ic.id == ic_id);
+      this.item.itemComponents.splice(idx, 1);
 	},
 	getImageUrl(){
 		if(this.item.attachment){
