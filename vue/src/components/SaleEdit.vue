@@ -264,8 +264,8 @@ export default {
         router.push('/itemComponentList/'+item_id);
     },
     deleteItem(item_id) {
-      var item = this.sale.saleItems.find(it => it.item.id == item_id);
-      this.sale.saleItems.splice(item, 1);
+      var idx = this.sale.saleItems.findIndex(it => it.item.id == item_id);
+      this.sale.saleItems.splice(idx, 1);
     }
   },
   mounted() {
