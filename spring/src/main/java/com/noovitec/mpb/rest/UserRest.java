@@ -77,7 +77,10 @@ class UserRest {
 		Cookie cookie = new Cookie("SID", sid);
 		cookie.setPath("/");
 		cookie.setMaxAge(3600); //1 hour.
+		cookie.setSecure(true);
+		cookie.setHttpOnly(true);
 		response.addCookie(cookie);
+//		response.setHeader("Set-Cookie", "SID="+sid+"; Path=/; Max-Age=3600; Secure; HttpOnly; SameSite=None");
 		return ResponseEntity.ok().body(result);
 	}
 
