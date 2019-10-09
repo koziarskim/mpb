@@ -265,7 +265,7 @@ export default {
     },
     deleteItem(item_id) {
       var item = this.sale.saleItems.find(it => it.item.id == item_id);
-      this.sale.saleItems.splice(this.sale.saleItems.find(item), 1);
+      this.sale.saleItems.splice(item, 1);
     }
   },
   mounted() {
