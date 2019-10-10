@@ -1,5 +1,5 @@
 <template>
-  <b-container fluid>
+  <b-container fluid @keyup.enter="login()">
     <b-row>
       <b-col cols="3" offset="4">
         <label class="top-label">Username:</label>
