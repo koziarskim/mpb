@@ -1,6 +1,6 @@
 <template>
   <b-container fluid>
-    <b-row style="padding-bottom: 4px;">
+    <b-row>
       <b-col cols=3>
         <span style="font-size: 18px; font-weight: bold">Daily Production Status:</span>
         <b-form-checkbox v-model="itemView">Item View</b-form-checkbox>
@@ -9,7 +9,6 @@
         <input class="form-control" type="date" v-model="date" placeholder="Date">
       </b-col>
     </b-row>
-    <br/>
     <b-row style="font-weight:bold; background-color:lightgray">
       <b-col cols=4>Item<br/> (Sale - Customer)</b-col>
       <b-col cols=1>Total<br/>Sold</b-col>

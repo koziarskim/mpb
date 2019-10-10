@@ -36,7 +36,7 @@ import router from "../router";
 export default {
   data() {
     return {
-      pageable: {totalElements: 100, currentPage: 1, perPage: 15, sortBy: 'name', sortDesc: false},
+      pageable: {totalElements: 100, currentPage: 1, perPage: 7, sortBy: 'name', sortDesc: false},
       searchKey: "",
       sortBy: "account",
       sortDesc: false,

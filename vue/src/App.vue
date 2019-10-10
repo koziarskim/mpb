@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <b-navbar toggleable="md" type="dark" variant="dark">
+    <b-navbar toggleable="md" type="dark" variant="dark" style="height:35px">
       <b-collapse is-nav id="nav_collapse">
         <b-navbar-nav v-if="!hideNavBar()">
           <b-nav-item v-on:click="goTo('/home')">Home</b-nav-item>
@@ -15,14 +15,16 @@
           <b-nav-item v-on:click="goTo('/schedule')">Schedule</b-nav-item>
 		      <b-nav-item v-on:click="goTo('/productionLineList')">Production</b-nav-item>
         </b-navbar-nav>
-        <b-navbar-nav class="ml-auto">
-          <span v-if="hideNavBar()" style="color: white; margin-right: 455px; padding-top: 7px;">Marketplace Brands</span>
-          <img v-if="hideNavBar()" style="width: 40px; height: 40px; margin-right: 650px" src="./assets/mpb-logo.jpg">
-          <b-nav-item-dropdown v-if="!hideNavBar()" right :text="securite.getUser().fullName">
+        <b-navbar-nav v-if="!hideNavBar()" style="margin:0px 0px 0px auto;">
+          <b-nav-item-dropdown right :text="securite.getUser().fullName">
             <b-dropdown-item @click="goTo('/Profile')">Profile</b-dropdown-item>
             <b-dropdown-item v-if="securite.hasRole(['ADMIN'])" @click="goTo('/users')">Manage Users</b-dropdown-item>
             <b-dropdown-item @click="logout()">Signout</b-dropdown-item>
           </b-nav-item-dropdown>
+        </b-navbar-nav>
+        <b-navbar-nav v-if="hideNavBar()">
+          <img style="height: 37px; margin-top: 5px" src="./assets/mpb-logo.png">
+          <span style="color: #d2cdcd; padding: 7px 20px; font-size: 20px">Marketplace Brands</span>
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
@@ -91,7 +93,16 @@ export default {
 .center {
   margin: auto;
   width: 95%;
-  padding: 10px;
+  padding-top: 40px;
+}
+.container-fluid{
+  padding-left: 0px !important;
+  padding-right: 0px !important;
+}
+.navbar {
+  position: fixed !important;
+  z-index: 1000;
+  width: 100%;
 }
 .hr-text {
   margin-top: 0;

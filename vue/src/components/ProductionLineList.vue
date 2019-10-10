@@ -16,7 +16,7 @@
       </b-col>
     </b-row>
     <div v-if="scheduleEvents.length==0">No lines set for this date</div>
-    <b-table v-if="scheduleEvents.length>0" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="scheduleEvents" :fields="fields">
+    <b-table v-if="scheduleEvents.length>0" :sticky-header="browserHeight()" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="scheduleEvents" :fields="fields">
       <template v-slot:cell(line.number)="row">
         <b-button size="sm" @click.stop="goToProductionLine(row.item.id)" variant="link">{{row.item.line.number}}</b-button>
       </template>
@@ -72,14 +72,14 @@ export default {
       sortBy: "line.number",
       sortDesc: false,
       fields: [
-        { key: "line.number", label: "Line", sortable: true },
-		    { key: "item", label: "Item (Sale & Customer)", sortable: true },
+        { key: "line.number", label: "Line", sortable: false },
+		    { key: "item", label: "Item (Sale & Customer)", sortable: false },
 		    { key: "saleItem.units", label: "Sold", sortable: true },
 		    { key: "unitsScheduled", label: "Scheduled", sortable: true },
 		    { key: "totalProduced", label: "Produced", sortable: true },
         { key: "unitsPending", label: "Still To Make", sortable: true },
         { key: "totalTime", label: "Total Time", sortable: true },
-        { key: "action", label: "Action", sortable: true },
+        { key: "action", label: "Action", sortable: false },
     ],
     schedule_id: null,
     scheduleEvents: [],
@@ -109,6 +109,9 @@ export default {
     }
   },
   methods: {
+    browserHeight(){
+      return +window.innerHeight - 150 +"px";
+    },
     editScheduleEvent(se){
       if(!securite.hasRole(['SUPER_USER', 'PROD_ADMIN'])){
         alert("You don't have permission for this operation");
