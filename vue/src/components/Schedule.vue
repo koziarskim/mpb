@@ -1,7 +1,7 @@
 <template>
   <b-container fluid>
-        <a href="#" @click="previousDays()">Previous 7 days</a> |
-        <a href="#" @click="nextDays()">Next 7 days</a>
+        <b-button type="reset" size="sm" @click="previousDays()"><< Previous week</b-button> o 
+        <b-button type="reset" size="sm" @click="nextDays()">Next week >></b-button>
         <b-row class="n-row" style="border-top: 1px solid black;">
           <div class="n-cell" style="width:7%">Date</div>
           <div class="n-cell" v-for="line in numberOfLines" :key="line">
@@ -14,9 +14,9 @@
           <span>{{formatDate(s.date)}}</span>
           <a style="padding-left: 15%" href="#" @click="newSchedule(s)">(+)</a>
         </div>
-        <div class="n-cell" v-for="i in 8" :key="i">
-          <div v-for="se in getScheduleEventsByLine(i, s.lines)" :key="se.id" style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
-            <a href="#" @click="editSchedule(se.id)">{{se.itemName}}</a>
+        <div class="n-cell" style="margin-top: 3px; margin-bottom: 3px;" v-for="i in 8" :key="i">
+          <div v-for="se in getScheduleEventsByLine(i, s.lines)" :key="se.id" style="margin-top: -8px; margin-bottom: -8px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
+            <a href="#" @click="editSchedule(se.id)" :title="se.itemName" style="font-size: 15px; ">{{se.itemName}}</a>
           </div>
         </div>
       </b-row>

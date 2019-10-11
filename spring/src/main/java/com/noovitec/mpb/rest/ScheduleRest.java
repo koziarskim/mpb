@@ -123,7 +123,7 @@ class ScheduleRest {
 				}
 				EventDto eventDto = new EventDto();
 				eventDto.setId(se.getId());
-				eventDto.setItemName(se.getSaleItem().getItem().getName());
+				eventDto.setItemName(se.getSaleItem().getItem().getName()+" - "+se.getSaleItem().getSale().getCustomer().getName());
 				lineDto.getEvents().add(eventDto);
 			}
 			scheduleDtos.add(scheduleDto);
