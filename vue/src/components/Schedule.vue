@@ -1,7 +1,7 @@
 <template>
   <b-container fluid>
-        <b-button type="reset" size="sm" @click="previousDays()"><< Previous week</b-button> o 
-        <b-button type="reset" size="sm" @click="nextDays()">Next week >></b-button>
+        <b-button type="reset" size="sm" @click="previousDays()">&#x22D8; Previous week</b-button> &#x22C7; 
+        <b-button type="reset" size="sm" @click="nextDays()">Next week &#x22D9;</b-button>
         <b-row class="n-row" style="border-top: 1px solid black;">
           <div class="n-cell" style="width:7%">Date</div>
           <div class="n-cell" v-for="line in numberOfLines" :key="line">
