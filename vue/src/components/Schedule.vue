@@ -1,27 +1,25 @@
 <template>
   <b-container fluid>
-    <div class="d-flex justify-content-between align-items-center">
-    </div>
-    <b-row class="n-row" style="border-top: 1px solid black;">
-      <div class="n-cell" style="width:7%">Date</div>
-      <div class="n-cell" v-for="line in numberOfLines" :key="line">
-        <div>Line {{line}}</div>
-      </div>
-    </b-row>
-    <b-row class="n-row" style="min-height: 75px" v-for="s in schedules" :key="s.date">
-      <div class="n-cell" style="width: 7%;">
-        <div>{{dayOfWeek(s.date)}}</div>
-        <span>{{formatDate(s.date)}}</span>
-        <a style="padding-left: 15%" href="#" @click="newSchedule(s)">(+)</a>
-      </div>
-      <div class="n-cell" v-for="line in numberOfLines" :key="line">
-        <div v-for="se in getScheduleEventsByLine(line, s.scheduleEvents)" :key="se.id" style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
-          <a href="#" @click="editSchedule(s, se)">{{se.saleItem.item.name}}:{{se.saleItem.sale?se.saleItem.sale.customer.name:''}}</a>
+        <a href="#" @click="previousDays()">Previous 7 days</a> |
+        <a href="#" @click="nextDays()">Next 7 days</a>
+        <b-row class="n-row" style="border-top: 1px solid black;">
+          <div class="n-cell" style="width:7%">Date</div>
+          <div class="n-cell" v-for="line in numberOfLines" :key="line">
+            <div>Line {{line}}</div>
+          </div>
+        </b-row>
+      <b-row class="n-row" style="min-height: 75px" v-for="s in schedules" :key="s.id">
+        <div class="n-cell" style="width: 7%;">
+          <div>{{dayOfWeek(s.date)}}</div>
+          <span>{{formatDate(s.date)}}</span>
+          <a style="padding-left: 15%" href="#" @click="newSchedule(s)">(+)</a>
         </div>
-      </div>
-    </b-row>
-    <a href="#" @click="previousDays()">Previous 7 days</a> |
-    <a href="#" @click="nextDays()">Next 7 days</a>
+        <div class="n-cell" v-for="i in 8" :key="i">
+          <div v-for="se in getScheduleEventsByLine(i, s.lines)" :key="se.id" style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
+            <a href="#" @click="editSchedule(se.id)">{{se.itemName}}</a>
+          </div>
+        </div>
+      </b-row>
     <div v-if="scheduleModalVisible">
       <schedule-modal v-on:closeModal="closeScheduleModal()" :schedule="schedule" :scheduleEvent="scheduleEvent"></schedule-modal>
     </div>
@@ -38,7 +36,7 @@ export default {
       numberOfLines: 8,
       scheduleEvent: { schedule:{}, unitsScheduled: 0 },
       schedule: {},
-      schedules: [{ id: 1 }],
+      schedules: [],
       scheduleModalVisible: false,
       itemDtos: [],
       scheduleDate: moment()
@@ -49,26 +47,46 @@ export default {
   computed: {},
   watch: {},
   methods: {
-    getSchedules() {
-      http
-        .get("/schedule/date/" + this.scheduleDate)
-        .then(response => {
-            this.schedules = response.data;
-        })
-        .catch(e => {
+    getSchedules(){
+      http.get("/schedule/date/" + this.scheduleDate).then(response => {
+          this.schedules = [];
+          this.schedules.push(this.getScheduleByDate(response.data, this.scheduleDate));
+          this.schedules.push(this.getScheduleByDate(response.data, moment(this.scheduleDate, "YYYY-MM-DD").add(1, 'days').format("YYYY-MM-DD")));
+          this.schedules.push(this.getScheduleByDate(response.data, moment(this.scheduleDate, "YYYY-MM-DD").add(2, 'days').format("YYYY-MM-DD")));
+          this.schedules.push(this.getScheduleByDate(response.data, moment(this.scheduleDate, "YYYY-MM-DD").add(3, 'days').format("YYYY-MM-DD")));
+          this.schedules.push(this.getScheduleByDate(response.data, moment(this.scheduleDate, "YYYY-MM-DD").add(4, 'days').format("YYYY-MM-DD")));
+          this.schedules.push(this.getScheduleByDate(response.data, moment(this.scheduleDate, "YYYY-MM-DD").add(5, 'days').format("YYYY-MM-DD")));
+          this.schedules.push(this.getScheduleByDate(response.data, moment(this.scheduleDate, "YYYY-MM-DD").add(6, 'days').format("YYYY-MM-DD")));
+        }).catch(e => {
           console.log("API error: " + e);
         });
     },
-    getScheduleEventsByLine(lineNumber, scheduleEvents) {
-      var lineScheduleEvents = [];
-      if (scheduleEvents) {
-        scheduleEvents.forEach(scheduleEvent => {
-          if (scheduleEvent.line.number == lineNumber) {
-            lineScheduleEvents.push(scheduleEvent);
-          }
-        });
+    getScheduleEvent(se_id){
+      return http.get("/scheduleEvent/" + se_id).then(response => {
+        return response.data;
+      }).catch(e => {
+        console.log("API error: " + e);
+      });
+    },
+    getScheduleByDate(schedules, date){
+      var schedule = schedules.find(s => s.date == date);
+      if(!schedule){
+        schedule = {
+          id: null,
+          date: date
+        }
       }
-      return lineScheduleEvents;
+      return schedule;
+    },
+    getScheduleEventsByLine(lineNumber, lines) {
+      var scheduleEvents = [];
+      if (lines) {
+        var line = lines.find(line => line.number == lineNumber);
+        if(line){
+          scheduleEvents = line.events;
+        }
+      }
+      return scheduleEvents;
     },
     newSchedule(schedule) {
       if (!schedule.id) {
@@ -82,10 +100,12 @@ export default {
         this.scheduleModalVisible = true;
       }
     },
-    editSchedule(schedule, scheduleEvent) {
-      this.schedule = schedule;
-      this.scheduleEvent = scheduleEvent;
-      this.scheduleModalVisible = true;
+    editSchedule(se_id) {
+      this.getScheduleEvent(se_id).then(se => {
+        this.schedule = se.schedule;
+        this.scheduleEvent = se;
+        this.scheduleModalVisible = true;
+      })
     },
     validateModal() {
       if (

@@ -24,7 +24,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.noovitec.mpb.dto.EventDto;
 import com.noovitec.mpb.dto.ItemAvailabilityDto;
+import com.noovitec.mpb.dto.LineDto;
+import com.noovitec.mpb.dto.ScheduleDto;
 import com.noovitec.mpb.dto.projection.ItemAvailabilityProjection;
 import com.noovitec.mpb.entity.Schedule;
 import com.noovitec.mpb.entity.ScheduleEvent;
@@ -58,8 +61,8 @@ class ScheduleRest {
 		return null;
 	}
 	
-	@GetMapping("/schedule/date/{date}")
-	Collection<Schedule> findByDate(@PathVariable(name = "date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
+	@GetMapping("/_schedule/date/{date}")
+	Collection<Schedule> _findByDate(@PathVariable(name = "date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
 		int days = 6;
 		LocalDate dateTo = date.plusDays(days);
 		Collection<Schedule> schedules = scheduleRepo.findByRange(date, dateTo);
@@ -98,6 +101,35 @@ class ScheduleRest {
 		}
 		// Convert to List and sort.
 		List<Schedule> list = new ArrayList<Schedule>(result);
+		list.sort(Comparator.comparing(o -> o.getDate()));
+		return list;
+	}
+
+	@GetMapping("/schedule/date/{date}")
+	Collection<ScheduleDto> findByDate(@PathVariable(name = "date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
+		LocalDate dateTo = date.plusDays(6);
+		Collection<Schedule> schedules = scheduleRepo.findByRange(date, dateTo);
+		List<ScheduleDto> scheduleDtos = new ArrayList<ScheduleDto>();
+		for (Schedule schedule : schedules) {
+			ScheduleDto scheduleDto = new ScheduleDto();
+			scheduleDto.setDate(schedule.getDate());
+			scheduleDto.setId(schedule.getId());
+			for(ScheduleEvent se: schedule.getScheduleEvents()) {
+				LineDto lineDto = scheduleDto.getLines().stream().filter(existingDto -> existingDto.getNumber() == se.getLine().getNumber()).findAny().orElse(null);
+				if(lineDto == null) {
+					lineDto = new LineDto();
+					lineDto.setNumber(se.getLine().getNumber());
+					scheduleDto.getLines().add(lineDto);
+				}
+				EventDto eventDto = new EventDto();
+				eventDto.setId(se.getId());
+				eventDto.setItemName(se.getSaleItem().getItem().getName());
+				lineDto.getEvents().add(eventDto);
+			}
+			scheduleDtos.add(scheduleDto);
+		}
+		// Convert to List and sort.
+		List<ScheduleDto> list = new ArrayList<ScheduleDto>(scheduleDtos);
 		list.sort(Comparator.comparing(o -> o.getDate()));
 		return list;
 	}
