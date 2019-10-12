@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
+import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.dto.SupplierDto;
 import com.noovitec.mpb.entity.Supplier;
 
@@ -26,5 +27,16 @@ public interface SupplierRepo extends PagingAndSortingRepository<Supplier, Long>
 			+ "left join sale.purchaseSales ps "
 			+ "where ps.purchase.id = :purchase_id")
 	public List<SupplierDto> findAllSuppliersForPurchase(@Param("purchase_id") Long purchase_id);
+
+	@Query("select distinct new com.noovitec.mpb.dto.KeyValueDto(s.id, s.name) "
+			+ "from Supplier s " 
+			+ "join s.components c "
+			+ "join c.itemComponents ic "
+			+ "join ic.item i "
+			+ "where i.id = :item_id")
+	public List<KeyValueDto> findSuppliersByItem(@Param("item_id") Long item_id);
+
+	@Query("select distinct new com.noovitec.mpb.dto.KeyValueDto(s.id, s.name) from Supplier s ")
+	public List<KeyValueDto> findAllDtos();
 
 }

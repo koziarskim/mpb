@@ -12,6 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
@@ -63,6 +64,10 @@ public class Purchase {
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "purchase_id")
 	private Collection<PurchaseSale> purchaseSales = new HashSet<PurchaseSale>();
+
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinTable(name = "purchase_sale_item", joinColumns = @JoinColumn(name = "purchase_id"), inverseJoinColumns = @JoinColumn(name = "sale_item_id"))
+	private Collection<SaleItem> saleItems = new HashSet<SaleItem>();
 
 	@JsonIgnoreProperties(value = { "purchase" }, allowSetters = true)
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)

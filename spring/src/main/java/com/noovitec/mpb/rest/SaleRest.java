@@ -100,6 +100,12 @@ class SaleRest {
 		return saleDtos;
 	}
 
+	@GetMapping("/saleItem/kv")
+	Collection<KeyValueDto> getAllKvs() {
+		Collection<KeyValueDto> saleDtos = saleRepo.findAllKvs();
+		return saleDtos;
+	}
+
 	@PostMapping("/sale")
 	ResponseEntity<Sale> post(@RequestBody(required = false) Sale sale) throws URISyntaxException {
 		if (sale == null) {

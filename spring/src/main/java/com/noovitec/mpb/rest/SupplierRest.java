@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.dto.SupplierDto;
 import com.noovitec.mpb.entity.Supplier;
 import com.noovitec.mpb.repo.SupplierRepo;
@@ -37,6 +38,11 @@ class SupplierRest {
 	@GetMapping("/supplier")
 	Collection<Supplier> getAll() {
 		return (Collection<Supplier>) supplierRepo.findAll();
+	}
+
+	@GetMapping("/supplier/kv")
+	Collection<KeyValueDto> getAllDtos() {
+		return (Collection<KeyValueDto>) supplierRepo.findAllDtos();
 	}
 
 	@GetMapping("/supplier/pageable")
@@ -60,6 +66,12 @@ class SupplierRest {
 	@GetMapping("/supplier/purchase/{purchase_id}")
 	Collection<SupplierDto> findAllSuppliersForPurchase(@PathVariable Long purchase_id) {
 		Collection<SupplierDto> result = supplierRepo.findAllSuppliersForPurchase(purchase_id);
+		return result;
+	}
+
+	@GetMapping("/supplier/item/{item_id}")
+	Collection<KeyValueDto> findSuppliersForItem(@PathVariable Long item_id) {
+		Collection<KeyValueDto> result = supplierRepo.findSuppliersByItem(item_id);
 		return result;
 	}
 

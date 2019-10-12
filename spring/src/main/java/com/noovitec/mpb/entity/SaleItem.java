@@ -5,11 +5,13 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
@@ -50,6 +52,10 @@ public class SaleItem {
 	@JoinColumn(name = "item_id", referencedColumnName = "id")
 	private Item item;
 	
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinTable(name = "purchase_sale_item", joinColumns = @JoinColumn(name = "sale_item_id"), inverseJoinColumns = @JoinColumn(name = "purchase_id"))
+	private Collection<Purchase> purchases = new HashSet<Purchase>();
+
 	@JsonIgnoreProperties(value={ "saleItem"}, allowSetters=true)
 	@OneToMany()
 	@JoinColumn(name = "sale_item_id")
