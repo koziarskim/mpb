@@ -13,29 +13,23 @@
                 </div>
             </b-col>
         </b-row>
-        <div v-if="items.length==0">Not found any components...</div>
-        <b-table v-if="items.length>0"
-                :items="items"
-                :fields="fields"
-                no-local-sorting @sort-changed="sorted">
-                <template v-slot:cell(number)="row">
-                    <b-button size="sm" variant="link" @click.stop="updateItem(row.item.id)">{{row.item.number}}</b-button>
-                </template>
-                <template v-slot:cell(unitsOnStack)="row">
-                    <b-button size="sm" variant="link" @click.stop="gotToItemComponentList(row.item.id)">{{row.item.unitsOnStack}}</b-button>
-                </template>
-                <template v-slot:cell(unitsSold)="row">
-                    <b-button size="sm" variant="link" @click.stop="goToItemSaleList(row.item.id)">{{row.item.unitsSold}}</b-button>
-                </template>
-                <template v-slot:cell(unitsScheduled)="row">
-                    <b-button size="sm" variant="link" @click.stop="goToItemScheduleList(row.item.id)">{{row.item.unitsScheduled}}</b-button>
-                </template>
-                <template v-slot:cell(unitsProduced)="row">
-                    <b-button size="sm" variant="link" @click.stop="goToItemScheduleList(row.item.id)">{{row.item.unitsProduced}}</b-button>
-                </template>
-                <template v-slot:cell(action)="row">
-                    <b-button size="sm" @click.stop="deleteItem(row.item.id)">x</b-button>
-                </template>
+        <b-table :items="items" :fields="fields" no-local-sorting @sort-changed="sorted">
+          <template v-slot:cell(name)="row">
+              <b-button size="sm" variant="link" @click.stop="updateItem(row.item.id)">{{row.item.name}}</b-button>
+          </template>
+          <template v-slot:cell(unitsSold)="row">
+              <b-button size="sm" variant="link" @click.stop="goToItemSaleList(row.item.id)">{{row.item.unitsSold}}</b-button>
+          </template>
+          <template v-slot:cell(unitsScheduled)="row">
+              <b-button size="sm" variant="link" @click.stop="goToItemScheduleList(row.item.id)">{{row.item.unitsScheduled}} / {{row.item.unitsProduced}}</b-button>
+          </template>
+          <template v-slot:cell(unitsShipped)="row">
+              <b-button size="sm" variant="link" @click.stop="goToItemShippedList(row.item.id)">{{row.item.unitsShipped}}</b-button>
+          </template>
+          <template v-slot:cell(action)="row">
+              <b-button size="sm" @click.stop="gotToInventory(row.item.id)">view</b-button>
+              <b-button size="sm" style="margin-left: 3px" @click.stop="deleteItem(row.item.id)">x</b-button>
+          </template>
         </b-table>
         <b-pagination v-model="pageable.currentPage" :per-page="pageable.perPage" :total-rows="pageable.totalElements" @change="paginationChange"></b-pagination>
     </b-container>
@@ -50,15 +44,14 @@ export default {
       pageable: {totalElements: 100, currentPage: 1, perPage: 7, sortBy: 'name', sortDesc: false},
       searchKey: "",
       fields: [
-        { key: 'number', sortable: true, label: 'Item #'},
         { key: 'name', sortable: true, label: 'Name'},
         { key: 'brand', sortable: true, label: 'Brand'},
         { key: 'category', sortable: true, label: 'Category'},
         { key: 'unitsOnStack', sortable: false, label: 'Stock'},
         { key: 'unitsSold', sortable: false, label: 'Sold'},
-        { key: 'unitsScheduled', sortable: false, label: 'Scheduled'},
-        { key: 'unitsProduced', sortable: false, label: 'Produced'},
-        { key: 'action', sortable: false}
+        { key: 'unitsScheduled', sortable: false, label: 'Sched/Produced'},
+        { key: 'unitsShipped', sortable: false, label: 'Shipped'},
+        { key: 'action', sortable: false, label: 'Inventory'},
       ],
       items: [] //ItemListDto
     };
@@ -87,14 +80,15 @@ export default {
         });
     },
     deleteItem(item_id) {
-      http
-        .delete("/item/"+item_id)
-        .then(response => {
-          this.getItems();
-        })
-        .catch(e => {
-          console.log("Error post");
-        });
+      this.$bvModal.msgBoxConfirm('Are you sure you want to delete Item?').then(ok => {
+        if(ok){
+          http.delete("/item/"+item_id).then(response => {
+              this.getItems();
+            }).catch(e => {
+              console.log("Error post");
+            });
+          }
+      })
     },
     createNewItem(){
         http
@@ -109,7 +103,7 @@ export default {
     updateItem(item_id){
         router.push('./itemEdit/'+item_id);
     },
-    gotToItemComponentList(item_id){
+    gotToInventory(item_id){
         router.push('./itemComponentList/'+item_id);
     },
     goToItemSaleList(item_id){
@@ -117,6 +111,9 @@ export default {
     },
     goToItemScheduleList(item_id){
         router.push('./scheduleEventList/'+item_id);
+    },
+    goToItemShippedList(item_id){
+        // router.push('./scheduleEventList/'+item_id);
     }
   },
   mounted() {

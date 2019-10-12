@@ -97,20 +97,19 @@ export default {
       return component;
     },
     deleteComponent(component_id) {
-        this.$bvModal.msgBoxConfirm('Are you sure you want to delete Component?')
-            .then(value => {
-                if(value){
-                    var item = this.getItem(component_id);
-                    if (item && item.locked) {
-                        this.showAlert("Component is locked. It may be currently used by Item(s)");
-                        return;
-                    }
-                    http
-                        .delete("/component/" + component_id)
-                        .then(response => {this.getComponentsData();})
-                        .catch(e => {
-                        console.log("API Error: " + e);
-                        });
+      this.$bvModal.msgBoxConfirm('Are you sure you want to delete Component?').then(ok => {
+        if(ok){
+          var item = this.getItem(component_id);
+          if (item && item.locked) {
+              this.showAlert("Component is locked. It may be currently used by Item(s)");
+              return;
+          }
+          http
+              .delete("/component/" + component_id)
+              .then(response => {this.getComponentsData();})
+              .catch(e => {
+              console.log("API Error: " + e);
+              });
             }
         })
     },

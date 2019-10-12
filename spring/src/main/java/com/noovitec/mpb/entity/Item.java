@@ -131,7 +131,18 @@ public class Item {
 		}
 		return units;
 	}
+
+	@Transient
+	private Long unitsShipped = 0L;
 	
+	public Long getUnitsShipped() {
+		Long units = 0L;
+		for(SaleItem si : this.getSaleItems()) {
+			units += si.getUnitsShipped();
+		}
+		return units;
+	}
+
 	@Transient
 	private String label;
 

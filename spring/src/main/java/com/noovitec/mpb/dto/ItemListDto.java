@@ -18,6 +18,7 @@ public class ItemListDto {
 	private Long unitsSold = 0L;
 	private Long unitsScheduled = 0L;
 	private Long unitsProduced = 0L;
+	private Long unitsShipped = 0L;
 	
 	private boolean none; //Bypass default constructor;
 	
