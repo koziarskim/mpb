@@ -28,7 +28,9 @@
         <b-row>
           <b-col cols=6>
             <label class="top-label">Sales/S.O.:</label>
-            <div v-for="s in availableSales" v-bind:key="s.id">{{s.name}}</div>
+            <div v-for="s in availableSales" v-bind:key="s.id"><span>{{s.number}}</span> | 
+              <span>{{s.customerName}}</span> | <span>{{s.unitsSold}}</span> | <span>{{s.unitsProduced}}</span>
+            </div>
             <!-- <b-table style="overflow-x: scroll;" sort-by.sync="id" sort-desc.sync="false" :sticky-header="saleHeight()" :items="availableSales" :fields="saleColumns">
             </b-table> -->
           </b-col>
@@ -126,7 +128,7 @@ export default {
         });
     },
     getAvailableSales() {
-      var url = "/saleItem/kv";
+      var url = "/purchaseSaleDto";
       http.get(url).then(r => {
           this.availableSales = r.data;
         }).catch(e => {

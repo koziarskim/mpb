@@ -45,6 +45,9 @@ public interface SaleRepo extends JpaRepository<Sale, Long> {
 	@Query(value="select new com.noovitec.mpb.dto.KeyValueDto(si.id, si.sale.number) from SaleItem si ")
 	public List<KeyValueDto> findAllKvs();
 
+	@Query(value="select si from SaleItem si")
+	public List<SaleItem> findAllSaleItems();
+
 	@Query(value="select si "
 			+ "from SaleItem si "
 			+ "where si.id = :sale_item_id ")

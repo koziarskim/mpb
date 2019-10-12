@@ -1,6 +1,7 @@
 package com.noovitec.mpb.rest;
 
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.noovitec.mpb.dto.KeyValueDto;
+import com.noovitec.mpb.dto.PurchaseSaleDto;
 import com.noovitec.mpb.dto.SaleDto;
 import com.noovitec.mpb.dto.SaleListDto;
 import com.noovitec.mpb.entity.Sale;
@@ -104,6 +106,23 @@ class SaleRest {
 	Collection<KeyValueDto> getAllKvs() {
 		Collection<KeyValueDto> saleDtos = saleRepo.findAllKvs();
 		return saleDtos;
+	}
+
+	@GetMapping("/purchaseSaleDto")
+	Collection<PurchaseSaleDto> getPurchaseSaleDtos() {
+		Collection<PurchaseSaleDto> dtos = new ArrayList<PurchaseSaleDto>();
+		for(SaleItem si: saleRepo.findAllSaleItems()) {
+			PurchaseSaleDto dto = new PurchaseSaleDto();
+			dto.setNumber(si.getSale().getNumber());
+			dto.setCustomerName(si.getSale().getCustomer().getName());
+			dto.setUnitsSold(Long.valueOf(si.getUnits()));
+			dto.setUnitsProduced(si.getUnitsProduced());
+			if(dto.getUnitsSold().equals(dto.getUnitsProduced())) {
+				continue;
+			}
+			dtos.add(dto);
+		}
+		return dtos;
 	}
 
 	@PostMapping("/sale")
