@@ -1,5 +1,5 @@
 <template>
-  <b-container fluid>
+  <b-container fluid @click="hideAll()">
     <b-row>
       <b-col cols=2>
         <span style="text-align: left; font-size: 18px; font-weight: bold">Purchase Order:</span>
@@ -23,6 +23,7 @@
         <label class="top-label">Item:</label>
         <b-select option-value="id" option-text="name" :list="availableItems" v-model="item" placeholder="Pick Item"></b-select>
         <div v-for="item in items" v-bind:key="item.id">{{item.name}}</div>
+        <item-search :hideContent="visible"></item-search>
       </b-col>
       <b-col cols=10>
         <b-row>
@@ -54,10 +55,13 @@
 import http from "../http-common";
 import router from "../router";
 import moment from "moment";
+import vue from "vue";
+import ItemSearch from "./ItemSearch";
 
 export default {
   data() {
     return {
+      visible: false,
       purchase: {
         date: moment().utc().format("YYYY-MM-DD")
       },
@@ -85,6 +89,9 @@ export default {
       ],
     };
   },
+  components:{
+    'item-search': ItemSearch
+  },
   computed: {},
   watch: {
     item(new_value, old_value){
@@ -103,6 +110,10 @@ export default {
     }
   },
   methods: {
+    hideAll(){
+      console.log("Hide all")
+      this.visible = false;
+    },
     getPurchase(purchase_id) {
       http.get("/purchase/" + purchase_id).then(r => {
           this.purchase = r.data;

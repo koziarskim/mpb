@@ -65,9 +65,9 @@ public class Purchase {
 	@JoinColumn(name = "purchase_id")
 	private Collection<PurchaseSale> purchaseSales = new HashSet<PurchaseSale>();
 
-	@OneToMany(cascade = CascadeType.ALL)
-	@JoinTable(name = "purchase_sale_item", joinColumns = @JoinColumn(name = "purchase_id"), inverseJoinColumns = @JoinColumn(name = "sale_item_id"))
-	private Collection<SaleItem> saleItems = new HashSet<SaleItem>();
+//	@OneToMany(cascade = CascadeType.ALL)
+//	@JoinTable(name = "purchase_sale_item", joinColumns = @JoinColumn(name = "purchase_id"), inverseJoinColumns = @JoinColumn(name = "sale_item_id"))
+//	private Collection<SaleItem> saleItems = new HashSet<SaleItem>();
 
 	@JsonIgnoreProperties(value = { "purchase" }, allowSetters = true)
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)

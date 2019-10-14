@@ -52,9 +52,9 @@ public class SaleItem {
 	@JoinColumn(name = "item_id", referencedColumnName = "id")
 	private Item item;
 	
-	@OneToMany(cascade = CascadeType.ALL)
-	@JoinTable(name = "purchase_sale_item", joinColumns = @JoinColumn(name = "sale_item_id"), inverseJoinColumns = @JoinColumn(name = "purchase_id"))
-	private Collection<Purchase> purchases = new HashSet<Purchase>();
+//	@OneToMany(cascade = CascadeType.ALL)
+//	@JoinTable(name = "purchase_sale_item", joinColumns = @JoinColumn(name = "sale_item_id"), inverseJoinColumns = @JoinColumn(name = "purchase_id"))
+//	private Collection<Purchase> purchases = new HashSet<Purchase>();
 
 	@JsonIgnoreProperties(value={ "saleItem"}, allowSetters=true)
 	@OneToMany()
