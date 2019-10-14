@@ -5,7 +5,7 @@
         <span style="text-align: left; font-size: 18px; font-weight: bold">Purchase Order:</span>
       </b-col>
       <b-col cols=2>
-        <input class="form-control" type="text" v-model="purchase.number" placeholder="P.O. Number">
+        <input class="form-control" @click="showItems()" type="text" v-model="purchase.number" placeholder="P.O. Number">
       </b-col>
       <b-col cols=2>
         <input class="form-control" type="date" v-model="purchase.date" placeholder="Date">
@@ -23,7 +23,7 @@
         <label class="top-label">Item:</label>
         <b-select option-value="id" option-text="name" :list="availableItems" v-model="item" placeholder="Pick Item"></b-select>
         <div v-for="item in items" v-bind:key="item.id">{{item.name}}</div>
-        <item-search></item-search>
+        <item-search v-on:itemsUpdated="updateItems"></item-search>
       </b-col>
       <b-col cols=10>
         <b-row>
@@ -64,6 +64,7 @@ export default {
       purchase: {
         date: moment().utc().format("YYYY-MM-DD")
       },
+      selectedItems: {},
       availableItems: [],
       item: {},
       items: [],
@@ -109,6 +110,12 @@ export default {
     }
   },
   methods: {
+    showItems(){
+      console.log(this.selectedItems)
+    },
+    updateItems(items){
+      this.selectedItems = items;
+    },
     getPurchase(purchase_id) {
       http.get("/purchase/" + purchase_id).then(r => {
           this.purchase = r.data;

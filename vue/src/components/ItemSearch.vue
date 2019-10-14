@@ -17,7 +17,7 @@ import router from "../router";
 export default {
   name: "ItemSearch",
   props: {
-    scheduleEvent: Object,
+    selectedItems: Object,
     schedule: Object,
   },
   data() {
@@ -36,6 +36,7 @@ export default {
     getItems(){
       http.get("/item/kv").then(r => {
         this.items = r.data;
+        this.$emit("itemsUpdated", r.data)
       }).catch(e => {
         console.log("API error: " + e);
       });
