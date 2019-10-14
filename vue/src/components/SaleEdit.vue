@@ -70,8 +70,11 @@
       <b-col style="padding-top: 30px" cols="1">
         <b-button variant="link" @click="addItem()">(+)</b-button>
       </b-col>
-      <b-col cols=3 offset=1 style="padding-top: 44px; padding-left: 0px;">
-          <span>Total Price: ${{totalPrice}}</span>
+      <b-col cols=5 offset=1 style="padding-top: 44px; padding-left: 0px;">
+          <span style="font-weight: bold">Items #: </span>{{totalItems}},
+          <span style="font-weight: bold">Units: </span>{{totalUnits}},
+          <span style="font-weight: bold">Cases: </span>{{totalCases}},
+          <span style="font-weight: bold">Total: </span>${{totalPrice}}
       </b-col>
     </b-row>
     <b-row>
@@ -84,11 +87,17 @@
           <template v-slot:cell(components)="row">
             <b-button size="sm" variant="link" @click.stop="gotToItemComponentList(row.item.item.id)">View</b-button>
           </template>
+          <template v-slot:cell(cost)="row">
+            <span>${{row.item.item.totalCost}}</span>
+          </template>
           <template v-slot:cell(units)="row">
             <input class="form-control" style="width:100px" type="tel" v-model="row.item.units">
           </template>
+          <template v-slot:cell(cases)="row">
+            <span>{{getCases(row.item)}}</span>
+          </template>
           <template v-slot:cell(unitPrice)="row">
-            <input class="form-control" style="width:100px" type="tel" v-model="row.item.unitPrice">
+            $<input class="form-control" style="display: inline; width:100px" type="tel" v-model="row.item.unitPrice">
           </template>
           <template v-slot:cell(totalUnitPrice)="row">
             <span>${{row.item.totalUnitPrice = (+row.item.unitPrice * +row.item.units).toFixed(2)}}</span>
@@ -129,8 +138,9 @@ export default {
         { key: "components", label: "Intentory", sortable: false },
         { key: "unitsScheduled", label: "Scheduled", sortable: false },
         { key: "unitsProduced", label: "Produced", sortable: false },
-        { key: "item.totalCost", label: "Cost", sortable: false },
+        { key: "cost", label: "Cost", sortable: false },
         { key: "units", label: "Units", sortable: false },
+        { key: "cases", label: "Cases", sortable: false },
         { key: "unitPrice", label: "Unit Price", sortable: false },
         { key: "totalUnitPrice", label: "Total", sortable: false },
         { key: "action", label: "Action", sortable: false }
@@ -147,7 +157,30 @@ export default {
               price += +(si.totalUnitPrice?si.totalUnitPrice:0);
           })
           return price.toFixed(2);
-      }
+      },
+      totalItems(){
+          var items = 0;
+          this.sale.saleItems.forEach(si=> {
+              items ++;
+          })
+          return items;
+      },
+      totalUnits(){
+          var units = 0;
+          this.sale.saleItems.forEach(si=> {
+              units += +(si.units?si.units:0);
+          })
+          return units;
+      },
+      totalCases(){
+          var cases = 0;
+          this.sale.saleItems.forEach(si=> {
+            var units = si.units?si.units:0;
+            var casePack = si.item.casePack?si.item.casePack:0
+              cases += +units/+casePack.toFixed(0);
+          })
+          return cases;
+      },
   },
   watch: {
     shippingAddress(new_value, old_value) {
@@ -266,6 +299,9 @@ export default {
     deleteItem(item_id) {
       var idx = this.sale.saleItems.findIndex(it => it.item.id == item_id);
       this.sale.saleItems.splice(idx, 1);
+    },
+    getCases(si){
+      return (+si.units / +si.item.casePack).toFixed(0);
     }
   },
   mounted() {
