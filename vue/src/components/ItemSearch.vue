@@ -1,11 +1,8 @@
 <template>
-  <b-container fluid @focus="focusEvent()" @blur="blurEvent()">
+  <b-container fluid @click="show">
     <label class="top-label">Items:</label>
-    <input @click="show" class="form-control" type="tel" v-model="searchKey" placeholder="Pick Item">
-    <div v-if="visible" @mousedown="mouseDown()" class="itemSearchContent">
-      <div style="display: flex;">
-        <div>testing</div><b-button variant="success" @click="hide">Close</b-button>
-      </div>
+    <input class="form-control" type="tel" v-model="searchKey" placeholder="Pick Item">
+    <div v-if="visible" class="itemSearchContent">
       <div>testing akfdsj adsf asdkflj asdfkj asdlfj aldksjf asldkjf akdsjf alksdjf l</div>
       <div>testin adskj asdf asdkfj a a dfslkjasd lkajds fla lakdsjfl aklsdjff adksfj g</div>
       <div>testing</div>
@@ -66,14 +63,13 @@ export default {
   props: {
     scheduleEvent: Object,
     schedule: Object,
-    hideContent: Boolean,
   },
   data() {
     return {
-      isFocus: false,
+      firstClick: false,
       availableItems: [],
       searchKey: "",
-      visible: this.hideContent,
+      visible: false,
     };
   },
   computed: {
@@ -81,37 +77,19 @@ export default {
   watch: {
   },
   methods: {
-    focusEvent(){
-      this.isFocus = true;
-    },
-    blurEvent(){
-      this.isFocus = false;
-    },
-    mouseDown(){
-      console.log("Mouse down")
-    },
     show(){
+      this.firstClick = true;
       this.visible = true;
-      document.addEventListener('click',this.clickEvent);
-    },
-    clickEvent(){
-      console.log(this.isFocus)
-      if(!this.isFocus){
-        this.visible = false;
-        this.searchKey = "";
-        document.removeEventListener('click',this.clickEvent);
-      }
+      document.addEventListener("click", this.hide);
     },
     hide(){
-      if(!this.isFocus){
+      if(!this.firstClick){
         this.visible = false;
         this.searchKey = "";
-        document.removeEventListener('click',this.clickEvent);
+        document.removeEventListener("click", this.hide);
       }
+      this.firstClick = false;
     },
-    closeModal() {
-      this.$emit("closeModal");
-    }
   },
   mounted() {
   }
