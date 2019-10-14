@@ -35,7 +35,7 @@ export default {
   },
   methods: {
     getItems(){
-      http.get("/item/kv").then(r => {
+      http.get("/item/kv", { params: {name: this.searchKey}}).then(r => {
         r.data.forEach(item => {
           var foundItem = this.selectedItems.find(it => it.id==item.id && it.selected);
           item.selected = foundItem?true:false;
@@ -44,7 +44,6 @@ export default {
       }).catch(e => {
         console.log("API error: " + e);
       });
-      this.searchKey = "";
     },
     init(){
       this.getItems();

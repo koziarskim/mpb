@@ -87,8 +87,12 @@ class ItemRest {
 	}
 
 	@GetMapping("/item/kv")
-	Collection<KeyValueDto> getAllKeyValueDtos() {
-		return itemRepo.getAllKeyValueDtos();
+	Collection<KeyValueDto> getAllKeyValueDtos(@RequestParam(name = "name", required = false) String name) {
+		if(name==null) {
+			return itemRepo.getAllKeyValueDtos();
+		}else {
+			return itemRepo.getAllKeyValueDtos(name);
+		}
 	}
 
 	@GetMapping("/item/pageable")

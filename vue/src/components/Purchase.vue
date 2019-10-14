@@ -20,10 +20,8 @@
       <b-col cols=2>
         <label class="top-label">Supplier:</label>
         <b-select option-value="id" option-text="name" :list="availableSuppliers" v-model="supplier" placeholder="Pick Supplier"></b-select>
-        <label class="top-label">Item:</label>
-        <b-select option-value="id" option-text="name" :list="availableItems" v-model="item" placeholder="Pick Item"></b-select>
-        <div v-for="item in items" v-bind:key="item.id">{{item.name}}</div>
         <item-search :selected-items="selectedItems" v-on:itemsUpdated="updateItems"></item-search>
+        <div v-for="item in selectedItems" v-bind:key="item.id">{{item.name}}</div>
       </b-col>
       <b-col cols=10>
         <b-row>
