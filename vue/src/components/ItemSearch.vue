@@ -1,6 +1,6 @@
 <template>
   <b-container fluid @click="show">
-    <label class="top-label">Items:</label>
+    <label class="top-label">Items: <a href="#" @click="clearItems()">(x)</a></label>
     <input @keydown.enter="getItems()" class="form-control" type="tel" v-model="searchKey" placeholder="Pick Item">
     <div v-if="visible" class="itemSearchContent">
       <div v-for="item in items" v-bind:key="item.id">
@@ -19,22 +19,36 @@ export default {
   name: "ItemSearch",
   props: {
     selectedItems: Array,
-    supplierId: Object,
+    supplierId: Number,
   },
   data() {
     return {
       firstClick: false,
+      skipShow: false,
       items: [],
       searchKey: "",
       visible: false,
+      supplier_id: ""
     };
   },
   computed: {
   },
   watch: {
+    supplierId(new_value, old_value){
+      if(this.supplier_id != new_value){
+        this.items = [];
+        this.supplier_id = new_value;
+      }
+    }
   },
   methods: {
+    clearItems(){
+      this.items = [];
+      this.$emit("itemsUpdated", [])
+      this.skipShow = true;
+    },
     getItems(){
+      if(this.items.length == 0){
       http.get("/item/kv", { params: {itemName: this.searchKey, supplierId: this.supplierId}}).then(r => {
         r.data.forEach(item => {
           var foundItem = this.selectedItems.find(it => it.id==item.id && it.selected);
@@ -44,14 +58,17 @@ export default {
       }).catch(e => {
         console.log("API error: " + e);
       });
+      }
     },
     init(){
       this.getItems();
     },
     show(){
-      if(!this.visible){
-        this.init();
+      if(this.skipShow){
+        this.skipShow = false;
+        return;
       }
+      this.getItems();
       this.firstClick = true;
       this.visible = true;
       document.addEventListener("click", this.hide);

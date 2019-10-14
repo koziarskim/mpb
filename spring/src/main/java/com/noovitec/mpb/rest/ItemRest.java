@@ -92,8 +92,8 @@ class ItemRest {
 	}
 
 	@GetMapping("/item/kv")
-	Collection<KeyValueDto> getAllKeyValueDtos(@RequestParam(name = "itemName", required = false) String itemName, @RequestParam(name = "supplierId", required = false) String supplierId) {
-		return itemRepo.findFiltered(itemName);
+	Collection<KeyValueDto> getAllKeyValueDtos(@RequestParam(name = "itemName", required = false) String itemName, @RequestParam(name = "supplierId", required = false) Long supplierId) {
+		return itemRepo.findFiltered(itemName, supplierId);
 	}
 
 	@GetMapping("/item/pageable")

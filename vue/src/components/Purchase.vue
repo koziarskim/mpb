@@ -94,16 +94,17 @@ export default {
   watch: {
     item(new_value, old_value){
       if(new_value && new_value.id){
-        this.getAvailableSuppliers();
-        this.getAvailableSales();
-        this.getAvailableComponents();
+        // this.getAvailableSuppliers();
+        // this.getAvailableSales();
+        // this.getAvailableComponents();
       }
     },
     supplier(new_value, old_value){
       if(new_value && new_value.id){
-        this.getAvailableItems();
-        this.getAvailableSales();
-        this.getAvailableComponents();
+        this.selectedItems = [];
+        // this.getAvailableItems();
+        // this.getAvailableSales();
+        // this.getAvailableComponents();
       }
     }
   },

@@ -6,6 +6,6 @@ import com.noovitec.mpb.dto.KeyValueDto;
 
 public interface ItemRepoCustom {
 
-	public List<KeyValueDto> findFiltered(String itemName);
+	public List<KeyValueDto> findFiltered(String itemName, Long supplierId);
 
 }
