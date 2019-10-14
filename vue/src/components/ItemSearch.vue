@@ -4,6 +4,7 @@
     <input @keydown.enter="getItems()" class="form-control" type="tel" v-model="searchKey" placeholder="Pick Item">
     <div v-if="visible" class="itemSearchContent">
       <div v-for="item in items" v-bind:key="item.id">
+        <input type="checkbox" v-model="item.selected">
         <span>{{item.name}}</span>
       </div>
     </div>
@@ -17,7 +18,7 @@ import router from "../router";
 export default {
   name: "ItemSearch",
   props: {
-    selectedItems: Object,
+    selectedItems: Array,
     schedule: Object,
   },
   data() {
@@ -35,8 +36,11 @@ export default {
   methods: {
     getItems(){
       http.get("/item/kv").then(r => {
+        r.data.forEach(item => {
+          var foundItem = this.selectedItems.find(it => it.id==item.id && it.selected);
+          item.selected = foundItem?true:false;
+        })
         this.items = r.data;
-        this.$emit("itemsUpdated", r.data)
       }).catch(e => {
         console.log("API error: " + e);
       });
@@ -58,10 +62,14 @@ export default {
         this.visible = false;
         this.searchKey = "";
         document.removeEventListener("click", this.hide);
+        this.updateSelected();
       }
       this.firstClick = false;
-      this.items = [];
     },
+    updateSelected(){
+      var selectedItems = this.items.filter(item => item.selected == true);
+      this.$emit("itemsUpdated", selectedItems)
+    }
   },
   mounted() {
   }

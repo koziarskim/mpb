@@ -23,7 +23,7 @@
         <label class="top-label">Item:</label>
         <b-select option-value="id" option-text="name" :list="availableItems" v-model="item" placeholder="Pick Item"></b-select>
         <div v-for="item in items" v-bind:key="item.id">{{item.name}}</div>
-        <item-search v-on:itemsUpdated="updateItems"></item-search>
+        <item-search :selected-items="selectedItems" v-on:itemsUpdated="updateItems"></item-search>
       </b-col>
       <b-col cols=10>
         <b-row>
@@ -64,7 +64,7 @@ export default {
       purchase: {
         date: moment().utc().format("YYYY-MM-DD")
       },
-      selectedItems: {},
+      selectedItems: [],
       availableItems: [],
       item: {},
       items: [],
