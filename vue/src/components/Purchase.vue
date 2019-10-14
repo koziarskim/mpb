@@ -19,7 +19,9 @@
     <b-row style="font-size: 10px;">
       <b-col cols=2>
         <label class="top-label">Supplier:</label>
-        <b-select option-value="id" option-text="name" :list="availableSuppliers" v-model="supplier" placeholder="Pick Supplier"></b-select>
+        <div @click="getAvailableSuppliers()">
+          <b-select option-value="id" option-text="name" :list="availableSuppliers" v-model="supplier" placeholder="Pick Supplier"></b-select>
+        </div>
         <item-search :supplier-id="supplier.id" :selected-items="selectedItems" v-on:itemsUpdated="updateItems"></item-search>
         <div v-for="item in selectedItems" v-bind:key="item.id">{{item.name}}</div>
       </b-col>
@@ -109,8 +111,12 @@ export default {
     }
   },
   methods: {
+    test(){
+      console.log("Test")
+    },
     updateItems(items){
       this.selectedItems = items;
+      this.availableSuppliers = [];
     },
     getPurchase(purchase_id) {
       http.get("/purchase/" + purchase_id).then(r => {
@@ -128,13 +134,15 @@ export default {
         });
     },
     getAvailableSuppliers() {
-      this.availableSuppliers = [];
-      var url = "/supplier/kv";
-      http.get(url).then(r => {
-          this.availableSuppliers = r.data;
-        }).catch(e => {
-          console.log("API error: " + e);
-        });
+      if(this.availableSuppliers.length == 0){
+        // TODO: Post to get suppliers based on selectedComponents if > 0, else selectedSales if > 0, else selectedItems if > 0, else getAll;
+        var url = "/supplier/kv";
+        http.get(url).then(r => {
+            this.availableSuppliers = r.data;
+          }).catch(e => {
+            console.log("API error: " + e);
+          });
+      }
     },
     getAvailableSales() {
       var url = "/purchaseSaleDto";
