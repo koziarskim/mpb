@@ -5,7 +5,7 @@
         <span style="text-align: left; font-size: 18px; font-weight: bold">Purchase Order:</span>
       </b-col>
       <b-col cols=2>
-        <input class="form-control" @click="showItems()" type="text" v-model="purchase.number" placeholder="P.O. Number">
+        <input class="form-control" type="text" v-model="purchase.number" placeholder="P.O. Number">
       </b-col>
       <b-col cols=2>
         <input class="form-control" type="date" v-model="purchase.date" placeholder="Date">
@@ -20,7 +20,7 @@
       <b-col cols=2>
         <label class="top-label">Supplier:</label>
         <b-select option-value="id" option-text="name" :list="availableSuppliers" v-model="supplier" placeholder="Pick Supplier"></b-select>
-        <item-search :selected-items="selectedItems" v-on:itemsUpdated="updateItems"></item-search>
+        <item-search :supplier-id="supplier.id" :selected-items="selectedItems" v-on:itemsUpdated="updateItems"></item-search>
         <div v-for="item in selectedItems" v-bind:key="item.id">{{item.name}}</div>
       </b-col>
       <b-col cols=10>
@@ -108,9 +108,6 @@ export default {
     }
   },
   methods: {
-    showItems(){
-      console.log(this.selectedItems)
-    },
     updateItems(items){
       this.selectedItems = items;
     },
@@ -178,7 +175,7 @@ export default {
     if (purchase_id) {
       this.getPurchaseData(purchase_id);
     }
-    this.getAvailableItems();
+    // this.getAvailableItems();
     this.getAvailableSuppliers();
   }
 };

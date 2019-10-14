@@ -19,7 +19,7 @@ export default {
   name: "ItemSearch",
   props: {
     selectedItems: Array,
-    schedule: Object,
+    supplierId: Object,
   },
   data() {
     return {
@@ -35,7 +35,7 @@ export default {
   },
   methods: {
     getItems(){
-      http.get("/item/kv", { params: {name: this.searchKey}}).then(r => {
+      http.get("/item/kv", { params: {itemName: this.searchKey, supplierId: this.supplierId}}).then(r => {
         r.data.forEach(item => {
           var foundItem = this.selectedItems.find(it => it.id==item.id && it.selected);
           item.selected = foundItem?true:false;

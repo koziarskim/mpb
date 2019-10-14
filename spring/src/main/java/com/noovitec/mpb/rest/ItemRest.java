@@ -11,6 +11,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,6 +71,8 @@ class ItemRest {
 	ReceivingRepo receivingRepo;
 	@Autowired
 	ScheduleEventRepo scheduleEventRepo;
+	@Autowired
+	private EntityManager entityManager;
 
 	private final Logger log = LoggerFactory.getLogger(ItemRest.class);
 	private ItemRepo itemRepo;
@@ -87,12 +92,8 @@ class ItemRest {
 	}
 
 	@GetMapping("/item/kv")
-	Collection<KeyValueDto> getAllKeyValueDtos(@RequestParam(name = "name", required = false) String name) {
-		if(name==null) {
-			return itemRepo.getAllKeyValueDtos();
-		}else {
-			return itemRepo.getAllKeyValueDtos(name);
-		}
+	Collection<KeyValueDto> getAllKeyValueDtos(@RequestParam(name = "itemName", required = false) String itemName, @RequestParam(name = "supplierId", required = false) String supplierId) {
+		return itemRepo.findFiltered(itemName);
 	}
 
 	@GetMapping("/item/pageable")
