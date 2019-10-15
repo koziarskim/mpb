@@ -7,12 +7,12 @@
       <b-button v-if="visibleSeasonMenu" class="btn-tab" size="sm" type="reset" variant="success" @click="closeSeasonMenu()">Close</b-button>
     </div>
     <div v-if="visibleSeasonMenu" class="menu-tab">
-        <div v-for="season in seasons" v-bind:key="season.id">
+        <div v-for="season in seasons" :key="season.id">
           <input type="checkbox" v-model="season.selected">
           <span>{{season.name}}</span>
       </div>
     </div>
-    <div v-for="season in selectedSeasons" v-bind:key="season.id">
+    <div v-for="season in selectedSeasons" :key="season.id">
       {{season.name}}
     </div>
     <br/>
@@ -24,12 +24,12 @@
       <b-button v-if="visibleCustomerMenu" class="btn-tab" size="sm" type="reset" variant="success" @click="closeCustomerMenu()">Close</b-button>
     </div>
     <div v-if="visibleCustomerMenu" class="menu-tab">
-        <div v-for="customer in customers" v-bind:key="customer.id">
+        <div v-for="customer in customers" :key="customer.id">
           <input type="checkbox" v-model="customer.selected">
           <span>{{customer.name}}</span>
       </div>
     </div>
-    <div v-for="customer in selectedCustomers" v-bind:key="customer.id">
+    <div v-for="customer in selectedCustomers" :key="customer.id">
       {{customer.name}}
     </div>
     <br/>
@@ -41,12 +41,12 @@
       <b-button v-if="visibleItemMenu" class="btn-tab" size="sm" type="reset" variant="success" @click="closeItemMenu()">Close</b-button>
     </div>
     <div v-if="visibleItemMenu" class="menu-tab">
-        <div v-for="item in items" v-bind:key="item.id">
+        <div v-for="item in items" :key="item.id">
           <input type="checkbox" v-model="item.selected">
           <span>{{item.name}}</span>
       </div>
     </div>
-    <div v-for="item in selectedItems" v-bind:key="item.id">
+    <div v-for="item in selectedItems" :key="item.id">
       {{item.name}}
     </div>
     <br/>
@@ -58,12 +58,12 @@
       <b-button v-if="visibleSaleMenu" class="btn-tab" size="sm" type="reset" variant="success" @click="closeSaleMenu()">Close</b-button>
     </div>
     <div v-if="visibleSaleMenu" class="menu-tab">
-        <div v-for="sale in sales" v-bind:key="sale.id">
+        <div v-for="sale in sales" :key="sale.id">
           <input type="checkbox" v-model="sale.selected">
           <span>{{sale.name}}</span>
       </div>
     </div>
-    <div v-for="sale in selectedSales" v-bind:key="sale.id">
+    <div v-for="sale in selectedSales" :key="sale.id">
       {{sale.name}}
     </div>
     <br/>
@@ -75,12 +75,12 @@
       <b-button v-if="visibleSupplierMenu" class="btn-tab" size="sm" type="reset" variant="success" @click="closeSupplierMenu()">Close</b-button>
     </div>
     <div v-if="visibleSupplierMenu" class="menu-tab">
-        <div v-for="supplier in suppliers" v-bind:key="supplier.id">
+        <div v-for="supplier in suppliers" :key="supplier.id">
           <input type="checkbox" v-model="supplier.selected">
           <span>{{supplier.name}}</span>
       </div>
     </div>
-    <div v-for="supplier in selectedSuppliers" v-bind:key="supplier.id">
+    <div v-for="supplier in selectedSuppliers" :key="supplier.id">
       {{supplier.name}}
     </div>
     <br/>
@@ -92,12 +92,12 @@
       <b-button v-if="visibleComponentMenu" class="btn-tab" size="sm" type="reset" variant="success" @click="closeComponentMenu()">Close</b-button>
     </div>
     <div v-if="visibleComponentMenu" class="menu-tab">
-        <div v-for="component in components" v-bind:key="component.id">
+        <div v-for="component in components" :key="component.id">
           <input type="checkbox" v-model="component.selected">
           <span>{{component.name}}</span>
       </div>
     </div>
-    <div v-for="component in selectedComponents" v-bind:key="component.id">
+    <div v-for="component in selectedComponents" :key="component.id">
       {{component.name}}
     </div>
     <br/>
@@ -179,9 +179,11 @@ export default {
     },
     clearSeasons(){
       this.searchDto.seasonName = "";
+      this.searchDto.seasons = [];
       this.seasons = [];
       this.selectedSeasons = [];
       this.closeSeasonMenu();
+      this.clearCustomers();
     },
     getSeasons(fresh){
       if(this.seasons.length == 0 || fresh){
@@ -211,9 +213,11 @@ export default {
     },
     clearCustomers(){
       this.searchDto.customerName = "";
+      this.searchDto.customers = [];
       this.customers = [];
       this.selectedCustomers = [];
       this.closeCustomerMenu();
+      this.clearItems();
     },
     getCustomers(fresh){
       if(this.customers.length == 0 || fresh){
@@ -243,9 +247,11 @@ export default {
     },
     clearItems(){
       this.searchDto.itemName = "";
+      this.searchDto.items = [];
       this.items = [];
       this.selectedItems = [];
       this.closeItemMenu();
+      this.clearSales();
     },
     getItems(fresh){
       if(this.items.length == 0 || fresh){
@@ -274,10 +280,12 @@ export default {
       this.searchDto.sales = this.selectedSales.map(it => it.id);
     },
     clearSales(){
-      this.searchDto.saleNumber = "";
+      this.searchDto.saleName = "";
+      this.searchDto.sales = [];
       this.sales = [];
       this.selectedSales = [];
       this.closeSaleMenu();
+      this.clearSuppliers();
     },
     getSales(fresh){
       if(this.sales.length == 0 || fresh){
@@ -307,9 +315,11 @@ export default {
     },
     clearSuppliers(){
       this.searchDto.supplierName = "";
+      this.searchDto.suppliers = [];
       this.suppliers = [];
       this.selectedSuppliers = [];
       this.closeSupplierMenu();
+      this.clearComponents();
     },
     getSuppliers(fresh){
       if(this.suppliers.length == 0 || fresh){
@@ -339,6 +349,7 @@ export default {
     },
     clearComponents(){
       this.searchDto.componentName = "";
+      this.searchDto.components = [];
       this.components = [];
       this.selectedComponents = [];
       this.closeComponentMenu();
