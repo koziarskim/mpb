@@ -20,7 +20,7 @@
     <!-- Customer -->
     <label class="top-label">Customers: <a href="#" @click="clearCustomers()">(x)</a></label>
     <div style="display: flex">
-      <input @keydown.enter="getCustomers(true)" @click="showCustomerMenu()" class="form-control search-width" type="tel" v-model="customerSearchKey" placeholder="Pick Customer">
+      <input @keydown.enter="getCustomers(true)" @click="showCustomerMenu()" class="form-control search-width" type="tel" v-model="searchDto.customerName" placeholder="Pick Customer">
       <b-button v-if="visibleCustomerMenu" class="btn-tab" size="sm" type="reset" variant="success" @click="closeCustomerMenu()">Close</b-button>
     </div>
     <div v-if="visibleCustomerMenu" class="menu-tab">
@@ -37,7 +37,7 @@
     <!-- Item -->
     <label class="top-label">Items: <a href="#" @click="clearItems()">(x)</a></label>
     <div style="display: flex">
-      <input @keydown.enter="getItems(true)" @click="showItemMenu()" class="form-control search-width" type="tel" v-model="itemSearchKey" placeholder="Pick Item">
+      <input @keydown.enter="getItems(true)" @click="showItemMenu()" class="form-control search-width" type="tel" v-model="searchDto.itemName" placeholder="Pick Item">
       <b-button v-if="visibleItemMenu" class="btn-tab" size="sm" type="reset" variant="success" @click="closeItemMenu()">Close</b-button>
     </div>
     <div v-if="visibleItemMenu" class="menu-tab">
@@ -54,7 +54,7 @@
     <!-- Sale -->
     <label class="top-label">Sales: <a href="#" @click="clearSales()">(x)</a></label>
     <div style="display: flex">
-      <input @keydown.enter="getSales(true)" @click="showSaleMenu()" class="form-control search-width" type="tel" v-model="saleSearchKey" placeholder="Pick Sale">
+      <input @keydown.enter="getSales(true)" @click="showSaleMenu()" class="form-control search-width" type="tel" v-model="searchDto.saleNumber" placeholder="Pick Sale">
       <b-button v-if="visibleSaleMenu" class="btn-tab" size="sm" type="reset" variant="success" @click="closeSaleMenu()">Close</b-button>
     </div>
     <div v-if="visibleSaleMenu" class="menu-tab">
@@ -71,7 +71,7 @@
     <!-- Supplier -->
     <label class="top-label">Suppliers: <a href="#" @click="clearSuppliers()">(x)</a></label>
     <div style="display: flex">
-      <input @keydown.enter="getSuppliers(true)" @click="showSupplierMenu()" class="form-control search-width" type="tel" v-model="supplierSearchKey" placeholder="Pick Supplier">
+      <input @keydown.enter="getSuppliers(true)" @click="showSupplierMenu()" class="form-control search-width" type="tel" v-model="searchDto.supplierName" placeholder="Pick Supplier">
       <b-button v-if="visibleSupplierMenu" class="btn-tab" size="sm" type="reset" variant="success" @click="closeSupplierMenu()">Close</b-button>
     </div>
     <div v-if="visibleSupplierMenu" class="menu-tab">
@@ -88,7 +88,7 @@
     <!-- Component -->
     <label class="top-label">Components: <a href="#" @click="clearComponents()">(x)</a></label>
     <div style="display: flex">
-      <input @keydown.enter="getComponents(true)" @click="showComponentMenu()" class="form-control search-width" type="tel" v-model="componentSearchKey" placeholder="Pick Component">
+      <input @keydown.enter="getComponents(true)" @click="showComponentMenu()" class="form-control search-width" type="tel" v-model="searchDto.componentName" placeholder="Pick Component">
       <b-button v-if="visibleComponentMenu" class="btn-tab" size="sm" type="reset" variant="success" @click="closeComponentMenu()">Close</b-button>
     </div>
     <div v-if="visibleComponentMenu" class="menu-tab">
@@ -136,27 +136,22 @@ export default {
       seasons: [],
       selectedSeasons: [],
 
-      customerSearchKey: "",
       visibleCustomerMenu: false,
       customers: [],
       selectedCustomers: [],
 
-      itemSearchKey: "",
       visibleItemMenu: false,
       items: [],
       selectedItems: [],
 
-      saleSearchKey: "",
       visibleSaleMenu: false,
       sales: [],
       selectedSales: [],
 
-      supplierSearchKey: "",
       visibleSupplierMenu: false,
       suppliers: [],
       selectedSuppliers: [],
 
-      componentSearchKey: "",
       visibleComponentMenu: false,
       components: [],
       selectedComponents: [],
@@ -213,14 +208,14 @@ export default {
       this.selectedCustomers = this.customers.filter(it => it.selected == true);
     },
     clearCustomers(){
-      this.customerSearchKey = "";
+      this.searchDto.customerName = "";
       this.customers = [];
       this.selectedCustomers = [];
       this.closeCustomerMenu();
     },
     getCustomers(fresh){
       if(this.customers.length == 0 || fresh){
-        return http.get("/search/customer/kv", { params: {customerName: this.customerSearchKey}}).then(r => {
+        return http.post("/search/customer/kv", this.searchDto).then(r => {
           r.data.forEach(customer => {
             var found = this.selectedCustomers.find(it => it.id==customer.id && it.selected);
             customer.selected = found?true:false;
@@ -244,14 +239,14 @@ export default {
       this.selectedItems = this.items.filter(it => it.selected == true);
     },
     clearItems(){
-      this.itemSearchKey = "";
+      this.searchDto.itemName = "";
       this.items = [];
       this.selectedItems = [];
       this.closeItemMenu();
     },
     getItems(fresh){
       if(this.items.length == 0 || fresh){
-        return http.get("/search/item/kv", { params: {itemName: this.itemSearchKey, supplierId: this.supplierId}}).then(r => {
+        return http.post("/search/item/kv", this.searchDto).then(r => {
           r.data.forEach(item => {
             var found = this.selectedItems.find(it => it.id==item.id && it.selected);
             item.selected = found?true:false;
@@ -275,14 +270,14 @@ export default {
       this.selectedSales = this.sales.filter(it => it.selected == true);
     },
     clearSales(){
-      this.saleSearchKey = "";
+      this.searchDto.saleNumber = "";
       this.sales = [];
       this.selectedSales = [];
       this.closeSaleMenu();
     },
     getSales(fresh){
       if(this.sales.length == 0 || fresh){
-        return http.get("/search/sale/kv", { params: {saleNumber: this.saleSearchKey}}).then(r => {
+        return http.post("/search/sale/kv", this.searchDto).then(r => {
           r.data.forEach(sale => {
             var found = this.selectedSales.find(it => it.id==sale.id && it.selected);
             sale.selected = found?true:false;
@@ -306,14 +301,14 @@ export default {
       this.selectedSuppliers = this.suppliers.filter(it => it.selected == true);
     },
     clearSuppliers(){
-      this.supplierSearchKey = "";
+      this.searchDto.supplierName = "";
       this.suppliers = [];
       this.selectedSuppliers = [];
       this.closeSupplierMenu();
     },
     getSuppliers(fresh){
       if(this.suppliers.length == 0 || fresh){
-        return http.get("/search/supplier/kv", { params: {supplierName: this.supplierSearchKey}}).then(r => {
+        return http.post("/search/supplier/kv", this.searchDto).then(r => {
           r.data.forEach(supplier => {
             var found = this.selectedSuppliers.find(it => it.id==supplier.id && it.selected);
             supplier.selected = found?true:false;
@@ -337,14 +332,14 @@ export default {
       this.selectedComponents = this.components.filter(it => it.selected == true);
     },
     clearComponents(){
-      this.componentSearchKey = "";
+      this.searchDto.componentName = "";
       this.components = [];
       this.selectedComponents = [];
       this.closeComponentMenu();
     },
     getComponents(fresh){
       if(this.components.length == 0 || fresh){
-        return http.get("/search/component/kv", { params: {componentName: this.componentSearchKey}}).then(r => {
+        return http.post("/search/component/kv", this.searchDto).then(r => {
           r.data.forEach(component => {
             var found = this.selectedComponents.find(it => it.id==component.id && it.selected);
             component.selected = found?true:false;
@@ -358,7 +353,7 @@ export default {
     },
 
     updateParent(){
-      this.$emit("componentsUpdated", [{id: 1, name: 'test1'}]);
+      this.$emit("componentsUpdated", this.selectedComponents);
     }
   },
   mounted() {

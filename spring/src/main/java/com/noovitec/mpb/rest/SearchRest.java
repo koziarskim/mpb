@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.noovitec.mpb.dto.KeyValueDto;
@@ -31,34 +30,34 @@ class SearchRest {
 	}
 
 	@PostMapping("/search/season/kv")
-	List<KeyValueDto> getAllSeasons(@RequestBody(required = false) SearchDto searchDto) {
+	List<KeyValueDto> getAllSeasons(@RequestBody SearchDto searchDto) {
 		List<KeyValueDto> results = searchRepo.findSeasons(searchDto);
 		return results;
 	}
 
-	@GetMapping("/search/customer/kv")
-	Collection<KeyValueDto> getAllCustomers(@RequestParam(name = "customerName", required = false) String customerName) {
-		return searchRepo.findCustomers(customerName);
+	@PostMapping("/search/customer/kv")
+	List<KeyValueDto> getAllCustomers(@RequestBody SearchDto searchDto) {
+		return searchRepo.findCustomers(searchDto);
 	}
 
-	@GetMapping("/search/item/kv")
-	Collection<KeyValueDto> getAllItems(@RequestParam(name = "itemName", required = false) String itemName, @RequestParam(name = "supplierId", required = false) Long supplierId) {
-		return searchRepo.findItems(itemName, supplierId);
+	@PostMapping("/search/item/kv")
+	List<KeyValueDto> getAllItems(@RequestBody SearchDto searchDto) {
+		return searchRepo.findItems(searchDto);
 	}
 
-	@GetMapping("/search/sale/kv")
-	Collection<KeyValueDto> getAllSales(@RequestParam(name = "saleNumber", required = false) String saleNumber) {
-		return searchRepo.findSales(saleNumber);
+	@PostMapping("/search/sale/kv")
+	List<KeyValueDto> getAllSales(@RequestBody SearchDto searchDto) {
+		return searchRepo.findSales(searchDto);
 	}
 
-	@GetMapping("/search/supplier/kv")
-	Collection<KeyValueDto> getAllSuppliers(@RequestParam(name = "supplierName", required = false) String supplierName) {
-		return searchRepo.findSuppliers(supplierName);
+	@PostMapping("/search/supplier/kv")
+	List<KeyValueDto> getAllSuppliers(@RequestBody SearchDto searchDto) {
+		return searchRepo.findSuppliers(searchDto);
 	}
 
-	@GetMapping("/search/component/kv")
-	Collection<KeyValueDto> getAllComponents(@RequestParam(name = "componentName", required = false) String componentName) {
-		return searchRepo.findComponents(componentName);
+	@PostMapping("/search/component/kv")
+	List<KeyValueDto> getAllComponents(@RequestBody SearchDto searchDto) {
+		return searchRepo.findComponents(searchDto);
 	}
 
 	/*

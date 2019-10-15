@@ -34,85 +34,85 @@ public class SearchRepoImpl implements SearchRepoCustom {
 	}
 
 	@Override
-	public List<KeyValueDto> findCustomers(String customerName) {
+	public List<KeyValueDto> findCustomers(SearchDto searchDto) {
 		String q = "select distinct new com.noovitec.mpb.dto.KeyValueDto(c.id, c.name) from Customer c ";
 		q += "where c.id is not null ";
-		if(customerName!=null) {
+		if(searchDto.getCustomerName()!=null) {
 			q += "and upper(c.name) like concat('%',upper(:customerName),'%')";
 		}
 		Query query = entityManager.createQuery(q);
-		if(customerName!=null) {
-			query.setParameter("customerName", customerName);
+		if(searchDto.getCustomerName()!=null) {
+			query.setParameter("customerName", searchDto.getCustomerName());
 		}
 		List<KeyValueDto> list = query.getResultList();
 		return list;
 	}
 
 	@Override
-	public List<KeyValueDto> findItems(String itemName, Long supplierId) {
+	public List<KeyValueDto> findItems(SearchDto searchDto) {
 		String q = "select distinct new com.noovitec.mpb.dto.KeyValueDto(i.id, i.name) from Item i ";
-		if(supplierId!=null) {
+		if(searchDto.getSuppliers().size()>0) {
 			q += "join ItemComponent ic on ic.item.id = i.id ";
 			q += "join Component c on ic.component.id = c.id ";
 		}
 		q += "where i.id is not null ";
-		if(itemName!=null) {
+		if(searchDto.getItemName()!=null) {
 			q += "and upper(i.name) like concat('%',upper(:itemName),'%')";
 		}
-		if(supplierId!=null) {
-			q += "and c.supplier.id = :supplierId";
+		if(searchDto.getSuppliers().size()>0) {
+			q += "and c.supplier.id in (:supplierIds)";
 		}
 		Query query = entityManager.createQuery(q);
-		if(itemName!=null) {
-			query.setParameter("itemName", itemName);
+		if(searchDto.getItemName()!=null) {
+			query.setParameter("itemName", searchDto.getItemName());
 		}
-		if(supplierId!=null) {
-			query.setParameter("supplierId", supplierId);
+		if(searchDto.getSuppliers().size()>0) {
+			query.setParameter("supplierIds", searchDto.getSuppliers());
 		}
 		List<KeyValueDto> list = query.getResultList();
 		return list;
 	}
 
 	@Override
-	public List<KeyValueDto> findComponents(String componentName) {
+	public List<KeyValueDto> findComponents(SearchDto searchDto) {
 		String q = "select distinct new com.noovitec.mpb.dto.KeyValueDto(c.id, c.name) from Component c ";
 		q += "where c.id is not null ";
-		if(componentName!=null) {
+		if(searchDto.getComponentName()!=null) {
 			q += "and upper(c.name) like concat('%',upper(:componentName),'%')";
 		}
 		Query query = entityManager.createQuery(q);
-		if(componentName!=null) {
-			query.setParameter("componentName", componentName);
+		if(searchDto.getComponentName()!=null) {
+			query.setParameter("componentName", searchDto.getComponentName());
 		}
 		List<KeyValueDto> list = query.getResultList();
 		return list;
 	}
 
 	@Override
-	public List<KeyValueDto> findSuppliers(String supplierName) {
+	public List<KeyValueDto> findSuppliers(SearchDto searchDto) {
 		String q = "select distinct new com.noovitec.mpb.dto.KeyValueDto(s.id, s.name) from Supplier s ";
 		q += "where s.id is not null ";
-		if(supplierName!=null) {
+		if(searchDto.getSupplierName()!=null) {
 			q += "and upper(s.name) like concat('%',upper(:supplierName),'%')";
 		}
 		Query query = entityManager.createQuery(q);
-		if(supplierName!=null) {
-			query.setParameter("supplierName", supplierName);
+		if(searchDto.getSupplierName()!=null) {
+			query.setParameter("supplierName", searchDto.getSupplierName());
 		}
 		List<KeyValueDto> list = query.getResultList();
 		return list;
 	}
 
 	@Override
-	public List<KeyValueDto> findSales(String saleNumber) {
+	public List<KeyValueDto> findSales(SearchDto searchDto) {
 		String q = "select distinct new com.noovitec.mpb.dto.KeyValueDto(s.id, s.number) from Sale s ";
 		q += "where s.id is not null ";
-		if(saleNumber!=null) {
+		if(searchDto.getSaleNumber()!=null) {
 			q += "and upper(s.number) like concat('%',upper(:saleNumber),'%')";
 		}
 		Query query = entityManager.createQuery(q);
-		if(saleNumber!=null) {
-			query.setParameter("saleNumber", saleNumber);
+		if(searchDto.getSaleNumber()!=null) {
+			query.setParameter("saleNumber", searchDto.getSaleNumber());
 		}
 		List<KeyValueDto> list = query.getResultList();
 		return list;
