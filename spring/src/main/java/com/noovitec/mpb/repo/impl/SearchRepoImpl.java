@@ -1,6 +1,7 @@
 package com.noovitec.mpb.repo.impl;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.dto.SearchDto;
+import com.noovitec.mpb.entity.Season;
 import com.noovitec.mpb.repo.interfaces.SearchRepoCustom;
 
 @Repository
@@ -35,14 +37,28 @@ public class SearchRepoImpl implements SearchRepoCustom {
 
 	@Override
 	public List<KeyValueDto> findCustomers(SearchDto searchDto) {
+		boolean customerName = searchDto.getCustomerName()!=null;
+		boolean seasons = searchDto.getSeasons().size()>0;
 		String q = "select distinct new com.noovitec.mpb.dto.KeyValueDto(c.id, c.name) from Customer c ";
+		if(seasons) {
+			q += "join Sale s on s.customer.id = c.id ";
+			q += "join SaleItem si on si.sale.id = s.id ";
+			q += "join Item i on si.item.id = i.id ";
+			q += "join Season season on i.season.id = season.id ";
+		}
 		q += "where c.id is not null ";
-		if(searchDto.getCustomerName()!=null) {
+		if(customerName) {
 			q += "and upper(c.name) like concat('%',upper(:customerName),'%')";
 		}
+		if(seasons) {
+			q += "and season.id in (:seasonIds)";
+		}
 		Query query = entityManager.createQuery(q);
-		if(searchDto.getCustomerName()!=null) {
+		if(customerName) {
 			query.setParameter("customerName", searchDto.getCustomerName());
+		}
+		if(seasons) {
+			query.setParameter("seasonIds", searchDto.getSeasons());
 		}
 		List<KeyValueDto> list = query.getResultList();
 		return list;

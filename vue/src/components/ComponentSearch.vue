@@ -175,6 +175,7 @@ export default {
     closeSeasonMenu(){
       this.visibleSeasonMenu = false;
       this.selectedSeasons = this.seasons.filter(it => it.selected == true);
+      this.searchDto.seasons = this.selectedSeasons.map(it => it.id);
     },
     clearSeasons(){
       this.searchDto.seasonName = "";
