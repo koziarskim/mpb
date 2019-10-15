@@ -18,15 +18,30 @@ public class SearchRepoImpl implements SearchRepoCustom {
     EntityManager entityManager;
 
 	@Override
-	public List<KeyValueDto> findSuppliers(String supplierName) {
-		String q = "select distinct new com.noovitec.mpb.dto.KeyValueDto(s.id, s.name) from Supplier s ";
+	public List<KeyValueDto> findSeasons(String seasonName) {
+		String q = "select distinct new com.noovitec.mpb.dto.KeyValueDto(s.id, s.name) from Season s ";
 		q += "where s.id is not null ";
-		if(supplierName!=null) {
-			q += "and upper(s.name) like concat('%',upper(:supplierName),'%')";
+		if(seasonName!=null) {
+			q += "and upper(s.name) like concat('%',upper(:seasonName),'%')";
 		}
 		Query query = entityManager.createQuery(q);
-		if(supplierName!=null) {
-			query.setParameter("supplierName", supplierName);
+		if(seasonName!=null) {
+			query.setParameter("seasonName", seasonName);
+		}
+		List<KeyValueDto> list = query.getResultList();
+		return list;
+	}
+
+	@Override
+	public List<KeyValueDto> findCustomers(String customerName) {
+		String q = "select distinct new com.noovitec.mpb.dto.KeyValueDto(c.id, c.name) from Customer c ";
+		q += "where c.id is not null ";
+		if(customerName!=null) {
+			q += "and upper(c.name) like concat('%',upper(:customerName),'%')";
+		}
+		Query query = entityManager.createQuery(q);
+		if(customerName!=null) {
+			query.setParameter("customerName", customerName);
 		}
 		List<KeyValueDto> list = query.getResultList();
 		return list;
@@ -58,21 +73,6 @@ public class SearchRepoImpl implements SearchRepoCustom {
 	}
 
 	@Override
-	public List<KeyValueDto> findSales(String saleNumber) {
-		String q = "select distinct new com.noovitec.mpb.dto.KeyValueDto(s.id, s.number) from Sale s ";
-		q += "where s.id is not null ";
-		if(saleNumber!=null) {
-			q += "and upper(s.number) like concat('%',upper(:saleNumber),'%')";
-		}
-		Query query = entityManager.createQuery(q);
-		if(saleNumber!=null) {
-			query.setParameter("saleNumber", saleNumber);
-		}
-		List<KeyValueDto> list = query.getResultList();
-		return list;
-	}
-
-	@Override
 	public List<KeyValueDto> findComponents(String componentName) {
 		String q = "select distinct new com.noovitec.mpb.dto.KeyValueDto(c.id, c.name) from Component c ";
 		q += "where c.id is not null ";
@@ -82,6 +82,36 @@ public class SearchRepoImpl implements SearchRepoCustom {
 		Query query = entityManager.createQuery(q);
 		if(componentName!=null) {
 			query.setParameter("componentName", componentName);
+		}
+		List<KeyValueDto> list = query.getResultList();
+		return list;
+	}
+
+	@Override
+	public List<KeyValueDto> findSuppliers(String supplierName) {
+		String q = "select distinct new com.noovitec.mpb.dto.KeyValueDto(s.id, s.name) from Supplier s ";
+		q += "where s.id is not null ";
+		if(supplierName!=null) {
+			q += "and upper(s.name) like concat('%',upper(:supplierName),'%')";
+		}
+		Query query = entityManager.createQuery(q);
+		if(supplierName!=null) {
+			query.setParameter("supplierName", supplierName);
+		}
+		List<KeyValueDto> list = query.getResultList();
+		return list;
+	}
+
+	@Override
+	public List<KeyValueDto> findSales(String saleNumber) {
+		String q = "select distinct new com.noovitec.mpb.dto.KeyValueDto(s.id, s.number) from Sale s ";
+		q += "where s.id is not null ";
+		if(saleNumber!=null) {
+			q += "and upper(s.number) like concat('%',upper(:saleNumber),'%')";
+		}
+		Query query = entityManager.createQuery(q);
+		if(saleNumber!=null) {
+			query.setParameter("saleNumber", saleNumber);
 		}
 		List<KeyValueDto> list = query.getResultList();
 		return list;

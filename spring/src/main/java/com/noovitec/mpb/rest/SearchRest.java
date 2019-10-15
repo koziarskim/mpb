@@ -28,9 +28,14 @@ class SearchRest {
 		this.searchRepo = searchRepo;
 	}
 
-	@GetMapping("/search/supplier/kv")
-	Collection<KeyValueDto> getAllSuppliers(@RequestParam(name = "supplierName", required = false) String supplierName) {
-		return searchRepo.findSuppliers(supplierName);
+	@GetMapping("/search/season/kv")
+	Collection<KeyValueDto> getAllSeasons(@RequestParam(name = "seasonName", required = false) String seasonName) {
+		return searchRepo.findSeasons(seasonName);
+	}
+
+	@GetMapping("/search/customer/kv")
+	Collection<KeyValueDto> getAllCustomers(@RequestParam(name = "customerName", required = false) String customerName) {
+		return searchRepo.findCustomers(customerName);
 	}
 
 	@GetMapping("/search/item/kv")
@@ -41,6 +46,11 @@ class SearchRest {
 	@GetMapping("/search/sale/kv")
 	Collection<KeyValueDto> getAllSales(@RequestParam(name = "saleNumber", required = false) String saleNumber) {
 		return searchRepo.findSales(saleNumber);
+	}
+
+	@GetMapping("/search/supplier/kv")
+	Collection<KeyValueDto> getAllSuppliers(@RequestParam(name = "supplierName", required = false) String supplierName) {
+		return searchRepo.findSuppliers(supplierName);
 	}
 
 	@GetMapping("/search/component/kv")

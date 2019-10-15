@@ -1,19 +1,36 @@
 <template>
   <b-container fluid>
-    <!-- Supplier -->
-    <label class="top-label">Suppliers: <a href="#" @click="clearSuppliers()">(x)</a></label>
+    <!-- Season -->
+    <label class="top-label">Seasons: <a href="#" @click="clearSeasons()">(x)</a></label>
     <div style="display: flex">
-      <input @keydown.enter="getSuppliers(true)" @click="showSupplierMenu()" class="form-control search-width" type="tel" v-model="supplierSearchKey" placeholder="Pick Supplier">
-      <b-button v-if="visibleSupplierMenu" class="btn-tab" size="sm" type="reset" variant="success" @click="closeSupplierMenu()">Close</b-button>
+      <input @keydown.enter="getSeasons(true)" @click="showSeasonMenu()" class="form-control search-width" type="tel" v-model="seasonSearchKey" placeholder="Pick Season">
+      <b-button v-if="visibleSeasonMenu" class="btn-tab" size="sm" type="reset" variant="success" @click="closeSeasonMenu()">Close</b-button>
     </div>
-    <div v-if="visibleSupplierMenu" class="menu-tab">
-        <div v-for="supplier in suppliers" v-bind:key="supplier.id">
-          <input type="checkbox" v-model="supplier.selected">
-          <span>{{supplier.name}}</span>
+    <div v-if="visibleSeasonMenu" class="menu-tab">
+        <div v-for="season in seasons" v-bind:key="season.id">
+          <input type="checkbox" v-model="season.selected">
+          <span>{{season.name}}</span>
       </div>
     </div>
-    <div v-for="supplier in selectedSuppliers" v-bind:key="supplier.id">
-      {{supplier.name}}
+    <div v-for="season in selectedSeasons" v-bind:key="season.id">
+      {{season.name}}
+    </div>
+    <br/>
+
+    <!-- Customer -->
+    <label class="top-label">Customers: <a href="#" @click="clearCustomers()">(x)</a></label>
+    <div style="display: flex">
+      <input @keydown.enter="getCustomers(true)" @click="showCustomerMenu()" class="form-control search-width" type="tel" v-model="customerSearchKey" placeholder="Pick Customer">
+      <b-button v-if="visibleCustomerMenu" class="btn-tab" size="sm" type="reset" variant="success" @click="closeCustomerMenu()">Close</b-button>
+    </div>
+    <div v-if="visibleCustomerMenu" class="menu-tab">
+        <div v-for="customer in customers" v-bind:key="customer.id">
+          <input type="checkbox" v-model="customer.selected">
+          <span>{{customer.name}}</span>
+      </div>
+    </div>
+    <div v-for="customer in selectedCustomers" v-bind:key="customer.id">
+      {{customer.name}}
     </div>
     <br/>
 
@@ -51,6 +68,23 @@
     </div>
     <br/>
 
+    <!-- Supplier -->
+    <label class="top-label">Suppliers: <a href="#" @click="clearSuppliers()">(x)</a></label>
+    <div style="display: flex">
+      <input @keydown.enter="getSuppliers(true)" @click="showSupplierMenu()" class="form-control search-width" type="tel" v-model="supplierSearchKey" placeholder="Pick Supplier">
+      <b-button v-if="visibleSupplierMenu" class="btn-tab" size="sm" type="reset" variant="success" @click="closeSupplierMenu()">Close</b-button>
+    </div>
+    <div v-if="visibleSupplierMenu" class="menu-tab">
+        <div v-for="supplier in suppliers" v-bind:key="supplier.id">
+          <input type="checkbox" v-model="supplier.selected">
+          <span>{{supplier.name}}</span>
+      </div>
+    </div>
+    <div v-for="supplier in selectedSuppliers" v-bind:key="supplier.id">
+      {{supplier.name}}
+    </div>
+    <br/>
+
     <!-- Component -->
     <label class="top-label">Components: <a href="#" @click="clearComponents()">(x)</a></label>
     <div style="display: flex">
@@ -69,7 +103,7 @@
     <br/>
 
     <div style="text-align: right;">
-      <b-button size="sm" type="reset" variant="success" @click="updateParent()">Search</b-button>
+      <b-button size="sm" type="reset" variant="success" @click="updateParent()">Apply</b-button>
     </div>
   </b-container>
 </template>
@@ -85,10 +119,15 @@ export default {
   },
   data() {
     return {
-      supplierSearchKey: "",
-      visibleSupplierMenu: false,
-      suppliers: [],
-      selectedSuppliers: [],
+      seasonSearchKey: "",
+      visibleSeasonMenu: false,
+      seasons: [],
+      selectedSeasons: [],
+
+      customerSearchKey: "",
+      visibleCustomerMenu: false,
+      customers: [],
+      selectedCustomers: [],
 
       itemSearchKey: "",
       visibleItemMenu: false,
@@ -99,6 +138,11 @@ export default {
       visibleSaleMenu: false,
       sales: [],
       selectedSales: [],
+
+      supplierSearchKey: "",
+      visibleSupplierMenu: false,
+      suppliers: [],
+      selectedSuppliers: [],
 
       componentSearchKey: "",
       visibleComponentMenu: false,
@@ -115,30 +159,61 @@ export default {
     }
   },
   methods: {
-    // Supplier
-    showSupplierMenu(){
-      this.getSuppliers().then(r => {
-        this.visibleSupplierMenu = true;
+    // Season
+    showSeasonMenu(){
+      this.getSeasons().then(r => {
+        this.visibleSeasonMenu = true;
       });
     },
-    closeSupplierMenu(){
-      this.visibleSupplierMenu = false;
-      this.selectedSuppliers = this.suppliers.filter(it => it.selected == true);
+    closeSeasonMenu(){
+      this.visibleSeasonMenu = false;
+      this.selectedSeasons = this.seasons.filter(it => it.selected == true);
     },
-    clearSuppliers(){
-      this.supplierSearchKey
-      this.suppliers = [];
-      this.selectedSuppliers = [];
-      this.closeSupplierMenu();
+    clearSeasons(){
+      this.seasonSearchKey = "";
+      this.seasons = [];
+      this.selectedSeasons = [];
+      this.closeSeasonMenu();
     },
-    getSuppliers(fresh){
-      if(this.suppliers.length == 0 || fresh){
-        return http.get("/search/supplier/kv", { params: {supplierName: this.supplierSearchKey}}).then(r => {
-          r.data.forEach(supplier => {
-            var found = this.selectedSuppliers.find(it => it.id==supplier.id && it.selected);
-            supplier.selected = found?true:false;
+    getSeasons(fresh){
+      if(this.seasons.length == 0 || fresh){
+        return http.get("/search/season/kv", { params: {seasonName: this.seasonSearchKey}}).then(r => {
+          r.data.forEach(season => {
+            var found = this.selectedSeasons.find(it => it.id==season.id && it.selected);
+            season.selected = found?true:false;
           })
-          this.suppliers = r.data;
+          this.seasons = r.data;
+        }).catch(e => {
+          console.log("API error: " + e);
+        });
+      }
+      return Promise.resolve();
+    },
+
+    // Customer
+    showCustomerMenu(){
+      this.getCustomers().then(r => {
+        this.visibleCustomerMenu = true;
+      });
+    },
+    closeCustomerMenu(){
+      this.visibleCustomerMenu = false;
+      this.selectedCustomers = this.customers.filter(it => it.selected == true);
+    },
+    clearCustomers(){
+      this.customerSearchKey = "";
+      this.customers = [];
+      this.selectedCustomers = [];
+      this.closeCustomerMenu();
+    },
+    getCustomers(fresh){
+      if(this.customers.length == 0 || fresh){
+        return http.get("/search/customer/kv", { params: {customerName: this.customerSearchKey}}).then(r => {
+          r.data.forEach(customer => {
+            var found = this.selectedCustomers.find(it => it.id==customer.id && it.selected);
+            customer.selected = found?true:false;
+          })
+          this.customers = r.data;
         }).catch(e => {
           console.log("API error: " + e);
         });
@@ -201,6 +276,37 @@ export default {
             sale.selected = found?true:false;
           })
           this.sales = r.data;
+        }).catch(e => {
+          console.log("API error: " + e);
+        });
+      }
+      return Promise.resolve();
+    },
+
+    // Supplier
+    showSupplierMenu(){
+      this.getSuppliers().then(r => {
+        this.visibleSupplierMenu = true;
+      });
+    },
+    closeSupplierMenu(){
+      this.visibleSupplierMenu = false;
+      this.selectedSuppliers = this.suppliers.filter(it => it.selected == true);
+    },
+    clearSuppliers(){
+      this.supplierSearchKey = "";
+      this.suppliers = [];
+      this.selectedSuppliers = [];
+      this.closeSupplierMenu();
+    },
+    getSuppliers(fresh){
+      if(this.suppliers.length == 0 || fresh){
+        return http.get("/search/supplier/kv", { params: {supplierName: this.supplierSearchKey}}).then(r => {
+          r.data.forEach(supplier => {
+            var found = this.selectedSuppliers.find(it => it.id==supplier.id && it.selected);
+            supplier.selected = found?true:false;
+          })
+          this.suppliers = r.data;
         }).catch(e => {
           console.log("API error: " + e);
         });
