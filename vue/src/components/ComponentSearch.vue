@@ -207,6 +207,7 @@ export default {
     closeCustomerMenu(){
       this.visibleCustomerMenu = false;
       this.selectedCustomers = this.customers.filter(it => it.selected == true);
+      this.searchDto.customers = this.selectedCustomers.map(it => it.id);
     },
     clearCustomers(){
       this.searchDto.customerName = "";
@@ -238,6 +239,7 @@ export default {
     closeItemMenu(){
       this.visibleItemMenu = false;
       this.selectedItems = this.items.filter(it => it.selected == true);
+      this.searchDto.items = this.selectedItems.map(it => it.id);
     },
     clearItems(){
       this.searchDto.itemName = "";
@@ -269,6 +271,7 @@ export default {
     closeSaleMenu(){
       this.visibleSaleMenu = false;
       this.selectedSales = this.sales.filter(it => it.selected == true);
+      this.searchDto.sales = this.selectedSales.map(it => it.id);
     },
     clearSales(){
       this.searchDto.saleNumber = "";
@@ -300,6 +303,7 @@ export default {
     closeSupplierMenu(){
       this.visibleSupplierMenu = false;
       this.selectedSuppliers = this.suppliers.filter(it => it.selected == true);
+      this.searchDto.suppliers = this.selectedSuppliers.map(it => it.id);
     },
     clearSuppliers(){
       this.searchDto.supplierName = "";
@@ -331,6 +335,7 @@ export default {
     closeComponentMenu(){
       this.visibleComponentMenu = false;
       this.selectedComponents = this.components.filter(it => it.selected == true);
+      this.searchDto.components = this.selectedComponents.map(it => it.id);
     },
     clearComponents(){
       this.searchDto.componentName = "";
