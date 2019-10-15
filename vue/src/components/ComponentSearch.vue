@@ -1,11 +1,14 @@
 <template>
-  <b-container fluid @click="show">
+  <b-container fluid>
     <label class="top-label">Items: <a href="#" @click="clearItems()">(x)</a></label>
-    <input @keydown.enter="getItems()" class="form-control" type="tel" v-model="searchKey" placeholder="Pick Item">
-    <div v-if="visible" class="itemSearchContent">
-      <div v-for="item in items" v-bind:key="item.id">
-        <input type="checkbox" v-model="item.selected">
-        <span>{{item.name}}</span>
+    <input @keydown.enter="getItems()" @click="show" class="form-control" type="tel" v-model="searchKey" placeholder="Pick Item">
+    <div v-if="visible" style="margin-top: -30px; z-index: 100; position: sticky; width: 400px;">
+      <b-button style="color: black; background-color: white; margin-bottom: -1px; border-bottom: 0px; margin-left: 346px; border-color: gray" size="sm" type="reset" variant="success" @click="closeMenu()">Close</b-button>
+      <div style="background-color:white; border: 1px solid gray;">
+        <div v-for="item in items" v-bind:key="item.id">
+          <input type="checkbox" v-model="item.selected">
+          <span>{{item.name}}</span>
+        </div>
       </div>
     </div>
     <div v-for="item in selectedItems" v-bind:key="item.id">
@@ -13,7 +16,7 @@
     </div>
     <br/>
     <div style="text-align: right;">
-      <b-button type="reset" variant="success" @click="updateParent()">Search</b-button>
+      <b-button size="sm" type="reset" variant="success" @click="updateParent()">Search</b-button>
     </div>
   </b-container>
 </template>
@@ -29,8 +32,6 @@ export default {
   },
   data() {
     return {
-      firstClick: false,
-      skipShow: false,
       items: [],
       searchKey: "",
       visible: false,
@@ -48,9 +49,9 @@ export default {
   },
   methods: {
     clearItems(){
-      this.skipShow = true;
       this.items = [];
       this.selectedItems = [];
+      this.closeMenu();
     },
     getItems(){
       if(this.items.length == 0){
@@ -76,23 +77,17 @@ export default {
       this.getItems();
     },
     show(){
-      if(this.skipShow){
-        this.skipShow = false;
-        return;
-      }
       this.getItems();
-      this.firstClick = true;
       this.visible = true;
-      document.addEventListener("click", this.hide);
     },
     hide(){
-      if(!this.firstClick){
-        this.visible = false;
-        this.searchKey = "";
-        document.removeEventListener("click", this.hide);
-        this.updateSelected();
-      }
-      this.firstClick = false;
+      this.visible = false;
+      this.searchKey = "";
+      this.updateSelected();
+    },
+    closeMenu(){
+      this.visible = false;
+      this.updateSelected();
     },
     updateSelected(){
       this.selectedItems = this.items.filter(item => item.selected == true);
@@ -109,10 +104,7 @@ export default {
 
 <style>
 .itemSearchContent {
-  z-index: 100;
-  position: sticky;
-  width: 400px;
-  background-color:white;
-  border: 1px solid gray;
+
+
 }
 </style>
