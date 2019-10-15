@@ -1,14 +1,14 @@
 <template>
   <b-container fluid>
     <label class="top-label">Items: <a href="#" @click="clearItems()">(x)</a></label>
-    <input @keydown.enter="getItems()" @click="show" class="form-control" type="tel" v-model="searchKey" placeholder="Pick Item">
-    <div v-if="visible" style="margin-top: -30px; z-index: 100; position: sticky; width: 400px;">
-      <b-button style="color: black; background-color: white; margin-bottom: -1px; border-bottom: 0px; margin-left: 346px; border-color: gray" size="sm" type="reset" variant="success" @click="closeMenu()">Close</b-button>
-      <div style="background-color:white; border: 1px solid gray;">
+    <div style="display: flex">
+      <input @keydown.enter="getItems(true)" @click="show" class="form-control search-width" type="tel" v-model="searchKey" placeholder="Pick Item">
+      <b-button v-if="visible" class="btn-tab" size="sm" type="reset" variant="success" @click="closeMenu()">Close</b-button>
+    </div>
+    <div v-if="visible" class="menu-tab">
         <div v-for="item in items" v-bind:key="item.id">
           <input type="checkbox" v-model="item.selected">
           <span>{{item.name}}</span>
-        </div>
       </div>
     </div>
     <div v-for="item in selectedItems" v-bind:key="item.id">
@@ -53,9 +53,9 @@ export default {
       this.selectedItems = [];
       this.closeMenu();
     },
-    getItems(){
-      if(this.items.length == 0){
-        http.get("/search/item/kv", { params: {itemName: this.searchKey, supplierId: this.supplierId}}).then(r => {
+    getItems(fresh){
+      if(this.items.length == 0 || fresh){
+        return http.get("/search/item/kv", { params: {itemName: this.searchKey, supplierId: this.supplierId}}).then(r => {
           r.data.forEach(item => {
             var foundItem = this.selectedItems.find(it => it.id==item.id && it.selected);
             item.selected = foundItem?true:false;
@@ -65,6 +65,7 @@ export default {
           console.log("API error: " + e);
         });
       }
+      return Promise.resolve();
     },
     getComponents(){
       http.get("/component/kv").then(r => {
@@ -77,8 +78,9 @@ export default {
       this.getItems();
     },
     show(){
-      this.getItems();
-      this.visible = true;
+      this.getItems().then(r => {
+        this.visible = true;
+      });
     },
     hide(){
       this.visible = false;
@@ -103,8 +105,23 @@ export default {
 </script>
 
 <style>
-.itemSearchContent {
-
-
+.menu-tab {
+  z-index: 100; 
+  position: sticky; 
+  width: 400px;
+  background-color:white; 
+  border: 1px solid gray;
+}
+.btn-tab {
+  color: black !important; 
+  background-color: white !important; 
+  margin-bottom: -1px !important; 
+  border-bottom: 0px !important; 
+  margin-left: 156px; 
+  border-color: gray !important;
+  z-index: 110 !important;
+}
+.search-width {
+  width: 190px !important;
 }
 </style>
