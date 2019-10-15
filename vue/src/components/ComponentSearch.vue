@@ -359,6 +359,8 @@ export default {
   z-index: 100; 
   position: sticky; 
   width: 400px;
+  height: 250px;
+  overflow: auto;
   background-color:white; 
   border: 1px solid gray;
 }
