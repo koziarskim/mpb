@@ -86,7 +86,7 @@ public class SearchRepoImpl implements SearchRepoCustom {
 		if(searchDto.getItems().size()==0) {
 			return new ArrayList<SaleItem>();
 		}
-		String q = "select distinct si from SaleItem si ";
+		String q = "select distinct si.id from SaleItem si ";
 		q += "join Sale s on si.sale.id = s.id ";
 		q += "join Item i on si.item.id = i.id ";
 		q += "where i.id in (:itemIds) ";
@@ -98,8 +98,12 @@ public class SearchRepoImpl implements SearchRepoCustom {
 		if(searchDto.getSaleNumber()!=null) {
 			query.setParameter("saleNumber", searchDto.getSaleNumber());
 		}
-		List<SaleItem> list = query.getResultList();
-		return list;
+		@SuppressWarnings("unchecked")
+		List<Long> ids = query.getResultList();
+		@SuppressWarnings("unchecked")
+		List<SaleItem> sales = entityManager.createQuery("select si from SaleItem si where si.id in (:ids) ")
+				.setParameter("ids", ids).getResultList();
+		return sales;
 	}
 
 	@Override
@@ -133,7 +137,7 @@ public class SearchRepoImpl implements SearchRepoCustom {
 		if(searchDto.getSales().size()==0) {
 			return new ArrayList<Component>();
 		}
-		String q = "select distinct c from Component c ";
+		String q = "select distinct c.id from Component c ";
 		q += "join ItemComponent ic on ic.component.id = c.id ";
 		q += "join Item i on ic.item.id = i.id ";
 		q += "join SaleItem si on si.item.id = i.id ";
@@ -150,8 +154,11 @@ public class SearchRepoImpl implements SearchRepoCustom {
 		if(searchDto.getComponentName()!=null) {
 			query.setParameter("componentName", searchDto.getComponentName());
 		}
-		List<Component> list = query.getResultList();
-		return list;
+		List<Long> ids = query.getResultList();
+		List<Component> components = entityManager.createQuery("select c from Component c where c.id in (:ids) ")
+				.setParameter("ids", ids).getResultList();
+
+		return components;
 	}
 
 }
