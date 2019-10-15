@@ -102,12 +102,20 @@ public class SearchRepoImpl implements SearchRepoCustom {
 
 	@Override
 	public List<KeyValueDto> findSuppliers(SearchDto searchDto) {
+		if(searchDto.getSales().size()==0) {
+			return new ArrayList<KeyValueDto>();
+		}
 		String q = "select distinct new com.noovitec.mpb.dto.KeyValueDto(s.id, s.name) from Supplier s ";
-		q += "where s.id is not null ";
+		q += "join Component c on c.supplier.id = s.id ";
+		q += "join ItemComponent ic on ic.component.id = c.id ";
+		q += "join Item i on ic.item.id = i.id ";
+		q += "join SaleItem si on si.item.id = i.id ";
+		q += "where si.id in (:saleIds) ";
 		if(searchDto.getSupplierName()!=null) {
 			q += "and upper(s.name) like concat('%',upper(:supplierName),'%')";
 		}
 		Query query = entityManager.createQuery(q);
+		query.setParameter("saleIds", searchDto.getSales());
 		if(searchDto.getSupplierName()!=null) {
 			query.setParameter("supplierName", searchDto.getSupplierName());
 		}
