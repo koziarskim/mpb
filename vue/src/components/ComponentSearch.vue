@@ -16,7 +16,7 @@ import http from "../http-common";
 import router from "../router";
 
 export default {
-  name: "ItemSearch",
+  name: "ComponentSearch",
   props: {
     selectedItems: Array,
     supplierId: Number,

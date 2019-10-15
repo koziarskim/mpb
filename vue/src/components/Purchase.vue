@@ -22,7 +22,7 @@
         <div @click="getAvailableSuppliers()">
           <b-select option-value="id" option-text="name" :list="availableSuppliers" v-model="supplier" placeholder="Pick Supplier"></b-select>
         </div>
-        <item-search :supplier-id="supplier.id" :selected-items="selectedItems" v-on:itemsUpdated="updateItems"></item-search>
+        <component-search :supplier-id="supplier.id" :selected-items="selectedItems" v-on:itemsUpdated="updateItems"></component-search>
         <div v-for="item in selectedItems" v-bind:key="item.id">{{item.name}}</div>
       </b-col>
       <b-col cols=10>
@@ -56,7 +56,7 @@ import http from "../http-common";
 import router from "../router";
 import moment from "moment";
 import vue from "vue";
-import ItemSearch from "./ItemSearch";
+import ComponentSearch from "./ComponentSearch";
 
 export default {
   data() {
@@ -90,7 +90,7 @@ export default {
     };
   },
   components:{
-    'item-search': ItemSearch
+    'component-search': ComponentSearch
   },
   computed: {},
   watch: {
