@@ -126,6 +126,7 @@ export default {
       this.selectedSuppliers = this.suppliers.filter(it => it.selected == true);
     },
     clearSuppliers(){
+      this.supplierSearchKey
       this.suppliers = [];
       this.selectedSuppliers = [];
       this.closeSupplierMenu();
@@ -156,6 +157,7 @@ export default {
       this.selectedItems = this.items.filter(it => it.selected == true);
     },
     clearItems(){
+      this.itemSearchKey = "";
       this.items = [];
       this.selectedItems = [];
       this.closeItemMenu();
@@ -186,6 +188,7 @@ export default {
       this.selectedSales = this.sales.filter(it => it.selected == true);
     },
     clearSales(){
+      this.saleSearchKey = "";
       this.sales = [];
       this.selectedSales = [];
       this.closeSaleMenu();
@@ -216,6 +219,7 @@ export default {
       this.selectedComponents = this.components.filter(it => it.selected == true);
     },
     clearComponents(){
+      this.componentSearchKey = "";
       this.components = [];
       this.selectedComponents = [];
       this.closeComponentMenu();
