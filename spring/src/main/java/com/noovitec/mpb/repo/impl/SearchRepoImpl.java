@@ -9,6 +9,7 @@ import javax.persistence.Query;
 import org.springframework.stereotype.Repository;
 
 import com.noovitec.mpb.dto.KeyValueDto;
+import com.noovitec.mpb.dto.SearchDto;
 import com.noovitec.mpb.repo.interfaces.SearchRepoCustom;
 
 @Repository
@@ -18,15 +19,15 @@ public class SearchRepoImpl implements SearchRepoCustom {
     EntityManager entityManager;
 
 	@Override
-	public List<KeyValueDto> findSeasons(String seasonName) {
+	public List<KeyValueDto> findSeasons(SearchDto searchDto) {
 		String q = "select distinct new com.noovitec.mpb.dto.KeyValueDto(s.id, s.name) from Season s ";
 		q += "where s.id is not null ";
-		if(seasonName!=null) {
+		if(searchDto.getSeasonName()!=null) {
 			q += "and upper(s.name) like concat('%',upper(:seasonName),'%')";
 		}
 		Query query = entityManager.createQuery(q);
-		if(seasonName!=null) {
-			query.setParameter("seasonName", seasonName);
+		if(searchDto.getSeasonName()!=null) {
+			query.setParameter("seasonName", searchDto.getSeasonName());
 		}
 		List<KeyValueDto> list = query.getResultList();
 		return list;

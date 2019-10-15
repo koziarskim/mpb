@@ -2,6 +2,7 @@ package com.noovitec.mpb.rest;
 
 import java.net.URISyntaxException;
 import java.util.Collection;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.noovitec.mpb.dto.KeyValueDto;
+import com.noovitec.mpb.dto.SearchDto;
 import com.noovitec.mpb.entity.Item;
 import com.noovitec.mpb.repo.SearchRepo;
 
@@ -28,9 +30,10 @@ class SearchRest {
 		this.searchRepo = searchRepo;
 	}
 
-	@GetMapping("/search/season/kv")
-	Collection<KeyValueDto> getAllSeasons(@RequestParam(name = "seasonName", required = false) String seasonName) {
-		return searchRepo.findSeasons(seasonName);
+	@PostMapping("/search/season/kv")
+	List<KeyValueDto> getAllSeasons(@RequestBody(required = false) SearchDto searchDto) {
+		List<KeyValueDto> results = searchRepo.findSeasons(searchDto);
+		return results;
 	}
 
 	@GetMapping("/search/customer/kv")

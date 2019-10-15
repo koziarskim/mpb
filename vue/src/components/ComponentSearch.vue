@@ -3,7 +3,7 @@
     <!-- Season -->
     <label class="top-label">Seasons: <a href="#" @click="clearSeasons()">(x)</a></label>
     <div style="display: flex">
-      <input @keydown.enter="getSeasons(true)" @click="showSeasonMenu()" class="form-control search-width" type="tel" v-model="seasonSearchKey" placeholder="Pick Season">
+      <input @keydown.enter="getSeasons(true)" @click="showSeasonMenu()" class="form-control search-width" type="tel" v-model="searchDto.seasonName" placeholder="Pick Season">
       <b-button v-if="visibleSeasonMenu" class="btn-tab" size="sm" type="reset" variant="success" @click="closeSeasonMenu()">Close</b-button>
     </div>
     <div v-if="visibleSeasonMenu" class="menu-tab">
@@ -119,7 +119,19 @@ export default {
   },
   data() {
     return {
-      seasonSearchKey: "",
+      searchDto: {
+        seasons: [],
+        seasonName: "",
+        customers: [],
+        customerName: "",
+        items: [],
+        itemName: "",
+        sales: [],
+        saleNumbe: "",
+        components: [],
+        componentName: ""
+      },
+
       visibleSeasonMenu: false,
       seasons: [],
       selectedSeasons: [],
@@ -170,14 +182,14 @@ export default {
       this.selectedSeasons = this.seasons.filter(it => it.selected == true);
     },
     clearSeasons(){
-      this.seasonSearchKey = "";
+      this.searchDto.seasonName = "";
       this.seasons = [];
       this.selectedSeasons = [];
       this.closeSeasonMenu();
     },
     getSeasons(fresh){
       if(this.seasons.length == 0 || fresh){
-        return http.get("/search/season/kv", { params: {seasonName: this.seasonSearchKey}}).then(r => {
+        return http.post("/search/season/kv", this.searchDto).then(r => {
           r.data.forEach(season => {
             var found = this.selectedSeasons.find(it => it.id==season.id && it.selected);
             season.selected = found?true:false;

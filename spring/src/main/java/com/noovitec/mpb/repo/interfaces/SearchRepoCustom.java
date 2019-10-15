@@ -3,10 +3,11 @@ package com.noovitec.mpb.repo.interfaces;
 import java.util.List;
 
 import com.noovitec.mpb.dto.KeyValueDto;
+import com.noovitec.mpb.dto.SearchDto;
 
 public interface SearchRepoCustom {
 
-	public List<KeyValueDto> findSeasons(String seasonName);
+	public List<KeyValueDto> findSeasons(SearchDto searchDto);
 
 	public List<KeyValueDto> findCustomers(String customerName);
 	
