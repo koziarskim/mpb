@@ -4,7 +4,8 @@
     <label class="top-label">Seasons: <a href="#" @click="clearSeasons()">(x)</a></label>
     <div style="display: flex">
       <input @keydown.enter="getSeasons(true)" @click="showSeasonMenu()" class="form-control search-width" type="tel" v-model="searchDto.seasonName" placeholder="Pick Season">
-      <b-button v-if="visibleSeasonMenu" class="btn-tab" size="sm" type="reset" variant="success" @click="closeSeasonMenu()">Close</b-button>
+      <div v-if="visibleSeasonMenu" class="chk-all-tab"><input type="checkbox" v-model="checkAllSeason"><span>All</span></div>
+      <div v-if="visibleSeasonMenu" class="btn-tab" @click="closeSeasonMenu()">Close</div>
     </div>
     <div v-if="visibleSeasonMenu" class="menu-tab">
         <div v-for="season in seasons" :key="season.id">
@@ -21,7 +22,8 @@
     <label class="top-label">Customers: <a href="#" @click="clearCustomers()">(x)</a></label>
     <div style="display: flex">
       <input @keydown.enter="getCustomers(true)" @click="showCustomerMenu()" class="form-control search-width" type="tel" v-model="searchDto.customerName" placeholder="Pick Customer">
-      <b-button v-if="visibleCustomerMenu" class="btn-tab" size="sm" type="reset" variant="success" @click="closeCustomerMenu()">Close</b-button>
+      <div v-if="visibleCustomerMenu" class="chk-all-tab"><input type="checkbox" v-model="checkAllCustomer"><span>All</span></div>
+      <div v-if="visibleCustomerMenu" class="btn-tab" @click="closeCustomerMenu()">Close</div>
     </div>
     <div v-if="visibleCustomerMenu" class="menu-tab">
         <div v-for="customer in customers" :key="customer.id">
@@ -38,7 +40,8 @@
     <label class="top-label">Items: <a href="#" @click="clearItems()">(x)</a></label>
     <div style="display: flex">
       <input @keydown.enter="getItems(true)" @click="showItemMenu()" class="form-control search-width" type="tel" v-model="searchDto.itemName" placeholder="Pick Item">
-      <b-button v-if="visibleItemMenu" class="btn-tab" size="sm" type="reset" variant="success" @click="closeItemMenu()">Close</b-button>
+      <div v-if="visibleItemMenu" class="chk-all-tab"><input type="checkbox" v-model="checkAllItem"><span>All</span></div>
+      <div v-if="visibleItemMenu" class="btn-tab" @click="closeItemMenu()">Close</div>
     </div>
     <div v-if="visibleItemMenu" class="menu-tab">
         <div v-for="item in items" :key="item.id">
@@ -55,7 +58,8 @@
     <label class="top-label">Sales: <a href="#" @click="clearSales()">(x)</a></label>
     <div style="display: flex">
       <input @keydown.enter="getSales(true)" @click="showSaleMenu()" class="form-control search-width" type="tel" v-model="searchDto.saleNumber" placeholder="Pick Sale">
-      <b-button v-if="visibleSaleMenu" class="btn-tab" size="sm" type="reset" variant="success" @click="closeSaleMenu()">Close</b-button>
+      <div v-if="visibleSaleMenu" class="chk-all-tab"><input type="checkbox" v-model="checkAllSale"><span>All</span></div>
+      <div v-if="visibleSaleMenu" class="btn-tab" @click="closeSaleMenu()">Close</div>
     </div>
     <div v-if="visibleSaleMenu" class="menu-tab">
         <div v-for="sale in sales" :key="sale.id">
@@ -72,7 +76,8 @@
     <label class="top-label">Suppliers: <a href="#" @click="clearSuppliers()">(x)</a></label>
     <div style="display: flex">
       <input @keydown.enter="getSuppliers(true)" @click="showSupplierMenu()" class="form-control search-width" type="tel" v-model="searchDto.supplierName" placeholder="Pick Supplier">
-      <b-button v-if="visibleSupplierMenu" class="btn-tab" size="sm" type="reset" variant="success" @click="closeSupplierMenu()">Close</b-button>
+      <div v-if="visibleSupplierMenu" class="chk-all-tab"><input type="checkbox" v-model="checkAllSupplier"><span>All</span></div>
+      <div v-if="visibleSupplierMenu" class="btn-tab" @click="closeSupplierMenu()">Close</div>
     </div>
     <div v-if="visibleSupplierMenu" class="menu-tab">
         <div v-for="supplier in suppliers" :key="supplier.id">
@@ -89,7 +94,8 @@
     <label class="top-label">Components: <a href="#" @click="clearComponents()">(x)</a></label>
     <div style="display: flex">
       <input @keydown.enter="getComponents(true)" @click="showComponentMenu()" class="form-control search-width" type="tel" v-model="searchDto.componentName" placeholder="Pick Component">
-      <b-button v-if="visibleComponentMenu" class="btn-tab" size="sm" type="reset" variant="success" @click="closeComponentMenu()">Close</b-button>
+      <div v-if="visibleComponentMenu" class="chk-all-tab"><input type="checkbox" v-model="checkAllComponent"><span>All</span></div>
+      <div v-if="visibleComponentMenu" class="btn-tab" @click="closeComponentMenu()">Close</div>
     </div>
     <div v-if="visibleComponentMenu" class="menu-tab">
         <div v-for="component in components" :key="component.id">
@@ -132,26 +138,32 @@ export default {
         componentName: ""
       },
 
+      checkAllSeason: false,
       visibleSeasonMenu: false,
       seasons: [],
       selectedSeasons: [],
 
+      checkAllCustomer: false,
       visibleCustomerMenu: false,
       customers: [],
       selectedCustomers: [],
 
+      checkAllItem: false,
       visibleItemMenu: false,
       items: [],
       selectedItems: [],
 
+      checkAllSale: false,
       visibleSaleMenu: false,
       sales: [],
       selectedSales: [],
 
+      checkAllSupplier: false,
       visibleSupplierMenu: false,
       suppliers: [],
       selectedSuppliers: [],
 
+      checkAllComponent: false,
       visibleComponentMenu: false,
       components: [],
       selectedComponents: [],
@@ -176,6 +188,24 @@ export default {
     selectedSupplier(new_value, old_value){
       this.clearComponents();
     },
+    checkAllSeason(new_value, old_value){
+      this.seasons.forEach(it => {it.selected = new_value;})
+    },
+    checkAllCustomer(new_value, old_value){
+      this.customers.forEach(it => {it.selected = new_value;})
+    },
+    checkAllItem(new_value, old_value){
+      this.items.forEach(it => {it.selected = new_value;})
+    },
+    checkAllSale(new_value, old_value){
+      this.sales.forEach(it => {it.selected = new_value;})
+    },
+    checkAllSupplier(new_value, old_value){
+      this.suppliers.forEach(it => {it.selected = new_value;})
+    },
+    checkAllComponent(new_value, old_value){
+      this.components.forEach(it => {it.selected = new_value;})
+    }
   },
   methods: {
     // Season
@@ -190,6 +220,7 @@ export default {
       this.searchDto.seasons = this.selectedSeasons.map(it => it.id);
     },
     clearSeasons(){
+      this.checkAllSeason = false;
       this.searchDto.seasonName = "";
       this.searchDto.seasons = [];
       this.seasons = [];
@@ -222,6 +253,7 @@ export default {
       this.searchDto.customers = this.selectedCustomers.map(it => it.id);
     },
     clearCustomers(){
+      this.checkAllCustomer = false;
       this.searchDto.customerName = "";
       this.searchDto.customers = [];
       this.customers = [];
@@ -388,14 +420,47 @@ export default {
   background-color:white; 
   border: 1px solid gray;
 }
+.chk-all-tab {
+  color: black; 
+  background-color: white; 
+  margin-bottom: -2px;
+  margin-top: 15px;
+  border-width: 1px 1px 0px 1px;
+  border-style: solid;
+  margin-left: 10px; 
+  border-color: gray;
+  z-index: 110;
+  display: flex;
+  border-radius: 4px;
+  height: 25px;
+}
+.chk-all-tab input {
+  width: 45px;
+  margin-top: 6px;
+  cursor: pointer;
+}
+.chk-all-tab span {
+  margin-top: 6px;
+  margin-left: -13px;
+  margin-right: 10px;
+}
 .btn-tab {
-  color: black !important; 
-  background-color: white !important; 
-  margin-bottom: -1px !important; 
-  border-bottom: 0px !important; 
-  margin-left: 156px; 
-  border-color: gray !important;
-  z-index: 110 !important;
+  color: black; 
+  background-color: white; 
+  margin-bottom: -2px;
+  margin-top: 15px;
+  border-width: 1px 1px 0px 1px;
+  border-style: solid;
+  margin-left: 94px; 
+  border-color: gray;
+  z-index: 110;
+  display: flex;
+  border-radius: 4px;
+  height: 25px;
+  padding-right: 12px;
+  padding-left: 12px;
+  padding-top: 5px;
+  cursor: pointer;
 }
 .search-width {
   width: 190px !important;
