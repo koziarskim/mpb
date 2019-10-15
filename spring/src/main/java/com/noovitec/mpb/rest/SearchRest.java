@@ -28,9 +28,19 @@ class SearchRest {
 		this.searchRepo = searchRepo;
 	}
 
+	@GetMapping("/search/supplier/kv")
+	Collection<KeyValueDto> getAllSuppliers(@RequestParam(name = "supplierName", required = false) String supplierName) {
+		return searchRepo.findSuppliers(supplierName);
+	}
+
 	@GetMapping("/search/item/kv")
-	Collection<KeyValueDto> getAllKeyValueDtos(@RequestParam(name = "itemName", required = false) String itemName, @RequestParam(name = "supplierId", required = false) Long supplierId) {
-		return searchRepo.findFiltered(itemName, supplierId);
+	Collection<KeyValueDto> getAllItems(@RequestParam(name = "itemName", required = false) String itemName, @RequestParam(name = "supplierId", required = false) Long supplierId) {
+		return searchRepo.findItems(itemName, supplierId);
+	}
+
+	@GetMapping("/search/sale/kv")
+	Collection<KeyValueDto> getAllSales(@RequestParam(name = "saleNumber", required = false) String saleNumber) {
+		return searchRepo.findSales(saleNumber);
 	}
 
 	/*

@@ -16,9 +16,24 @@ public class SearchRepoImpl implements SearchRepoCustom {
 
     @PersistenceContext
     EntityManager entityManager;
-    
+
 	@Override
-	public List<KeyValueDto> findFiltered(String itemName, Long supplierId) {
+	public List<KeyValueDto> findSuppliers(String supplierName) {
+		String q = "select distinct new com.noovitec.mpb.dto.KeyValueDto(s.id, s.name) from Supplier s ";
+		q += "where s.id is not null ";
+		if(supplierName!=null) {
+			q += "and upper(s.name) like concat('%',upper(:supplierName),'%')";
+		}
+		Query query = entityManager.createQuery(q);
+		if(supplierName!=null) {
+			query.setParameter("supplierName", supplierName);
+		}
+		List<KeyValueDto> list = query.getResultList();
+		return list;
+	}
+
+	@Override
+	public List<KeyValueDto> findItems(String itemName, Long supplierId) {
 		String q = "select distinct new com.noovitec.mpb.dto.KeyValueDto(i.id, i.name) from Item i ";
 		if(supplierId!=null) {
 			q += "join ItemComponent ic on ic.item.id = i.id ";
@@ -42,5 +57,19 @@ public class SearchRepoImpl implements SearchRepoCustom {
 		return list;
 	}
 
+	@Override
+	public List<KeyValueDto> findSales(String saleNumber) {
+		String q = "select distinct new com.noovitec.mpb.dto.KeyValueDto(s.id, s.number) from Sale s ";
+		q += "where s.id is not null ";
+		if(saleNumber!=null) {
+			q += "and upper(s.number) like concat('%',upper(:saleNumber),'%')";
+		}
+		Query query = entityManager.createQuery(q);
+		if(saleNumber!=null) {
+			query.setParameter("saleNumber", saleNumber);
+		}
+		List<KeyValueDto> list = query.getResultList();
+		return list;
+	}
 
 }
