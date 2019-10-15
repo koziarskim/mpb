@@ -13,9 +13,7 @@
           <span>{{season.name}}</span>
       </div>
     </div>
-    <div v-for="season in selectedSeasons" :key="season.id">
-      {{season.name}}
-    </div>
+    <div v-for="season in selectedSeasons" :key="season.id+season.name">{{season.name}}</div>
     <br/>
 
     <!-- Customer -->
@@ -31,9 +29,7 @@
           <span>{{customer.name}}</span>
       </div>
     </div>
-    <div v-for="customer in selectedCustomers" :key="customer.id">
-      {{customer.name}}
-    </div>
+    <div v-for="customer in selectedCustomers" :key="customer.id+customer.name">{{customer.name}}</div>
     <br/>
 
     <!-- Item -->
@@ -49,9 +45,7 @@
           <span>{{item.name}}</span>
       </div>
     </div>
-    <div v-for="item in selectedItems" :key="item.id">
-      {{item.name}}
-    </div>
+    <div v-for="item in selectedItems" :key="item.id+item.name">{{item.name}}</div>
     <br/>
 
     <!-- Sale -->
@@ -67,9 +61,7 @@
           <span>{{sale.name}}</span>
       </div>
     </div>
-    <div v-for="sale in selectedSales" :key="sale.id">
-      {{sale.name}}
-    </div>
+    <div v-for="sale in selectedSales" :key="sale.id+sale.name">{{sale.name}}</div>
     <br/>
 
     <!-- Supplier -->
@@ -85,9 +77,7 @@
           <span>{{supplier.name}}</span>
       </div>
     </div>
-    <div v-for="supplier in selectedSuppliers" :key="supplier.id">
-      {{supplier.name}}
-    </div>
+    <div v-for="supplier in selectedSuppliers" :key="supplier.id+supplier.name">{{supplier.name}}</div>
     <br/>
 
     <!-- Component -->
@@ -103,9 +93,7 @@
           <span>{{component.name}}</span>
       </div>
     </div>
-    <div v-for="component in selectedComponents" :key="component.id">
-      {{component.name}}
-    </div>
+    <div v-for="component in selectedComponents" :key="component.id+component.name">{{component.name}}</div>
     <br/>
 
     <div style="text-align: right;">
