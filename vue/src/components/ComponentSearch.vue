@@ -161,9 +161,21 @@ export default {
   computed: {
   },
   watch: {
-    supplier(new_value, old_value){
-      // this.items = [];
-    }
+    selectedSeasons(new_value, old_value){
+      this.clearCustomers();
+    },
+    selectedCustomers(new_value, old_value){
+      this.clearItems();
+    },
+    selectedItems(new_value, old_value){
+      this.clearSales();
+    },
+    selectedSales(new_value, old_value){
+      this.clearSuppliers();
+    },
+    selectedSupplier(new_value, old_value){
+      this.clearComponents();
+    },
   },
   methods: {
     // Season
