@@ -186,7 +186,6 @@ export default {
       this.clearCustomers();
     },
     getSeasons(fresh){
-      if(this.seasons.length == 0 || fresh){
         return http.post("/search/season/kv", this.searchDto).then(r => {
           r.data.forEach(season => {
             var found = this.selectedSeasons.find(it => it.id==season.id && it.selected);
@@ -196,7 +195,6 @@ export default {
         }).catch(e => {
           console.log("API error: " + e);
         });
-      }
       return Promise.resolve();
     },
 
@@ -220,7 +218,6 @@ export default {
       this.clearItems();
     },
     getCustomers(fresh){
-      if(this.customers.length == 0 || fresh){
         return http.post("/search/customer/kv", this.searchDto).then(r => {
           r.data.forEach(customer => {
             var found = this.selectedCustomers.find(it => it.id==customer.id && it.selected);
@@ -230,7 +227,6 @@ export default {
         }).catch(e => {
           console.log("API error: " + e);
         });
-      }
       return Promise.resolve();
     },
 
@@ -254,7 +250,6 @@ export default {
       this.clearSales();
     },
     getItems(fresh){
-      if(this.items.length == 0 || fresh){
         return http.post("/search/item/kv", this.searchDto).then(r => {
           r.data.forEach(item => {
             var found = this.selectedItems.find(it => it.id==item.id && it.selected);
@@ -264,7 +259,6 @@ export default {
         }).catch(e => {
           console.log("API error: " + e);
         });
-      }
       return Promise.resolve();
     },
 
@@ -288,7 +282,6 @@ export default {
       this.clearSuppliers();
     },
     getSales(fresh){
-      if(this.sales.length == 0 || fresh){
         return http.post("/search/sale/kv", this.searchDto).then(r => {
           r.data.forEach(sale => {
             var found = this.selectedSales.find(it => it.id==sale.id && it.selected);
@@ -298,7 +291,6 @@ export default {
         }).catch(e => {
           console.log("API error: " + e);
         });
-      }
       return Promise.resolve();
     },
 
@@ -322,7 +314,6 @@ export default {
       this.clearComponents();
     },
     getSuppliers(fresh){
-      if(this.suppliers.length == 0 || fresh){
         return http.post("/search/supplier/kv", this.searchDto).then(r => {
           r.data.forEach(supplier => {
             var found = this.selectedSuppliers.find(it => it.id==supplier.id && it.selected);
@@ -332,7 +323,6 @@ export default {
         }).catch(e => {
           console.log("API error: " + e);
         });
-      }
       return Promise.resolve();
     },
 
@@ -355,7 +345,6 @@ export default {
       this.closeComponentMenu();
     },
     getComponents(fresh){
-      if(this.components.length == 0 || fresh){
         return http.post("/search/component/kv", this.searchDto).then(r => {
           r.data.forEach(component => {
             var found = this.selectedComponents.find(it => it.id==component.id && it.selected);
@@ -365,7 +354,6 @@ export default {
         }).catch(e => {
           console.log("API error: " + e);
         });
-      }
       return Promise.resolve();
     },
 
