@@ -9,10 +9,10 @@ import javax.persistence.Query;
 import org.springframework.stereotype.Repository;
 
 import com.noovitec.mpb.dto.KeyValueDto;
-import com.noovitec.mpb.repo.interfaces.ItemRepoCustom;
+import com.noovitec.mpb.repo.interfaces.SearchRepoCustom;
 
 @Repository
-public class ItemRepoImpl implements ItemRepoCustom {
+public class SearchRepoImpl implements SearchRepoCustom {
 
     @PersistenceContext
     EntityManager entityManager;

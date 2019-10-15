@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -92,8 +91,8 @@ class ItemRest {
 	}
 
 	@GetMapping("/item/kv")
-	Collection<KeyValueDto> getAllKeyValueDtos(@RequestParam(name = "itemName", required = false) String itemName, @RequestParam(name = "supplierId", required = false) Long supplierId) {
-		return itemRepo.findFiltered(itemName, supplierId);
+	Collection<KeyValueDto> getAllKeyValueDtos() {
+		return itemRepo.getAllKeyValueDtos();
 	}
 
 	@GetMapping("/item/pageable")

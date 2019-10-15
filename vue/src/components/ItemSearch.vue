@@ -49,7 +49,7 @@ export default {
     },
     getItems(){
       if(this.items.length == 0){
-      http.get("/item/kv", { params: {itemName: this.searchKey, supplierId: this.supplierId}}).then(r => {
+      http.get("/search/item/kv", { params: {itemName: this.searchKey, supplierId: this.supplierId}}).then(r => {
         r.data.forEach(item => {
           var foundItem = this.selectedItems.find(it => it.id==item.id && it.selected);
           item.selected = foundItem?true:false;

@@ -17,9 +17,8 @@ import com.noovitec.mpb.dto.ItemListDto;
 import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.dto.projection.ItemAvailabilityProjection;
 import com.noovitec.mpb.entity.Item;
-import com.noovitec.mpb.repo.interfaces.ItemRepoCustom;
 
-public interface ItemRepo extends PagingAndSortingRepository<Item, Long>, ItemRepoCustom {
+public interface ItemRepo extends PagingAndSortingRepository<Item, Long> {
 	Item findByName(String name);
 
 	@Query(value = "select i.* from Item i order by i.id desc limit 1", nativeQuery = true)
@@ -27,9 +26,6 @@ public interface ItemRepo extends PagingAndSortingRepository<Item, Long>, ItemRe
 	
 	@Query(value = "select new com.noovitec.mpb.dto.KeyValueDto(i.id, i.name) from Item i")
 	public List<KeyValueDto> getAllKeyValueDtos();
-
-	@Query(value = "select new com.noovitec.mpb.dto.KeyValueDto(i.id, i.name) from Item i where upper(i.name) like concat('%',upper(:name),'%')")
-	public List<KeyValueDto> getAllKeyValueDtos(String name);
 
 	@Query("select i " + "from Item i " + "join i.saleItems si " + "join si.sale s " + "join s.purchaseSales ps " + "left join i.brand b "
 			+ "left join i.category c " + "join ps.purchase.purchaseComponents pc " + "where ps.purchase.id = :purchase_id")
