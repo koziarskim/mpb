@@ -8,6 +8,13 @@
         <span>{{item.name}}</span>
       </div>
     </div>
+    <div v-for="item in selectedItems" v-bind:key="item.id">
+      {{item.name}}
+    </div>
+    <br/>
+    <div style="text-align: right;">
+      <b-button type="reset" variant="success" @click="updateParent()">Search</b-button>
+    </div>
   </b-container>
 </template>
 
@@ -18,8 +25,7 @@ import router from "../router";
 export default {
   name: "ComponentSearch",
   props: {
-    selectedItems: Array,
-    supplierId: Number,
+    ss: Number,
   },
   data() {
     return {
@@ -28,37 +34,43 @@ export default {
       items: [],
       searchKey: "",
       visible: false,
-      supplier_id: ""
+      supplier_id: "",
+      selectedItems: [],
+      supplier: {}
     };
   },
   computed: {
   },
   watch: {
-    supplierId(new_value, old_value){
-      if(this.supplier_id != new_value){
-        this.items = [];
-        this.supplier_id = new_value;
-      }
+    supplier(new_value, old_value){
+      // this.items = [];
     }
   },
   methods: {
     clearItems(){
-      this.items = [];
-      this.$emit("itemsUpdated", [])
       this.skipShow = true;
+      this.items = [];
+      this.selectedItems = [];
     },
     getItems(){
       if(this.items.length == 0){
-      http.get("/search/item/kv", { params: {itemName: this.searchKey, supplierId: this.supplierId}}).then(r => {
-        r.data.forEach(item => {
-          var foundItem = this.selectedItems.find(it => it.id==item.id && it.selected);
-          item.selected = foundItem?true:false;
-        })
-        this.items = r.data;
+        http.get("/search/item/kv", { params: {itemName: this.searchKey, supplierId: this.supplierId}}).then(r => {
+          r.data.forEach(item => {
+            var foundItem = this.selectedItems.find(it => it.id==item.id && it.selected);
+            item.selected = foundItem?true:false;
+          })
+          this.items = r.data;
+        }).catch(e => {
+          console.log("API error: " + e);
+        });
+      }
+    },
+    getComponents(){
+      http.get("/component/kv").then(r => {
+        this.availableComponents = r.data;
       }).catch(e => {
         console.log("API error: " + e);
       });
-      }
     },
     init(){
       this.getItems();
@@ -83,8 +95,11 @@ export default {
       this.firstClick = false;
     },
     updateSelected(){
-      var selectedItems = this.items.filter(item => item.selected == true);
-      this.$emit("itemsUpdated", selectedItems)
+      this.selectedItems = this.items.filter(item => item.selected == true);
+    },
+    updateParent(){
+      this.skipShow = true;
+      this.$emit("componentsUpdated", [{id: 1, name: 'test1'}]);
     }
   },
   mounted() {

@@ -18,31 +18,13 @@
     </b-row>
     <b-row style="font-size: 10px;">
       <b-col cols=2>
-        <label class="top-label">Supplier:</label>
-        <div @click="getAvailableSuppliers()">
-          <b-select option-value="id" option-text="name" :list="availableSuppliers" v-model="supplier" placeholder="Pick Supplier"></b-select>
-        </div>
-        <component-search :supplier-id="supplier.id" :selected-items="selectedItems" v-on:itemsUpdated="updateItems"></component-search>
-        <div v-for="item in selectedItems" v-bind:key="item.id">{{item.name}}</div>
+        <component-search v-on:componentsUpdated="updateComponents"></component-search>
       </b-col>
       <b-col cols=10>
         <b-row>
-          <b-col cols=6>
-            <label class="top-label">Sales/S.O.:</label>
-            <div v-for="s in availableSales" v-bind:key="s.id"><span>{{s.number}}</span> | 
-              <span>{{s.customerName}}</span> | <span>{{s.unitsSold}}</span> | <span>{{s.unitsProduced}}</span>
-            </div>
-            <!-- <b-table style="overflow-x: scroll;" sort-by.sync="id" sort-desc.sync="false" :sticky-header="saleHeight()" :items="availableSales" :fields="saleColumns">
-            </b-table> -->
-          </b-col>
-          <b-col cols=6>
+          <b-col>
             <label class="top-label">Components:</label>
-            <div v-for="c in availableComponents" v-bind:key="c.id">{{c.name}}</div>
-            <!-- <b-table sort-by.sync="id" sort-desc.sync="false" :items="availableComponents" :fields="componentColumns">
-              <template v-slot:cell(name)="row">
-                <b-button size="sm" variant="link">{{row.item.name}}</b-button>
-              </template>
-            </b-table> -->
+            <div v-for="c in selectedComponents" v-bind:key="c.id">{{c.name}}</div>
           </b-col>
         </b-row>
       </b-col>
@@ -64,29 +46,7 @@ export default {
       purchase: {
         date: moment().utc().format("YYYY-MM-DD")
       },
-      selectedItems: [],
-      availableItems: [],
-      item: {},
-      items: [],
-      availableSales: [],
-      sales: [],
-      availableSuppliers: [],
-      supplier: {},
-      availableComponents: [],
-      component: {},
-      saleColumns: [
-        { key: "name", label: "Sale", sortable: false },
-        { key: "sale.customer.name", label: "Customer", sortable: false },
-        { key: "units", label: "Sold", sortable: false },
-        { key: "unitsProduced", label: "Produced", sortable: false },
-        { key: "action", label: "Action", sortable: false }
-      ],
-      componentColumns: [
-        { key: "name", label: "Component", sortable: false },
-        { key: "sale.customer.name", label: "Customer", sortable: false },
-        { key: "units", label: "Sold", sortable: false },
-        { key: "action", label: "Action", sortable: false }
-      ],
+      selectedComponents: [],
     };
   },
   components:{
@@ -94,68 +54,14 @@ export default {
   },
   computed: {},
   watch: {
-    item(new_value, old_value){
-      if(new_value && new_value.id){
-        // this.getAvailableSuppliers();
-        // this.getAvailableSales();
-        // this.getAvailableComponents();
-      }
-    },
-    supplier(new_value, old_value){
-      if(new_value && new_value.id){
-        this.selectedItems = [];
-        // this.getAvailableItems();
-        // this.getAvailableSales();
-        // this.getAvailableComponents();
-      }
-    }
   },
   methods: {
-    test(){
-      console.log("Test")
-    },
-    updateItems(items){
-      this.selectedItems = items;
-      this.availableSuppliers = [];
+    updateComponents(components){
+      this.selectedComponents = components;
     },
     getPurchase(purchase_id) {
       http.get("/purchase/" + purchase_id).then(r => {
           this.purchase = r.data;
-        }).catch(e => {
-          console.log("API error: " + e);
-        });
-    },
-    getAvailableItems() {
-      this.availableItems = [];
-      http.get("/item/kv").then(response => {
-          this.availableItems = response.data;
-        }).catch(e => {
-          console.log("API error: " + e);
-        });
-    },
-    getAvailableSuppliers() {
-      if(this.availableSuppliers.length == 0){
-        // TODO: Post to get suppliers based on selectedComponents if > 0, else selectedSales if > 0, else selectedItems if > 0, else getAll;
-        var url = "/supplier/kv";
-        http.get(url).then(r => {
-            this.availableSuppliers = r.data;
-          }).catch(e => {
-            console.log("API error: " + e);
-          });
-      }
-    },
-    getAvailableSales() {
-      var url = "/purchaseSaleDto";
-      http.get(url).then(r => {
-          this.availableSales = r.data;
-        }).catch(e => {
-          console.log("API error: " + e);
-        });
-    },
-    getAvailableComponents() {
-      var url = "/component/kv";
-      http.get(url).then(r => {
-          this.availableComponents = r.data;
         }).catch(e => {
           console.log("API error: " + e);
         });
@@ -184,8 +90,6 @@ export default {
     if (purchase_id) {
       this.getPurchaseData(purchase_id);
     }
-    // this.getAvailableItems();
-    this.getAvailableSuppliers();
   }
 };
 </script>
