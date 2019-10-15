@@ -2,10 +2,10 @@
   <b-container fluid>
     <label class="top-label">Items: <a href="#" @click="clearItems()">(x)</a></label>
     <div style="display: flex">
-      <input @keydown.enter="getItems(true)" @click="show" class="form-control search-width" type="tel" v-model="searchKey" placeholder="Pick Item">
-      <b-button v-if="visible" class="btn-tab" size="sm" type="reset" variant="success" @click="closeMenu()">Close</b-button>
+      <input @keydown.enter="getItems(true)" @click="showItemMenu" class="form-control search-width" type="tel" v-model="itemSearchKey" placeholder="Pick Item">
+      <b-button v-if="visibleItemMenu" class="btn-tab" size="sm" type="reset" variant="success" @click="closeItemMenu()">Close</b-button>
     </div>
-    <div v-if="visible" class="menu-tab">
+    <div v-if="visibleItemMenu" class="menu-tab">
         <div v-for="item in items" v-bind:key="item.id">
           <input type="checkbox" v-model="item.selected">
           <span>{{item.name}}</span>
@@ -33,8 +33,8 @@ export default {
   data() {
     return {
       items: [],
-      searchKey: "",
-      visible: false,
+      itemSearchKey: "",
+      visibleItemMenu: false,
       supplier_id: "",
       selectedItems: [],
       supplier: {}
@@ -51,11 +51,11 @@ export default {
     clearItems(){
       this.items = [];
       this.selectedItems = [];
-      this.closeMenu();
+      this.closeItemMenu();
     },
     getItems(fresh){
       if(this.items.length == 0 || fresh){
-        return http.get("/search/item/kv", { params: {itemName: this.searchKey, supplierId: this.supplierId}}).then(r => {
+        return http.get("/search/item/kv", { params: {itemName: this.itemSearchKey, supplierId: this.supplierId}}).then(r => {
           r.data.forEach(item => {
             var foundItem = this.selectedItems.find(it => it.id==item.id && it.selected);
             item.selected = foundItem?true:false;
@@ -74,28 +74,16 @@ export default {
         console.log("API error: " + e);
       });
     },
-    init(){
-      this.getItems();
-    },
-    show(){
+    showItemMenu(){
       this.getItems().then(r => {
-        this.visible = true;
+        this.visibleItemMenu = true;
       });
     },
-    hide(){
-      this.visible = false;
-      this.searchKey = "";
-      this.updateSelected();
-    },
-    closeMenu(){
-      this.visible = false;
-      this.updateSelected();
-    },
-    updateSelected(){
+    closeItemMenu(){
+      this.visibleItemMenu = false;
       this.selectedItems = this.items.filter(item => item.selected == true);
     },
     updateParent(){
-      this.skipShow = true;
       this.$emit("componentsUpdated", [{id: 1, name: 'test1'}]);
     }
   },
