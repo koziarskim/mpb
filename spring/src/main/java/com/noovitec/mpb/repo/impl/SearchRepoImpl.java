@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.dto.SearchDto;
+import com.noovitec.mpb.entity.SaleItem;
 import com.noovitec.mpb.repo.interfaces.SearchRepoCustom;
 
 @Repository
@@ -80,11 +81,11 @@ public class SearchRepoImpl implements SearchRepoCustom {
 	}
 
 	@Override
-	public List<KeyValueDto> findSales(SearchDto searchDto) {
+	public List<SaleItem> findSales(SearchDto searchDto) {
 		if(searchDto.getItems().size()==0) {
-			return new ArrayList<KeyValueDto>();
+			return new ArrayList<SaleItem>();
 		}
-		String q = "select distinct new com.noovitec.mpb.dto.KeyValueDto(si.id, s.number) from SaleItem si ";
+		String q = "select si from SaleItem si ";
 		q += "join Sale s on si.sale.id = s.id ";
 		q += "join Item i on si.item.id = i.id ";
 		q += "where i.id in (:itemIds) ";
@@ -96,7 +97,7 @@ public class SearchRepoImpl implements SearchRepoCustom {
 		if(searchDto.getSaleNumber()!=null) {
 			query.setParameter("saleNumber", searchDto.getSaleNumber());
 		}
-		List<KeyValueDto> list = query.getResultList();
+		List<SaleItem> list = query.getResultList();
 		return list;
 	}
 
