@@ -12,4 +12,6 @@ public interface SearchRepoCustom {
 
 	public List<KeyValueDto> findSales(String saleNumber);
 
+	public List<KeyValueDto> findComponents(String componentName);
+
 }

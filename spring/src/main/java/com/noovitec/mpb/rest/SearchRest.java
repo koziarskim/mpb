@@ -43,6 +43,11 @@ class SearchRest {
 		return searchRepo.findSales(saleNumber);
 	}
 
+	@GetMapping("/search/component/kv")
+	Collection<KeyValueDto> getAllComponents(@RequestParam(name = "componentName", required = false) String componentName) {
+		return searchRepo.findComponents(componentName);
+	}
+
 	/*
 	 * Use this to create and update entity. No need to use PUT for update. If ID is
 	 * not null, it will try to update.

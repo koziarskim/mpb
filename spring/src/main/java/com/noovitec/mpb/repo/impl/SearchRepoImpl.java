@@ -72,4 +72,19 @@ public class SearchRepoImpl implements SearchRepoCustom {
 		return list;
 	}
 
+	@Override
+	public List<KeyValueDto> findComponents(String componentName) {
+		String q = "select distinct new com.noovitec.mpb.dto.KeyValueDto(c.id, c.name) from Component c ";
+		q += "where c.id is not null ";
+		if(componentName!=null) {
+			q += "and upper(c.name) like concat('%',upper(:componentName),'%')";
+		}
+		Query query = entityManager.createQuery(q);
+		if(componentName!=null) {
+			query.setParameter("componentName", componentName);
+		}
+		List<KeyValueDto> list = query.getResultList();
+		return list;
+	}
+
 }

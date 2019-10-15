@@ -16,6 +16,7 @@
       {{supplier.name}}
     </div>
     <br/>
+
     <!-- Item -->
     <label class="top-label">Items: <a href="#" @click="clearItems()">(x)</a></label>
     <div style="display: flex">
@@ -32,7 +33,8 @@
       {{item.name}}
     </div>
     <br/>
-    <!-- Sales -->
+
+    <!-- Sale -->
     <label class="top-label">Sales: <a href="#" @click="clearSales()">(x)</a></label>
     <div style="display: flex">
       <input @keydown.enter="getSales(true)" @click="showSaleMenu()" class="form-control search-width" type="tel" v-model="saleSearchKey" placeholder="Pick Sale">
@@ -48,6 +50,24 @@
       {{sale.name}}
     </div>
     <br/>
+
+    <!-- Component -->
+    <label class="top-label">Components: <a href="#" @click="clearComponents()">(x)</a></label>
+    <div style="display: flex">
+      <input @keydown.enter="getComponents(true)" @click="showComponentMenu()" class="form-control search-width" type="tel" v-model="componentSearchKey" placeholder="Pick Component">
+      <b-button v-if="visibleComponentMenu" class="btn-tab" size="sm" type="reset" variant="success" @click="closeComponentMenu()">Close</b-button>
+    </div>
+    <div v-if="visibleComponentMenu" class="menu-tab">
+        <div v-for="component in components" v-bind:key="component.id">
+          <input type="checkbox" v-model="component.selected">
+          <span>{{component.name}}</span>
+      </div>
+    </div>
+    <div v-for="component in selectedComponents" v-bind:key="component.id">
+      {{component.name}}
+    </div>
+    <br/>
+
     <div style="text-align: right;">
       <b-button size="sm" type="reset" variant="success" @click="updateParent()">Search</b-button>
     </div>
@@ -80,6 +100,11 @@ export default {
       sales: [],
       selectedSales: [],
 
+      componentSearchKey: "",
+      visibleComponentMenu: false,
+      components: [],
+      selectedComponents: [],
+
     };
   },
   computed: {
@@ -90,14 +115,6 @@ export default {
     }
   },
   methods: {
-    getComponents(){
-      http.get("/component/kv").then(r => {
-        this.availableComponents = r.data;
-      }).catch(e => {
-        console.log("API error: " + e);
-      });
-    },
-
     // Supplier
     showSupplierMenu(){
       this.getSuppliers().then(r => {
@@ -175,12 +192,42 @@ export default {
     },
     getSales(fresh){
       if(this.sales.length == 0 || fresh){
-        return http.get("/search/sale/kv", { params: {itemName: this.saleSearchKey}}).then(r => {
+        return http.get("/search/sale/kv", { params: {saleNumber: this.saleSearchKey}}).then(r => {
           r.data.forEach(sale => {
             var found = this.selectedSales.find(it => it.id==sale.id && it.selected);
             sale.selected = found?true:false;
           })
           this.sales = r.data;
+        }).catch(e => {
+          console.log("API error: " + e);
+        });
+      }
+      return Promise.resolve();
+    },
+
+    // Component
+    showComponentMenu(){
+      this.getComponents().then(r => {
+        this.visibleComponentMenu = true;
+      });
+    },
+    closeComponentMenu(){
+      this.visibleComponentMenu = false;
+      this.selectedComponents = this.components.filter(it => it.selected == true);
+    },
+    clearComponents(){
+      this.components = [];
+      this.selectedComponents = [];
+      this.closeComponentMenu();
+    },
+    getComponents(fresh){
+      if(this.components.length == 0 || fresh){
+        return http.get("/search/component/kv", { params: {componentName: this.componentSearchKey}}).then(r => {
+          r.data.forEach(component => {
+            var found = this.selectedComponents.find(it => it.id==component.id && it.selected);
+            component.selected = found?true:false;
+          })
+          this.components = r.data;
         }).catch(e => {
           console.log("API error: " + e);
         });
