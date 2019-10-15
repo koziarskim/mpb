@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.dto.SearchDto;
+import com.noovitec.mpb.entity.Component;
 import com.noovitec.mpb.entity.SaleItem;
 import com.noovitec.mpb.repo.interfaces.SearchRepoCustom;
 
@@ -85,7 +86,7 @@ public class SearchRepoImpl implements SearchRepoCustom {
 		if(searchDto.getItems().size()==0) {
 			return new ArrayList<SaleItem>();
 		}
-		String q = "select si from SaleItem si ";
+		String q = "select distinct si from SaleItem si ";
 		q += "join Sale s on si.sale.id = s.id ";
 		q += "join Item i on si.item.id = i.id ";
 		q += "where i.id in (:itemIds) ";
@@ -125,14 +126,14 @@ public class SearchRepoImpl implements SearchRepoCustom {
 	}
 
 	@Override
-	public List<KeyValueDto> findComponents(SearchDto searchDto) {
+	public List<Component> findComponents(SearchDto searchDto) {
 		if(searchDto.getSuppliers().size()==0) {
-			return new ArrayList<KeyValueDto>();
+			return new ArrayList<Component>();
 		}
 		if(searchDto.getSales().size()==0) {
-			return new ArrayList<KeyValueDto>();
+			return new ArrayList<Component>();
 		}
-		String q = "select distinct new com.noovitec.mpb.dto.KeyValueDto(c.id, c.name) from Component c ";
+		String q = "select distinct c from Component c ";
 		q += "join ItemComponent ic on ic.component.id = c.id ";
 		q += "join Item i on ic.item.id = i.id ";
 		q += "join SaleItem si on si.item.id = i.id ";
@@ -149,7 +150,7 @@ public class SearchRepoImpl implements SearchRepoCustom {
 		if(searchDto.getComponentName()!=null) {
 			query.setParameter("componentName", searchDto.getComponentName());
 		}
-		List<KeyValueDto> list = query.getResultList();
+		List<Component> list = query.getResultList();
 		return list;
 	}
 

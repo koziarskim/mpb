@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.dto.SearchDto;
+import com.noovitec.mpb.entity.Component;
 import com.noovitec.mpb.entity.Item;
 import com.noovitec.mpb.entity.SaleItem;
 import com.noovitec.mpb.repo.SearchRepo;
@@ -65,7 +66,15 @@ class SearchRest {
 
 	@PostMapping("/search/component/kv")
 	List<KeyValueDto> getAllComponents(@RequestBody SearchDto searchDto) {
-		return searchRepo.findComponents(searchDto);
+		List<Component> components = searchRepo.findComponents(searchDto);
+		List<KeyValueDto> dtos = new ArrayList<KeyValueDto>();
+		for(Component c: components) {
+			KeyValueDto dto = new KeyValueDto();
+			dto.setId(c.getId());
+			dto.setName(c.getName());
+			dtos.add(dto);
+		}
+		return dtos;
 	}
 
 	/*
