@@ -404,6 +404,10 @@ export default {
 
     // PoComponentDtos
     getPoComponents(){
+      if(this.searchDto.components.length==0){
+        alert("No Components selected. Please pick one.");
+        return;
+      }
         return http.post("/search/po/component", this.searchDto).then(r => {
           this.updateParent(r.data);
         }).catch(e => {

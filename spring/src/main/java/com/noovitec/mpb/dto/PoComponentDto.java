@@ -15,6 +15,8 @@ public class PoComponentDto {
 	private String name;
 	private Long unitsSold;
 	private Long unitsProduced;
+	private Long totalSold;
+	private Long totalProduced;
 	private Long unitsInOrder;
 	private Long unitsOnStock;
 	private Long units;

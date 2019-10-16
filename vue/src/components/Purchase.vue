@@ -1,18 +1,36 @@
 <template>
   <b-container fluid>
     <b-row>
-      <b-col cols=2>
-        <span style="text-align: left; font-size: 18px; font-weight: bold">Purchase Order:</span>
-      </b-col>
-      <b-col cols=2>
-        <input class="form-control" type="text" v-model="purchase.number" placeholder="P.O. Number">
-      </b-col>
-      <b-col cols=2>
-        <input class="form-control" type="date" v-model="purchase.date" placeholder="Date">
-      </b-col>
       <b-col>
-        <div style="text-align: right;">
-          <b-button style="margin: 2px;" type="reset" variant="success" @click="saveAndClose">Save & Close</b-button>
+        <div style="display:flex">
+          <span style="padding-right:125px; text-align: left; font-size: 18px; font-weight: bold">Purchase<br/>Order</span>
+          <div style="width: 160px; padding-left: 3px; padding-right: 3px;">
+            <label class="top-label">P.O. Number:</label>
+            <input class="form-control" type="text" v-model="purchase.number" placeholder="P.O. Number">
+          </div>
+          <div style="width: 175px; padding-left: 3px; padding-right: 3px;">
+            <label class="top-label">P.O. Date:</label>
+            <input class="form-control" type="date" v-model="purchase.date">
+          </div>
+          <div style="width: 175px; padding-left: 3px; padding-right: 3px;">
+            <label class="top-label">Shipping Date:</label>
+            <input class="form-control" type="date" v-model="purchase.shippingDate">
+          </div>
+          <div style="width: 175px; padding-left: 3px; padding-right: 3px;">
+            <label class="top-label">Expected Date:</label>
+            <input class="form-control" type="date" v-model="purchase.expectedDate">
+          </div>
+          <div style="width: 160px; padding-left: 3px; padding-right: 3px;">
+            <label class="top-label">Container:</label>
+            <input class="form-control" type="text" v-model="purchase.containerNumber" placeholder="Container">
+          </div>
+          <div style="width: 160px; padding-left: 3px; padding-right: 3px;">
+            <label class="top-label">Invoice:</label>
+            <input class="form-control" type="text" v-model="purchase.invoiceNumber" placeholder="Invoice">
+          </div>
+          <div style="text-align: right;">
+            <b-button style="margin: 2px; margin-top:22px" type="reset" variant="success" @click="saveAndClose">Save</b-button>
+          </div>
         </div>
       </b-col>
     </b-row>
@@ -23,8 +41,8 @@
       <b-col cols=10>
         <label class="top-label">Components:</label>
         <b-table sort-by.sync="name" sort-desc.sync="false" :items="selectedComponents" :fields="fields">
-          <template v-slot:head(unitsInOrder)="row">
-            <span>Ordered </span><span style="font-size: 8px">(Not Received)</span>
+          <template v-slot:cell(totalNeeded)="row">
+            {{row.item.totalSold - row.item.totalProduced}} ({{row.item.totalSold}} - {{row.item.totalProduced}})
           </template>
           <template v-slot:cell(unitsNeeded)="row">
             {{row.item.unitsSold - row.item.unitsProduced}} ({{row.item.unitsSold}} - {{row.item.unitsProduced}})
@@ -62,8 +80,9 @@ export default {
       selectedComponents: [],
       fields: [
         { key: "name", label: "Name", sortable: false },
-        { key: "unitsNeeded", label: "Needed (Sold - Produced)", sortable: false },
-        { key: "unitsInOrder", label: "Ordered (Not Received)", sortable: false },
+        { key: "totalNeeded", label: "Total Needed", sortable: false },
+        { key: "unitsNeeded", label: "Needed (S-P)", sortable: false },
+        { key: "unitsInOrder", label: "Pen. Orders", sortable: false },
         { key: "unitsOnStock", label: "On-Stock", sortable: false },
         { key: "unitPrice", label: "Unit Price", sortable: false },
         { key: "units", label: "To Order", sortable: false },

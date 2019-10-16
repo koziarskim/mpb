@@ -171,6 +171,9 @@ public class SearchRepoImpl implements SearchRepoCustom {
 
 	@Override
 	public List<PoComponentDto> findPoComponents(SearchDto searchDto) {
+		if(searchDto.getComponents().size()==0) {
+			return new ArrayList<PoComponentDto>();
+		}
 		@SuppressWarnings("unchecked")
 		List<Component> components = entityManager.createQuery("select c from Component c where c.id in (:ids) ")
 				.setParameter("ids", searchDto.getComponents()).getResultList();
@@ -184,21 +187,23 @@ public class SearchRepoImpl implements SearchRepoCustom {
 			dto.setUnitPrice(c.getUnitCost());
 			Long unitsSold = 0L;
 			Long unitsProduced = 0L;
+			Long totalSold = 0L;
+			Long totalProduced = 0L;
 			for(ItemComponent ic: c.getItemComponents()) {
-				if(!searchDto.getItems().contains(ic.getItem().getId())) {
-					continue;
-				}
 				Long unitsInItem = ic.getUnits().longValue();
 				for(SaleItem si: ic.getItem().getSaleItems()) {
-					if(!searchDto.getSales().contains(si.getId())) {
-						continue;
+					if(searchDto.getItems().contains(ic.getItem().getId()) && searchDto.getSales().contains(si.getId())) {
+						unitsSold += (unitsInItem * si.getUnits());
+						unitsProduced += (unitsInItem * si.getUnitsProduced());
 					}
-					unitsSold += (unitsInItem * si.getUnits());
-					unitsProduced += (unitsInItem * si.getUnitsProduced());
+					totalSold += (unitsInItem * si.getUnits());
+					totalProduced += (unitsInItem * si.getUnitsProduced());
 				}
 			}
 			dto.setUnitsSold(unitsSold);
 			dto.setUnitsProduced(unitsProduced);
+			dto.setTotalSold(totalSold);
+			dto.setTotalProduced(totalProduced);
 			dto.setUnits(dto.getUnitsSold() - dto.getUnitsProduced() - dto.getUnitsInOrder() - dto.getUnitsOnStock());
 			dto.setTotalPrice(dto.getUnitPrice().multiply(BigDecimal.valueOf(dto.getUnits(), 2)));
 			dtos.add(dto);
