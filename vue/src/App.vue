@@ -9,7 +9,7 @@
           <b-nav-item v-on:click="goTo('/itemList')">Item</b-nav-item>
           <b-nav-item v-on:click="goTo('/customerList')">Customer</b-nav-item>
           <b-nav-item v-on:click="goTo('/saleList')">Sale</b-nav-item>
-          <b-nav-item v-on:click="goTo('/purchase')">Purchase</b-nav-item>
+          <b-nav-item v-on:click="goTo('/purchaseList')">Purchase</b-nav-item>
           <b-nav-item v-on:click="goTo('/receivingList')">Receiving</b-nav-item>
           <b-nav-item v-on:click="goTo('/shipmentList')">Shipment</b-nav-item>
           <b-nav-item v-on:click="goTo('/schedule')">Schedule</b-nav-item>

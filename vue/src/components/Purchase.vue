@@ -117,7 +117,7 @@ export default {
   mounted() {
     var purchase_id = this.$route.params.purchase_id;
     if (purchase_id) {
-      this.getPurchaseData(purchase_id);
+      this.getPurchase(purchase_id);
     }
   }
 };

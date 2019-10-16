@@ -168,18 +168,7 @@ export default {
         });
     },
     goToPurchase(id) {
-      if (!id) {
-        http
-          .post("/purchase")
-          .then(response => {
-            router.push("/purchaseEdit/" + response.data.id);
-          })
-          .catch(e => {
-            console.log("API Error: " + e);
-          });
-      } else {
-        router.push("/purchaseEdit/" + id);
-      }
+      router.push("/purchase/" + id);
     },
     goToReceiving(purchase_id) {
       var query = { purchase_id: purchase_id };
