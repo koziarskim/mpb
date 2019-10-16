@@ -22,7 +22,7 @@
                     </b-col>
                     <b-col cols=4>
                         <label class="top-label">Component#:</label>
-                        <input class="form-control" readOnly :value="component.number" />
+                        <input class="form-control" v-model="component.number" />
                     </b-col>
                 </b-row>
                 <b-row>

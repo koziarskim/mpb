@@ -35,12 +35,9 @@
       </b-col>
     </b-row>
     <b-row style="font-size: 12px">
-      <b-col cols=2>
-        <component-search v-on:componentsUpdated="updateComponents"></component-search>
-      </b-col>
       <b-col cols=10>
         <label class="top-label">Components:</label>
-        <b-table sort-by.sync="name" sort-desc.sync="false" :items="selectedComponents" :fields="fields">
+        <b-table sort-by.sync="name" sort-desc.sync="false" :items="purchase.purchaseComponents" :fields="fields">
           <template v-slot:cell(totalNeeded)="row">
             {{row.item.totalSold - row.item.totalProduced}} ({{row.item.totalSold}} - {{row.item.totalProduced}})
           </template>
@@ -75,16 +72,18 @@ export default {
   data() {
     return {
       purchase: {
-        date: moment().utc().format("YYYY-MM-DD")
+        date: moment().utc().format("YYYY-MM-DD"),
+        purchaseComponents: [{
+          totalSold: 0
+        }]
       },
       selectedComponents: [],
       fields: [
-        { key: "name", label: "Name", sortable: false },
+        { key: "component.name", label: "Name", sortable: false },
         { key: "totalNeeded", label: "Total Needed", sortable: false },
-        { key: "unitsNeeded", label: "Needed (S-P)", sortable: false },
         { key: "unitsInOrder", label: "Pen. Orders", sortable: false },
-        { key: "unitsOnStock", label: "On-Stock", sortable: false },
-        { key: "unitCost", label: "Unit Cost", sortable: false },
+        { key: "component.unitsOnStack", label: "On-Stock", sortable: false },
+        { key: "component.unitCost", label: "Unit Cost", sortable: false },
         { key: "unitPrice", label: "P.O. Price", sortable: false },
         { key: "units", label: "P.O. Units", sortable: false },
         { key: "totalPrice", label: "Total", sortable: false },
@@ -106,16 +105,31 @@ export default {
     },
     getPurchase(purchase_id) {
       http.get("/purchase/" + purchase_id).then(r => {
-          this.purchase = r.data;
+          // this.purchase = r.data;
+          this.getPoComponents(r.data);
         }).catch(e => {
           console.log("API error: " + e);
         });
     },
-    savePurchase() {
-      this.purchase.purchaseComponents = [];
-      this.selectedComponents.forEach(c => {
-       this.purchase.purchaseComponents.push({component: {id: c.id}});
+        // PoComponentDtos
+    getPoComponents(purchase){
+      var searchDto = {components: []}
+      purchase.purchaseComponents.forEach(pc => {
+        searchDto.components.push(pc.component.id);
       })
+      return http.post("/search/po/component", searchDto).then(r => {
+        purchase.purchaseComponents.forEach(pc => {
+          var dto = r.data.find(it => it.id == pc.component.id);
+          pc.totalSold = dto.totalSold;
+          pc.totalProduced = dto.totalProduced;
+          pc.unitsInOrder = dto.unitsInOrder;
+        })
+        this.purchase = purchase;
+      }).catch(e => {
+        console.log("API error: " + e);
+      });
+    },
+    savePurchase() {
       return http.post("/purchase", this.purchase).then(r => {
         this.purchase = r.data;
         }).catch(e => {
@@ -136,9 +150,7 @@ export default {
   },
   mounted() {
     var purchase_id = this.$route.params.purchase_id;
-    if (purchase_id) {
-      this.getPurchase(purchase_id);
-    }
+    this.getPurchase(purchase_id);
   }
 };
 </script>

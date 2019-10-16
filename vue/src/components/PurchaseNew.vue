@@ -101,13 +101,21 @@ export default {
     getTotalPrice(item){
       return (item.units * item.unitPrice).toFixed(2);
     },
-    updateComponents(components){
-      this.selectedComponents = components;
+    updateComponents(searchDto){
+      this.purchase.supplier = {id: searchDto.suppliers[0]}
+      this.getPoComponents(searchDto);
+    },
+    getPoComponents(searchDto){
+      return http.post("/search/po/component", searchDto).then(r => {
+        this.selectedComponents = r.data;
+      }).catch(e => {
+        console.log("API error: " + e);
+      });
     },
     savePurchase() {
       this.purchase.purchaseComponents = [];
       this.selectedComponents.forEach(c => {
-       this.purchase.purchaseComponents.push({component: {id: c.id}});
+       this.purchase.purchaseComponents.push({component: {id: c.id}, units: c.units, unitPrice: c.unitPrice});
       })
       return http.post("/purchase", this.purchase).then(r => {
         this.purchase = r.data;

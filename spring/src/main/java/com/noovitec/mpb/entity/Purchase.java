@@ -50,11 +50,6 @@ public class Purchase {
 	@JoinColumn(name = "supplier_id", referencedColumnName = "id")
 	private Supplier supplier;
 
-	@JsonIgnoreProperties(value = { "customer" }, allowSetters = true)
-	@ManyToOne()
-	@JoinColumn(name = "address_id", referencedColumnName = "id")
-	private Address shipAddress;
-
 	@JsonIgnoreProperties(value = { "data" }, allowSetters = true)
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "attachment_id", referencedColumnName = "id")
@@ -80,7 +75,7 @@ public class Purchase {
 	public BigDecimal getTotalPrice() {
 		BigDecimal price = BigDecimal.ZERO;
 			for(PurchaseComponent pc: this.getPurchaseComponents()) {
-				price.add(pc.getTotalPrice());
+				price = price.add(pc.getTotalPrice());
 			}
 		return price;
 	}

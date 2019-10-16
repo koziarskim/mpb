@@ -109,7 +109,7 @@
     <br/>
 
     <div style="text-align: right;">
-      <b-button size="sm" type="reset" variant="success" @click="getPoComponents()">Show</b-button>
+      <b-button size="sm" type="reset" variant="success" @click="updateParent()">Show</b-button>
     </div>
   </b-container>
 </template>
@@ -401,23 +401,16 @@ export default {
         });
       return Promise.resolve();
     },
-
-    // PoComponentDtos
-    getPoComponents(){
+    updateParent(){
       if(this.searchDto.components.length==0){
         alert("No Components selected. Please pick one.");
         return;
       }
-        return http.post("/search/po/component", this.searchDto).then(r => {
-          this.updateParent(r.data);
-        }).catch(e => {
-          console.log("API error: " + e);
-        });
-      return Promise.resolve();
-    },
-
-    updateParent(components){
-      this.$emit("componentsUpdated", components);
+      if(this.searchDto.suppliers.length > 1){
+        alert("Only one Supplier is allowed! Please pick only one.");
+        return;
+      }
+      this.$emit("componentsUpdated", this.searchDto);
     }
   },
   mounted() {
