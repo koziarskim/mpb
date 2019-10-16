@@ -1,5 +1,6 @@
 package com.noovitec.mpb.entity;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
@@ -35,11 +36,8 @@ public class PurchaseComponent {
 	private LocalDateTime created;
 	@UpdateTimestamp
 	private LocalDateTime updated;
-	private Long units; //Units ordered;
-	private Long unitsOrdered = 0L; //Units submitted.
-	//TODO: Should this be a transient?
-	private Long unitsReceived = 0L;
-	private Long unitsInTransit = 0L;
+	private Long units = 0L;
+	private BigDecimal unitPrice = BigDecimal.ZERO;
 
 	@JsonIgnoreProperties(value = { "purchaseComponents" }, allowSetters = true)
 	@ManyToOne()
@@ -57,10 +55,8 @@ public class PurchaseComponent {
 	private Collection<Receiving> receivings = new HashSet<Receiving>();
 
 	@Transient
-	private boolean received;
-	@Transient
-	private String componentNumber;
-
+	private Long unitsReceived;
+	
 	public Long getUnitsReceived() {
 		Long units = 0L;
 		for(Receiving r: this.getReceivings()) {
@@ -71,24 +67,22 @@ public class PurchaseComponent {
 		return units;
 	}
 	
-	public void updateUnits() {
-		Long unitsInTransit = 0L;
-		Long unitsReceived = 0L;
-		for (Receiving r : this.getReceivings()) {
-			if(r.getReceivedDate()!=null) {
-				unitsReceived += r.getUnits();
-			}else if(r.getShippedDate()!=null) {
-				unitsInTransit += r.getUnits();
+	@Transient
+	private Long unitsInTransit = 0L;
+	
+	public Long getUnitsInTransit() {
+		Long units = 0L;
+		for(Receiving r: this.getReceivings()) {
+			if(r.getReceivedDate()==null) {
+				units += Long.valueOf(r.getUnits());
 			}
 		}
-		this.unitsReceived = unitsReceived;
-		this.unitsInTransit = unitsInTransit;
-		this.unitsOrdered = 0L;
-		if(this.getPurchase()!=null && this.getPurchase().isSubmitted()) {
-			this.unitsOrdered = this.getUnits();			
-		}
+		return units;
 	}
-
+			
+	@Transient
+	private boolean received;
+	
 	public boolean isReceived() {
 		if (this.getUnitsReceived() >= (this.getUnits()==null?0:this.getUnits())) {
 			return true;
@@ -96,20 +90,16 @@ public class PurchaseComponent {
 		return false;
 	}
 	
-	public String getStatus() {
-		if(this.isReceived()) {
-			return "Received";
-		}
-		if(this.getPurchase().isSubmitted()) {
-			if(this.getUnitsInTransit()!=null && this.getUnitsInTransit()>0) {
-				return "In Transit";
-			}
-			return "Ordered";
-		}
-		return "Pending";
-	}
+	@Transient
+	private String componentNumber;
 	
 	public String getComponentNumber() {
 		return this.getComponent()!=null?this.getComponent().getNumber():null;
+	}
+	
+	public BigDecimal getTotalPrice() {
+		BigDecimal unitPrice = this.getUnitPrice()==null?BigDecimal.ZERO:this.getUnitPrice();
+		BigDecimal units = this.getUnits()==null?BigDecimal.ZERO:BigDecimal.valueOf(this.getUnits()); 
+		return unitPrice.multiply(units);
 	}
 }

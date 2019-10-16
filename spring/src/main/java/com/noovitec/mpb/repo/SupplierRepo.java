@@ -17,16 +17,16 @@ public interface SupplierRepo extends PagingAndSortingRepository<Supplier, Long>
 	@Query("select s from Supplier s where upper(s.name) LIKE CONCAT('%',UPPER(:searchKey),'%')")
 	Page<Supplier> findAll(Pageable pageable, String searchKey);
 
-	@Query("select distinct new com.noovitec.mpb.dto.SupplierDto(s.id, s.name, s.account, (ps.id is not null)) "
-			+ "from Supplier s " 
-			+ "left join s.components c "
-			+ "left join c.itemComponents ic "
-			+ "left join ic.item i "
-			+ "left join i.saleItems si "
-			+ "left join si.sale sale "
-			+ "left join sale.purchaseSales ps "
-			+ "where ps.purchase.id = :purchase_id")
-	public List<SupplierDto> findAllSuppliersForPurchase(@Param("purchase_id") Long purchase_id);
+//	@Query("select distinct new com.noovitec.mpb.dto.SupplierDto(s.id, s.name, s.account, (ps.id is not null)) "
+//			+ "from Supplier s " 
+//			+ "left join s.components c "
+//			+ "left join c.itemComponents ic "
+//			+ "left join ic.item i "
+//			+ "left join i.saleItems si "
+//			+ "left join si.sale sale "
+//			+ "left join sale.purchaseSales ps "
+//			+ "where ps.purchase.id = :purchase_id")
+//	public List<SupplierDto> findAllSuppliersForPurchase(@Param("purchase_id") Long purchase_id);
 
 	@Query("select distinct new com.noovitec.mpb.dto.KeyValueDto(s.id, s.name) "
 			+ "from Supplier s " 

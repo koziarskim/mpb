@@ -29,9 +29,9 @@
           <template v-slot:cell(unitsNeeded)="row">
             {{row.item.unitsSold - row.item.unitsProduced}} ({{row.item.unitsSold}} - {{row.item.unitsProduced}})
           </template>
-          <template v-slot:cell(unitCost)="row">
+          <template v-slot:cell(unitPrice)="row">
             <div style="display: flex">
-              $<b-form-input style="width:100px" class="form-control" type="tel" v-model="row.item.unitCost"></b-form-input>
+              $<b-form-input style="width:100px" class="form-control" type="tel" v-model="row.item.unitPrice"></b-form-input>
             </div>
           </template>
           <template v-slot:cell(units)="row">
@@ -65,7 +65,7 @@ export default {
         { key: "unitsNeeded", label: "Needed (Sold - Produced)", sortable: false },
         { key: "unitsInOrder", label: "Ordered (Not Received)", sortable: false },
         { key: "unitsOnStock", label: "On-Stock", sortable: false },
-        { key: "unitCost", label: "Unit Cost", sortable: false },
+        { key: "unitPrice", label: "Unit Price", sortable: false },
         { key: "units", label: "To Order", sortable: false },
         { key: "totalCost", label: "Total", sortable: false },
       ],
@@ -79,7 +79,7 @@ export default {
   },
   methods: {
     getTotalCost(item){
-      return (item.units * item.unitCost).toFixed(2);
+      return (item.units * item.unitPrice).toFixed(2);
     },
     updateComponents(components){
       this.selectedComponents = components;
@@ -94,7 +94,7 @@ export default {
     savePurchase() {
       this.purchase.purchaseComponents = [];
       this.selectedComponents.forEach(c => {
-       this.purchase.purchaseComponents.push({component: {id: c.id}, units: c.units, unitCost: c.unitCost});
+       this.purchase.purchaseComponents.push({component: {id: c.id}, units: c.units, unitPrice: c.unitPrice});
       })
       return http.post("/purchase", this.purchase).then(r => {
         this.purchase = r.data;

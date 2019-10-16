@@ -4,7 +4,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
-import java.sql.Timestamp;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
@@ -29,7 +28,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -46,10 +44,8 @@ import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfStamper;
 import com.noovitec.mpb.dto.ComponentDto;
 import com.noovitec.mpb.entity.Attachment;
-import com.noovitec.mpb.entity.Component;
 import com.noovitec.mpb.entity.Purchase;
 import com.noovitec.mpb.entity.PurchaseComponent;
-import com.noovitec.mpb.entity.PurchaseSale;
 import com.noovitec.mpb.repo.AttachmentRepo;
 import com.noovitec.mpb.repo.ComponentRepo;
 import com.noovitec.mpb.repo.PurchaseRepo;
@@ -89,9 +85,10 @@ class PurchaseRest {
 		return result;
 	}
 
+	//TODO: Use getAll instead.
 	@GetMapping("/purchase/submitted")
 	Collection<Purchase> getAllSubmitted() {
-		Collection<Purchase> result = purchaseRepo.findAllSubmitted();
+		Collection<Purchase> result = purchaseRepo.findAll();
 		return result;
 	}
 
@@ -105,7 +102,7 @@ class PurchaseRest {
 	HttpEntity<byte[]> getPdf(@PathVariable Long id) throws DocumentException, IOException {
 		Purchase purchase = purchaseRepo.findById(id).get();
 		byte[] data = null;
-		if (purchase.isSubmitted() && purchase.getAttachment() != null) {
+		if (purchase.getAttachment() != null) {
 			Attachment attachment = attachmentRepo.findById(purchase.getAttachment().getId()).get();
 			data = attachment.getData();
 		} else {
@@ -171,15 +168,12 @@ class PurchaseRest {
 		String componentUnits = "";
 		String componentPrice = "";
 		String componentTotalPrice = "";
-		List<ComponentDto> dtos = componentRepo.getComponentsForPurchaseAndSupplier(purchase.getId(), purchase.getSupplier().getId());
-		for (ComponentDto dto : dtos) {
-			if (dto.isSelected()) {
-				componentName += dto.getNumber() + "\n";
-				componentDescription += dto.getName() + "\n";
-				componentUnits += dto.getUnits() + "\n";
-				componentPrice += currencyFormat.format(dto.getUnitPrice()) + "\n";
-				componentTotalPrice += currencyFormat.format(dto.getTotalPrice()) + "\n";
-			}
+		for (PurchaseComponent pc : purchase.getPurchaseComponents()) {
+			componentName += pc.getComponent().getName() + "\n";
+			componentDescription += pc.getComponent().getDescription() + "\n";
+			componentUnits += pc.getUnits() + "\n";
+			componentPrice += currencyFormat.format(pc.getUnitPrice()) + "\n";
+			componentTotalPrice += currencyFormat.format(pc.getTotalPrice()) + "\n";
 		}
 		InputStream in = this.getClass().getClassLoader().getResourceAsStream("pdf/PO-Template.pdf");
 		PdfReader pdfTemplate = new PdfReader(in);

@@ -78,11 +78,11 @@ class SaleRest {
 		return result.map(response -> ResponseEntity.ok().body(response)).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
 	}
 
-	@GetMapping("/sale/purchase/{purchase_id}")
-	Collection<SaleDto> getAllByPurchase(@PathVariable Long purchase_id) {
-		Collection<SaleDto> saleDtos = saleRepo.findAllSalesAndPurchaseSales(purchase_id);
-		return saleDtos;
-	}
+//	@GetMapping("/sale/purchase/{purchase_id}")
+//	Collection<SaleDto> getAllByPurchase(@PathVariable Long purchase_id) {
+//		Collection<SaleDto> saleDtos = saleRepo.findAllSalesAndPurchaseSales(purchase_id);
+//		return saleDtos;
+//	}
 
 	@GetMapping("/sale/customer/{customer_id}")
 	Collection<Sale> getAllByCustomer(@PathVariable Long customer_id) {

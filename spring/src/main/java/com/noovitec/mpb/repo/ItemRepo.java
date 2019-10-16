@@ -27,9 +27,9 @@ public interface ItemRepo extends PagingAndSortingRepository<Item, Long> {
 	@Query(value = "select new com.noovitec.mpb.dto.KeyValueDto(i.id, i.name) from Item i")
 	public List<KeyValueDto> getAllKeyValueDtos();
 
-	@Query("select i " + "from Item i " + "join i.saleItems si " + "join si.sale s " + "join s.purchaseSales ps " + "left join i.brand b "
-			+ "left join i.category c " + "join ps.purchase.purchaseComponents pc " + "where ps.purchase.id = :purchase_id")
-	List<Item> getPurchaseItems(@Param("purchase_id") Long purchase_id);
+//	@Query("select i " + "from Item i " + "join i.saleItems si " + "join si.sale s " + "join s.purchaseSales ps " + "left join i.brand b "
+//			+ "left join i.category c " + "join ps.purchase.purchaseComponents pc " + "where ps.purchase.id = :purchase_id")
+//	List<Item> getPurchaseItems(@Param("purchase_id") Long purchase_id);
 
 	@Query("select new com.noovitec.mpb.dto.ItemListDto(i.id, i.number, i.name, b.name, c.name, i.unitsOnStack, sum(si.units), sum(se.unitsScheduled), sum(p.unitsProduced)) from Item i "
 			+ "left join Category c on c.id = i.category.id "

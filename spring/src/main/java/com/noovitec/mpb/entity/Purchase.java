@@ -1,9 +1,9 @@
 package com.noovitec.mpb.entity;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashSet;
 
 import javax.persistence.CascadeType;
@@ -12,7 +12,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
@@ -39,11 +38,12 @@ public class Purchase {
 	private LocalDateTime created;
 	@UpdateTimestamp
 	private LocalDateTime updated;
-	private Date date;
+	private LocalDate date;
 	private String number;
-	private Date expectedDate;
-	private boolean submitted;
-	private BigDecimal totalPrice = BigDecimal.ZERO;
+	private LocalDate expectedDate;
+	private LocalDate shippingDate;
+	private String invoiceNumber;
+	private String containerNumber;
 
 	@JsonIgnoreProperties({ "components" })
 	@ManyToOne()
@@ -63,30 +63,26 @@ public class Purchase {
 	@JsonIgnoreProperties(value = { "purchase" }, allowSetters = true)
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "purchase_id")
-	private Collection<PurchaseSale> purchaseSales = new HashSet<PurchaseSale>();
-
-//	@OneToMany(cascade = CascadeType.ALL)
-//	@JoinTable(name = "purchase_sale_item", joinColumns = @JoinColumn(name = "purchase_id"), inverseJoinColumns = @JoinColumn(name = "sale_item_id"))
-//	private Collection<SaleItem> saleItems = new HashSet<SaleItem>();
-
-	@JsonIgnoreProperties(value = { "purchase" }, allowSetters = true)
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn(name = "purchase_id")
 	private Collection<PurchaseComponent> purchaseComponents = new HashSet<PurchaseComponent>();
 	
 	@Transient
 	private boolean received;
 	
 	public boolean isReceived() {
-		if(this.getPurchaseComponents().size()==0 || !this.isSubmitted()) {
-			return false;
-		}
 		for(PurchaseComponent pc : this.getPurchaseComponents()) {
 			if(!pc.isReceived()) {
 				return false;
 			}
 		}
 		return true;
+	}
+	
+	public BigDecimal getTotalPrice() {
+		BigDecimal price = BigDecimal.ZERO;
+			for(PurchaseComponent pc: this.getPurchaseComponents()) {
+				price.add(pc.getTotalPrice());
+			}
+		return price;
 	}
 
 }

@@ -96,11 +96,11 @@ class ComponentRest {
 		return ResponseEntity.ok().body(Collections.singletonMap("number", number));
 	}
 
-	@GetMapping("/component/purchase/{purchase_id}/supplier/{supplier_id}")
-	Collection<ComponentDto> getComponentsForPurchaseAndSupplier(@PathVariable Long purchase_id, @PathVariable Long supplier_id) {
-		Collection<ComponentDto> dtos = componentRepo.getComponentsForPurchaseAndSupplier(purchase_id, supplier_id);
-		return dtos;
-	}
+//	@GetMapping("/component/purchase/{purchase_id}/supplier/{supplier_id}")
+//	Collection<ComponentDto> getComponentsForPurchaseAndSupplier(@PathVariable Long purchase_id, @PathVariable Long supplier_id) {
+//		Collection<ComponentDto> dtos = componentRepo.getComponentsForPurchaseAndSupplier(purchase_id, supplier_id);
+//		return dtos;
+//	}
 
 	@PostMapping("/component")
 	ResponseEntity<Component> post(@RequestBody(required = false) Component component) throws URISyntaxException {

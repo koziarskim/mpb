@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashSet;
 
 import javax.persistence.CascadeType;
@@ -60,11 +59,6 @@ public class Sale {
 	@OneToMany(cascade=CascadeType.ALL, orphanRemoval=true)
 	@JoinColumn(name = "sale_id")
 	private Collection<SaleItem> saleItems = new HashSet<SaleItem>();
-	
-	@JsonIgnoreProperties(value={ "sale" }, allowSetters=true)
-	@OneToMany()
-	@JoinColumn(name = "sale_id")
-	private Collection<PurchaseSale> purchaseSales = new HashSet<PurchaseSale>();
 	
 	@Transient
 	private Long unitsSold;

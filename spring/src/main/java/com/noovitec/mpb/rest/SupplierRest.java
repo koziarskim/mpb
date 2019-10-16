@@ -63,11 +63,11 @@ class SupplierRest {
 	}
 
 	//Get all suppliers included in purchase (components associated with sales for purchase).
-	@GetMapping("/supplier/purchase/{purchase_id}")
-	Collection<SupplierDto> findAllSuppliersForPurchase(@PathVariable Long purchase_id) {
-		Collection<SupplierDto> result = supplierRepo.findAllSuppliersForPurchase(purchase_id);
-		return result;
-	}
+//	@GetMapping("/supplier/purchase/{purchase_id}")
+//	Collection<SupplierDto> findAllSuppliersForPurchase(@PathVariable Long purchase_id) {
+//		Collection<SupplierDto> result = supplierRepo.findAllSuppliersForPurchase(purchase_id);
+//		return result;
+//	}
 
 	@GetMapping("/supplier/item/{item_id}")
 	Collection<KeyValueDto> findSuppliersForItem(@PathVariable Long item_id) {
