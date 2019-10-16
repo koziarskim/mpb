@@ -13,7 +13,9 @@
           <span>{{season.name}}</span>
       </div>
     </div>
-    <div v-for="season in selectedSeasons" :key="season.id+season.name">{{season.name}}</div>
+    <div v-if="showSelected">
+      <div v-for="season in selectedSeasons" :key="season.id+season.name">{{season.name}}</div>
+    </div>
     <br/>
 
     <!-- Customer -->
@@ -29,7 +31,9 @@
           <span>{{customer.name}}</span>
       </div>
     </div>
-    <div v-for="customer in selectedCustomers" :key="customer.id+customer.name">{{customer.name}}</div>
+    <div v-if="showSelected">
+      <div v-for="customer in selectedCustomers" :key="customer.id+customer.name">{{customer.name}}</div>
+    </div>
     <br/>
 
     <!-- Item -->
@@ -45,7 +49,9 @@
           <span>{{item.name}}</span>
       </div>
     </div>
-    <div v-for="item in selectedItems" :key="item.id+item.name">{{item.name}}</div>
+    <div v-if="showSelected">
+      <div v-for="item in selectedItems" :key="item.id+item.name">{{item.name}}</div>
+    </div>
     <br/>
 
     <!-- Sale -->
@@ -61,7 +67,9 @@
           <span>{{sale.name}}</span>
       </div>
     </div>
-    <div v-for="sale in selectedSales" :key="sale.id+sale.name">{{sale.name}}</div>
+    <div v-if="showSelected">
+      <div v-for="sale in selectedSales" :key="sale.id+sale.name">{{sale.name}}</div>
+    </div>
     <br/>
 
     <!-- Supplier -->
@@ -77,7 +85,9 @@
           <span>{{supplier.name}}</span>
       </div>
     </div>
-    <div v-for="supplier in selectedSuppliers" :key="supplier.id+supplier.name">{{supplier.name}}</div>
+    <div v-if="showSelected">
+      <div v-for="supplier in selectedSuppliers" :key="supplier.id+supplier.name">{{supplier.name}}</div>
+    </div>
     <br/>
 
     <!-- Component -->
@@ -93,11 +103,13 @@
           <span>{{component.name}}</span>
       </div>
     </div>
-    <div v-for="component in selectedComponents" :key="component.id+component.name">{{component.name}}</div>
+    <div v-if="showSelected">
+      <div v-for="component in selectedComponents" :key="component.id+component.name">{{component.name}}</div>
+    </div>
     <br/>
 
     <div style="text-align: right;">
-      <b-button size="sm" type="reset" variant="success" @click="getPoComponents()">Apply</b-button>
+      <b-button size="sm" type="reset" variant="success" @click="getPoComponents()">Show</b-button>
     </div>
   </b-container>
 </template>
@@ -113,6 +125,7 @@ export default {
   },
   data() {
     return {
+      showSelected: false,
       searchDto: {
         seasons: [],
         seasonName: "",

@@ -37,8 +37,8 @@
           <template v-slot:cell(units)="row">
             <b-form-input style="width:100px" class="form-control" type="tel" v-model="row.item.units"></b-form-input>
           </template>
-          <template v-slot:cell(totalCost)="row">
-            ${{row.item.totalCost = getTotalCost(row.item)}}
+          <template v-slot:cell(totalPrice)="row">
+            ${{row.item.totalPrice = getTotalPrice(row.item)}}
           </template>
         </b-table>
       </b-col>
@@ -67,7 +67,7 @@ export default {
         { key: "unitsOnStock", label: "On-Stock", sortable: false },
         { key: "unitPrice", label: "Unit Price", sortable: false },
         { key: "units", label: "To Order", sortable: false },
-        { key: "totalCost", label: "Total", sortable: false },
+        { key: "totalPrice", label: "Total", sortable: false },
       ],
     };
   },
@@ -78,7 +78,7 @@ export default {
   watch: {
   },
   methods: {
-    getTotalCost(item){
+    getTotalPrice(item){
       return (item.units * item.unitPrice).toFixed(2);
     },
     updateComponents(components){

@@ -84,7 +84,7 @@ public class PurchaseComponent {
 	private boolean received;
 	
 	public boolean isReceived() {
-		if (this.getUnitsReceived() >= (this.getUnits()==null?0:this.getUnits())) {
+		if (this.getUnitsReceived()!=0 && this.getUnitsReceived() >= (this.getUnits()==null?0:this.getUnits())) {
 			return true;
 		}
 		return false;

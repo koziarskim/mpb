@@ -181,7 +181,7 @@ public class SearchRepoImpl implements SearchRepoCustom {
 			dto.setName(c.getName());
 			dto.setUnitsOnStock(Long.valueOf(c.getUnitsOnStack()));
 			dto.setUnitsInOrder(c.getUnitsInOrder());
-			dto.setUnitCost(c.getUnitCost());
+			dto.setUnitPrice(c.getUnitCost());
 			Long unitsSold = 0L;
 			Long unitsProduced = 0L;
 			for(ItemComponent ic: c.getItemComponents()) {
@@ -200,7 +200,7 @@ public class SearchRepoImpl implements SearchRepoCustom {
 			dto.setUnitsSold(unitsSold);
 			dto.setUnitsProduced(unitsProduced);
 			dto.setUnits(dto.getUnitsSold() - dto.getUnitsProduced() - dto.getUnitsInOrder() - dto.getUnitsOnStock());
-			dto.setTotalCost(dto.getUnitCost().multiply(BigDecimal.valueOf(dto.getUnits(), 2)));
+			dto.setTotalPrice(dto.getUnitPrice().multiply(BigDecimal.valueOf(dto.getUnits(), 2)));
 			dtos.add(dto);
 		}
 		return dtos;
