@@ -37,6 +37,7 @@ public class PurchaseComponent {
 	private LocalDateTime updated;
 	private Long units; //Units ordered;
 	private Long unitsOrdered = 0L; //Units submitted.
+	//TODO: Should this be a transient?
 	private Long unitsReceived = 0L;
 	private Long unitsInTransit = 0L;
 
@@ -60,6 +61,16 @@ public class PurchaseComponent {
 	@Transient
 	private String componentNumber;
 
+	public Long getUnitsReceived() {
+		Long units = 0L;
+		for(Receiving r: this.getReceivings()) {
+			if(r.getReceivedDate()!=null) {
+				units += Long.valueOf(r.getUnits());
+			}
+		}
+		return units;
+	}
+	
 	public void updateUnits() {
 		Long unitsInTransit = 0L;
 		Long unitsReceived = 0L;

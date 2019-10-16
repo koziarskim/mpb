@@ -99,6 +99,17 @@ public class Component {
 		return this.getNumber() + " - " + this.getName();
 	}
 
+	@Transient
+	private Long unitsInOrder = 0L;
+	
+	public Long getUnitsInOrder() {
+		Long units = 0L;
+		for(PurchaseComponent pc: this.getPurchaseComponents()) {
+			units += (pc.getUnits() - pc.getUnitsReceived());
+		}
+		return units;
+	}
+	
 	//Helper methods
 	//Returns extra units.
 	public Long addUnitsOnStack(Long units) {

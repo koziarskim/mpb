@@ -7,16 +7,22 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import com.noovitec.mpb.dto.KeyValueDto;
+import com.noovitec.mpb.dto.PoComponentDto;
 import com.noovitec.mpb.dto.SearchDto;
 import com.noovitec.mpb.entity.Component;
+import com.noovitec.mpb.entity.ItemComponent;
 import com.noovitec.mpb.entity.SaleItem;
 import com.noovitec.mpb.repo.interfaces.SearchRepoCustom;
 
 @Repository
 public class SearchRepoImpl implements SearchRepoCustom {
+
+	private final Logger log = LoggerFactory.getLogger(SearchRepoImpl.class);
 
     @PersistenceContext
     EntityManager entityManager;
@@ -154,11 +160,46 @@ public class SearchRepoImpl implements SearchRepoCustom {
 		if(searchDto.getComponentName()!=null) {
 			query.setParameter("componentName", searchDto.getComponentName());
 		}
+		@SuppressWarnings("unchecked")
 		List<Long> ids = query.getResultList();
+		@SuppressWarnings("unchecked")
 		List<Component> components = entityManager.createQuery("select c from Component c where c.id in (:ids) ")
 				.setParameter("ids", ids).getResultList();
-
 		return components;
 	}
 
+	@Override
+	public List<PoComponentDto> findPoComponents(SearchDto searchDto) {
+		@SuppressWarnings("unchecked")
+		List<Component> components = entityManager.createQuery("select c from Component c where c.id in (:ids) ")
+				.setParameter("ids", searchDto.getComponents()).getResultList();
+		List<PoComponentDto> dtos = new ArrayList<PoComponentDto>();
+		for(Component c: components) {
+			PoComponentDto dto = new PoComponentDto();
+			dto.setId(c.getId());
+			dto.setName(c.getName());
+			dto.setUnitsOnStock(Long.valueOf(c.getUnitsOnStack()));
+			dto.setUnitsInOrder(c.getUnitsInOrder());
+			dto.setUnitCost(c.getUnitCost());
+			Long unitsSold = 0L;
+			Long unitsProduced = 0L;
+			for(ItemComponent ic: c.getItemComponents()) {
+				if(!searchDto.getItems().contains(ic.getItem().getId())) {
+					continue;
+				}
+				Long unitsInItem = ic.getUnits().longValue();
+				for(SaleItem si: ic.getItem().getSaleItems()) {
+					if(!searchDto.getSales().contains(si.getId())) {
+						continue;
+					}
+					unitsSold += (unitsInItem * si.getUnits());
+					unitsProduced += (unitsInItem * si.getUnitsProduced());
+				}
+			}
+			dto.setUnitsSold(unitsSold);
+			dto.setUnitsProduced(unitsProduced);
+			dtos.add(dto);
+		}
+		return dtos;
+	}	
 }

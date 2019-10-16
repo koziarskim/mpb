@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.noovitec.mpb.dto.KeyValueDto;
+import com.noovitec.mpb.dto.PoComponentDto;
 import com.noovitec.mpb.dto.SearchDto;
 import com.noovitec.mpb.entity.Component;
 import com.noovitec.mpb.entity.Item;
@@ -77,13 +78,9 @@ class SearchRest {
 		return dtos;
 	}
 
-	/*
-	 * Use this to create and update entity. No need to use PUT for update. If ID is
-	 * not null, it will try to update.
-	 */
-	@PostMapping("/search/item")
-	ResponseEntity<Item> post(@RequestBody(required = false) Item jsonItem) throws URISyntaxException {
-//		Item result = searchRepo.save(jsonItem);
-		return ResponseEntity.ok().body(null);
+	@PostMapping("/search/po/component")
+	List<PoComponentDto> getAllPoComponents(@RequestBody SearchDto searchDto) {
+		List<PoComponentDto> components = searchRepo.findPoComponents(searchDto);
+		return components;
 	}
 }

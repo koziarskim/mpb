@@ -1,9 +1,9 @@
 <template>
-  <b-container fluid>
+  <b-container fluid style="font-size: 10px;">
     <!-- Season -->
     <label class="top-label">Seasons: <a href="#" @click="clearSeasons()">(x)</a></label>
     <div style="display: flex">
-      <input @keydown.enter="getSeasons(true)" @click="showSeasonMenu()" class="form-control search-width" type="tel" v-model="searchDto.seasonName" placeholder="Pick Season">
+      <input @keydown.enter="getSeasons()" @click="showSeasonMenu()" class="form-control search-width" type="tel" v-model="searchDto.seasonName" placeholder="Pick Season">
       <div v-if="visibleSeasonMenu" class="chk-all-tab"><input type="checkbox" v-model="checkAllSeason"><span>All</span></div>
       <div v-if="visibleSeasonMenu" class="btn-tab" @click="closeSeasonMenu()">Close</div>
     </div>
@@ -19,7 +19,7 @@
     <!-- Customer -->
     <label class="top-label">Customers: <a href="#" @click="clearCustomers()">(x)</a></label>
     <div style="display: flex">
-      <input @keydown.enter="getCustomers(true)" @click="showCustomerMenu()" class="form-control search-width" type="tel" v-model="searchDto.customerName" placeholder="Pick Customer">
+      <input @keydown.enter="getCustomers()" @click="showCustomerMenu()" class="form-control search-width" type="tel" v-model="searchDto.customerName" placeholder="Pick Customer">
       <div v-if="visibleCustomerMenu" class="chk-all-tab"><input type="checkbox" v-model="checkAllCustomer"><span>All</span></div>
       <div v-if="visibleCustomerMenu" class="btn-tab" @click="closeCustomerMenu()">Close</div>
     </div>
@@ -35,7 +35,7 @@
     <!-- Item -->
     <label class="top-label">Items: <a href="#" @click="clearItems()">(x)</a></label>
     <div style="display: flex">
-      <input @keydown.enter="getItems(true)" @click="showItemMenu()" class="form-control search-width" type="tel" v-model="searchDto.itemName" placeholder="Pick Item">
+      <input @keydown.enter="getItems()" @click="showItemMenu()" class="form-control search-width" type="tel" v-model="searchDto.itemName" placeholder="Pick Item">
       <div v-if="visibleItemMenu" class="chk-all-tab"><input type="checkbox" v-model="checkAllItem"><span>All</span></div>
       <div v-if="visibleItemMenu" class="btn-tab" @click="closeItemMenu()">Close</div>
     </div>
@@ -51,7 +51,7 @@
     <!-- Sale -->
     <label class="top-label">Sales: <a href="#" @click="clearSales()">(x)</a></label>
     <div style="display: flex">
-      <input @keydown.enter="getSales(true)" @click="showSaleMenu()" class="form-control search-width" type="tel" v-model="searchDto.saleNumber" placeholder="Pick Sale">
+      <input @keydown.enter="getSales()" @click="showSaleMenu()" class="form-control search-width" type="tel" v-model="searchDto.saleNumber" placeholder="Pick Sale">
       <div v-if="visibleSaleMenu" class="chk-all-tab"><input type="checkbox" v-model="checkAllSale"><span>All</span></div>
       <div v-if="visibleSaleMenu" class="btn-tab" @click="closeSaleMenu()">Close</div>
     </div>
@@ -67,7 +67,7 @@
     <!-- Supplier -->
     <label class="top-label">Suppliers: <a href="#" @click="clearSuppliers()">(x)</a></label>
     <div style="display: flex">
-      <input @keydown.enter="getSuppliers(true)" @click="showSupplierMenu()" class="form-control search-width" type="tel" v-model="searchDto.supplierName" placeholder="Pick Supplier">
+      <input @keydown.enter="getSuppliers()" @click="showSupplierMenu()" class="form-control search-width" type="tel" v-model="searchDto.supplierName" placeholder="Pick Supplier">
       <div v-if="visibleSupplierMenu" class="chk-all-tab"><input type="checkbox" v-model="checkAllSupplier"><span>All</span></div>
       <div v-if="visibleSupplierMenu" class="btn-tab" @click="closeSupplierMenu()">Close</div>
     </div>
@@ -83,7 +83,7 @@
     <!-- Component -->
     <label class="top-label">Components: <a href="#" @click="clearComponents()">(x)</a></label>
     <div style="display: flex">
-      <input @keydown.enter="getComponents(true)" @click="showComponentMenu()" class="form-control search-width" type="tel" v-model="searchDto.componentName" placeholder="Pick Component">
+      <input @keydown.enter="getComponents()" @click="showComponentMenu()" class="form-control search-width" type="tel" v-model="searchDto.componentName" placeholder="Pick Component">
       <div v-if="visibleComponentMenu" class="chk-all-tab"><input type="checkbox" v-model="checkAllComponent"><span>All</span></div>
       <div v-if="visibleComponentMenu" class="btn-tab" @click="closeComponentMenu()">Close</div>
     </div>
@@ -97,7 +97,7 @@
     <br/>
 
     <div style="text-align: right;">
-      <b-button size="sm" type="reset" variant="success" @click="updateParent()">Apply</b-button>
+      <b-button size="sm" type="reset" variant="success" @click="getPoComponents()">Apply</b-button>
     </div>
   </b-container>
 </template>
@@ -216,7 +216,7 @@ export default {
       this.closeSeasonMenu();
       this.clearCustomers();
     },
-    getSeasons(fresh){
+    getSeasons(){
         return http.post("/search/season/kv", this.searchDto).then(r => {
           r.data.forEach(season => {
             var found = this.selectedSeasons.find(it => it.id==season.id && it.selected);
@@ -249,7 +249,7 @@ export default {
       this.closeCustomerMenu();
       this.clearItems();
     },
-    getCustomers(fresh){
+    getCustomers(){
         return http.post("/search/customer/kv", this.searchDto).then(r => {
           r.data.forEach(customer => {
             var found = this.selectedCustomers.find(it => it.id==customer.id && it.selected);
@@ -281,7 +281,7 @@ export default {
       this.closeItemMenu();
       this.clearSales();
     },
-    getItems(fresh){
+    getItems(){
         return http.post("/search/item/kv", this.searchDto).then(r => {
           r.data.forEach(item => {
             var found = this.selectedItems.find(it => it.id==item.id && it.selected);
@@ -313,7 +313,7 @@ export default {
       this.closeSaleMenu();
       this.clearSuppliers();
     },
-    getSales(fresh){
+    getSales(){
         return http.post("/search/sale/kv", this.searchDto).then(r => {
           r.data.forEach(sale => {
             var found = this.selectedSales.find(it => it.id==sale.id && it.selected);
@@ -345,7 +345,7 @@ export default {
       this.closeSupplierMenu();
       this.clearComponents();
     },
-    getSuppliers(fresh){
+    getSuppliers(){
         return http.post("/search/supplier/kv", this.searchDto).then(r => {
           r.data.forEach(supplier => {
             var found = this.selectedSuppliers.find(it => it.id==supplier.id && it.selected);
@@ -376,7 +376,7 @@ export default {
       this.selectedComponents = [];
       this.closeComponentMenu();
     },
-    getComponents(fresh){
+    getComponents(){
         return http.post("/search/component/kv", this.searchDto).then(r => {
           r.data.forEach(component => {
             var found = this.selectedComponents.find(it => it.id==component.id && it.selected);
@@ -389,8 +389,18 @@ export default {
       return Promise.resolve();
     },
 
-    updateParent(){
-      this.$emit("componentsUpdated", this.selectedComponents);
+    // PoComponentDtos
+    getPoComponents(){
+        return http.post("/search/po/component", this.searchDto).then(r => {
+          this.updateParent(r.data);
+        }).catch(e => {
+          console.log("API error: " + e);
+        });
+      return Promise.resolve();
+    },
+
+    updateParent(components){
+      this.$emit("componentsUpdated", components);
     }
   },
   mounted() {
