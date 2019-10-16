@@ -20,6 +20,7 @@ public class PoComponentDto {
 	private Long unitsInOrder;
 	private Long unitsOnStock;
 	private Long units;
+	private BigDecimal unitCost = BigDecimal.ZERO;
 	private BigDecimal unitPrice = BigDecimal.ZERO;
 	private BigDecimal totalPrice = BigDecimal.ZERO;
 }

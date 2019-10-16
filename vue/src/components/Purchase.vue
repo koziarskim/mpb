@@ -84,8 +84,9 @@ export default {
         { key: "unitsNeeded", label: "Needed (S-P)", sortable: false },
         { key: "unitsInOrder", label: "Pen. Orders", sortable: false },
         { key: "unitsOnStock", label: "On-Stock", sortable: false },
-        { key: "unitPrice", label: "Unit Price", sortable: false },
-        { key: "units", label: "To Order", sortable: false },
+        { key: "unitCost", label: "Unit Cost", sortable: false },
+        { key: "unitPrice", label: "P.O. Price", sortable: false },
+        { key: "units", label: "P.O. Units", sortable: false },
         { key: "totalPrice", label: "Total", sortable: false },
       ],
     };
