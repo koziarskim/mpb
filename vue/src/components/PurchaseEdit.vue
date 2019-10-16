@@ -1,31 +1,62 @@
 <template>
   <b-container fluid>
     <b-row>
-      <b-col cols="2">
-        <span style="text-align: left; font-size: 18px; font-weight: bold">Purchase Order:</span>
-      </b-col>
-      <b-col cols="2">
-        <input class="form-control" type="text" v-model="purchase.number" placeholder="Item name" :disabled="disabled()">
-      </b-col>
-      <b-col cols="2">
-        <input class="form-control" type="date" v-model="date" placeholder="Date" :disabled="disabled()">
-      </b-col>
       <b-col>
-        <div style="text-align: right;">
-          <b-button style="margin: 2px;" type="submit" variant="info" @click="goToPurchaseComponent()">Next</b-button>
-          <b-button style="margin: 2px;" type="reset" variant="success" @click="saveAndClose" :disabled="disabled()">Save & Close</b-button>
+        <div style="display:flex">
+          <span style="padding-right:125px; text-align: left; font-size: 18px; font-weight: bold">Purchase<br/>Order</span>
+          <div style="width: 160px; padding-left: 3px; padding-right: 3px;">
+            <label class="top-label">P.O. Number:</label>
+            <input class="form-control" type="text" v-model="purchase.number" placeholder="P.O. Number">
+          </div>
+          <div style="width: 175px; padding-left: 3px; padding-right: 3px;">
+            <label class="top-label">P.O. Date:</label>
+            <input class="form-control" type="date" v-model="purchase.date">
+          </div>
+          <div style="width: 175px; padding-left: 3px; padding-right: 3px;">
+            <label class="top-label">Shipping Date:</label>
+            <input class="form-control" type="date" v-model="purchase.shippingDate">
+          </div>
+          <div style="width: 175px; padding-left: 3px; padding-right: 3px;">
+            <label class="top-label">Expected Date:</label>
+            <input class="form-control" type="date" v-model="purchase.expectedDate">
+          </div>
+          <div style="width: 160px; padding-left: 3px; padding-right: 3px;">
+            <label class="top-label">Container:</label>
+            <input class="form-control" type="text" v-model="purchase.containerNumber" placeholder="Container">
+          </div>
+          <div style="width: 160px; padding-left: 3px; padding-right: 3px;">
+            <label class="top-label">Invoice:</label>
+            <input class="form-control" type="text" v-model="purchase.invoiceNumber" placeholder="Invoice">
+          </div>
+          <div style="text-align: right;">
+            <b-button style="margin: 2px; margin-top:22px" type="reset" variant="success" @click="saveAndClose">Save</b-button>
+          </div>
         </div>
       </b-col>
     </b-row>
-    <b-row>
-      <b-col>
-        <label class="top-label">Available Sale Orders:</label>
-        <b-table v-if="availableSales.length>0" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="availableSales" :fields="columns">
-          <template v-slot:cell(number)="row">
-            <b-button size="sm" @click.stop="goToSale(row.item.id)" variant="link">{{row.item.number}}</b-button>
+    <b-row style="font-size: 12px">
+      <b-col cols=2>
+        <component-search v-on:componentsUpdated="updateComponents"></component-search>
+      </b-col>
+      <b-col cols=10>
+        <label class="top-label">Components:</label>
+        <b-table sort-by.sync="name" sort-desc.sync="false" :items="selectedComponents" :fields="fields">
+          <template v-slot:cell(totalNeeded)="row">
+            {{row.item.totalSold - row.item.totalProduced}} ({{row.item.totalSold}} - {{row.item.totalProduced}})
           </template>
-          <template v-slot:cell(action)="row">
-            <b-form-checkbox v-model="row.item.selected" @input="rowSelect(row.item.id, row.item.selected)" :disabled="disabled()"></b-form-checkbox>
+          <template v-slot:cell(unitsNeeded)="row">
+            {{row.item.unitsSold - row.item.unitsProduced}} ({{row.item.unitsSold}} - {{row.item.unitsProduced}})
+          </template>
+          <template v-slot:cell(unitPrice)="row">
+            <div style="display: flex">
+              $<b-form-input style="width:100px" class="form-control" type="tel" v-model="row.item.unitPrice"></b-form-input>
+            </div>
+          </template>
+          <template v-slot:cell(units)="row">
+            <b-form-input style="width:100px" class="form-control" type="tel" v-model="row.item.units"></b-form-input>
+          </template>
+          <template v-slot:cell(totalPrice)="row">
+            ${{row.item.totalPrice = getTotalPrice(row.item)}}
           </template>
         </b-table>
       </b-col>
@@ -37,68 +68,57 @@
 import http from "../http-common";
 import router from "../router";
 import moment from "moment";
+import vue from "vue";
+import ComponentSearch from "./ComponentSearch";
 
 export default {
   data() {
     return {
-      purchase: {},
-      customer: {},
-      supplier: {},
-      availableSales: [],
-      availableSuppliers: [],
-      sortBy: "id",
-      sortDesc: false,
-      columns: [
-        { key: "number", label: "S.O.", sortable: false },
-        { key: "customerName", label: "Customer", sortable: false },
-        { key: "date", label: "Date", sortable: false },
-        { key: "dc", label: "Distribution", sortable: false },
-        { key: "action", label: "Action", sortable: false }
+      purchase: {
+        date: moment().utc().format("YYYY-MM-DD")
+      },
+      selectedComponents: [],
+      fields: [
+        { key: "name", label: "Name", sortable: false },
+        { key: "totalNeeded", label: "Total Needed", sortable: false },
+        { key: "unitsNeeded", label: "Needed (S-P)", sortable: false },
+        { key: "unitsInOrder", label: "Pen. Orders", sortable: false },
+        { key: "unitsOnStock", label: "On-Stock", sortable: false },
+        { key: "unitCost", label: "Unit Cost", sortable: false },
+        { key: "unitPrice", label: "P.O. Price", sortable: false },
+        { key: "units", label: "P.O. Units", sortable: false },
+        { key: "totalPrice", label: "Total", sortable: false },
       ],
-      date: "",
     };
+  },
+  components:{
+    'component-search': ComponentSearch
   },
   computed: {},
   watch: {
-      date(new_date, old_date){
-          this.purchase.date = new_date;
-      }
   },
   methods: {
-    disabled(){
-        return this.purchase.submitted;
+    getTotalPrice(item){
+      return (item.units * item.unitPrice).toFixed(2);
     },
-    getPurchaseData(id) {
-      http
-        .get("/purchase/" + id)
-        .then(response => {
-          this.purchase = response.data;
-          this.date = moment(response.data.date?response.data.date:moment()).utc().format("YYYY-MM-DD");
-          this.getAvailableSales(response.data.id);
-        })
-        .catch(e => {
+    updateComponents(components){
+      this.selectedComponents = components;
+    },
+    getPurchase(purchase_id) {
+      http.get("/purchase/" + purchase_id).then(r => {
+          this.purchase = r.data;
+        }).catch(e => {
           console.log("API error: " + e);
         });
     },
     savePurchase() {
-      if (this.purchase.submitted && this.purchase.attachment){
-          return Promise.resolve();
-      }
-      if (this.purchase.supplier) {
-        var supplier = this.availableSuppliers.find(
-          s => s.id == this.purchase.supplier.id
-        );
-        if (!supplier) {
-          this.purchase.supplier = null;
-          this.purchase.purchaseComponents = [];
-        }
-      }
-      return http
-        .post("/purchase", this.purchase)
-        .then(response => {
-          this.getPurchaseData(response.data.id);
-        })
-        .catch(e => {
+      this.purchase.purchaseComponents = [];
+      this.selectedComponents.forEach(c => {
+       this.purchase.purchaseComponents.push({component: {id: c.id}});
+      })
+      return http.post("/purchase", this.purchase).then(r => {
+        this.purchase = r.data;
+        }).catch(e => {
           console.log("API error: " + e);
         });
     },
@@ -107,92 +127,19 @@ export default {
         router.push("/purchaseList");
       });
     },
-    getAvailableSales(purchase_id) {
-      http
-        .get("/sale/purchase/" + purchase_id)
-        .then(response => {
-          this.availableSales = response.data;
-          this.getAvailableSuppliers(purchase_id);
-        })
-        .catch(e => {
-          console.log("API error: " + e);
-        });
+    goToComponent(component_id) {
+      router.push("/componentEdit/" + component_id);
     },
-    getAvailableSuppliers(purchase_id) {
-      return http
-        .get("/supplier/purchase/" + purchase_id)
-        .then(response => {
-          this.availableSuppliers = response.data;
-        })
-        .catch(e => {
-          console.log("API error: " + e);
-        });
+    saleHeight(){
+      return +window.innerHeight - 150 +"px";
     },
-    rowSelect(sale_id, selected) {
-      var ps = {};
-      if (selected) {
-        ps = {
-          sale: { id: sale_id }
-        };
-        this.purchase.purchaseSales.push(ps);
-      } else {
-        ps = this.purchase.purchaseSales.find(ps => ps.sale.id == sale_id);
-        var idx = this.purchase.purchaseSales.findIndex(ps => ps.sale.id == sale_id);
-        this.purchase.purchaseSales.splice(idx, 1);
-        var component = null;
-        ps.sale.saleItems.forEach(si => {
-          si.item.itemComponents.forEach(ic => {
-            component = this.purchase.purchaseComponents.find(
-              pc => pc.component.id == ic.component.id
-            );
-            if (component) {
-              return;
-            }
-          });
-        });
-        if (component) {
-          var indx = this.purchase.purchaseComponents.findIndex(pc => pc.component.id == ic.component.id);
-          this.purchase.purchaseComponents.splice(indx, 1);
-        }
-      }
-      this.savePurchase();
-    },
-    comRowSelect(com_id, value) {
-      var pc = {};
-      if (value) {
-        pc = {
-          component: { id: com_id }
-        };
-        this.purchase.purchaseComponents.push(pc);
-      } else {
-        pc = this.purchase.purchaseComponents.find(
-          pc => pc.component.id == com_id
-        );
-        this.purchase.purchaseComponents.splice(
-          this.purchase.purchaseComponents.findIndex(
-          pc => pc.component.id == com_id
-        ),
-          1
-        );
-      }
-    },
-    goToSale(sale_id) {
-      router.push("/saleEdit/" + sale_id);
-    },
-    goToPurchaseComponent() {
-      this.savePurchase().then(r => {
-        router.push("/purchaseComponent/" + this.purchase.id);
-      });
-    }
   },
   mounted() {
-    var id = this.$route.params.purchase_id;
-    if (id) {
-      this.getPurchaseData(id);
+    var purchase_id = this.$route.params.purchase_id;
+    if (purchase_id) {
+      this.getPurchase(purchase_id);
     }
   }
 };
 </script>
 
-<style>
-</style>

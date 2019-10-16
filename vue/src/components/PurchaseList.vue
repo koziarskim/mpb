@@ -13,14 +13,14 @@
       </b-col>
       <b-col>
         <div style="text-align: right;">
-          <b-button type="submit" variant="primary" @click="goToPurchase('')">New P.O.</b-button>
+          <b-button type="submit" variant="primary" @click="goToPurchaseNew()">New P.O.</b-button>
         </div>
       </b-col>
     </b-row>
     <div v-if="purchases.length==0">Not found any purchase orders...</div>
     <b-table v-if="purchases.length>0" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="items" :fields="fields" :keyword="keyword">
       <template v-slot:cell(number)="row">
-        <b-button size="sm" @click.stop="goToPurchase(row.item.id)" variant="link">{{row.item.number}}</b-button>
+        <b-button size="sm" @click.stop="goToPurchaseEdit(row.item.id)" variant="link">{{row.item.number}}</b-button>
       </template>
       <template v-slot:cell(submitted)="row">
         <span>{{row.item.submitted?"Yes":"No"}}</span>
@@ -167,8 +167,11 @@ export default {
           console.log("API Error: " + e);
         });
     },
-    goToPurchase(id) {
-      router.push("/purchase/" + id);
+    goToPurchaseNew() {
+      router.push("/purchase");
+    },
+    goToPurchaseEdit(id) {
+      router.push("/purchaseEdit/" + id);
     },
     goToReceiving(purchase_id) {
       var query = { purchase_id: purchase_id };

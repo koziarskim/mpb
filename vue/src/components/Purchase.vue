@@ -104,17 +104,10 @@ export default {
     updateComponents(components){
       this.selectedComponents = components;
     },
-    getPurchase(purchase_id) {
-      http.get("/purchase/" + purchase_id).then(r => {
-          this.purchase = r.data;
-        }).catch(e => {
-          console.log("API error: " + e);
-        });
-    },
     savePurchase() {
       this.purchase.purchaseComponents = [];
       this.selectedComponents.forEach(c => {
-       this.purchase.purchaseComponents.push({component: {id: c.id}, units: c.units, unitPrice: c.unitPrice});
+       this.purchase.purchaseComponents.push({component: {id: c.id}});
       })
       return http.post("/purchase", this.purchase).then(r => {
         this.purchase = r.data;
@@ -135,10 +128,6 @@ export default {
     },
   },
   mounted() {
-    var purchase_id = this.$route.params.purchase_id;
-    if (purchase_id) {
-      this.getPurchase(purchase_id);
-    }
   }
 };
 </script>
