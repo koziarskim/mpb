@@ -1,5 +1,6 @@
 package com.noovitec.mpb.repo.impl;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -198,6 +199,8 @@ public class SearchRepoImpl implements SearchRepoCustom {
 			}
 			dto.setUnitsSold(unitsSold);
 			dto.setUnitsProduced(unitsProduced);
+			dto.setUnits(dto.getUnitsSold() - dto.getUnitsProduced() - dto.getUnitsInOrder() - dto.getUnitsOnStock());
+			dto.setTotalCost(dto.getUnitCost().multiply(BigDecimal.valueOf(dto.getUnits(), 2)));
 			dtos.add(dto);
 		}
 		return dtos;

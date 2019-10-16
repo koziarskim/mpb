@@ -23,30 +23,23 @@
       <b-col cols=10>
         <label class="top-label">Components:</label>
         <b-table sort-by.sync="name" sort-desc.sync="false" :items="selectedComponents" :fields="fields">
-          <!-- <template v-slot:cell(line.number)="row">
-            <b-button size="sm" @click.stop="goToProductionLine(row.item.id)" variant="link">{{row.item.line.number}}</b-button>
+          <template v-slot:head(unitsInOrder)="row">
+            <span>Ordered </span><span style="font-size: 8px">(Not Received)</span>
           </template>
-          <template v-slot:cell(item)="row">
-            <b-button size="sm" @click.stop="navigation.goToItemEdit(row.item.saleItem.item.id)" variant="link">{{row.item.saleItem.item.name}}</b-button>
-            <span>({{row.item.saleItem.sale.number}} - {{row.item.saleItem.sale.customer.name}})</span>
+          <template v-slot:cell(unitsNeeded)="row">
+            {{row.item.unitsSold - row.item.unitsProduced}} ({{row.item.unitsSold}} - {{row.item.unitsProduced}})
           </template>
-          <template v-slot:cell(totalTime)="row">
-          <span>{{formatter.secondsToTime(row.item.totalTime)}}</span>
+          <template v-slot:cell(unitCost)="row">
+            <div style="display: flex">
+              $<b-form-input style="width:100px" class="form-control" type="tel" v-model="row.item.unitCost"></b-form-input>
+            </div>
           </template>
-          <template v-slot:cell(unitsScheduled)="row">
-            <b-button v-if="!row.item.edit" @click="editScheduleEvent(row.item)" variant="light">{{row.item.unitsScheduled}}</b-button>
-            <b-input-group>
-              <b-form-input style="width:100px" v-if="row.item.edit" class="form-control" type="tel" v-model="row.item.unitsScheduled">
-              </b-form-input>
-              <b-input-group-append>
-                <b-button v-if="row.item.edit" style="margin-left: 5px" variant="link" @click="saveScheduleEvent(row.item)">save</b-button>
-              </b-input-group-append>
-            </b-input-group>
+          <template v-slot:cell(units)="row">
+            <b-form-input style="width:100px" class="form-control" type="tel" v-model="row.item.units"></b-form-input>
           </template>
-          <template v-slot:cell(action)="row">
-            <span v-if="row.item.eventCompleted">Done</span>
-            <b-button v-if="!row.item.eventCompleted" size="sm" :disabled="deleteDisabled(row.item)" @click="deleteScheduleEvent(row.item.id)" variant="primary">X</b-button>
-          </template> -->
+          <template v-slot:cell(totalCost)="row">
+            ${{getTotalCost(row.item)}}
+          </template>
         </b-table>
       </b-col>
     </b-row>
@@ -72,8 +65,7 @@ export default {
         { key: "unitsNeeded", label: "Needed (Sold - Produced)", sortable: false },
         { key: "unitsInOrder", label: "Ordered (Not Received)", sortable: false },
         { key: "unitsOnStock", label: "On-Stock", sortable: false },
-        { key: "unitsShort", label: "Short", sortable: false },
-        { key: "unitsCost", label: "Unit Cost", sortable: false },
+        { key: "unitCost", label: "Unit Cost", sortable: false },
         { key: "units", label: "To Order", sortable: false },
         { key: "totalCost", label: "Total", sortable: false },
       ],
@@ -86,6 +78,9 @@ export default {
   watch: {
   },
   methods: {
+    getTotalCost(item){
+      return (item.units * item.unitCost).toFixed(2);
+    },
     updateComponents(components){
       this.selectedComponents = components;
     },
