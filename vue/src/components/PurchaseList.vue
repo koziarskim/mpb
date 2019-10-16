@@ -168,7 +168,7 @@ export default {
         });
     },
     goToPurchaseNew() {
-      router.push("/purchase");
+      router.push("/purchaseNew");
     },
     goToPurchaseEdit(id) {
       router.push("/purchaseEdit/" + id);

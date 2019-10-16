@@ -33,7 +33,7 @@ import ProductionLineList from "./components/ProductionLineList";
 import ProductionItemList from "./components/ProductionItemList";
 import Profile from "./components/Profile";
 import DailyStatus from "./components/public/DailyStatus";
-import Purchase from "./components/Purchase";
+import PurchaseNew from "./components/PurchaseNew";
 
 Vue.use(Router);
 
@@ -164,9 +164,9 @@ const router = new Router({
       }
     },
     {
-      path: "/purchase/:purchase_id?",
-      name: "Purchase",
-      component: Purchase,
+      path: "/purchaseNew",
+      name: "PurchaseNew",
+      component: PurchaseNew,
       meta: {
         roles: ["SUPER_USER"]
       }
