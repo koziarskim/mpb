@@ -126,44 +126,35 @@ class PurchaseRest {
 		if (purchase == null) {
 			purchase = new Purchase();
 		}
-		if(purchase.isSubmitted() && purchase.getAttachment()!=null) {
-			throw new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED, "Already submitted, no changes allowed");
-		}
-		for (PurchaseSale ps : purchase.getPurchaseSales()) {
-			ps.setPurchase(purchase);
-		}
 		for (PurchaseComponent pc : purchase.getPurchaseComponents()) {
 			pc.setPurchase(purchase);
 		}
-		if(purchase.isSubmitted() && purchase.getPurchaseComponents().size() == 0) {
-			throw new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED, "No Component selected on submit");
-		}
-		if (purchase.isSubmitted() && purchase.getAttachment() == null) {
-			byte[] data = this.generatePdf(purchase, true);
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
-			Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-			String fileName = "PO" + purchase.getNumber() + "-" + sdf.format(timestamp) + ".pdf";
-			Attachment attachment = new Attachment();
-			attachment.setData(data);
-			attachment.setType("POR");
-			attachment.setName(fileName);
-			purchase.setAttachment(attachment);
-		}
+//		if (purchase.isSubmitted() && purchase.getAttachment() == null) {
+//			byte[] data = this.generatePdf(purchase, true);
+//			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+//			Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+//			String fileName = "PO" + purchase.getNumber() + "-" + sdf.format(timestamp) + ".pdf";
+//			Attachment attachment = new Attachment();
+//			attachment.setData(data);
+//			attachment.setType("POR");
+//			attachment.setName(fileName);
+//			purchase.setAttachment(attachment);
+//		}
 		Purchase result = purchaseRepo.save(purchase);
-		for (PurchaseComponent pc : result.getPurchaseComponents()) {
-				pc.updateUnits();
-				Component component = componentRepo.findById(pc.getComponent().getId()).get();
-				component.updateUnits();
-				componentRepo.save(component);
-
-		}
-		result = purchaseRepo.save(result);
-		for (PurchaseComponent pc : result.getPurchaseComponents()) {
-			Component component = componentRepo.findById(pc.getComponent().getId()).get();
-			component.updateUnits();
-			componentRepo.save(component);
-
-		}
+//		for (PurchaseComponent pc : result.getPurchaseComponents()) {
+//				pc.updateUnits();
+//				Component component = componentRepo.findById(pc.getComponent().getId()).get();
+//				component.updateUnits();
+//				componentRepo.save(component);
+//
+//		}
+//		result = purchaseRepo.save(result);
+//		for (PurchaseComponent pc : result.getPurchaseComponents()) {
+//			Component component = componentRepo.findById(pc.getComponent().getId()).get();
+//			component.updateUnits();
+//			componentRepo.save(component);
+//
+//		}
 		return ResponseEntity.ok().body(result);
 	}
 

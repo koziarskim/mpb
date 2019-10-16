@@ -38,7 +38,7 @@
             <b-form-input style="width:100px" class="form-control" type="tel" v-model="row.item.units"></b-form-input>
           </template>
           <template v-slot:cell(totalCost)="row">
-            ${{getTotalCost(row.item)}}
+            ${{row.item.totalCost = getTotalCost(row.item)}}
           </template>
         </b-table>
       </b-col>
@@ -92,8 +92,12 @@ export default {
         });
     },
     savePurchase() {
+      this.purchase.purchaseComponents = [];
+      this.selectedComponents.forEach(c => {
+       this.purchase.purchaseComponents.push({component: {id: c.id}, units: c.units, unitCost: c.unitCost});
+      })
       return http.post("/purchase", this.purchase).then(r => {
-          this.getPurchaseData(r.data.id);
+        this.purchase = r.data;
         }).catch(e => {
           console.log("API error: " + e);
         });
