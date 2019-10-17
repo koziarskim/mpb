@@ -102,12 +102,14 @@ export default {
       return (item.units * item.unitPrice).toFixed(2);
     },
     updateComponents(searchDto){
-      this.purchase.supplier = {id: searchDto.suppliers[0]}
+      //this.purchase.supplier = {id: searchDto.suppliers[0]}
       this.getPoComponents(searchDto);
     },
     getPoComponents(searchDto){
       return http.post("/search/po/component", searchDto).then(r => {
-        this.selectedComponents = r.data;
+        r.data.forEach(dto => {
+          this.selectedComponents.push(dto);
+        })
       }).catch(e => {
         console.log("API error: " + e);
       });

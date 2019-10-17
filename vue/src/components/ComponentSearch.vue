@@ -109,7 +109,7 @@
     <br/>
 
     <div style="text-align: right;">
-      <b-button size="sm" type="reset" variant="success" @click="updateParent()">Show</b-button>
+      <b-button size="sm" type="reset" variant="success" @click="updateParent()">Add >></b-button>
     </div>
   </b-container>
 </template>
@@ -125,7 +125,7 @@ export default {
   },
   data() {
     return {
-      showSelected: false,
+      showSelected: true,
       searchDto: {
         seasons: [],
         seasonName: "",
@@ -174,50 +174,45 @@ export default {
   computed: {
   },
   watch: {
-    selectedSeasons(new_value, old_value){
-      this.clearCustomers();
-    },
-    selectedCustomers(new_value, old_value){
-      this.clearItems();
-    },
-    selectedItems(new_value, old_value){
-      this.clearSales();
-    },
-    selectedSales(new_value, old_value){
-      this.clearSuppliers();
-    },
-    selectedSupplier(new_value, old_value){
-      this.clearComponents();
-    },
     checkAllSeason(new_value, old_value){
       this.seasons.forEach(it => {it.selected = new_value;})
+      this.selectedSeasons = [];
     },
     checkAllCustomer(new_value, old_value){
       this.customers.forEach(it => {it.selected = new_value;})
+      this.selectedCustomers = [];
     },
     checkAllItem(new_value, old_value){
       this.items.forEach(it => {it.selected = new_value;})
+      this.selectedItems = [];
     },
     checkAllSale(new_value, old_value){
       this.sales.forEach(it => {it.selected = new_value;})
+      this.selectedSeasons = [];
     },
     checkAllSupplier(new_value, old_value){
       this.suppliers.forEach(it => {it.selected = new_value;})
+      this.selectedSuppliers = [];
     },
     checkAllComponent(new_value, old_value){
       this.components.forEach(it => {it.selected = new_value;})
+      this.selectedComponents = [];
     }
   },
   methods: {
     // Season
     showSeasonMenu(){
+      this.updateSelected(this.seasons, this.selectedSeasons);
+      if(this.visibleSeasonMenu){
+        return;
+      }
       this.getSeasons().then(r => {
         this.visibleSeasonMenu = true;
       });
     },
     closeSeasonMenu(){
+      this.updateSelected(this.seasons, this.selectedSeasons);
       this.visibleSeasonMenu = false;
-      this.selectedSeasons = this.seasons.filter(it => it.selected == true);
       this.searchDto.seasons = this.selectedSeasons.map(it => it.id);
     },
     clearSeasons(){
@@ -244,13 +239,17 @@ export default {
 
     // Customer
     showCustomerMenu(){
+      this.updateSelected(this.customers, this.selectedCustomers);
+      if(this.visibleCustomerMenu){
+        return;
+      }
       this.getCustomers().then(r => {
         this.visibleCustomerMenu = true;
       });
     },
     closeCustomerMenu(){
+      this.updateSelected(this.customers, this.selectedCustomers);
       this.visibleCustomerMenu = false;
-      this.selectedCustomers = this.customers.filter(it => it.selected == true);
       this.searchDto.customers = this.selectedCustomers.map(it => it.id);
     },
     clearCustomers(){
@@ -277,13 +276,17 @@ export default {
 
     // Item
     showItemMenu(){
+      this.updateSelected(this.items, this.selectedItems);
+      if(this.visibleItemMenu){
+        return;
+      }
       this.getItems().then(r => {
         this.visibleItemMenu = true;
       });
     },
     closeItemMenu(){
+      this.updateSelected(this.items, this.selectedItems);
       this.visibleItemMenu = false;
-      this.selectedItems = this.items.filter(it => it.selected == true);
       this.searchDto.items = this.selectedItems.map(it => it.id);
     },
     clearItems(){
@@ -309,13 +312,17 @@ export default {
 
     // Sale
     showSaleMenu(){
+      this.updateSelected(this.sales, this.selectedSales);
+      if(this.visibleSaleMenu){
+        return;
+      }
       this.getSales().then(r => {
         this.visibleSaleMenu = true;
       });
     },
     closeSaleMenu(){
+      this.updateSelected(this.sales, this.selectedSales);
       this.visibleSaleMenu = false;
-      this.selectedSales = this.sales.filter(it => it.selected == true);
       this.searchDto.sales = this.selectedSales.map(it => it.id);
     },
     clearSales(){
@@ -341,14 +348,18 @@ export default {
 
     // Supplier
     showSupplierMenu(){
+      this.updateSelected(this.suppliers, this.selectedSuppliers);
+      if(this.visibleSupplierMenu){
+        return;
+      }
       this.getSuppliers().then(r => {
         this.visibleSupplierMenu = true;
       });
     },
     closeSupplierMenu(){
-      this.visibleSupplierMenu = false;
-      this.selectedSuppliers = this.suppliers.filter(it => it.selected == true);
+      this.updateSelected(this.suppliers, this.selectedSuppliers);
       this.searchDto.suppliers = this.selectedSuppliers.map(it => it.id);
+      this.visibleSupplierMenu = false;
     },
     clearSuppliers(){
       this.searchDto.supplierName = "";
@@ -401,16 +412,27 @@ export default {
         });
       return Promise.resolve();
     },
+
+    //Common methods.
+    updateSelected(menuObjects, selectedObjects){
+      menuObjects.forEach(dto => {
+        var existing = selectedObjects.find(selected => selected.id == dto.id)
+        if(dto.selected && !existing){
+          selectedObjects.push(dto);
+        }
+      })
+    },
     updateParent(){
       if(this.searchDto.components.length==0){
         alert("No Components selected. Please pick one.");
         return;
       }
-      if(this.searchDto.suppliers.length > 1){
-        alert("Only one Supplier is allowed! Please pick only one.");
-        return;
-      }
+      // if(this.searchDto.suppliers.length > 1){
+      //   alert("Only one Supplier is allowed! Please pick only one.");
+      //   return;
+      // }
       this.$emit("componentsUpdated", this.searchDto);
+      this.selectedComponents = [];
     }
   },
   mounted() {
