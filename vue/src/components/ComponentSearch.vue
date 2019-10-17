@@ -18,24 +18,6 @@
     </div>
     <br/>
 
-    <!-- Customer -->
-    <label class="top-label">Customers: <a href="#" @click="clearCustomers()">(x)</a></label>
-    <div style="display: flex">
-      <input @keydown.enter="getCustomers()" @click="showCustomerMenu()" class="form-control search-width" type="tel" v-model="searchDto.customerName" placeholder="Pick Customer">
-      <div v-if="visibleCustomerMenu" class="chk-all-tab"><input type="checkbox" v-model="checkAllCustomer"><span>All</span></div>
-      <div v-if="visibleCustomerMenu" class="btn-tab" @click="closeCustomerMenu()">Close</div>
-    </div>
-    <div v-if="visibleCustomerMenu" class="menu-tab">
-        <div v-for="customer in customers" :key="customer.id">
-          <input type="checkbox" v-model="customer.selected">
-          <span>{{customer.name}}</span>
-      </div>
-    </div>
-    <div v-if="showSelected">
-      <div v-for="customer in selectedCustomers" :key="customer.id+customer.name">{{customer.name}}</div>
-    </div>
-    <br/>
-
     <!-- Item -->
     <label class="top-label">Items: <a href="#" @click="clearItems()">(x)</a></label>
     <div style="display: flex">
@@ -51,6 +33,24 @@
     </div>
     <div v-if="showSelected">
       <div v-for="item in selectedItems" :key="item.id+item.name">{{item.name}}</div>
+    </div>
+    <br/>
+
+    <!-- Customer -->
+    <label class="top-label">Customers: <a href="#" @click="clearCustomers()">(x)</a></label>
+    <div style="display: flex">
+      <input @keydown.enter="getCustomers()" @click="showCustomerMenu()" class="form-control search-width" type="tel" v-model="searchDto.customerName" placeholder="Pick Customer">
+      <div v-if="visibleCustomerMenu" class="chk-all-tab"><input type="checkbox" v-model="checkAllCustomer"><span>All</span></div>
+      <div v-if="visibleCustomerMenu" class="btn-tab" @click="closeCustomerMenu()">Close</div>
+    </div>
+    <div v-if="visibleCustomerMenu" class="menu-tab">
+        <div v-for="customer in customers" :key="customer.id">
+          <input type="checkbox" v-model="customer.selected">
+          <span>{{customer.name}}</span>
+      </div>
+    </div>
+    <div v-if="showSelected">
+      <div v-for="customer in selectedCustomers" :key="customer.id+customer.name">{{customer.name}}</div>
     </div>
     <br/>
 
@@ -129,10 +129,10 @@ export default {
       searchDto: {
         seasons: [],
         seasonName: "",
-        customers: [],
-        customerName: "",
         items: [],
         itemName: "",
+        customers: [],
+        customerName: "",
         sales: [],
         saleNumbe: "",
         components: [],
@@ -144,15 +144,15 @@ export default {
       seasons: [],
       selectedSeasons: [],
 
-      checkAllCustomer: false,
-      visibleCustomerMenu: false,
-      customers: [],
-      selectedCustomers: [],
-
       checkAllItem: false,
       visibleItemMenu: false,
       items: [],
       selectedItems: [],
+
+      checkAllCustomer: false,
+      visibleCustomerMenu: false,
+      customers: [],
+      selectedCustomers: [],
 
       checkAllSale: false,
       visibleSaleMenu: false,
@@ -178,13 +178,13 @@ export default {
       this.seasons.forEach(it => {it.selected = new_value;})
       this.selectedSeasons = [];
     },
-    checkAllCustomer(new_value, old_value){
-      this.customers.forEach(it => {it.selected = new_value;})
-      this.selectedCustomers = [];
-    },
     checkAllItem(new_value, old_value){
       this.items.forEach(it => {it.selected = new_value;})
       this.selectedItems = [];
+    },
+    checkAllCustomer(new_value, old_value){
+      this.customers.forEach(it => {it.selected = new_value;})
+      this.selectedCustomers = [];
     },
     checkAllSale(new_value, old_value){
       this.sales.forEach(it => {it.selected = new_value;})
@@ -222,7 +222,7 @@ export default {
       this.seasons = [];
       this.selectedSeasons = [];
       this.closeSeasonMenu();
-      this.clearCustomers();
+      this.clearItems();
     },
     getSeasons(){
         return http.post("/search/season/kv", this.searchDto).then(r => {
@@ -231,6 +231,42 @@ export default {
             season.selected = found?true:false;
           })
           this.seasons = r.data;
+        }).catch(e => {
+          console.log("API error: " + e);
+        });
+      return Promise.resolve();
+    },
+
+    // Item
+    showItemMenu(){
+      this.updateSelected(this.items, this.selectedItems);
+      if(this.visibleItemMenu){
+        return;
+      }
+      this.getItems().then(r => {
+        this.visibleItemMenu = true;
+      });
+    },
+    closeItemMenu(){
+      this.updateSelected(this.items, this.selectedItems);
+      this.visibleItemMenu = false;
+      this.searchDto.items = this.selectedItems.map(it => it.id);
+    },
+    clearItems(){
+      this.searchDto.itemName = "";
+      this.searchDto.items = [];
+      this.items = [];
+      this.selectedItems = [];
+      this.closeItemMenu();
+      this.clearCustomers();
+    },
+    getItems(){
+        return http.post("/search/item/kv", this.searchDto).then(r => {
+          r.data.forEach(item => {
+            var found = this.selectedItems.find(it => it.id==item.id && it.selected);
+            item.selected = found?true:false;
+          })
+          this.items = r.data;
         }).catch(e => {
           console.log("API error: " + e);
         });
@@ -259,7 +295,7 @@ export default {
       this.customers = [];
       this.selectedCustomers = [];
       this.closeCustomerMenu();
-      this.clearItems();
+      this.clearSales();
     },
     getCustomers(){
         return http.post("/search/customer/kv", this.searchDto).then(r => {
@@ -268,42 +304,6 @@ export default {
             customer.selected = found?true:false;
           })
           this.customers = r.data;
-        }).catch(e => {
-          console.log("API error: " + e);
-        });
-      return Promise.resolve();
-    },
-
-    // Item
-    showItemMenu(){
-      this.updateSelected(this.items, this.selectedItems);
-      if(this.visibleItemMenu){
-        return;
-      }
-      this.getItems().then(r => {
-        this.visibleItemMenu = true;
-      });
-    },
-    closeItemMenu(){
-      this.updateSelected(this.items, this.selectedItems);
-      this.visibleItemMenu = false;
-      this.searchDto.items = this.selectedItems.map(it => it.id);
-    },
-    clearItems(){
-      this.searchDto.itemName = "";
-      this.searchDto.items = [];
-      this.items = [];
-      this.selectedItems = [];
-      this.closeItemMenu();
-      this.clearSales();
-    },
-    getItems(){
-        return http.post("/search/item/kv", this.searchDto).then(r => {
-          r.data.forEach(item => {
-            var found = this.selectedItems.find(it => it.id==item.id && it.selected);
-            item.selected = found?true:false;
-          })
-          this.items = r.data;
         }).catch(e => {
           console.log("API error: " + e);
         });
@@ -432,7 +432,6 @@ export default {
       //   return;
       // }
       this.$emit("componentsUpdated", this.searchDto);
-      this.selectedComponents = [];
     }
   },
   mounted() {

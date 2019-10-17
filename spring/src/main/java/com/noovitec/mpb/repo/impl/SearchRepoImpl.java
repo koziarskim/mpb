@@ -30,12 +30,53 @@ public class SearchRepoImpl implements SearchRepoCustom {
 
 	@Override
 	public List<KeyValueDto> findSeasons(SearchDto searchDto) {
-		String q = "select distinct new com.noovitec.mpb.dto.KeyValueDto(s.id, s.name) from Season s ";
-		q += "where s.id is not null ";
+//		if(searchDto.getItems().isEmpty() && searchDto.getCustomers().isEmpty() && searchDto.getSales().isEmpty() 
+//				&& searchDto.getSuppliers().isEmpty() && searchDto.getComponents().isEmpty() && searchDto.getSeasonName().isBlank()) {
+//			return new ArrayList<KeyValueDto>();
+//		}
+		String q = "select distinct new com.noovitec.mpb.dto.KeyValueDto(se.id, se.name) from Season se ";
+		q += "join Item i on i.season.id = se.id ";
+		q += "join ItemComponent ic on ic.item.id = i.id ";
+		q += "join Component c on ic.component.id = c.id ";
+		q += "join Supplier su on c.supplier.id = su.id ";
+		q += "join SaleItem si on si.item.id = i.id ";
+		q += "join Sale s on si.sale.id = s.id ";
+		q += "join Customer cu on s.customer.id = cu.id ";
+		q += "where se.id is not null ";
+		if(!searchDto.getCustomers().isEmpty()) {
+			q += "and cu.id in (:customerIds) ";
+		}
+		if(!searchDto.getItems().isEmpty()) {
+			q += "and i.id in (:itemIds) ";
+		}
+		if(!searchDto.getSales().isEmpty()) {
+			q += "and si.id in (:saleIds) ";
+		}
+		if(!searchDto.getSuppliers().isEmpty()){
+			q += "and su.id in (:supplierIds) ";
+		}
+		if(!searchDto.getComponents().isEmpty()){
+			q += "and c.id in (:componentIds) ";
+		}
 		if(!searchDto.getSeasonName().isEmpty()) {
-			q += "and upper(s.name) like concat('%',upper(:seasonName),'%')";
+			q += "and upper(se.name) like concat('%',upper(:seasonName),'%')";
 		}
 		Query query = entityManager.createQuery(q);
+		if(!searchDto.getCustomers().isEmpty()) {
+			query.setParameter("customerIds", searchDto.getCustomers());
+		}
+		if(!searchDto.getItems().isEmpty()) {
+			query.setParameter("itemIds", searchDto.getItems());
+		}
+		if(!searchDto.getSales().isEmpty()) {
+			query.setParameter("saleIds", searchDto.getSales());
+		}
+		if(!searchDto.getSuppliers().isEmpty()){
+			query.setParameter("supplierIds", searchDto.getSuppliers());
+		}
+		if(!searchDto.getComponents().isEmpty()){
+			query.setParameter("componentIds", searchDto.getComponents());
+		}
 		if(!searchDto.getSeasonName().isBlank()) {
 			query.setParameter("seasonName", searchDto.getSeasonName());
 		}
@@ -44,36 +85,9 @@ public class SearchRepoImpl implements SearchRepoCustom {
 	}
 
 	@Override
-	public List<KeyValueDto> findCustomers(SearchDto searchDto) {
-		if(searchDto.getSeasons().isEmpty() && searchDto.getCustomerName().isBlank()) {
-			return new ArrayList<KeyValueDto>();
-		}
-		String q = "select distinct new com.noovitec.mpb.dto.KeyValueDto(c.id, c.name) from Customer c ";
-		q += "join Sale s on s.customer.id = c.id ";
-		q += "join SaleItem si on si.sale.id = s.id ";
-		q += "join Item i on si.item.id = i.id ";
-		q += "join Season season on i.season.id = season.id ";
-		q += "where c.id is not null ";
-		if(!searchDto.getSeasons().isEmpty()) {
-			q += "and season.id in (:seasonIds) ";
-		}
-		if(!searchDto.getCustomerName().isBlank()) {
-			q += "and upper(c.name) like concat('%',upper(:customerName),'%')";
-		}
-		Query query = entityManager.createQuery(q);
-		if(!searchDto.getSeasons().isEmpty()) {
-			query.setParameter("seasonIds", searchDto.getSeasons());
-		}
-		if(!searchDto.getCustomerName().isBlank()) {
-			query.setParameter("customerName", searchDto.getCustomerName());
-		}
-		List<KeyValueDto> list = query.getResultList();
-		return list;
-	}
-
-	@Override
 	public List<KeyValueDto> findItems(SearchDto searchDto) {
-		if(searchDto.getCustomers().isEmpty() && searchDto.getItemName().isBlank()) {
+		if(searchDto.getSeasons().isEmpty() && searchDto.getCustomers().isEmpty() && searchDto.getSales().isEmpty() 
+				&& searchDto.getSuppliers().isEmpty() && searchDto.getComponents().isEmpty() && searchDto.getItemName().isBlank()) {
 			return new ArrayList<KeyValueDto>();
 		}
 		String q = "select distinct new com.noovitec.mpb.dto.KeyValueDto(i.id, i.name) from Item i ";
@@ -81,13 +95,25 @@ public class SearchRepoImpl implements SearchRepoCustom {
 		q += "join Sale s on si.sale.id = s.id ";
 		q += "join Item i on si.item.id = i.id ";
 		q += "join Season se on i.season.id = se.id ";
-		q += "join Customer c on s.customer.id = c.id ";
+		q += "join Customer cu on s.customer.id = cu.id ";
+		q += "join ItemComponent ic on ic.item.id = i.id ";
+		q += "join Component c on ic.component.id = c.id ";
+		q += "join Supplier su on c.supplier.id = su.id ";
 		q += "where i.id is not null ";
 		if(!searchDto.getSeasons().isEmpty()) {
 			q += "and se.id in (:seasonIds) ";
 		}
 		if(!searchDto.getCustomers().isEmpty()) {
-			q += "and c.id in (:customerIds) ";
+			q += "and cu.id in (:customerIds) ";
+		}
+		if(!searchDto.getSales().isEmpty()) {
+			q += "and si.id in (:saleIds) ";
+		}
+		if(!searchDto.getSuppliers().isEmpty()){
+			q += "and su.id in (:supplierIds) ";
+		}
+		if(!searchDto.getComponents().isEmpty()){
+			q += "and c.id in (:componentIds) ";
 		}
 		if(!searchDto.getItemName().isBlank()) {
 			q += "and upper(i.name) like concat('%',upper(:itemName),'%')";
@@ -99,6 +125,15 @@ public class SearchRepoImpl implements SearchRepoCustom {
 		if(!searchDto.getCustomers().isEmpty()) {
 			query.setParameter("customerIds", searchDto.getCustomers());
 		}
+		if(!searchDto.getSales().isEmpty()) {
+			query.setParameter("saleIds", searchDto.getSales());
+		}
+		if(!searchDto.getSuppliers().isEmpty()){
+			query.setParameter("supplierIds", searchDto.getSuppliers());
+		}
+		if(!searchDto.getComponents().isEmpty()){
+			query.setParameter("componentIds", searchDto.getComponents());
+		}
 		if(!searchDto.getItemName().isBlank()) {
 			query.setParameter("itemName", searchDto.getItemName());
 		}
@@ -107,9 +142,65 @@ public class SearchRepoImpl implements SearchRepoCustom {
 	}
 
 	@Override
+	public List<KeyValueDto> findCustomers(SearchDto searchDto) {
+		if(searchDto.getSeasons().isEmpty() && searchDto.getItems().isEmpty() && searchDto.getSales().isEmpty() 
+				&& searchDto.getSuppliers().isEmpty() && searchDto.getComponents().isEmpty() && searchDto.getCustomerName().isBlank()) {
+			return new ArrayList<KeyValueDto>();
+		}
+		String q = "select distinct new com.noovitec.mpb.dto.KeyValueDto(cu.id, cu.name) from Customer cu ";
+		q += "join Sale s on s.customer.id = cu.id ";
+		q += "join SaleItem si on si.sale.id = s.id ";
+		q += "join Item i on si.item.id = i.id ";
+		q += "join Season se on i.season.id = se.id ";
+		q += "join ItemComponent ic on ic.item.id = i.id ";
+		q += "join Component c on ic.component.id = c.id ";
+		q += "join Supplier su on c.supplier.id = su.id ";
+		q += "where cu.id is not null ";
+		if(!searchDto.getSeasons().isEmpty()) {
+			q += "and se.id in (:seasonIds) ";
+		}
+		if(!searchDto.getItems().isEmpty()) {
+			q += "and i.id in (:itemIds) ";
+		}
+		if(!searchDto.getSales().isEmpty()) {
+			q += "and si.id in (:saleIds) ";
+		}
+		if(!searchDto.getSuppliers().isEmpty()){
+			q += "and su.id in (:supplierIds) ";
+		}
+		if(!searchDto.getComponents().isEmpty()){
+			q += "and c.id in (:componentIds) ";
+		}
+		if(!searchDto.getCustomerName().isBlank()) {
+			q += "and upper(cu.name) like concat('%',upper(:customerName),'%')";
+		}
+		Query query = entityManager.createQuery(q);
+		if(!searchDto.getSeasons().isEmpty()) {
+			query.setParameter("seasonIds", searchDto.getSeasons());
+		}
+		if(!searchDto.getItems().isEmpty()) {
+			query.setParameter("itemIds", searchDto.getItems());
+		}
+		if(!searchDto.getSales().isEmpty()) {
+			query.setParameter("saleIds", searchDto.getSales());
+		}
+		if(!searchDto.getSuppliers().isEmpty()){
+			query.setParameter("supplierIds", searchDto.getSuppliers());
+		}
+		if(!searchDto.getComponents().isEmpty()){
+			query.setParameter("componentIds", searchDto.getComponents());
+		}
+		if(!searchDto.getCustomerName().isBlank()) {
+			query.setParameter("customerName", searchDto.getCustomerName());
+		}
+		List<KeyValueDto> list = query.getResultList();
+		return list;
+	}
+	
+	@Override
 	public List<SaleItem> findSales(SearchDto searchDto) {
-		if(searchDto.getSeasons().isEmpty() && searchDto.getItems().isEmpty()
-				&& searchDto.getCustomers().isEmpty() && searchDto.getSaleNumber().isBlank()) {
+		if(searchDto.getSeasons().isEmpty() && searchDto.getItems().isEmpty() && searchDto.getCustomers().isEmpty() 
+				&& searchDto.getSuppliers().isEmpty() && searchDto.getComponents().isEmpty() && searchDto.getSaleNumber().isBlank()) {
 			return new ArrayList<SaleItem>();
 		}
 		String q = "select distinct si.id from SaleItem si ";
@@ -117,6 +208,9 @@ public class SearchRepoImpl implements SearchRepoCustom {
 		q += "join Item i on si.item.id = i.id ";
 		q += "join Season se on i.season.id = se.id ";
 		q += "join Customer cu on s.customer.id = cu.id ";
+		q += "join ItemComponent ic on ic.item.id = i.id ";
+		q += "join Component c on ic.component.id = c.id ";
+		q += "join Supplier su on c.supplier.id = su.id ";
 		q += "where si.id is not null ";
 		if(!searchDto.getSeasons().isEmpty()) {
 			q += "and se.id in (:seasonIds) ";
@@ -126,6 +220,12 @@ public class SearchRepoImpl implements SearchRepoCustom {
 		}
 		if(!searchDto.getItems().isEmpty()) {
 			q += "and i.id in (:itemIds) ";
+		}
+		if(!searchDto.getSuppliers().isEmpty()){
+			q += "and su.id in (:supplierIds) ";
+		}
+		if(!searchDto.getComponents().isEmpty()){
+			q += "and c.id in (:componentIds) ";
 		}
 		if(!searchDto.getSaleNumber().isEmpty()) {
 			q += "and upper(s.number) like concat('%',upper(:saleNumber),'%')";
@@ -139,6 +239,12 @@ public class SearchRepoImpl implements SearchRepoCustom {
 		}
 		if(!searchDto.getItems().isEmpty()) {
 			query.setParameter("itemIds", searchDto.getItems());
+		}
+		if(!searchDto.getSuppliers().isEmpty()){
+			query.setParameter("supplierIds", searchDto.getSuppliers());
+		}
+		if(!searchDto.getComponents().isEmpty()){
+			query.setParameter("componentIds", searchDto.getComponents());
 		}
 		if(!searchDto.getSaleNumber().isBlank()) {
 			query.setParameter("saleNumber", searchDto.getSaleNumber());
@@ -156,12 +262,12 @@ public class SearchRepoImpl implements SearchRepoCustom {
 
 	@Override
 	public List<KeyValueDto> findSuppliers(SearchDto searchDto) {
-		if(searchDto.getSales().isEmpty() && searchDto.getItems().isEmpty() 
-				&& searchDto.getCustomers().isEmpty() && searchDto.getSupplierName().isBlank()) {
+		if(searchDto.getSeasons().isEmpty() && searchDto.getItems().isEmpty() && searchDto.getCustomers().isEmpty() 
+				&& searchDto.getSales().isEmpty() && searchDto.getComponents().isEmpty() && searchDto.getSupplierName().isBlank()) {
 			return new ArrayList<KeyValueDto>();
 		}
-		String q = "select distinct new com.noovitec.mpb.dto.KeyValueDto(s.id, s.name) from Supplier s ";
-		q += "join Component c on c.supplier.id = s.id ";
+		String q = "select distinct new com.noovitec.mpb.dto.KeyValueDto(su.id, su.name) from Supplier su ";
+		q += "join Component c on c.supplier.id = su.id ";
 		q += "join ItemComponent ic on ic.component.id = c.id ";
 		q += "join Item i on ic.item.id = i.id ";
 		q += "join Season se on i.season.id = se.id ";
@@ -181,8 +287,11 @@ public class SearchRepoImpl implements SearchRepoCustom {
 		if(!searchDto.getSales().isEmpty()){
 			q += "and si.id in (:saleIds) ";
 		}
+		if(!searchDto.getComponents().isEmpty()){
+			q += "and c.id in (:componentIds) ";
+		}
 		if(!searchDto.getSupplierName().isBlank()) {
-			q += "and upper(s.name) like concat('%',upper(:supplierName),'%')";
+			q += "and upper(su.name) like concat('%',upper(:supplierName),'%')";
 		}
 		Query query = entityManager.createQuery(q);
 		if(!searchDto.getSeasons().isEmpty()){
@@ -197,6 +306,9 @@ public class SearchRepoImpl implements SearchRepoCustom {
 		if(!searchDto.getSales().isEmpty()){
 			query.setParameter("saleIds", searchDto.getSales());
 		}
+		if(!searchDto.getComponents().isEmpty()){
+			query.setParameter("componentIds", searchDto.getComponents());
+		}
 		if(!searchDto.getSupplierName().isBlank()) {
 			query.setParameter("supplierName", searchDto.getSupplierName());
 		}
@@ -206,7 +318,8 @@ public class SearchRepoImpl implements SearchRepoCustom {
 
 	@Override
 	public List<Component> findComponents(SearchDto searchDto) {
-		if(searchDto.getSuppliers().isEmpty() && searchDto.getSales().isEmpty() && searchDto.getItems().isEmpty() && searchDto.getComponentName().isBlank()) {
+		if(searchDto.getSeasons().isEmpty() && searchDto.getItems().isEmpty() && searchDto.getCustomers().isEmpty() 
+				&& searchDto.getSales().isEmpty() && searchDto.getSuppliers().isEmpty() && searchDto.getComponentName().isBlank()) {
 			return new ArrayList<Component>();
 		}
 		String q = "select distinct c.id from Component c ";
