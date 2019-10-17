@@ -113,10 +113,19 @@ export default {
       });
     },
     savePurchase() {
+      var skip = false;
       this.purchase.purchaseComponents = [];
       this.selectedComponents.forEach(c => {
+        if(c.units < 0){
+          skip = true;
+          return;
+        }
        this.purchase.purchaseComponents.push({component: {id: c.id}, units: c.units, unitPrice: c.unitPrice});
       })
+      if(skip){
+          alert("One of the Compnents has negative number of P.O. Units! Please fix.");
+          return Promise.reject();
+      }
       return http.post("/purchase", this.purchase).then(r => {
         this.purchase = r.data;
         }).catch(e => {
@@ -126,6 +135,8 @@ export default {
     saveAndClose() {
       this.savePurchase().then(r => {
         router.push("/purchaseList");
+      }).catch(e => {
+        //TODO: Do nothing.
       });
     },
     goToComponent(component_id) {

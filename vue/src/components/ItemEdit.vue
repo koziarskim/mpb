@@ -1,13 +1,16 @@
 <template>
   <b-container fluid>
     <b-row>
+      <b-col cols="1">
+        <h4 style="text-align: left;">Item:</h4>
+      </b-col>
       <b-col cols="2">
-        <h4 style="text-align: left;">Item: {{item.number}}</h4>
+        <input class="form-control" type="text" v-model="item.number" placeholder="Item number">
       </b-col>
       <b-col cols="3">
         <input class="form-control" type="text" v-model="item.name" placeholder="Item name">
       </b-col>
-      <b-col cols="2" offset="5">
+      <b-col cols="2" offset="4">
         <div style="text-align: right;">
           <b-button type="reset" variant="success" @click="saveAndClose">Save & Close</b-button>
         </div>

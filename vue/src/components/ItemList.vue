@@ -4,8 +4,8 @@
             <b-col cols="2">
                 <span style="text-align: left; font-size: 18px; font-weight: bold">Items</span>
             </b-col>
-            <b-col cols="3">
-                <input class="form-control" type="tel" v-model="searchKey" @keyup.enter="getItems()" placeholder="Search by Name, Brand or Category"/>
+            <b-col cols="4">
+                <input class="form-control" type="tel" v-model="searchKey" @keyup.enter="getItems()" placeholder="Search by Number, Name, Brand or Category"/>
             </b-col>
             <b-col>
                 <div style="text-align: right;">
@@ -14,8 +14,8 @@
             </b-col>
         </b-row>
         <b-table :items="items" :fields="fields" no-local-sorting @sort-changed="sorted">
-          <template v-slot:cell(name)="row">
-              <b-button size="sm" variant="link" @click.stop="updateItem(row.item.id)">{{row.item.name}}</b-button>
+          <template v-slot:cell(number)="row">
+              <b-button size="sm" variant="link" @click.stop="updateItem(row.item.id)">{{row.item.number}}</b-button>
           </template>
           <template v-slot:cell(unitsSold)="row">
               <b-button size="sm" variant="link" @click.stop="goToItemSaleList(row.item.id)">{{row.item.unitsSold}}</b-button>
@@ -44,6 +44,7 @@ export default {
       pageable: {totalElements: 100, currentPage: 1, perPage: 7, sortBy: 'name', sortDesc: false},
       searchKey: "",
       fields: [
+        { key: 'number', sortable: true, label: 'Number'},
         { key: 'name', sortable: true, label: 'Name'},
         { key: 'brand', sortable: true, label: 'Brand'},
         { key: 'category', sortable: true, label: 'Category'},

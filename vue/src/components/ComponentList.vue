@@ -5,7 +5,7 @@
         <span style="text-align: left; font-size: 18px; font-weight: bold">Components</span>
       </b-col>
       <b-col cols="3">
-        <input class="form-control" type="tel" v-model="nameSearch" @keyup.enter="getComponentsData" placeholder="Search by Name or Supplier"/>
+        <input class="form-control" type="tel" v-model="nameSearch" @keyup.enter="getComponentsData" placeholder="Search by Number, Name or Supplier"/>
       </b-col>
       <b-col>
         <div style="text-align: right;">

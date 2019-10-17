@@ -6,30 +6,30 @@
           <span style="padding-right:125px; text-align: left; font-size: 18px; font-weight: bold">Purchase<br/>Order</span>
           <div style="width: 160px; padding-left: 3px; padding-right: 3px;">
             <label class="top-label">P.O. Number:</label>
-            <input class="form-control" type="text" v-model="purchase.number" placeholder="P.O. Number">
+            <input class="form-control" type="text" disabled="true" v-model="purchase.number" placeholder="P.O. Number">
           </div>
           <div style="width: 175px; padding-left: 3px; padding-right: 3px;">
             <label class="top-label">P.O. Date:</label>
-            <input class="form-control" type="date" v-model="purchase.date">
+            <input class="form-control" type="date" disabled="true" v-model="purchase.date">
           </div>
           <div style="width: 175px; padding-left: 3px; padding-right: 3px;">
             <label class="top-label">Shipping Date:</label>
-            <input class="form-control" type="date" v-model="purchase.shippingDate">
+            <input class="form-control" type="date" disabled="true" v-model="purchase.shippingDate">
           </div>
           <div style="width: 175px; padding-left: 3px; padding-right: 3px;">
             <label class="top-label">Expected Date:</label>
-            <input class="form-control" type="date" v-model="purchase.expectedDate">
+            <input class="form-control" type="date" disabled="true" v-model="purchase.expectedDate">
           </div>
           <div style="width: 160px; padding-left: 3px; padding-right: 3px;">
             <label class="top-label">Container:</label>
-            <input class="form-control" type="text" v-model="purchase.containerNumber" placeholder="Container">
+            <input class="form-control" type="text" disabled="true" v-model="purchase.containerNumber" placeholder="Container">
           </div>
           <div style="width: 160px; padding-left: 3px; padding-right: 3px;">
             <label class="top-label">Invoice:</label>
-            <input class="form-control" type="text" v-model="purchase.invoiceNumber" placeholder="Invoice">
+            <input class="form-control" type="text" disabled="true" v-model="purchase.invoiceNumber" placeholder="Invoice">
           </div>
           <div style="text-align: right;">
-            <b-button style="margin: 2px; margin-top:22px" type="reset" variant="success" @click="saveAndClose">Save</b-button>
+            <b-button style="margin: 2px; margin-top:22px" type="reset" variant="success" @click="close()">Close</b-button>
           </div>
         </div>
       </b-col>
@@ -45,12 +45,10 @@
             {{row.item.unitsSold - row.item.unitsProduced}} ({{row.item.unitsSold}} - {{row.item.unitsProduced}})
           </template>
           <template v-slot:cell(unitPrice)="row">
-            <div style="display: flex">
-              $<b-form-input style="width:100px" class="form-control" type="tel" v-model="row.item.unitPrice"></b-form-input>
-            </div>
+              ${{row.item.unitPrice}}
           </template>
           <template v-slot:cell(units)="row">
-            <b-form-input style="width:100px" class="form-control" type="tel" v-model="row.item.units"></b-form-input>
+            {{row.item.units}}
           </template>
           <template v-slot:cell(totalPrice)="row">
             ${{row.item.totalPrice = getTotalPrice(row.item)}}
@@ -129,17 +127,8 @@ export default {
         console.log("API error: " + e);
       });
     },
-    savePurchase() {
-      return http.post("/purchase", this.purchase).then(r => {
-        this.purchase = r.data;
-        }).catch(e => {
-          console.log("API error: " + e);
-        });
-    },
-    saveAndClose() {
-      this.savePurchase().then(r => {
-        router.push("/purchaseList");
-      });
+    close() {
+      router.push("/purchaseList");
     },
     goToComponent(component_id) {
       router.push("/componentEdit/" + component_id);

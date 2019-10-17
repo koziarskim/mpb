@@ -68,6 +68,7 @@ public interface ItemRepo extends PagingAndSortingRepository<Item, Long> {
 			+ "left join Category c on c.id = i.category.id "
 			+ "left join Brand b on b.id = i.brand.id "
 			+ "where upper(i.name) LIKE CONCAT('%',UPPER(:searchKey),'%') "
+			+ "or upper(i.number) LIKE CONCAT('%',UPPER(:searchKey),'%') "
 			+ "or upper(b.name) LIKE CONCAT('%',UPPER(:searchKey),'%') "
 			+ "or upper(c.name) LIKE CONCAT('%',UPPER(:searchKey),'%')")
 	Page<Item> getItemsPageable(Pageable pageable, String searchKey);
