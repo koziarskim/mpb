@@ -4,12 +4,8 @@
       <b-col cols="2">
         <span style="text-align: left; font-size: 18px; font-weight: bold">Purchase Orders</span>
       </b-col>
-      <b-col cols="2" style="margin-top: -12px">
-        <label class="top-label">Component:</label>
-        <b-select option-value="id" option-text="name" :list="availableComponents" v-model="component"></b-select>
-      </b-col>
-      <b-col cols="2" style="margin-top: 16px">
-        <b-form-checkbox @change="showAllChange()" v-model="showAll">Show All</b-form-checkbox>
+      <b-col cols="4">
+        <input class="form-control" type="tel" v-model="searchKey" @keyup.enter="getPurchasesData()" placeholder="Search by Component Number or Name"/>
       </b-col>
       <b-col>
         <div style="text-align: right;">
@@ -17,13 +13,9 @@
         </div>
       </b-col>
     </b-row>
-    <div v-if="purchases.length==0">Not found any purchase orders...</div>
-    <b-table v-if="purchases.length>0" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="items" :fields="fields" :keyword="keyword">
+    <b-table :items="purchases" :fields="fields" no-local-sorting>
       <template v-slot:cell(number)="row">
         <b-button size="sm" @click.stop="goToPurchaseEdit(row.item.id)" variant="link">{{row.item.number}}</b-button>
-      </template>
-      <template v-slot:cell(submitted)="row">
-        <span>{{row.item.submitted?"Yes":"No"}}</span>
       </template>
       <template v-slot:cell(received)="row">
         <span>{{row.item.received?"Yes":"No"}}</span>
@@ -44,7 +36,7 @@
         <span>{{row.item.date | formatDate}}</span>
       </template>
     </b-table>
-    <b-alert :show="alertSecs" dismissible variant="warning" @dismiss-count-down="(secs) => { alertSecs = secs }">{{alertMessage}}</b-alert>
+    <b-pagination v-model="pageable.currentPage" :per-page="pageable.perPage" :total-rows="pageable.totalElements" @change="paginationChange"></b-pagination>
   </b-container>
 </template>
 <script>
@@ -56,16 +48,15 @@ import store from "../store.js";
 export default {
   data() {
     return {
-      alertSecs: 0,
-      alertMessage: "",
-      sortBy: "id",
-      sortDesc: false,
+      pageable: {totalElements: 100, currentPage: 1, perPage: 7, sortBy: 'number', sortDesc: false},
+      searchKey: "",
+      searchKeyComponent: "",
       fields: [
         { key: "number", label: "P.O. #", sortable: false },
         { key: "supplier.name", label: "Supplier", sortable: false },
-        { key: "date", label: "Date", sortable: false },
+        { key: "date", label: "P.O. Date", sortable: false },
         { key: "expectedDate", label: "Expected", sortable: false },
-        { key: "submitted", label: "Submitted", sortable: false },
+        { key: "shippingDate", label: "Shipping", sortable: false },
         { key: "received", label: "Received", sortable: false },
         { key: "pdf", label: "PDF", sortable: false },
         { key: "action", label: "Action", sortable: false }
@@ -78,33 +69,14 @@ export default {
     };
   },
   computed: {
-    items() {
-      var filtered = [];
-      if (this.keyword) {
-        this.purchases.filter(item => {
-          if (
-            item.number.includes(this.keyword) ||
-            item.supplier.name.includes(this.keyword) ||
-            (item.date ? item.date.includes(this.keyword) : false)
-          ) {
-            filtered.push(item);
-          }
-        });
-      } else {
-        filtered = this.purchases;
-      }
-      return filtered;
-    }
   },
   watch: {
-    component(new_value, old_value) {
-        if(this.showAll){
-            this.showAll = false;
-        }
-      this.getPurchasesData();
-    },
   },
   methods: {
+    paginationChange(page){
+      this.pageable.currentPage = page;
+      this.getPurchasesData();
+    },
     showAllChange(){
       this.showAll = !this.showAll
       if (this.component.id) {
@@ -119,39 +91,12 @@ export default {
     showAlert(message) {
       (this.alertSecs = 3), (this.alertMessage = message);
     },
-    getAvailableComponents() {
-      http
-        .get("/component/kv")
-        .then(response => {
-          this.availableComponents = response.data;
-          this.getPurchasesData();
-        })
-        .catch(e => {
-          console.log("API error: " + e);
-        });
-    },
-    getComponent(component_id) {
-      http
-        .get("/component/" + component_id)
-        .then(response => {
-          this.component = response.data;
-          this.getPurchasesData();
-        })
-        .catch(e => {
-          console.log("API error: " + e);
-        });
-    },
     getPurchasesData() {
-      var url =
-        "/purchase/active?component_id=" +
-        (this.component.id ? this.component.id : "");
-      if (this.showAll) {
-        url = "/purchase";
-      }
       http
-        .get(url)
+        .get("/purchase/pageable", {params: {pageable: this.pageable, searchKey: this.searchKey}})
         .then(response => {
-          this.purchases = response.data;
+          this.purchases = response.data.content;
+          this.pageable.totalElements = response.data.totalElements;
         })
         .catch(e => {
           console.log("API error: " + e);
@@ -185,7 +130,7 @@ export default {
     }
   },
   mounted() {
-    this.getAvailableComponents();
+    this.getPurchasesData();
   }
 };
 </script>

@@ -15,6 +15,8 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -70,6 +72,17 @@ class PurchaseRest {
 	@GetMapping("/purchase")
 	Collection<Purchase> getAll() {
 		return purchaseRepo.findAll();
+	}
+	
+	@GetMapping("/purchase/pageable")
+	Page<Purchase> getAllPageable(@RequestParam(name = "pageable", required = false) Pageable pageable, @RequestParam(name = "searchKey", required = false) String searchKey) {
+		Page<Purchase> purchases = null;
+		if(searchKey ==null || searchKey.trim().length() == 0) {
+			purchases = purchaseRepo.getAllPageable(pageable);
+		}else {
+			purchases = purchaseRepo.getAllPageable(pageable, searchKey);
+		}
+		return purchases;
 	}
 
 	@GetMapping("/purchase/active")
