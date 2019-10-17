@@ -304,7 +304,6 @@ export default {
     season: function(newValue, oldValue) {
       if (!this.item.season || this.item.season.id != newValue.id) {
         this.item.season = newValue;
-        this.setItemNumber(this.item.season.id);
       }
     },
     dimension: function(newValue, oldValue) {
@@ -413,16 +412,6 @@ export default {
         .get("/season")
         .then(response => {
           this.availableSeasons = response.data;
-        })
-        .catch(e => {
-          console.log("API error: " + e);
-        });
-    },
-    setItemNumber(season_id) {
-      http
-        .get("/season/" + season_id)
-        .then(response => {
-          this.item.number = response.data.prefix + this.item.id;
         })
         .catch(e => {
           console.log("API error: " + e);

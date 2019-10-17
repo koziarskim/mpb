@@ -210,7 +210,6 @@ export default {
     category: function(newValue, oldValue) {
         if(!this.component.category || this.component.category.id != newValue.id){
             this.component.category=newValue;
-            this.setCategoryNumber(this.category.id);
         }
     },
     deliveryCost: function(newValue, oldValue){
@@ -236,18 +235,20 @@ export default {
         alert("Item already added")
         return;
       }
-      var ic = {
-        item: {id: this.item.id},
-        component: {id: this.component.id},
-        units: this.icUnits
-      }
-      http.post("/itemComponent", ic).then(response => {
-        this.item = {};
-        this.icUnits = 0;
-        this.getComponentData(this.component.id)
-      }).catch(e => {
-        console.log("API error: " + e);
-      })
+      this.save().then(r=> {
+        var ic = {
+          item: {id: this.item.id},
+          component: {id: this.component.id},
+          units: this.icUnits
+        }
+        http.post("/itemComponent", ic).then(response => {
+          this.item = {};
+          this.icUnits = 0;
+          this.getComponentData(this.component.id)
+        }).catch(e => {
+          console.log("API error: " + e);
+        })
+      });
     },
     onUpload(file){
       this.uploadedFile = file;
@@ -309,14 +310,11 @@ export default {
           console.log("API error: " + e);
         });
     },
-    setCategoryNumber(category_id) {
-      http
-        .get("/category/"+category_id)
-        .then(response => {
-          this.component.number = response.data.prefix+this.component.id;
-        })
-        .catch(e => {
-          console.log("API error: " + e);
+    save() {
+      return http.post("/component/", this.component).then(response =>{
+        return Promise.resolve();
+        }).catch(e => {
+          console.log("API error: "+e);
         });
     },
     saveAndUpload() {
