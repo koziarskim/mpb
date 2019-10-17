@@ -311,6 +311,10 @@ export default {
         });
     },
     save() {
+       if(!this.component.name || !this.component.number){
+        alert("Please enter Component Name and Number");
+        return Promise.reject();
+      }
       return http.post("/component/", this.component).then(response =>{
         return Promise.resolve();
         }).catch(e => {
@@ -318,6 +322,10 @@ export default {
         });
     },
     saveAndUpload() {
+      if(!this.component.name || !this.component.number){
+        alert("Please enter Component Name and Number");
+        return Promise.reject();
+      }
       let formData = new FormData();
       formData.append("image", this.uploadedFile);
       formData.append("jsonComponent", JSON.stringify(this.component));

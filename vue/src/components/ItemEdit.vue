@@ -418,8 +418,8 @@ export default {
         });
     },
     validate(){
-        if(!this.item.name){
-            alert("Item name is required");
+        if(!this.item.name || !this.item.number){
+            alert("Item Name and Number is required");
             return false;
         }
         if(!this.item.season || !this.item.season.id){
