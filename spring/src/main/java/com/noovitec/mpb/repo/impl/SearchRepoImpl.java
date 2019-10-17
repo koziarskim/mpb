@@ -390,6 +390,7 @@ public class SearchRepoImpl implements SearchRepoCustom {
 		for(Component c: components) {
 			PoComponentDto dto = new PoComponentDto();
 			dto.setId(c.getId());
+			dto.setSupplierId(c.getSupplier()==null?null:c.getSupplier().getId());
 			dto.setName(c.getName());
 			dto.setUnitsOnStock(Long.valueOf(c.getUnitsOnStack()));
 			dto.setUnitsInOrder(c.getUnitsInOrder());

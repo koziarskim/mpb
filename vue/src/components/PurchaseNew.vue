@@ -75,7 +75,8 @@ export default {
   data() {
     return {
       purchase: {
-        date: moment().utc().format("YYYY-MM-DD")
+        date: moment().utc().format("YYYY-MM-DD"),
+        supplier: {}
       },
       selectedComponents: [],
       fields: [
@@ -107,8 +108,27 @@ export default {
     },
     getPoComponents(searchDto){
       return http.post("/search/po/component", searchDto).then(r => {
+        var missmatch = false;
+        var supplierId = this.purchase.supplierId;
         r.data.forEach(dto => {
-          this.selectedComponents.push(dto);
+          if(!supplierId){
+            supplierId = dto.supplierId;
+          }
+          if(supplierId != dto.supplierId){
+            missmatch = true;
+            return;
+          }
+        })
+        if(missmatch){
+          alert("Supplier missmatch! Only components to single supplier are allowed!");
+          return
+        }
+        this.purchase.supplier.id = supplierId;
+        r.data.forEach(dto => {
+          var existing = this.selectedComponents.find(selected => selected.id == dto.id)
+          if(!existing){
+            this.selectedComponents.push(dto);
+          }
         })
       }).catch(e => {
         console.log("API error: " + e);

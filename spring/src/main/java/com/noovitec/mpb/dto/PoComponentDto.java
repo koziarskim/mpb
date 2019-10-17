@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class PoComponentDto {
 
 	private Long id;
+	private Long supplierId;
 	private String name;
 	private Long unitsSold;
 	private Long unitsProduced;
