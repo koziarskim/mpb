@@ -48,6 +48,9 @@ public class SearchRepoImpl implements SearchRepoCustom {
 
 	@Override
 	public List<KeyValueDto> findItems(SearchDto searchDto) {
+		if(searchDto.getSeasons().isEmpty()) {
+			return new ArrayList<KeyValueDto>();
+		}
 		String q = "select distinct new com.noovitec.mpb.dto.KeyValueDto(i.id, i.name) from Item i ";
 		q += "join Season se on i.season.id = se.id ";
 		q += "where i.id is not null ";
@@ -70,6 +73,9 @@ public class SearchRepoImpl implements SearchRepoCustom {
 
 	@Override
 	public List<KeyValueDto> findCustomers(SearchDto searchDto) {
+		if(searchDto.getSeasons().isEmpty() || searchDto.getItems().isEmpty()) {
+			return new ArrayList<KeyValueDto>();
+		}
 		String q = "select distinct new com.noovitec.mpb.dto.KeyValueDto(cu.id, cu.name) from Customer cu ";
 		q += "join Sale s on s.customer.id = cu.id ";
 		q += "join SaleItem si on si.sale.id = s.id ";
@@ -101,6 +107,9 @@ public class SearchRepoImpl implements SearchRepoCustom {
 	
 	@Override
 	public List<KeyValueDto> findSales(SearchDto searchDto) {
+		if(searchDto.getSeasons().isEmpty() || searchDto.getItems().isEmpty() || searchDto.getCustomers().isEmpty()) {
+			return new ArrayList<KeyValueDto>();
+		}
 		String q = "select distinct new com.noovitec.mpb.dto.KeyValueDto(si.id, s.number) from SaleItem si ";
 		q += "join Sale s on si.sale.id = s.id ";
 		q += "join Item i on si.item.id = i.id ";
@@ -139,6 +148,10 @@ public class SearchRepoImpl implements SearchRepoCustom {
 
 	@Override
 	public List<KeyValueDto> findSuppliers(SearchDto searchDto) {
+		if(searchDto.getSeasons().isEmpty() || searchDto.getItems().isEmpty() || searchDto.getCustomers().isEmpty()
+				|| searchDto.getSales().isEmpty()) {
+			return new ArrayList<KeyValueDto>();
+		}
 		String q = "select distinct new com.noovitec.mpb.dto.KeyValueDto(su.id, su.name) from Supplier su ";
 		q += "join Component c on c.supplier.id = su.id ";
 		q += "join ItemComponent ic on ic.component.id = c.id ";
@@ -185,6 +198,10 @@ public class SearchRepoImpl implements SearchRepoCustom {
 
 	@Override
 	public List<KeyValueDto> findComponents(SearchDto searchDto) {
+		if(searchDto.getSeasons().isEmpty() || searchDto.getItems().isEmpty() || searchDto.getCustomers().isEmpty()
+				|| searchDto.getSales().isEmpty() || searchDto.getSuppliers().isEmpty()) {
+			return new ArrayList<KeyValueDto>();
+		}
 		String q = "select distinct new com.noovitec.mpb.dto.KeyValueDto(c.id, c.name) from Component c ";
 		q += "join ItemComponent ic on ic.component.id = c.id ";
 		q += "join Item i on ic.item.id = i.id ";
