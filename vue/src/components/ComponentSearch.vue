@@ -8,8 +8,10 @@
     </div>
     <div v-if="visibleSeasonMenu.value" class="menu-tab">
         <div v-for="season in seasons" :key="season.id">
-          <input type="checkbox" v-model="season.selected" @click="searchDto.seasonAll = false; itemClear()">
-          <span>{{season.name}}</span>
+          <div v-if="!season.hide">
+            <input type="checkbox" v-model="season.selected" @click="searchDto.seasonAll = false; itemClear()">
+            <span>{{season.name}}</span>
+          </div>
       </div>
     </div>
     <br/>
@@ -22,8 +24,10 @@
     </div>
     <div v-if="visibleItemMenu.value" class="menu-tab">
         <div v-for="item in items" :key="item.id">
-          <input type="checkbox" v-model="item.selected" @click="searchDto.itemAll = false; customerClear()">
-          <span>{{item.name}}</span>
+          <div v-if="!item.hide">
+            <input type="checkbox" v-model="item.selected" @click="searchDto.itemAll = false; customerClear()">
+            <span>{{item.name}}</span>
+          </div>
       </div>
     </div>
     <br/>
@@ -36,8 +40,10 @@
     </div>
     <div v-if="visibleCustomerMenu.value" class="menu-tab">
         <div v-for="customer in customers" :key="customer.id">
-          <input type="checkbox" v-model="customer.selected" @click="searchDto.customerAll = false; saleClear()">
-          <span>{{customer.name}}</span>
+          <div v-if="!customer.hide">
+            <input type="checkbox" v-model="customer.selected" @click="searchDto.customerAll = false; saleClear()">
+            <span>{{customer.name}}</span>
+          </div>
       </div>
     </div>
     <br/>
@@ -50,8 +56,10 @@
     </div>
     <div v-if="visibleSaleMenu.value" class="menu-tab">
         <div v-for="sale in sales" :key="sale.id">
-          <input type="checkbox" v-model="sale.selected" @click="searchDto.saleAll = false; supplierClear()">
-          <span>{{sale.name}}</span>
+          <div v-if="!sale.hide">
+            <input type="checkbox" v-model="sale.selected" @click="searchDto.saleAll = false; supplierClear()">
+            <span>{{sale.name}}</span>
+          </div>
       </div>
     </div>
     <br/>
@@ -64,8 +72,10 @@
     </div>
     <div v-if="visibleSupplierMenu.value" class="menu-tab">
         <div v-for="supplier in suppliers" :key="supplier.id">
-          <input type="checkbox" v-model="supplier.selected" @click="searchDto.supplierAll = false; componentClear()">
-          <span>{{supplier.name}}</span>
+          <div v-if="!supplier.hide">
+            <input type="checkbox" v-model="supplier.selected" @click="searchDto.supplierAll = false; componentClear()">
+            <span>{{supplier.name}}</span>
+          </div>
       </div>
     </div>
     <br/>
