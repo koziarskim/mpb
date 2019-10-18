@@ -48,7 +48,8 @@ public class SearchRepoImpl implements SearchRepoCustom {
 
 	@Override
 	public List<KeyValueDto> findItems(SearchDto searchDto) {
-		if(searchDto.getSeasons().isEmpty()) {
+		//TODO: This could go to client site.
+		if(searchDto.getSeasons().isEmpty() && !searchDto.isSeasonAll()) {
 			return new ArrayList<KeyValueDto>();
 		}
 		String q = "select distinct new com.noovitec.mpb.dto.KeyValueDto(i.id, i.name) from Item i ";
@@ -73,7 +74,9 @@ public class SearchRepoImpl implements SearchRepoCustom {
 
 	@Override
 	public List<KeyValueDto> findCustomers(SearchDto searchDto) {
-		if(searchDto.getSeasons().isEmpty() || searchDto.getItems().isEmpty()) {
+		//TODO: This could go to client site.
+		if((searchDto.getSeasons().isEmpty() && !searchDto.isSeasonAll()) 
+				|| (searchDto.getItems().isEmpty() && !searchDto.isItemAll())) {
 			return new ArrayList<KeyValueDto>();
 		}
 		String q = "select distinct new com.noovitec.mpb.dto.KeyValueDto(cu.id, cu.name) from Customer cu ";
@@ -107,7 +110,10 @@ public class SearchRepoImpl implements SearchRepoCustom {
 	
 	@Override
 	public List<KeyValueDto> findSales(SearchDto searchDto) {
-		if(searchDto.getSeasons().isEmpty() || searchDto.getItems().isEmpty() || searchDto.getCustomers().isEmpty()) {
+		//TODO: This could go to client site.
+		if((searchDto.getSeasons().isEmpty() && !searchDto.isSeasonAll()) 
+				|| (searchDto.getItems().isEmpty() && !searchDto.isItemAll())
+				|| (searchDto.getCustomers().isEmpty() && !searchDto.isCustomerAll())) {
 			return new ArrayList<KeyValueDto>();
 		}
 		String q = "select distinct new com.noovitec.mpb.dto.KeyValueDto(si.id, s.number) from SaleItem si ";
@@ -148,8 +154,11 @@ public class SearchRepoImpl implements SearchRepoCustom {
 
 	@Override
 	public List<KeyValueDto> findSuppliers(SearchDto searchDto) {
-		if(searchDto.getSeasons().isEmpty() || searchDto.getItems().isEmpty() || searchDto.getCustomers().isEmpty()
-				|| searchDto.getSales().isEmpty()) {
+		//TODO: This could go to client site.
+		if((searchDto.getSeasons().isEmpty() && !searchDto.isSeasonAll()) 
+				|| (searchDto.getItems().isEmpty() && !searchDto.isItemAll())
+				|| (searchDto.getCustomers().isEmpty() && !searchDto.isCustomerAll())
+				|| (searchDto.getSales().isEmpty() && !searchDto.isSaleAll())) {
 			return new ArrayList<KeyValueDto>();
 		}
 		String q = "select distinct new com.noovitec.mpb.dto.KeyValueDto(su.id, su.name) from Supplier su ";
@@ -198,8 +207,12 @@ public class SearchRepoImpl implements SearchRepoCustom {
 
 	@Override
 	public List<KeyValueDto> findComponents(SearchDto searchDto) {
-		if(searchDto.getSeasons().isEmpty() || searchDto.getItems().isEmpty() || searchDto.getCustomers().isEmpty()
-				|| searchDto.getSales().isEmpty() || searchDto.getSuppliers().isEmpty()) {
+		//TODO: This could go to client site.
+		if((searchDto.getSeasons().isEmpty() && !searchDto.isSeasonAll()) 
+				|| (searchDto.getItems().isEmpty() && !searchDto.isItemAll())
+				|| (searchDto.getCustomers().isEmpty() && !searchDto.isCustomerAll())
+				|| (searchDto.getSales().isEmpty() && !searchDto.isSaleAll())
+				|| (searchDto.getSuppliers().isEmpty() && !searchDto.isSupplierAll())) {
 			return new ArrayList<KeyValueDto>();
 		}
 		String q = "select distinct new com.noovitec.mpb.dto.KeyValueDto(c.id, c.name) from Component c ";
