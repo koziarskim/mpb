@@ -1,14 +1,14 @@
 <template>
   <b-container fluid style="font-size: 10px;">
     <!-- Season -->
-    <label class="top-label">Seasons: <input type="checkbox" v-model="searchDto.seasonAll"></label>
+    <label class="top-label">Seasons: <input type="checkbox" v-model="searchDto.seasonAll" @click="seasonAll()"></label>
     <div style="display: flex">
       <input @keydown.enter="getSeasons()" @click="showSeasonMenu()" class="form-control search-width" type="tel" v-model="searchDto.seasonName" placeholder="Pick Season">
       <div v-if="visibleSeasonMenu" class="btn-tab" @click="closeSeasonMenu()">Close</div>
     </div>
     <div v-if="visibleSeasonMenu" class="menu-tab">
         <div v-for="season in seasons" :key="season.id">
-          <input type="checkbox" v-model="season.selected">
+          <input type="checkbox" v-model="season.selected" @click="searchDto.seasonAll = false">
           <span>{{season.name}}</span>
       </div>
     </div>
@@ -18,14 +18,14 @@
     <br/>
 
     <!-- Item -->
-    <label class="top-label">Items: <input type="checkbox" v-model="searchDto.itemAll"></label>
+    <label class="top-label">Items: <input type="checkbox" v-model="searchDto.itemAll" @click="itemAll()"></label>
     <div style="display: flex">
       <input @keydown.enter="getItems()" @click="showItemMenu()" class="form-control search-width" type="tel" v-model="searchDto.itemName" placeholder="Pick Item">
       <div v-if="visibleItemMenu" class="btn-tab" @click="closeItemMenu()">Close</div>
     </div>
     <div v-if="visibleItemMenu" class="menu-tab">
         <div v-for="item in items" :key="item.id">
-          <input type="checkbox" v-model="item.selected">
+          <input type="checkbox" v-model="item.selected" @click="searchDto.itemAll = false">>
           <span>{{item.name}}</span>
       </div>
     </div>
@@ -35,14 +35,14 @@
     <br/>
 
     <!-- Customer -->
-    <label class="top-label">Customers: <input type="checkbox" v-model="searchDto.customerAll"></label>
+    <label class="top-label">Customers: <input type="checkbox" v-model="searchDto.customerAll" @click="customerAll()"></label>
     <div style="display: flex">
       <input @keydown.enter="getCustomers()" @click="showCustomerMenu()" class="form-control search-width" type="tel" v-model="searchDto.customerName" placeholder="Pick Customer">
       <div v-if="visibleCustomerMenu" class="btn-tab" @click="closeCustomerMenu()">Close</div>
     </div>
     <div v-if="visibleCustomerMenu" class="menu-tab">
         <div v-for="customer in customers" :key="customer.id">
-          <input type="checkbox" v-model="customer.selected">
+          <input type="checkbox" v-model="customer.selected" @click="searchDto.customerAll = false">>
           <span>{{customer.name}}</span>
       </div>
     </div>
@@ -52,14 +52,14 @@
     <br/>
 
     <!-- Sale -->
-    <label class="top-label">Sales: <input type="checkbox" v-model="searchDto.saleAll"></label>
+    <label class="top-label">Sales: <input type="checkbox" v-model="searchDto.saleAll" @click="saleAll()"></label>
     <div style="display: flex">
       <input @keydown.enter="getSales()" @click="showSaleMenu()" class="form-control search-width" type="tel" v-model="searchDto.saleNumber" placeholder="Pick Sale">
       <div v-if="visibleSaleMenu" class="btn-tab" @click="closeSaleMenu()">Close</div>
     </div>
     <div v-if="visibleSaleMenu" class="menu-tab">
         <div v-for="sale in sales" :key="sale.id">
-          <input type="checkbox" v-model="sale.selected">
+          <input type="checkbox" v-model="sale.selected" @click="searchDto.saleAll = false">>
           <span>{{sale.name}}</span>
       </div>
     </div>
@@ -69,14 +69,14 @@
     <br/>
 
     <!-- Supplier -->
-    <label class="top-label">Suppliers: <input type="checkbox" v-model="searchDto.supplierAll"></label>
+    <label class="top-label">Suppliers: <input type="checkbox" v-model="searchDto.supplierAll" @click="supplierAll()"></label>
     <div style="display: flex">
       <input @keydown.enter="getSuppliers()" @click="showSupplierMenu()" class="form-control search-width" type="tel" v-model="searchDto.supplierName" placeholder="Pick Supplier">
       <div v-if="visibleSupplierMenu" class="btn-tab" @click="closeSupplierMenu()">Close</div>
     </div>
     <div v-if="visibleSupplierMenu" class="menu-tab">
         <div v-for="supplier in suppliers" :key="supplier.id">
-          <input type="checkbox" v-model="supplier.selected">
+          <input type="checkbox" v-model="supplier.selected" @click="searchDto.supplierAll = false">>
           <span>{{supplier.name}}</span>
       </div>
     </div>
@@ -86,14 +86,14 @@
     <br/>
 
     <!-- Component -->
-    <label class="top-label">Components: <input type="checkbox" v-model="searchDto.componentAll"></label>
+    <label class="top-label">Components: <input type="checkbox" v-model="searchDto.componentAll" @click="componentAll()"></label>
     <div style="display: flex">
       <input @keydown.enter="getComponents()" @click="showComponentMenu()" class="form-control search-width" type="tel" v-model="searchDto.componentName" placeholder="Pick Component">
       <div v-if="visibleComponentMenu" class="btn-tab" @click="closeComponentMenu()">Close</div>
     </div>
     <div v-if="visibleComponentMenu" class="menu-tab">
         <div v-for="component in components" :key="component.id">
-          <input type="checkbox" v-model="component.selected">
+          <input type="checkbox" v-model="component.selected" @click="searchDto.componentAll = false">>
           <span>{{component.name}}</span>
       </div>
     </div>
@@ -170,29 +170,13 @@ export default {
   computed: {
   },
   watch: {
-    'searchDto.seasonAll'(new_value, old_value){
-      this.seasons.forEach(it => {it.selected = new_value;})
-    },
-    'searchDto.itemAll'(new_value, old_value){
-      this.items.forEach(it => {it.selected = new_value;})
-    },
-    'searchDto.customerAll'(new_value, old_value){
-      this.customers.forEach(it => {it.selected = new_value;})
-    },
-    'searchDto.saleAll'(new_value, old_value){
-      this.sales.forEach(it => {it.selected = new_value;})
-    },
-    'searchDto.supplierAll'(new_value, old_value){
-      this.suppliers.forEach(it => {it.selected = new_value;})
-    },
-    'searchDto.componentAll'(new_value, old_value){
-      this.components.forEach(it => {it.selected = new_value;})
-    }
   },
   methods: {
     // Season
+    seasonAll(value){
+      this.seasons.forEach(it => {it.selected = !this.searchDto.seasonAll})
+    },
     showSeasonMenu(){
-      // this.updateSelected(this.seasons, this.selectedSeasons);
       if(this.visibleSeasonMenu){
         return;
       }
@@ -201,19 +185,13 @@ export default {
       });
     },
     closeSeasonMenu(){
-      // this.updateSelected(this.seasons, this.selectedSeasons);
       this.visibleSeasonMenu = false;
-      // this.searchDto.seasons = this.selectedSeasons.map(it => it.id);
     },
     getSeasons(){
       if(this.seasons.length > 0){
         return Promise.resolve();
       }
         return http.post("/search/season/kv", this.searchDto).then(r => {
-          // r.data.forEach(season => {
-          //   var found = this.selectedSeasons.find(it => it.id==season.id && it.selected);
-          //   season.selected = found?true:false;
-          // })
           this.seasons = r.data;
         }).catch(e => {
           console.log("API error: " + e);
@@ -222,8 +200,10 @@ export default {
     },
 
     // Item
+    itemAll(value){
+      this.items.forEach(it => {it.selected = !this.searchDto.itemAll;})
+    },
     showItemMenu(){
-      // this.updateSelected(this.items, this.selectedItems);
       if(this.visibleItemMenu){
         return;
       }
@@ -232,19 +212,13 @@ export default {
       });
     },
     closeItemMenu(){
-      // this.updateSelected(this.items, this.selectedItems);
       this.visibleItemMenu = false;
-      // this.searchDto.items = this.selectedItems.map(it => it.id);
     },
     getItems(){
       if(this.items.length > 0){
         return Promise.resolve();
       }
         return http.post("/search/item/kv", this.searchDto).then(r => {
-          // r.data.forEach(item => {
-          //   var found = this.selectedItems.find(it => it.id==item.id && it.selected);
-          //   item.selected = found?true:false;
-          // })
           this.items = r.data;
         }).catch(e => {
           console.log("API error: " + e);
@@ -253,8 +227,10 @@ export default {
     },
 
     // Customer
+    customerAll(value){
+      this.customers.forEach(it => {it.selected = !this.searchDto.customerAll;})
+    },
     showCustomerMenu(){
-      // this.updateSelected(this.customers, this.selectedCustomers);
       if(this.visibleCustomerMenu){
         return;
       }
@@ -263,19 +239,13 @@ export default {
       });
     },
     closeCustomerMenu(){
-      // this.updateSelected(this.customers, this.selectedCustomers);
       this.visibleCustomerMenu = false;
-      // this.searchDto.customers = this.selectedCustomers.map(it => it.id);
     },
     getCustomers(){
       if(this.customers.length > 0){
         return Promise.resolve();
       }
         return http.post("/search/customer/kv", this.searchDto).then(r => {
-          // r.data.forEach(customer => {
-          //   var found = this.selectedCustomers.find(it => it.id==customer.id && it.selected);
-          //   customer.selected = found?true:false;
-          // })
           this.customers = r.data;
         }).catch(e => {
           console.log("API error: " + e);
@@ -284,8 +254,10 @@ export default {
     },
 
     // Sale
+    saleAll(value){
+      this.sales.forEach(it => {it.selected = !this.searchDto.saleAll;})
+    },
     showSaleMenu(){
-      // this.updateSelected(this.sales, this.selectedSales);
       if(this.visibleSaleMenu){
         return;
       }
@@ -294,19 +266,13 @@ export default {
       });
     },
     closeSaleMenu(){
-      // this.updateSelected(this.sales, this.selectedSales);
       this.visibleSaleMenu = false;
-      // this.searchDto.sales = this.selectedSales.map(it => it.id);
     },
     getSales(){
       if(this.sales.length > 0){
         return Promise.resolve();
       }
         return http.post("/search/sale/kv", this.searchDto).then(r => {
-          // r.data.forEach(sale => {
-          //   var found = this.selectedSales.find(it => it.id==sale.id && it.selected);
-          //   sale.selected = found?true:false;
-          // })
           this.sales = r.data;
         }).catch(e => {
           console.log("API error: " + e);
@@ -315,8 +281,10 @@ export default {
     },
 
     // Supplier
+    supplierAll(value){
+      this.suppliers.forEach(it => {it.selected = !this.searchDto.supplierAll;})
+    },
     showSupplierMenu(){
-      // this.updateSelected(this.suppliers, this.selectedSuppliers);
       if(this.visibleSupplierMenu){
         return;
       }
@@ -325,8 +293,6 @@ export default {
       });
     },
     closeSupplierMenu(){
-      // this.updateSelected(this.suppliers, this.selectedSuppliers);
-      // this.searchDto.suppliers = this.selectedSuppliers.map(it => it.id);
       this.visibleSupplierMenu = false;
     },
     getSuppliers(){
@@ -334,10 +300,6 @@ export default {
         return Promise.resolve();
       }
         return http.post("/search/supplier/kv", this.searchDto).then(r => {
-          // r.data.forEach(supplier => {
-          //   var found = this.selectedSuppliers.find(it => it.id==supplier.id && it.selected);
-          //   supplier.selected = found?true:false;
-          // })
           this.suppliers = r.data;
         }).catch(e => {
           console.log("API error: " + e);
@@ -346,6 +308,9 @@ export default {
     },
 
     // Component
+    componentAll(value){
+      this.components.forEach(it => {it.selected = !this.searchDto.componentAll;})
+    },
     showComponentMenu(){
       if(this.visibleComponentMenu){
         return;
@@ -356,18 +321,12 @@ export default {
     },
     closeComponentMenu(){
       this.visibleComponentMenu = false;
-      // this.selectedComponents = this.components.filter(it => it.selected == true);
-      // this.searchDto.components = this.selectedComponents.map(it => it.id);
     },
     getComponents(){
       if(this.components.length > 0){
         return Promise.resolve();
       }
         return http.post("/search/component/kv", this.searchDto).then(r => {
-          // r.data.forEach(component => {
-          //   var found = this.selectedComponents.find(it => it.id==component.id && it.selected);
-          //   component.selected = found?true:false;
-          // })
           this.components = r.data;
         }).catch(e => {
           console.log("API error: " + e);
@@ -377,11 +336,7 @@ export default {
 
     //Common methods.
     updateSelected(menuObjects, selectedObjects){
-      // var found = selectedObjects.find(it => it.selected);
       var selected = [];
-      // if(found){
-      //   selected.push(found);
-      // }
       menuObjects.forEach(dto => {
         var existing = selectedObjects.find(it => it.id == dto.id)
         if(dto.selected && !existing){
@@ -396,10 +351,6 @@ export default {
         alert("No Components selected. Please pick one.");
         return;
       }
-      // if(this.searchDto.suppliers.length > 1){
-      //   alert("Only one Supplier is allowed! Please pick only one.");
-      //   return;
-      // }
       this.$emit("componentsUpdated", this.searchDto);
     }
   },
