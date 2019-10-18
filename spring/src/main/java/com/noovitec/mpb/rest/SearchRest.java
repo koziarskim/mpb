@@ -1,12 +1,9 @@
 package com.noovitec.mpb.rest;
 
-import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,9 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.dto.PoComponentDto;
 import com.noovitec.mpb.dto.SearchDto;
-import com.noovitec.mpb.entity.Component;
-import com.noovitec.mpb.entity.Item;
-import com.noovitec.mpb.entity.SaleItem;
 import com.noovitec.mpb.repo.SearchRepo;
 
 @RestController
@@ -33,8 +27,7 @@ class SearchRest {
 
 	@PostMapping("/search/season/kv")
 	List<KeyValueDto> getAllSeasons(@RequestBody SearchDto searchDto) {
-		List<KeyValueDto> results = searchRepo.findSeasons(searchDto);
-		return results;
+		return searchRepo.findSeasons(searchDto);
 	}
 
 	@PostMapping("/search/customer/kv")
@@ -49,15 +42,7 @@ class SearchRest {
 
 	@PostMapping("/search/sale/kv")
 	List<KeyValueDto> getAllSales(@RequestBody SearchDto searchDto) {
-		List<SaleItem> sales = searchRepo.findSales(searchDto);
-		List<KeyValueDto> dtos = new ArrayList<KeyValueDto>();
-		for(SaleItem si: sales) {
-			KeyValueDto dto = new KeyValueDto();
-			dto.setId(si.getId());
-			dto.setName(si.getSale().getNumber());
-			dtos.add(dto);
-		}
-		return dtos;
+		return searchRepo.findSales(searchDto);
 	}
 
 	@PostMapping("/search/supplier/kv")
@@ -67,15 +52,7 @@ class SearchRest {
 
 	@PostMapping("/search/component/kv")
 	List<KeyValueDto> getAllComponents(@RequestBody SearchDto searchDto) {
-		List<Component> components = searchRepo.findComponents(searchDto);
-		List<KeyValueDto> dtos = new ArrayList<KeyValueDto>();
-		for(Component c: components) {
-			KeyValueDto dto = new KeyValueDto();
-			dto.setId(c.getId());
-			dto.setName(c.getName());
-			dtos.add(dto);
-		}
-		return dtos;
+		return searchRepo.findComponents(searchDto);
 	}
 
 	@PostMapping("/search/po/component")

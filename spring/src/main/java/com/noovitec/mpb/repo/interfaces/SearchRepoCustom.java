@@ -16,11 +16,11 @@ public interface SearchRepoCustom {
 	
 	public List<KeyValueDto> findItems(SearchDto searchDto);
 
-	public List<SaleItem> findSales(SearchDto searchDto);
+	public List<KeyValueDto> findSales(SearchDto searchDto);
 
 	public List<KeyValueDto> findSuppliers(SearchDto searchDto);
 
-	public List<Component> findComponents(SearchDto searchDto);
+	public List<KeyValueDto> findComponents(SearchDto searchDto);
 	
 	public List<PoComponentDto> findPoComponents(SearchDto searchDto);
 
