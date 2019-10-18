@@ -97,7 +97,7 @@
     <br/>
 
     <div style="text-align: right;">
-      <b-button size="sm" type="reset" variant="success" @click="updateParent()">Add >></b-button>
+      <b-button size="sm" type="reset" variant="success" @click="updateParent()">Update >></b-button>
     </div>
   </b-container>
 </template>
@@ -137,29 +137,21 @@ export default {
 
       visibleSeasonMenu: {value: false},
       seasons: [],
-      selectedSeasons: [],
 
       visibleItemMenu: {value: false},
       items: [],
-      selectedItems: [],
 
       visibleCustomerMenu: {value: false},
       customers: [],
-      selectedCustomers: [],
 
       visibleSaleMenu: {value: false},
       sales: [],
-      selectedSales: [],
 
       visibleSupplierMenu: {value: false},
       suppliers: [],
-      selectedSuppliers: [],
 
       visibleComponentMenu: {value: false},
       components: [],
-      componentsFull: [],
-      selectedComponents: [],
-
     };
   },
   computed: {
@@ -173,9 +165,9 @@ export default {
       if(useLocal){
         return Promise.resolve();
       }
-        return http.post("/search/season/kv", this.searchDto).then(r => {
-        this.setResponse(this.seasons, this.searchDto.seasonAll, r.data);
-        return Promise.resolve();
+      return http.post("/search/season/kv", this.searchDto).then(r => {
+          this.setResponse(this.seasons, this.searchDto.seasonAll, r.data);
+          return Promise.resolve();
         }).catch(e => {
           console.log("API error: " + e);
         });
@@ -196,9 +188,9 @@ export default {
       if(useLocal){
         return Promise.resolve();
       }
-        return http.post("/search/item/kv", this.searchDto).then(r => {
-        this.setResponse(this.items, this.searchDto.itemAll, r.data);
-        return Promise.resolve();
+      return http.post("/search/item/kv", this.searchDto).then(r => {
+          this.setResponse(this.items, this.searchDto.itemAll, r.data);
+          return Promise.resolve();
         }).catch(e => {
           console.log("API error: " + e);
         });
@@ -219,9 +211,9 @@ export default {
       if(useLocal){
         return Promise.resolve();
       }
-        return http.post("/search/customer/kv", this.searchDto).then(r => {
-        this.setResponse(this.customers, this.searchDto.customerAll, r.data);
-        return Promise.resolve();
+      return http.post("/search/customer/kv", this.searchDto).then(r => {
+          this.setResponse(this.customers, this.searchDto.customerAll, r.data);
+          return Promise.resolve();
         }).catch(e => {
           console.log("API error: " + e);
         });
@@ -242,9 +234,9 @@ export default {
       if(useLocal){
         return Promise.resolve();
       }
-        return http.post("/search/sale/kv", this.searchDto).then(r => {
-        this.setResponse(this.sales, this.searchDto.saleAll, r.data);
-        return Promise.resolve();
+      return http.post("/search/sale/kv", this.searchDto).then(r => {
+          this.setResponse(this.sales, this.searchDto.saleAll, r.data);
+          return Promise.resolve();
         }).catch(e => {
           console.log("API error: " + e);
         });
@@ -265,9 +257,9 @@ export default {
       if(useLocal){
         return Promise.resolve();
       }
-        return http.post("/search/supplier/kv", this.searchDto).then(r => {
-        this.setResponse(this.suppliers, this.searchDto.supplierAll, r.data);
-        return Promise.resolve();
+      return http.post("/search/supplier/kv", this.searchDto).then(r => {
+          this.setResponse(this.suppliers, this.searchDto.supplierAll, r.data);
+          return Promise.resolve();
         }).catch(e => {
           console.log("API error: " + e);
         });
@@ -288,11 +280,11 @@ export default {
         return Promise.resolve();
       }
       return http.post("/search/component/kv", this.searchDto).then(r => {
-        this.setResponse(this.components, this.searchDto.componentAll, r.data);
-        return Promise.resolve();
-      }).catch(e => {
-        console.log("API error: " + e);
-      });
+          this.setResponse(this.components, this.searchDto.componentAll, r.data);
+          return Promise.resolve();
+        }).catch(e => {
+          console.log("API error: " + e);
+        });
     },
 
     //Common methods.
@@ -350,8 +342,14 @@ export default {
     },
     updateParent(){
       if(this.searchDto.components.length==0){
-        alert("No Components selected. Please pick one.");
-        return;
+        this.getComponents().then(r => {
+          this.searchDto.components = this.components.map(dto => dto.id);
+          if(this.searchDto.components.length==0){
+            alert("No Components selected. Please pick one.");
+            return;
+          }
+          this.$emit("componentsUpdated", this.searchDto);
+        })
       }
       this.$emit("componentsUpdated", this.searchDto);
     }

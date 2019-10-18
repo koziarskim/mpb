@@ -124,6 +124,7 @@ export default {
           return
         }
         this.purchase.supplier.id = supplierId;
+        this.selectedComponents = [];
         r.data.forEach(dto => {
           var existing = this.selectedComponents.find(selected => selected.id == dto.id)
           if(!existing){
