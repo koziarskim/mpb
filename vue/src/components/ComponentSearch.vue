@@ -1,92 +1,77 @@
 <template>
   <b-container fluid style="font-size: 10px;">
     <!-- Season -->
-    <label class="top-label">Seasons: <input type="checkbox" v-model="searchDto.seasonAll" @click="toggleAll(seasons, searchDto.seasonName, searchDto.seasonAll)"></label>
+    <label class="top-label">Seasons: <input type="checkbox" v-model="searchDto.seasonAll" @click="toggleAll(seasons, searchDto.seasonName, searchDto.seasonAll, itemClear())"></label>
     <div style="display: flex">
       <input @keydown.enter="getSeasons(true)" @click="showMenu(getSeasons(), visibleSeasonMenu)" class="form-control search-width" type="tel" v-model="searchDto.seasonName" placeholder="Pick Season">
       <div v-if="visibleSeasonMenu.value" class="btn-tab" @click="closeMenu(seasons, searchDto.seasons, visibleSeasonMenu)">Close</div>
     </div>
     <div v-if="visibleSeasonMenu.value" class="menu-tab">
         <div v-for="season in seasons" :key="season.id">
-          <input type="checkbox" v-model="season.selected" @click="searchDto.seasonAll = false">
+          <input type="checkbox" v-model="season.selected" @click="searchDto.seasonAll = false; itemClear()">
           <span>{{season.name}}</span>
       </div>
-    </div>
-    <div v-if="showSelected">
-      <div v-for="season in selectedSeasons" :key="season.id+season.name">{{season.name}}</div>
     </div>
     <br/>
 
     <!-- Item -->
-    <label class="top-label">Items: <input type="checkbox" v-model="searchDto.itemAll" @click="toggleAll(items, searchDto.itemName, searchDto.itemAll)"></label>
+    <label class="top-label">Items: <input type="checkbox" v-model="searchDto.itemAll" @click="toggleAll(items, searchDto.itemName, searchDto.itemAll, customerClear())"></label>
     <div style="display: flex">
       <input @keydown.enter="getItems(true)" @click="showMenu(getItems(), visibleItemMenu)" class="form-control search-width" type="tel" v-model="searchDto.itemName" placeholder="Pick Item">
       <div v-if="visibleItemMenu.value" class="btn-tab" @click="closeMenu(items, searchDto.items, visibleItemMenu)">Close</div>
     </div>
     <div v-if="visibleItemMenu.value" class="menu-tab">
         <div v-for="item in items" :key="item.id">
-          <input type="checkbox" v-model="item.selected" @click="searchDto.itemAll = false">
+          <input type="checkbox" v-model="item.selected" @click="searchDto.itemAll = false; customerClear()">
           <span>{{item.name}}</span>
       </div>
-    </div>
-    <div v-if="showSelected">
-      <div v-for="item in selectedItems" :key="item.id+item.name">{{item.name}}</div>
     </div>
     <br/>
 
     <!-- Customer -->
-    <label class="top-label">Customers: <input type="checkbox" v-model="searchDto.customerAll" @click="toggleAll(customers, searchDto.customerName, searchDto.customerAll)"></label>
+    <label class="top-label">Customers: <input type="checkbox" v-model="searchDto.customerAll" @click="toggleAll(customers, searchDto.customerName, searchDto.customerAll, saleClear())"></label>
     <div style="display: flex">
       <input @keydown.enter="getCustomers(true)" @click="showMenu(getCustomers(), visibleCustomerMenu)" class="form-control search-width" type="tel" v-model="searchDto.customerName" placeholder="Pick Customer">
       <div v-if="visibleCustomerMenu.value" class="btn-tab" @click="closeMenu(customers, searchDto.customers, visibleCustomerMenu)">Close</div>
     </div>
     <div v-if="visibleCustomerMenu.value" class="menu-tab">
         <div v-for="customer in customers" :key="customer.id">
-          <input type="checkbox" v-model="customer.selected" @click="searchDto.customerAll = false">
+          <input type="checkbox" v-model="customer.selected" @click="searchDto.customerAll = false; saleClear()">
           <span>{{customer.name}}</span>
       </div>
-    </div>
-    <div v-if="showSelected">
-      <div v-for="customer in selectedCustomers" :key="customer.id+customer.name">{{customer.name}}</div>
     </div>
     <br/>
 
     <!-- Sale -->
-    <label class="top-label">Sales: <input type="checkbox" v-model="searchDto.saleAll" @click="toggleAll(sales, searchDto.saleName, searchDto.saleAll)"></label>
+    <label class="top-label">Sales: <input type="checkbox" v-model="searchDto.saleAll" @click="toggleAll(sales, searchDto.saleName, searchDto.saleAll, supplierClear())"></label>
     <div style="display: flex">
       <input @keydown.enter="getSales(true)" @click="showMenu(getSales(), visibleSaleMenu)" class="form-control search-width" type="tel" v-model="searchDto.saleNumber" placeholder="Pick Sale">
       <div v-if="visibleSaleMenu.value" class="btn-tab" @click="closeMenu(sales, searchDto.sales, visibleSaleMenu)">Close</div>
     </div>
     <div v-if="visibleSaleMenu.value" class="menu-tab">
         <div v-for="sale in sales" :key="sale.id">
-          <input type="checkbox" v-model="sale.selected" @click="searchDto.saleAll = false">
+          <input type="checkbox" v-model="sale.selected" @click="searchDto.saleAll = false; supplierClear()">
           <span>{{sale.name}}</span>
       </div>
-    </div>
-    <div v-if="showSelected">
-      <div v-for="sale in selectedSales" :key="sale.id+sale.name">{{sale.name}}</div>
     </div>
     <br/>
 
     <!-- Supplier -->
-    <label class="top-label">Suppliers: <input type="checkbox" v-model="searchDto.supplierAll" @click="toggleAll(suppliers, searchDto.supplierName, searchDto.supplierAll)"></label>
+    <label class="top-label">Suppliers: <input type="checkbox" v-model="searchDto.supplierAll" @click="toggleAll(suppliers, searchDto.supplierName, searchDto.supplierAll, componentClear())"></label>
     <div style="display: flex">
       <input @keydown.enter="getSuppliers(true)" @click="showMenu(getSuppliers(), visibleSupplierMenu)" class="form-control search-width" type="tel" v-model="searchDto.supplierName" placeholder="Pick Supplier">
       <div v-if="visibleSupplierMenu.value" class="btn-tab" @click="closeMenu(suppliers, searchDto.suppliers, visibleSupplierMenu)">Close</div>
     </div>
     <div v-if="visibleSupplierMenu.value" class="menu-tab">
         <div v-for="supplier in suppliers" :key="supplier.id">
-          <input type="checkbox" v-model="supplier.selected" @click="searchDto.supplierAll = false">
+          <input type="checkbox" v-model="supplier.selected" @click="searchDto.supplierAll = false; componentClear()">
           <span>{{supplier.name}}</span>
       </div>
-    </div>
-    <div v-if="showSelected">
-      <div v-for="supplier in selectedSuppliers" :key="supplier.id+supplier.name">{{supplier.name}}</div>
     </div>
     <br/>
 
     <!-- Component -->
-    <label class="top-label">Components: <input type="checkbox" v-model="searchDto.componentAll" @click="toggleAll(components, searchDto.componentName, searchDto.componentAll)"></label>
+    <label class="top-label">Components: <input type="checkbox" v-model="searchDto.componentAll" @click="toggleAll(components, searchDto.componentName, searchDto.componentAll, null)"></label>
     <div style="display: flex">
       <input @keydown.enter="getComponents(true)" @click="showMenu(getComponents(), visibleComponentMenu)" class="form-control search-width" type="tel" v-model="searchDto.componentName" placeholder="Pick Component">
       <div v-if="visibleComponentMenu.value" class="btn-tab" @click="closeMenu(components, searchDto.components, visibleComponentMenu)">Close</div>
@@ -98,9 +83,6 @@
             <span>{{component.name}}</span>
           </div>
       </div>
-    </div>
-    <div v-if="showSelected">
-      <div v-for="component in selectedComponents" :key="component.id+component.name">{{component.name}}</div>
     </div>
     <br/>
 
@@ -176,10 +158,6 @@ export default {
   },
   methods: {
     // Season
-    seasonSelect(){
-      this.searchDto.seasonAll = false;
-      this.itemClear();
-    },
     getSeasons(enter){
       var useLocal = this.getLocal(this.seasons, [], this.searchDto.seasonName, true, enter);
       if(useLocal){
@@ -195,15 +173,13 @@ export default {
     },
 
     // Item
-    itemSelect(){
-      this.searchDto.itemAll = false;
-      this.customerClear();
-    },
     itemClear(){
       this.items = [];
       this.searchDto.itemAll = true;
       this.searchDto.items = [];
       this.customerClear();
+      this.searchDto.itemName = "";
+      this.items.forEach(dto => dto.hide = false);
     },
     getItems(enter){
       var useLocal = this.getLocal(this.items, this.searchDto.seasons, this.searchDto.itemName, this.searchDto.seasonAll, enter);
@@ -220,15 +196,13 @@ export default {
     },
 
     // Customer
-    customerSelect(){
-      this.searchDto.customerAll = false;
-      this.saleClear();
-    },
     customerClear(){
       this.customers = [];
       this.searchDto.customerAll = true;
       this.searchDto.customers = [];
       this.saleClear();
+      this.searchDto.customerName = "";
+      this.customers.forEach(dto => dto.hide = false);
     },
     getCustomers(enter){
       var useLocal = this.getLocal(this.customers, this.searchDto.items, this.searchDto.customerName, this.searchDto.itemAll, enter);
@@ -245,15 +219,13 @@ export default {
     },
 
     // Sale
-    saleSelect(){
-      this.searchDto.saleAll = false;
-      this.supplierClear();
-    },
     saleClear(){
       this.sales = [];
       this.searchDto.saleAll = true;
       this.searchDto.sales = [];
       this.supplierClear();
+      this.searchDto.saleName = "";
+      this.sales.forEach(dto => dto.hide = false);
     },
     getSales(enter){
       var useLocal = this.getLocal(this.sales, this.searchDto.customers, this.searchDto.saleName, this.searchDto.customerAll, enter);
@@ -270,15 +242,13 @@ export default {
     },
 
     // Supplier
-    supplierSelect(){
-      this.searchDto.supplierAll = false;
-      this.componentClear();
-    },
     supplierClear(){
       this.suppliers = [];
       this.searchDto.supplierAll = true;
       this.searchDto.suppliers = [];
       this.componentClear();
+      this.searchDto.supplierName = "";
+      this.suppliers.forEach(dto => dto.hide = false);
     },
     getSuppliers(enter){
       var useLocal = this.getLocal(this.suppliers, this.searchDto.sales, this.searchDto.supplierName, this.searchDto.saleAll, enter);
@@ -296,10 +266,10 @@ export default {
 
     // Component
     componentClear(){
-      this.searchDto.componentName = "";
       this.components = [];
       this.searchDto.componentAll = true;
       this.searchDto.components = [];
+      this.searchDto.componentName = "";
       this.components.forEach(dto => dto.hide = false);
     },
     getComponents(enter){
