@@ -89,9 +89,9 @@
     <label class="top-label">Components: <input type="checkbox" v-model="searchDto.componentAll" @click="componentAll()"></label>
     <div style="display: flex">
       <input @keydown.enter="getComponents(true)" @click="showComponentMenu()" class="form-control search-width" type="tel" v-model="searchDto.componentName" placeholder="Pick Component">
-      <div v-if="visibleComponentMenu" class="btn-tab" @click="closeComponentMenu()">Close</div>
+      <div v-if="visibleComponentMenu.value" class="btn-tab" @click="closeMenu(components, searchDto.components, visibleComponentMenu)">Close</div>
     </div>
-    <div v-if="visibleComponentMenu" class="menu-tab">
+    <div v-if="visibleComponentMenu.value" class="menu-tab">
         <div v-for="component in components" :key="component.id">
           <div v-if="!component.hide">
             <input type="checkbox" v-model="component.selected" @click="componentSelect()">
@@ -163,7 +163,7 @@ export default {
       suppliers: [],
       selectedSuppliers: [],
 
-      visibleComponentMenu: false,
+      visibleComponentMenu: {value: false},
       components: [],
       componentsFull: [],
       selectedComponents: [],
@@ -367,6 +367,13 @@ export default {
     },
     supplierAll(value){
       this.suppliers.forEach(it => {it.selected = !this.searchDto.supplierAll;})
+      this.searchDto.suppliers = [];
+      this.suppliers.forEach(dto => {
+        if(dto.selected){
+          this.searchDto.suppliers.push(dto.id);
+        }
+      })
+      this.componentClear();
     },
     showSupplierMenu(){
       if(this.visibleSupplierMenu){
@@ -406,9 +413,11 @@ export default {
       this.searchDto.componentAll = false;
     },
     componentClear(){
+      this.searchDto.componentName = "";
       this.components = [];
       this.searchDto.componentAll = true;
       this.searchDto.components = [];
+      this.components.forEach(dto => dto.hide = false);
     },
     componentAll(value){
       this.searchDto.componentName = "";
@@ -418,11 +427,11 @@ export default {
       })
     },
     showComponentMenu(){
-      if(this.visibleComponentMenu){
+      if(this.visibleComponentMenu.value){
         return;
       }
       this.getComponents().then(r => {
-        this.visibleComponentMenu = true;
+        this.visibleComponentMenu.value = true;
       });
     },
     closeComponentMenu(){
@@ -432,39 +441,59 @@ export default {
           this.searchDto.components.push(dto.id);
         }
       })
-      this.visibleComponentMenu = false;
+      this.visibleComponentMenu.value = false;
     },
     getComponents(enter){
-      if(this.components.length > 0 && (this.searchDto.componentName || enter)){
-          this.components.forEach(dto => {
-            dto.hide = true;
-            if(!this.searchDto.componentName && enter){
-              dto.hide = false;
-            }else if(dto.name && dto.name.toUpperCase().indexOf(this.searchDto.componentName.toUpperCase()) >= 0){
-              dto.hide = false;
-            }
-          });
-        return Promise.resolve();
-      }else if(this.components.length > 0){
+      var useLocal = this.getLocal(this.components, this.searchDto.suppliers, this.searchDto.componentName, this.searchDto.supplierAll, enter);
+      if(useLocal){
         return Promise.resolve();
       }
-      if(this.searchDto.suppliers.length == 0 && !this.searchDto.supplierAll){
-        this.components = [];
+      return http.post("/search/component/kv", this.searchDto).then(r => {
+        this.setResponse(this.components, this.searchDto.componentAll, r.data);
         return Promise.resolve();
-      }
-        return http.post("/search/component/kv", this.searchDto).then(r => {
-          r.data.forEach(dto => {
-            dto.hide = false;
-            dto.selected = this.searchDto.componentAll;
-          })
-          this.components = r.data;
-        }).catch(e => {
-          console.log("API error: " + e);
-        });
-      return Promise.resolve();
+      }).catch(e => {
+        console.log("API error: " + e);
+      });
     },
 
     //Common methods.
+    closeMenu(objects, searchOjects, menu){
+      searchOjects.splice(0,searchOjects.length)
+      objects.forEach(dto => {
+        if(dto.selected){
+          searchOjects.push(dto.id);
+        }
+      })
+      menu.value = false;
+    },
+    setResponse(objects, allFlag, data){
+      data.forEach(dto => {
+        dto.hide = false;
+        dto.selected = allFlag;
+        objects.push(dto);
+      })
+    },
+    getLocal(objects, searchObjects, searchKey, allFlag, enter){
+      if(objects.length > 0 && (searchKey || enter)){
+          objects.forEach(dto => {
+            dto.hide = true;
+            if(!searchKey && enter){
+              dto.hide = false;
+            }else if(dto.name && dto.name.toUpperCase().indexOf(searchKey.toUpperCase()) >= 0){
+              dto.hide = false;
+            }
+          });
+        return true;
+      }else if(objects.length > 0){
+        return true;
+      }
+      if(searchObjects.length == 0 && !allFlag){
+        objects.splice(0,objects.length)
+        return true;
+      }
+
+      return false;
+    },
     updateParent(){
       if(this.searchDto.components.length==0){
         alert("No Components selected. Please pick one.");
