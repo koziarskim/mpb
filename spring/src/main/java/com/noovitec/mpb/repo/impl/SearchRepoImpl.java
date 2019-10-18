@@ -43,9 +43,6 @@ public class SearchRepoImpl implements SearchRepoCustom {
 			query.setParameter("seasonName", searchDto.getSeasonName());
 		}
 		List<KeyValueDto> list = query.getResultList();
-		for(KeyValueDto dto: list) {
-			dto.setSelected(searchDto.isSeasonAll());
-		}
 		return list;
 	}
 
@@ -68,9 +65,6 @@ public class SearchRepoImpl implements SearchRepoCustom {
 			query.setParameter("itemName", searchDto.getItemName());
 		}
 		List<KeyValueDto> list = query.getResultList();
-		for(KeyValueDto dto: list) {
-			dto.setSelected(searchDto.isItemAll());
-		}
 		return list;
 	}
 
@@ -80,6 +74,7 @@ public class SearchRepoImpl implements SearchRepoCustom {
 		q += "join Sale s on s.customer.id = cu.id ";
 		q += "join SaleItem si on si.sale.id = s.id ";
 		q += "join Item i on si.item.id = i.id ";
+		q += "join Season se on i.season.id = se.id ";
 		q += "where cu.id is not null ";
 		if(!searchDto.getSeasons().isEmpty()) {
 			q += "and se.id in (:seasonIds) ";
@@ -101,9 +96,6 @@ public class SearchRepoImpl implements SearchRepoCustom {
 			query.setParameter("customerName", searchDto.getCustomerName());
 		}
 		List<KeyValueDto> list = query.getResultList();
-		for(KeyValueDto dto: list) {
-			dto.setSelected(searchDto.isCustomerAll());
-		}
 		return list;
 	}
 	
@@ -142,9 +134,6 @@ public class SearchRepoImpl implements SearchRepoCustom {
 		}
 		@SuppressWarnings("unchecked")
 		List<KeyValueDto> list = query.getResultList();
-		for(KeyValueDto dto: list) {
-			dto.setSelected(searchDto.isSaleAll());
-		}
 		return list;
 	}
 
@@ -191,9 +180,6 @@ public class SearchRepoImpl implements SearchRepoCustom {
 			query.setParameter("supplierName", searchDto.getSupplierName());
 		}
 		List<KeyValueDto> list = query.getResultList();
-		for(KeyValueDto dto: list) {
-			dto.setSelected(searchDto.isSupplierAll());
-		}
 		return list;
 	}
 
@@ -246,9 +232,6 @@ public class SearchRepoImpl implements SearchRepoCustom {
 		}
 		@SuppressWarnings("unchecked")
 		List<KeyValueDto> list = query.getResultList();
-		for(KeyValueDto dto: list) {
-			dto.setSelected(searchDto.isComponentAll());
-		}
 		return list;
 	}
 

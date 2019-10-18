@@ -8,7 +8,7 @@
     </div>
     <div v-if="visibleSeasonMenu" class="menu-tab">
         <div v-for="season in seasons" :key="season.id">
-          <input type="checkbox" v-model="season.selected" @click="searchDto.seasonAll = false">
+          <input type="checkbox" v-model="season.selected" @click="seasonSelect()">
           <span>{{season.name}}</span>
       </div>
     </div>
@@ -25,7 +25,7 @@
     </div>
     <div v-if="visibleItemMenu" class="menu-tab">
         <div v-for="item in items" :key="item.id">
-          <input type="checkbox" v-model="item.selected" @click="searchDto.itemAll = false">>
+          <input type="checkbox" v-model="item.selected" @click="itemSelect()">
           <span>{{item.name}}</span>
       </div>
     </div>
@@ -42,7 +42,7 @@
     </div>
     <div v-if="visibleCustomerMenu" class="menu-tab">
         <div v-for="customer in customers" :key="customer.id">
-          <input type="checkbox" v-model="customer.selected" @click="searchDto.customerAll = false">>
+          <input type="checkbox" v-model="customer.selected" @click="customerSelect()">
           <span>{{customer.name}}</span>
       </div>
     </div>
@@ -59,7 +59,7 @@
     </div>
     <div v-if="visibleSaleMenu" class="menu-tab">
         <div v-for="sale in sales" :key="sale.id">
-          <input type="checkbox" v-model="sale.selected" @click="searchDto.saleAll = false">>
+          <input type="checkbox" v-model="sale.selected" @click="saleSelect()">
           <span>{{sale.name}}</span>
       </div>
     </div>
@@ -76,7 +76,7 @@
     </div>
     <div v-if="visibleSupplierMenu" class="menu-tab">
         <div v-for="supplier in suppliers" :key="supplier.id">
-          <input type="checkbox" v-model="supplier.selected" @click="searchDto.supplierAll = false">>
+          <input type="checkbox" v-model="supplier.selected" @click="supplierSelect()">
           <span>{{supplier.name}}</span>
       </div>
     </div>
@@ -88,13 +88,15 @@
     <!-- Component -->
     <label class="top-label">Components: <input type="checkbox" v-model="searchDto.componentAll" @click="componentAll()"></label>
     <div style="display: flex">
-      <input @keydown.enter="getComponents()" @click="showComponentMenu()" class="form-control search-width" type="tel" v-model="searchDto.componentName" placeholder="Pick Component">
+      <input @keydown.enter="getComponents(true)" @click="showComponentMenu()" class="form-control search-width" type="tel" v-model="searchDto.componentName" placeholder="Pick Component">
       <div v-if="visibleComponentMenu" class="btn-tab" @click="closeComponentMenu()">Close</div>
     </div>
     <div v-if="visibleComponentMenu" class="menu-tab">
         <div v-for="component in components" :key="component.id">
-          <input type="checkbox" v-model="component.selected" @click="searchDto.componentAll = false">>
-          <span>{{component.name}}</span>
+          <div v-if="!component.hide">
+            <input type="checkbox" v-model="component.selected" @click="componentSelect()">
+            <span>{{component.name}}</span>
+          </div>
       </div>
     </div>
     <div v-if="showSelected">
@@ -163,6 +165,7 @@ export default {
 
       visibleComponentMenu: false,
       components: [],
+      componentsFull: [],
       selectedComponents: [],
 
     };
@@ -173,8 +176,13 @@ export default {
   },
   methods: {
     // Season
+    seasonSelect(){
+      this.searchDto.seasonAll = false;
+      this.itemClear();
+    },
     seasonAll(value){
-      this.seasons.forEach(it => {it.selected = !this.searchDto.seasonAll})
+      this.seasons.forEach(it => {it.selected = !this.searchDto.seasonAll});
+      this.itemClear();
     },
     showSeasonMenu(){
       if(this.visibleSeasonMenu){
@@ -185,7 +193,13 @@ export default {
       });
     },
     closeSeasonMenu(){
-      this.visibleSeasonMenu = false;
+      this.searchDto.seasons = [];
+      this.seasons.forEach(dto => {
+        if(dto.selected){
+          this.searchDto.seasons.push(dto.id);
+        }
+      })
+       this.visibleSeasonMenu = false;
     },
     getSeasons(){
       if(this.seasons.length > 0){
@@ -200,6 +214,16 @@ export default {
     },
 
     // Item
+    itemSelect(){
+      this.searchDto.itemAll = false;
+      this.customerClear();
+    },
+    itemClear(){
+      this.items = [];
+      this.searchDto.itemAll = true;
+      this.searchDto.items = [];
+      this.customerClear();
+    },
     itemAll(value){
       this.items.forEach(it => {it.selected = !this.searchDto.itemAll;})
     },
@@ -212,10 +236,20 @@ export default {
       });
     },
     closeItemMenu(){
+      this.searchDto.items = [];
+      this.items.forEach(dto => {
+        if(dto.selected){
+          this.searchDto.items.push(dto.id);
+        }
+      })
       this.visibleItemMenu = false;
     },
     getItems(){
       if(this.items.length > 0){
+        return Promise.resolve();
+      }
+      if(this.searchDto.seasons.length == 0 && !this.searchDto.seasonAll){
+        this.items = [];
         return Promise.resolve();
       }
         return http.post("/search/item/kv", this.searchDto).then(r => {
@@ -227,6 +261,16 @@ export default {
     },
 
     // Customer
+    customerSelect(){
+      this.searchDto.customerAll = false;
+      this.saleClear();
+    },
+    customerClear(){
+      this.customers = [];
+      this.searchDto.customerAll = true;
+      this.searchDto.customers = [];
+      this.saleClear();
+    },
     customerAll(value){
       this.customers.forEach(it => {it.selected = !this.searchDto.customerAll;})
     },
@@ -239,10 +283,20 @@ export default {
       });
     },
     closeCustomerMenu(){
+      this.searchDto.customers = [];
+      this.customers.forEach(dto => {
+        if(dto.selected){
+          this.searchDto.customers.push(dto.id);
+        }
+      })
       this.visibleCustomerMenu = false;
     },
     getCustomers(){
       if(this.customers.length > 0){
+        return Promise.resolve();
+      }
+      if(this.searchDto.items.length == 0 && !this.searchDto.itemAll){
+        this.customers = [];
         return Promise.resolve();
       }
         return http.post("/search/customer/kv", this.searchDto).then(r => {
@@ -254,6 +308,16 @@ export default {
     },
 
     // Sale
+    saleSelect(){
+      this.searchDto.saleAll = false;
+      this.supplierClear();
+    },
+    saleClear(){
+      this.sales = [];
+      this.searchDto.saleAll = true;
+      this.searchDto.sales = [];
+      this.supplierClear();
+    },
     saleAll(value){
       this.sales.forEach(it => {it.selected = !this.searchDto.saleAll;})
     },
@@ -266,10 +330,20 @@ export default {
       });
     },
     closeSaleMenu(){
+      this.searchDto.sales = [];
+      this.sales.forEach(dto => {
+        if(dto.selected){
+          this.searchDto.sales.push(dto.id);
+        }
+      })
       this.visibleSaleMenu = false;
     },
     getSales(){
       if(this.sales.length > 0){
+        return Promise.resolve();
+      }
+      if(this.searchDto.customers.length == 0 && !this.searchDto.customerAll){
+        this.sales = [];
         return Promise.resolve();
       }
         return http.post("/search/sale/kv", this.searchDto).then(r => {
@@ -281,6 +355,16 @@ export default {
     },
 
     // Supplier
+    supplierSelect(){
+      this.searchDto.supplierAll = false;
+      this.componentClear();
+    },
+    supplierClear(){
+      this.suppliers = [];
+      this.searchDto.supplierAll = true;
+      this.searchDto.suppliers = [];
+      this.componentClear();
+    },
     supplierAll(value){
       this.suppliers.forEach(it => {it.selected = !this.searchDto.supplierAll;})
     },
@@ -293,10 +377,20 @@ export default {
       });
     },
     closeSupplierMenu(){
+      this.searchDto.suppliers = [];
+      this.suppliers.forEach(dto => {
+        if(dto.selected){
+          this.searchDto.suppliers.push(dto.id);
+        }
+      })
       this.visibleSupplierMenu = false;
     },
     getSuppliers(){
       if(this.suppliers.length > 0){
+        return Promise.resolve();
+      }
+      if(this.searchDto.sales.length == 0 && !this.searchDto.saleAll){
+        this.suppliers = [];
         return Promise.resolve();
       }
         return http.post("/search/supplier/kv", this.searchDto).then(r => {
@@ -308,8 +402,20 @@ export default {
     },
 
     // Component
+    componentSelect(){
+      this.searchDto.componentAll = false;
+    },
+    componentClear(){
+      this.components = [];
+      this.searchDto.componentAll = true;
+      this.searchDto.components = [];
+    },
     componentAll(value){
-      this.components.forEach(it => {it.selected = !this.searchDto.componentAll;})
+      this.searchDto.componentName = "";
+      this.components.forEach(it => {
+        it.selected = !this.searchDto.componentAll;
+        it.hide = false;
+      })
     },
     showComponentMenu(){
       if(this.visibleComponentMenu){
@@ -320,13 +426,37 @@ export default {
       });
     },
     closeComponentMenu(){
+      this.searchDto.components = [];
+      this.components.forEach(dto => {
+        if(dto.selected){
+          this.searchDto.components.push(dto.id);
+        }
+      })
       this.visibleComponentMenu = false;
     },
-    getComponents(){
-      if(this.components.length > 0){
+    getComponents(enter){
+      if(this.components.length > 0 && (this.searchDto.componentName || enter)){
+          this.components.forEach(dto => {
+            dto.hide = true;
+            if(!this.searchDto.componentName && enter){
+              dto.hide = false;
+            }else if(dto.name && dto.name.toUpperCase().indexOf(this.searchDto.componentName.toUpperCase()) >= 0){
+              dto.hide = false;
+            }
+          });
+        return Promise.resolve();
+      }else if(this.components.length > 0){
+        return Promise.resolve();
+      }
+      if(this.searchDto.suppliers.length == 0 && !this.searchDto.supplierAll){
+        this.components = [];
         return Promise.resolve();
       }
         return http.post("/search/component/kv", this.searchDto).then(r => {
+          r.data.forEach(dto => {
+            dto.hide = false;
+            dto.selected = this.searchDto.componentAll;
+          })
           this.components = r.data;
         }).catch(e => {
           console.log("API error: " + e);
@@ -335,17 +465,6 @@ export default {
     },
 
     //Common methods.
-    updateSelected(menuObjects, selectedObjects){
-      var selected = [];
-      menuObjects.forEach(dto => {
-        var existing = selectedObjects.find(it => it.id == dto.id)
-        if(dto.selected && !existing){
-          selected.push(dto);
-        }
-      })
-      selectedObjects.splice(0,selectedObjects.length)
-      selectedObjects.push(selected);
-    },
     updateParent(){
       if(this.searchDto.components.length==0){
         alert("No Components selected. Please pick one.");

@@ -14,7 +14,8 @@ public class KeyValueDto {
 	private Long key;
 	private Object value;
 	private String name;
-	boolean selected = true;
+//	boolean selected = true;
+//	boolean hide = false;
 
 	public KeyValueDto(Long id, Object value) {
 		this.id = id;
