@@ -223,9 +223,6 @@ export default {
         .get("/sale/" + id)
         .then(response => {
           this.sale = response.data;
-          if(response.data.purchaseSales.length > 0){
-              this.locked = true;
-          }
           if (response.data.customer) {
             this.customerDto = {
               id: response.data.customer.id,
