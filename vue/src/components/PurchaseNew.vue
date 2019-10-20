@@ -135,25 +135,35 @@ export default {
         console.log("API error: " + e);
       });
     },
+    validate(){
+      if(this.selectedComponents.length == 0){
+        alert("No Component selected.");
+        return false;
+      }
+      if(!this.purchase.number){
+        alert("Purchase Number not entered");
+        return false;
+      }
+      var empty = this.selectedComponents.find(c => c.units < 0);
+      if(empty){
+          alert("One of the Compnents has negative number of P.O. Units! Please fix.");
+          return false;
+      }
+      return true;
+    },
     savePurchase() {
-      var skip = false;
+      if(!this.validate()){
+        return Promise.reject();
+      }
       this.purchase.purchaseComponents = [];
       this.selectedComponents.forEach(c => {
-        if(c.units < 0){
-          skip = true;
-          return;
-        }
        this.purchase.purchaseComponents.push({component: {id: c.id}, units: c.units, unitPrice: c.unitPrice});
       })
-      if(skip){
-          alert("One of the Compnents has negative number of P.O. Units! Please fix.");
-          return Promise.reject();
-      }
       return http.post("/purchase", this.purchase).then(r => {
         this.purchase = r.data;
-        }).catch(e => {
-          console.log("API error: " + e);
-        });
+      }).catch(e => {
+        console.log("API error: " + e);
+      });
     },
     saveAndClose() {
       this.savePurchase().then(r => {
