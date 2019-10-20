@@ -83,6 +83,7 @@ export default {
       columns: [
         { key: "sale", label: "Sale", sortable: false },
         { key: "sale.customer.name", label: "Customer", sortable: false },
+        { key: "sale.shippingAddress.dc", label: "DC", sortable: false },
         { key: "units", label: "Sold", sortable: false },
         { key: "unitsScheduled", label: "Scheduled", sortable: false },
         { key: "unitsProduced", label: "Produced", sortable: false },
