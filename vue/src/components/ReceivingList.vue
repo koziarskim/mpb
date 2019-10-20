@@ -6,16 +6,12 @@
       </b-col>
       <b-col cols="2" style="margin-top: -12px">
         <label class="top-label">Purchase:</label>
-        <b-select option-value="id" option-text="number" :list="availablePurchases" v-model="purchase"></b-select>
+        <b-select option-value="id" option-text="name" :list="availablePurchases" v-model="purchase"></b-select>
       </b-col>
       <b-col cols="2" style="margin-top: -12px">
         <label class="top-label">Component:</label>
-        <b-select option-value="id" option-text="componentNumber" :list="availablePurchaseComponents" v-model="purchaseComponent"></b-select>
+        <b-select option-value="id" option-text="name" :list="availableComponents" v-model="component"></b-select>
       </b-col>
-      <!-- <b-col cols="2" style="margin-top: -12px">
-        <label class="top-label">Search:</label>
-        <input class="form-control" type="text" v-model="keyword" placeholder="Type to search">
-      </b-col> -->
       <b-col>
         <div style="text-align: right;">
           <b-button type="submit" variant="primary" @click="goToReceiving('')">New Receiving</b-button>
@@ -23,7 +19,7 @@
       </b-col>
     </b-row>
     <div v-if="receivings.length==0">Not found any purchase orders...</div>
-    <b-table v-if="receivings.length>0" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="filteredReceivings" :fields="fields">
+    <b-table v-if="receivings.length>0" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="receivings" :fields="fields">
       <template v-slot:cell(number)="row">
         <b-button size="sm" @click.stop="goToReceiving(row.item.id)" variant="link">{{row.item.number}}</b-button>
       </template>
@@ -79,44 +75,23 @@ export default {
         { key: "component", label: "Component #", sortable: false },
         { key: "action", label: "Action", sortable: false }
       ],
-      purchase: {},
       availablePurchases: [],
-      purchaseComponent: {},
-      availablePurchaseComponents: [],
+      purchase: {},
+      availableComponents: [],
+      component: {},
       receivings: [],
-      keyword: ""
     };
   },
-  computed: {
-    filteredReceivings() {
-      var filtered = [];
-      if (this.keyword) {
-        this.receivings.filter(item => {
-          if (
-            item.number.includes(this.keyword) || item.purchase
-              ? item.purchase.number.includes(this.keyword)
-              : false || item.component
-              ? item.component.number.includes(this.keyword)
-              : false
-          ) {
-            filtered.push(item);
-          }
-        });
-      } else {
-        filtered = this.receivings;
-      }
-      return filtered;
-    }
-  },
+  computed: {},
   watch: {
     purchase(new_value, old_value) {
-      this.purchaseComponent = {};
-      this.getAvailablePurchaseComponents().then(r => {
-        this.getReceivings();
+      this.component = {};
+      this.getAvailableComponents().then(r => {
+        this.getReceivings(new_value.id, null);
       });
     },
-    purchaseComponent() {
-      this.getReceivings();
+    component(new_value, old_value) {
+      this.getReceivings(this.purchase.id, new_value.id);
     }
   },
   methods: {
@@ -127,18 +102,8 @@ export default {
                 .format("YYYY-MM-DD")
             : "";
     },
-    getReceivings() {
-      var purchase_id = this.purchase.id?this.purchase.id:"";
-      var component_id = this.purchaseComponent.component
-        ? this.purchaseComponent.component.id
-        : "";
-      http
-        .get(
-          "/receiving?purchase_id=" +
-            purchase_id +
-            "&component_id=" +
-            component_id
-        )
+    getReceivings(purchase_id, component_id) {
+      http.get("/receiving", {params: {purchase_id: purchase_id, component_id: component_id}})
         .then(response => {
           this.receivings = response.data;
         })
@@ -147,37 +112,24 @@ export default {
         });
     },
     getAvailablePurchases(purchase_id) {
-      return http
-        .get("/purchase/submitted")
-        .then(response => {
-          this.availablePurchases = response.data;
-          if (purchase_id) {
-            this.purchase = response.data.filter(it => it.id == purchase_id)[0];
-          }
-        })
-        .catch(e => {
-          console.log("API error: " + e);
-        });
-    },
-    getAvailablePurchaseComponents(component_id) {
-        if(!this.purchase.id){
-            this.availablePurchaseComponents = [];
-            this.purchaseComponent = {};
-            return new Promise((resolve, reject) => {});
+      return http.get("/purchase/kv").then(response => {
+        this.availablePurchases = response.data;
+        if (purchase_id) {
+          this.purchase = {id: purchase_id}
         }
-      return http
-        .get("/purchaseComponent/purchase/" + this.purchase.id)
-        .then(response => {
-          this.availablePurchaseComponents = response.data;
-          if (component_id) {
-            this.purchaseComponent = response.data.filter(
-              it => it.component.id == component_id
-            )[0];
-          }
-        })
-        .catch(e => {
-          console.log("API error: " + e);
-        });
+      }).catch(e => {
+        console.log("API error: " + e);
+      });
+    },
+    getAvailableComponents(component_id) {
+      return http.get("/component/kv").then(response => {
+        this.availableComponents = response.data;
+        if (component_id) {
+          this.component = {id: component_id};
+        }
+      }).catch(e => {
+        console.log("API error: " + e);
+      });
     },
     goToReceiving(receiving_id) {
       if (!receiving_id) {
@@ -217,14 +169,14 @@ export default {
     }
   },
   mounted() {
-    var purchase_id = parseInt(this.$route.query.purchase_id);
-    var component_id = parseInt(this.$route.query.component_id);
+    var purchase_id = this.$route.query.purchase_id;
+    var component_id = this.$route.query.component_id;
     this.getAvailablePurchases(purchase_id).then(r => {
-      this.getAvailablePurchaseComponents(component_id).then(r => {
-        this.getReceivings();
+      this.getAvailableComponents(component_id).then(r => {
+        this.getReceivings(purchase_id, component_id);
       });
     });
-    window.history.pushState({}, document.title, window.location.pathname);
+    window.history.replaceState({}, document.title, window.location.pathname);
   }
 };
 </script>

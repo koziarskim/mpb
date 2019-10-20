@@ -35,23 +35,11 @@
       </b-col>
     </b-row>
     <b-row style="font-size: 12px">
-      <b-col cols=10>
+      <b-col>
         <label class="top-label">Components:</label>
-        <b-table sort-by.sync="name" sort-desc.sync="false" :items="purchase.purchaseComponents" :fields="fields">
-          <template v-slot:cell(totalNeeded)="row">
-            {{row.item.totalSold - row.item.totalProduced}} ({{row.item.totalSold}} - {{row.item.totalProduced}})
-          </template>
-          <template v-slot:cell(unitsNeeded)="row">
-            {{row.item.unitsSold - row.item.unitsProduced}} ({{row.item.unitsSold}} - {{row.item.unitsProduced}})
-          </template>
-          <template v-slot:cell(unitPrice)="row">
-              ${{row.item.unitPrice}}
-          </template>
-          <template v-slot:cell(units)="row">
-            {{row.item.units}}
-          </template>
-          <template v-slot:cell(totalPrice)="row">
-            ${{row.item.totalPrice = getTotalPrice(row.item)}}
+        <b-table sort-by.sync="name" sort-desc.sync="false" :items="purchaseComponents" :fields="fields">
+          <template v-slot:cell(unitsReceived)="row">
+            <b-button size="sm" @click.stop="goToReceiving(row.item.purchase.id, row.item.component.id)" variant="link">{{row.item.unitsReceived}}</b-button>
           </template>
         </b-table>
       </b-col>
@@ -69,63 +57,38 @@ import ComponentSearch from "./ComponentSearch";
 export default {
   data() {
     return {
-      purchase: {
-        date: moment().utc().format("YYYY-MM-DD"),
-        purchaseComponents: [{
-          totalSold: 0
-        }]
-      },
-      selectedComponents: [],
+      purchase: {},
+      purchaseComponents: [],
       fields: [
         { key: "component.name", label: "Name", sortable: false },
-        { key: "totalNeeded", label: "Total Needed", sortable: false },
-        { key: "unitsInOrder", label: "Pen. Orders", sortable: false },
-        { key: "component.unitsOnStack", label: "On-Stock", sortable: false },
         { key: "component.unitCost", label: "Unit Cost", sortable: false },
         { key: "unitPrice", label: "P.O. Price", sortable: false },
         { key: "units", label: "P.O. Units", sortable: false },
+        { key: "unitsReceived", label: "Received", sortable: false },
         { key: "totalPrice", label: "Total", sortable: false },
       ],
     };
-  },
-  components:{
-    'component-search': ComponentSearch
   },
   computed: {},
   watch: {
   },
   methods: {
-    getTotalPrice(item){
-      return (item.units * item.unitPrice).toFixed(2);
-    },
-    updateComponents(components){
-      this.selectedComponents = components;
+    getTotalPrice(pc){
+      return (pc.units * pc.unitPrice).toFixed(2);
     },
     getPurchase(purchase_id) {
       http.get("/purchase/" + purchase_id).then(r => {
-          // this.purchase = r.data;
-          this.getPoComponents(r.data);
+          this.purchase = r.data;
         }).catch(e => {
           console.log("API error: " + e);
         });
     },
-        // PoComponentDtos
-    getPoComponents(purchase){
-      var searchDto = {components: []}
-      purchase.purchaseComponents.forEach(pc => {
-        searchDto.components.push(pc.component.id);
-      })
-      return http.post("/search/po/component", searchDto).then(r => {
-        purchase.purchaseComponents.forEach(pc => {
-          var dto = r.data.find(it => it.id == pc.component.id);
-          pc.totalSold = dto.totalSold;
-          pc.totalProduced = dto.totalProduced;
-          pc.unitsInOrder = dto.unitsInOrder;
-        })
-        this.purchase = purchase;
-      }).catch(e => {
-        console.log("API error: " + e);
-      });
+    getPurchaseComponents(purchase_id) {
+      http.get("/purchaseComponent/purchase/" + purchase_id).then(r => {
+          this.purchaseComponents = r.data;
+        }).catch(e => {
+          console.log("API error: " + e);
+        });
     },
     close() {
       router.push("/purchaseList");
@@ -133,12 +96,14 @@ export default {
     goToComponent(component_id) {
       router.push("/componentEdit/" + component_id);
     },
-    saleHeight(){
-      return +window.innerHeight - 150 +"px";
+    goToReceiving(purchase_id, component_id) {
+      var query = { purchase_id: purchase_id, component_id: component_id };
+      router.push({ path: "/receivingList", query: query });
     },
   },
   mounted() {
     var purchase_id = this.$route.params.purchase_id;
+    this.getPurchaseComponents(purchase_id);
     this.getPurchase(purchase_id);
   }
 };

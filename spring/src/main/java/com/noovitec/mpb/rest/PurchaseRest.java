@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -37,6 +38,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfStamper;
+import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.entity.Attachment;
 import com.noovitec.mpb.entity.Component;
 import com.noovitec.mpb.entity.Purchase;
@@ -70,10 +72,15 @@ class PurchaseRest {
 	}
 
 	@GetMapping("/purchase")
-	Collection<Purchase> getAll() {
+	List<Purchase> getAll() {
 		return purchaseRepo.findAll();
 	}
-	
+
+	@GetMapping("/purchase/kv")
+	List<KeyValueDto> getAllKv() {
+		return purchaseRepo.findAllKv();
+	}
+
 	@GetMapping("/purchase/pageable")
 	Page<Purchase> getAllPageable(@RequestParam(name = "pageable", required = false) Pageable pageable, @RequestParam(name = "searchKey", required = false) String searchKey) {
 		Page<Purchase> purchases = null;

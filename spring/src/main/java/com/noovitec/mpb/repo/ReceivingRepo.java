@@ -30,4 +30,24 @@ public interface ReceivingRepo extends JpaRepository<Receiving, Long> {
 	@Query("select r from Receiving r where r.receivedDate is null")
 	List<Receiving> findReceivingInTransit();
 
+	@Query("select r from Receiving r "
+			+ "join r.purchaseComponent pc "
+			+ "join pc.purchase p "
+			+ "where p.id = :purchase_id")
+	List<Receiving> findByPurchase(@Param("purchase_id") Long purchase_id);
+
+	@Query("select r from Receiving r "
+			+ "join r.purchaseComponent pc "
+			+ "join pc.component c "
+			+ "where c.id = :component_id")
+	List<Receiving> findByComponent(@Param("component_id") Long component_id);
+
+	@Query("select r from Receiving r "
+			+ "join r.purchaseComponent pc "
+			+ "join pc.purchase p "
+			+ "join pc.component c "
+			+ "where p.id = :purchase_id "
+			+ "and c.id = :component_id")
+	List<Receiving> findByPurchaseAndComponent(@Param("purchase_id") Long purchase_id, @Param("component_id") Long component_id);
+
 }

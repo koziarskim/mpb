@@ -3,10 +3,11 @@ package com.noovitec.mpb.rest;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -48,28 +49,19 @@ class ReceivingRest {
 	}
 
 	@GetMapping("/receiving")
-	Collection<Receiving> getAll(@RequestParam(name = "purchase_id", required = false) Long purchase_id,
+	List<Receiving> getAll(@RequestParam(name = "purchase_id", required = false) Long purchase_id,
 			@RequestParam(name = "component_id", required = false) Long component_id) {
-		Collection<Receiving> result = new HashSet<Receiving>();
-		for (Receiving receiving : receivingRepo.findAll()) {
-			boolean foundPurchase = false;
-			if (purchase_id == null) {
-				foundPurchase = true;
-			} else if (receiving.getPurchaseComponent().getPurchase() != null && purchase_id.equals(receiving.getPurchaseComponent().getPurchase().getId())) {
-				foundPurchase = true;
-			}
-			boolean foundComponent = false;
-			if (component_id == null) {
-				foundComponent = true;
-			} else if (receiving.getPurchaseComponent().getComponent() != null
-					&& component_id.equals(receiving.getPurchaseComponent().getComponent().getId())) {
-				foundComponent = true;
-			}
-			if (foundPurchase && foundComponent) {
-				result.add(receiving);
-			}
+		List<Receiving> receivings = new ArrayList<Receiving>();
+		if(purchase_id != null && component_id !=null) {
+			receivings = receivingRepo.findByPurchaseAndComponent(purchase_id, component_id);
+		}else if(purchase_id != null && component_id == null) {
+			receivings = receivingRepo.findByPurchase(purchase_id);
+		}else if(purchase_id == null && component_id !=null) {
+			receivings = receivingRepo.findByComponent(component_id);
+		}else {
+			receivings = receivingRepo.findAll();
 		}
-		return result;
+		return receivings;
 	}
 
 	@GetMapping("/receiving/{id}")
