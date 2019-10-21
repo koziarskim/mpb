@@ -68,9 +68,9 @@ export default {
         { key: "purchase", label: "Purchase", sortable: false },
         { key: "component", label: "Component", sortable: false },
         { key: "containerNumber", label: "Container", sortable: false },
-        { key: "receivingDate", label: "Received", sortable: false },
         { key: "shippingDate", label: "Shipped", sortable: false },
-        { key: "units", label: "Units Received", sortable: false },
+        { key: "receivingDate", label: "Received", sortable: false },
+        { key: "units", label: "Units", sortable: false },
         { key: "action", label: "Action", sortable: false }
       ],
       availablePurchases: [],
