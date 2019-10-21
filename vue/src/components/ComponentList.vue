@@ -18,8 +18,8 @@
       <template v-slot:cell(name)="row">
         <b-button size="sm" @click.stop="goToComponent(row.item.id)" variant="link">{{row.item.number}} - {{row.item.name}}</b-button>
       </template>
-      <template v-slot:cell(units)="row">
-        <b-button size="sm" @click.stop="goToComponentPurchaseList(row.item.id)" variant="link">{{row.item.unitsOrdered}} / {{row.item.unitsInTransit}}</b-button>
+      <template v-slot:cell(unitsOnStock)="row">
+        <b-button size="sm" @click.stop="goToReceiving(row.item.id)" variant="link">{{row.item.unitsOnStock}}</b-button>
       </template>
       <template v-slot:cell(action)="row">
         <b-button size="sm" @click.stop="deleteComponent(row.item.id)" :disabled="row.item.locked" >x</b-button>
@@ -53,7 +53,6 @@ export default {
         { key: "name", label: "Component #", sortable: true },
         { key: "category.name", label: "Category", sortable: true },
         { key: "supplier.name", label: "Supplier", sortable: true },
-        { key: "units", label: "Receiving", sortable: false },
         { key: "unitsOnStock", label: "On Stock", sortable: false },
         { key: "action", label: "Action", sortable: false }
       ],
@@ -125,9 +124,10 @@ export default {
         router.push("/componentEdit/" + component_id);
       }
     },
-    goToComponentPurchaseList(component_id) {
-      router.push("/ComponentPurchaseList/" + component_id);
-    },
+    goToReceiving(component_id){
+      var query = { component_id: component_id };
+      router.push({ path: "/receivingList", query: query });
+    }
   },
   mounted() {
     this.getComponentsData();
