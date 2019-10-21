@@ -43,6 +43,7 @@ import com.noovitec.mpb.entity.Attachment;
 import com.noovitec.mpb.entity.Component;
 import com.noovitec.mpb.entity.Purchase;
 import com.noovitec.mpb.entity.PurchaseComponent;
+import com.noovitec.mpb.entity.Sale;
 import com.noovitec.mpb.entity.Supplier;
 import com.noovitec.mpb.repo.AttachmentRepo;
 import com.noovitec.mpb.repo.ComponentRepo;
@@ -82,12 +83,18 @@ class PurchaseRest {
 	}
 
 	@GetMapping("/purchase/pageable")
-	Page<Purchase> getAllPageable(@RequestParam(name = "pageable", required = false) Pageable pageable, @RequestParam(name = "searchKey", required = false) String searchKey) {
+	Page<Purchase> getAllPageable(@RequestParam(name = "pageable", required = false) Pageable pageable, 
+			@RequestParam(name = "searchKey", required = false) String searchKey, @RequestParam(name = "searchType", required = false) String searchType) {
 		Page<Purchase> purchases = null;
-		if(searchKey ==null || searchKey.trim().length() == 0) {
-			purchases = purchaseRepo.getAllPageable(pageable);
-		}else {
-			purchases = purchaseRepo.getAllPageable(pageable, searchKey);
+		if(searchType==null || searchType.isBlank() || searchKey==null || searchKey.isBlank()) {
+			purchases = purchaseRepo.findPage(pageable);
+		}else if(searchType.equals("purchase") && !searchKey.isBlank()) {
+			purchases = purchaseRepo.findPageByPurchase(pageable, searchKey);
+		}else if(searchType.equals("component") && !searchKey.isBlank()){
+			purchases = purchaseRepo.findPageByComponent(pageable, searchKey);
+		}
+		if(purchases == null) {
+			 return Page.empty();
 		}
 		return purchases;
 	}

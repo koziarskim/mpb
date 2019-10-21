@@ -47,9 +47,9 @@ class SaleRest {
 	Page<SaleListDto> getAllPageable(@RequestParam(name = "pageable", required = false) Pageable pageable, @RequestParam(name = "searchKey", required = false) String searchKey, @RequestParam(name = "searchType", required = false) String searchType) {
 		Page<Sale> sales = null;
 		if(searchType==null || searchType.isBlank() || searchKey==null || searchKey.isBlank()) {
-			sales = saleRepo.findPageAll(pageable);
-		}else if(searchType.equals("default") && !searchKey.isBlank()) {
-			sales = saleRepo.findPageByDefault(pageable, searchKey);
+			sales = saleRepo.findPage(pageable);
+		}else if(searchType.equals("sale") && !searchKey.isBlank()) {
+			sales = saleRepo.findPageBySale(pageable, searchKey);
 		}else if(searchType.equals("item") && !searchKey.isBlank()){
 			sales = saleRepo.findPageByItem(pageable, searchKey);
 		}

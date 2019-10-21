@@ -20,13 +20,18 @@ public interface PurchaseRepo extends JpaRepository<Purchase, Long> {
 	public List<KeyValueDto> findAllKv();
 
 	@Query("select p from Purchase p")
-	Page<Purchase> getAllPageable(Pageable pageable);
+	Page<Purchase> findPage(Pageable pageable);
 
 	@Query("select distinct p from Purchase p "
-			+ "left join p.purchaseComponents pc "
-			+ "left join pc.component c "
+			+ "where upper(p.number) LIKE CONCAT('%',UPPER(:searchKey),'%') "
+			+ "or upper(p.name) LIKE CONCAT('%',UPPER(:searchKey),'%')")
+	Page<Purchase> findPageByPurchase(Pageable pageable, String searchKey);
+
+	@Query("select distinct p from Purchase p "
+			+ "join p.purchaseComponents pc "
+			+ "join pc.component c "
 			+ "where upper(c.number) LIKE CONCAT('%',UPPER(:searchKey),'%') "
 			+ "or upper(c.name) LIKE CONCAT('%',UPPER(:searchKey),'%')")
-	Page<Purchase> getAllPageable(Pageable pageable, String searchKey);
+	Page<Purchase> findPageByComponent(Pageable pageable, String searchKey);
 
 }

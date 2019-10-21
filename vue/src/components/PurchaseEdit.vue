@@ -8,7 +8,7 @@
             <input style="width: 160px" class="form-control" disabled="true" type="text" v-model="purchase.number" placeholder="P.O. Number">
           </div>
           <div style="width: 200px; padding-left: 3px; padding-right: 3px;">
-            <label class="top-label">P.O. Number:</label>
+            <label class="top-label">P.O. Name:</label>
             <input class="form-control" type="text" disabled="true" v-model="purchase.name" placeholder="P.O. Name/Description">
           </div>
           <div style="width: 175px; padding-left: 3px; padding-right: 3px;">
@@ -41,6 +41,9 @@
       <b-col>
         <label class="top-label">Components:</label>
         <b-table sort-by.sync="name" sort-desc.sync="false" :items="purchaseComponents" :fields="fields">
+          <template v-slot:cell(name)="row">
+            <b-button size="sm" @click.stop="goToComponent(row.item.component.id)" variant="link">{{row.item.component.number}} - {{row.item.component.name}}</b-button>
+          </template>
           <template v-slot:cell(unitsReceived)="row">
             <b-button size="sm" @click.stop="goToReceiving(row.item.purchase.id, row.item.component.id)" variant="link">{{row.item.unitsReceived}}</b-button>
           </template>
@@ -63,7 +66,7 @@ export default {
       purchase: {},
       purchaseComponents: [],
       fields: [
-        { key: "component.name", label: "Name", sortable: false },
+        { key: "name", label: "Name", sortable: false },
         { key: "component.unitCost", label: "Unit Cost", sortable: false },
         { key: "unitPrice", label: "P.O. Price", sortable: false },
         { key: "units", label: "P.O. Units", sortable: false },

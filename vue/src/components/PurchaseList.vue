@@ -4,8 +4,11 @@
       <b-col cols="2">
         <span style="text-align: left; font-size: 18px; font-weight: bold">Purchase Orders</span>
       </b-col>
-      <b-col cols="4">
-        <input class="form-control" type="tel" v-model="searchKey" @keyup.enter="getPurchasesData()" placeholder="Search by Component Number or Name"/>
+      <b-col cols="3">
+        <input class="form-control" type="tel" v-model="searchPurchase" @click="searchComponent = ''" @keyup.enter="getPurchases('purchase')" placeholder="Search Number or Name"/>
+      </b-col>
+      <b-col cols="3">
+        <input class="form-control" type="tel" v-model="searchComponent" @click="searchPurchase = ''" @keyup.enter="getPurchases('component')" placeholder="Search Component"/>
       </b-col>
       <b-col>
         <div style="text-align: right;">
@@ -49,8 +52,8 @@ export default {
   data() {
     return {
       pageable: {totalElements: 100, currentPage: 1, perPage: 7, sortBy: 'number', sortDesc: false},
-      searchKey: "",
-      searchKeyComponent: "",
+      searchPurchase: "",
+      searchComponent: "",
       fields: [
         { key: "number", label: "P.O. #", sortable: false },
         { key: "supplier.name", label: "Supplier", sortable: false },
@@ -75,7 +78,7 @@ export default {
   methods: {
     paginationChange(page){
       this.pageable.currentPage = page;
-      this.getPurchasesData();
+      this.getPurchases();
     },
     showAllChange(){
       this.showAll = !this.showAll
@@ -83,7 +86,7 @@ export default {
         this.component = {};
       }
       this.keyword = "";
-      this.getPurchasesData();
+      this.getPurchases();
     },
     disabled(purchase) {
       return purchase.submitted;
@@ -91,9 +94,10 @@ export default {
     showAlert(message) {
       (this.alertSecs = 3), (this.alertMessage = message);
     },
-    getPurchasesData() {
+    getPurchases(type) {
+      var searchKey = type=="purchase"?this.searchPurchase:this.searchComponent;
       http
-        .get("/purchase/pageable", {params: {pageable: this.pageable, searchKey: this.searchKey}})
+        .get("/purchase/pageable", {params: {pageable: this.pageable, searchKey: searchKey, searchType: type}})
         .then(response => {
           this.purchases = response.data.content;
           this.pageable.totalElements = response.data.totalElements;
@@ -106,7 +110,7 @@ export default {
       http
         .delete("/purchase/" + id)
         .then(response => {
-          this.getPurchasesData();
+          this.getPurchases();
         })
         .catch(e => {
           console.log("API Error: " + e);
@@ -130,7 +134,7 @@ export default {
     }
   },
   mounted() {
-    this.getPurchasesData();
+    this.getPurchases();
   }
 };
 </script>

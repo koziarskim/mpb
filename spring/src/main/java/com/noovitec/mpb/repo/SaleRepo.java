@@ -50,7 +50,7 @@ public interface SaleRepo extends JpaRepository<Sale, Long> {
 	public List<Sale> findSaleByCustomer(@Param("customer_id") Long sale_id);
 	
 	@Query("select s from Sale s")
-	Page<Sale> findPageAll(Pageable pageable);
+	Page<Sale> findPage(Pageable pageable);
 
 	@Query("select s from Sale s "
 			+ "join Customer c on c.id = s.customer.id "
@@ -58,7 +58,7 @@ public interface SaleRepo extends JpaRepository<Sale, Long> {
 			+ "where upper(s.number) LIKE CONCAT('%',UPPER(:searchKey),'%') "
 			+ "or upper(c.name) LIKE CONCAT('%',UPPER(:searchKey),'%') "
 			+ "or upper(s.name) LIKE CONCAT('%',UPPER(:searchKey),'%')")
-	Page<Sale> findPageByDefault(Pageable pageable, String searchKey);
+	Page<Sale> findPageBySale(Pageable pageable, String searchKey);
 
 	@Query("select s from Sale s "
 			+ "join s.saleItems sa "

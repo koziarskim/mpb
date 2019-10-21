@@ -5,10 +5,10 @@
                 <span style="text-align: left; font-size: 18px; font-weight: bold">Sale Orders</span>
             </b-col>
             <b-col cols="3">
-                <input class="form-control" type="tel" v-model="searchDefault" @click="searchItem = ''" @keyup.enter="getSales('default')" placeholder="Search Number, Name or Customer"/>
+                <input class="form-control" type="tel" v-model="searchSale" @click="searchItem = ''" @keyup.enter="getSales('sale')" placeholder="Search Number, Name or Customer"/>
             </b-col>
             <b-col cols="2">
-                <input class="form-control" type="tel" v-model="searchItem" @click="searchDefault = ''" @keyup.enter="getSales('item')" placeholder="Search Item"/>
+                <input class="form-control" type="tel" v-model="searchItem" @click="searchSale = ''" @keyup.enter="getSales('item')" placeholder="Search Item"/>
             </b-col>
             <b-col>
                 <div style="text-align: right;">
@@ -36,7 +36,7 @@ export default {
   data() {
     return {
       pageable: {totalElements: 100, currentPage: 1, perPage: 7, sortBy: 'number', sortDesc: false},
-      searchDefault: "",
+      searchSale: "",
       searchItem: "",
       fields: [
         { key: "number", label: "S.O. #", sortable: false },
@@ -63,7 +63,7 @@ export default {
         this.getSales();
     },
 	getSales(type) {
-    var searchKey = type=="default"?this.searchDefault:this.searchItem;
+    var searchKey = type=="sale"?this.searchSale:this.searchItem;
       http
         .get("/sale/pageable", {params: {pageable: this.pageable, searchKey: searchKey, searchType: type}})
         .then(response => {
