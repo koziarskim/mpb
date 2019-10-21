@@ -17,13 +17,6 @@ import com.noovitec.mpb.entity.SaleItem;
 
 public interface SaleRepo extends JpaRepository<Sale, Long> {
 
-//	@Query(value="select new com.noovitec.mpb.dto.SaleDto(s.id, s.number, s.date, c.name, a.dc, (ps.id is not null)) "
-//			+ "from Sale s "
-//			+ "left join s.purchaseSales ps with ps.purchase.id = :purchase_id "
-//			+ "left join s.customer c "
-//			+ "left join s.shippingAddress a")
-//	public List<SaleDto> findAllSalesAndPurchaseSales(@Param("purchase_id") Long purchase_id);
-
 	@Query(value="select new com.noovitec.mpb.dto.SaleItemDto(si.id, s.id, s.number, c.name, si.units) "
 			+ "from SaleItem si "
 			+ "join si.sale s "
@@ -57,14 +50,21 @@ public interface SaleRepo extends JpaRepository<Sale, Long> {
 	public List<Sale> findSaleByCustomer(@Param("customer_id") Long sale_id);
 	
 	@Query("select s from Sale s")
-	Page<Sale> getSalePageable(Pageable pageable);
+	Page<Sale> findPageAll(Pageable pageable);
 
 	@Query("select s from Sale s "
-			+ "left join Customer c on c.id = s.customer.id "
-			+ "left join Address a on a.id = s.shippingAddress.id "
+			+ "join Customer c on c.id = s.customer.id "
+			+ "join Address a on a.id = s.shippingAddress.id "
 			+ "where upper(s.number) LIKE CONCAT('%',UPPER(:searchKey),'%') "
-			+ "or upper(c.name) LIKE CONCAT('%',UPPER(:searchKey),'%') ")
-	Page<Sale> getSalePageable(Pageable pageable, String searchKey);
+			+ "or upper(c.name) LIKE CONCAT('%',UPPER(:searchKey),'%') "
+			+ "or upper(s.name) LIKE CONCAT('%',UPPER(:searchKey),'%')")
+	Page<Sale> findPageByDefault(Pageable pageable, String searchKey);
 
+	@Query("select s from Sale s "
+			+ "join s.saleItems sa "
+			+ "join sa.item i "
+			+ "where upper(i.number) LIKE CONCAT('%',UPPER(:searchKey),'%') "
+			+ "or upper(i.name) LIKE CONCAT('%',UPPER(:searchKey),'%')")
+	Page<Sale> findPageByItem(Pageable pageable, String searchKey);
 
 }

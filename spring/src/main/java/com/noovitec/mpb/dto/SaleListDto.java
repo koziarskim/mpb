@@ -14,6 +14,7 @@ public class SaleListDto {
 	
 	private Long id;
 	private String number;
+	private String name;
 	private String customerName;
 	private LocalDate date;
 	private String dc;

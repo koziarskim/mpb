@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.dto.PurchaseSaleDto;
-import com.noovitec.mpb.dto.SaleDto;
 import com.noovitec.mpb.dto.SaleListDto;
 import com.noovitec.mpb.entity.Sale;
 import com.noovitec.mpb.entity.SaleItem;
@@ -45,17 +44,23 @@ class SaleRest {
 	}
 	
 	@GetMapping("/sale/pageable")
-	Page<SaleListDto> getAllPageable(@RequestParam(name = "pageable", required = false) Pageable pageable, @RequestParam(name = "searchKey", required = false) String searchKey) {
+	Page<SaleListDto> getAllPageable(@RequestParam(name = "pageable", required = false) Pageable pageable, @RequestParam(name = "searchKey", required = false) String searchKey, @RequestParam(name = "searchType", required = false) String searchType) {
 		Page<Sale> sales = null;
-		if(searchKey ==null || searchKey.trim().length() == 0) {
-			sales = saleRepo.getSalePageable(pageable);
-		}else {
-			sales = saleRepo.getSalePageable(pageable, searchKey);
+		if(searchType==null || searchType.isBlank() || searchKey==null || searchKey.isBlank()) {
+			sales = saleRepo.findPageAll(pageable);
+		}else if(searchType.equals("default") && !searchKey.isBlank()) {
+			sales = saleRepo.findPageByDefault(pageable, searchKey);
+		}else if(searchType.equals("item") && !searchKey.isBlank()){
+			sales = saleRepo.findPageByItem(pageable, searchKey);
+		}
+		if(sales == null) {
+			 return Page.empty();
 		}
 		Page<SaleListDto> all = sales.map(sale -> {
 			SaleListDto dto = new SaleListDto();
 			dto.setId(sale.getId());
 			dto.setNumber(sale.getNumber());
+			dto.setName(sale.getName());
 			dto.setDc(sale.getShippingAddress()==null?"":sale.getShippingAddress().getDc());
 			dto.setDate(sale.getDate());
 			dto.setCustomerName(sale.getCustomer().getName());

@@ -5,7 +5,10 @@
                 <span style="text-align: left; font-size: 18px; font-weight: bold">Sale Orders</span>
             </b-col>
             <b-col cols="3">
-                <input class="form-control" type="tel" v-model="searchKey" @keyup.enter="getSales()" placeholder="Search by Number or Customer"/>
+                <input class="form-control" type="tel" v-model="searchDefault" @keyup.enter="getSales('default')" placeholder="Search Number, Name or Customer"/>
+            </b-col>
+            <b-col cols="2">
+                <input class="form-control" type="tel" v-model="searchItem" @keyup.enter="getSales('item')" placeholder="Search Item"/>
             </b-col>
             <b-col>
                 <div style="text-align: right;">
@@ -33,7 +36,8 @@ export default {
   data() {
     return {
       pageable: {totalElements: 100, currentPage: 1, perPage: 7, sortBy: 'number', sortDesc: false},
-      searchKey: "",
+      searchDefault: "",
+      searchItem: "",
       fields: [
         { key: "number", label: "S.O. #", sortable: false },
         { key: "customerName", label: "Customer", sortable: false },
@@ -58,9 +62,10 @@ export default {
         this.pageable.currentPage = page;
         this.getSales();
     },
-	getSales() {
+	getSales(type) {
+    var searchKey = type=="default"?this.searchDefault:this.searchItem;
       http
-        .get("/sale/pageable", {params: {pageable: this.pageable, searchKey: this.searchKey}})
+        .get("/sale/pageable", {params: {pageable: this.pageable, searchKey: searchKey, searchType: type}})
         .then(response => {
           //SaleListDto
           this.sales = response.data.content;
