@@ -24,8 +24,8 @@
         <span>{{row.item.received?"Yes":"No"}}</span>
       </template>
       <template v-slot:cell(action)="row">
-        <b-button size="sm" @click.stop="deletePurchase(row.item.id)" :disabled="disabled(row.item)">x</b-button>&nbsp;
-        <b-button size="sm" @click.stop="goToReceiving(row.item.id)" :disabled="!disabled(row.item)">Receivings</b-button>
+        <b-button size="sm" @click.stop="deletePurchase(row.item.id)">x</b-button>&nbsp;
+        <b-button size="sm" @click.stop="goToReceiving(row.item.id)">Receivings</b-button>
       </template>
       <template v-slot:cell(pdf)="row">
         <a :href="rowPdfUrl(row.item.id)" target="_blank">
@@ -88,9 +88,6 @@ export default {
       this.keyword = "";
       this.getPurchases();
     },
-    disabled(purchase) {
-      return purchase.submitted;
-    },
     showAlert(message) {
       (this.alertSecs = 3), (this.alertMessage = message);
     },
@@ -140,4 +137,10 @@ export default {
 </script>
 
 <style>
+.table td {
+   text-align: left;   
+}
+.table th {
+   text-align: left;   
+}
 </style>

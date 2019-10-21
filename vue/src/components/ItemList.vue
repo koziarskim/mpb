@@ -14,8 +14,8 @@
             </b-col>
         </b-row>
         <b-table :items="items" :fields="fields" no-local-sorting @sort-changed="sorted">
-          <template v-slot:cell(number)="row">
-              <b-button size="sm" variant="link" @click.stop="updateItem(row.item.id)">{{row.item.number}}</b-button>
+          <template v-slot:cell(name)="row">
+              <b-button size="sm" variant="link" @click.stop="updateItem(row.item.id)">{{row.item.number}} - {{row.item.name}}</b-button>
           </template>
           <template v-slot:cell(unitsSold)="row">
               <b-button size="sm" variant="link" @click.stop="goToItemSaleList(row.item.id)">{{row.item.unitsSold}}</b-button>
@@ -44,7 +44,6 @@ export default {
       pageable: {totalElements: 100, currentPage: 1, perPage: 7, sortBy: 'name', sortDesc: false},
       searchKey: "",
       fields: [
-        { key: 'number', sortable: true, label: 'Number'},
         { key: 'name', sortable: true, label: 'Name'},
         { key: 'brand', sortable: true, label: 'Brand'},
         { key: 'category', sortable: true, label: 'Category'},
@@ -124,4 +123,10 @@ export default {
 </script>
 
 <style>
+.table td {
+   text-align: left;   
+}
+.table th {
+   text-align: left;   
+}
 </style>

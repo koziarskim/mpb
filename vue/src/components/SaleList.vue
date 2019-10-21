@@ -116,4 +116,10 @@ export default {
 </script>
 
 <style>
+.table td {
+   text-align: left;   
+}
+.table th {
+   text-align: left;   
+}
 </style>

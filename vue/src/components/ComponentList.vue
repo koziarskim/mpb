@@ -15,8 +15,8 @@
     </b-row>
     <div v-if="components.length==0">Not found any components...</div>
     <b-table v-if="components.length>0" no-local-sorting @sort-changed="sorted" :items="components" :fields="fields">
-      <template v-slot:cell(number)="row">
-        <b-button size="sm" @click.stop="goToComponent(row.item.id)" variant="link">{{row.item.number}}</b-button>
+      <template v-slot:cell(name)="row">
+        <b-button size="sm" @click.stop="goToComponent(row.item.id)" variant="link">{{row.item.number}} - {{row.item.name}}</b-button>
       </template>
       <template v-slot:cell(units)="row">
         <b-button size="sm" @click.stop="goToComponentPurchaseList(row.item.id)" variant="link">{{row.item.unitsOrdered}} / {{row.item.unitsInTransit}}</b-button>
@@ -50,13 +50,11 @@ export default {
       sortBy: "age",
       sortDesc: false,
       fields: [
-        { key: "number", label: "Component #", sortable: true },
-        { key: "name", label: "Name", sortable: true },
-        { key: "units", label: "Awaiting/Transit", sortable: false },
-        { key: "unitsOnStock", label: "On Stock", sortable: false },
-        // { key: "unitsReserved", label: "Reserved", sortable: false },
+        { key: "name", label: "Component #", sortable: true },
         { key: "category.name", label: "Category", sortable: true },
         { key: "supplier.name", label: "Supplier", sortable: true },
+        { key: "units", label: "Receiving", sortable: false },
+        { key: "unitsOnStock", label: "On Stock", sortable: false },
         { key: "action", label: "Action", sortable: false }
       ],
       components: []
@@ -138,4 +136,10 @@ export default {
 </script>
 
 <style>
+.table td {
+   text-align: left;   
+}
+.table th {
+   text-align: left;   
+}
 </style>

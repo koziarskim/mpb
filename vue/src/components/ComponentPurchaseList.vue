@@ -16,7 +16,7 @@
             <span>{{calculateAwaiting(row.item)}}</span>
           </template>
           <template v-slot:cell(action)="row">
-            <b-button size="sm" @click.stop="goToReceiving(row.item.purchase.id)" :disabled="!row.item.purchase.submitted || row.item.purchase.received">Receivings</b-button>
+            <b-button size="sm" @click.stop="goToReceiving(row.item.purchase.id)">Receivings</b-button>
           </template>
         </b-table>
       </b-col>
@@ -38,11 +38,9 @@ export default {
       sortDesc: false,
       columns: [
         { key: "purchase", label: "Purchase #", sortable: false },
-        { key: "unitsOrdered", label: "Ordered", sortable: false },
-        { key: "unitsAwaiting", label: "Awaiting", sortable: false },
-        { key: "unitsInTransit", label: "In Transit", sortable: false },
+        { key: "units", label: "Ordered", sortable: false },
+        // { key: "unitsInTransit", label: "In Transit", sortable: false },
         { key: "unitsReceived", label: "Received", sortable: false },
-        // { key: "status", label: "Status", sortable: false },
         { key: "action", label: "Action", sortable: false }
       ],
       expectedDate: ""
