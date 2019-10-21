@@ -14,6 +14,8 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -49,17 +51,26 @@ class ReceivingRest {
 	}
 
 	@GetMapping("/receiving")
-	List<Receiving> getAll(@RequestParam(name = "purchase_id", required = false) Long purchase_id,
+	List<Receiving> getAll() {
+		return  receivingRepo.findAll();
+	}
+
+	@GetMapping("/receiving/pageable")
+	Page<Receiving> getAllPageable(@RequestParam(name = "pageable", required = false) Pageable pageable, 
+			@RequestParam(name = "purchase_id", required = false) Long purchase_id,
 			@RequestParam(name = "component_id", required = false) Long component_id) {
-		List<Receiving> receivings = new ArrayList<Receiving>();
+		Page<Receiving> receivings = null;
 		if(purchase_id != null && component_id !=null) {
-			receivings = receivingRepo.findByPurchaseAndComponent(purchase_id, component_id);
+			receivings = receivingRepo.findByPurchaseAndComponent(pageable, purchase_id, component_id);
 		}else if(purchase_id != null && component_id == null) {
-			receivings = receivingRepo.findByPurchase(purchase_id);
+			receivings = receivingRepo.findByPurchase(pageable, purchase_id);
 		}else if(purchase_id == null && component_id !=null) {
-			receivings = receivingRepo.findByComponent(component_id);
+			receivings = receivingRepo.findByComponent(pageable, component_id);
 		}else {
-			receivings = receivingRepo.findAll();
+			receivings = receivingRepo.findPage(pageable);
+		}
+		if(receivings == null) {
+			receivings = Page.empty();
 		}
 		return receivings;
 	}

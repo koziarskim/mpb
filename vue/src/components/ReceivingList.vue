@@ -18,8 +18,7 @@
         </div>
       </b-col>
     </b-row>
-    <div v-if="receivings.length==0">Not found any purchase orders...</div>
-    <b-table v-if="receivings.length>0" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="receivings" :fields="fields">
+    <b-table :items="receivings" :fields="fields" no-local-sorting>
       <template v-slot:cell(name)="row">
         <b-button size="sm" @click.stop="goToReceiving(row.item.id)" variant="link">{{row.item.number}} - {{row.item.name}}</b-button>
       </template>
@@ -50,6 +49,7 @@
         <b-button size="sm" @click.stop="deleteReceiving(row.item.id)">x</b-button>
       </template>
     </b-table>
+    <b-pagination v-model="pageable.currentPage" :per-page="pageable.perPage" :total-rows="pageable.totalElements" @change="paginationChange"></b-pagination>
   </b-container>
 </template>
 <script>
@@ -61,8 +61,7 @@ import moment from "moment";
 export default {
   data() {
     return {
-      sortBy: "id",
-      sortDesc: false,
+      pageable: {totalElements: 100, currentPage: 1, perPage: 7, sortBy: 'number', sortDesc: false},
       fields: [
         { key: "name", label: "Receiving", sortable: false },
         { key: "purchase", label: "Purchase", sortable: false },
@@ -100,6 +99,10 @@ export default {
     }
   },
   methods: {
+    paginationChange(page){
+      this.pageable.currentPage = page;
+      this.getReceivings(this.purchase.id, this.component.id);
+    },
     formatDate(date){
         return date
             ? moment(date)
@@ -108,9 +111,10 @@ export default {
             : "";
     },
     getReceivings(purchase_id, component_id) {
-      http.get("/receiving", {params: {purchase_id: purchase_id, component_id: component_id}})
-        .then(response => {
-          this.receivings = response.data;
+      http.get("/receiving/pageable", {params: {pageable: this.pageable, purchase_id: purchase_id, component_id: component_id}})
+        .then(r => {
+          this.receivings = r.data.content;
+          this.pageable.totalElements = r.data.totalElements;
         })
         .catch(e => {
           console.log("API error: " + e);

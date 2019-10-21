@@ -100,7 +100,7 @@ class PurchaseRest {
 			purchases = purchaseRepo.findPageByComponent(pageable, searchKey);
 		}
 		if(purchases == null) {
-			 return Page.empty();
+			 purchases = Page.empty();
 		}
 		return purchases;
 	}
