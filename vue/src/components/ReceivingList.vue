@@ -83,13 +83,20 @@ export default {
   computed: {},
   watch: {
     purchase(new_value, old_value) {
-      this.component = {};
+      if(new_value.id == old_value.id){
+        return;
+      }
       this.getAvailableComponents().then(r => {
         this.getReceivings(new_value.id, null);
       });
     },
     component(new_value, old_value) {
-      this.getReceivings(this.purchase.id, new_value.id);
+      if(new_value.id == old_value.id){
+        return;
+      }
+      this.getAvailablePurchases().then(r => {
+        this.getReceivings(this.purchase.id, new_value.id);
+      })
     }
   },
   methods: {
@@ -110,7 +117,7 @@ export default {
         });
     },
     getAvailablePurchases(purchase_id) {
-      return http.get("/purchase/kv").then(response => {
+      return http.get("/purchase/kv", {params: {component_id: this.component.id}}).then(response => {
         this.availablePurchases = response.data;
         if (purchase_id) {
           this.purchase = {id: purchase_id}
@@ -120,7 +127,7 @@ export default {
       });
     },
     getAvailableComponents(component_id) {
-      return http.get("/component/kv").then(response => {
+      return http.get("/component/kv", {params: {purchase_id: this.purchase.id}}).then(response => {
         this.availableComponents = response.data;
         if (component_id) {
           this.component = {id: component_id};

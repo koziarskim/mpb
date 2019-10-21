@@ -78,8 +78,14 @@ class PurchaseRest {
 	}
 
 	@GetMapping("/purchase/kv")
-	List<KeyValueDto> getAllKv() {
-		return purchaseRepo.findAllKv();
+	List<KeyValueDto> getAllKv(@RequestParam(name = "component_id", required = false) Long component_id) {
+		List<KeyValueDto> dtos = null;
+		if(component_id ==null) {
+			dtos = purchaseRepo.findAllKv();
+		}else {
+			dtos = purchaseRepo.findKvByComponnet(component_id);
+		}
+		return dtos;
 	}
 
 	@GetMapping("/purchase/pageable")

@@ -5,6 +5,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -76,8 +77,14 @@ class ComponentRest {
 	}
 
 	@GetMapping("/component/kv")
-	Collection<KeyValueDto> getAllKeyValue() {
-		return componentRepo.getAllKeyValue();
+	Collection<KeyValueDto> getAllKeyValue(@RequestParam(name = "purchase_id", required = false) Long purchase_id) {
+		List<KeyValueDto> dtos = null;
+		if(purchase_id ==null) {
+			dtos = componentRepo.getAllKeyValue();
+		}else {
+			dtos = componentRepo.findKvByPurchase(purchase_id);
+		}
+		return dtos;
 	}
 
 	@GetMapping("/component/{id}")
