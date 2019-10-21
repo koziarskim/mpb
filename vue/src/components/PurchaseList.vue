@@ -15,7 +15,7 @@
     </b-row>
     <b-table :items="purchases" :fields="fields" no-local-sorting>
       <template v-slot:cell(number)="row">
-        <b-button size="sm" @click.stop="goToPurchaseEdit(row.item.id)" variant="link">{{row.item.number}}</b-button>
+        <b-button size="sm" @click.stop="goToPurchaseEdit(row.item.id)" variant="link">{{row.item.number}} - {{row.item.name}}</b-button>
       </template>
       <template v-slot:cell(received)="row">
         <span>{{row.item.received?"Yes":"No"}}</span>

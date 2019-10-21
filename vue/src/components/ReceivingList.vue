@@ -35,7 +35,7 @@
           size="sm"
           @click.stop="goToComponent(row.item.purchaseComponent.component.id)"
           variant="link"
-        >{{row.item.purchaseComponent?row.item.purchaseComponent.component.number:''}}</b-button>
+        >{{row.item.purchaseComponent?row.item.purchaseComponent.component.name:''}}</b-button>
       </template>
       <template v-slot:cell(shippedDate)="row">
         <span>{{formatDate(row.item.shippedDate)}}</span>
@@ -65,14 +65,12 @@ export default {
       sortDesc: false,
       fields: [
         { key: "number", label: "Receiving #", sortable: false },
-        { key: "container", label: "Container", sortable: false },
-        { key: "units", label: "Units", sortable: false },
-        // { key: "unitsReserved", label: "Reserved", sortable: false },
-        { key: "shippedDate", label: "Shipped", sortable: false },
-        { key: "etaDate", label: "ETA", sortable: false },
-        { key: "receivedDate", label: "Received", sortable: false },
         { key: "purchase", label: "Purchase #", sortable: false },
         { key: "component", label: "Component #", sortable: false },
+        { key: "containerNumber", label: "Container", sortable: false },
+        { key: "receivingDate", label: "Received", sortable: false },
+        { key: "shippingDate", label: "Shipped", sortable: false },
+        { key: "units", label: "Units Received", sortable: false },
         { key: "action", label: "Action", sortable: false }
       ],
       availablePurchases: [],

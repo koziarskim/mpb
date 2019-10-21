@@ -1,11 +1,18 @@
 <template>
   <b-container fluid>
-    <div style="border: 0px" class="d-flex justify-content-between align-items-center">
-      <h4 style="text-align: left;">Sale Order:</h4>
-      <div style="text-align: right;">
-        <b-button type="reset" variant="success" @click="saveAndClose">Save & Close</b-button>
-      </div>
-    </div>
+    <b-row>
+      <b-col cols="2">
+        <h4 style="text-align: left;">Sale Order:</h4>
+      </b-col>
+      <b-col cols="3">
+        <input class="form-control" type="text" v-model="sale.name" placeholder="Sale name/description">
+      </b-col>
+      <b-col cols="2" offset="5">
+        <div style="text-align: right;">
+          <b-button type="reset" variant="success" @click="saveAndClose()">Save & Close</b-button>
+        </div>
+      </b-col>
+    </b-row>
     <b-row>
       <b-col cols="4">
         <label class="top-label">Customer:</label>

@@ -40,6 +40,7 @@ public class Purchase {
 	private LocalDateTime updated;
 	private LocalDate date;
 	private String number;
+	private String name;
 	private LocalDate expectedDate;
 	private LocalDate shippingDate;
 	private String invoiceNumber;

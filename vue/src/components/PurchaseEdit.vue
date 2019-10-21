@@ -3,10 +3,13 @@
     <b-row>
       <b-col>
         <div style="display:flex">
-          <span style="padding-right:125px; text-align: left; font-size: 18px; font-weight: bold">Purchase<br/>Order</span>
-          <div style="width: 160px; padding-left: 3px; padding-right: 3px;">
+          <div>
+            <span style="font-size: 16px; font-weight: bold">Purchase Order</span>
+            <input style="width: 160px" class="form-control" disabled="true" type="text" v-model="purchase.number" placeholder="P.O. Number">
+          </div>
+          <div style="width: 200px; padding-left: 3px; padding-right: 3px;">
             <label class="top-label">P.O. Number:</label>
-            <input class="form-control" type="text" disabled="true" v-model="purchase.number" placeholder="P.O. Number">
+            <input class="form-control" type="text" disabled="true" v-model="purchase.name" placeholder="P.O. Name/Description">
           </div>
           <div style="width: 175px; padding-left: 3px; padding-right: 3px;">
             <label class="top-label">P.O. Date:</label>

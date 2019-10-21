@@ -40,6 +40,7 @@ public class Sale {
 	private LocalDateTime updated;
 	private LocalDate date;
 	private String number;
+	private String name;
 	private String paymentTerms;
 	private String freightTerms;
 	private LocalDate expectedDate;

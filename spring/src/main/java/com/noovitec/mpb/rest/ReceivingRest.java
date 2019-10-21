@@ -90,7 +90,7 @@ class ReceivingRest {
 	@DeleteMapping("/receiving/{id}")
 	public ResponseEntity<?> delete(@PathVariable Long id) {
 		Receiving existingReceiving = receivingRepo.findById(id).get();
-		if (existingReceiving.getPurchaseComponent()!=null && existingReceiving.getPurchaseComponent().getComponent() != null) {
+		if (existingReceiving.getReceivingDate()!=null) {
 			Long unitsOnStock = existingReceiving.getPurchaseComponent().getComponent().getUnitsOnStock() - existingReceiving.getUnits();
 			existingReceiving.getPurchaseComponent().getComponent().setUnitsOnStock(unitsOnStock);
 		}

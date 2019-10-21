@@ -3,7 +3,7 @@
     <div style="border: 0px" class="d-flex justify-content-between align-items-center">
       <h4 style="text-align: left;">Receiving: {{receiving.number}}</h4>
       <div style="text-align: right;">
-        <b-button type="reset" variant="success" @click="saveAndClose">Save & Close</b-button>
+        <b-button v-if="editMode" type="reset" variant="success" @click="saveAndClose">Save & Close</b-button>
       </div>
     </div>
     <b-row>
@@ -11,29 +11,29 @@
         <b-row>
           <b-col cols="4">
             <label class="top-label">Shipped Date:</label>
-            <input class="form-control" type="date" v-model="receiving.shippingDate" :disabled="receiving.id">
+            <input class="form-control" type="date" v-model="receiving.shippingDate" :disabled="!editMode">
           </b-col>
           <b-col cols="4">
             <label class="top-label">ETA Date:</label>
-            <input class="form-control" type="date" v-model="receiving.etaDate" :disabled="receiving.id">
+            <input class="form-control" type="date" v-model="receiving.etaDate" :disabled="!editMode">
           </b-col>
           <b-col cols="4">
             <label class="top-label">Received Date:</label>
-            <input class="form-control" type="date" v-model="receiving.receivingdDate" :disabled="receiving.id">
+            <input class="form-control" type="date" v-model="receiving.receivingDate" :disabled="!editMode">
           </b-col>
         </b-row>
         <b-row>
           <b-col cols="4">
             <label class="top-label">Units (Shipped/Received):</label>
-            <input class="form-control" type="text" v-model="receiving.units" :disabled="receiving.id" placeholder="Units Received">
+            <input class="form-control" type="text" v-model="receiving.units" :disabled="!editMode" placeholder="Units Received">
           </b-col>
           <b-col cols="4">
             <label class="top-label">Container:</label>
-            <input class="form-control" type="text" v-model="receiving.containerNumber" :disabled="receiving.id" placeholder="Container #">
+            <input class="form-control" type="text" v-model="receiving.containerNumber" :disabled="!editMode" placeholder="Container #">
           </b-col>
           <b-col cols="4">
             <label class="top-label">Invoice:</label>
-            <input class="form-control" type="text" v-model="receiving.invoiceNumber" :disabled="receiving.id" placeholder="Invoice #">
+            <input class="form-control" type="text" v-model="receiving.invoiceNumber" :disabled="!editMode" placeholder="Invoice #">
           </b-col>
         </b-row>
       </b-col>
@@ -58,6 +58,7 @@ import moment from "moment";
 export default {
   data() {
     return {
+      editMode: true,
       receiving: {
         shippingDate: moment().format("YYYY-MM-DD"),
         etaDate: moment().add(7, 'days').format("YYYY-MM-DD"),
@@ -72,6 +73,9 @@ export default {
     getReceiving(receiving_id) {
       return http.get("/receiving/" + receiving_id).then(r => {
           this.receiving = r.data;
+          if(r.data.receivingDate){
+            this.editMode = false;
+          }
           if(!this.purchaseComponent.id){
             this.purchaseComponent = r.data.purchaseComponent;
           }
@@ -84,7 +88,7 @@ export default {
         alert("Please enter units!");
         return false;
       }
-      if(!this.receiving.etaDate && !this.receiving.receivedDate){
+      if(!this.receiving.etaDate && !this.receiving.receivingDate){
         alert("Please enter ETA or Received Date!");
         return false;
       }
