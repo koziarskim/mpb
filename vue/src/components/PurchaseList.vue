@@ -55,7 +55,7 @@ export default {
       searchPurchase: "",
       searchComponent: "",
       fields: [
-        { key: "number", label: "P.O. #", sortable: false },
+        { key: "number", label: "P.O.", sortable: false },
         { key: "supplier.name", label: "Supplier", sortable: false },
         { key: "date", label: "P.O. Date", sortable: false },
         { key: "expectedDate", label: "Expected", sortable: false },

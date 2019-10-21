@@ -39,7 +39,7 @@ export default {
       searchSale: "",
       searchItem: "",
       fields: [
-        { key: "number", label: "S.O. #", sortable: false },
+        { key: "number", label: "S.O.", sortable: false },
         { key: "customerName", label: "Customer", sortable: false },
         { key: "dc", label: "DC", sortable: false },
         { key: "date", label: "Date", sortable: false },

@@ -20,8 +20,8 @@
     </b-row>
     <div v-if="receivings.length==0">Not found any purchase orders...</div>
     <b-table v-if="receivings.length>0" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="receivings" :fields="fields">
-      <template v-slot:cell(number)="row">
-        <b-button size="sm" @click.stop="goToReceiving(row.item.id)" variant="link">{{row.item.number}}</b-button>
+      <template v-slot:cell(name)="row">
+        <b-button size="sm" @click.stop="goToReceiving(row.item.id)" variant="link">{{row.item.number}} - {{row.item.name}}</b-button>
       </template>
       <template v-slot:cell(purchase)="row">
         <b-button
@@ -64,9 +64,9 @@ export default {
       sortBy: "id",
       sortDesc: false,
       fields: [
-        { key: "number", label: "Receiving #", sortable: false },
-        { key: "purchase", label: "Purchase #", sortable: false },
-        { key: "component", label: "Component #", sortable: false },
+        { key: "name", label: "Receiving", sortable: false },
+        { key: "purchase", label: "Purchase", sortable: false },
+        { key: "component", label: "Component", sortable: false },
         { key: "containerNumber", label: "Container", sortable: false },
         { key: "receivingDate", label: "Received", sortable: false },
         { key: "shippingDate", label: "Shipped", sortable: false },

@@ -34,6 +34,7 @@ public class Receiving {
 	@UpdateTimestamp
 	private LocalDateTime updated;
 	private String number;
+	private String name;
 	private String containerNumber;
 	private String invoiceNumber;
 	private Long units;
