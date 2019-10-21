@@ -5,10 +5,10 @@
                 <span style="text-align: left; font-size: 18px; font-weight: bold">Sale Orders</span>
             </b-col>
             <b-col cols="3">
-                <input class="form-control" type="tel" v-model="searchDefault" @keyup.enter="getSales('default')" placeholder="Search Number, Name or Customer"/>
+                <input class="form-control" type="tel" v-model="searchDefault" @click="searchItem = ''" @keyup.enter="getSales('default')" placeholder="Search Number, Name or Customer"/>
             </b-col>
             <b-col cols="2">
-                <input class="form-control" type="tel" v-model="searchItem" @keyup.enter="getSales('item')" placeholder="Search Item"/>
+                <input class="form-control" type="tel" v-model="searchItem" @click="searchDefault = ''" @keyup.enter="getSales('item')" placeholder="Search Item"/>
             </b-col>
             <b-col>
                 <div style="text-align: right;">
