@@ -230,7 +230,7 @@ export default {
       this.sales.forEach(dto => dto.hide = false);
     },
     getSales(enter){
-      var useLocal = this.getLocal(this.sales, this.searchDto.customers, this.searchDto.saleName, this.searchDto.customerAll, enter);
+      var useLocal = this.getLocal(this.sales, this.searchDto.customers, this.searchDto.saleNumber, this.searchDto.customerAll, enter);
       if(useLocal){
         return Promise.resolve();
       }
