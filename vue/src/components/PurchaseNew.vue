@@ -75,7 +75,7 @@ export default {
   data() {
     return {
       purchase: {
-        date: moment().utc().format("YYYY-MM-DD"),
+        date: moment().format("YYYY-MM-DD"),
         supplier: {}
       },
       selectedComponents: [],

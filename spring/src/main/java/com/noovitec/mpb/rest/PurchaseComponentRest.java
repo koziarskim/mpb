@@ -2,6 +2,7 @@ package com.noovitec.mpb.rest;
 
 import java.net.URISyntaxException;
 import java.util.Collection;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +35,11 @@ class PurchaseComponentRest {
 		return purchaseComponentRepo.findAll();
 	}
 
+	@GetMapping("/purchaseComponent/{pc_id}")
+	PurchaseComponent getById(@PathVariable Long pc_id) {
+		return purchaseComponentRepo.getOne(pc_id);
+	}
+
 	@GetMapping("/purchaseComponent/purchase/{purchase_id}")
 	Collection<PurchaseComponent> getByPurchase(@PathVariable Long purchase_id) {
 		Collection<PurchaseComponent> result = purchaseComponentRepo.findByPurchase(purchase_id);
@@ -44,6 +50,12 @@ class PurchaseComponentRest {
 	Collection<PurchaseComponent> getByComponent(@PathVariable Long component_id) {
 		Collection<PurchaseComponent> result = purchaseComponentRepo.findByComponent(component_id);
 		return result;
+	}
+
+	@GetMapping("/purchaseComponent/purchase/{purchase_id}/component/{component_id}")
+	PurchaseComponent getByPurchaseAndComponent(@PathVariable Long purchase_id, @PathVariable Long component_id) {
+		List<PurchaseComponent> result = purchaseComponentRepo.findByPurchaseAndComponent(purchase_id, component_id);
+		return result.get(0);
 	}
 
 	@PostMapping("/purchaseComponent")

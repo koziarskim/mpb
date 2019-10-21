@@ -131,22 +131,22 @@ export default {
         console.log("API error: " + e);
       });
     },
+    getPurchaseComponent(purchase_id, component_id) {
+      return http.get("/purchaseComponent/purchase/"+purchase_id+"/component/"+component_id).then(r => {
+       return r.data;
+      }).catch(e => {
+        console.log("API error: " + e);
+      });
+    },
     goToReceiving(receiving_id) {
       if (!receiving_id) {
-        var receiving = {};
-        if (!this.purchaseComponent.id) {
-          alert("Please select Purchase and Component first!!!")
-          return;
+        if(!this.purchase.id || !this.component.id){
+          alert("Please pick Purchase and Component first!")
+          return Promise.resolve();
         }
-        receiving.purchaseComponent = { id: this.purchaseComponent.id };
-        return http
-          .post("/receiving", receiving)
-          .then(response => {
-            router.push("/receivingEdit/" + response.data.id);
-          })
-          .catch(e => {
-            console.log("API Error: " + e);
-          });
+        this.getPurchaseComponent(this.purchase.id, this.component.id).then(pc => {
+          router.push("/receivingEdit/pc/" + pc.id);
+        })
       } else {
         router.push("/receivingEdit/" + receiving_id);
       }

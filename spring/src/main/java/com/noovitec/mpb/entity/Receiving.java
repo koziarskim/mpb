@@ -1,5 +1,6 @@
 package com.noovitec.mpb.entity;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -36,9 +37,9 @@ public class Receiving {
 	private String container;
 	private int units;
 	private int unitsReserved;
-	private Date shippedDate;
-	private Date etaDate;
-	private Date receivedDate;
+	private LocalDate shippedDate;
+	private LocalDate etaDate;
+	private LocalDate receivedDate;
 
 	@JsonIgnoreProperties(value = { "receivings" }, allowSetters = true)
 	@ManyToOne()

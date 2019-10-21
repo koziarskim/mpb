@@ -212,6 +212,14 @@ const router = new Router({
       }
     },
     {
+      path: "/ReceivingEdit/pc/:pc_id",
+      name: "ReceivingEdit",
+      component: ReceivingEdit,
+      meta: {
+        roles: ["SUPER_USER"]
+      }
+    },
+    {
       path: "/Users",
       name: "Users",
       component: Users,
