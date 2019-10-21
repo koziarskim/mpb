@@ -110,7 +110,7 @@ class ItemRest {
 			dto.setName(item.getName());
 			dto.setBrand(item.getBrand()==null?"":item.getBrand().getName());
 			dto.setCategory(item.getCategory()==null?"":item.getCategory().getName());
-			dto.setUnitsOnStack(item.getUnitsOnStack());
+			dto.setUnitsOnStock(item.getUnitsOnStock());
 			dto.setUnitsSold(item.getUnitsSold());
 			dto.setUnitsScheduled(item.getUnitsScheduled());
 			dto.setUnitsProduced(item.getUnitsProduced());
@@ -142,41 +142,6 @@ class ItemRest {
 		return ResponseEntity.ok().body(Collections.singletonMap("number", number));
 	}
 
-//	@GetMapping("/item/purchase/{purchase_id}")
-//	Collection<ItemDto> getAll(@PathVariable Long purchase_id) {
-//		Collection<ItemDto> dtos = new HashSet<ItemDto>();
-//		for (Item item : itemRepo.getPurchaseItems(purchase_id)) {
-//			ItemDto dto = new ItemDto(item.getId(), item.getNumber(), item.getName(), item.getBrand() == null ? null : item.getBrand().getName(),
-//					item.getCategory() == null ? null : item.getCategory().getName(), item.getStatus(), item.getUnitsOnStack(), item.getUnitsSold(),
-//							item.getUnitsScheduled(), item.getUnitsProduced());
-//			dtos.add(dto);
-//		}
-//		return dtos;
-//	}
-
-	@GetMapping("/item/available/eta/{date}")
-	Collection<ItemAvailabilityDto> getAvailableItems(@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
-			@RequestParam(name = "itemIds", required = false) List<Long> itemIds) {
-		if (itemIds == null) {
-			itemIds = new ArrayList<Long>();
-			itemIds.add(0L);
-		}
-		List<ItemAvailabilityDto> dtos = new ArrayList<ItemAvailabilityDto>();
-		for(ItemAvailabilityProjection iap : itemRepo.getItemsAvailabilityFiltered(date, itemIds)) {
-			ItemAvailabilityDto dto = new ItemAvailabilityDto();
-			dto.setId(iap.getId());
-			dto.setUnitsToProduction(iap.getUnitsToProduction());
-			Long itemUnits = itemRepo.getItemsScheduledToDate(date, iap.getId());
-			if(itemUnits==null) {
-				itemUnits = 0L;
-			}
-			dto.setUnitsScheduled(itemUnits);
-			dto.setUnitsToSchedule(iap.getUnitsToSchedule() - itemUnits);
-			dtos.add(dto);
-		}
-		return dtos;
-	}
-	
 	@GetMapping("/item/production/date/{date}")
 	Collection<ItemTreeDto> getItemsByDate(@PathVariable(name = "date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
 		List<ItemTreeDto> dtos = new ArrayList<ItemTreeDto>();
@@ -187,7 +152,7 @@ class ItemRest {
 				itemDto = new ItemTreeDto();
 				itemDto.setId(se.getSaleItem().getItem().getId());
 				itemDto.setName(se.getSaleItem().getItem().getName());
-				itemDto.setUnitsOnStack(se.getSaleItem().getItem().getUnitsOnStack());
+				itemDto.setUnitsOnStock(se.getSaleItem().getItem().getUnitsOnStock());
 				itemDto.setTotalSold(se.getSaleItem().getItem().getUnitsSold());
 				itemDto.setTotalProduced(se.getSaleItem().getItem().getUnitsProduced());
 				itemDto.setTotalSeconds(se.getSaleItem().getItem().getDurationSeconds());

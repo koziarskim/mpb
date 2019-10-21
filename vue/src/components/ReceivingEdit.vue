@@ -11,7 +11,7 @@
         <b-row>
           <b-col cols="4">
             <label class="top-label">Shipped Date:</label>
-            <input class="form-control" type="date" v-model="receiving.shippedDate" :disabled="receiving.id">
+            <input class="form-control" type="date" v-model="receiving.shippingDate" :disabled="receiving.id">
           </b-col>
           <b-col cols="4">
             <label class="top-label">ETA Date:</label>
@@ -19,21 +19,21 @@
           </b-col>
           <b-col cols="4">
             <label class="top-label">Received Date:</label>
-            <input class="form-control" type="date" v-model="receiving.receivedDate" :disabled="receiving.id">
+            <input class="form-control" type="date" v-model="receiving.receivingdDate" :disabled="receiving.id">
           </b-col>
         </b-row>
         <b-row>
           <b-col cols="4">
             <label class="top-label">Units (Shipped/Received):</label>
-            <input class="form-control" type="text" v-model="receiving.units" :disabled="receiving.id" placeholder="Units">
+            <input class="form-control" type="text" v-model="receiving.units" :disabled="receiving.id" placeholder="Units Received">
           </b-col>
           <b-col cols="4">
             <label class="top-label">Container:</label>
-            <input class="form-control" type="text" v-model="receiving.container" :disabled="receiving.id" placeholder="Container">
+            <input class="form-control" type="text" v-model="receiving.containerNumber" :disabled="receiving.id" placeholder="Container #">
           </b-col>
           <b-col cols="4">
             <label class="top-label">Invoice:</label>
-            <input class="form-control" type="text" v-model="receiving.invoiceNumber" :disabled="receiving.id" placeholder="Container">
+            <input class="form-control" type="text" v-model="receiving.invoiceNumber" :disabled="receiving.id" placeholder="Invoice #">
           </b-col>
         </b-row>
       </b-col>
@@ -42,13 +42,7 @@
             P.O.#: {{purchaseComponent.purchase.number}}<br/>
             Component: {{purchaseComponent.component.name}}<br/>
             Ordered: {{purchaseComponent.units}}<br/>
-            <!-- In Transit: {{purchaseComponent.unitsInTransit}}<br/> -->
             Received: {{purchaseComponent.unitsReceived}}<br/>
-            <!-- <br/>
-            All P.O.s<br/>
-            Ordered: {{purchaseComponent.component.unitsOrdered}}<br/>
-            In Transit: {{purchaseComponent.component.unitsInTransit}}<br/>
-            Received: {{purchaseComponent.component.unitsReceived}}<br/> -->
         </b-row>
       </b-col>
     </b-row>
@@ -65,7 +59,7 @@ export default {
   data() {
     return {
       receiving: {
-        shippedDate: moment().format("YYYY-MM-DD"),
+        shippingDate: moment().format("YYYY-MM-DD"),
         etaDate: moment().add(7, 'days').format("YYYY-MM-DD"),
       },
       purchaseComponent: {purchase: {}, component: {}},
@@ -90,7 +84,7 @@ export default {
         alert("Please enter units!");
         return false;
       }
-      if(!this.receiving.ataDate && !this.receiving.receivedDate){
+      if(!this.receiving.etaDate && !this.receiving.receivedDate){
         alert("Please enter ETA or Received Date!");
         return false;
       }
@@ -117,9 +111,9 @@ export default {
     getPurchaseComponent(pc_id) {
       return http.get("/purchaseComponent/"+pc_id).then(r => {
           this.purchaseComponent = r.data;
-          this.receiving.shippedDate = r.data.purchase.shippingDate;
+          this.receiving.shippingDate = r.data.purchase.shippingDate;
           this.receiving.etaData = r.data.purchase.expectedDate;
-          this.receiving.container = r.data.purchase.containerNumber;
+          this.receiving.containerNumber = r.data.purchase.containerNumber;
           this.receiving.invoiceNumber = r.data.purchase.invoiceNumber;
         }).catch(e => {
           console.log("API error: " + e);

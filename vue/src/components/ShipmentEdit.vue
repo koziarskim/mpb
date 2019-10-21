@@ -150,7 +150,7 @@ export default {
         { key: "item", label: "Item", sortable: false },
         { key: "sale", label: "Sale", sortable: false },
         { key: "saleItem.units", label: "Sold", sortable: false },
-        { key: "saleItem.item.unitsOnStack", label: "Stock", sortable: false },
+        { key: "saleItem.item.unitsOnStock", label: "Stock", sortable: false },
         { key: "unitsShipped", label: "Shipped", sortable: false },
         { key: "units", label: "Units", sortable: false },
         { key: "saleItem.item.casePack", label: "Case Pack", sortable: false },
@@ -351,7 +351,7 @@ export default {
         })
     },
     unitsBlur(si){
-        if(si.units > si.saleItem.item.unitsOnStack){
+        if(si.units > si.saleItem.item.unitsOnStock){
             alert("Cannot ship more that on stock");
             si.units = 0;
         }

@@ -53,7 +53,7 @@ export default {
         { key: "number", label: "Component #", sortable: true },
         { key: "name", label: "Name", sortable: true },
         { key: "units", label: "Awaiting/Transit", sortable: false },
-        { key: "unitsOnStack", label: "On Stack", sortable: false },
+        { key: "unitsOnStock", label: "On Stock", sortable: false },
         // { key: "unitsReserved", label: "Reserved", sortable: false },
         { key: "category.name", label: "Category", sortable: true },
         { key: "supplier.name", label: "Supplier", sortable: true },

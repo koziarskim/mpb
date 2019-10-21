@@ -36,7 +36,7 @@ export default {
       columns: [
         { key: "component", label: "Component #", sortable: false },
         { key: "units", label: "Units", sortable: false },
-        { key: "component.unitsOnStack", label: "On Stack", sortable: false },
+        { key: "component.unitsOnStock", label: "On Stock", sortable: false },
         { key: "component.unitsOrdered", label: "Awaiting", sortable: false },
         { key: "component.unitsInTransit", label: "In Transit", sortable: false },
       ],

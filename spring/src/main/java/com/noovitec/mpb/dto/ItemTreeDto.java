@@ -18,7 +18,7 @@ public class ItemTreeDto {
 	private String name;
 	private String status;
 	private boolean show;
-	private Long unitsOnStack = 0L;
+	private Long unitsOnStock = 0L;
 	private Long totalSold = 0L;
 	private Long totalProduced = 0L;
 	private Long totalSeconds = 0L;

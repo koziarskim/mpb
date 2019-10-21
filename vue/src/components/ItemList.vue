@@ -48,7 +48,7 @@ export default {
         { key: 'name', sortable: true, label: 'Name'},
         { key: 'brand', sortable: true, label: 'Brand'},
         { key: 'category', sortable: true, label: 'Category'},
-        { key: 'unitsOnStack', sortable: false, label: 'Stock'},
+        { key: 'unitsOnStock', sortable: false, label: 'Stock'},
         { key: 'unitsSold', sortable: false, label: 'Sold'},
         { key: 'unitsScheduled', sortable: false, label: 'Sched/Produced'},
         { key: 'unitsShipped', sortable: false, label: 'Shipped'},

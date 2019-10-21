@@ -121,7 +121,7 @@ class ShipmentRest {
 		shipmentRepo.save(result);
 		if(result.isSubmitted()) {
 			for(ShipmentItem si: shipment.getShipmentItems()) {
-				Long units = si.getSaleItem().getItem().getUnitsOnStack();
+				Long units = si.getSaleItem().getItem().getUnitsOnStock();
 				units = units - si.getUnits();
 				itemRepo.updateUnitsOnStock(units, si.getSaleItem().getItem().getId());
 			}

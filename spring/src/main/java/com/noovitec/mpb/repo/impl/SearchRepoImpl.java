@@ -279,7 +279,7 @@ public class SearchRepoImpl implements SearchRepoCustom {
 			dto.setId(c.getId());
 			dto.setSupplierId(c.getSupplier()==null?null:c.getSupplier().getId());
 			dto.setName(c.getName());
-			dto.setUnitsOnStock(Long.valueOf(c.getUnitsOnStack()));
+			dto.setUnitsOnStock(Long.valueOf(c.getUnitsOnStock()));
 			dto.setUnitsInOrder(c.getUnitsInOrder());
 			dto.setUnitPrice(c.getUnitCost());
 			dto.setUnitCost(c.getUnitCost());

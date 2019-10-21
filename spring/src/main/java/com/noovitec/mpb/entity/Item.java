@@ -58,7 +58,7 @@ public class Item {
 	private BigDecimal otherCost = BigDecimal.ZERO;
 	private BigDecimal totalCost = BigDecimal.ZERO;
 	private String status = "NONE"; // This is "DYNAMIC" in DB because it is calculated on the GET.
-	private Long unitsOnStack = 0L;
+	private Long unitsOnStock = 0L;
 
 	@JsonIgnoreProperties(value = { "item" }, allowSetters = true)
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
@@ -164,11 +164,11 @@ public class Item {
 		return secs;
 	}
 
-	public void addUnitsOnStack(Long units) {
-		if (this.unitsOnStack == null) {
-			this.unitsOnStack = 0L;
+	public void addUnitsOnStock(Long units) {
+		if (this.unitsOnStock == null) {
+			this.unitsOnStock = 0L;
 		}
-		this.unitsOnStack += units;
+		this.unitsOnStock += units;
 	}
 
 }

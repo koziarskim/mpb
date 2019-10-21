@@ -33,7 +33,7 @@ export default {
         { key: "componentNumber", label: "Component #", sortable: false },
         { key: "componentName", label: "Name", sortable: false },
         { key: "supplierName", label: "Supplier", sortable: false },
-        { key: "unitsOnStack", label: "On Stack", sortable: false },
+        { key: "unitsOnStock", label: "On Stock", sortable: false },
         { key: "unitsOrdered", label: "Ordered", sortable: false }
       ],
       inventories: [],

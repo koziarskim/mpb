@@ -31,7 +31,7 @@ public interface ItemRepo extends PagingAndSortingRepository<Item, Long> {
 //			+ "left join i.category c " + "join ps.purchase.purchaseComponents pc " + "where ps.purchase.id = :purchase_id")
 //	List<Item> getPurchaseItems(@Param("purchase_id") Long purchase_id);
 
-	@Query("select new com.noovitec.mpb.dto.ItemListDto(i.id, i.number, i.name, b.name, c.name, i.unitsOnStack, sum(si.units), sum(se.unitsScheduled), sum(p.unitsProduced)) from Item i "
+	@Query("select new com.noovitec.mpb.dto.ItemListDto(i.id, i.number, i.name, b.name, c.name, i.unitsOnStock, sum(si.units), sum(se.unitsScheduled), sum(p.unitsProduced)) from Item i "
 			+ "left join Category c on c.id = i.category.id "
 			+ "left join Brand b on b.id = i.brand.id "
 			+ "left join SaleItem si on si.item.id = i.id "
@@ -40,7 +40,7 @@ public interface ItemRepo extends PagingAndSortingRepository<Item, Long> {
 			+ "group by i.id, c.id, b.id")
 	List<ItemListDto> getItemListDto();
 
-	@Query("select new com.noovitec.mpb.dto.ItemListDto(i.id, i.number, i.name, b.name, c.name, i.unitsOnStack, sum(si.units), sum(se.unitsScheduled), sum(p.unitsProduced)) from Item i "
+	@Query("select new com.noovitec.mpb.dto.ItemListDto(i.id, i.number, i.name, b.name, c.name, i.unitsOnStock, sum(si.units), sum(se.unitsScheduled), sum(p.unitsProduced)) from Item i "
 			+ "left join Category c on c.id = i.category.id "
 			+ "left join Brand b on b.id = i.brand.id "
 			+ "left join SaleItem si on si.item.id = i.id "
@@ -49,7 +49,7 @@ public interface ItemRepo extends PagingAndSortingRepository<Item, Long> {
 			+ "group by i.id, c.id, b.id")
 	Page<ItemListDto> getItemListDtoPageable(Pageable pageable);
 
-	@Query("select new com.noovitec.mpb.dto.ItemListDto(i.id, i.number, i.name, b.name, c.name, i.unitsOnStack, sum(si.units), sum(se.unitsScheduled), sum(p.unitsProduced)) from Item i "
+	@Query("select new com.noovitec.mpb.dto.ItemListDto(i.id, i.number, i.name, b.name, c.name, i.unitsOnStock, sum(si.units), sum(se.unitsScheduled), sum(p.unitsProduced)) from Item i "
 			+ "left join Category c on c.id = i.category.id "
 			+ "left join Brand b on b.id = i.brand.id "
 			+ "left join SaleItem si on si.item.id = i.id "
@@ -73,23 +73,11 @@ public interface ItemRepo extends PagingAndSortingRepository<Item, Long> {
 			+ "or upper(c.name) LIKE CONCAT('%',UPPER(:searchKey),'%')")
 	Page<Item> getItemsPageable(Pageable pageable, String searchKey);
 	
-	/*
-	select tmp.i_id, min(tmp.units) from (
-		select i.id as i_id,
-		((c.units_on_stack + sum(case when r.units is null then 0 else r.units end))/max(ic.units)) as units from item i
-		join item_component ic on ic.item_id = i.id
-		join component c on c.id = ic.component_id
-		left join purchase_component pc on pc.component_id = c.id
-		left join receiving r on r.purchase_component_id = pc.id and r.received_date is null and r.eta_date < '2019-06-1'																			 
-		group by c.id, i.id
-		order by i.id asc) as tmp
-	group by tmp.i_id
-	 */
 	@Query(value = ""
 			+ "select tmp.i_id as id, tmp.us as unitsScheduled, min(tmp.unitsToSchedule) as unitsToSchedule, min(tmp.unitsToProduction) as unitsToProduction "
-				+ "from (select i.id as i_id, i.units_on_stack as us, "
-				+ "((c.units_on_stack + sum(case when r.units is null then 0 else r.units end))/max(ic.units)) as unitsToSchedule, "
-				+ "((c.units_on_stack)/max(ic.units)) as unitsToProduction "
+				+ "from (select i.id as i_id, i.units_on_stock as us, "
+				+ "((c.units_on_stock + sum(case when r.units is null then 0 else r.units end))/max(ic.units)) as unitsToSchedule, "
+				+ "((c.units_on_stock)/max(ic.units)) as unitsToProduction "
 				+ "from item i "
 				+ "join item_component ic on ic.item_id = i.id "
 				+ "join component c on c.id = ic.component_id "
@@ -117,6 +105,6 @@ public interface ItemRepo extends PagingAndSortingRepository<Item, Long> {
 	
 	@Modifying
 	@Transactional
-	@Query("update Item i set i.unitsOnStack = :units where i.id = :item_id")
+	@Query("update Item i set i.unitsOnStock = :units where i.id = :item_id")
 	void updateUnitsOnStock(@Param("units") Long units, @Param("item_id") Long item_id);
 }

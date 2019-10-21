@@ -60,7 +60,7 @@ public class PurchaseComponent {
 	public Long getUnitsReceived() {
 		Long units = 0L;
 		for(Receiving r: this.getReceivings()) {
-			if(r.getReceivedDate()!=null) {
+			if(r.getReceivingDate()!=null) {
 				units += Long.valueOf(r.getUnits());
 			}
 		}
@@ -73,7 +73,7 @@ public class PurchaseComponent {
 	public Long getUnitsInTransit() {
 		Long units = 0L;
 		for(Receiving r: this.getReceivings()) {
-			if(r.getReceivedDate()==null) {
+			if(r.getReceivingDate()==null) {
 				units += Long.valueOf(r.getUnits());
 			}
 		}

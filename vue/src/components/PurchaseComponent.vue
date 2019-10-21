@@ -192,7 +192,7 @@ export default {
           component: { id: component_id }
         };
         this.purchase.purchaseComponents.push(pc);
-        dto.units = dto.unitsNeeded - +dto.unitsOnStack;
+        dto.units = dto.unitsNeeded - +dto.unitsOnStock;
       } else {
         pc = this.purchase.purchaseComponents.find(
           pc => pc.component.id == component_id

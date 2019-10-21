@@ -61,50 +61,6 @@ class ScheduleRest {
 		return null;
 	}
 	
-	@GetMapping("/_schedule/date/{date}")
-	Collection<Schedule> _findByDate(@PathVariable(name = "date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
-		int days = 6;
-		LocalDate dateTo = date.plusDays(days);
-		Collection<Schedule> schedules = scheduleRepo.findByRange(date, dateTo);
-		Map<LocalDate, Schedule> scheduleMap = new HashMap<LocalDate, Schedule>();
-		Collection<Schedule> result = new HashSet<Schedule>();
-		for (Schedule schedule : schedules) {
-			scheduleMap.put(schedule.getDate(), schedule);
-		}
-		for (int day = 0; day <= days; day++) {
-			LocalDate d = date.plusDays(day);
-			Schedule s = scheduleMap.get(d);
-			if (s == null) {
-				s = new Schedule();
-				s.setDate(d);
-			}
-			// Get all items that are available to schedule based on receiving.
-			List<Long> items = new ArrayList<Long>();
-			if (s.getId() != null) {
-				items.addAll(itemRepo.getItemsScheduled(s.getId()));
-			}
-			if (!items.isEmpty()) {
-				for (ItemAvailabilityProjection iap : itemRepo.getItemsAvailabilityFiltered(s.getDate(), items)) {
-					ItemAvailabilityDto dto = new ItemAvailabilityDto();
-					dto.setId(iap.getId());
-					dto.setUnitsToProduction(iap.getUnitsToProduction());
-					Long itemUnits = itemRepo.getItemsScheduledToDate(s.getDate(), iap.getId());
-					if (itemUnits == null) {
-						itemUnits = 0L;
-					}
-					dto.setUnitsScheduled(itemUnits);
-					dto.setUnitsToSchedule(iap.getUnitsToSchedule() - itemUnits);
-					s.getItems().add(dto);
-				}
-			}
-			result.add(s);
-		}
-		// Convert to List and sort.
-		List<Schedule> list = new ArrayList<Schedule>(result);
-		list.sort(Comparator.comparing(o -> o.getDate()));
-		return list;
-	}
-
 	@GetMapping("/schedule/date/{date}")
 	Collection<ScheduleDto> findByDate(@PathVariable(name = "date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
 		LocalDate dateTo = date.plusDays(6);

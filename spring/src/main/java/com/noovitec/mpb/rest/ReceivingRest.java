@@ -70,34 +70,6 @@ class ReceivingRest {
 		return result.map(response -> ResponseEntity.ok().body(response)).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
 	}
 
-	//TODO: Is this used?
-	@GetMapping("/receiving/date/{date}")
-	Map get(@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
-		Collection<Receiving> receivings = receivingRepo.findReceivingInTransit();
-		for(Receiving r : receivings) {
-			Long c_id = r.getPurchaseComponent().getComponent().getId();
-			int units = r.getUnits();
-		}
-		
-		Map<LocalDate, Map> result = new HashMap<LocalDate, Map>();
-		Map<String, Map> dateMap = new HashMap<String, Map>();
-		Map<String, Integer> compMap = new HashMap<String, Integer>();
-		compMap.put("feature", 1);
-		compMap.put("past", 33);
-		compMap.put("stack", 0);
-		Map<String, Integer> compMap2 = new HashMap<String, Integer>();
-		compMap2.put("feature", 2);
-		compMap2.put("past", 33);
-		compMap2.put("stack", 0);
-		dateMap.put("C1", compMap);
-		dateMap.put("C2", compMap2);
-		LocalDate d1 = LocalDate.parse("27/04/2019", DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-		LocalDate d2 = LocalDate.parse("26/04/2019", DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-		result.put(d1, dateMap);
-		result.put(d2, dateMap);
-		return result;
-	}
-
 	@PostMapping("/receiving")
 	ResponseEntity<?> post(@RequestBody(required = false) Receiving receiving) throws URISyntaxException {
 		if (receiving == null) {
@@ -107,8 +79,8 @@ class ReceivingRest {
 		result = receivingRepo.save(receiving);
 		if(receiving.getPurchaseComponent()!=null && receiving.getPurchaseComponent().getComponent() != null) {
 			Component component = componentRepo.findById(receiving.getPurchaseComponent().getComponent().getId()).get();
-			if (receiving.getReceivedDate()!=null) {
-				component.addUnitsOnStack(Long.valueOf(receiving.getUnits()));
+			if (receiving.getReceivingDate()!=null) {
+				component.addUnitsOnStock(receiving.getUnits());
 			}
 			componentRepo.save(component);
 		}
@@ -119,8 +91,8 @@ class ReceivingRest {
 	public ResponseEntity<?> delete(@PathVariable Long id) {
 		Receiving existingReceiving = receivingRepo.findById(id).get();
 		if (existingReceiving.getPurchaseComponent()!=null && existingReceiving.getPurchaseComponent().getComponent() != null) {
-			int unitsOnStack = existingReceiving.getPurchaseComponent().getComponent().getUnitsOnStack() - existingReceiving.getUnits();
-			existingReceiving.getPurchaseComponent().getComponent().setUnitsOnStack(unitsOnStack);
+			Long unitsOnStock = existingReceiving.getPurchaseComponent().getComponent().getUnitsOnStock() - existingReceiving.getUnits();
+			existingReceiving.getPurchaseComponent().getComponent().setUnitsOnStock(unitsOnStock);
 		}
 		receivingRepo.save(existingReceiving);
 		Receiving receiving = receivingRepo.findById(id).get();

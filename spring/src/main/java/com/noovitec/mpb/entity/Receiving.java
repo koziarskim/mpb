@@ -34,12 +34,12 @@ public class Receiving {
 	@UpdateTimestamp
 	private LocalDateTime updated;
 	private String number;
-	private String container;
-	private int units;
-	private int unitsReserved;
-	private LocalDate shippedDate;
+	private String containerNumber;
+	private String invoiceNumber;
+	private Long units;
+	private LocalDate shippingDate;
 	private LocalDate etaDate;
-	private LocalDate receivedDate;
+	private LocalDate receivingDate;
 
 	@JsonIgnoreProperties(value = { "receivings" }, allowSetters = true)
 	@ManyToOne()

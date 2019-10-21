@@ -63,7 +63,7 @@ class ProductionRest {
 		ScheduleEvent scheduleEvent = scheduleEventRepo.getOne(production.getScheduleEvent().getId());
 		Production result = productionRepo.save(production);
 		Item item = itemRepo.findById(scheduleEvent.getSaleItem().getItem().getId()).get();
-		item.addUnitsOnStack(result.getUnitsProduced() - existingUnitsProduced);
+		item.addUnitsOnStock(result.getUnitsProduced() - existingUnitsProduced);
 		itemRepo.save(item);
 		return ResponseEntity.ok().body(result);
 	}
@@ -74,7 +74,7 @@ class ProductionRest {
 		Long existingUnitsProduced = existingProduction.getUnitsProduced();
 		ScheduleEvent scheduleEvent = scheduleEventRepo.getOne(existingProduction.getScheduleEvent().getId());
 		Item item = itemRepo.findById(scheduleEvent.getSaleItem().getItem().getId()).get();
-		item.addUnitsOnStack(existingUnitsProduced * (-1));
+		item.addUnitsOnStock(existingUnitsProduced * (-1));
 		productionRepo.deleteById(id);
 		return ResponseEntity.ok().build();
 	}
