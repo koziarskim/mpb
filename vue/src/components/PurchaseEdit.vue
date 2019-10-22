@@ -33,12 +33,13 @@
           </div>
           <div v-if="receiveMode" style="margin-left: 680px; width: 175px; padding-left: 3px; padding-right: 3px;">
             <label class="top-label">Received:</label>
-            <input class="form-control" type="date" v-model="purchase.receivingDate">
+            <input class="form-control" type="date" v-model="receivingDate">
           </div>
           <div style="text-align: right;">
             <b-button v-if="!editMode && !receiveMode" size="sm" style="margin-right: 2px; width: 70px; margin-left: -50px" type="reset" variant="success" @click="edit()">Edit</b-button>
             <b-button v-if="!editMode && !receiveMode" size="sm" style="margin: 2px; width: 70px" type="reset" variant="success" @click="receive()">Receive</b-button>
-            <b-button v-if="editMode || receiveMode" size="sm" style="margin: 2px; width: 70px; margin-top: 25px;" type="reset" variant="success" @click="save()">Save</b-button>
+            <b-button v-if="editMode || receiveMode" size="sm" style="margin-right: 2px; width: 70px; margin-left: -50px" type="reset" variant="success" @click="cancel()">Cancel</b-button>
+            <b-button v-if="editMode || receiveMode" size="sm" style="margin: 2px; width: 70px" type="reset" variant="success" @click="save()">Save</b-button>
           </div>
         </div>
       </b-col>
@@ -50,7 +51,19 @@
             <b-button size="sm" @click.stop="goToComponent(row.item.component.id)" variant="link">{{row.item.component.number}} - {{row.item.component.name}}</b-button>
           </template>
           <template v-slot:cell(unitsReceived)="row">
-            <b-button size="sm" @click.stop="goToReceiving(purchase.id, row.item.component.id)" variant="link">{{row.item.unitsReceived}}</b-button>
+            <b-button v-if="!receiveMode" size="sm" @click.stop="goToReceiving(purchase.id, row.item.component.id)" variant="link">{{row.item.unitsReceived}}</b-button>
+            <input v-if="receiveMode" class="form-control" type="tel" v-model="row.item.units">          
+          </template>
+          <template v-slot:cell(unitPrice)="row">
+            <input v-if="editMode" class="form-control" type="tel" v-model="row.item.unitPrice">          
+            <span v-if="!editMode">{{row.item.unitPrice}}</span>
+          </template>
+          <template v-slot:cell(units)="row">
+            <input v-if="editMode" class="form-control" type="tel" v-model="row.item.units">   
+            <span v-if="!editMode">{{row.item.units}}</span>
+          </template>
+          <template v-slot:cell(totalPrice)="row">
+            ${{row.item.totalPrice = getTotalPrice(row.item)}}
           </template>
         </b-table>
       </b-col>
@@ -68,6 +81,7 @@ import ComponentSearch from "./ComponentSearch";
 export default {
   data() {
     return {
+      receivingDate: '',
       editMode: false,
       receiveMode: false,
       purchase: {},
@@ -86,6 +100,15 @@ export default {
   watch: {
   },
   methods: {
+    getTotalPrice(item){
+      return (item.units * item.unitPrice).toFixed(2);
+    },
+    cancel(){
+      this.getPurchase(this.purchase.id).then(purchase =>{
+        this.editMode = false;
+        this.receiveMode = false;
+      })
+    },
     edit(){
       this.editMode = true;
     },
@@ -109,8 +132,21 @@ export default {
       });
     },
     saveReceive(){
+      if(this.purchase.receivingDate){
+        alert("Already received. Please use individual Receiving to create additional receivings");
+        return Promise.reject();
+      }
+      if(!this.receivingDate){
+        alert("Please enter Receiving Date");
+        return Promise.reject();
+      }
       var receivings = [];
+      var noUnits = false;
       this.purchase.purchaseComponents.forEach(pc => {
+        if(!pc.unitsToReceive){
+          noUnits = true;
+          return;
+        }
         var receiving = {purchaseComponent: {id: pc.id}}
         receiving.name = "Rec-"+this.purchase.name+"-"+pc.component.name;
         receiving.containerNumber = this.purchase.containerNumber;
@@ -118,11 +154,14 @@ export default {
         receiving.shippingDate = this.purchase.shippingDate;
         receiving.etaDate = this.purchase.expectedDate;
         receiving.receivingDate = this.purchase.receivingDate;
-        receiving.units = 1;
+        receiving.units = pc.unitsToReceive;
         receivings.push(receiving);
       })
+      if(noUnits){
+          alert("One of the Components has no Received Units set");
+          return Promise.reject();
+      }
       return http.post("/receivings/purchase/"+this.purchase.id, receivings).then(r => {
-        // this.getPurchase(r.data.id);
         this.purchase = r.data;
         this.editMode = false;
         this.receiveMode = false;
@@ -134,11 +173,16 @@ export default {
       return (pc.units * pc.unitPrice).toFixed(2);
     },
     getPurchase(purchase_id) {
-      http.get("/purchase/" + purchase_id).then(r => {
-          this.purchase = r.data;
-        }).catch(e => {
-          console.log("API error: " + e);
-        });
+      return http.get("/purchase/" + purchase_id).then(r => {
+        this.purchase = r.data;
+        this.receivingDate = r.data.receivingDate;
+        this.purchase.purchaseComponents.forEach(pc => {
+          pc.unitsToReceice = pc.units;
+        })
+        return r.data;
+      }).catch(e => {
+        console.log("API error: " + e);
+      });
     },
     close() {
       router.push("/purchaseList");
