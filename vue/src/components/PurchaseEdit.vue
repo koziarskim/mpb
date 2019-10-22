@@ -52,14 +52,14 @@
           </template>
           <template v-slot:cell(unitsReceived)="row">
             <b-button v-if="!receiveMode" size="sm" @click.stop="goToReceiving(purchase.id, row.item.component.id)" variant="link">{{row.item.unitsReceived}}</b-button>
-            <input v-if="receiveMode" class="form-control" type="tel" v-model="row.item.units">          
+            <input v-if="receiveMode" class="form-control" style="width: 120px" type="tel" v-model="row.item.units">          
           </template>
           <template v-slot:cell(unitPrice)="row">
-            <input v-if="editMode" class="form-control" type="tel" v-model="row.item.unitPrice">          
+            <input v-if="editMode" class="form-control" style="width: 120px" type="tel" v-model="row.item.unitPrice">          
             <span v-if="!editMode">{{row.item.unitPrice}}</span>
           </template>
           <template v-slot:cell(units)="row">
-            <input v-if="editMode" class="form-control" type="tel" v-model="row.item.units">   
+            <input v-if="editMode" class="form-control" style="width: 120px" type="tel" v-model="row.item.units">   
             <span v-if="!editMode">{{row.item.units}}</span>
           </template>
           <template v-slot:cell(totalPrice)="row">
