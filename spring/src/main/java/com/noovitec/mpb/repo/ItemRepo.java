@@ -62,17 +62,24 @@ public interface ItemRepo extends PagingAndSortingRepository<Item, Long> {
 	Page<ItemListDto> getItemListDtoPageable(Pageable pageable, String searchKey);
 
 	@Query("select i from Item i")
-	Page<Item> getItemsPageable(Pageable pageable);
+	Page<Item> findPage(Pageable pageable);
 
 	@Query("select i from Item i "
-			+ "left join Category c on c.id = i.category.id "
-			+ "left join Brand b on b.id = i.brand.id "
+			+ "join Category c on c.id = i.category.id "
+			+ "join Brand b on b.id = i.brand.id "
 			+ "where upper(i.name) LIKE CONCAT('%',UPPER(:searchKey),'%') "
 			+ "or upper(i.number) LIKE CONCAT('%',UPPER(:searchKey),'%') "
 			+ "or upper(b.name) LIKE CONCAT('%',UPPER(:searchKey),'%') "
 			+ "or upper(c.name) LIKE CONCAT('%',UPPER(:searchKey),'%')")
-	Page<Item> getItemsPageable(Pageable pageable, String searchKey);
-	
+	Page<Item> findPageByItem(Pageable pageable, String searchKey);
+
+	@Query("select i from Item i "
+			+ "join i.itemComponents ic "
+			+ "join ic.component c "
+			+ "where upper(c.name) LIKE CONCAT('%',UPPER(:searchKey),'%') "
+			+ "or upper(c.number) LIKE CONCAT('%',UPPER(:searchKey),'%')")
+	Page<Item> findPageByComponent(Pageable pageable, String searchKey);
+
 	@Query(value = ""
 			+ "select tmp.i_id as id, tmp.us as unitsScheduled, min(tmp.unitsToSchedule) as unitsToSchedule, min(tmp.unitsToProduction) as unitsToProduction "
 				+ "from (select i.id as i_id, i.units_on_stock as us, "

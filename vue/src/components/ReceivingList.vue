@@ -20,7 +20,7 @@
     </b-row>
     <b-table :items="receivings" :fields="fields" no-local-sorting>
       <template v-slot:cell(name)="row">
-        <b-button size="sm" @click.stop="goToReceiving(row.item.id)" variant="link">{{row.item.number}} - {{row.item.name}}</b-button>
+        <b-button size="sm" @click.stop="goToReceiving(row.item.id)" variant="link">{{row.item.number}} ({{row.item.name}})</b-button>
       </template>
       <template v-slot:cell(purchase)="row">
         <b-button
@@ -63,7 +63,7 @@ export default {
     return {
       pageable: {totalElements: 100, currentPage: 1, perPage: 7, sortBy: 'number', sortDesc: false},
       fields: [
-        { key: "name", label: "Receiving", sortable: false },
+        { key: "name", label: "Receiving # (Name)", sortable: false },
         { key: "purchase", label: "Purchase", sortable: false },
         { key: "component", label: "Component", sortable: false },
         { key: "containerNumber", label: "Container", sortable: false },

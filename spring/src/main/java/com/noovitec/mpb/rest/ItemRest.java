@@ -44,6 +44,7 @@ import com.noovitec.mpb.dto.projection.ItemAvailabilityProjection;
 import com.noovitec.mpb.entity.Attachment;
 import com.noovitec.mpb.entity.Item;
 import com.noovitec.mpb.entity.ItemComponent;
+import com.noovitec.mpb.entity.Sale;
 import com.noovitec.mpb.entity.ScheduleEvent;
 import com.noovitec.mpb.entity.Season;
 import com.noovitec.mpb.entity.Upc;
@@ -96,12 +97,19 @@ class ItemRest {
 	}
 
 	@GetMapping("/item/pageable")
-	Page<ItemListDto> getAllPageable(@RequestParam(name = "pageable", required = false) Pageable pageable, @RequestParam(name = "searchKey", required = false) String searchKey) {
+	Page<ItemListDto> getAllPageable(@RequestParam(name = "pageable", required = false) Pageable pageable, 
+			@RequestParam(name = "searchKey", required = false) String searchKey,
+			@RequestParam(name = "searchType", required = false) String searchType) {
 		Page<Item> items = null;
-		if(searchKey ==null || searchKey.trim().length() == 0) {
-			items = itemRepo.getItemsPageable(pageable);
-		}else {
-			items = itemRepo.getItemsPageable(pageable, searchKey);
+		if(searchType==null || searchType.isBlank() || searchKey==null || searchKey.isBlank()) {
+			items = itemRepo.findPage(pageable);
+		}else if(searchType.equals("item") && !searchKey.isBlank()) {
+			items = itemRepo.findPageByItem(pageable, searchKey);
+		}else if(searchType.equals("component") && !searchKey.isBlank()){
+			items = itemRepo.findPageByComponent(pageable, searchKey);
+		}
+		if(items == null) {
+			 return Page.empty();
 		}
 		Page<ItemListDto> dtos = items.map(item -> {
 			ItemListDto dto = new ItemListDto();

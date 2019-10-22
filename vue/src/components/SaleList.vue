@@ -16,10 +16,9 @@
                 </div>
             </b-col>
         </b-row>
-        <div v-if="sales.length==0">Not found any sale orders...</div>
-        <b-table v-if="sales.length>0" :items="sales" :fields="fields" no-local-sorting @sort-changed="sorted">
+        <b-table :items="sales" :fields="fields" no-local-sorting @sort-changed="sorted">
           <template v-slot:cell(number)="row">
-              <b-button size="sm" @click.stop=goToSale(row.item.id) variant="link">{{row.item.number}} - {{row.item.name}}</b-button>
+              <b-button size="sm" @click.stop=goToSale(row.item.id) variant="link">{{row.item.number}} ({{row.item.name}})</b-button>
           </template>
           <template v-slot:cell(action)="row">
               <b-button size="sm" @click.stop="deleteSale(row.item.id)">x</b-button>
@@ -39,7 +38,7 @@ export default {
       searchSale: "",
       searchItem: "",
       fields: [
-        { key: "number", label: "S.O.", sortable: false },
+        { key: "number", label: "Sale # (Name)", sortable: false },
         { key: "customerName", label: "Customer", sortable: false },
         { key: "dc", label: "DC", sortable: false },
         { key: "date", label: "Date", sortable: false },

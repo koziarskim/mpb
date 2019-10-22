@@ -18,7 +18,7 @@
     </b-row>
     <b-table :items="purchases" :fields="fields" no-local-sorting>
       <template v-slot:cell(number)="row">
-        <b-button size="sm" @click.stop="goToPurchaseEdit(row.item.id)" variant="link">{{row.item.number}} - {{row.item.name}}</b-button>
+        <b-button size="sm" @click.stop="goToPurchaseEdit(row.item.id)" variant="link">{{row.item.number}} ({{row.item.name}})</b-button>
       </template>
       <template v-slot:cell(received)="row">
         <span>{{row.item.received?"Yes":"No"}}</span>
@@ -55,7 +55,8 @@ export default {
       searchPurchase: "",
       searchComponent: "",
       fields: [
-        { key: "number", label: "P.O.", sortable: false },
+        { key: "number", label: "Purchase # (Name)", sortable: false },
+        { key: "invoiceNumber", label: "Invoice", sortable: false },
         { key: "supplier.name", label: "Supplier", sortable: false },
         { key: "date", label: "P.O. Date", sortable: false },
         { key: "expectedDate", label: "Expected", sortable: false },
