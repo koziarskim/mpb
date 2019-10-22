@@ -43,6 +43,7 @@ public class Purchase {
 	private String name;
 	private LocalDate expectedDate;
 	private LocalDate shippingDate;
+	private LocalDate receivingDate;
 	private String invoiceNumber;
 	private String containerNumber;
 

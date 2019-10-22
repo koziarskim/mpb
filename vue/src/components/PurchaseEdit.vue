@@ -3,43 +3,48 @@
     <b-row>
       <b-col>
         <div style="display:flex">
-          <div>
-            <span style="font-size: 16px; font-weight: bold">Purchase Order</span>
-            <input style="width: 160px" class="form-control" disabled="true" type="text" v-model="purchase.number" placeholder="P.O. Number">
+          <div style="margin-top:-5px;">
+            <span style="font-size: 18px; font-weight: bold">Purchase Order</span>
+            <input style="width: 150px" class="form-control" type="text" v-model="purchase.number" :disabled="!editMode">
           </div>
           <div style="width: 200px; padding-left: 3px; padding-right: 3px;">
             <label class="top-label">P.O. Name:</label>
-            <input class="form-control" type="text" disabled="true" v-model="purchase.name" placeholder="P.O. Name/Description">
+            <input class="form-control" type="text" v-model="purchase.name" :disabled="!editMode">
           </div>
-          <div style="width: 175px; padding-left: 3px; padding-right: 3px;">
+          <div v-if="!receiveMode" style="width: 175px; padding-left: 3px; padding-right: 3px;">
             <label class="top-label">P.O. Date:</label>
-            <input class="form-control" type="date" disabled="true" v-model="purchase.date">
+            <input class="form-control" type="date" v-model="purchase.date" :disabled="!editMode">
           </div>
-          <div style="width: 175px; padding-left: 3px; padding-right: 3px;">
+          <div v-if="!receiveMode" style="width: 175px; padding-left: 3px; padding-right: 3px;">
             <label class="top-label">Shipping Date:</label>
-            <input class="form-control" type="date" disabled="true" v-model="purchase.shippingDate">
+            <input class="form-control" type="date" v-model="purchase.shippingDate" :disabled="!editMode">
           </div>
-          <div style="width: 175px; padding-left: 3px; padding-right: 3px;">
-            <label class="top-label">Expected Date:</label>
-            <input class="form-control" type="date" disabled="true" v-model="purchase.expectedDate">
+          <div v-if="!receiveMode" style="width: 175px; padding-left: 3px; padding-right: 3px;">
+            <label class="top-label">ETA Date:</label>
+            <input class="form-control" type="date" v-model="purchase.expectedDate" :disabled="!editMode">
           </div>
-          <div style="width: 160px; padding-left: 3px; padding-right: 3px;">
+          <div v-if="!receiveMode" style="width: 160px; padding-left: 3px; padding-right: 3px;">
             <label class="top-label">Container:</label>
-            <input class="form-control" type="text" disabled="true" v-model="purchase.containerNumber" placeholder="Container">
+            <input class="form-control" type="text" v-model="purchase.containerNumber" :disabled="!editMode">
           </div>
-          <div style="width: 160px; padding-left: 3px; padding-right: 3px;">
+          <div v-if="!receiveMode" style="width: 160px; padding-left: 3px; padding-right: 3px;">
             <label class="top-label">Invoice:</label>
-            <input class="form-control" type="text" disabled="true" v-model="purchase.invoiceNumber" placeholder="Invoice">
+            <input class="form-control" type="text" v-model="purchase.invoiceNumber" :disabled="!editMode">
+          </div>
+          <div v-if="receiveMode" style="margin-left: 680px; width: 175px; padding-left: 3px; padding-right: 3px;">
+            <label class="top-label">Received:</label>
+            <input class="form-control" type="date" v-model="purchase.receivingDate">
           </div>
           <div style="text-align: right;">
-            <b-button style="margin: 2px; margin-top:22px" type="reset" variant="success" @click="close()">Close</b-button>
+            <b-button v-if="!editMode && !receiveMode" size="sm" style="margin-right: 2px; width: 70px; margin-left: -50px" type="reset" variant="success" @click="edit()">Edit</b-button>
+            <b-button v-if="!editMode && !receiveMode" size="sm" style="margin: 2px; width: 70px" type="reset" variant="success" @click="receive()">Receive</b-button>
+            <b-button v-if="editMode || receiveMode" size="sm" style="margin: 2px; width: 70px; margin-top: 25px;" type="reset" variant="success" @click="save()">Save</b-button>
           </div>
         </div>
       </b-col>
     </b-row>
     <b-row style="font-size: 12px">
       <b-col>
-        <label class="top-label">Components:</label>
         <b-table sort-by.sync="name" sort-desc.sync="false" :items="purchaseComponents" :fields="fields">
           <template v-slot:cell(name)="row">
             <b-button size="sm" @click.stop="goToComponent(row.item.component.id)" variant="link">{{row.item.component.number}} - {{row.item.component.name}}</b-button>
@@ -63,6 +68,8 @@ import ComponentSearch from "./ComponentSearch";
 export default {
   data() {
     return {
+      editMode: false,
+      receiveMode: false,
       purchase: {},
       purchaseComponents: [],
       fields: [
@@ -79,6 +86,16 @@ export default {
   watch: {
   },
   methods: {
+    edit(){
+      this.editMode = true;
+    },
+    receive(){
+      this.receiveMode = true;
+    },
+    save(){
+      this.editMode = false;
+      this.receiveMode = false;
+    },
     getTotalPrice(pc){
       return (pc.units * pc.unitPrice).toFixed(2);
     },
