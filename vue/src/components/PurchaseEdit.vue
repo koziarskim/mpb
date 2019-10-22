@@ -36,10 +36,14 @@
             <input class="form-control" type="date" v-model="receivingDate">
           </div>
           <div style="text-align: right;">
-            <b-button v-if="!editMode && !receiveMode" size="sm" style="margin-right: 2px; width: 70px; margin-left: -50px" type="reset" variant="success" @click="edit()">Edit</b-button>
-            <b-button v-if="!editMode && !receiveMode" size="sm" style="margin: 2px; width: 70px" type="reset" variant="success" @click="receive()">Receive</b-button>
-            <b-button v-if="editMode || receiveMode" size="sm" style="margin-right: 2px; width: 70px; margin-left: -50px" type="reset" variant="success" @click="cancel()">Cancel</b-button>
-            <b-button v-if="editMode || receiveMode" size="sm" style="margin: 2px; width: 70px" type="reset" variant="success" @click="save()">Save</b-button>
+            <div v-if="!editMode && !receiveMode">
+              <b-button size="sm" style="margin-right: 2px; width: 70px; margin-left: -50px" type="reset" variant="success" @click="edit()">Edit</b-button><br/>
+              <b-button size="sm" style="margin: 2px; width: 70px" type="reset" variant="success" @click="receive()">Receive</b-button>
+            </div>
+            <div v-if="editMode || receiveMode">
+            <b-button size="sm" style="margin-right: 2px; width: 70px; margin-left: -50px" type="reset" variant="success" @click="cancel()">Cancel</b-button><br/>
+            <b-button size="sm" style="margin: 2px; width: 70px" type="reset" variant="success" @click="save()">Save</b-button>
+            </div>
           </div>
         </div>
       </b-col>
@@ -110,9 +114,17 @@ export default {
       })
     },
     edit(){
+      if(this.purchase.receivingDate){
+        alert("Purchase is partially received. Action not allowed!");
+        return;
+      }
       this.editMode = true;
     },
     receive(){
+      if(this.purchase.receivingDate){
+        alert("Purchase is partially received. Action not allowed!");
+        return;
+      }
       this.receiveMode = true;
     },
     save(){
@@ -132,10 +144,6 @@ export default {
       });
     },
     saveReceive(){
-      if(this.purchase.receivingDate){
-        alert("Already received. Please use individual Receiving to create additional receivings");
-        return Promise.reject();
-      }
       if(!this.receivingDate){
         alert("Please enter Receiving Date");
         return Promise.reject();
@@ -147,13 +155,13 @@ export default {
           noUnits = true;
           return;
         }
-        var receiving = {purchaseComponent: {id: pc.id}}
+        var receiving = {purchaseComponent: pc}
         receiving.name = "Rec-"+this.purchase.name+"-"+pc.component.name;
         receiving.containerNumber = this.purchase.containerNumber;
         receiving.invoiceNumber = this.purchase.invoiceNumber;
         receiving.shippingDate = this.purchase.shippingDate;
         receiving.etaDate = this.purchase.expectedDate;
-        receiving.receivingDate = this.purchase.receivingDate;
+        receiving.receivingDate = this.receivingDate;
         receiving.units = pc.unitsToReceive;
         receivings.push(receiving);
       })
@@ -174,11 +182,11 @@ export default {
     },
     getPurchase(purchase_id) {
       return http.get("/purchase/" + purchase_id).then(r => {
+        r.data.purchaseComponents.forEach(pc => {
+          pc.unitsToReceive = pc.units;
+        })
         this.purchase = r.data;
         this.receivingDate = r.data.receivingDate;
-        this.purchase.purchaseComponents.forEach(pc => {
-          pc.unitsToReceice = pc.units;
-        })
         return r.data;
       }).catch(e => {
         console.log("API error: " + e);
