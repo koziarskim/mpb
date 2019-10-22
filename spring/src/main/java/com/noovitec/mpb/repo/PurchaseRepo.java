@@ -1,10 +1,14 @@
 package com.noovitec.mpb.repo;
 
+import java.time.LocalDate;
 import java.util.List;
+
+import javax.transaction.Transactional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -39,5 +43,10 @@ public interface PurchaseRepo extends JpaRepository<Purchase, Long> {
 			+ "where upper(c.number) LIKE CONCAT('%',UPPER(:searchKey),'%') "
 			+ "or upper(c.name) LIKE CONCAT('%',UPPER(:searchKey),'%')")
 	Page<Purchase> findPageByComponent(Pageable pageable, String searchKey);
+	
+	@Modifying
+	@Transactional
+	@Query("update Purchase p set p.receivingDate = :receivingDate where p.id = :purchase_id")
+	void updateReceivingDate(@Param("receivingDate") LocalDate receivingDate, @Param("purchase_id") Long purchase_id);
 
 }

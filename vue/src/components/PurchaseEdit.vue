@@ -45,12 +45,12 @@
     </b-row>
     <b-row style="font-size: 12px">
       <b-col>
-        <b-table sort-by.sync="name" sort-desc.sync="false" :items="purchaseComponents" :fields="fields">
+        <b-table sort-by.sync="name" sort-desc.sync="false" :items="purchase.purchaseComponents" :fields="fields">
           <template v-slot:cell(name)="row">
             <b-button size="sm" @click.stop="goToComponent(row.item.component.id)" variant="link">{{row.item.component.number}} - {{row.item.component.name}}</b-button>
           </template>
           <template v-slot:cell(unitsReceived)="row">
-            <b-button size="sm" @click.stop="goToReceiving(row.item.purchase.id, row.item.component.id)" variant="link">{{row.item.unitsReceived}}</b-button>
+            <b-button size="sm" @click.stop="goToReceiving(purchase.id, row.item.component.id)" variant="link">{{row.item.unitsReceived}}</b-button>
           </template>
         </b-table>
       </b-col>
@@ -93,8 +93,42 @@ export default {
       this.receiveMode = true;
     },
     save(){
-      this.editMode = false;
-      this.receiveMode = false;
+      if(this.editMode){
+        this.updatePurchase();
+      }else if(this.receiveMode){
+        this.saveReceive();
+      }
+    },
+    updatePurchase(){
+      return http.post("/purchase", this.purchase).then(r => {
+        this.purchase = r.data;
+        this.editMode = false;
+        this.receiveMode = false;
+      }).catch(e => {
+        console.log("API error: " + e);
+      });
+    },
+    saveReceive(){
+      var receivings = [];
+      this.purchase.purchaseComponents.forEach(pc => {
+        var receiving = {purchaseComponent: {id: pc.id}}
+        receiving.name = "Rec-"+this.purchase.name+"-"+pc.component.name;
+        receiving.containerNumber = this.purchase.containerNumber;
+        receiving.invoiceNumber = this.purchase.invoiceNumber;
+        receiving.shippingDate = this.purchase.shippingDate;
+        receiving.etaDate = this.purchase.expectedDate;
+        receiving.receivingDate = this.purchase.receivingDate;
+        receiving.units = 1;
+        receivings.push(receiving);
+      })
+      return http.post("/receivings/purchase/"+this.purchase.id, receivings).then(r => {
+        // this.getPurchase(r.data.id);
+        this.purchase = r.data;
+        this.editMode = false;
+        this.receiveMode = false;
+      }).catch(e => {
+        console.log("API error: " + e);
+      });
     },
     getTotalPrice(pc){
       return (pc.units * pc.unitPrice).toFixed(2);
@@ -102,13 +136,6 @@ export default {
     getPurchase(purchase_id) {
       http.get("/purchase/" + purchase_id).then(r => {
           this.purchase = r.data;
-        }).catch(e => {
-          console.log("API error: " + e);
-        });
-    },
-    getPurchaseComponents(purchase_id) {
-      http.get("/purchaseComponent/purchase/" + purchase_id).then(r => {
-          this.purchaseComponents = r.data;
         }).catch(e => {
           console.log("API error: " + e);
         });
@@ -126,7 +153,6 @@ export default {
   },
   mounted() {
     var purchase_id = this.$route.params.purchase_id;
-    this.getPurchaseComponents(purchase_id);
     this.getPurchase(purchase_id);
   }
 };
