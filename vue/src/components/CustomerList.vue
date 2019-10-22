@@ -5,7 +5,7 @@
           <span style="text-align: left; font-size: 18px; font-weight: bold">Customers</span>
       </b-col>
       <b-col cols="3">
-          <input class="form-control" type="tel" v-model="searchCustomer" @keyup.enter="getCustomers('customer')" placeholder="Search Number, Name, Brand or Category"/>
+          <input class="form-control" type="tel" v-model="searchCustomer" @keyup.enter="getCustomers('customer')" placeholder="Search Name"/>
       </b-col>
       <b-col>
           <div style="text-align: right;">
