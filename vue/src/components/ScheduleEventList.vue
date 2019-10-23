@@ -5,11 +5,12 @@
         <span style="font-size: 18px; font-weight: bold">Schedule Items: {{item.name}}</span>
       </b-col>
       <b-col cols=3>
-        <b-select option-value="id" option-text="number" :list="availableSales" v-model="selectedSale"></b-select>
+        <b-select option-value="id" option-text="number" :list="availableSales" v-model="selectedSale" placeholder="Pick Sale"></b-select>
       </b-col>
-      <b-col cols=1 offset=5>
-        <div style="text-align: right;">
-          <b-button type="reset" variant="success" @click="close">Close</b-button>
+      <b-col cols=1 offset=4>
+        <div style="display: flex; text-align: right; margin-left: 20px">
+          <b-button style="margin: 3px" type="reset" variant="success" @click="goToGraph()">Graph</b-button>
+          <b-button style="margin: 3px" type="reset" variant="success" @click="close()">Close</b-button>
         </div>
       </b-col>
     </b-row>
@@ -165,6 +166,9 @@ export default {
     },
     goToSale(sale_id) {
       router.push("/saleEdit/" + sale_id);
+    },
+    goToGraph() {
+      router.push("/itemGraph/" + this.item.id);
     },
   },
   mounted() {

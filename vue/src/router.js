@@ -33,6 +33,7 @@ import ProductionItemList from "./components/ProductionItemList";
 import Profile from "./components/Profile";
 import DailyStatus from "./components/public/DailyStatus";
 import PurchaseNew from "./components/PurchaseNew";
+import ItemGraph from "./components/ItemGraph";
 
 Vue.use(Router);
 
@@ -118,6 +119,14 @@ const router = new Router({
       path: "/itemEdit/:item_id?",
       name: "itemEdit",
       component: ItemEdit,
+      meta: {
+        roles: ["SUPER_USER"]
+      }
+    },
+    {
+      path: "/itemGraph/:item_id?",
+      name: "ItemGraph",
+      component: ItemGraph,
       meta: {
         roles: ["SUPER_USER"]
       }
