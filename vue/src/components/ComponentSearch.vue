@@ -173,6 +173,11 @@ export default {
         this.searchDto.seasonAll = false;
         this.toggleAll(this.seasons, this.searchDto.seasonName, !this.searchDto.seasonAll, this.itemClear())
       }
+      this.closeMenu(this.items, this.searchDto.items, this.visibleItemMenu)
+      this.closeMenu(this.customers, this.searchDto.customers, this.visibleCustomerMenu)
+      this.closeMenu(this.sales, this.searchDto.sales, this.visibleSaleMenu)
+      this.closeMenu(this.suppliers, this.searchDto.suppliers, this.visibleSupplierMenu)
+      this.closeMenu(this.components, this.searchDto.components, this.visibleComponentMenu)
       var useLocal = this.getLocal(this.seasons, [], this.searchDto.seasonName, true, enter);
       if(useLocal){
         return Promise.resolve();
@@ -200,6 +205,11 @@ export default {
         this.searchDto.itemAll = false;
         this.toggleAll(this.items, this.searchDto.itemName, !this.searchDto.itemAll, this.customerClear())
       }
+      this.closeMenu(this.seasons, this.searchDto.seasons, this.visibleSeasonMenu)
+      this.closeMenu(this.customers, this.searchDto.customers, this.visibleCustomerMenu)
+      this.closeMenu(this.sales, this.searchDto.sales, this.visibleSaleMenu)
+      this.closeMenu(this.suppliers, this.searchDto.suppliers, this.visibleSupplierMenu)
+      this.closeMenu(this.components, this.searchDto.components, this.visibleComponentMenu)
       var useLocal = this.getLocal(this.items, this.searchDto.seasons, this.searchDto.itemName, this.searchDto.seasonAll, enter);
       if(useLocal){
         return Promise.resolve();
@@ -227,6 +237,11 @@ export default {
         this.searchDto.customerAll = false;
         this.toggleAll(this.customers, this.searchDto.customerName, !this.searchDto.customerAll, this.saleClear())
       }
+      this.closeMenu(this.seasons, this.searchDto.seasons, this.visibleSeasonMenu)
+      this.closeMenu(this.items, this.searchDto.items, this.visibleItemMenu)
+      this.closeMenu(this.sales, this.searchDto.sales, this.visibleSaleMenu)
+      this.closeMenu(this.suppliers, this.searchDto.suppliers, this.visibleSupplierMenu)
+      this.closeMenu(this.components, this.searchDto.components, this.visibleComponentMenu)
       var useLocal = this.getLocal(this.customers, this.searchDto.items, this.searchDto.customerName, this.searchDto.itemAll, enter);
       if(useLocal){
         return Promise.resolve();
@@ -254,6 +269,11 @@ export default {
         this.searchDto.saleAll = false;
         this.toggleAll(this.sales, this.searchDto.saleName, !this.searchDto.saleAll, this.supplierClear())
       }
+      this.closeMenu(this.seasons, this.searchDto.seasons, this.visibleSeasonMenu)
+      this.closeMenu(this.items, this.searchDto.items, this.visibleItemMenu)
+      this.closeMenu(this.customers, this.searchDto.customers, this.visibleCustomerMenu)
+      this.closeMenu(this.suppliers, this.searchDto.suppliers, this.visibleSupplierMenu)
+      this.closeMenu(this.components, this.searchDto.components, this.visibleComponentMenu)
       var useLocal = this.getLocal(this.sales, this.searchDto.customers, this.searchDto.saleNumber, this.searchDto.customerAll, enter);
       if(useLocal){
         return Promise.resolve();
@@ -281,6 +301,11 @@ export default {
         this.searchDto.supplierAll = false;
         this.toggleAll(this.suppliers, this.searchDto.supplierName, !this.searchDto.supplierAll, this.componentClear())
       }
+      this.closeMenu(this.seasons, this.searchDto.seasons, this.visibleSeasonMenu)
+      this.closeMenu(this.items, this.searchDto.items, this.visibleItemMenu)
+      this.closeMenu(this.customers, this.searchDto.customers, this.visibleCustomerMenu)
+      this.closeMenu(this.sales, this.searchDto.sales, this.visibleSaleMenu)
+      this.closeMenu(this.components, this.searchDto.components, this.visibleComponentMenu)
       var useLocal = this.getLocal(this.suppliers, this.searchDto.sales, this.searchDto.supplierName, this.searchDto.saleAll, enter);
       if(useLocal){
         return Promise.resolve();
@@ -307,6 +332,11 @@ export default {
         this.searchDto.componentAll = false;
         this.toggleAll(this.components, this.searchDto.componentName, !this.searchDto.componentAll, null)
       }
+      this.closeMenu(this.seasons, this.searchDto.seasons, this.visibleSeasonMenu)
+      this.closeMenu(this.items, this.searchDto.items, this.visibleItemMenu)
+      this.closeMenu(this.customers, this.searchDto.customers, this.visibleCustomerMenu)
+      this.closeMenu(this.sales, this.searchDto.sales, this.visibleSaleMenu)
+      this.closeMenu(this.suppliers, this.searchDto.suppliers, this.visibleSupplierMenu)
       var useLocal = this.getLocal(this.components, this.searchDto.suppliers, this.searchDto.componentName, this.searchDto.supplierAll, enter);
       if(useLocal){
         return Promise.resolve();
@@ -373,6 +403,12 @@ export default {
       return false;
     },
     updateParent(){
+      this.closeMenu(this.seasons, this.searchDto.seasons, this.visibleSeasonMenu)
+      this.closeMenu(this.items, this.searchDto.items, this.visibleItemMenu)
+      this.closeMenu(this.customers, this.searchDto.customers, this.visibleCustomerMenu)
+      this.closeMenu(this.sales, this.searchDto.sales, this.visibleSaleMenu)
+      this.closeMenu(this.suppliers, this.searchDto.suppliers, this.visibleSupplierMenu)
+      this.closeMenu(this.components, this.searchDto.components, this.visibleComponentMenu)
       if(this.searchDto.components.length==0){
         this.getComponents().then(r => {
           this.searchDto.components = this.components.map(dto => dto.id);

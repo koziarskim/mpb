@@ -106,23 +106,23 @@ export default {
       return (item.units * item.unitPrice).toFixed(2);
     },
     updateComponents(searchDto){
-      if(!this.purchase.supplier.id){
-        this.purchase.supplier = {id: searchDto.suppliers[0]}
-      }
-      var missmatch = false;
-      searchDto.suppliers.forEach(su => {
-        if(su != this.purchase.supplier.id){
-          missmatch = true;
-        }
-      })
-      if(missmatch){
-          alert("Supplier missmatch! Only components to single supplier are allowed!");
-          return
-      }
       this.getPoComponents(searchDto);
     },
     getPoComponents(searchDto){
       return http.post("/search/po/component", searchDto).then(r => {
+        if(!this.purchase.supplier.id){
+          this.purchase.supplier = {id: r.data[0].supplierId}
+        }
+        var missmatch = false;
+        r.data.forEach(dto => {
+          if(dto.supplierId != this.purchase.supplier.id){
+            missmatch = true;
+          }
+        })
+        if(missmatch){
+            alert("Supplier missmatch! Only components to single supplier are allowed!");
+            return Promise.reject();
+        }
         r.data.forEach(dto => {
           var existing = this.selectedComponents.find(selected => selected.id == dto.id)
           if(!existing){
