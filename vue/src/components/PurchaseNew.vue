@@ -85,7 +85,7 @@ export default {
       fields: [
         { key: "name", label: "Name", sortable: false },
         { key: "totalNeeded", label: "Total Needed", sortable: false },
-        { key: "unitsNeeded", label: "Needed (S-P)", sortable: false },
+        // { key: "unitsNeeded", label: "Needed (S-P)", sortable: false },
         { key: "unitsInOrder", label: "Pen. Orders", sortable: false },
         { key: "unitsOnStock", label: "On-Stock", sortable: false },
         { key: "unitCost", label: "Unit Cost", sortable: false },
@@ -106,28 +106,23 @@ export default {
       return (item.units * item.unitPrice).toFixed(2);
     },
     updateComponents(searchDto){
-      //this.purchase.supplier = {id: searchDto.suppliers[0]}
+      if(!this.purchase.supplier.id){
+        this.purchase.supplier = {id: searchDto.suppliers[0]}
+      }
+      var missmatch = false;
+      searchDto.suppliers.forEach(su => {
+        if(su != this.purchase.supplier.id){
+          missmatch = true;
+        }
+      })
+      if(missmatch){
+          alert("Supplier missmatch! Only components to single supplier are allowed!");
+          return
+      }
       this.getPoComponents(searchDto);
     },
     getPoComponents(searchDto){
       return http.post("/search/po/component", searchDto).then(r => {
-        var missmatch = false;
-        var supplierId = this.purchase.supplierId;
-        r.data.forEach(dto => {
-          if(!supplierId){
-            supplierId = dto.supplierId;
-          }
-          if(supplierId != dto.supplierId){
-            missmatch = true;
-            return;
-          }
-        })
-        if(missmatch){
-          alert("Supplier missmatch! Only components to single supplier are allowed!");
-          return
-        }
-        this.purchase.supplier.id = supplierId;
-        this.selectedComponents = [];
         r.data.forEach(dto => {
           var existing = this.selectedComponents.find(selected => selected.id == dto.id)
           if(!existing){

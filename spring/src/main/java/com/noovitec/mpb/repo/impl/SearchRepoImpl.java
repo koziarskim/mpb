@@ -215,7 +215,7 @@ public class SearchRepoImpl implements SearchRepoCustom {
 				|| (searchDto.getSuppliers().isEmpty() && !searchDto.isSupplierAll())) {
 			return new ArrayList<KeyValueDto>();
 		}
-		String q = "select distinct new com.noovitec.mpb.dto.KeyValueDto(c.id, c.name) from Component c ";
+		String q = "select distinct new com.noovitec.mpb.dto.KeyValueDto(c.id, concat(c.number, ' (', c.name, ')')) from Component c ";
 		q += "join ItemComponent ic on ic.component.id = c.id ";
 		q += "join Item i on ic.item.id = i.id ";
 		q += "join SaleItem si on si.item.id = i.id ";

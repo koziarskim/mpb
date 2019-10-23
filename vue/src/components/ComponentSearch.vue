@@ -97,7 +97,7 @@
     <br/>
 
     <div style="text-align: right;">
-      <b-button size="sm" type="reset" variant="success" @click="updateParent()">Update >></b-button>
+      <b-button size="sm" type="reset" variant="success" @click="updateParent()">Add >></b-button>
     </div>
   </b-container>
 </template>
@@ -160,7 +160,19 @@ export default {
   },
   methods: {
     // Season
+    seasonClear(){
+      this.seasons = [];
+      this.searchDto.seasonAll = true;
+      this.searchDto.seasons = [];
+      this.itemClear();
+      this.searchDto.seasonName = "";
+      this.seasons.forEach(dto => dto.hide = false);
+    },
     getSeasons(enter){
+      if(this.searchDto.seasonAll){
+        this.searchDto.seasonAll = false;
+        this.toggleAll(this.seasons, this.searchDto.seasonName, !this.searchDto.seasonAll, this.itemClear())
+      }
       var useLocal = this.getLocal(this.seasons, [], this.searchDto.seasonName, true, enter);
       if(useLocal){
         return Promise.resolve();
@@ -184,6 +196,10 @@ export default {
       this.items.forEach(dto => dto.hide = false);
     },
     getItems(enter){
+      if(this.searchDto.itemAll){
+        this.searchDto.itemAll = false;
+        this.toggleAll(this.items, this.searchDto.itemName, !this.searchDto.itemAll, this.customerClear())
+      }
       var useLocal = this.getLocal(this.items, this.searchDto.seasons, this.searchDto.itemName, this.searchDto.seasonAll, enter);
       if(useLocal){
         return Promise.resolve();
@@ -207,6 +223,10 @@ export default {
       this.customers.forEach(dto => dto.hide = false);
     },
     getCustomers(enter){
+      if(this.searchDto.customerAll){
+        this.searchDto.customerAll = false;
+        this.toggleAll(this.customers, this.searchDto.customerName, !this.searchDto.customerAll, this.saleClear())
+      }
       var useLocal = this.getLocal(this.customers, this.searchDto.items, this.searchDto.customerName, this.searchDto.itemAll, enter);
       if(useLocal){
         return Promise.resolve();
@@ -230,6 +250,10 @@ export default {
       this.sales.forEach(dto => dto.hide = false);
     },
     getSales(enter){
+      if(this.searchDto.saleAll){
+        this.searchDto.saleAll = false;
+        this.toggleAll(this.sales, this.searchDto.saleName, !this.searchDto.saleAll, this.supplierClear())
+      }
       var useLocal = this.getLocal(this.sales, this.searchDto.customers, this.searchDto.saleNumber, this.searchDto.customerAll, enter);
       if(useLocal){
         return Promise.resolve();
@@ -253,6 +277,10 @@ export default {
       this.suppliers.forEach(dto => dto.hide = false);
     },
     getSuppliers(enter){
+      if(this.searchDto.supplierAll){
+        this.searchDto.supplierAll = false;
+        this.toggleAll(this.suppliers, this.searchDto.supplierName, !this.searchDto.supplierAll, this.componentClear())
+      }
       var useLocal = this.getLocal(this.suppliers, this.searchDto.sales, this.searchDto.supplierName, this.searchDto.saleAll, enter);
       if(useLocal){
         return Promise.resolve();
@@ -275,6 +303,10 @@ export default {
       this.components.forEach(dto => dto.hide = false);
     },
     getComponents(enter){
+      if(this.searchDto.componentAll){
+        this.searchDto.componentAll = false;
+        this.toggleAll(this.components, this.searchDto.componentName, !this.searchDto.componentAll, null)
+      }
       var useLocal = this.getLocal(this.components, this.searchDto.suppliers, this.searchDto.componentName, this.searchDto.supplierAll, enter);
       if(useLocal){
         return Promise.resolve();
@@ -349,9 +381,12 @@ export default {
             return;
           }
           this.$emit("componentsUpdated", this.searchDto);
+          // this.seasonClear();
         })
       }
-      this.$emit("componentsUpdated", this.searchDto);
+      var dto = JSON.parse(JSON.stringify(this.searchDto));
+      this.$emit("componentsUpdated", dto);
+      this.seasonClear();
     }
   },
   mounted() {
