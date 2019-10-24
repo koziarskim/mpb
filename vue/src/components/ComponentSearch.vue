@@ -422,7 +422,7 @@ export default {
       }
       var dto = JSON.parse(JSON.stringify(this.searchDto));
       this.$emit("componentsUpdated", dto);
-      this.seasonClear();
+      this.itemClear();
     }
   },
   mounted() {
