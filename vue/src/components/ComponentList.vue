@@ -13,8 +13,7 @@
         </div>
       </b-col>
     </b-row>
-    <div v-if="components.length==0">Not found any components...</div>
-    <b-table v-if="components.length>0" no-local-sorting @sort-changed="sorted" :items="components" :fields="fields">
+    <b-table no-local-sorting @sort-changed="sorted" :items="components" :fields="fields">
       <template v-slot:cell(name)="row">
         <b-button size="sm" @click.stop="goToComponent(row.item.id)" variant="link">{{row.item.number}} ({{row.item.name}})</b-button>
       </template>
@@ -51,8 +50,8 @@ export default {
       sortDesc: false,
       fields: [
         { key: "name", label: "Component # (Name)", sortable: true },
-        { key: "category.name", label: "Category", sortable: true },
-        { key: "supplier.name", label: "Supplier", sortable: true },
+        { key: "categoryName", label: "Category", sortable: true },
+        { key: "supplierName", label: "Supplier", sortable: true },
         { key: "unitsOnStock", label: "On Stock", sortable: false },
         { key: "action", label: "Action", sortable: false }
       ],

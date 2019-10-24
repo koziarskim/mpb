@@ -61,19 +61,27 @@ class ComponentRest {
 	}
 
 	@GetMapping("/component/pageable")
-	Page<Component> getAllPageable(@RequestParam(name = "pageable", required = false) Pageable pageable, @RequestParam(name = "nameSearch", required = false) String nameSearch) {
-		Page<Component> all = null;
+	Page<ComponentDto> getAllPageable(@RequestParam(name = "pageable", required = false) Pageable pageable, @RequestParam(name = "nameSearch", required = false) String nameSearch) {
+		Page<Component> components = null;
 		if(nameSearch ==null || nameSearch.trim().length() == 0) {
-			all = componentRepo.findAll(pageable);
+			components = componentRepo.findAll(pageable);
 		}else {
-			all = componentRepo.findAll(pageable, nameSearch);
+			components = componentRepo.findAll(pageable, nameSearch);
 		}
-		return all;
-	}
-
-	@GetMapping("/component/dto")
-	Collection<ComponentDto> getAllDto() {
-		return componentRepo.getAllDto();
+		if(components == null) {
+			 return Page.empty();
+		}
+		Page<ComponentDto> dtos = components.map(component -> {
+			ComponentDto dto = new ComponentDto();
+			dto.setId(component.getId());
+			dto.setNumber(component.getNumber());
+			dto.setName(component.getName());
+			dto.setCategoryName(component.getCategory().getName());
+			dto.setSupplierName(component.getSupplier().getName());
+			dto.setUnitsOnStock(component.getUnitsOnStock());
+		    return dto;
+		});
+		return dtos;
 	}
 
 	@GetMapping("/component/kv")
@@ -102,12 +110,6 @@ class ComponentRest {
 		String number = prefix + component_id.toString();
 		return ResponseEntity.ok().body(Collections.singletonMap("number", number));
 	}
-
-//	@GetMapping("/component/purchase/{purchase_id}/supplier/{supplier_id}")
-//	Collection<ComponentDto> getComponentsForPurchaseAndSupplier(@PathVariable Long purchase_id, @PathVariable Long supplier_id) {
-//		Collection<ComponentDto> dtos = componentRepo.getComponentsForPurchaseAndSupplier(purchase_id, supplier_id);
-//		return dtos;
-//	}
 
 	@PostMapping("/component")
 	ResponseEntity<Component> post(@RequestBody(required = false) Component component) throws URISyntaxException {

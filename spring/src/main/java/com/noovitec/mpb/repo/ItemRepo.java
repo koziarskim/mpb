@@ -15,7 +15,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import com.noovitec.mpb.dto.ItemListDto;
 import com.noovitec.mpb.dto.KeyValueDto;
-import com.noovitec.mpb.dto.projection.ItemAvailabilityProjection;
 import com.noovitec.mpb.entity.Item;
 
 public interface ItemRepo extends PagingAndSortingRepository<Item, Long> {
@@ -76,23 +75,6 @@ public interface ItemRepo extends PagingAndSortingRepository<Item, Long> {
 			+ "or upper(c.number) LIKE CONCAT('%',UPPER(:searchKey),'%')")
 	Page<Item> findPageByComponent(Pageable pageable, String searchKey);
 
-	@Query(value = ""
-			+ "select tmp.i_id as id, tmp.us as unitsScheduled, min(tmp.unitsToSchedule) as unitsToSchedule, min(tmp.unitsToProduction) as unitsToProduction "
-				+ "from (select i.id as i_id, i.units_on_stock as us, "
-				+ "((c.units_on_stock + sum(case when r.units is null then 0 else r.units end))/max(ic.units)) as unitsToSchedule, "
-				+ "((c.units_on_stock)/max(ic.units)) as unitsToProduction "
-				+ "from item i "
-				+ "join item_component ic on ic.item_id = i.id "
-				+ "join component c on c.id = ic.component_id "
-				+ "left join purchase_component pc on pc.component_id = c.id "
-				+ "left join receiving r on r.purchase_component_id = pc.id and r.received_date is null and r.eta_date <= :date "
-				+ "where "
-				+ "(case when 0 in :itemIds then true else i.id in :itemIds end) "
-				+ "group by c.id, i.id "
-				+ "order by i.id asc) as tmp "
-			+ "group by tmp.i_id, tmp.us", nativeQuery = true)
-	List<ItemAvailabilityProjection> getItemsAvailabilityFiltered(@Param("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date, @Param("itemIds") List<Long> itemIds);
-	
 	@Query("select distinct i.id from Item i "
 			+ "join i.saleItems si "
 			+ "join si.scheduleEvents se "

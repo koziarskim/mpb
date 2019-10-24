@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
-import com.noovitec.mpb.dto.ComponentDto;
 import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.entity.Component;
 
@@ -24,9 +23,6 @@ public interface ComponentRepo extends PagingAndSortingRepository<Component, Lon
 	// TODO: Change it to HQL. Remove limit.
 	@Query(value = "select c.* from Component c order by c.id desc limit 1", nativeQuery = true)
 	Component getLast();
-
-	@Query("select distinct new com.noovitec.mpb.dto.ComponentDto(" + "c.id, c.number) " + "from Component c " + "order by c.number asc")
-	List<ComponentDto> getAllDto();
 
 	@Query("select new com.noovitec.mpb.dto.KeyValueDto(c.id, concat(c.number, '-', c.name)) from Component c where c.number is not null")
 	List<KeyValueDto> getAllKeyValue();
