@@ -7,8 +7,8 @@
     </b-row>
 	<br/>
 	<b-row>
-		<b-col cols=8>
-			<chart :chartdata="chartData" :options="chartOptions" :width="900" :height="300"></chart>
+		<b-col cols=12>
+			<chart :chartdata="chartData" :options="chartOptions" :height="100"></chart>
 		</b-col>
 	</b-row>
   </b-container>
@@ -65,29 +65,38 @@ export default {
         });
 		},
 		updateChart(){
-			var productions = [];
 			var ses = this.scheduleEvents = this.scheduleEvents.sort(function(a, b){
 					return moment(a.schedule.date, 'MM-DD-YYYY').diff(moment(b.schedule.date, 'MM-DD-YYYY'));
 				});
 			ses.forEach(se => {
-				var ps = se.productions.sort(function(a, b){
-					return moment(a.finishTime, 'HH:mm:ss').diff(moment(b.finishTime, 'HH:mm:ss'));
-				});
-				productions.push(...ps);
-			});
+				console.log(moment(se.schedule.date).format('MM-DD-YYYY'));
+			})
+			var date = ses[0].schedule.date;
+			var dateLabel = moment(date).format('MM-DD-YYYY') + ', ';
 			this.chartData = {
-				labels: [moment(ses[0].startTime,'HH:mm:ss').format('HH:mm')],
+				labels: [dateLabel+moment(ses[0].startTime,'HH:mm:ss').format('HH:mm')],
 				datasets: [{data: [0], lineTension: 0}]
 			}
-			var lastTime = moment(ses[0].startTime, 'HH:mm:ss');
-			productions.forEach(production => {
-				var currentTime = moment(production.finishTime, 'HH:mm:ss');
-				var diffMins = currentTime.diff(lastTime, 'minutes');
-				var unitsPerMinute = (production.unitsProduced/diffMins)*60;
-				this.chartData.labels.push(moment(production.finishTime,'HH:mm:ss').format('HH:mm'));
-				this.chartData.datasets[0].data.push(unitsPerMinute);
-				lastTime = currentTime;
-			})
+			ses.forEach(se => {
+				var productions = se.productions.sort(function(a, b){
+					return moment(a.finishTime, 'HH:mm:ss').diff(moment(b.finishTime, 'HH:mm:ss'));
+				});
+				var lastTime = moment(se.startTime, 'HH:mm:ss');
+				productions.forEach(production => {
+					if(date === se.schedule.date){
+						dateLabel = "";
+					}else{
+						dateLabel = moment(date).format('MM-DD-YYYY') + ', ';
+						date = se.schedule.date;
+					}
+					var currentTime = moment(production.finishTime, 'HH:mm:ss');
+					var diffMins = currentTime.diff(lastTime, 'minutes');
+					var unitsPerMinute = (production.unitsProduced/diffMins)*60;
+					this.chartData.labels.push(dateLabel+moment(production.finishTime,'HH:mm:ss').format('HH:mm'));
+					this.chartData.datasets[0].data.push(unitsPerMinute);
+					lastTime = currentTime;
+				})
+			});
 		},
   },
   mounted() {
