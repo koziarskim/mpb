@@ -272,7 +272,7 @@ export default {
     },
     getAvailableSuppliers() {
       http
-        .get("/supplier")
+        .get("/supplier/kv")
         .then(response => {
           this.availableSuppliers = response.data;
         })

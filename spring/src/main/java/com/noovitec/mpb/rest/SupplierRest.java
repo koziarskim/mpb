@@ -46,14 +46,27 @@ class SupplierRest {
 	}
 
 	@GetMapping("/supplier/pageable")
-	Page<Supplier> getAllPageable(@RequestParam(name = "pageable", required = false) Pageable pageable, @RequestParam(name = "searchKey", required = false) String searchKey) {
-		Page<Supplier> all = null;
+	Page<SupplierDto> getAllPageable(@RequestParam(name = "pageable", required = false) Pageable pageable, @RequestParam(name = "searchKey", required = false) String searchKey) {
+		Page<Supplier> suppliers = null;
 		if(searchKey ==null || searchKey.trim().length() == 0) {
-			all = supplierRepo.findAll(pageable);
+			suppliers = supplierRepo.findPage(pageable);
 		}else {
-			all = supplierRepo.findAll(pageable, searchKey);
+			suppliers = supplierRepo.findPageBySupplier(pageable, searchKey);
 		}
-		return all;
+		if(suppliers == null) {
+			 return Page.empty();
+		}
+		Page<SupplierDto> dtos = suppliers.map(supplier -> {
+			SupplierDto dto = new SupplierDto();
+			dto.setId(supplier.getId());
+			dto.setName(supplier.getName());
+			dto.setAccount(supplier.getAccount());
+			dto.setCity(supplier.getCity());
+			dto.setPhone(supplier.getPhone());
+		    return dto;
+		});
+		return dtos;
+
 	}
 
 	@GetMapping("/supplier/{id}")

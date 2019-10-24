@@ -57,7 +57,6 @@ public class Supplier {
 	@JoinColumn(name = "address_id", referencedColumnName = "id")
 	private Address address;
 
-	@JsonIgnore
 	@JsonIgnoreProperties(value = { "supplier" }, allowSetters = true)
 	@OneToMany()
 	@JoinColumn(name = "supplier_id")

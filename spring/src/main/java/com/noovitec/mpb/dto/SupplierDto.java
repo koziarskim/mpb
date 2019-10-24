@@ -12,5 +12,6 @@ public class SupplierDto {
 	private Long id;
 	private String name;
 	private String account;
-	private boolean selected;
+	private String city;
+	private String phone;
 }
