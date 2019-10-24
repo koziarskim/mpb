@@ -121,6 +121,9 @@ export default {
         })
         if(missmatch){
             alert("Supplier missmatch! Only components to single supplier are allowed!");
+            if(this.selectedComponents.length==0){
+              this.purchase.supplier = {};
+            }
             return Promise.reject();
         }
         r.data.forEach(dto => {
