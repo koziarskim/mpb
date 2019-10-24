@@ -65,36 +65,31 @@ export default {
         });
 		},
 		updateChart(){
-			var ses = this.scheduleEvents = this.scheduleEvents.sort(function(a, b){
-					return moment(a.schedule.date, 'MM-DD-YYYY').diff(moment(b.schedule.date, 'MM-DD-YYYY'));
-				});
-			ses.forEach(se => {
-				console.log(moment(se.schedule.date).format('MM-DD-YYYY'));
-			})
-			var date = ses[0].schedule.date;
+			// var ses = this.scheduleEvents = this.scheduleEvents.sort(function(a, b){
+			// 		return moment(a.schedule.date, 'MM-DD-YYYY').diff(moment(b.schedule.date, 'MM-DD-YYYY'));
+			// 	});
+			var date = this.scheduleEvents[0].schedule.date;
 			var dateLabel = moment(date).format('MM-DD-YYYY') + ', ';
 			this.chartData = {
-				labels: [dateLabel+moment(ses[0].startTime,'HH:mm:ss').format('HH:mm')],
+				labels: [dateLabel+moment(this.scheduleEvents[0].startTime,'HH:mm:ss').format('HH:mm')],
 				datasets: [{data: [0], lineTension: 0}]
 			}
-			ses.forEach(se => {
+			this.scheduleEvents.forEach(se => {
 				var productions = se.productions.sort(function(a, b){
 					return moment(a.finishTime, 'HH:mm:ss').diff(moment(b.finishTime, 'HH:mm:ss'));
 				});
 				var lastTime = moment(se.startTime, 'HH:mm:ss');
+				date = se.schedule.date;
+				dateLabel = moment(date).format('MM-DD-YYYY') + ', ';
+				console.log(dateLabel);
 				productions.forEach(production => {
-					if(date === se.schedule.date){
-						dateLabel = "";
-					}else{
-						dateLabel = moment(date).format('MM-DD-YYYY') + ', ';
-						date = se.schedule.date;
-					}
 					var currentTime = moment(production.finishTime, 'HH:mm:ss');
-					var diffMins = currentTime.diff(lastTime, 'minutes');
-					var unitsPerMinute = (production.unitsProduced/diffMins)*60;
-					this.chartData.labels.push(dateLabel+moment(production.finishTime,'HH:mm:ss').format('HH:mm'));
+					var diffSecs = currentTime.diff(lastTime, 'seconds');
+					var unitsPerMinute = (production.unitsProduced/diffSecs)*60*60;
+					this.chartData.labels.push(dateLabel+moment(production.finishTime,'HH:mm:ss').format('HH:mm:ss'));
 					this.chartData.datasets[0].data.push(unitsPerMinute);
 					lastTime = currentTime;
+					dateLabel = "";
 				})
 			});
 		},

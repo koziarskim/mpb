@@ -9,7 +9,7 @@
       </b-col>
       <b-col cols=1 offset=4>
         <div style="display: flex; text-align: right; margin-left: 20px">
-          <b-button style="margin: 3px" type="reset" variant="success" @click="goToGraph()" :disabled="true">Graph</b-button>
+          <b-button style="margin: 3px" type="reset" variant="success" @click="goToGraph()" :disabled="false">Graph</b-button>
           <b-button style="margin: 3px" type="reset" variant="success" @click="close()">Close</b-button>
         </div>
       </b-col>

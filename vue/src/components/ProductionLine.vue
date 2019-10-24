@@ -103,7 +103,6 @@ export default {
 				// 	this.chartClickEvent(evt, item);
 				// }
 			},
-			sortedProductions: [],
       availableLines: [],
       line: {},
       availableItems: [],
@@ -167,22 +166,67 @@ export default {
         });
 	},
 	updateChart(){
-		this.chartData = {
-			labels: [moment(this.scheduleEvent.startTime,'HH:mm:ss').format('HH:mm')],
-			datasets: [{data: [0], lineTension: 0}]
+		var sortedProductions = this.scheduleEvent.productions.sort(function(a, b){
+			return moment(a.finishTime, 'HH:mm:ss').diff(moment(b.finishTime, 'HH:mm:ss'));
+		});
+		var startTime = moment(this.scheduleEvent.startTime,'HH:mm:ss');
+		var startHour = startTime.hour();
+		var finishTime = moment(sortedProductions[sortedProductions.length-1].finishTime,'HH:mm:ss');
+		var finishHour = finishTime.hour();
+		var currentHour = startHour;
+		this.chartData = {labels: [], datasets: [{data: [], lineTension: 0}]};
+		while(currentHour<=finishHour){
+			var units = this.getUnitsForHour(currentHour, sortedProductions);
+			if(currentHour==startHour){
+				this.chartData.labels.push(startTime.format('HH:mm'));
+			}else{
+				this.chartData.labels.push(moment(currentHour+':00','HH:mm').format('HH:mm'));
+			}
+			this.chartData.datasets[0].data.push(units);
+			currentHour++;
 		}
-		var lastTime = moment(this.scheduleEvent.startTime, 'HH:mm:ss');
-		this.sortedProductions = this.scheduleEvent.productions.sort(function(a, b){
-				return moment(a.finishTime, 'HH:mm:ss').diff(moment(b.finishTime, 'HH:mm:ss'));
-			});
-		this.sortedProductions.forEach(production => {
-			var currentTime = moment(production.finishTime, 'HH:mm:ss');
-			var diffMins = currentTime.diff(lastTime, 'minutes');
-			var unitsPerMinute = (production.unitsProduced/diffMins)*60;
-			this.chartData.labels.push(moment(production.finishTime,'HH:mm:ss').format('HH:mm'));
-			this.chartData.datasets[0].data.push(unitsPerMinute);
-			lastTime = currentTime;
+		// var lastTime = moment(this.scheduleEvent.startTime, 'HH:mm:ss');
+		// var lastHour = lastTime.hour();
+		// var lastHourUnits = 0;
+		// this.sortedProductions = this.scheduleEvent.productions.sort(function(a, b){
+		// 		return moment(a.finishTime, 'HH:mm:ss').diff(moment(b.finishTime, 'HH:mm:ss'));
+		// 	});
+		// this.sortedProductions.forEach(production => {
+		// 	var lastHourTime = moment().set({hour: lastHour, minutes: 0, seconds: 0});
+		// 	var secondsFromLastHour = lastTime.diff(lastHourTime, 'seconds');
+		// 	var currentTime = moment(production.finishTime, 'HH:mm:ss');
+		// 	var diffSecs = currentTime.diff(lastTime, 'seconds');
+		// 	var unitsPerSecond = diffSecs==0?0:(production.unitsProduced/diffSecs);
+		// 	this.chartData.labels.push(moment(production.finishTime,'HH:mm:ss').format('HH:mm:ss'));
+		// 	this.chartData.datasets[0].data.push(unitsPerSecond);
+		// 	lastTime = currentTime;
+		// })
+	},
+	getUnitsForHour(hour, productions){
+		var units = 0;
+		var index = 0;
+		productions.forEach(p => {
+			var nextProduction = productions[index+1];
+			var nextHour = null;
+			if(nextProduction){
+				nextHour = moment(productions[index+1].finishTime,'HH:mm:ss').hour();;
+			}
+			var currentHour = moment(p.finishTime,'HH:mm:ss').hour();
+			if(currentHour==hour){
+				if(nextHour==hour){
+					units += p.unitsProduced;
+				}else{
+					var reminingSecs = moment(nextProduction.finishTime, 'HH:mm:ss').diff(moment(p.finishTime, 'HH:mm:ss'),'seconds');
+					var perc = reminingSecs/3600;
+					var nextUnits = nextProduction.unitsProduced;
+					var reminingUnits = nextUnits*perc;
+					units += reminingUnits;
+				}
+				
+			}
+			index++;
 		})
+		return units.toFixed(0);
 	},
     getAvailableLines() {
       this.availableLines = [
