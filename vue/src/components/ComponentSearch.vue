@@ -132,7 +132,7 @@ export default {
         supplierAll: true,
         components: [],
         componentName: "",
-        componentAll: true,
+        componentAll: false,
       },
 
       visibleSeasonMenu: {value: false},
@@ -322,7 +322,7 @@ export default {
     // Component
     componentClear(){
       this.components = [];
-      this.searchDto.componentAll = true;
+      this.searchDto.componentAll = false;
       this.searchDto.components = [];
       this.searchDto.componentName = "";
       this.components.forEach(dto => dto.hide = false);
@@ -410,15 +410,8 @@ export default {
       this.closeMenu(this.suppliers, this.searchDto.suppliers, this.visibleSupplierMenu)
       this.closeMenu(this.components, this.searchDto.components, this.visibleComponentMenu)
       if(this.searchDto.components.length==0){
-        this.getComponents().then(r => {
-          this.searchDto.components = this.components.map(dto => dto.id);
-          if(this.searchDto.components.length==0){
-            alert("No Components selected. Please pick one.");
-            return;
-          }
-          this.$emit("componentsUpdated", this.searchDto);
-          // this.seasonClear();
-        })
+        alert("No Components selected. Please pick one.");
+        return;
       }
       var dto = JSON.parse(JSON.stringify(this.searchDto));
       this.$emit("componentsUpdated", dto);
