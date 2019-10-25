@@ -87,41 +87,38 @@ export default {
 	  unitsToAdd: 0,
 	  people: 0,
 	  chartData: {
-			// labels:["a","b","c"],
-        datasets: [{
-            label: 'my Dataset',
-            data: [{x: '1:00', y: 65}, 
-                     {x: '2:00', y: 59}, 
-                     {x: '3:00', y: 80}, 
-                     {x: '4:00', y: 81}, 
-                     {x: '5:00', y: 56}]
-        }]
+			labels:[],
+      datasets: [{
+        label: 'Units per Time',
+				data: [],
+				lineTension: 0
+      }]
 		},
 	  chartOptions: {
 			legend: {
 				display: false,
 			},
 			scales: {
-                     xAxes: [{
-													 type: 'linear', // MANDATORY TO SHOW YOUR POINTS! (THIS IS THE IMPORTANT BIT)
-													 time: {
-        unit: 'day',
-        unitStepSize: 1,
-        displayFormats: {
-           'day': 'MMM DD'
-        }},
-                           display: true, // mandatory
-                           scaleLabel: {
-                                display: true, // mandatory
-                                labelString: 'Your label' // optional 
-                           },
-                      }], 
-                     yAxes: [{ // and your y axis customization as you see fit...
-                        display: true,
-                        scaleLabel: {
-                             display: true,
-                             labelString: 'Count'
-                        }
+        xAxes: [{
+					type: 'time',
+					time: {
+						distribution: 'linear',
+						unit: 'hour',
+						min: this.newDate(0,0),
+						max: this.newDate(23,59),
+						stepSize: 1,
+						displayFormats: {
+							'millisecond': 'MMM DD',
+							'second': 'MMM DD',
+							'minute': 'MMM DD',
+							'hour': 'HH:mm',
+							'day': 'MMM DD H:mm:ss',
+							'week': 'MMM DD',
+							'month': 'MMM DD',
+							'quarter': 'MMM DD',
+							'year': 'MMM DD',
+						}
+					}
 				}]
 			},
 		},
@@ -130,7 +127,8 @@ export default {
     availableItems: [],
     item: {},
     dateStarted: moment().format("YYYY-MM-DD"),
-	  timeStarted: moment().format("HH:mm:ss"),
+		timeStarted: moment().format("HH:mm:ss"),
+		today: moment(),
 	  scheduleEvent: {
 		  schedule: {},
 		  line: {},
@@ -149,6 +147,9 @@ export default {
     }
   },
   methods: {
+		newDate(hour, min){
+			return moment("00:00:00", "H:mm:ss").add(hour, 'hours').add(min, 'minutes');
+		},
 		hasRoles(roles){
 			var hasRole = this.$store.getters.userContext.hasRoles(['PRODUCTION_ADMIN']);
 			return hasRole;
@@ -185,48 +186,23 @@ export default {
           console.log("API error: " + e);
         });
 	},
+	mtime(time){
+		return moment(time,'HH:mm:ss');
+	},
 	updateChart(){
-		// var sortedProductions = this.scheduleEvent.productions.sort(function(a, b){
-		// 	return moment(a.finishTime, 'HH:mm:ss').diff(moment(b.finishTime, 'HH:mm:ss'));
-		// });
-		// var startTime = moment(this.scheduleEvent.startTime,'HH:mm:ss');
-		// var startHour = startTime.hour();
-		// var finishTime = moment(sortedProductions[sortedProductions.length-1].finishTime,'HH:mm:ss');
-		// var finishHour = finishTime.hour();
-		// var currentHour = startHour;
-		this.chartData = {labels: ['a','b','c','d','f'], datasets: [{data: [
-			{x: 0, y: 0}, 
-                     {x: 0, y: 59}, 
-                     {x: 100, y: 80}, 
-                     {x: 110, y: 81}, 
-                     {x: 125, y: 56}
-		], lineTension: 0}]};
-		// while(currentHour<=finishHour){
-		// 	var units = this.getUnitsForHour(currentHour, sortedProductions);
-		// 	if(currentHour==startHour){
-		// 		this.chartData.labels.push(startTime.format('HH:mm'));
-		// 	}else{
-		// 		this.chartData.labels.push(moment(currentHour+':00','HH:mm').format('HH:mm'));
-		// 	}
-		// 	this.chartData.datasets[0].data.push(units);
-		// 	currentHour++;
-		// }
-		// var lastTime = moment(this.scheduleEvent.startTime, 'HH:mm:ss');
-		// var lastHour = lastTime.hour();
-		// var lastHourUnits = 0;
-		// this.sortedProductions = this.scheduleEvent.productions.sort(function(a, b){
-		// 		return moment(a.finishTime, 'HH:mm:ss').diff(moment(b.finishTime, 'HH:mm:ss'));
-		// 	});
-		// this.sortedProductions.forEach(production => {
-		// 	var lastHourTime = moment().set({hour: lastHour, minutes: 0, seconds: 0});
-		// 	var secondsFromLastHour = lastTime.diff(lastHourTime, 'seconds');
-		// 	var currentTime = moment(production.finishTime, 'HH:mm:ss');
-		// 	var diffSecs = currentTime.diff(lastTime, 'seconds');
-		// 	var unitsPerSecond = diffSecs==0?0:(production.unitsProduced/diffSecs);
-		// 	this.chartData.labels.push(moment(production.finishTime,'HH:mm:ss').format('HH:mm:ss'));
-		// 	this.chartData.datasets[0].data.push(unitsPerSecond);
-		// 	lastTime = currentTime;
-		// })
+		var prevTime = this.mtime(this.scheduleEvent.startTime);
+		this.chartData.labels.push(prevTime);
+		this.chartData.datasets[0].data.push(0); 
+		var sortedProductions = this.scheduleEvent.productions.sort(function(a, b){
+			return moment(a.finishTime, 'HH:mm:ss').diff(moment(b.finishTime, 'HH:mm:ss'));
+		});
+		sortedProductions.forEach(p => {
+			var secs = moment(p.finishTime, 'HH:mm:ss').diff(prevTime, 'seconds');
+			var perf = ((p.unitsProduced/secs)*3600).toFixed(0);
+			this.chartData.labels.push(this.mtime(p.finishTime));
+			this.chartData.datasets[0].data.push(perf);
+			prevTime = this.mtime(p.finishTime);
+		})
 	},
 	getUnitsForHour(hour, productions){
 		var units = 0;
