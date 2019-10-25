@@ -1,0 +1,31 @@
+Digital Ocean
+Ubuntu:
+sudo adduser koziarskim sudo
+enable firewal:
+
+Postgres:
+sudo apt update
+sudo apt install postgresql postgresql-contrib
+sudo -u postgres createuser --interactive
+			set koziarskim as supperuser
+sudo -u postgres createdb mpb
+psql mpb
+mpb=# alter user postgres with password '99mpbrands!';
+sudo vi /etc/postgresql/9.5/main/postgresql.conf
+	add entry:
+	listen_addresses = '*'
+sudo vi /etc/postgresql/9.5/main/pg_hba.conf
+	add entries:
+	host all all 0.0.0.0/0 md5
+	host all all ::/0      md5
+sudo service postgresql start
+
+Tomcat:
+
+Nginx:
+
+Java:
+
+
+Git:
+

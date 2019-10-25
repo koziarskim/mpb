@@ -1,0 +1,22 @@
+
+Deploy to mpb.noovitec.com
+	- IMPORTANT: Remove/comment-out following lines from application.properties
+		spring.jpa.hibernate.ddl-auto=create
+		spring.datasource.data=classpath:sql/import_data.sql
+	
+	- Backup DB: run from Windows: mpb/env/backup_mpb_noovitec.bat
+	
+	- From mpb/vue run "yarn -e clean build" - this will rebuild "mpb/vue/dist" directory.
+	- Copy "dist" to location set in nginx-(linux/windows).conf, line server.location.alias (for mpb/static).
+	- Use WinSCP or any tool to remote copy.
+	
+	- From mpb/spring run "mvn -e clean package" - this will build "mpb/spring/target/mpb-api.war" file that needs to be deployed to Tomcat.
+	- Use Tomcat console to deploy (or any other way).
+
+	- If nginx configuration changed (mpb/env/nginx-(linux/windows).conf, copy file to location set in /etc/nginx/nginx.config property "http.include"
+	- Restart nginx: sudo systemctl restart nginx
+	
+	- If any Vue properties changed, make sure to copy (mpb/vue/.env.production) to (git/mpb/vue/).
+
+TODO:
+- mpb/env/nginx-(linux/windows).config TODO: There are two separate files (linux/windows). Why trailing slashes doesn't work the same way.

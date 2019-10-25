@@ -1,0 +1,14 @@
+Locations:
+	tomcat location: /opt/tomcat/
+	tomcat settings: /etc/systemd/system/tomcat.service
+	
+	ngix location: /etc/nginx/
+	ngix http config: ~/git/mpb/env/ngix-(linux/windows).conf
+	ngix logs: /var/log/nginx/
+	
+	vue dsc location: ~/git/mpb/vue/dst/
+	vue properties: ~/git/mpb/vue/
+	
+	postgres: /etc/postgresql/9.5/main/postgresql.conf
+	postgres: /etc/postgresql/9.5/main/pg_hba.conf
+	backups location is at: "C:\Users\kozia\postgres\backups\noovitec\backup_schema_(schema/data*).sql"
