@@ -1,0 +1,5 @@
+sudo systemctr restart postgresql
+sudo systemctl restart nginx
+sudo systemctl restart tomcat
+
+see all processes: jps -m

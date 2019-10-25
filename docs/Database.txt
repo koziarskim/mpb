@@ -1,0 +1,5 @@
+
+Create noovitec backup and copy to local:
+	Run from Windows: mpb/env/backup_mpb_noovitec.bat
+	Backup location is at: "C:\Users\kozia\postgres\backups\noovitec\backup_schema_(schema/data*).sql"
+

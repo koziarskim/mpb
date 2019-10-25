@@ -1,0 +1,69 @@
+CloudSetup droplet (virtual machine)
+Install Ubuntu 16.04
+
+Marketplace WiFi Pass: market445
+
+Local
+Install VirtualBox
+Install Ubuntu 16.04 on VB
+	Enable ssh
+		# sudo apt-get install openssh-server
+	Enable shared folders
+		Set shared folder in VM settings.
+		# wget http://download.virtualbox.org/virtualbox/6.0.0_RC1/VBoxGuestAdditions_6.0.0_RC1.iso
+		# sudo mkdir /media/iso
+		# sudo mount VBoxGuestAdditions_6.0.0_RC1.iso /media/iso
+		# cd /media/iso
+		# sudo ./VBoxLinuxAdditions.run
+		# usermod -aG vboxsf koziarskim
+		# reboot
+		You should be able to access your shared folder under /media/sf_[your_folder_name]
+		# ln -s ~/git/mpb /media/sf_mpb
+	Python
+		Create uwsgi config:
+		# nano /home/koziarskim/git/mpb/src/python/uwsgi.conf
+		Start server using config (from /home/koziarskim/git/mpb/src/python):
+		# uwsgi --ini uwsgi_config.ini
+	Setup reverse proxy in nginx
+		See /etc/nginx/sites-available/mpb
+		Create alias 
+		# sudo ln -s /etc/nginx/sites-available/mpb /etc/nginx/sites-enabled
+		Change nginx user from "www-data" to "koziarskim"
+		# sudo nano /etc/nginx/nginx.conf
+	Postgres
+		sudo apt-get update
+		sudo apt-get install postgresql postgresql-contrib
+		sudo passwd postgres
+		sudo -u postgres createuser --interactive
+			set koziarskim as supperuser
+		sudo -u postgres createdb mpb
+		psql mpb
+		mpb=# alter user koziarskim with password '99mpbrands!';
+		mpb=# alter user postgres with password '99mpbrands!';
+
+		su -i -u postgres
+		psql -U postgres -c 'SHOW config_file';
+		psql -U postgres -c 'SHOW hba_file';
+		sudo nano /etc/postgresql/9.5/main/postgresql.conf
+			add listen_addresses = '*'
+		sudo nano /etc/postgresql/9.5/main/pg_hba.conf
+			add entries:
+			host all all 0.0.0.0/0 md5
+			host all all ::/0      md5
+		systemctr restart postgresql
+		backup data:
+		"C:\Program Files (x86)\pgAdmin 4\v4\runtime\pg_dump.exe" --file "C:\\Users\\kozia\\postgres\\backups\\dump.sql" --dbname=postgresql://postgres:s3cret@localhost:5432/mpb --verbose --format=p --data-only --inserts --column-inserts
+		restore:
+		psql --dbname=postgresql://postgres:s3cret@localhost:5432 --file=C:\Users\kozia\postgres\backups\dump.sql
+		psql --dbname=postgresql://postgres:s3cret@localhost:5432/mpb --single-transaction --file=C:\Users\kozia\eclipse\workspace\mpb\spring\src\main\resources\sql\import_main.sql
+		C:\Users\kozia\migration>node index.js
+	Migration (remotely execute query:
+		- From mpb/migration run "node migrate"
+	
+		
+		
+		
+
+		
+
+		
