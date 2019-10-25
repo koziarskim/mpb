@@ -86,31 +86,51 @@ export default {
 	  addInProgress: false,
 	  unitsToAdd: 0,
 	  people: 0,
-	  chartData: {},
+	  chartData: {
+			// labels:["a","b","c"],
+        datasets: [{
+            label: 'my Dataset',
+            data: [{x: '1:00', y: 65}, 
+                     {x: '2:00', y: 59}, 
+                     {x: '3:00', y: 80}, 
+                     {x: '4:00', y: 81}, 
+                     {x: '5:00', y: 56}]
+        }]
+		},
 	  chartOptions: {
-				legend: {
-					display: false,
-				},
-			  scales: {
-          		yAxes: [{
-              		scaleLabel: {
-                		display: true,
-                		labelString: 'Units Per Hour'
-              		}
-            	}
-						]},
-				// onClick: (evt, item) => {
-				// 	this.chartClickEvent(evt, item);
-				// }
+			legend: {
+				display: false,
 			},
-      availableLines: [],
-      line: {},
-      availableItems: [],
-      item: {},
-      dateStarted: moment()
-		.format("YYYY-MM-DD"),
-	  timeStarted: moment()
-          .format("HH:mm:ss"),
+			scales: {
+                     xAxes: [{
+													 type: 'linear', // MANDATORY TO SHOW YOUR POINTS! (THIS IS THE IMPORTANT BIT)
+													 time: {
+        unit: 'day',
+        unitStepSize: 1,
+        displayFormats: {
+           'day': 'MMM DD'
+        }},
+                           display: true, // mandatory
+                           scaleLabel: {
+                                display: true, // mandatory
+                                labelString: 'Your label' // optional 
+                           },
+                      }], 
+                     yAxes: [{ // and your y axis customization as you see fit...
+                        display: true,
+                        scaleLabel: {
+                             display: true,
+                             labelString: 'Count'
+                        }
+				}]
+			},
+		},
+    availableLines: [],
+    line: {},
+    availableItems: [],
+    item: {},
+    dateStarted: moment().format("YYYY-MM-DD"),
+	  timeStarted: moment().format("HH:mm:ss"),
 	  scheduleEvent: {
 		  schedule: {},
 		  line: {},
@@ -166,25 +186,31 @@ export default {
         });
 	},
 	updateChart(){
-		var sortedProductions = this.scheduleEvent.productions.sort(function(a, b){
-			return moment(a.finishTime, 'HH:mm:ss').diff(moment(b.finishTime, 'HH:mm:ss'));
-		});
-		var startTime = moment(this.scheduleEvent.startTime,'HH:mm:ss');
-		var startHour = startTime.hour();
-		var finishTime = moment(sortedProductions[sortedProductions.length-1].finishTime,'HH:mm:ss');
-		var finishHour = finishTime.hour();
-		var currentHour = startHour;
-		this.chartData = {labels: [], datasets: [{data: [], lineTension: 0}]};
-		while(currentHour<=finishHour){
-			var units = this.getUnitsForHour(currentHour, sortedProductions);
-			if(currentHour==startHour){
-				this.chartData.labels.push(startTime.format('HH:mm'));
-			}else{
-				this.chartData.labels.push(moment(currentHour+':00','HH:mm').format('HH:mm'));
-			}
-			this.chartData.datasets[0].data.push(units);
-			currentHour++;
-		}
+		// var sortedProductions = this.scheduleEvent.productions.sort(function(a, b){
+		// 	return moment(a.finishTime, 'HH:mm:ss').diff(moment(b.finishTime, 'HH:mm:ss'));
+		// });
+		// var startTime = moment(this.scheduleEvent.startTime,'HH:mm:ss');
+		// var startHour = startTime.hour();
+		// var finishTime = moment(sortedProductions[sortedProductions.length-1].finishTime,'HH:mm:ss');
+		// var finishHour = finishTime.hour();
+		// var currentHour = startHour;
+		this.chartData = {labels: ['a','b','c','d','f'], datasets: [{data: [
+			{x: 0, y: 0}, 
+                     {x: 0, y: 59}, 
+                     {x: 100, y: 80}, 
+                     {x: 110, y: 81}, 
+                     {x: 125, y: 56}
+		], lineTension: 0}]};
+		// while(currentHour<=finishHour){
+		// 	var units = this.getUnitsForHour(currentHour, sortedProductions);
+		// 	if(currentHour==startHour){
+		// 		this.chartData.labels.push(startTime.format('HH:mm'));
+		// 	}else{
+		// 		this.chartData.labels.push(moment(currentHour+':00','HH:mm').format('HH:mm'));
+		// 	}
+		// 	this.chartData.datasets[0].data.push(units);
+		// 	currentHour++;
+		// }
 		// var lastTime = moment(this.scheduleEvent.startTime, 'HH:mm:ss');
 		// var lastHour = lastTime.hour();
 		// var lastHourUnits = 0;
