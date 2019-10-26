@@ -86,18 +86,8 @@ export default {
 	  addInProgress: false,
 	  unitsToAdd: 0,
 	  people: 0,
-	  chartData: {
-			labels:[],
-      datasets: [{
-        label: 'Units per Time',
-				data: [],
-				lineTension: 0
-      }]
-		},
+	  chartData: {datasets: []},
 	  chartOptions: {
-			legend: {
-				display: false,
-			},
 			scales: {
         xAxes: [{
 					type: 'time',
@@ -107,17 +97,7 @@ export default {
 						min: this.newDate(0,0),
 						max: this.newDate(23,59),
 						stepSize: 1,
-						displayFormats: {
-							'millisecond': 'MMM DD',
-							'second': 'MMM DD',
-							'minute': 'MMM DD',
-							'hour': 'HH:mm',
-							'day': 'MMM DD H:mm:ss',
-							'week': 'MMM DD',
-							'month': 'MMM DD',
-							'quarter': 'MMM DD',
-							'year': 'MMM DD',
-						}
+						displayFormats: {hour : 'HH:mm'}
 					}
 				}]
 			},
@@ -147,6 +127,28 @@ export default {
     }
   },
   methods: {
+		updateChart(){
+			var prevTime = this.mtime(this.scheduleEvent.startTime);
+			this.chartData.datasets = [{
+				label: this.scheduleEvent.saleItem.item.name, 
+				data: [{x: prevTime, y: 0}], 
+				lineTension: 0,
+				borderColor: '#C28535',
+  			// backgroundColor: '#C28535',
+  			// pointBorderColor: '#C28535',
+  			// pointBackgroundColor: '#C28535',
+  			// pointBorderWidth: 1,
+			}]; 
+			var sortedProductions = this.scheduleEvent.productions.sort(function(a, b){
+				return moment(a.finishTime, 'HH:mm:ss').diff(moment(b.finishTime, 'HH:mm:ss'));
+			});
+			sortedProductions.forEach(p => {
+				var secs = moment(p.finishTime, 'HH:mm:ss').diff(prevTime, 'seconds');
+				var perf = ((p.unitsProduced/secs)*3600).toFixed(0);
+				this.chartData.datasets[0].data.push({x: this.mtime(p.finishTime), y: perf});
+				prevTime = this.mtime(p.finishTime);
+			})
+		},
 		newDate(hour, min){
 			return moment("00:00:00", "H:mm:ss").add(hour, 'hours').add(min, 'minutes');
 		},
@@ -188,21 +190,6 @@ export default {
 	},
 	mtime(time){
 		return moment(time,'HH:mm:ss');
-	},
-	updateChart(){
-		var prevTime = this.mtime(this.scheduleEvent.startTime);
-		this.chartData.labels.push(prevTime);
-		this.chartData.datasets[0].data.push(0); 
-		var sortedProductions = this.scheduleEvent.productions.sort(function(a, b){
-			return moment(a.finishTime, 'HH:mm:ss').diff(moment(b.finishTime, 'HH:mm:ss'));
-		});
-		sortedProductions.forEach(p => {
-			var secs = moment(p.finishTime, 'HH:mm:ss').diff(prevTime, 'seconds');
-			var perf = ((p.unitsProduced/secs)*3600).toFixed(0);
-			this.chartData.labels.push(this.mtime(p.finishTime));
-			this.chartData.datasets[0].data.push(perf);
-			prevTime = this.mtime(p.finishTime);
-		})
 	},
 	getUnitsForHour(hour, productions){
 		var units = 0;
@@ -326,7 +313,8 @@ export default {
     }
   },
   mounted() {
-    var schedule_event_id = this.$route.params.schedule_event_id;
+		var schedule_event_id = this.$route.params.schedule_event_id;
+		var line_id = this.$route.params.line_id;
     if (schedule_event_id) {
       this.getScheduleEvent(schedule_event_id);
     }
