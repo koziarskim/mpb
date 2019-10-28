@@ -90,6 +90,12 @@ export default {
 	  chartOptions: {
 			legend: {display: false},
 			scales: {
+				yAxes: [{
+          scaleLabel: {
+          	display: true,
+          	labelString: 'Units Per Hour'
+          }
+        }],
         xAxes: [{
 					type: 'time',
 					time: {
@@ -150,8 +156,9 @@ export default {
 			});
 			sortedProductions.forEach(p => {
 				var secs = moment(p.finishTime, 'HH:mm:ss').diff(prevTime, 'seconds');
-				var perf = ((p.unitsProduced/secs)*3600).toFixed(0);
-				var tooltipLabel= p.unitsProduced+" units in "+(secs/60).toFixed(0)+" minutes"
+				var time = moment().startOf('day').seconds(secs).format('HH:mm:ss')
+				var perf = !secs?0:((p.unitsProduced/secs)*3600).toFixed(0);
+				var tooltipLabel= perf+" u/h (" +p.unitsProduced+" units in "+time+")"
 				this.chartData.datasets[0].data.push({x: this.mtime(p.finishTime), y: perf, tooltipLabel: tooltipLabel});
 				prevTime = this.mtime(p.finishTime);
 			})

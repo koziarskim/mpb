@@ -21,6 +21,9 @@
           <template v-slot:cell(sale)="row">
             <b-button size="sm" @click.stop="goToSale(row.item.saleItem.sale.id)" variant="link">{{row.item.saleItem.sale.number}}</b-button>
           </template>
+          <template v-slot:cell(startTime)="row">
+            <b-button size="sm" @click.stop="goToProduction(row.item.id)" variant="link">{{row.item.startTime}}</b-button>
+          </template>
           <template v-slot:cell(unitsScheduled)="row">
             <b-button v-if="!row.item.edit" @click="editScheduleEvent(row.item)" variant="light">{{row.item.unitsScheduled}}</b-button>
             <b-input-group>
@@ -56,7 +59,7 @@ export default {
       sortDesc: false,
       columns: [
         { key: "schedule.date", label: "Date", sortable: true },
-        { key: "startTime", label: "Time", sortable: false },
+        { key: "startTime", label: "Started", sortable: false },
         { key: "line.number", label: "Line", sortable: true },
         { key: "sale", label: "Sale", sortable: true },
         { key: "saleItem.sale.customer.name", label: "Customer", sortable: true },
@@ -166,6 +169,9 @@ export default {
     },
     goToSale(sale_id) {
       router.push("/saleEdit/" + sale_id);
+    },
+    goToProduction(se_id) {
+      router.push("/productionLine/" + se_id);
     },
     goToGraph() {
       router.push("/itemGraph/" + this.item.id);

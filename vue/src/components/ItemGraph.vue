@@ -27,19 +27,39 @@ export default {
     return {
 			item: {},
 			scheduleEvents: [],
-			chartData: {},
-			chartOptions: {
-				legend: {
-					display: false,
-				},
+	  	chartData: {datasets: []},
+	  	chartOptions: {
+				legend: {display: false},
 				scales: {
 					yAxes: [{
 						scaleLabel: {
 							display: true,
 							labelString: 'Units Per Hour'
 						}
+					}],
+        	xAxes: [{
+						type: 'time',
+						time: {
+							distribution: 'linear',
+							unit: 'day',
+							// min: moment('2019-09-17 00:00:00', 'YYYY-MM-DD HH:mm:ss'),
+							// max: moment('2019-09-18 00:00:00', 'YYYY-MM-DD HH:mm:ss'),
+							stepSize: 1,
+							displayFormats: {
+								minute: 'mm:ss',
+								hour: 'HH:mm:ss',
+								day : 'MM-DD-YYYY'
+								}
+						}
 					}]
 				},
+				tooltips: {
+        	callbacks: {
+          	label: function(tooltipItem, data) {
+            	return data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index].tooltipLabel;
+          	}
+					}
+				}
 			},
     };
   },
@@ -64,35 +84,43 @@ export default {
           console.log("API error: " + e);
         });
 		},
+		mtime(time){
+			var mtime = moment(time,'YYYY-MM-DD HH:mm:ss');
+			return mtime;
+		},	
 		updateChart(){
-			// var ses = this.scheduleEvents = this.scheduleEvents.sort(function(a, b){
-			// 		return moment(a.schedule.date, 'MM-DD-YYYY').diff(moment(b.schedule.date, 'MM-DD-YYYY'));
-			// 	});
-			var date = this.scheduleEvents[0].schedule.date;
-			var dateLabel = moment(date).format('MM-DD-YYYY') + ', ';
-			this.chartData = {
-				labels: [dateLabel+moment(this.scheduleEvents[0].startTime,'HH:mm:ss').format('HH:mm')],
-				datasets: [{data: [0], lineTension: 0}]
-			}
+			// this.chartOptions.scales.xAxes[0].time.unit = 'day';
+			var dsIndex = 0;
 			this.scheduleEvents.forEach(se => {
-				var productions = se.productions.sort(function(a, b){
+				if(!se.startTime){
+					return;
+				}
+				var startDate = moment(se.schedule.date +" "+ se.startTime, 'YYYY-MM-DD HH:mm:ss');
+				var prevTime = moment(se.startTime, 'HH:mm:ss');
+				var tooltipLabel = "Started at "+ moment(se.startTime, 'HH:mm:ss').format('HH:mm');
+				var data = [{x: startDate, y: 0, tooltipLabel: tooltipLabel}];
+				var sortedProductions = se.productions.sort(function(a, b){
 					return moment(a.finishTime, 'HH:mm:ss').diff(moment(b.finishTime, 'HH:mm:ss'));
 				});
-				var lastTime = moment(se.startTime, 'HH:mm:ss');
-				date = se.schedule.date;
-				dateLabel = moment(date).format('MM-DD-YYYY') + ', ';
-				console.log(dateLabel);
-				productions.forEach(production => {
-					var currentTime = moment(production.finishTime, 'HH:mm:ss');
-					var diffSecs = currentTime.diff(lastTime, 'seconds');
-					var unitsPerMinute = (production.unitsProduced/diffSecs)*60*60;
-					this.chartData.labels.push(dateLabel+moment(production.finishTime,'HH:mm:ss').format('HH:mm:ss'));
-					this.chartData.datasets[0].data.push(unitsPerMinute);
-					lastTime = currentTime;
-					dateLabel = "";
+				sortedProductions.forEach(p => {
+					var secs = moment(p.finishTime, 'HH:mm:ss').diff(prevTime, 'seconds');
+					var time = moment().startOf('day').seconds(secs).format('HH:mm:ss')
+					var perf = !secs?0:((p.unitsProduced/secs)*3600).toFixed(0);
+					var tooltipLabel= perf+" u/h (" +p.unitsProduced+" units in "+time+")"
+					data.push({x: moment(se.schedule.date +" "+ p.finishTime, 'YYYY-MM-DD HH:mm:ss'), y: perf, tooltipLabel: tooltipLabel});
+					prevTime = moment(p.finishTime, 'HH:mm:ss');
 				})
-			});
-		},
+				this.chartData.datasets.push({
+					// label: this.scheduleEvent.saleItem.item.name,
+					datasetIndex: dsIndex, 
+					data: data, 
+					lineTension: 0,
+					fill: false,
+					borderColor: '#C28535',
+				});
+				dsIndex++;
+			})
+		}
   },
   mounted() {
     var item_id = this.$route.params.item_id;
