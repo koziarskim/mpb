@@ -88,6 +88,7 @@ export default {
 	  people: 0,
 	  chartData: {datasets: []},
 	  chartOptions: {
+			legend: {display: false},
 			scales: {
         xAxes: [{
 					type: 'time',
@@ -101,6 +102,13 @@ export default {
 					}
 				}]
 			},
+			tooltips: {
+        callbacks: {
+          label: function(tooltipItem, data) {
+            return data.datasets[0].data[tooltipItem.index].tooltipLabel;
+          }
+				}
+			}
 		},
     availableLines: [],
     line: {},
@@ -129,15 +137,13 @@ export default {
   methods: {
 		updateChart(){
 			var prevTime = this.mtime(this.scheduleEvent.startTime);
+			var tooltipLabel = "Started at "+ moment(this.scheduleEvent.startTime, 'HH:mm:ss').format('HH:mm');
 			this.chartData.datasets = [{
-				label: this.scheduleEvent.saleItem.item.name, 
-				data: [{x: prevTime, y: 0}], 
+				// label: this.scheduleEvent.saleItem.item.name, 
+				data: [{x: prevTime, y: 0, tooltipLabel: tooltipLabel}], 
 				lineTension: 0,
+				fill: false,
 				borderColor: '#C28535',
-  			// backgroundColor: '#C28535',
-  			// pointBorderColor: '#C28535',
-  			// pointBackgroundColor: '#C28535',
-  			// pointBorderWidth: 1,
 			}]; 
 			var sortedProductions = this.scheduleEvent.productions.sort(function(a, b){
 				return moment(a.finishTime, 'HH:mm:ss').diff(moment(b.finishTime, 'HH:mm:ss'));
@@ -145,7 +151,8 @@ export default {
 			sortedProductions.forEach(p => {
 				var secs = moment(p.finishTime, 'HH:mm:ss').diff(prevTime, 'seconds');
 				var perf = ((p.unitsProduced/secs)*3600).toFixed(0);
-				this.chartData.datasets[0].data.push({x: this.mtime(p.finishTime), y: perf});
+				var tooltipLabel= p.unitsProduced+" units in "+(secs/60).toFixed(0)+" minutes"
+				this.chartData.datasets[0].data.push({x: this.mtime(p.finishTime), y: perf, tooltipLabel: tooltipLabel});
 				prevTime = this.mtime(p.finishTime);
 			})
 		},
