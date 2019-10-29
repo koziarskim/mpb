@@ -42,8 +42,6 @@ export default {
 						time: {
 							distribution: 'linear',
 							unit: 'day',
-							// min: moment('2019-09-17 00:00:00', 'YYYY-MM-DD HH:mm:ss'),
-							// max: moment('2019-09-18 00:00:00', 'YYYY-MM-DD HH:mm:ss'),
 							stepSize: 1,
 							displayFormats: {
 								minute: 'mm:ss',
@@ -115,6 +113,7 @@ export default {
 					datasetIndex: dsIndex, 
 					data: data, 
 					lineTension: 0,
+					steppedLine: 'after',
 					fill: false,
 					borderColor: '#C28535',
 				});

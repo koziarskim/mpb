@@ -54,9 +54,6 @@ class ScheduleEventRest {
 	List<ScheduleEvent> getByItem(@PathVariable Long item_id) {
 		List<ScheduleEvent> result = scheduleEventRepo.findByItem(item_id);
 		List<ScheduleEvent> sorted = result.stream().sorted((se1, se2) -> se1.getSchedule().getDate().compareTo(se2.getSchedule().getDate())).collect(Collectors.toList());;
-		for(ScheduleEvent se: sorted) {
-			System.out.println(se.getSchedule().getDate());
-		}
 		return sorted;
 	}
 

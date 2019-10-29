@@ -148,6 +148,7 @@ export default {
 				// label: this.scheduleEvent.saleItem.item.name, 
 				data: [{x: prevTime, y: 0, tooltipLabel: tooltipLabel}], 
 				lineTension: 0,
+				steppedLine: 'after',
 				fill: false,
 				borderColor: '#C28535',
 			}]; 
