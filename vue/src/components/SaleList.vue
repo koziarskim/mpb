@@ -30,10 +30,12 @@
 <script>
 import http from "../http-common";
 import router from "../router";
+import securite from "../securite"
 
 export default {
   data() {
     return {
+      securite: securite,
       pageable: {totalElements: 100, currentPage: 1, perPage: 7, sortBy: 'number', sortDesc: false},
       searchSale: "",
       searchItem: "",
@@ -84,6 +86,10 @@ export default {
         return component;
     },
     deleteSale(id) {
+      if(!securite.hasRole(["ADMIN"])){
+        alert("Don't have permission to delete sale");
+        return;
+      }
       http
         .delete("/sale/"+id)
         .then(response => {

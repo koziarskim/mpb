@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -25,7 +26,9 @@ import com.noovitec.mpb.dto.PurchaseSaleDto;
 import com.noovitec.mpb.dto.SaleListDto;
 import com.noovitec.mpb.entity.Sale;
 import com.noovitec.mpb.entity.SaleItem;
+import com.noovitec.mpb.entity.ScheduleEvent;
 import com.noovitec.mpb.repo.SaleRepo;
+import com.noovitec.mpb.repo.ScheduleEventRepo;
 
 @RestController
 @RequestMapping("/api")
@@ -34,6 +37,9 @@ class SaleRest {
 	private final Logger log = LoggerFactory.getLogger(SaleRest.class);
 	private SaleRepo saleRepo;
 
+	@Autowired
+	ScheduleEventRepo scheduleEventRpo;
+	
 	public SaleRest(SaleRepo saleRepo) {
 		this.saleRepo = saleRepo;
 	}
@@ -63,7 +69,7 @@ class SaleRest {
 			dto.setName(sale.getName());
 			dto.setDc(sale.getShippingAddress()==null?"":sale.getShippingAddress().getDc());
 			dto.setDate(sale.getDate());
-			dto.setCustomerName(sale.getCustomer().getName());
+			dto.setCustomerName(sale.getCustomer()==null?"":sale.getCustomer().getName());
 			dto.setUnitsSold(sale.getUnitsSold());
 			dto.setUnitsScheduled(sale.getUnitsScheduled());
 			dto.setUnitsProduced(sale.getUnitsProduced());
@@ -145,6 +151,12 @@ class SaleRest {
 
 	@DeleteMapping("/sale/{id}")
 	public ResponseEntity<?> delete(@PathVariable Long id) {
+		Sale sale = saleRepo.getOne(id);
+		for(SaleItem si: sale.getSaleItems()) {
+			for(ScheduleEvent se: si.getScheduleEvents()) {
+				scheduleEventRpo.deleteById(se.getId());
+			}
+		}
 		saleRepo.deleteById(id);
 		return ResponseEntity.ok().build();
 	}
