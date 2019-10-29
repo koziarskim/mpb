@@ -101,8 +101,8 @@ export default {
 					time: {
 						distribution: 'linear',
 						unit: 'hour',
-						min: this.newDate(0,0),
-						max: this.newDate(23,59),
+						min: moment("00:00:00", "H:mm:ss").add(0, 'hours').add(0, 'minutes'),
+						max: moment("00:00:00", "H:mm:ss").add(23, 'hours').add(59, 'minutes'),
 						stepSize: 1,
 						displayFormats: {hour : 'HH:mm'}
 					}
@@ -110,7 +110,7 @@ export default {
 			},
 			tooltips: {
         callbacks: {
-          label: function(tooltipItem, data) {
+          label: (tooltipItem, data) => {
             return data.datasets[0].data[tooltipItem.index].tooltipLabel;
           }
 				}
@@ -120,9 +120,6 @@ export default {
     line: {},
     availableItems: [],
     item: {},
-    dateStarted: moment().format("YYYY-MM-DD"),
-		timeStarted: moment().format("HH:mm:ss"),
-		today: moment(),
 	  scheduleEvent: {
 		  schedule: {},
 		  line: {},
@@ -147,7 +144,6 @@ export default {
 			this.chartData.datasets = [{
 				// label: this.scheduleEvent.saleItem.item.name, 
 				data: [{x: prevTime, y: 0, tooltipLabel: tooltipLabel}], 
-				lineTension: 0,
 				steppedLine: 'after',
 				fill: false,
 				borderColor: '#C28535',
@@ -163,9 +159,6 @@ export default {
 				this.chartData.datasets[0].data.push({x: this.mtime(p.finishTime), y: perf, tooltipLabel: tooltipLabel});
 				prevTime = this.mtime(p.finishTime);
 			})
-		},
-		newDate(hour, min){
-			return moment("00:00:00", "H:mm:ss").add(hour, 'hours').add(min, 'minutes');
 		},
 		hasRoles(roles){
 			var hasRole = this.$store.getters.userContext.hasRoles(['PRODUCTION_ADMIN']);
