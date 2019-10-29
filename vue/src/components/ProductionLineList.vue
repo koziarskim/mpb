@@ -18,7 +18,7 @@
     <div v-if="scheduleEvents.length==0">No lines set for this date</div>
     <b-table v-if="scheduleEvents.length>0" :sticky-header="browserHeight()" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="scheduleEvents" :fields="fields">
       <template v-slot:cell(line.number)="row">
-        <b-button size="sm" @click="goToProductionLine(row.item.id)" variant="link">{{row.item.line.number}}</b-button>
+        <b-button size="sm" @click="goToProductionLine(row.item.line.id)" variant="link">{{row.item.line.id}}</b-button>
       </template>
       <template v-slot:cell(item)="row">
         <b-button size="sm" @click="goToProductionLine(row.item.id)" variant="link">{{row.item.saleItem.item.name}}</b-button>
@@ -212,12 +212,8 @@ export default {
           console.log("API error: " + e);
         });
 	  },
-    goToProductionLine(schedule_event_id) {
-      if (schedule_event_id) {
-        router.push("/productionLine/" + schedule_event_id);
-        return;
-      }
-      router.push("/productionLine");
+    goToProductionLine(line_id) {
+      router.push("/productionLine/" +this.schedule_id+"/"+ line_id);
 	  },
   },
   mounted() {

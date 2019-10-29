@@ -8,7 +8,11 @@
 	<br/>
 	<b-row>
 		<b-col cols=12>
-			<chart :chartdata="chartData" :options="chartOptions" :height="100"></chart>
+			<div class="chartWrapper">
+    		<div class="chartAreaWrapper">
+					<chart :chartdata="chartData" :options="chartOptions" :height="300" :width="50000" style="width: 50000px"></chart>
+				</div>
+			</div>
 		</b-col>
 	</b-row>
   </b-container>
@@ -122,10 +126,26 @@ export default {
   },
   mounted() {
     var item_id = this.$route.params.item_id;
-    this.getItem(item_id);
+		this.getItem(item_id);
+		this.chartWidth="width: 600px";
   }
 };
 </script>
 
 <style>
+.chartWrapper {
+		position: relative;
+}
+
+.chartWrapper > canvas {
+		position: absolute;
+		left: 0;
+		top: 0;
+		pointer-events:none;
+}
+
+.chartAreaWrapper {
+		width: 1200px;
+		overflow-x: scroll;
+}
 </style>

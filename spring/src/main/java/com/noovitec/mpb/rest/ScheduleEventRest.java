@@ -50,6 +50,13 @@ class ScheduleEventRest {
 		return result.map(response -> ResponseEntity.ok().body(response)).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
 	}
 
+	@GetMapping("/scheduleEvent/schedule/{schedule_id}/line/{line_id}")
+	List<ScheduleEvent> getByLine(@PathVariable Long schedule_id, @PathVariable Long line_id) {
+		List<ScheduleEvent> result = scheduleEventRepo.findByScheduleAndLine(schedule_id, line_id);
+		List<ScheduleEvent> sorted = result.stream().sorted((se1, se2) -> se1.getSchedule().getDate().compareTo(se2.getSchedule().getDate())).collect(Collectors.toList());;
+		return sorted;
+	}
+
 	@GetMapping("/scheduleEvent/item/{item_id}")
 	List<ScheduleEvent> getByItem(@PathVariable Long item_id) {
 		List<ScheduleEvent> result = scheduleEventRepo.findByItem(item_id);
