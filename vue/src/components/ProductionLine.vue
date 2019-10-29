@@ -52,7 +52,7 @@
 		</b-col>
 	</b-row>
 	<br/>
-	<b-row v-for="(production) in scheduleEvent.productions" v-bind:key="production.id">
+	<b-row v-for="production in sortedProductions" v-bind:key="production.id">
 		<b-col cols=2>
 			<input class="form-control" type="time" v-model="production.finishTime">
 		</b-col>
@@ -85,6 +85,7 @@ export default {
     return {
 			securite: securite,
 			addInProgress: false,
+			sortedProductions: [],
 			unitsToAdd: 0,
 			people: 0,
 			scheduleEvent: {
@@ -141,10 +142,7 @@ export default {
 				fill: false,
 				borderColor: '#C28535',
 			}]; 
-			var sortedProductions = this.scheduleEvent.productions.sort(function(a, b){
-				return moment(a.finishTime, 'HH:mm:ss').diff(moment(b.finishTime, 'HH:mm:ss'));
-			});
-			sortedProductions.forEach(p => {
+			this.sortedProductions.forEach(p => {
 				var secs = moment(p.finishTime, 'HH:mm:ss').diff(prevTime, 'seconds');
 				var time = moment().startOf('day').seconds(secs).format('HH:mm:ss')
 				var perf = !secs?0:((p.unitsProduced/secs)*3600).toFixed(0);
@@ -170,7 +168,10 @@ export default {
 		},
     getScheduleEvent(schedule_event_id) {
       http.get("/scheduleEvent/" + schedule_event_id).then(response => {
-		  	this.scheduleEvent = response.data;
+				this.scheduleEvent = response.data;
+				this.sortedProductions = response.data.productions.sort(function(a, b){
+					return moment(a.finishTime, 'HH:mm:ss').diff(moment(b.finishTime, 'HH:mm:ss'));
+				});
 		  	this.updateChart();
       }).catch(e => {
         console.log("API error: " + e);
@@ -206,9 +207,24 @@ export default {
 				alert("Cannot enter more units than scheduled");
 				return;
 			}
+			var prevTime = moment(this.scheduleEvent.startTime, 'HH:mm:ss');
+			if(this.sortedProductions.length>0){
+				prevTime = moment(this.sortedProductions[this.sortedProductions.length-1].finishTime, 'HH:mm:ss');
+			}
+			var currentTime = moment();
+			var secs = currentTime.diff(prevTime, 'seconds');
+			if(secs<60){
+				alert("It took "+secs+" seconds to produce "+this.unitsToAdd +" units?\n\n"
+					+"Few tips: \n"
+					+"Click Start Production button when production started (not later).\n"
+					+"Units entered don't have to equal previously entered\n"
+					+"Add units as soon as possible.\n"
+					+"Add units as often as possible.\n\n"
+					+"Units will added this time but please, follow the tips!");
+			}
 			var production = {
 				scheduleEvent: {id: this.scheduleEvent.id},
-				finishTime: moment().format("HH:mm:ss"),
+				finishTime: currentTime.format("HH:mm:ss"),
 				unitsProduced: this.unitsToAdd,
 				people: this.people
 			};
