@@ -45,7 +45,7 @@
 		</b-col>
 	</b-row>
 	<br/>
-	<div v-if="hasRoles(['PRODUCTION_ADMIN'])">
+	<div v-if="securite.hasRole(['PRODUCTION_ADMIN'])">
 	<b-row>
 		<b-col>
 			<span style="font-size: 18px; font-weight: bold; align:left">Production Output </span>
@@ -78,68 +78,61 @@ import router from "../router";
 import httpUtils from "../httpUtils";
 import moment from "moment";
 import store from "../store.js";
+import securite from "../securite";
 
 export default {
-  name: "edit-component",
   data() {
     return {
-	  addInProgress: false,
-	  unitsToAdd: 0,
-	  people: 0,
-	  chartData: {datasets: []},
-	  chartOptions: {
-			legend: {display: false},
-			scales: {
-				yAxes: [{
-          scaleLabel: {
-          	display: true,
-          	labelString: 'Units Per Hour'
-          }
-        }],
-        xAxes: [{
-					type: 'time',
-					time: {
-						distribution: 'linear',
-						unit: 'hour',
-						min: moment("00:00:00", "H:mm:ss").add(0, 'hours').add(0, 'minutes'),
-						max: moment("00:00:00", "H:mm:ss").add(23, 'hours').add(59, 'minutes'),
-						stepSize: 1,
-						displayFormats: {hour : 'HH:mm'}
+			securite: securite,
+			addInProgress: false,
+			unitsToAdd: 0,
+			people: 0,
+			scheduleEvent: {
+				schedule: {},
+				line: {},
+				saleItem: {
+					item: {},
+					sale: {
+						customer: {}
 					}
-				}]
-			},
-			tooltips: {
-        callbacks: {
-          label: (tooltipItem, data) => {
-            return data.datasets[0].data[tooltipItem.index].tooltipLabel;
-          }
 				}
-			}
-		},
-    availableLines: [],
-    line: {},
-    availableItems: [],
-    item: {},
-	  scheduleEvent: {
-		  schedule: {},
-		  line: {},
-		  saleItem: {
-			  item: {},
-			  sale: {
-				  customer: {}
-			  }
-		  }
-	  }
+			},
+			chartData: {datasets: []},
+			chartOptions: {
+				legend: {display: false},
+				scales: {
+					yAxes: [{
+						scaleLabel: {
+							display: true,
+							labelString: 'Units Per Hour'
+						}
+					}],
+					xAxes: [{
+						type: 'time',
+						time: {
+							distribution: 'linear',
+							unit: 'hour',
+							min: moment("00:00:00", "H:mm:ss").add(0, 'hours').add(0, 'minutes'),
+							max: moment("00:00:00", "H:mm:ss").add(23, 'hours').add(59, 'minutes'),
+							stepSize: 1,
+							displayFormats: {hour : 'HH:mm'}
+						}
+					}]
+				},
+				tooltips: {
+					callbacks: {
+						label: (tooltipItem, data) => {
+							return data.datasets[0].data[tooltipItem.index].tooltipLabel;
+						}
+					}
+				}
+			},
     };
   },
-  watch: {
-    line(new_value, old_value) {
-      this.getAvailableItems();
-    }
-  },
+  watch: {},
   methods: {
 		updateChart(){
-			var prevTime = this.mtime(this.scheduleEvent.startTime);
+			var prevTime = moment(this.scheduleEvent.startTime, 'HH:mm:ss');
 			var tooltipLabel = "Started at "+ moment(this.scheduleEvent.startTime, 'HH:mm:ss').format('HH:mm');
 			this.chartData.datasets = [{
 				// label: this.scheduleEvent.saleItem.item.name, 
@@ -156,177 +149,88 @@ export default {
 				var time = moment().startOf('day').seconds(secs).format('HH:mm:ss')
 				var perf = !secs?0:((p.unitsProduced/secs)*3600).toFixed(0);
 				var tooltipLabel= perf+" u/h (" +p.unitsProduced+" units in "+time+")"
-				this.chartData.datasets[0].data.push({x: this.mtime(p.finishTime), y: perf, tooltipLabel: tooltipLabel});
-				prevTime = this.mtime(p.finishTime);
+				this.chartData.datasets[0].data.push({x: moment(p.finishTime, 'HH:mm:ss'), y: perf, tooltipLabel: tooltipLabel});
+				prevTime = moment(p.finishTime, 'HH:mm:ss');
 			})
-		},
-		hasRoles(roles){
-			var hasRole = this.$store.getters.userContext.hasRoles(['PRODUCTION_ADMIN']);
-			return hasRole;
 		},
 		updateProduction(production){
 			production.scheduleEvent = {id: this.scheduleEvent.id};
-      return http
-        .post("/production", production)
-        .then(response => {
-					this.getScheduleEvent(this.scheduleEvent.id);
-        })
-        .catch(e => {
-          console.log("API error: " + e);
-        });
+      return http.post("/production", production).then(response => {
+				this.getScheduleEvent(this.scheduleEvent.id);
+      }).catch(e => {
+        console.log("API error: " + e);
+      });
 		},
 		deleteProduction(production_id){
-      return http
-        .delete("/production/"+production_id)
-        .then(response => {
-					this.getScheduleEvent(this.scheduleEvent.id);
-        })
-        .catch(e => {
-          console.log("API error: " + e);
-        });
+      return http.delete("/production/"+production_id).then(response => {
+				this.getScheduleEvent(this.scheduleEvent.id);
+      }).catch(e => {
+        console.log("API error: " + e);
+      });
 		},
     getScheduleEvent(schedule_event_id) {
-      http
-        .get("/scheduleEvent/" + schedule_event_id)
-        .then(response => {
-		  		this.scheduleEvent = response.data;
-		  		this.updateChart();
-        })
-        .catch(e => {
-          console.log("API error: " + e);
-        });
-	},
-	mtime(time){
-		return moment(time,'HH:mm:ss');
-	},
-	getUnitsForHour(hour, productions){
-		var units = 0;
-		var index = 0;
-		productions.forEach(p => {
-			var nextProduction = productions[index+1];
-			var nextHour = null;
-			if(nextProduction){
-				nextHour = moment(productions[index+1].finishTime,'HH:mm:ss').hour();;
+      http.get("/scheduleEvent/" + schedule_event_id).then(response => {
+		  	this.scheduleEvent = response.data;
+		  	this.updateChart();
+      }).catch(e => {
+        console.log("API error: " + e);
+      });
+		},
+		startProduction() {
+			this.scheduleEvent.startTime = moment().format("HH:mm:ss");
+				return http.post("/scheduleEvent", this.scheduleEvent).then(response => {
+					this.getScheduleEvent(this.scheduleEvent.id);
+				}).catch(e => {
+					console.log("API error: " + e);
+				});
+			},
+			finishProduction() {
+				this.scheduleEvent.finishTime = moment().format("HH:mm:ss");
+				return http.post("/scheduleEvent", this.scheduleEvent).then(response => {
+					router.push("/productionLineList");
+				}).catch(e => {
+					console.log("API error: " + e);
+				});
+			},
+		saveOutput(){
+			if(!this.unitsToAdd || this.unitsToAdd<1){
+				alert("Enter Units Produced!")
+				return;
 			}
-			var currentHour = moment(p.finishTime,'HH:mm:ss').hour();
-			if(currentHour==hour){
-				if(nextHour==hour){
-					units += p.unitsProduced;
-				}else{
-					var reminingSecs = moment(nextProduction.finishTime, 'HH:mm:ss').diff(moment(p.finishTime, 'HH:mm:ss'),'seconds');
-					var perc = reminingSecs/3600;
-					var nextUnits = nextProduction.unitsProduced;
-					var reminingUnits = nextUnits*perc;
-					units += reminingUnits;
-				}
-				
+			if(!this.people || this.people<1){
+				alert("Enter Assigned People!")
+				return;
 			}
-			index++;
-		})
-		return units.toFixed(0);
+			var totalUnits = +this.scheduleEvent.totalProduced + +this.unitsToAdd;
+			if(totalUnits > this.scheduleEvent.unitsScheduled){
+				alert("Cannot enter more units than scheduled");
+				return;
+			}
+			var production = {
+				scheduleEvent: {id: this.scheduleEvent.id},
+				finishTime: moment().format("HH:mm:ss"),
+				unitsProduced: this.unitsToAdd,
+				people: this.people
+			};
+			return http.post("/production", production).then(response => {
+				this.getScheduleEvent(this.scheduleEvent.id);
+			}).catch(e => {
+				console.log("API error: " + e);
+			});
+			this.addInProgress = false;
+		},
+		inProgress() {
+			return (this.scheduleEvent.startTime != null && this.scheduleEvent.finishTime == null);
+		},
+		isFinished() {
+			return this.scheduleEvent.finishTime != null;
+		}
 	},
-    getAvailableLines() {
-      this.availableLines = [
-        { id: 1, number: 1 },
-        { id: 2, number: 2 },
-        { id: 3, number: 3 },
-        { id: 4, number: 4 },
-        { id: 5, number: 5 },
-        { id: 6, number: 6 },
-        { id: 7, number: 7 },
-        { id: 8, number: 8 }
-      ];
-    },
-    getAvailableItems() {
-      http
-        .get("/item")
-        .then(response => {
-          this.availableItems = response.data;
-        })
-        .catch(e => {
-          console.log("API error: " + e);
-        });
-    },
-    validate() {
-      if (!this.line.id) {
-        alert("Please select line");
-        return false;
-      }
-      if (!this.item.id) {
-        alert("Please select item");
-        return false;
-      }
-      return true;
-    },
-    startProduction() {
-		this.scheduleEvent.startTime = moment().format("HH:mm:ss");
-      return http
-        .post("/scheduleEvent", this.scheduleEvent)
-        .then(response => {
-			this.getScheduleEvent(this.scheduleEvent.id);
-        })
-        .catch(e => {
-          console.log("API error: " + e);
-        });
-    },
-    finishProduction() {
-      this.scheduleEvent.finishTime = moment().format("HH:mm:ss");
-      return http
-        .post("/scheduleEvent", this.scheduleEvent)
-        .then(response => {
-          router.push("/productionLineList");
-        })
-        .catch(e => {
-          console.log("API error: " + e);
-        });
-    },
-	saveOutput(){
-		if(!this.unitsToAdd || this.unitsToAdd<1){
-			alert("Enter Units Produced!")
-			return;
-		}
-		if(!this.people || this.people<1){
-			alert("Enter Assigned People!")
-			return;
-		}
-		var totalUnits = +this.scheduleEvent.totalProduced + +this.unitsToAdd;
-		if(totalUnits > this.scheduleEvent.unitsScheduled){
-			alert("Cannot enter more units than scheduled");
-			return;
-		}
-		var production = {
-		  scheduleEvent: {id: this.scheduleEvent.id},
-		  finishTime: moment().format("HH:mm:ss"),
-		  unitsProduced: this.unitsToAdd,
-		  people: this.people
-	  };
-      return http
-        .post("/production", production)
-        .then(response => {
-			this.getScheduleEvent(this.scheduleEvent.id);
-        })
-        .catch(e => {
-          console.log("API error: " + e);
-        });
-		this.addInProgress = false;
-	},
-    inProgress() {
-      return (
-        this.scheduleEvent.startTime != null &&
-        this.scheduleEvent.finishTime == null
-	  );
-    },
-    isFinished() {
-		return this.scheduleEvent.finishTime != null;
-    }
-  },
-  mounted() {
+	mounted() {
 		var schedule_event_id = this.$route.params.schedule_event_id;
-		var line_id = this.$route.params.line_id;
     if (schedule_event_id) {
       this.getScheduleEvent(schedule_event_id);
     }
-    this.getAvailableLines();
   }
 };
 </script>
