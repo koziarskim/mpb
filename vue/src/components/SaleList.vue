@@ -90,14 +90,16 @@ export default {
         alert("Don't have permission to delete sale");
         return;
       }
-      http
-        .delete("/sale/"+id)
-        .then(response => {
-          this.getSales();
-        })
-        .catch(e => {
+      this.$bvModal.msgBoxConfirm('Are you sure you want to delete this Sale? '+
+      'This will also delete all Schedules and Productions associated with this Sale').then(ok => {
+        if(ok){
+          http.delete("/sale/"+id).then(response => {
+            this.getSales();
+          }).catch(e => {
             console.log("API Error: "+e);
-        });
+          });
+            }
+        })
     },
     goToSale(id){
         if(!id){

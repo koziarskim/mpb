@@ -6,12 +6,12 @@ Deploy to mpb.noovitec.com
 	
 	- Backup DB: run from Windows: mpb/env/backup_mpb_noovitec.bat
 	
+	- From mpb/spring run "mvn -e clean package" - this will build "mpb/spring/target/mpb-api.war" file that needs to be deployed to Tomcat.
+	- Use Tomcat console to deploy (or any other way).
+
 	- From mpb/vue run "yarn -e clean build" - this will rebuild "mpb/vue/dist" directory.
 	- Copy "dist" to location set in nginx-(linux/windows).conf, line server.location.alias (for mpb/static).
 	- Use WinSCP or any tool to remote copy.
-	
-	- From mpb/spring run "mvn -e clean package" - this will build "mpb/spring/target/mpb-api.war" file that needs to be deployed to Tomcat.
-	- Use Tomcat console to deploy (or any other way).
 
 	- If nginx configuration changed (mpb/env/nginx-(linux/windows).conf, copy file to location set in /etc/nginx/nginx.config property "http.include"
 	- Restart nginx: sudo systemctl restart nginx
