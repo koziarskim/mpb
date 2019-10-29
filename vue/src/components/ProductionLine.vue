@@ -113,8 +113,7 @@ export default {
 						time: {
 							distribution: 'linear',
 							unit: 'hour',
-							min: moment("00:00:00", "H:mm:ss").add(0, 'hours').add(0, 'minutes'),
-							max: moment("00:00:00", "H:mm:ss").add(23, 'hours').add(59, 'minutes'),
+							// max: moment("00:00:00", "H:mm:ss").add(23, 'hours').add(59, 'minutes'),
 							stepSize: 1,
 							displayFormats: {hour : 'HH:mm'}
 						}
@@ -134,6 +133,7 @@ export default {
   methods: {
 		updateChart(){
 			var prevTime = moment(this.scheduleEvent.startTime, 'HH:mm:ss');
+			this.chartOptions.scales.xAxes[0].time.min = moment(prevTime.hour(), "HH");
 			var tooltipLabel = "Started at "+ moment(this.scheduleEvent.startTime, 'HH:mm:ss').format('HH:mm');
 			this.chartData.datasets = [{
 				// label: this.scheduleEvent.saleItem.item.name, 
