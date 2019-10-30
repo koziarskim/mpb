@@ -244,6 +244,11 @@ export default {
 				});
 			},
 			finishProduction() {
+				if(this.scheduleEvent.totalProduced < this.scheduleEvent.unitsScheduled){
+					if(!confirm("There are more units scheduled that produced. \n Are you sure you want to finish it?")){
+						return;
+					}
+				}
 				this.scheduleEvent.finishTime = moment().format("HH:mm:ss");
 				return http.post("/scheduleEvent", this.scheduleEvent).then(response => {
 					this.getScheduleEvent(this.scheduleEvent.id);
