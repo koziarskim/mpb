@@ -171,7 +171,7 @@ export default {
       router.push("/saleEdit/" + sale_id);
     },
     goToProduction(se_id) {
-      router.push("/productionLine/" + se_id);
+      router.push("/productionSale/" + se_id);
     },
     goToGraph() {
       router.push("/itemGraph/" + this.item.id);
