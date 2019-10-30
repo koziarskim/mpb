@@ -1,72 +1,63 @@
 <template>
   <b-container fluid>
-    <b-row>
-      <b-col cols="6">
-        <span style="font-size: 18px; font-weight: bold">{{schedule.date}} Production Output for Line: {{line_id}} </span>
-      </b-col>
-    </b-row>
-	<b-row>
-		<b-col cols=4>
-			<div style="font-size:18px">Started: {{scheduleEvent.startTime}}</div>
-			<div style="font-size:18px">Finished: {{scheduleEvent.finishTime}}</div>
-			<div style="font-size:18px">Units Scheduled: {{scheduleEvent.unitsScheduled}}</div>
-			<div style="font-size:18px">Total Produced: {{scheduleEvent.totalProduced}}</div>
-		</b-col>
-		<b-col cols=4>
-			<div style="font-size:18px">Item: {{scheduleEvent.saleItem.item.name}}</div>
-			<div style="font-size:18px">Customer: {{scheduleEvent.saleItem.sale.customer.name}}</div>
-			<div style="font-size:18px">Sale: {{scheduleEvent.saleItem.sale.number}}</div>
-		</b-col>
-		<b-col cols=4>
-			<b-button v-if="inProgress() && !isFinished()" style="margin: 3px" type="submit" variant="success" @click="openModal()">Add Units</b-button>
-			<b-button v-if="!inProgress() && !isFinished()" style="margin: 3px" type="submit" variant="success" @click="startProduction">Start</b-button>
-			<b-button v-if="inProgress() && !isFinished()" style="margin: 3px" type="submit" variant="success" @click="finishProduction">Finish</b-button>
-		</b-col>
-	</b-row>
-	<b-row>
-		<b-col cols=5>
-			<div v-for="ie in itemEvents" :key="ie.id">
-				<div :style="getStyle(ie.active)">{{ie.name}}</div>
-				<ul v-for="customer in ie.customers" :key="customer.id">
-					<li :style="getStyle(customer.active)">{{customer.name}}</li>
-					<ul v-for="event in customer.events" :key="event.id">
-						<li style="cursor: pointer;" :style="getStyle(event.active)" @click="setEvent(ie, customer, event)">
-							{{event.saleItem.sale.number}} {{event.finishTime?" (Completed)":(event.startTime?" (Started)":" (Not Started)")}}
-						</li>
+		<b-row>
+			<b-col cols=10 style="margin-top:6px; margin-bottom:6px">
+				<span style="font-weight: bold">{{schedule.date}} </span>- Production Line: <span style="font-weight: bold">{{line_id}}</span>
+				Started: <span style="font-weight: bold">{{scheduleEvent.startTime}}</span>
+				Finished: <span style="font-weight: bold">{{scheduleEvent.finishTime}}</span>
+				Units Scheduled: <span style="font-weight: bold">{{scheduleEvent.unitsScheduled}}</span>
+				Total Produced: <span style="font-weight: bold">{{scheduleEvent.totalProduced}}</span>
+			</b-col>
+			<b-col>
+				<b-button v-if="inProgress() && !isFinished()" type="submit" variant="success" @click="openModal()">Add Units</b-button>
+				<b-button v-if="this.scheduleEvent.id !=null && !inProgress() && !isFinished()" type="submit" variant="success" @click="startProduction">Start</b-button>
+				<b-button v-if="inProgress() && !isFinished()" type="submit" variant="success" @click="finishProduction">Finish</b-button>
+			</b-col>
+		</b-row>
+		<b-row>
+			<b-col cols=4>
+				<div v-for="ie in itemEvents" :key="ie.id">
+					<div :style="getStyle(ie.active)">{{ie.name}}</div>
+					<ul v-for="customer in ie.customers" :key="customer.id">
+						<li :style="getStyle(customer.active)">{{customer.name}}</li>
+						<ul v-for="event in customer.events" :key="event.id">
+							<li style="cursor: pointer;" :style="getStyle(event.active)" @click="getScheduleEvent(event.id)">
+								{{event.saleItem.sale.number}} {{event.finishTime?" (Completed)":(event.startTime?" (Started)":" (Not Started)")}}
+							</li>
+						</ul>
 					</ul>
-				</ul>
-			</div>
-		</b-col>
-		<b-col cols=7>
-			<chart :chartdata="chartData" :options="chartOptions" :width="600" :height="300"></chart>
-		</b-col>
-	</b-row>
-	<div v-if="modalVisible">
-		<production-modal v-on:closeModal="closeModal()"></production-modal>
-	</div>
-	<br/>
-	<div v-if="securite.hasRole(['PRODUCTION_ADMIN'])">
-	<b-row>
-		<b-col>
-			<span style="font-size: 18px; font-weight: bold; align:left">Production Output </span>
-		</b-col>
-	</b-row>
-	<br/>
-	<b-row v-for="production in sortedProductions" v-bind:key="production.id">
-		<b-col cols=2>
-			<input class="form-control" type="time" v-model="production.finishTime">
-		</b-col>
-		<b-col cols=2>
-			<input class="form-control" type="tel" v-model="production.unitsProduced">
-		</b-col>
-		<b-col cols=1>
-			<input class="form-control" type="tel" v-model="production.people">
-		</b-col>
-		<b-col cols=2>
-			<b-button size="sm" @click.stop="updateProduction(production)" variant="link">Update</b-button>
-			<b-button size="sm" @click.stop="deleteProduction(production.id)" variant="link">Delete</b-button>
-		</b-col>
-	</b-row>
+				</div>
+			</b-col>
+			<b-col cols=8>
+				<chart :chartdata="chartData" :options="chartOptions" :width="600" :height="300"></chart>
+			</b-col>
+		</b-row>
+		<div v-if="modalVisible">
+			<production-modal :schedule-event="scheduleEvent" v-on:closeModal="closeModal()"></production-modal>
+		</div>
+		<br/>
+		<div v-if="securite.hasRole(['PRODUCTION_ADMIN'])">
+		<b-row>
+			<b-col>
+				<span style="font-size: 18px; font-weight: bold; align:left">Production Output </span>
+			</b-col>
+		</b-row>
+		<br/>
+		<b-row v-for="production in sortedProductions" v-bind:key="production.id">
+			<b-col cols=2>
+				<input class="form-control" type="time" v-model="production.finishTime">
+			</b-col>
+			<b-col cols=2>
+				<input class="form-control" type="tel" v-model="production.unitsProduced">
+			</b-col>
+			<b-col cols=1>
+				<input class="form-control" type="tel" v-model="production.people">
+			</b-col>
+			<b-col cols=2>
+				<b-button size="sm" @click.stop="updateProduction(production)" variant="link">Update</b-button>
+				<b-button size="sm" @click.stop="deleteProduction(production.id)" variant="link">Delete</b-button>
+			</b-col>
+		</b-row>
 	</div>
 	<br/>
   </b-container>
@@ -95,6 +86,7 @@ export default {
 			unitsToAdd: 0,
 			people: 0,
 			itemEvents: [],
+			activeItemEvent: {},
 			scheduleEvents: [],
 			scheduleEvent: {
 				schedule: {},
@@ -146,24 +138,6 @@ export default {
 			}
 			return style;
 		},
-		setEvent(itemEvent, customer, event){
-			this.itemEvents.forEach(ie => {
-				ie.active = false;
-				ie.customers.forEach(cu => {
-					cu.active = false;
-					cu.events.forEach(e => {
-						e.active = false;
-					})
-				})
-			})
-			itemEvent.active = !itemEvent.active;
-			customer.active = !customer.active;
-			event.active = !event.active;
-			if(event.active){
-				this.getScheduleEvent(event.id);
-			}
-			this.updateChart();
-		},
 		updateChart(){
 			var prevTime = moment(this.scheduleEvent.startTime, 'HH:mm:ss');
 			this.chartOptions.scales.xAxes[0].time.min = moment(prevTime.hour(), "HH");
@@ -208,7 +182,7 @@ export default {
 		},
     getScheduleEvents(schedule_id) {
       http.get("/scheduleEvent/schedule/"+schedule_id+"/line/" + this.line_id).then(response => {
-				this.itemEvents = [];
+				this.itemEvents.splice(0, this.itemEvents.length);
 				this.scheduleEvents = response.data;
 				response.data.forEach(event => {
 					var itemEvent = this.itemEvents.find(ie => ie.id == event.saleItem.item.id);
@@ -216,7 +190,7 @@ export default {
 						itemEvent = {
 							id: event.saleItem.item.id,
 							name: event.saleItem.item.name,
-							active: false,
+							active: this.scheduleEvent.saleItem.item.id == event.saleItem.item.id?true:false,
 							customers: [],
 						}
 						this.itemEvents.push(itemEvent);
@@ -226,12 +200,12 @@ export default {
 						customer = {
 							id: event.saleItem.sale.customer.id,
 							name: event.saleItem.sale.customer.name,
-							active: false,
+							active: this.scheduleEvent.saleItem.sale.customer.id == event.saleItem.sale.customer.id?true:false,
 							events: []
 						}
 						itemEvent.customers.push(customer);
 					}
-					event.active = false;
+					event.active = this.scheduleEvent.id == event.id?true:false;
 					customer.events.push(event);
 				})
       }).catch(e => {
@@ -239,12 +213,14 @@ export default {
       });
 		},
     getScheduleEvent(schedule_event_id) {
-      http.get("/scheduleEvent/" + schedule_event_id).then(response => {
+      return http.get("/scheduleEvent/" + schedule_event_id).then(response => {
 				this.scheduleEvent = response.data;
 				this.sortedProductions = response.data.productions.sort(function(a, b){
 					return moment(a.finishTime, 'HH:mm:ss').diff(moment(b.finishTime, 'HH:mm:ss'));
 				});
-		  	this.updateChart();
+				this.updateChart();
+				this.getScheduleEvents(this.schedule.id);
+				return response.data;
       }).catch(e => {
         console.log("API error: " + e);
       });
@@ -263,7 +239,6 @@ export default {
 			this.scheduleEvent.startTime = moment().format("HH:mm:ss");
 				return http.post("/scheduleEvent", this.scheduleEvent).then(response => {
 					this.getScheduleEvent(this.scheduleEvent.id);
-					this.getScheduleEvents(this.schedule.id)
 				}).catch(e => {
 					console.log("API error: " + e);
 				});
@@ -272,59 +247,19 @@ export default {
 				this.scheduleEvent.finishTime = moment().format("HH:mm:ss");
 				return http.post("/scheduleEvent", this.scheduleEvent).then(response => {
 					this.getScheduleEvent(this.scheduleEvent.id);
-					this.getScheduleEvents(this.schedule.id);
 				}).catch(e => {
 					console.log("API error: " + e);
 				});
 			},
 		openModal(){
 			this.modalVisible = true;
-			// if(!this.unitsToAdd || this.unitsToAdd<1){
-			// 	alert("Enter Units Produced!")
-			// 	return;
-			// }
-			// if(!this.people || this.people<1){
-			// 	alert("Enter Assigned People!")
-			// 	return;
-			// }
-			// var totalUnits = +this.scheduleEvent.totalProduced + +this.unitsToAdd;
-			// if(totalUnits > this.scheduleEvent.unitsScheduled){
-			// 	alert("Cannot enter more units than scheduled");
-			// 	return;
-			// }
-			// var prevTime = moment(this.scheduleEvent.startTime, 'HH:mm:ss');
-			// if(this.sortedProductions.length>0){
-			// 	prevTime = moment(this.sortedProductions[this.sortedProductions.length-1].finishTime, 'HH:mm:ss');
-			// }
-			// var currentTime = moment();
-			// var secs = currentTime.diff(prevTime, 'seconds');
-			// if(secs<60){
-			// 	alert("It took "+secs+" seconds to produce "+this.unitsToAdd +" units?\n\n"
-			// 		+"Few tips: \n"
-			// 		+"Click Start Production button when production started (not later).\n"
-			// 		+"Units entered don't have to equal previously entered\n"
-			// 		+"Add units as soon as possible.\n"
-			// 		+"Add units as often as possible.\n\n"
-			// 		+"Units will added this time but please, follow the tips!");
-			// }
-			// var production = {
-			// 	scheduleEvent: {id: this.scheduleEvent.id},
-			// 	finishTime: currentTime.format("HH:mm:ss"),
-			// 	unitsProduced: this.unitsToAdd,
-			// 	people: this.people
-			// };
-			// return http.post("/production", production).then(response => {
-			// 	this.getScheduleEvent(this.scheduleEvent.id);
-			// }).catch(e => {
-			// 	console.log("API error: " + e);
-			// });
-			// this.addInProgress = false;
 		},
 		closeModal(){
 			this.modalVisible=false;
+			this.getScheduleEvent(this.scheduleEvent.id);
 		},
 		inProgress() {
-			return (this.scheduleEvent.startTime != null && this.scheduleEvent.finishTime == null);
+			return (this.scheduleEvent.startTime !=null && this.scheduleEvent.finishTime == null);
 		},
 		isFinished() {
 			return this.scheduleEvent.finishTime != null;

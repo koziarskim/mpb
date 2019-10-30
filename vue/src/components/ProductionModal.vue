@@ -12,6 +12,20 @@
           </div>
         </b-col>
       </b-row>
+			<b-row>
+				<b-col cols=2>
+					<label class="top-label">Units Produced:</label>
+					<input class="form-control"  type="tel" v-model="production.units" placeholder="0">
+				</b-col>
+				<b-col cols="2">
+					<label class="top-label">People Assigned:</label>
+					<input class="form-control" type="tel" v-model="production.people" placeholder="0">
+				</b-col>
+				<b-col cols="3">
+          <label class="top-label">Time Finished:</label>
+					<input class="form-control" type="time" v-model="production.finishTime">
+				</b-col>
+			</b-row>
     </b-modal>
   </b-container>
 </template>
@@ -19,168 +33,77 @@
 <script>
 import http from "../http-common";
 import router from "../router";
+import moment from "moment";
 
 export default {
-  name: "schedule-modal",
   props: {
     scheduleEvent: Object,
-    schedule: Object
   },
   data() {
     return {
-	  visible: true,
-	  availableCustomers: [],
-	  kvCustomer: {},
-      availableSales: [],
-      kvSale: {},
-      availableSaleItems: [], //SaleItemDto
-      kvSaleItem: {}, //SaleItemDto
-      saleItem: {item: {}},
-      availableItems: [], //ItemDto
-      item: {}, //ItemDto
-      availableLines: [],
-      line: {},
-      initScheduled: 0
+      production: {
+        finishTime: moment().format("HH:mm"),
+      },
+	    visible: true,
     };
   },
   computed: {
   },
-  watch: {
-    kvCustomer(new_value, old_value) {
-      if (!new_value || new_value.id == old_value.id) {
-        return;
-      }
-      if (this.kvCustomer.id) {
-        this.getAvailableSales(this.kvCustomer.id);
-      }
-    },
-    kvSale(new_value, old_value) {
-      if (!new_value || new_value.id == old_value.id) {
-        return;
-      }
-      if (this.kvSale.id) {
-        this.getAvailableSaleItems(this.kvSale.id);
-      }
-    },
-    kvSaleItem(new_value, old_value) {
-      if (!new_value || new_value.id == old_value.id) {
-        return;
-      }
-      if (this.kvSaleItem.id) {
-        this.getSaleItem(this.kvSaleItem.id);
-      }
-    }
-  },
+  watch:{},
   methods: {
-    getAvailableLines() {
-		this.availableLines = [
-			{ id: 1, number: 1 },
-			{ id: 2, number: 2 },
-			{ id: 3, number: 3 },
-			{ id: 4, number: 4 },
-			{ id: 5, number: 5 },
-			{ id: 6, number: 6 },
-			{ id: 7, number: 7 },
-			{ id: 8, number: 8 }
-		];
-		this.line = this.scheduleEvent.line ? this.scheduleEvent.line : {};
-    },
-    getAvailableCustomers() {
-      http
-        .get("/customer/kv")
-        .then(response => {
-          this.availableCustomers = response.data;
-          if (this.scheduleEvent.id) {
-            this.kvCustomer = response.data.find(
-              kvDto => kvDto.id == this.scheduleEvent.saleItem.sale.customer.id
-            );
-          }
-        })
-        .catch(e => {
-          console.log("API error: " + e);
-        });
-    },
-    getAvailableSales(customer_id) {
-      http
-        .get("/kv/sale/customer/"+customer_id)
-        .then(response => {
-          this.availableSales = response.data;
-          if (this.scheduleEvent.id) {
-            this.kvSale = response.data.find(
-              kvDto => kvDto.id == this.scheduleEvent.saleItem.sale.id
-            );
-          }
-        })
-        .catch(e => {
-          console.log("API error: " + e);
-        });
-    },
-    getAvailableSaleItems(sale_id) {
-      if (!sale_id) {
-        this.modalData.availableSales = [];
-      }
-      http
-        .get("/saleItem/sale/" + sale_id)
-        .then(response => {
-          this.availableSaleItems = response.data;
-          if (this.scheduleEvent.id) {
-            this.kvSaleItem = response.data.find(
-              kvDto => kvDto.id == this.scheduleEvent.saleItem.id
-            );
-          }
-        })
-        .catch(e => {
-          console.log("API error: " + e);
-        });
-    },
-    getSaleItem(saleItemId) {
-      http
-        .get("/saleItem/" + saleItemId)
-        .then(response => {
-          this.saleItem = response.data;
-          this.scheduleEvent.unitsScheduled = +this.saleItem.units - +this.saleItem.unitsScheduled;
-        })
-        .catch(e => {
-          console.log("API error: " + e);
-        });
-    },
     validate() {
-      if (!this.line || !this.kvCustomer || !this.saleItem.id || !this.scheduleEvent.scheduleTime || this.scheduleEvent.unitsScheduled <= 0) {
-        alert("Make sure all fields are entered");
-        return false;
+			if(!this.production.units || this.production.units<1){
+				alert("Enter Units Produced!")
+				return false;
+			}
+			if(!this.production.people || this.production.people<1){
+				alert("Enter Assigned People!")
+				return false;
       }
-      if ((+this.saleItem.unitsScheduled + +this.scheduleEvent.unitsScheduled) > this.saleItem.units){
-        alert("Cannot schedule more units than sold!")
-        return false;
-      }
+      if(!this.production.finishTime){
+				alert("Enter Finish Time!")
+				return false;
+			}
+			var totalUnits = +this.scheduleEvent.totalProduced + +this.production.units;
+			if(totalUnits > this.scheduleEvent.unitsScheduled){
+				alert("Cannot enter more units than scheduled");
+				return;
+			}
+      var prevTime = moment(this.scheduleEvent.startTime, 'HH:mm:ss');
+      var sortedProductions = this.scheduleEvent.productions.sort(function(a, b){
+				return moment(a.finishTime, 'HH:mm:ss').diff(moment(b.finishTime, 'HH:mm:ss'));
+			});
+			if(sortedProductions.length>0){
+				prevTime = moment(sortedProductions[sortedProductions.length-1].finishTime, 'HH:mm:ss');
+			}
+			var secs = moment(this.production.finishTime,'HH:mm:ss').diff(prevTime, 'seconds');
+			if(secs<60){
+				alert("It took "+secs+" seconds to produce "+this.production.units +" units?\n\n"
+					+"Few tips: \n"
+					+"Click Start Production button when production started (not later).\n"
+					+"Units entered don't have to equal previously entered\n"
+					+"Add units as soon as possible.\n"
+					+"Add units as often as possible.\n\n"
+					+"Units will added this time but please, follow the tips!");
+			}
       return true;
     },
     saveModal() {
       if (!this.validate()) {
         return;
       }
-      this.scheduleEvent.line = { id: this.line.id };
-      this.scheduleEvent.saleItem = { id: this.saleItem.id };
-      this.scheduleEvent.schedule = { id: this.schedule.id };
-
-      http
-        .post("/scheduleEvent", this.scheduleEvent)
-        .then(response => {
-          this.closeModal();
-        })
-        .catch(e => {
-          console.log("API error: " + e);
-        });
-    },
-    deleteModal() {
-      http
-        .delete("/scheduleEvent/" + this.scheduleEvent.id)
-        .then(response => {
-          this.closeModal();
-        })
-        .catch(e => {
-          console.log("Error post");
-        });
+      var production = {
+				scheduleEvent: {id: this.scheduleEvent.id},
+				finishTime: moment(this.production.finishTime,'HH:mm:ss').format("HH:mm:ss"),
+				unitsProduced: this.production.units,
+				people: this.production.people
+			};
+      http.post("/production", production).then(response => {
+        this.closeModal();
+			}).catch(e => {
+				console.log("API error: " + e);
+			});
+      this.closeModal(this.production);
     },
     closeModal() {
       this.$emit("closeModal");
