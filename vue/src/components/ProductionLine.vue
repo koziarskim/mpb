@@ -2,7 +2,7 @@
   <b-container fluid>
     <b-row>
       <b-col cols="6">
-        <span style="font-size: 18px; font-weight: bold">Production Output for Line: {{line_id}} </span>
+        <span style="font-size: 18px; font-weight: bold">{{schedule.date}} Production Output for Line: {{line_id}} </span>
       </b-col>
     </b-row>
 	<b-row>
@@ -25,8 +25,16 @@
 	</b-row>
 	<b-row>
 		<b-col cols=5>
-			<div v-for="event in scheduleEvents" :key="event.id">
-				<a href="#" @click="getScheduleEvent(event.id)">{{event.saleItem.item.name}} ({{event.saleItem.sale.number}} - {{event.saleItem.sale.customer.name}})</a>
+			<div v-for="ie in itemEvents" :key="ie.id">
+				<div :style="getStyle(ie.active)">{{ie.name}}</div>
+				<ul v-for="customer in ie.customers" :key="customer.id">
+					<li :style="getStyle(customer.active)">{{customer.name}}</li>
+					<ul v-for="event in customer.events" :key="event.id">
+						<li style="cursor: pointer;" :style="getStyle(event.active)" @click="setEvent(ie, customer, event)">
+							{{event.saleItem.sale.number}} {{event.finishTime?" (Completed)":(event.startTime?" (Started)":" (Not Started)")}}
+						</li>
+					</ul>
+				</ul>
 			</div>
 		</b-col>
 		<b-col cols=7>
@@ -79,13 +87,14 @@ export default {
   data() {
     return {
 			line_id: "",
-			schedule_id: "",
+			schedule: {},
 			modalVisible: false,
 			securite: securite,
 			addInProgress: false,
 			sortedProductions: [],
 			unitsToAdd: 0,
 			people: 0,
+			itemEvents: [],
 			scheduleEvents: [],
 			scheduleEvent: {
 				schedule: {},
@@ -130,6 +139,31 @@ export default {
   },
   watch: {},
   methods: {
+		getStyle(active){
+			var style = "";
+			if(active){
+				style = "color: red; font-weight: bold"; 
+			}
+			return style;
+		},
+		setEvent(itemEvent, customer, event){
+			this.itemEvents.forEach(ie => {
+				ie.active = false;
+				ie.customers.forEach(cu => {
+					cu.active = false;
+					cu.events.forEach(e => {
+						e.active = false;
+					})
+				})
+			})
+			itemEvent.active = !itemEvent.active;
+			customer.active = !customer.active;
+			event.active = !event.active;
+			if(event.active){
+				this.getScheduleEvent(event.id);
+			}
+			this.updateChart();
+		},
 		updateChart(){
 			var prevTime = moment(this.scheduleEvent.startTime, 'HH:mm:ss');
 			this.chartOptions.scales.xAxes[0].time.min = moment(prevTime.hour(), "HH");
@@ -165,9 +199,41 @@ export default {
         console.log("API error: " + e);
       });
 		},
-    getScheduleEvents() {
-      http.get("/scheduleEvent/schedule/"+this.schedule_id+"/line/" + this.line_id).then(response => {
+    getSchedule(schedule_id) {
+      http.get("/schedule/"+schedule_id).then(response => {
+				this.schedule = response.data;
+      }).catch(e => {
+        console.log("API error: " + e);
+      });
+		},
+    getScheduleEvents(schedule_id) {
+      http.get("/scheduleEvent/schedule/"+schedule_id+"/line/" + this.line_id).then(response => {
+				this.itemEvents = [];
 				this.scheduleEvents = response.data;
+				response.data.forEach(event => {
+					var itemEvent = this.itemEvents.find(ie => ie.id == event.saleItem.item.id);
+					if(!itemEvent){
+						itemEvent = {
+							id: event.saleItem.item.id,
+							name: event.saleItem.item.name,
+							active: false,
+							customers: [],
+						}
+						this.itemEvents.push(itemEvent);
+					}
+					var customer = itemEvent.customers.find(cu => cu.id == event.saleItem.sale.customer.id);
+					if(!customer){
+						customer = {
+							id: event.saleItem.sale.customer.id,
+							name: event.saleItem.sale.customer.name,
+							active: false,
+							events: []
+						}
+						itemEvent.customers.push(customer);
+					}
+					event.active = false;
+					customer.events.push(event);
+				})
       }).catch(e => {
         console.log("API error: " + e);
       });
@@ -184,9 +250,20 @@ export default {
       });
 		},
 		startProduction() {
+			var alreadyStarted = false;
+			this.scheduleEvents.forEach(se => {
+				if(se.startTime && !se.finishTime){
+					alreadyStarted = true;
+				}
+			})
+			if(alreadyStarted){
+				alert("There is another Sale in progress. Please, finish it before start next one");
+				return;
+			}
 			this.scheduleEvent.startTime = moment().format("HH:mm:ss");
 				return http.post("/scheduleEvent", this.scheduleEvent).then(response => {
 					this.getScheduleEvent(this.scheduleEvent.id);
+					this.getScheduleEvents(this.schedule.id)
 				}).catch(e => {
 					console.log("API error: " + e);
 				});
@@ -194,7 +271,8 @@ export default {
 			finishProduction() {
 				this.scheduleEvent.finishTime = moment().format("HH:mm:ss");
 				return http.post("/scheduleEvent", this.scheduleEvent).then(response => {
-					router.push("/productionLineList");
+					this.getScheduleEvent(this.scheduleEvent.id);
+					this.getScheduleEvents(this.schedule.id);
 				}).catch(e => {
 					console.log("API error: " + e);
 				});
@@ -253,13 +331,10 @@ export default {
 		}
 	},
 	mounted() {
-		this.schedule_id = this.$route.params.schedule_id;
+		var schedule_id = this.$route.params.schedule_id;
+		this.getSchedule(schedule_id);
 		this.line_id = this.$route.params.line_id;
-		this.getScheduleEvents();
-		// var schedule_event_id = this.$route.params.schedule_event_id;
-    // if (schedule_event_id) {
-    //   this.getScheduleEvent(schedule_event_id);
-    // }
+		this.getScheduleEvents(schedule_id);
   }
 };
 </script>
