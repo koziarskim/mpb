@@ -28,6 +28,7 @@ import ShipmentEdit from "./components/ShipmentEdit";
 import ShipmentList from "./components/ShipmentList";
 import ScheduleEventList from "./components/ScheduleEventList";
 import ProductionLine from "./components/ProductionLine";
+import ProductionSale from "./components/ProductionSale";
 import ProductionLineList from "./components/ProductionLineList";
 import ProductionItemList from "./components/ProductionItemList";
 import Profile from "./components/Profile";
@@ -267,6 +268,14 @@ const router = new Router({
       component: ScheduleEventList,
       meta: {
         roles: ["SUPER_USER"]
+      }
+    },
+    {
+      path: "/ProductionSale/:schedule_event_id",
+      name: "ProductionSale",
+      component: ProductionSale,
+      meta: {
+        roles: ["SUPER_USER", "PRODUCTION_ADMIN", "PRODUCTION_LEADER"]
       }
     },
     {

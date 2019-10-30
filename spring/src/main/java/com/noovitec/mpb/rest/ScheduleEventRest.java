@@ -53,7 +53,7 @@ class ScheduleEventRest {
 	@GetMapping("/scheduleEvent/schedule/{schedule_id}/line/{line_id}")
 	List<ScheduleEvent> getByLine(@PathVariable Long schedule_id, @PathVariable Long line_id) {
 		List<ScheduleEvent> result = scheduleEventRepo.findByScheduleAndLine(schedule_id, line_id);
-		List<ScheduleEvent> sorted = result.stream().sorted((se1, se2) -> se1.getStartTime().compareTo(se2.getStartTime())).collect(Collectors.toList());;
+		List<ScheduleEvent> sorted = result.stream().sorted((se1, se2) -> se1.getScheduleTime().compareTo(se2.getScheduleTime())).collect(Collectors.toList());;
 		return sorted;
 	}
 
