@@ -41,9 +41,9 @@ public interface ScheduleEventRepo extends JpaRepository<ScheduleEvent, Long> {
 	@Query("select se from ScheduleEvent se "
 			+ "join se.schedule sch "
 			+ "join se.line line "
-			+ "where sch.id = :schedule_id "
+			+ "where sch.date = :date "
 			+ "and line.id = :line_id")
-	public List<ScheduleEvent> findByScheduleAndLine(Long schedule_id, Long line_id);
+	public List<ScheduleEvent> findByDateAndLine(LocalDate date, Long line_id);
 
 	@Query("select se from ScheduleEvent se "
 			+ "where se.saleItem.item.id = :item_id")

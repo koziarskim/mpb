@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -50,9 +51,9 @@ class ScheduleEventRest {
 		return result.map(response -> ResponseEntity.ok().body(response)).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
 	}
 
-	@GetMapping("/scheduleEvent/schedule/{schedule_id}/line/{line_id}")
-	List<ScheduleEvent> getByLine(@PathVariable Long schedule_id, @PathVariable Long line_id) {
-		List<ScheduleEvent> result = scheduleEventRepo.findByScheduleAndLine(schedule_id, line_id);
+	@GetMapping("/scheduleEvent/date/{date}/line/{line_id}")
+	List<ScheduleEvent> getByLine(@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date, @PathVariable Long line_id) {
+		List<ScheduleEvent> result = scheduleEventRepo.findByDateAndLine(date, line_id);
 		List<ScheduleEvent> sorted = result.stream().sorted((se1, se2) -> se1.getScheduleTime().compareTo(se2.getScheduleTime())).collect(Collectors.toList());;
 		return sorted;
 	}

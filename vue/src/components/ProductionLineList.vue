@@ -81,7 +81,7 @@ export default {
         { key: "totalTime", label: "Total Time", sortable: true },
         { key: "action", label: "Action", sortable: false },
     ],
-    schedule_id: null,
+    schedule: {},
     scheduleEvents: [],
     availableLines: [],
     availableItems: [],
@@ -128,7 +128,7 @@ export default {
         alert("Cannot schedule less than produced");
         return;
       }
-      se.schedule = {id: this.schedule_id}
+      se.schedule = {id: this.schedule.id}
       http.post("/scheduleEvent", se).then(response => {
         this.getScheduleEvents(this.date)
       }).catch(e => {
@@ -192,7 +192,7 @@ export default {
           this.totalScheduled = 0;
           this.totalProduced = 0;
           if(response.data){
-            this.schedule_id = response.data.id;
+            this.schedule = response.data;
             response.data.scheduleEvents.forEach(se =>{
               se.edit = false;
               if(this.selectedLine.id && se.line.id != this.selectedLine.id){
@@ -216,7 +216,7 @@ export default {
       router.push("/itemEdit/" +item_id);
 	  },
     goToProductionLine(line_id) {
-      router.push("/productionLine/" +this.schedule_id+"/"+ line_id);
+      router.push("/productionLine/" +this.schedule.date+"/"+ line_id);
 	  },
   },
   mounted() {

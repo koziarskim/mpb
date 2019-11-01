@@ -2,11 +2,14 @@
   <b-container fluid>
 		<b-row>
 			<b-col cols=10 style="margin-top:7px; margin-bottom:7px">
-				<span style="font-weight: bold">{{schedule.date}} </span>- Production Line: <span style="font-weight: bold">{{line_id}}</span>
-				Started: <span style="font-weight: bold">{{scheduleEvent.startTime}}</span>
-				Finished: <span style="font-weight: bold">{{scheduleEvent.finishTime}}</span>
-				Units Scheduled: <span style="font-weight: bold">{{scheduleEvent.unitsScheduled}}</span>
-				Total Produced: <span style="font-weight: bold">{{scheduleEvent.totalProduced}}</span>
+				<div style="display:flex">
+					<input class="form-control" style="width: 190px" type="date" v-model="date">
+					- Production Line: <span style="font-weight: bold">{{line_id}}</span>
+					Started: <span style="font-weight: bold">{{scheduleEvent.startTime}}</span>
+					Finished: <span style="font-weight: bold">{{scheduleEvent.finishTime}}</span>
+					Units Scheduled: <span style="font-weight: bold">{{scheduleEvent.unitsScheduled}}</span>
+					Total Produced: <span style="font-weight: bold">{{scheduleEvent.totalProduced}}</span>
+				</div>
 			</b-col>
 			<b-col>
 				<b-button v-if="inProgress() && !isFinished()" style="margin-right: 3px" type="submit" variant="success" @click="openModal()">Add Units</b-button>
@@ -17,11 +20,11 @@
 		<b-row>
 			<b-col cols=4>
 				<div v-for="ie in itemEvents" :key="ie.id">
-					<div style="display:inline; color: blue" :style="getStyle(ie.active)">{{ie.name}}</div>
+					<div style="display:inline; color: blue" :style="getTreeItemStyle(ie.active)">{{ie.name}}</div>
 					<div v-for="customer in ie.customers" :key="customer.id" style="margin-bottom: 0px">
-						<div style="display:inline; color: #4bb316" :style="getStyle(customer.active)">&nbsp;&nbsp;&nbsp;&#9679;{{customer.name}}</div>
+						<div style="display:inline; color: #4bb316" :style="getTreeItemStyle(customer.active)">&nbsp;&nbsp;&nbsp;&#9679;{{customer.name}}</div>
 						<div v-for="event in customer.events" :key="event.id">
-							<div style="cursor: pointer; display:inline; color:#e22626; font-weight: bold" :style="getStyle(event.active)" @click="getScheduleEvent(event.id)">
+							<div style="cursor: pointer; display:inline; color:#e22626; font-weight: bold" :style="getTreeItemStyle(event.active)" @click="getScheduleEvent(event.id)">
 								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#9656;SO: {{event.saleItem.sale.number}} {{event.finishTime?" (Completed)":(event.startTime?" (Started)":" (Not Started)")}}
 							</div>
 						</div>
@@ -30,7 +33,9 @@
 			</b-col>
 			<b-col cols=8>
 				<div v-if="!scheduleEvent.id" style="margin-top: 120px; font-weight: bold">Please select sale order (SO) on the left (red)</div>
+				<div id="1234" :style="chartVisibility">
 					<chart :chartdata="chartData" :options="chartOptions" :width="600" :height="300"></chart>
+				</div>
 			</b-col>
 		</b-row>
 		<div v-if="modalVisible">
@@ -78,6 +83,8 @@ export default {
   },
   data() {
     return {
+			chartVisibility: "visibility: hidden",
+			date: moment().format("YYYY-MM-DD"),
 			line_id: "",
 			schedule: {},
 			modalVisible: false,
@@ -130,9 +137,25 @@ export default {
 			},
     };
   },
-  watch: {},
+  watch: {
+		date(new_value, old_value){
+			this.scheduleEvent = {
+				schedule: {},
+				line: {},
+				saleItem: {
+					item: {},
+					sale: {
+						customer: {}
+					}
+				}
+			};
+			this.getScheduleEvents();
+			this.sortedProductions = [];
+			this.chartVisibility = "visibility: hidden";
+		}
+	},
   methods: {
-		getStyle(active){
+		getTreeItemStyle(active){
 			var style = "";
 			if(active){
 				style = "background-color: #dbe0db"; 
@@ -174,15 +197,8 @@ export default {
         console.log("API error: " + e);
       });
 		},
-    getSchedule(schedule_id) {
-      http.get("/schedule/"+schedule_id).then(response => {
-				this.schedule = response.data;
-      }).catch(e => {
-        console.log("API error: " + e);
-      });
-		},
-    getScheduleEvents(schedule_id) {
-      http.get("/scheduleEvent/schedule/"+schedule_id+"/line/" + this.line_id).then(response => {
+    getScheduleEvents() {
+      http.get("/scheduleEvent/date/"+this.date+"/line/" + this.line_id).then(response => {
 				this.itemEvents.splice(0, this.itemEvents.length);
 				this.scheduleEvents = response.data;
 				response.data.forEach(event => {
@@ -220,7 +236,8 @@ export default {
 					return moment(a.finishTime, 'HH:mm:ss').diff(moment(b.finishTime, 'HH:mm:ss'));
 				});
 				this.updateChart();
-				this.getScheduleEvents(this.schedule.id);
+				this.getScheduleEvents();
+				this.chartVisibility = "visiblility: visible;"
 				return response.data;
       }).catch(e => {
         console.log("API error: " + e);
@@ -272,10 +289,9 @@ export default {
 		}
 	},
 	mounted() {
-		var schedule_id = this.$route.params.schedule_id;
-		this.getSchedule(schedule_id);
+		this.date = this.$route.params.date;
 		this.line_id = this.$route.params.line_id;
-		this.getScheduleEvents(schedule_id);
+		this.getScheduleEvents();
   }
 };
 </script>

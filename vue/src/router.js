@@ -279,7 +279,7 @@ const router = new Router({
       }
     },
     {
-      path: "/ProductionLine/:schedule_id/:line_id",
+      path: "/ProductionLine/:date/:line_id",
       name: "ProductionLine",
       component: ProductionLine,
       meta: {
