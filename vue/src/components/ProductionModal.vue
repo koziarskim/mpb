@@ -2,8 +2,8 @@
   <b-container fluid>
     <b-modal centered size="lg" v-model="visible" :hide-header="true" :hide-footer="true">
       <b-row>
-        <b-col>
-          <span>Schedule for: </span>
+        <b-col cols=9>
+          <span>Production output for {{scheduleEvent.saleItem.item.name}}</span>
         </b-col>
         <b-col>
           <div style="text-align: right;">

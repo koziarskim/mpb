@@ -1,7 +1,7 @@
 <template>
   <b-container fluid>
 		<b-row>
-			<b-col cols=10 style="margin-top:6px; margin-bottom:6px">
+			<b-col cols=10 style="margin-top:7px; margin-bottom:7px">
 				<span style="font-weight: bold">{{schedule.date}} </span>- Production Line: <span style="font-weight: bold">{{line_id}}</span>
 				Started: <span style="font-weight: bold">{{scheduleEvent.startTime}}</span>
 				Finished: <span style="font-weight: bold">{{scheduleEvent.finishTime}}</span>
@@ -9,7 +9,7 @@
 				Total Produced: <span style="font-weight: bold">{{scheduleEvent.totalProduced}}</span>
 			</b-col>
 			<b-col>
-				<b-button v-if="inProgress() && !isFinished()" type="submit" variant="success" @click="openModal()">Add Units</b-button>
+				<b-button v-if="inProgress() && !isFinished()" style="margin-right: 3px" type="submit" variant="success" @click="openModal()">Add Units</b-button>
 				<b-button v-if="this.scheduleEvent.id !=null && !inProgress() && !isFinished()" type="submit" variant="success" @click="startProduction">Start</b-button>
 				<b-button v-if="inProgress() && !isFinished()" type="submit" variant="success" @click="finishProduction">Finish</b-button>
 			</b-col>
@@ -17,19 +17,20 @@
 		<b-row>
 			<b-col cols=4>
 				<div v-for="ie in itemEvents" :key="ie.id">
-					<div :style="getStyle(ie.active)">{{ie.name}}</div>
-					<ul v-for="customer in ie.customers" :key="customer.id">
-						<li :style="getStyle(customer.active)">{{customer.name}}</li>
-						<ul v-for="event in customer.events" :key="event.id">
-							<li style="cursor: pointer;" :style="getStyle(event.active)" @click="getScheduleEvent(event.id)">
-								{{event.saleItem.sale.number}} {{event.finishTime?" (Completed)":(event.startTime?" (Started)":" (Not Started)")}}
-							</li>
-						</ul>
-					</ul>
+					<div style="display:inline" :style="getStyle(ie.active)">{{ie.name}}</div>
+					<div v-for="customer in ie.customers" :key="customer.id" style="margin-bottom: 0px">
+						<div style="display:inline" :style="getStyle(customer.active)">&nbsp;&nbsp;&nbsp;&#9679;{{customer.name}}</div>
+						<div v-for="event in customer.events" :key="event.id">
+							<div style="cursor: pointer; display:inline" :style="getStyle(event.active)" @click="getScheduleEvent(event.id)">
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#9656;SO: {{event.saleItem.sale.number}} {{event.finishTime?" (Completed)":(event.startTime?" (Started)":" (Not Started)")}}
+							</div>
+						</div>
+					</div>
 				</div>
 			</b-col>
 			<b-col cols=8>
-				<chart :chartdata="chartData" :options="chartOptions" :width="600" :height="300"></chart>
+				<div v-if="!scheduleEvent.id" style="margin-top: 120px; font-weight: bold">Please select sale order (SO)</div>
+					<chart :chartdata="chartData" :options="chartOptions" :width="600" :height="300"></chart>
 			</b-col>
 		</b-row>
 		<div v-if="modalVisible">
@@ -134,7 +135,7 @@ export default {
 		getStyle(active){
 			var style = "";
 			if(active){
-				style = "color: red; font-weight: bold"; 
+				style = "color: blue; background-color: #dbe0db"; 
 			}
 			return style;
 		},
