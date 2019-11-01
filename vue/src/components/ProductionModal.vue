@@ -67,7 +67,11 @@ export default {
 			var totalUnits = +this.scheduleEvent.totalProduced + +this.production.units;
 			if(totalUnits > this.scheduleEvent.unitsScheduled){
 				alert("Cannot enter more units than scheduled");
-				return;
+				return false;
+			}
+			if(moment(this.production.finishTime, "HH:mm:ss").isBefore(moment(this.scheduleEvent.startTime, "HH:mm:ss"))){
+				alert("Finish time cannot be before Start time " +this.scheduleEvent.startTime);
+				return false;
 			}
       var prevTime = moment(this.scheduleEvent.startTime, 'HH:mm:ss');
       var sortedProductions = this.scheduleEvent.productions.sort(function(a, b){

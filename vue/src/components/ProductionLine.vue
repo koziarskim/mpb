@@ -17,11 +17,11 @@
 		<b-row>
 			<b-col cols=4>
 				<div v-for="ie in itemEvents" :key="ie.id">
-					<div style="display:inline" :style="getStyle(ie.active)">{{ie.name}}</div>
+					<div style="display:inline; color: blue" :style="getStyle(ie.active)">{{ie.name}}</div>
 					<div v-for="customer in ie.customers" :key="customer.id" style="margin-bottom: 0px">
-						<div style="display:inline" :style="getStyle(customer.active)">&nbsp;&nbsp;&nbsp;&#9679;{{customer.name}}</div>
+						<div style="display:inline; color: #4bb316" :style="getStyle(customer.active)">&nbsp;&nbsp;&nbsp;&#9679;{{customer.name}}</div>
 						<div v-for="event in customer.events" :key="event.id">
-							<div style="cursor: pointer; display:inline" :style="getStyle(event.active)" @click="getScheduleEvent(event.id)">
+							<div style="cursor: pointer; display:inline; color:#e22626; font-weight: bold" :style="getStyle(event.active)" @click="getScheduleEvent(event.id)">
 								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#9656;SO: {{event.saleItem.sale.number}} {{event.finishTime?" (Completed)":(event.startTime?" (Started)":" (Not Started)")}}
 							</div>
 						</div>
@@ -29,7 +29,7 @@
 				</div>
 			</b-col>
 			<b-col cols=8>
-				<div v-if="!scheduleEvent.id" style="margin-top: 120px; font-weight: bold">Please select sale order (SO)</div>
+				<div v-if="!scheduleEvent.id" style="margin-top: 120px; font-weight: bold">Please select sale order (SO) on the left (red)</div>
 					<chart :chartdata="chartData" :options="chartOptions" :width="600" :height="300"></chart>
 			</b-col>
 		</b-row>
@@ -135,7 +135,7 @@ export default {
 		getStyle(active){
 			var style = "";
 			if(active){
-				style = "color: blue; background-color: #dbe0db"; 
+				style = "background-color: #dbe0db"; 
 			}
 			return style;
 		},
