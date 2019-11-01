@@ -1,16 +1,19 @@
 <template>
   <b-container fluid>
     <b-row>
-      <b-col cols="6">
+      <b-col cols=6>
         <span style="font-size: 18px; font-weight: bold">Production Output for Item: </span><span>{{item.number}} ({{item.name}})</span>
       </b-col>
+			<b-col cols=2>
+				<b-select option-value="id" option-text="name" :list="availableZooms" v-model="zoom"></b-select>
+			</b-col>
     </b-row>
 	<br/>
 	<b-row>
 		<b-col cols=12>
 			<div class="chartWrapper">
     		<div class="chartAreaWrapper">
-					<chart :chartdata="chartData" :options="chartOptions" :height="300" :width="50000" style="width: 50000px"></chart>
+					<chart :chartdata="chartData" :options="chartOptions" :style="getChartStyle()"></chart>
 				</div>
 			</div>
 		</b-col>
@@ -29,10 +32,19 @@ export default {
   name: "edit-component",
   data() {
     return {
+			chartWidth: 1200,
+			chartHeight: 400,
 			item: {},
 			scheduleEvents: [],
+			availableZooms: [
+				{id: 1, name: "Zoom x1", width: 1200, height: 400},
+				{id: 2, name: "Zoom x10", width: 6000, height: 800},
+				{id: 3, name: "Zoom x100", width: 12000, height: 1600},
+			],
+			zoom: {id: 1},
 	  	chartData: {datasets: []},
 	  	chartOptions: {
+				maintainAspectRatio: false,
 				legend: {display: false},
 				scales: {
 					yAxes: [{
@@ -65,8 +77,17 @@ export default {
 			},
     };
   },
-  watch: {},
+  watch: {
+		zoom(new_value, old_value){
+			this.chartWidth = new_value.width;
+			this.chartHeight = new_value.height;
+			this.updateChart();
+		}
+	},
   methods: {
+		getChartStyle(){
+			return "height: "+this.chartHeight+"px; width: "+this.chartWidth+"px;";
+		},
 		getItem(item_id) {
 			http.get("/item/"+item_id).then(response => {
 				this.item = response.data;
@@ -93,6 +114,7 @@ export default {
 		updateChart(){
 			// this.chartOptions.scales.xAxes[0].time.unit = 'day';
 			var dsIndex = 0;
+			this.chartData.datasets = [];
 			this.scheduleEvents.forEach(se => {
 				if(!se.startTime){
 					return;
@@ -127,7 +149,6 @@ export default {
   mounted() {
     var item_id = this.$route.params.item_id;
 		this.getItem(item_id);
-		this.chartWidth="width: 600px";
   }
 };
 </script>
@@ -146,6 +167,7 @@ export default {
 
 .chartAreaWrapper {
 		width: 1200px;
+		height: 450px;
 		overflow-x: scroll;
 }
 </style>
