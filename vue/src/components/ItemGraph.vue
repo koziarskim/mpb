@@ -130,7 +130,7 @@ export default {
 					var secs = moment(p.finishTime, 'HH:mm:ss').diff(prevTime, 'seconds');
 					var time = moment().startOf('day').seconds(secs).format('HH:mm:ss')
 					var perf = !secs?0:((p.unitsProduced/secs)*3600).toFixed(0);
-					var tooltipLabel= perf+" u/h (" +p.unitsProduced+" units in "+time+")"
+					var tooltipLabel= "SO: "+se.saleItem.sale.number+", "+ perf+" u/h (" +p.unitsProduced+" units in "+time+")"
 					data.push({x: moment(se.schedule.date +" "+ p.finishTime, 'YYYY-MM-DD HH:mm:ss'), y: perf, tooltipLabel: tooltipLabel});
 					prevTime = moment(p.finishTime, 'HH:mm:ss');
 				})
