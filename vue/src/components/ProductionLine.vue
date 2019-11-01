@@ -3,12 +3,13 @@
 		<b-row>
 			<b-col cols=10 style="margin-top:7px; margin-bottom:7px">
 				<div style="display:flex">
-					<input class="form-control" style="width: 190px" type="date" v-model="date">
-					- Production Line: <span style="font-weight: bold">{{line_id}}</span>
-					Started: <span style="font-weight: bold">{{scheduleEvent.startTime}}</span>
-					Finished: <span style="font-weight: bold">{{scheduleEvent.finishTime}}</span>
-					Units Scheduled: <span style="font-weight: bold">{{scheduleEvent.unitsScheduled}}</span>
-					Total Produced: <span style="font-weight: bold">{{scheduleEvent.totalProduced}}</span>
+					<input class="form-control" style="width: 170px; height: 33px; margin-top: -10px; margin-right: 5px;" type="date" v-model="date"> 
+					<b-button size="sm" type="submit" variant="success" style="margin-top: -10px; margin-right: 5px;" @click="setToday()">Today</b-button>
+					Line: <span style="font-weight: bold; margin-right: 5px;">{{line_id}}</span> 
+					Started: <span style="font-weight: bold; margin-right: 5px;">{{scheduleEvent.startTime}}</span> 
+					Finished: <span style="font-weight: bold; margin-right: 5px;">{{scheduleEvent.finishTime}}</span> 
+					Units Scheduled: <span style="font-weight: bold; margin-right: 5px;">{{scheduleEvent.unitsScheduled}}</span> 
+					Total Produced: <span style="font-weight: bold">{{scheduleEvent.totalProduced}}</span> 
 				</div>
 			</b-col>
 			<b-col>
@@ -20,9 +21,9 @@
 		<b-row>
 			<b-col cols=4>
 				<div v-for="ie in itemEvents" :key="ie.id">
-					<div style="display:inline; color: blue" :style="getTreeItemStyle(ie.active)">{{ie.name}}</div>
+					<div style="display:inline; color: blue">{{ie.name}}</div>
 					<div v-for="customer in ie.customers" :key="customer.id" style="margin-bottom: 0px">
-						<div style="display:inline; color: #4bb316" :style="getTreeItemStyle(customer.active)">&nbsp;&nbsp;&nbsp;&#9679;{{customer.name}}</div>
+						<div style="display:inline; color: #4bb316">&nbsp;&nbsp;&nbsp;&#9679;{{customer.name}}</div>
 						<div v-for="event in customer.events" :key="event.id">
 							<div style="cursor: pointer; display:inline; color:#e22626; font-weight: bold" :style="getTreeItemStyle(event.active)" @click="getScheduleEvent(event.id)">
 								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#9656;SO: {{event.saleItem.sale.number}} {{event.finishTime?" (Completed)":(event.startTime?" (Started)":" (Not Started)")}}
@@ -34,6 +35,7 @@
 			<b-col cols=8>
 				<div v-if="!scheduleEvent.id" style="margin-top: 120px; font-weight: bold">Please select sale order (SO) on the left (red)</div>
 				<div id="1234" :style="chartVisibility">
+					<div style="font-size: 12px; margin-left: 260px">{{scheduleEvent.saleItem.item.name}} ({{scheduleEvent.saleItem.sale.customer.name}} - {{scheduleEvent.saleItem.sale.number}})</div>
 					<chart :chartdata="chartData" :options="chartOptions" :width="600" :height="300"></chart>
 				</div>
 			</b-col>
@@ -155,6 +157,9 @@ export default {
 		}
 	},
   methods: {
+		setToday(){
+			this.date = moment().format("YYYY-MM-DD");
+		},
 		getTreeItemStyle(active){
 			var style = "";
 			if(active){
@@ -289,9 +294,13 @@ export default {
 		}
 	},
 	mounted() {
-		this.date = this.$route.params.date;
+		this.date = this.$route.query.date;
+		if(!this.date){
+			this.date = moment().format("YYYY-MM-DD");
+		}
 		this.line_id = this.$route.params.line_id;
 		this.getScheduleEvents();
+		window.history.replaceState({}, document.title, window.location.pathname);
   }
 };
 </script>

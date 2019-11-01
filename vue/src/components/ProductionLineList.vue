@@ -216,7 +216,8 @@ export default {
       router.push("/itemEdit/" +item_id);
 	  },
     goToProductionLine(line_id) {
-      router.push("/productionLine/" +this.schedule.date+"/"+ line_id);
+      var query = { date: this.schedule.date };
+      router.push({ path: "/productionLine/"+line_id, query: query } );
 	  },
   },
   mounted() {
