@@ -9,9 +9,9 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.noovitec.mpb</groupId>
-	<artifactId>spring</artifactId>
+	<artifactId>mpb-spring</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>spring</name>
+	<name>mpb-spring</name>
 	<description>Marketplace Brands</description>
 	<packaging>war</packaging>
 
