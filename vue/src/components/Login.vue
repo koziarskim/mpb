@@ -25,12 +25,14 @@
 import http from "../http-common";
 import router from "../router";
 import state from "../data/state";
+import securite from "../securite";
 
 export default {
   name: "add-component",
   data() {
     return {
-        user: {}
+      securite: securite,
+      user: {}
     };
   },
   computed: {},
@@ -51,7 +53,9 @@ export default {
     },
   },
   mounted() {
-    console.log(process.env)
+    if(securite.getUser().id){
+      router.push("/home");
+    }
   }
 };
 </script>
