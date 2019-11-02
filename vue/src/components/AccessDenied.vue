@@ -32,7 +32,7 @@ export default {
   watch: {},
   methods: {
     goToHome() {
-      router.push("/Home");
+      router.push("/Login");
     }
   },
   mounted() {}

@@ -39,23 +39,16 @@ export default {
   watch: {},
   methods: {
     login() {
-      return http
-        .post("/user/login", this.user)
-        .then(response => {
-            //TODO: Get page context instead.
-            this.$store.dispatch("changeUser", response.data);
-            router.push("/home")
-        })
-        .catch(e => {
-          console.log("API error: " + e);
-          alert(e.response.data)
-        });
+      return http.post("/user/login", this.user).then(response => {
+        this.$store.dispatch("changeUser", response.data);
+        router.push("/home")
+      }).catch(e => {
+        console.log("API error: " + e);
+        alert(e.response.data)
+      });
     },
   },
   mounted() {
-    if(securite.getUser().id){
-      router.push("/home");
-    }
   }
 };
 </script>
