@@ -3,3 +3,7 @@ sudo systemctl restart nginx
 sudo systemctl restart tomcat
 
 see all processes: jps -m
+
+npm:
+npm cache clean --force
+npm install
