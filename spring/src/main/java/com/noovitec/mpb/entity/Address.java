@@ -33,6 +33,8 @@ public class Address {
 	private String state;
 	private String zip;
 	private String dc;
+	//FRG - Freight
+	private String type;
 
 	@Transient
 	private String label;

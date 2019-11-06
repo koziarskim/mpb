@@ -49,6 +49,10 @@ class AddressRest {
 		return addressRepo.findKvByCustomer(customer_id);
 	}
 	
+	@GetMapping("/address/type/{type}")
+	Collection<KeyValueDto> getByType(@PathVariable String type) {
+		return addressRepo.findKvByType(type);
+	}
 
 	@PostMapping("/address")
 	ResponseEntity<Address> post(@RequestBody(required = false) Address address) throws URISyntaxException {

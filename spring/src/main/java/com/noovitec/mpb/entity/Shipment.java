@@ -62,8 +62,12 @@ public class Shipment {
 	private Attachment attachment;
 
 	@ManyToOne()
-	@JoinColumn(name = "address_id", referencedColumnName = "id")
+	@JoinColumn(name = "shipping_address_id", referencedColumnName = "id")
 	private Address shippingAddress;
+
+	@ManyToOne()
+	@JoinColumn(name = "freight_address_id", referencedColumnName = "id")
+	private Address freightAddress;
 
 	@JsonIgnoreProperties(value = { "shipment" }, allowSetters = true)
 	@OneToMany(cascade=CascadeType.ALL, orphanRemoval=true)

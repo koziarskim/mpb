@@ -15,4 +15,8 @@ public interface AddressRepo extends JpaRepository<Address, Long> {
 			+ "where cu.id = :customer_id")
 	List<KeyValueDto> findKvByCustomer(Long customer_id);
 
+	@Query("select distinct new com.noovitec.mpb.dto.KeyValueDto(a.id, concat(a.street, ', ', a.city)) from Address a "
+			+ "where upper(a.type) = upper(:type)")
+	List<KeyValueDto> findKvByType(String type);
+
 }

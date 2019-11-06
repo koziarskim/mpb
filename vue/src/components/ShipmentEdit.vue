@@ -21,15 +21,11 @@
     <b-row>
       <b-col cols="3">
         <label class="top-label">Ship To:</label>
-        <br>
-        <b-select option-value="id" option-text="name" :list="availableShippingAddresses" v-model="shippingAddress" placeholder="Select Distribution"></b-select>
+        <b-select option-value="id" option-text="name" :list="availableShippingAddresses" v-model="shippingAddress" placeholder="Pick shipping address"></b-select>
       </b-col>
       <b-col cols="3">
-        <label class="top-label">Bill To:</label>
-        <br>
-        <label v-if="customer.billingAddress">{{customer.billingAddress.street}}</label>
-        <br>
-        <label v-if="customer.billingAddress">{{customer.billingAddress.city}}, {{customer.billingAddress.state}} {{customer.billingAddress.zip}}</label>
+        <label class="top-label">Freight Address:<a href="#" @click="openModal()"> (Edit/New) </a></label>
+        <b-select option-value="id" option-text="name" :list="availableFreightAddresses" v-model="freightAddress" placeholder="Pick freight address"></b-select>
       </b-col>
       <b-col>
         <b-form-textarea type="text" :rows="3" v-model="shipment.notes" placeholder="Special Notes"></b-form-textarea>
@@ -70,14 +66,14 @@
     <b-row>
       <b-col cols="3">
         <label class="top-label">Sale:</label>
-        <b-select v-if="!locked" option-value="id" option-text="number" :list="availableSales" v-model="sale"></b-select>
+        <b-select option-value="id" option-text="number" :list="availableSales" v-model="sale"></b-select>
       </b-col>
       <b-col cols="2">
         <label class="top-label">Item:</label>
-        <b-select v-if="!locked" option-value="id" option-text="label" :list="availableSaleItems" v-model="saleItem"></b-select>
+        <b-select option-value="id" option-text="label" :list="availableSaleItems" v-model="saleItem"></b-select>
       </b-col>
       <b-col cols="1">
-        <b-button v-if="!locked" style="padding-top: 30px; padding-left: 0px" variant="link" @click="addItem()">(+)</b-button>
+        <b-button style="padding-top: 30px; padding-left: 0px" variant="link" @click="addItem()">(+)</b-button>
       </b-col>
       <b-col>
         <br>
@@ -102,7 +98,7 @@
             <b-button @click.stop="goToSale(row.item.saleItem.sale.id)" variant="link">{{row.item.saleItem.sale.number}}</b-button>
           </template>
           <template v-slot:cell(units)="row">
-            <input class="form-control" style="width:100px" type="tel" :disabled="locked" v-model="row.item.units" @blur="unitsBlur(row.item)">
+            <input class="form-control" style="width:100px" type="tel" v-model="row.item.units" @blur="unitsBlur(row.item)">
           </template>
           <template v-slot:cell(unitsShipped)="row">
             <span>{{(+row.item.saleItem.unitsShipped - +row.item.existingUnits + +row.item.units)}}</span>
@@ -114,11 +110,14 @@
             <span>{{row.item.pallets = Math.ceil(+row.item.cases / (+row.item.saleItem.item.ti * +row.item.saleItem.item.hi))}}</span>
           </template>
           <template v-slot:cell(action)="row">
-            <b-button :disabled="locked" size="sm" @click.stop="deleteItem(row.item.id)">x</b-button>
+            <b-button size="sm" @click.stop="deleteItem(row.item.id)">x</b-button>
           </template>
         </b-table>
       </b-col>
     </b-row>
+    <div v-if="modalVisible">
+			<address-modal :address-id="freightAddress.id" v-on:closeModal="closeModal()"></address-modal>
+		</div>
   </b-container>
 </template>
 
@@ -129,12 +128,17 @@ import router from "../router";
 import moment from "moment";
 
 export default {
+  components: {
+    AddressModal: () => import("./AddressModal")
+  },
   data() {
     return {
-      locked: false,
+      modalVisible: false,
       shipment: { shipmentItems: [] },
       availableCustomers: [],
       availableShippingAddresses: [],
+      availableFreightAddresses: [],
+      freightAddress: {},
       customer: {},
       shippingAddresses: [],
       shippingAddress: {},
@@ -207,6 +211,13 @@ export default {
     }
   },
   methods: {
+    openModal(){
+			this.modalVisible = true;
+		},
+		closeModal(){
+      this.getAvailableFreightAddresses();
+			this.modalVisible=false;
+		},
     getShipment(id) {
       http
         .get("/shipment/" + id)
@@ -221,6 +232,9 @@ export default {
           if (response.data.shippingAddress) {
             this.shippingAddress = response.data.shippingAddress;
           }
+          if (response.data.freightAddress){
+            this.freightAddress = response.data.freightAddress;
+          }
         })
         .catch(e => {
           console.log("API error: " + e);
@@ -229,6 +243,7 @@ export default {
     saveShipment() {
       this.shipment.customer = this.customer.id?{id: this.customer.id}:null;
       this.shipment.shippingAddress = this.shippingAddress.id?{ id: this.shippingAddress.id }:null;
+      this.shipment.freightAddress = this.freightAddress.id?{ id: this.freightAddress.id }:null;
       this.shipment.totalUnits = this.totalUnits;
       this.shipment.totalCases = this.totalCases;
       this.shipment.totalPallets = this.totalPallets;
@@ -263,15 +278,14 @@ export default {
           console.log("API error: " + e);
         });
     },
-    getCustomer(customer_id) {
-      return http.get("/customer/"+customer_id).then(r => {
-        this.customer = r.data;
-        this.getAvailableShippingAddresses(customer_id)
-        this.getAvailableSales();
-          return r.data;
-        }).catch(e => {
-          console.log("API error: " + e);
-        });
+    getAvailableFreightAddresses() {
+      this.availableFreightAddresses = [];
+      return http.get("/address/type/frg").then(r => {
+        this.availableFreightAddresses = r.data;
+        return r.data;
+      }).catch(e => {
+        console.log("API error: " + e);
+      });
     },
     getAvailableShippingAddresses(customer_id) {
       return http.get("/address/customer/"+customer_id).then(r => {
@@ -354,6 +368,7 @@ export default {
       this.getShipment(id);
     }
     this.getAvailableCustomers();
+    this.getAvailableFreightAddresses();
   }
 };
 </script>
