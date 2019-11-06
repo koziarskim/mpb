@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.entity.Address;
 import com.noovitec.mpb.repo.AddressRepo;
 
@@ -42,6 +43,12 @@ class AddressRest {
 		return result.map(response -> ResponseEntity.ok().body(response))
 				.orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
 	}
+	
+	@GetMapping("/address/customer/{customer_id}")
+	Collection<KeyValueDto> getByCustomer(@PathVariable Long customer_id) {
+		return addressRepo.findKvByCustomer(customer_id);
+	}
+	
 
 	@PostMapping("/address")
 	ResponseEntity<Address> post(@RequestBody(required = false) Address address) throws URISyntaxException {

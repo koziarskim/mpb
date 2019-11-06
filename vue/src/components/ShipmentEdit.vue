@@ -2,19 +2,18 @@
   <b-container fluid>
     <b-row style="padding-bottom: 4px;">
       <b-col cols="2">
-        <span style="text-align: left; font-size: 18px; font-weight: bold">Shipment: {{shipment.number}}</span>
+        <span style="text-align: left; font-size: 18px; font-weight: bold">Shipment: </span>
+        <input class="form-control" type="tel" v-model="shipment.number">
       </b-col>
       <b-col cols="3">
-        <b-select v-if="shipment.shipmentItems.length==0" option-value="id" option-text="name" :list="availableCustomers" v-model="customer" placeholder="Select Customer"></b-select>
-        <span v-if="shipment.shipmentItems.length>0">{{customer.name}}</span>
+        <b-select option-value="id" option-text="name" :list="availableCustomers" v-model="customer" placeholder="Select Customer"></b-select>
       </b-col>
       <b-col cols="2">
         <input class="form-control" type="date" v-model="shipment.date">
       </b-col>
       <b-col>
         <div style="text-align: right;">
-          <b-button :disabled="locked" type="reset" variant="primary" @click="saveAndClose">Save & Close</b-button>
-          <b-button :disabled="locked" style="margin: 2px;" type="reset" variant="success" @click="submitShipment()">Submit</b-button>
+          <b-button type="reset" variant="primary" @click="save()">Save</b-button>
           <img @click="openPdf()" style="margin: 2px;" src="../assets/pdf-download.png" width="25px">
         </div>
       </b-col>
@@ -23,8 +22,7 @@
       <b-col cols="3">
         <label class="top-label">Ship To:</label>
         <br>
-        <b-select option-value="id" option-text="label" :list="shippingAddresses" v-model="shippingAddress" placeholder="Select Distribution"></b-select>
-        <label>{{shippingAddress.city}}, {{shippingAddress.state}} {{shippingAddress.zip}}</label>
+        <b-select option-value="id" option-text="name" :list="availableShippingAddresses" v-model="shippingAddress" placeholder="Select Distribution"></b-select>
       </b-col>
       <b-col cols="3">
         <label class="top-label">Bill To:</label>
@@ -136,6 +134,7 @@ export default {
       locked: false,
       shipment: { shipmentItems: [] },
       availableCustomers: [],
+      availableShippingAddresses: [],
       customer: {},
       shippingAddresses: [],
       shippingAddress: {},
@@ -192,22 +191,10 @@ export default {
   },
   watch: {
     customer(new_value, old_value) {
-      if (new_value.id == old_value.id) {
+      if (!new_value.id || new_value.id == old_value.id) {
         return;
       }
-      this.getCustomer(new_value.id).then(customer =>{
-        this.customer = customer;
-        this.shippingAddresses = customer.addresses;
-        if (
-          this.shipment.customer == null ||
-          this.shipment.customer.id != customer.id
-        ) {
-          this.shippingAddress = {};
-          this.shipment.customer = customer;
-          this.saveShipment();
-        }
-        this.getAvailableSales();
-      })
+      this.getAvailableShippingAddresses(new_value.id)
     },
     sale(new_value, old_value) {
       if (new_value.id != old_value.id) {
@@ -224,7 +211,6 @@ export default {
       http
         .get("/shipment/" + id)
         .then(response => {
-          this.locked = response.data.submitted;
           response.data.shipmentItems.forEach(si => {
             si.existingUnits = si.units;
           });
@@ -241,9 +227,8 @@ export default {
         });
     },
     saveShipment() {
-      if (this.shippingAddress.id) {
-        this.shipment.shippingAddress = { id: this.shippingAddress.id };
-      }
+      this.shipment.customer = this.customer.id?{id: this.customer.id}:null;
+      this.shipment.shippingAddress = this.shippingAddress.id?{ id: this.shippingAddress.id }:null;
       this.shipment.totalUnits = this.totalUnits;
       this.shipment.totalCases = this.totalCases;
       this.shipment.totalPallets = this.totalPallets;
@@ -265,10 +250,8 @@ export default {
           console.log("API error: " + e);
         });
     },
-    saveAndClose() {
-      this.saveShipment().then(r => {
-        router.push("/shipmentList");
-      });
+    save() {
+      this.saveShipment()
     },
     getAvailableCustomers() {
       return http
@@ -282,10 +265,18 @@ export default {
     },
     getCustomer(customer_id) {
       return http.get("/customer/"+customer_id).then(r => {
+        this.customer = r.data;
+        this.getAvailableShippingAddresses(customer_id)
+        this.getAvailableSales();
           return r.data;
         }).catch(e => {
           console.log("API error: " + e);
         });
+    },
+    getAvailableShippingAddresses(customer_id) {
+      return http.get("/address/customer/"+customer_id).then(r => {
+        this.availableShippingAddresses = r.data;
+      })
     },
     getAvailableSales() {
       return http
@@ -359,7 +350,9 @@ export default {
   },
   mounted() {
     var id = this.$route.params.shipment_id;
-    this.getShipment(id);
+    if(id!="new"){
+      this.getShipment(id);
+    }
     this.getAvailableCustomers();
   }
 };

@@ -96,35 +96,21 @@ class ShipmentRest {
 			si.setShipment(shipment);
 		}
 		Shipment result = shipmentRepo.save(shipment);
-		if(result.getNumber()==null) {
-			String number = result.getId().toString();
-			if(number.length()==1) {
-				number = "00"+number;
-			}
-			if(number.length() == 2) {
-				number = "0"+number;
-			}
-			result.setNumber(number);
-			shipmentRepo.save(result);			
-		}
-		if (result.isSubmitted() && result.getAttachment() == null) {
-			byte[] data = this.generatePdf(result, true);
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
-			Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-			String fileName = "BOL" + result.getNumber() + "-" + sdf.format(timestamp) + ".pdf";
-			Attachment attachment = new Attachment();
-			attachment.setData(data);
-			attachment.setType("BOL");
-			attachment.setName(fileName);
-			result.setAttachment(attachment);
-		}
-		shipmentRepo.save(result);
-		if(result.isSubmitted()) {
-			for(ShipmentItem si: shipment.getShipmentItems()) {
-				Long units = si.getSaleItem().getItem().getUnitsOnStock();
-				units = units - si.getUnits();
-				itemRepo.updateUnitsOnStock(units, si.getSaleItem().getItem().getId());
-			}
+//		if (result.isSubmitted() && result.getAttachment() == null) {
+//			byte[] data = this.generatePdf(result, true);
+//			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+//			Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+//			String fileName = "BOL" + result.getNumber() + "-" + sdf.format(timestamp) + ".pdf";
+//			Attachment attachment = new Attachment();
+//			attachment.setData(data);
+//			attachment.setType("BOL");
+//			attachment.setName(fileName);
+//			result.setAttachment(attachment);
+//		}
+		for(ShipmentItem si: shipment.getShipmentItems()) {
+			Long units = si.getSaleItem().getItem().getUnitsOnStock();
+			units = units - si.getUnits();
+			itemRepo.updateUnitsOnStock(units, si.getSaleItem().getItem().getId());
 		}
 		return ResponseEntity.ok().body(result);
 	}

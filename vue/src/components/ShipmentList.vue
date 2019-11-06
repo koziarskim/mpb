@@ -3,7 +3,7 @@
         <div class="d-flex justify-content-between align-items-center">
             <span style="text-align: left; font-size: 18px; font-weight: bold">Shipments</span>
             <div style="text-align: right;">
-                <b-button type="submit" variant="primary" @click="goToShipment('')">New Shipment</b-button>
+                <b-button type="submit" variant="primary" @click="goToShipment('new')">New Shipment</b-button>
             </div>
         </div>
         <div v-if="shipments.length==0">Not found any data...</div>
@@ -63,15 +63,6 @@ export default {
     goToShipment(id) {
       if (id) {
         router.push("/shipmentEdit/" + id);
-      } else {
-        http
-          .post("/shipment")
-          .then(response => {
-            router.push("/shipmentEdit/" + response.data.id);
-          })
-          .catch(e => {
-            console.log("API Error: " + e);
-          });
       }
     }
   },
