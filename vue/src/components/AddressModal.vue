@@ -73,14 +73,13 @@ export default {
 			}
 			this.address.type = "FRG";
       http.post("/address", this.address).then(response => {
-        this.closeModal();
+        this.closeModal(response.data);
 			}).catch(e => {
 				console.log("API error: " + e);
 			});
-      this.closeModal();
     },
-    closeModal() {
-      this.$emit("closeModal");
+    closeModal(address) {
+      this.$emit("closeModal", address);
     }
   },
   mounted() {

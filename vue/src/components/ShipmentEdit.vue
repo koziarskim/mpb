@@ -116,7 +116,7 @@
       </b-col>
     </b-row>
     <div v-if="modalVisible">
-			<address-modal :address-id="freightAddress.id" v-on:closeModal="closeModal()"></address-modal>
+			<address-modal :address-id="freightAddress.id" v-on:closeModal="closeModal"></address-modal>
 		</div>
   </b-container>
 </template>
@@ -214,8 +214,11 @@ export default {
     openModal(){
 			this.modalVisible = true;
 		},
-		closeModal(){
+		closeModal(address){
       this.getAvailableFreightAddresses();
+      if(address){
+        this.freightAddress = address;
+      }
 			this.modalVisible=false;
 		},
     getShipment(id) {
