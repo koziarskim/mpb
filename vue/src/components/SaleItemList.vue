@@ -27,9 +27,9 @@
           <template v-slot:cell(itemNumber)="row">
               <b-button size="sm" @click=goToItem(row.item.itemId) variant="link">{{row.item.itemNumber}} ({{row.item.itemName}})</b-button>
           </template>
-          <!-- <template v-slot:cell(action)="row">
-              <b-button size="sm" @click="deleteSale(row.item.id)">x</b-button>
-          </template> -->
+          <template v-slot:cell(action)="row">
+            <input type="checkbox" v-model="row.item.selected" @input="row.item.selected = !row.item.selected; itemSelected(row.item)"></input>
+          </template>
         </b-table>
 		<b-pagination v-model="pageable.currentPage" :per-page="pageable.perPage" :total-rows="pageable.totalElements" @change="paginationChange"></b-pagination>
     </b-container>
@@ -62,6 +62,7 @@ export default {
         { key: "customerName", label: "Customer", sortable: false },
         { key: "unitsSold", label: "Sold", sortable: false },
         { key: "unitsProduced", label: "Produced", sortable: false },
+        { key: "unitsShipped", label: "Shipped", sortable: false },
         { key: "unitsOnStock", label: "On Stock", sortable: false },
         { key: "action", label: "Action", sortable: false}
       ],
@@ -82,6 +83,13 @@ export default {
     }
   },
   methods: {
+    itemSelected(saleItem){
+      if(saleItem.selected){
+        this.selectedSaleItems.push(saleItem.id);
+      }else{
+        this.selectedSaleItems = this.selectedSaleItems.filter(id => id != saleItem.id);
+      }
+    },
 	sorted(e){
         if(!e.sortBy){ return }
         this.pageable.sortBy = e.sortBy;
@@ -94,6 +102,13 @@ export default {
     },
   getSaleItems(){
     http.get("/saleItem/pageable", {params: {pageable: this.pageable, numberName: this.numberName, customerId: this.customer.id, itemId: this.item.id}}).then(r => {
+      r.data.content.forEach(si => {
+        if(this.selectedSaleItems.includes(si.id)){
+          si.selected = true;
+        }else{
+          si.selected = false;
+        }
+      })
       this.saleItems = r.data.content;
       this.pageable.totalElements = r.data.totalElements;
     }).catch(e => {
@@ -114,44 +129,6 @@ export default {
       console.log("API error: "+e);
     });
   },
-	getSales(type) {
-    var searchKey = type=="sale"?this.searchSale:this.searchItem;
-      http
-        .get("/sale/pageable", {params: {pageable: this.pageable, searchKey: searchKey, searchType: type}})
-        .then(response => {
-          //SaleListDto
-          this.sales = response.data.content;
-          this.pageable.totalElements = response.data.totalElements;
-        })
-        .catch(e => {
-          console.log("API error: "+e);
-        });
-    },
-    getItem(component_id){
-        var component;
-        var found = this.sales.some(function(element) {
-           if(element.id === component_id){
-                component = element;
-           }
-        });
-        return component;
-    },
-    deleteSale(id) {
-      if(!securite.hasRole(["ADMIN"])){
-        alert("Don't have permission to delete sale");
-        return;
-      }
-      this.$bvModal.msgBoxConfirm('Are you sure you want to delete this Sale? '+
-      'This will also delete all Schedules and Productions associated with this Sale').then(ok => {
-        if(ok){
-          http.delete("/sale/"+id).then(response => {
-            this.getSales();
-          }).catch(e => {
-            console.log("API Error: "+e);
-          });
-            }
-        })
-    },
     gotToItem(itemId){
       router.push("/itemEdit/"+itemId);
     },
