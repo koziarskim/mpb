@@ -28,7 +28,7 @@
               <b-button size="sm" @click=goToItem(row.item.itemId) variant="link">{{row.item.itemNumber}} ({{row.item.itemName}})</b-button>
           </template>
           <template v-slot:cell(action)="row">
-            <input type="checkbox" v-model="selectedSaleItems" :value="row.item.id" @change="checkboxSelected(row.item)" :disabled="checkboxDisabled(row.item)"></input>
+            <input type="checkbox" v-model="selectedSaleItems" :value="row.item.id" @change="checkboxSelected(row.item)" :disabled="checkboxDisabled(row.item)">
           </template>
         </b-table>
 		<b-pagination v-model="pageable.currentPage" :per-page="pageable.perPage" :total-rows="pageable.totalElements" @change="paginationChange"></b-pagination>
