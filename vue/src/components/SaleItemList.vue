@@ -13,7 +13,7 @@
             </b-col>
             <b-col>
                 <div style="text-align: right;">
-                <b-button type="submit" variant="primary" @click="goToSale('')">New S.O.</b-button>
+                <b-button type="submit" variant="primary" @click="goToSale('')">New Shipment ({{selectedSaleItems.length}})</b-button>
                 </div>
             </b-col>
         </b-row>
@@ -39,10 +39,12 @@ export default {
     return {
       securite: securite,
       navigation: navigation,
-      pageable: {totalElements: 100, currentPage: 1, perPage: 7, sortBy: 'number', sortDesc: false},
+      pageable: {totalElements: 100, currentPage: 1, perPage: 7, sortBy: 'id', sortDesc: false},
       searchSale: "",
       searchItem: "",
       itemView: true,
+      selectedSaleItems: [],
+      saleItems: [],
       fields: [
         { key: "number", label: "Sale # (Name)", sortable: false },
         { key: "customerName", label: "Customer", sortable: false },
@@ -74,6 +76,15 @@ export default {
         this.pageable.currentPage = page;
         this.getSales();
     },
+  getSaleItems(){
+    http.get("/saleItem/pageable", {params: {pageable: this.pageable, numberName: '123', customerId: 123, itemId: 123}}).then(response => {
+      this.saleItems = response.data.content;
+      // this.pageable.totalElements = response.data.totalElements;
+    })
+    .catch(e => {
+      console.log("API error: "+e);
+    });
+  },
 	getSales(type) {
     var searchKey = type=="sale"?this.searchSale:this.searchItem;
       http
@@ -129,6 +140,7 @@ export default {
   },
   mounted() {
      this.getSales();
+     this.getSaleItems();
   }
 };
 </script>

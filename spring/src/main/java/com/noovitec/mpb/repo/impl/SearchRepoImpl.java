@@ -18,10 +18,10 @@ import com.noovitec.mpb.dto.SearchDto;
 import com.noovitec.mpb.entity.Component;
 import com.noovitec.mpb.entity.ItemComponent;
 import com.noovitec.mpb.entity.SaleItem;
-import com.noovitec.mpb.repo.interfaces.SearchRepoCustom;
+import com.noovitec.mpb.repo.custom.CustomSearchRepo;
 
 @Repository
-public class SearchRepoImpl implements SearchRepoCustom {
+public class SearchRepoImpl implements CustomSearchRepo {
 
 	private final Logger log = LoggerFactory.getLogger(SearchRepoImpl.class);
 

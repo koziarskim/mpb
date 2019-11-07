@@ -1,4 +1,4 @@
-package com.noovitec.mpb.repo.interfaces;
+package com.noovitec.mpb.repo.custom;
 
 import java.util.List;
 
@@ -8,7 +8,7 @@ import com.noovitec.mpb.dto.SearchDto;
 import com.noovitec.mpb.entity.Component;
 import com.noovitec.mpb.entity.SaleItem;
 
-public interface SearchRepoCustom {
+public interface CustomSearchRepo {
 
 	public List<KeyValueDto> findSeasons(SearchDto searchDto);
 
