@@ -250,12 +250,16 @@ export default {
       this.shipment.totalCases = this.totalCases;
       this.shipment.totalPallets = this.totalPallets;
       this.shipment.totalWeight = this.totalWeight;
-      return http
-        .post("/shipment", this.shipment)
-        .then(response => {})
-        .catch(e => {
-          console.log("API error: " + e);
-        });
+      return http.post("/shipment", this.shipment).then(r => {
+        //This is to replace "new" with ID from url.
+        if(!this.shipment.id){
+          router.push("/shipmentEdit/"+r.data.id);
+        }else{
+          this.shipment = r.data;
+        }
+      }).catch(e => {
+         console.log("API error: " + e);
+      });
     },
     saveShipmentItem(shipmentItem) {
       return http
@@ -279,7 +283,7 @@ export default {
         r.data.forEach(saleItem => {
           this.shipment.shipmentItems.push(
             {
-              shipment: this.shipment,
+              shipment: {id: this.shipment.id},
               saleItem: saleItem,
               units: saleItem.unitsOnStock,
               cases: 0,

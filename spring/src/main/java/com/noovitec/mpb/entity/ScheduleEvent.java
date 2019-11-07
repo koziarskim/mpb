@@ -120,7 +120,7 @@ public class ScheduleEvent {
 		productions.sort((h1, h2) -> h1.getFinishTime().compareTo(h2.getFinishTime()));
 		for(Production p: productions) {
 			if(start == null) {
-				start = p.getScheduleEvent().getStartTime();
+				start = this.getStartTime();
 			}
 			totalSecs += ChronoUnit.SECONDS.between(start, p.getFinishTime());
 			//Set for next start
