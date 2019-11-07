@@ -28,7 +28,7 @@
               <b-button size="sm" @click=goToItem(row.item.itemId) variant="link">{{row.item.itemNumber}} ({{row.item.itemName}})</b-button>
           </template>
           <template v-slot:cell(action)="row">
-            <input type="checkbox" v-model="row.item.selected" @input="row.item.selected = !row.item.selected; itemSelected(row.item)"></input>
+            <input type="checkbox" v-model="selectedSaleItems" :value="row.item.id" @change="checkboxSelected(row.item)" :disabled="checkboxDisabled(row.item)"></input>
           </template>
         </b-table>
 		<b-pagination v-model="pageable.currentPage" :per-page="pageable.perPage" :total-rows="pageable.totalElements" @change="paginationChange"></b-pagination>
@@ -56,6 +56,7 @@ export default {
       item: {},
       availableCustomers: [],
       customer: {},
+      selectedCustomerId: null,
       fields: [
         { key: "number", label: "Sale # (Name)", sortable: false },
         { key: "itemNumber", label: "Item", sortable: false },
@@ -83,12 +84,13 @@ export default {
     }
   },
   methods: {
-    itemSelected(saleItem){
-      if(saleItem.selected){
-        this.selectedSaleItems.push(saleItem.id);
-      }else{
-        this.selectedSaleItems = this.selectedSaleItems.filter(id => id != saleItem.id);
+    checkboxSelected(saleItem){
+      if(!this.selectedCustomerId){
+        this.selectedCustomerId = saleItem.customerId;
       }
+    },
+    checkboxDisabled(saleItem){
+      return this.selectedCustomerId && !this.selectedSaleItems.includes(saleItem.id) && this.selectedCustomerId != saleItem.customerId;
     },
 	sorted(e){
         if(!e.sortBy){ return }
