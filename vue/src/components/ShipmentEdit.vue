@@ -100,9 +100,6 @@
           <template v-slot:cell(units)="row">
             <input class="form-control" style="width:100px" type="tel" v-model="row.item.units" @blur="unitsBlur(row.item)">
           </template>
-          <template v-slot:cell(unitsShipped)="row">
-            <span>{{(+row.item.saleItem.unitsShipped - +row.item.existingUnits + +row.item.units)}}</span>
-          </template>
           <template v-slot:cell(cases)="row">
             <span>{{row.item.cases = Math.ceil(+row.item.units / +row.item.saleItem.item.casePack)}}</span>
           </template>
@@ -134,7 +131,10 @@ export default {
   data() {
     return {
       modalVisible: false,
-      shipment: { shipmentItems: [] },
+      shipment: { 
+        shipmentItems: [],
+        date: moment().format("YYYY-MM-DD"),
+      },
       availableCustomers: [],
       availableShippingAddresses: [],
       availableFreightAddresses: [],
@@ -149,12 +149,11 @@ export default {
       sortBy: "id",
       sortDesc: false,
       columns: [
-        { key: "id", label: "#", sortable: false },
         { key: "item", label: "Item", sortable: false },
         { key: "sale", label: "Sale", sortable: false },
         { key: "saleItem.units", label: "Sold", sortable: false },
-        { key: "saleItem.item.unitsOnStock", label: "Stock", sortable: false },
-        { key: "unitsShipped", label: "Shipped", sortable: false },
+        { key: "saleItem.unitsOnStock", label: "Stock", sortable: false },
+        { key: "saleItem.unitsShipped", label: "Shipped", sortable: false },
         { key: "units", label: "Units", sortable: false },
         { key: "saleItem.item.casePack", label: "Case Pack", sortable: false },
         { key: "cases", label: "Cases", sortable: false },
@@ -276,11 +275,15 @@ export default {
         return;
       }
       return http.get("/saleItem", {params: {ids: saleItemIds}}).then(r => {
+        this.customer = {id: r.data[0].sale.customer.id}
         r.data.forEach(saleItem => {
           this.shipment.shipmentItems.push(
             {
               shipment: this.shipment,
               saleItem: saleItem,
+              units: saleItem.unitsOnStock,
+              cases: 0,
+              pallets: 0
             }
           )
         })
@@ -384,6 +387,7 @@ export default {
   mounted() {
     var id = this.$route.params.shipment_id;
     var saleItemIds = this.$route.query.saleItemIds;
+    window.history.replaceState({}, document.title, window.location.pathname);
     if(id!="new"){
       this.getShipment(id);
     }
