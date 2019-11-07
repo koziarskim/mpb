@@ -22,18 +22,31 @@ public class SaleItemRepoImpl implements CustomSaleItemRepo {
 
 	@Override
 	public List<Long> findIds(String numberName, Long customerId, Long itemId) {
-		String q = "select distinct si.id from SaleItem si ";
-//		q += "where se.id is not null ";
-//		if(!searchDto.getSeasonName().isEmpty()) {
-//			q += "and upper(se.name) like concat('%',upper(:seasonName),'%')";
-//		}
+		String q = "select distinct si.id from SaleItem si "
+				+ "join si.item i "
+				+ "join si.sale s "
+				+ "join s.customer cu "
+				+ "where si.id is not null ";
+		if(numberName != null && !numberName.isEmpty()) {
+			q += "and (upper(s.number) like concat('%',upper(:numberName),'%') ";
+			q += "or upper(s.name) like concat('%',upper(:numberName),'%')) ";
+		}
+		if(customerId != null) {
+			q += "and cu.id = :customerId ";
+		}		
+		if(itemId != null) {
+			q += "and i.id = :itemId ";
+		}
 		Query query = entityManager.createQuery(q);
-//		if(!searchDto.getCustomers().isEmpty()) {
-//			query.setParameter("customerIds", searchDto.getCustomers());
-//		}
-//		if(!searchDto.getSeasonName().isBlank()) {
-//			query.setParameter("seasonName", searchDto.getSeasonName());
-//		}
+		if(numberName != null && !numberName.isEmpty()) {
+			query.setParameter("numberName", numberName);
+		}
+		if(customerId != null) {
+			query.setParameter("customerId", customerId);
+		}
+		if(itemId != null) {
+			query.setParameter("itemId", itemId);
+		}
 		List<Long> list = query.getResultList();
 		return list;
 	}

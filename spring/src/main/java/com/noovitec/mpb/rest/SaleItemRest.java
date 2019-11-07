@@ -1,5 +1,6 @@
 package com.noovitec.mpb.rest;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -64,6 +65,9 @@ class SaleItemRest {
 			}
 		}
 		List<Long> ids = saleItemRepo.findIds(numberName, customerId, itemId);
+		if(ids.isEmpty()) {
+			return Page.empty();
+		}
 		Page<SaleItem> saleItems = saleItemRepo.findPage(pageable, ids);
 //		if(searchType==null || searchType.isBlank() || searchKey==null || searchKey.isBlank()) {
 //			sales = saleRepo.findPage(pageable);
