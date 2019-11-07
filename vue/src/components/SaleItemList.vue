@@ -6,10 +6,13 @@
                 <b-form-checkbox size="sm" v-model="itemView">Item View</b-form-checkbox>
             </b-col>
             <b-col cols="3">
-                <input class="form-control" type="tel" v-model="searchSale" @click="searchItem = ''" @keyup.enter="getSales('sale')" placeholder="Search Number, Name or Customer"/>
+                <input class="form-control" type="tel" v-model="numberName" @keyup.enter="getSaleItems()" placeholder="Search Sale Number or Name"/>
             </b-col>
             <b-col cols="2">
-                <input class="form-control" type="tel" v-model="searchItem" @click="searchSale = ''" @keyup.enter="getSales('item')" placeholder="Search Item"/>
+              <b-select option-value="id" option-text="name" :list="availableCustomers" v-model="customer" placeholder="Search Customer"></b-select>
+            </b-col>
+            <b-col cols="2">
+              <b-select option-value="id" option-text="name" :list="availableItems" v-model="item" placeholder="Search Item"></b-select>
             </b-col>
             <b-col>
                 <div style="text-align: right;">
@@ -17,13 +20,16 @@
                 </div>
             </b-col>
         </b-row>
-        <b-table :items="sales" :fields="fields" no-local-sorting @sort-changed="sorted">
+        <b-table :items="saleItems" :fields="fields" no-local-sorting @sort-changed="sorted">
           <template v-slot:cell(number)="row">
-              <b-button size="sm" @click.stop=goToSale(row.item.id) variant="link">{{row.item.number}} ({{row.item.name}})</b-button>
+              <b-button size="sm" @click=goToSale(row.item.saleId) variant="link">{{row.item.saleNumber}} ({{row.item.saleName}})</b-button>
           </template>
-          <template v-slot:cell(action)="row">
-              <b-button size="sm" @click.stop="deleteSale(row.item.id)">x</b-button>
+          <template v-slot:cell(itemNumber)="row">
+              <b-button size="sm" @click=goToItem(row.item.itemId) variant="link">{{row.item.itemNumber}} ({{row.item.itemName}})</b-button>
           </template>
+          <!-- <template v-slot:cell(action)="row">
+              <b-button size="sm" @click="deleteSale(row.item.id)">x</b-button>
+          </template> -->
         </b-table>
 		<b-pagination v-model="pageable.currentPage" :per-page="pageable.perPage" :total-rows="pageable.totalElements" @change="paginationChange"></b-pagination>
     </b-container>
@@ -45,14 +51,18 @@ export default {
       itemView: true,
       selectedSaleItems: [],
       saleItems: [],
+      numberName: "",
+      availableItems: [],
+      item: {},
+      availableCustomers: [],
+      customer: {},
       fields: [
         { key: "number", label: "Sale # (Name)", sortable: false },
+        { key: "itemNumber", label: "Item", sortable: false },
         { key: "customerName", label: "Customer", sortable: false },
-        { key: "dc", label: "DC", sortable: false },
-        { key: "date", label: "Date", sortable: false },
         { key: "unitsSold", label: "Sold", sortable: false },
-        { key: "unitsScheduled", label: "Scheduled", sortable: false },
         { key: "unitsProduced", label: "Produced", sortable: false },
+        { key: "unitsOnStock", label: "On Stock", sortable: false },
         { key: "action", label: "Action", sortable: false}
       ],
       sales: []
@@ -63,6 +73,12 @@ export default {
       if(newValue==false){
         navigation.goTo("/saleList/")
       }
+    },
+    item(newValue, oldValue){
+      this.getSaleItems();
+    },
+    customer(newValue, oldValue){
+      this.getSaleItems();
     }
   },
   methods: {
@@ -70,18 +86,31 @@ export default {
         if(!e.sortBy){ return }
         this.pageable.sortBy = e.sortBy;
         this.pageable.sortDesc = e.sortDesc;
-        this.getSales();
+        this.getSaleItems();
     },
     paginationChange(page){
         this.pageable.currentPage = page;
-        this.getSales();
+        this.getSaleItems();
     },
   getSaleItems(){
-    http.get("/saleItem/pageable", {params: {pageable: this.pageable, numberName: '123', customerId: 123, itemId: 123}}).then(response => {
-      this.saleItems = response.data.content;
-      // this.pageable.totalElements = response.data.totalElements;
-    })
-    .catch(e => {
+    http.get("/saleItem/pageable", {params: {pageable: this.pageable, numberName: this.numberName, customerId: this.customer.id, itemId: this.item.id}}).then(r => {
+      this.saleItems = r.data.content;
+      this.pageable.totalElements = r.data.totalElements;
+    }).catch(e => {
+      console.log("API error: "+e);
+    });
+  },
+  getAvailableCustomers() {
+    http.get("/customer/kv").then(r => {
+      this.availableCustomers = r.data;
+    }).catch(e => {
+      console.log("API error: "+e);
+    });
+  },
+  getAvailableItems() {
+    http.get("/item/kv").then(r => {
+      this.availableItems = r.data;
+    }).catch(e => {
       console.log("API error: "+e);
     });
   },
@@ -123,8 +152,11 @@ export default {
             }
         })
     },
-    goToSale(id){
-        if(!id){
+    gotToItem(itemId){
+      router.push("/itemEdit/"+itemId);
+    },
+    goToSale(saleId){
+        if(!saleId){
             http
             .post("/sale")
             .then(response =>{
@@ -134,13 +166,14 @@ export default {
                 console.log("API Error: "+e);
             })
         }else{
-            router.push('/saleEdit/'+id);
+            router.push('/saleEdit/'+saleId);
         }
     },
   },
   mounted() {
-     this.getSales();
      this.getSaleItems();
+     this.getAvailableCustomers();
+     this.getAvailableItems();
   }
 };
 </script>

@@ -39,57 +39,26 @@ class SaleItemRest {
 			@RequestParam(name = "numberName", required = false) String numberName, 
 			@RequestParam(name = "itemId", required = false) Long itemId,
 			@RequestParam(name = "customerId", required = false) Long customerId) {
-		if(numberName != null && !numberName.isBlank()) {
-			if(itemId != null) {
-				if(customerId != null) {
-					//TODO: Search by numberName && itemId && customerId
-				}else {
-					//TODO: Search by numberName && itemId
-				}
-			}else {
-				if(customerId !=null) {
-					//TODO: search by numberName && customerId
-				}else {
-					//TODO: search by numberName
-				}
-			}
-		}else {
-			if(itemId !=null ) {
-				if(customerId !=null) {
-					//TODO: search by itemId && customerId
-				}else {
-					//TODO: search by itemId
-				}
-			}else {
-				//TODO: search by customerId
-			}
-		}
 		List<Long> ids = saleItemRepo.findIds(numberName, customerId, itemId);
 		if(ids.isEmpty()) {
 			return Page.empty();
 		}
 		Page<SaleItem> saleItems = saleItemRepo.findPage(pageable, ids);
-//		if(searchType==null || searchType.isBlank() || searchKey==null || searchKey.isBlank()) {
-//			sales = saleRepo.findPage(pageable);
-//		}else if(searchType.equals("sale") && !searchKey.isBlank()) {
-//			sales = saleRepo.findPageBySale(pageable, searchKey);
-//		}else if(searchType.equals("item") && !searchKey.isBlank()){
-//			sales = saleRepo.findPageByItem(pageable, searchKey);
-//		}
-//		if(sales == null) {
-//			 return Page.empty();
-//		}
 		Page<SaleItemDto> all = saleItems.map(saleItem -> {
 			SaleItemDto dto = new SaleItemDto();
 			dto.setId(saleItem.getId());
-//			dto.setNumber(sale.getNumber());
-//			dto.setName(sale.getName());
-//			dto.setDc(sale.getShippingAddress()==null?"":sale.getShippingAddress().getDc());
-//			dto.setDate(sale.getDate());
-//			dto.setCustomerName(sale.getCustomer()==null?"":sale.getCustomer().getName());
-//			dto.setUnitsSold(sale.getUnitsSold());
-//			dto.setUnitsScheduled(sale.getUnitsScheduled());
-//			dto.setUnitsProduced(sale.getUnitsProduced());
+			dto.setSaleId(saleItem.getSale().getId());
+			dto.setSaleNumber(saleItem.getSale().getNumber());
+			dto.setSaleName(saleItem.getSale().getName());
+			dto.setItemId(saleItem.getItem().getId());
+			dto.setItemNumber(saleItem.getItem().getNumber());
+			dto.setItemName(saleItem.getItem().getName());
+			dto.setCustomerId(saleItem.getSale().getCustomer().getId());
+			dto.setCustomerName(saleItem.getSale().getCustomer().getName());
+			dto.setUnitsSold(Long.valueOf(saleItem.getUnits()));
+			dto.setUnitsProduced(saleItem.getUnitsProduced());
+			dto.setUnitsShipped(saleItem.getUnitsShipped());
+			dto.setUnitsOnStock(saleItem.getUnitsOnStock());
 		    return dto;
 		});
 		return all;

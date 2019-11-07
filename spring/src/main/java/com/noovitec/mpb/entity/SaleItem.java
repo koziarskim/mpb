@@ -123,4 +123,11 @@ public class SaleItem {
 		return this.unitsShipped;
 	}
 	
+	@Transient
+	private Long unitsOnStock = 0L;
+	
+	public Long getUnitsOnStock() {
+		return this.getUnitsProduced() - this.getUnitsShipped();
+	}
+	
 }
