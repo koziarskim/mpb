@@ -3,7 +3,7 @@
     <b-row style="padding-bottom: 4px;">
       <b-col cols=3>
         <span style="font-size: 18px; font-weight: bold">Daily Production Status:</span>
-        <b-form-checkbox v-model="itemView">Item View</b-form-checkbox>
+        <b-form-checkbox size="sm" v-model="itemView">Item View</b-form-checkbox>
       </b-col>
       <b-col cols=2>
         <input class="form-control" type="date" v-model="date" placeholder="Date">

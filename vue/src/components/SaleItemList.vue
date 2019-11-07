@@ -1,37 +1,37 @@
 <template>
     <b-container fluid>
-      <b-row style="padding-bottom: 4px;">
-        <b-col cols="2">
-          <span style="text-align: left; font-size: 18px; font-weight: bold">Sale Orders</span>
-          <b-form-checkbox size="sm" v-model="itemView">Item View</b-form-checkbox>
-        </b-col>
-        <b-col cols="3">
-          <input class="form-control" type="tel" v-model="searchSale" @click="searchItem = ''" @keyup.enter="getSales('sale')" placeholder="Search Number, Name or Customer"/>
-        </b-col>
-        <b-col cols="2">
-          <input class="form-control" type="tel" v-model="searchItem" @click="searchSale = ''" @keyup.enter="getSales('item')" placeholder="Search Item"/>
-        </b-col>
-        <b-col>
-          <div style="text-align: right;">
-          <b-button type="submit" variant="primary" @click="goToSale('')">New S.O.</b-button>
-          </div>
-        </b-col>
-      </b-row>
-      <b-table :items="sales" :fields="fields" no-local-sorting @sort-changed="sorted">
-        <template v-slot:cell(number)="row">
-            <b-button size="sm" @click.stop=goToSale(row.item.id) variant="link">{{row.item.number}} ({{row.item.name}})</b-button>
-        </template>
-        <template v-slot:cell(action)="row">
-            <b-button size="sm" @click.stop="deleteSale(row.item.id)">x</b-button>
-        </template>
-      </b-table>
+        <b-row style="padding-bottom: 4px;">
+            <b-col cols="2">
+                <span style="text-align: left; font-size: 18px; font-weight: bold">Sales by Item</span>
+                <b-form-checkbox size="sm" v-model="itemView">Item View</b-form-checkbox>
+            </b-col>
+            <b-col cols="3">
+                <input class="form-control" type="tel" v-model="searchSale" @click="searchItem = ''" @keyup.enter="getSales('sale')" placeholder="Search Number, Name or Customer"/>
+            </b-col>
+            <b-col cols="2">
+                <input class="form-control" type="tel" v-model="searchItem" @click="searchSale = ''" @keyup.enter="getSales('item')" placeholder="Search Item"/>
+            </b-col>
+            <b-col>
+                <div style="text-align: right;">
+                <b-button type="submit" variant="primary" @click="goToSale('')">New S.O.</b-button>
+                </div>
+            </b-col>
+        </b-row>
+        <b-table :items="sales" :fields="fields" no-local-sorting @sort-changed="sorted">
+          <template v-slot:cell(number)="row">
+              <b-button size="sm" @click.stop=goToSale(row.item.id) variant="link">{{row.item.number}} ({{row.item.name}})</b-button>
+          </template>
+          <template v-slot:cell(action)="row">
+              <b-button size="sm" @click.stop="deleteSale(row.item.id)">x</b-button>
+          </template>
+        </b-table>
 		<b-pagination v-model="pageable.currentPage" :per-page="pageable.perPage" :total-rows="pageable.totalElements" @change="paginationChange"></b-pagination>
     </b-container>
 </template>
 <script>
 import http from "../http-common";
 import router from "../router";
-import securite from "../securite"
+import securite from "../securite";
 import navigation from "../utils/navigation";
 
 export default {
@@ -42,7 +42,7 @@ export default {
       pageable: {totalElements: 100, currentPage: 1, perPage: 7, sortBy: 'number', sortDesc: false},
       searchSale: "",
       searchItem: "",
-      itemView: false,
+      itemView: true,
       fields: [
         { key: "number", label: "Sale # (Name)", sortable: false },
         { key: "customerName", label: "Customer", sortable: false },
@@ -58,8 +58,8 @@ export default {
   },
   watch: {
     itemView(newValue, oldValue){
-      if(newValue==true){
-        navigation.goTo("/saleItemList/")
+      if(newValue==false){
+        navigation.goTo("/saleList/")
       }
     }
   },

@@ -23,6 +23,7 @@ import Users from "./components/Users";
 import Login from "./components/Login";
 import Schedule from "./components/Schedule";
 import ItemSaleList from "./components/ItemSaleList";
+import SaleItemList from "./components/SaleItemList";
 import AccessDenied from "./components/AccessDenied";
 import ShipmentEdit from "./components/ShipmentEdit";
 import ShipmentList from "./components/ShipmentList";
@@ -96,6 +97,14 @@ const router = new Router({
       path: "/saleList",
       name: "saleList",
       component: SaleList,
+      meta: {
+        roles: ["SUPER_USER"]
+      }
+    },
+    {
+      path: "/saleItemList",
+      name: "saleItemList",
+      component: SaleItemList,
       meta: {
         roles: ["SUPER_USER"]
       }
