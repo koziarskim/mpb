@@ -88,6 +88,9 @@ export default {
       if(!this.selectedCustomerId){
         this.selectedCustomerId = saleItem.customerId;
       }
+      if(this.selectedSaleItems.length==0){
+        this.selectedCustomerId = null;
+      }
     },
     checkboxDisabled(saleItem){
       return this.selectedCustomerId && !this.selectedSaleItems.includes(saleItem.id) && this.selectedCustomerId != saleItem.customerId;
@@ -104,13 +107,6 @@ export default {
     },
   getSaleItems(){
     http.get("/saleItem/pageable", {params: {pageable: this.pageable, numberName: this.numberName, customerId: this.customer.id, itemId: this.item.id}}).then(r => {
-      r.data.content.forEach(si => {
-        if(this.selectedSaleItems.includes(si.id)){
-          si.selected = true;
-        }else{
-          si.selected = false;
-        }
-      })
       this.saleItems = r.data.content;
       this.pageable.totalElements = r.data.totalElements;
     }).catch(e => {
