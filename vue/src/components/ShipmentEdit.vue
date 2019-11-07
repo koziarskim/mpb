@@ -271,13 +271,29 @@ export default {
     save() {
       this.saveShipment()
     },
+    getSaleItems(saleItemIds){
+      if(!saleItemIds){
+        return;
+      }
+      return http.get("/saleItem", {params: {ids: saleItemIds}}).then(r => {
+        r.data.forEach(saleItem => {
+          this.shipment.shipmentItems.push(
+            {
+              shipment: this.shipment,
+              saleItem: saleItem,
+            }
+          )
+        })
+      }).catch(e => {
+        console.log("API error: " + e); 
+      })
+    },
     getAvailableCustomers() {
       return http
         .get("/customer/kv")
         .then(response => {
           this.availableCustomers = response.data;
-        })
-        .catch(e => {
+        }).catch(e => {
           console.log("API error: " + e);
         });
     },
@@ -367,11 +383,13 @@ export default {
   },
   mounted() {
     var id = this.$route.params.shipment_id;
+    var saleItemIds = this.$route.query.saleItemIds;
     if(id!="new"){
       this.getShipment(id);
     }
     this.getAvailableCustomers();
     this.getAvailableFreightAddresses();
+    this.getSaleItems(saleItemIds);
   }
 };
 </script>

@@ -30,5 +30,8 @@ public interface SaleItemRepo extends PagingAndSortingRepository<SaleItem, Long>
 
 	@Query(value="select new com.noovitec.mpb.dto.KeyValueDto(si.id, si.sale.number) from SaleItem si ")
 	public List<KeyValueDto> findAllKvs();
+	
+	@Query("select si from SaleItem si where si.id in (:ids)")
+	public List<SaleItem> findAllByIds(Long[] ids);
 
 }

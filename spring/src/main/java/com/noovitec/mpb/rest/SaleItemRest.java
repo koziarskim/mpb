@@ -1,6 +1,5 @@
 package com.noovitec.mpb.rest;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -31,6 +30,11 @@ class SaleItemRest {
 
 	public SaleItemRest(SaleItemRepo saleItemRepo) {
 		this.saleItemRepo = saleItemRepo;
+	}
+	
+	@GetMapping("/saleItem")
+	List<SaleItem> getAll(@RequestParam(name = "ids", required = false) Long[] ids) {
+		return  saleItemRepo.findAllByIds(ids);
 	}
 	
 	@GetMapping("/saleItem/pageable")

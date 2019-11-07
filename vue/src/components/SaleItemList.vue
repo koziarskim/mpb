@@ -16,7 +16,7 @@
             </b-col>
             <b-col>
                 <div style="text-align: right;">
-                <b-button type="submit" variant="primary" @click="goToSale('')">New Shipment ({{selectedSaleItems.length}})</b-button>
+                <b-button type="submit" variant="primary" @click="newShipment()">New Shipment ({{selectedSaleItemIds.length}})</b-button>
                 </div>
             </b-col>
         </b-row>
@@ -28,7 +28,7 @@
               <b-button size="sm" @click=goToItem(row.item.itemId) variant="link">{{row.item.itemNumber}} ({{row.item.itemName}})</b-button>
           </template>
           <template v-slot:cell(action)="row">
-            <input type="checkbox" v-model="selectedSaleItems" :value="row.item.id" @change="checkboxSelected(row.item)" :disabled="checkboxDisabled(row.item)">
+            <input type="checkbox" v-model="selectedSaleItemIds" :value="row.item.id" @change="checkboxSelected(row.item)" :disabled="checkboxDisabled(row.item)">
           </template>
         </b-table>
 		<b-pagination v-model="pageable.currentPage" :per-page="pageable.perPage" :total-rows="pageable.totalElements" @change="paginationChange"></b-pagination>
@@ -49,7 +49,7 @@ export default {
       searchSale: "",
       searchItem: "",
       itemView: true,
-      selectedSaleItems: [],
+      selectedSaleItemIds: [],
       saleItems: [],
       numberName: "",
       availableItems: [],
@@ -88,12 +88,12 @@ export default {
       if(!this.selectedCustomerId){
         this.selectedCustomerId = saleItem.customerId;
       }
-      if(this.selectedSaleItems.length==0){
+      if(this.selectedSaleItemIds.length==0){
         this.selectedCustomerId = null;
       }
     },
     checkboxDisabled(saleItem){
-      return this.selectedCustomerId && !this.selectedSaleItems.includes(saleItem.id) && this.selectedCustomerId != saleItem.customerId;
+      return this.selectedCustomerId && !this.selectedSaleItemIds.includes(saleItem.id) && this.selectedCustomerId != saleItem.customerId;
     },
 	sorted(e){
         if(!e.sortBy){ return }
@@ -126,6 +126,10 @@ export default {
     }).catch(e => {
       console.log("API error: "+e);
     });
+  },
+  newShipment(){
+    var query = { saleItemIds: this.selectedSaleItemIds.join(",") };
+    router.push({ path: "/shipmentEdit/new", query: query })
   },
     gotToItem(itemId){
       router.push("/itemEdit/"+itemId);
