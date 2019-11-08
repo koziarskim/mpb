@@ -73,7 +73,7 @@
         <b-select option-value="id" option-text="label" :list="availableSaleItems" v-model="saleItem"></b-select>
       </b-col>
       <b-col cols="1">
-        <b-button style="padding-top: 30px; padding-left: 0px" variant="link" @click="addItem()">(+)</b-button>
+        <b-button style="padding-top: 30px; padding-left: 0px" variant="link" @click="addSaleItemKv(saleItem.id)">(+)</b-button>
       </b-col>
       <b-col>
         <br>
@@ -197,6 +197,7 @@ export default {
       if (!new_value.id || new_value.id == old_value.id) {
         return;
       }
+      this.getAvailableSales();
       this.getAvailableShippingAddresses(new_value.id)
     },
     sale(new_value, old_value) {
@@ -207,7 +208,7 @@ export default {
           this.availableSaleItems.push(si);
         });
       }
-    }
+    },
   },
   methods: {
     openModal(){
@@ -281,15 +282,7 @@ export default {
       return http.get("/saleItem", {params: {ids: saleItemIds}}).then(r => {
         this.customer = {id: r.data[0].sale.customer.id}
         r.data.forEach(saleItem => {
-          this.shipment.shipmentItems.push(
-            {
-              shipment: {id: this.shipment.id},
-              saleItem: saleItem,
-              units: saleItem.unitsOnStock,
-              cases: 0,
-              pallets: 0
-            }
-          )
+          this.addSaleItem(saleItem);
         })
       }).catch(e => {
         console.log("API error: " + e); 
@@ -328,21 +321,23 @@ export default {
           console.log("API error: " + e);
         });
     },
-    addItem() {
-      this.saveShipment().then(r => {
-        var shipmentItem = {
-          shipment: { id: this.shipment.id },
-          saleItem: { id: this.saleItem.id }
-        };
-        http
-          .post("/shipmentItem", shipmentItem)
-          .then(response => {
-            this.getShipment(this.shipment.id);
-          })
-          .catch(e => {
-            console.log("API error: " + e);
-          });
-      });
+    addSaleItemKv(saleItemId){
+      http.get("/saleItem/"+saleItemId).then(r => {
+        this.addSaleItem(r.data);
+      }).catch(e => {
+        console.log("API error: " + e);
+      })
+    },
+    addSaleItem(saleItem){
+      this.shipment.shipmentItems.push(
+        {
+          shipment: {id: this.shipment.id},
+          saleItem: saleItem,
+          units: saleItem.unitsOnStock,
+          cases: 0,
+          pallets: 0
+        }
+      )
     },
     deleteItem(shipmentItemId) {
       http
