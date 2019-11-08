@@ -39,13 +39,11 @@ public class Shipment {
 	private String number;
 	private LocalDate date;
 	private String notes;
-	private String poNumber;
-	private LocalDate shippingDate;
 	private String via;
 	private String fob;
-	private Long freight;
-	private String csNumber;
-	private boolean submitted;
+	private String freightNmfc;
+	private String freightTerms;
+	private String loadNumber;
 	private Long totalUnits = 0L;
 	private Long totalCases = 0L;
 	private Long totalPallets = 0L;

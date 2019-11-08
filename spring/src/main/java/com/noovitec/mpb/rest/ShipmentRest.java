@@ -73,7 +73,7 @@ class ShipmentRest {
 	HttpEntity<byte[]> getPdf(@PathVariable Long id) throws DocumentException, IOException {
 		Shipment shipment = shipmentRepo.findById(id).get();
 		byte[] data = null;
-		if (shipment.isSubmitted() && shipment.getAttachment() != null) {
+		if (shipment.getAttachment() != null) {
 			Attachment attachment = attachmentRepo.findById(shipment.getAttachment().getId()).get();
 			data = attachment.getData();
 		} else {
@@ -139,12 +139,11 @@ class ShipmentRest {
 		stamper.setFormFlattening(true);
 		stamper.getAcroFields().setField("date", shipment.getDate().format(DateTimeFormatter.ofPattern("MM/dd/yyy")));
 		stamper.getAcroFields().setField("number", shipment.getNumber());
-		stamper.getAcroFields().setField("poNumber", shipment.getPoNumber());
-		stamper.getAcroFields().setField("shippingDate", shipment.getShippingDate().format(DateTimeFormatter.ofPattern("MM/dd/yyy")));
 		stamper.getAcroFields().setField("via", shipment.getVia());
 		stamper.getAcroFields().setField("fob", shipment.getFob());
-		stamper.getAcroFields().setField("freight", shipment.getFreight().toString());
-		stamper.getAcroFields().setField("csNumber", shipment.getCsNumber());
+		stamper.getAcroFields().setField("freightNmfc", shipment.getFreightNmfc());
+		stamper.getAcroFields().setField("freightTerms", shipment.getFreightTerms());
+		stamper.getAcroFields().setField("loadNumber", shipment.getLoadNumber());
 
 		stamper.getAcroFields().setField("itemQuantity", itemQuantity);
 		stamper.getAcroFields().setField("itemDescription", itemDescription);

@@ -1,78 +1,75 @@
 <template>
   <b-container fluid>
-    <b-row style="padding-bottom: 4px;">
-      <b-col cols="2">
-        <span style="text-align: left; font-size: 18px; font-weight: bold">Shipment: </span>
-        <input class="form-control" type="tel" v-model="shipment.number">
+    <b-row>
+      <b-col cols=2>
+          <label style="font-size: 18px; font-weight: bold; margin-top: -10px">Shipment #:</label>
+          <input class="form-control" style="margin-top: -7px;" type="tel" v-model="shipment.number">
       </b-col>
-      <b-col cols="3">
+      <b-col cols=3>
+        <label class="top-label">Customer:</label>
         <b-select option-value="id" option-text="name" :list="availableCustomers" v-model="customer" placeholder="Select Customer"></b-select>
       </b-col>
-      <b-col cols="2">
+      <b-col cols=2>
+        <label class="top-label">Shipping Date:</label>
         <input class="form-control" type="date" v-model="shipment.date">
       </b-col>
+      <b-col cols=2>
+        <label class="top-label">Freight Terms:</label>
+        <input class="form-control" type="tel" v-model="shipment.freightTerms">
+      </b-col>
+      <b-col cols=2>
+        <label class="top-label">Load Number:</label>
+        <input class="form-control" type="tel" v-model="shipment.loadNumber">
+      </b-col>      
       <b-col>
-        <div style="text-align: right;">
-          <b-button type="reset" variant="primary" @click="save()">Save</b-button>
+        <div style="margin-top: 22px;">
+          <b-button type="reset" variant="primary" style="margin-left: -18px" @click="saveShipment()">Save</b-button>
           <img @click="openPdf()" style="margin: 2px;" src="../assets/pdf-download.png" width="25px">
         </div>
       </b-col>
     </b-row>
     <b-row>
-      <b-col cols="3">
-        <label class="top-label">Ship To:</label>
-        <b-select option-value="id" option-text="name" :list="availableShippingAddresses" v-model="shippingAddress" placeholder="Pick shipping address"></b-select>
-      </b-col>
-      <b-col cols="3">
-        <label class="top-label">Freight Address:<a href="#" @click="openModal()"> (Edit/New) </a></label>
-        <b-select option-value="id" option-text="name" :list="availableFreightAddresses" v-model="freightAddress" placeholder="Pick freight address"></b-select>
+      <b-col>
+        <b-row>
+          <b-col cols=6>
+            <label class="top-label">Ship To:</label>
+            <b-select option-value="id" option-text="name" :list="availableShippingAddresses" v-model="shippingAddress" placeholder="Pick shipping address"></b-select>
+          </b-col>
+          <b-col cols=6>
+            <label class="top-label">Freight Address:<a href="#" @click="openModal()"> (Edit/New) </a></label>
+            <b-select option-value="id" option-text="name" :list="availableFreightAddresses" v-model="freightAddress" placeholder="Pick freight address"></b-select>
+          </b-col>
+        </b-row>
+        <b-row>
+          <b-col cols=4>
+            <label class="top-label">Via:</label>
+            <input class="form-control" type="tel" v-model="shipment.via">
+          </b-col>
+          <b-col cols=4>
+            <label class="top-label">FOB:</label>
+            <input class="form-control" type="tel" v-model="shipment.fob">
+          </b-col>
+          <b-col cols=4>
+            <label class="top-label">Freight/NMFC:</label>
+            <input class="form-control" type="tel" v-model="shipment.freightNmfc">
+          </b-col>
+        </b-row>
       </b-col>
       <b-col>
-        <b-form-textarea type="text" :rows="3" v-model="shipment.notes" placeholder="Special Notes"></b-form-textarea>
+        <label class="top-label">Special Notes:</label>
+        <b-form-textarea type="text" :rows="4" v-model="shipment.notes" placeholder="Special Notes"></b-form-textarea>
       </b-col>
     </b-row>
     <b-row>
-      <b-col cols="2">
-        <label class="top-label">P.O. No.:</label>
-        <br>
-        <input class="form-control" type="tel" v-model="shipment.poNumber">
-      </b-col>
-      <b-col cols="2">
-        <label class="top-label">Ship Date:</label>
-        <br>
-        <input class="form-control" type="date" v-model="shipment.shippingDate">
-      </b-col>
-      <b-col cols="2">
-        <label class="top-label">Via:</label>
-        <br>
-        <input class="form-control" type="tel" v-model="shipment.via">
-      </b-col>
-      <b-col cols="2">
-        <label class="top-label">FOB:</label>
-        <br>
-        <input class="form-control" type="tel" v-model="shipment.fob">
-      </b-col>
-      <b-col cols="2">
-        <label class="top-label">Freight Class</label>
-        <br>
-        <input class="form-control" type="tel" v-model="shipment.freight">
-      </b-col>
-      <b-col cols="2">
-        <label class="top-label">CS No.:</label>
-        <br>
-        <input class="form-control" type="tel" v-model="shipment.csNumber">
-      </b-col>
-    </b-row>
-    <b-row>
-      <b-col cols="3">
+      <b-col cols=3>
         <label class="top-label">Sale:</label>
         <b-select option-value="id" option-text="number" :list="availableSales" v-model="sale"></b-select>
       </b-col>
-      <b-col cols="2">
+      <b-col cols=2>
         <label class="top-label">Item:</label>
         <b-select option-value="id" option-text="label" :list="availableSaleItems" v-model="saleItem"></b-select>
       </b-col>
-      <b-col cols="1">
+      <b-col cols=1>
         <b-button style="padding-top: 30px; padding-left: 0px" variant="link" @click="addSaleItemKv(saleItem.id)">(+)</b-button>
       </b-col>
       <b-col>
@@ -107,7 +104,7 @@
             <span>{{row.item.pallets = Math.ceil(+row.item.cases / (+row.item.saleItem.item.ti * +row.item.saleItem.item.hi))}}</span>
           </template>
           <template v-slot:cell(action)="row">
-            <b-button size="sm" @click.stop="deleteItem(row.item.saleItem.id)">x</b-button>
+            <b-button size="sm" @click.stop="removeSaleItem(row.item.saleItem.id)">x</b-button>
           </template>
         </b-table>
       </b-col>
@@ -222,26 +219,24 @@ export default {
 			this.modalVisible=false;
 		},
     getShipment(id) {
-      http
-        .get("/shipment/" + id)
-        .then(response => {
-          response.data.shipmentItems.forEach(si => {
-            si.existingUnits = si.units;
-          });
-          this.shipment = response.data;
-          if (response.data.customer) {
-            this.customer = response.data.customer;
-          }
-          if (response.data.shippingAddress) {
-            this.shippingAddress = response.data.shippingAddress;
-          }
-          if (response.data.freightAddress){
-            this.freightAddress = response.data.freightAddress;
-          }
-        })
-        .catch(e => {
-          console.log("API error: " + e);
+      http.get("/shipment/" + id).then(response => {
+        response.data.shipmentItems.forEach(si => {
+          si.existingUnits = si.units;
         });
+        this.shipment = response.data;
+        if (response.data.customer) {
+          this.customer = response.data.customer;
+        }
+        if (response.data.shippingAddress) {
+          this.shippingAddress = response.data.shippingAddress;
+        }
+        if (response.data.freightAddress){
+          this.freightAddress = response.data.freightAddress;
+        }
+      })
+      .catch(e => {
+        console.log("API error: " + e);
+      });
     },
     saveShipment() {
       this.shipment.customer = this.customer.id?{id: this.customer.id}:null;
@@ -261,19 +256,6 @@ export default {
       }).catch(e => {
          console.log("API error: " + e);
       });
-    },
-    saveShipmentItem(shipmentItem) {
-      return http
-        .post("/shipmentItem", shipmentItem)
-        .then(response => {
-          return Promise.resolve();
-        })
-        .catch(e => {
-          console.log("API error: " + e);
-        });
-    },
-    save() {
-      this.saveShipment()
     },
     getSaleItems(saleItemIds){
       if(!saleItemIds){
@@ -339,7 +321,7 @@ export default {
         }
       )
     },
-    deleteItem(saleItemId) {
+    removeSaleItem(saleItemId) {
       var idx = this.shipment.shipmentItems.findIndex(shipItem => shipItem.saleItem.id == saleItemId);
       this.shipment.shipmentItems.splice(idx, 1)
     },
@@ -348,21 +330,6 @@ export default {
     },
     goToSale(sale_id) {
       router.push("/saleEdit/" + sale_id);
-    },
-    formatDate(date) {
-      return date
-        ? moment(date)
-            .utc()
-            .format("YYYY-MM-DD")
-        : "";
-    },
-    submitShipment() {
-      if (this.shipment.shipmentItems.length == 0) {
-        alert("No Items selected!!!");
-        return Promise.resolve();
-      }
-      this.shipment.submitted = true;
-      this.saveShipment();
     },
     openPdf(){
         this.saveShipment().then(r=>{
