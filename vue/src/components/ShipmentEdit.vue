@@ -62,13 +62,9 @@
     </b-row>
     <div style="border: 1px solid #d6d3d3; margin-top: 10px;">
       <b-row>
-        <b-col cols=3>
-          <label class="top-label">Sale:</label>
-          <b-select option-value="id" option-text="number" :list="availableSales" v-model="sale"></b-select>
-        </b-col>
-        <b-col cols=3>
-          <label class="top-label">Item:</label>
-          <b-select option-value="id" option-text="label" :list="availableSaleItems" v-model="saleItem"></b-select>
+        <b-col cols=6>
+          <label class="top-label">Sale ( Item ):</label>
+          <b-select option-value="id" option-text="name" :list="availableSaleItems" v-model="saleItem"></b-select>
         </b-col>
         <b-col cols=1>
           <b-button size="sm" style="margin-top: 30px;" variant="primary" @click="addSaleItemKv(saleItem.id)">Add &#x25BC;</b-button>
@@ -195,20 +191,8 @@ export default {
       if (!new_value.id || new_value.id == old_value.id) {
         return;
       }
-      this.getAvailableSales();
+      this.getAvailableSaleItems();
       this.getAvailableShippingAddresses(new_value.id)
-    },
-    sale(new_value, old_value) {
-      if(!new_value || !new_value.id){
-        return;
-      }
-      if (new_value.id != old_value.id) {
-        this.availableSaleItems = [];
-        new_value.saleItems.forEach(si => {
-          si.label = si.item.number +' ('+si.item.name+')';
-          this.availableSaleItems.push(si);
-        });
-      }
     },
   },
   methods: {
@@ -297,11 +281,11 @@ export default {
         this.availableShippingAddresses = r.data;
       })
     },
-    getAvailableSales() {
+    getAvailableSaleItems() {
       return http
-        .get("/sale/customer/" + this.customer.id)
+        .get("/saleItem/kv/customer/" + this.customer.id)
         .then(response => {
-          this.availableSales = response.data;
+          this.availableSaleItems = response.data;
         })
         .catch(e => {
           console.log("API error: " + e);
