@@ -226,7 +226,15 @@ export default {
         console.log("API error: " + e);
       });
     },
+    validate(){
+      if(!this.shipment.number){
+        alert("Shipping Number required.")
+      }
+    },
     saveShipment() {
+      if(!this.validate()){
+        return;
+      }
       this.shipment.customer = this.customer.id?{id: this.customer.id}:null;
       this.shipment.shippingAddress = this.shippingAddress.id?{ id: this.shippingAddress.id }:null;
       this.shipment.freightAddress = this.freightAddress.id?{ id: this.freightAddress.id }:null;
