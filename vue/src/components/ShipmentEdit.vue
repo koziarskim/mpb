@@ -107,7 +107,7 @@
             <span>{{row.item.pallets = Math.ceil(+row.item.cases / (+row.item.saleItem.item.ti * +row.item.saleItem.item.hi))}}</span>
           </template>
           <template v-slot:cell(action)="row">
-            <b-button size="sm" @click.stop="deleteItem(row.item.id)">x</b-button>
+            <b-button size="sm" @click.stop="deleteItem(row.item.saleItem.id)">x</b-button>
           </template>
         </b-table>
       </b-col>
@@ -339,15 +339,9 @@ export default {
         }
       )
     },
-    deleteItem(shipmentItemId) {
-      http
-        .delete("/shipmentItem/" + shipmentItemId)
-        .then(response => {
-          this.getShipment(this.shipment.id);
-        })
-        .catch(e => {
-          console.log("API error: " + e);
-        });
+    deleteItem(saleItemId) {
+      var idx = this.shipment.shipmentItems.findIndex(shipItem => shipItem.saleItem.id == saleItemId);
+      this.shipment.shipmentItems.splice(idx, 1)
     },
     goToItem(item_id) {
       router.push("/itemEdit/" + item_id);
