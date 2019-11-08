@@ -332,10 +332,10 @@ export default {
       router.push("/saleEdit/" + sale_id);
     },
     openPdf(){
-        this.saveShipment().then(r=>{
-            var url = httpUtils.baseUrl + "/shipment/" + this.shipment.id + "/pdf";
-            window.open(url, "_blank","")
-        })
+      this.saveShipment().then(r=>{
+        var url = httpUtils.baseUrl + "/shipment/" + this.shipment.id + "/pdf";
+        window.open(url, "_blank","")
+      })
     },
     unitsBlur(si){
         if(si.units > si.saleItem.item.unitsOnStock){

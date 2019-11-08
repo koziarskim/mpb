@@ -24,16 +24,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.HttpServerErrorException;
 
 import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Element;
-import com.itextpdf.text.Font;
-import com.itextpdf.text.Font.FontFamily;
-import com.itextpdf.text.Phrase;
-import com.itextpdf.text.pdf.ColumnText;
-import com.itextpdf.text.pdf.PdfContentByte;
-import com.itextpdf.text.pdf.PdfGState;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfStamper;
 import com.noovitec.mpb.entity.Attachment;
@@ -69,16 +61,13 @@ class ShipmentRest {
 		return result.map(response -> ResponseEntity.ok().body(response)).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
 	}
 	
-	@GetMapping("/shipment/{id}/pdf")
-	HttpEntity<byte[]> getPdf(@PathVariable Long id) throws DocumentException, IOException {
-		Shipment shipment = shipmentRepo.findById(id).get();
-		byte[] data = null;
-		if (shipment.getAttachment() != null) {
-			Attachment attachment = attachmentRepo.findById(shipment.getAttachment().getId()).get();
-			data = attachment.getData();
-		} else {
-			data = this.generatePdf(shipment, false);
+	@GetMapping("/shipment/{shipmentId}/pdf")
+	HttpEntity<byte[]> getPdf(@PathVariable Long shipmentId) throws DocumentException, IOException {
+		Shipment shipment = shipmentRepo.findById(shipmentId).get();
+		if(shipment.getAttachment()==null) {
+			return null;
 		}
+		byte[] data = shipment.getAttachment().getData();
 		HttpHeaders header = new HttpHeaders();
 		header.setContentType(MediaType.APPLICATION_OCTET_STREAM);
 		String fileName = shipment.getAttachment() != null ? shipment.getAttachment().getName() : "BOL" + shipment.getNumber() + "-Draft.pdf";
@@ -95,24 +84,28 @@ class ShipmentRest {
 		for(ShipmentItem si: shipment.getShipmentItems()) {
 			si.setShipment(shipment);
 		}
-		Shipment result = shipmentRepo.save(shipment);
-//		if (result.isSubmitted() && result.getAttachment() == null) {
-//			byte[] data = this.generatePdf(result, true);
-//			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
-//			Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-//			String fileName = "BOL" + result.getNumber() + "-" + sdf.format(timestamp) + ".pdf";
-//			Attachment attachment = new Attachment();
-//			attachment.setData(data);
-//			attachment.setType("BOL");
-//			attachment.setName(fileName);
-//			result.setAttachment(attachment);
-//		}
+		shipment = shipmentRepo.save(shipment);
+		//TODO: We might need to keep the audit.
+		if(shipment.getAttachment()!=null && shipment.getAttachment().getId()!=null) {
+			Long attachmentId = shipment.getAttachment().getId();
+			shipment.setAttachment(null);
+			attachmentRepo.deleteById(attachmentId);
+		}
+		byte[] data = this.generatePdf(shipment, true);
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+		String fileName = "BOL" + shipment.getNumber() + "-" + sdf.format(timestamp) + ".pdf";
+		shipment.setAttachment(new Attachment());
+		shipment.getAttachment().setData(data);
+		shipment.getAttachment().setType("BOL");
+		shipment.getAttachment().setName(fileName);
+		shipment = shipmentRepo.save(shipment);
 		for(ShipmentItem si: shipment.getShipmentItems()) {
 			Long units = si.getSaleItem().getItem().getUnitsOnStock();
 			units = units - si.getUnits();
 			itemRepo.updateUnitsOnStock(units, si.getSaleItem().getItem().getId());
 		}
-		return ResponseEntity.ok().body(result);
+		return ResponseEntity.ok().body(shipment);
 	}
 
 	@DeleteMapping("/shipment/{id}")
@@ -123,11 +116,13 @@ class ShipmentRest {
 	
 	private byte[] generatePdf(Shipment shipment, boolean submitted) throws IOException, DocumentException {
 		String itemQuantity = "";
+		String saleNumber = "";
 		String itemDescription = "";
 		String itemCases = "";
 		String itemPallets = "";
 		for (ShipmentItem si : shipment.getShipmentItems()) {
 			itemQuantity += si.getUnits() + "\n";
+			saleNumber += si.getSaleItem().getSale().getNumber() +"\n";
 			itemDescription += si.getSaleItem().getItem().getNumber() + " - " +si.getSaleItem().getItem().getName() + "\n";
 			itemCases += si.getCases() + "\n";
 			itemPallets += si.getPallets() + "\n";
@@ -144,29 +139,32 @@ class ShipmentRest {
 		stamper.getAcroFields().setField("freightNmfc", shipment.getFreightNmfc());
 		stamper.getAcroFields().setField("freightTerms", shipment.getFreightTerms());
 		stamper.getAcroFields().setField("loadNumber", shipment.getLoadNumber());
-
 		stamper.getAcroFields().setField("itemQuantity", itemQuantity);
+		stamper.getAcroFields().setField("saleNumber", saleNumber);
 		stamper.getAcroFields().setField("itemDescription", itemDescription);
 		stamper.getAcroFields().setField("itemCases", itemCases);
 		stamper.getAcroFields().setField("itemPallets", itemPallets);
-		String shippingAddress = shipment.getShippingAddress().getStreet() + "\n" +shipment.getShippingAddress().getCity() + ", "+ shipment.getShippingAddress().getState() + " "+shipment.getShippingAddress().getZip();
+		String shippingAddress = shipment.getCustomer().getName() + "\n" 
+				+ shipment.getShippingAddress().getStreet() + "\n" 
+				+ shipment.getShippingAddress().getCity() + ", " + shipment.getShippingAddress().getState() + " "+shipment.getShippingAddress().getZip();
 		stamper.getAcroFields().setField("shippingAddress", shippingAddress);
-		String billingAddress = shipment.getCustomer().getBillingAddress().getStreet() + "\n" +shipment.getCustomer().getBillingAddress().getCity() + ", "+ shipment.getCustomer().getBillingAddress().getState() + " "+shipment.getCustomer().getBillingAddress().getZip();		
-		stamper.getAcroFields().setField("billingAddress", billingAddress);
+		String freightAddress = shipment.getFreightAddress().getStreet() + "\n" 
+				+ shipment.getFreightAddress().getCity() + ", "+ shipment.getFreightAddress().getState() + " "+shipment.getFreightAddress().getZip();		
+		stamper.getAcroFields().setField("freightAddress", freightAddress);
 		stamper.getAcroFields().setField("notes", shipment.getNotes());
 		stamper.getAcroFields().setField("totalUnits", shipment.getTotalUnits().toString());
 		stamper.getAcroFields().setField("totalCases", shipment.getTotalCases().toString());
 		stamper.getAcroFields().setField("totalPallets", shipment.getTotalPallets().toString());
 		stamper.getAcroFields().setField("totalWeight", shipment.getTotalWeight().toString());
-		if (!submitted) {
-			PdfContentByte under = stamper.getUnderContent(1);
-			PdfGState gs1 = new PdfGState();
-			gs1.setFillOpacity(0.5f);
-			under.setGState(gs1);
-			Font f = new Font(FontFamily.HELVETICA, 15);
-			Phrase p = new Phrase("DAFT...DRAFT...DRAFT...DRAFT...DRAFT...DRAFT...DRAFT...DRAFT...DRAFT...DRAFT...DRAFT...DRAFT", f);
-			ColumnText.showTextAligned(under, Element.ALIGN_CENTER, p, 300, 400, 45f);
-		}
+//		if (!submitted) {
+//			PdfContentByte under = stamper.getUnderContent(1);
+//			PdfGState gs1 = new PdfGState();
+//			gs1.setFillOpacity(0.5f);
+//			under.setGState(gs1);
+//			Font f = new Font(FontFamily.HELVETICA, 15);
+//			Phrase p = new Phrase("DAFT...DRAFT...DRAFT...DRAFT...DRAFT...DRAFT...DRAFT...DRAFT...DRAFT...DRAFT...DRAFT...DRAFT", f);
+//			ColumnText.showTextAligned(under, Element.ALIGN_CENTER, p, 300, 400, 45f);
+//		}
 		stamper.close();
 		pdfTemplate.close();
 		return baos.toByteArray();
