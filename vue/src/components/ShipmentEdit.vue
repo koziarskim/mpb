@@ -1,5 +1,5 @@
 <template>
-  <b-container fluid>
+  <b-container fluid style="background-color: #f9f9f9; padding-left: 5px !important; padding-right: 5px !important; height: 90vh;">
     <b-row>
       <b-col cols=2>
           <label style="font-size: 18px; font-weight: bold; margin-top: -10px">Shipment #:</label>
@@ -24,7 +24,7 @@
       <b-col>
         <div style="margin-top: 22px;">
           <b-button type="reset" variant="primary" style="margin-left: -18px" @click="saveShipment()">Save</b-button>
-          <img @click="openPdf()" style="margin: 2px;" src="../assets/pdf-download.png" width="25px">
+          <img @click="openPdf()" style="margin: 2px; cursor: pointer" src="../assets/pdf-download.png" width="25px">
         </div>
       </b-col>
     </b-row>
@@ -57,58 +57,59 @@
       </b-col>
       <b-col>
         <label class="top-label">Special Notes:</label>
-        <b-form-textarea type="text" :rows="4" v-model="shipment.notes" placeholder="Special Notes"></b-form-textarea>
+        <b-form-textarea style="padding-bottom: -15px;" type="text" :rows="4" v-model="shipment.notes" placeholder="Special Notes"></b-form-textarea>
       </b-col>
     </b-row>
-    <b-row>
-      <b-col cols=3>
-        <label class="top-label">Sale:</label>
-        <b-select option-value="id" option-text="number" :list="availableSales" v-model="sale"></b-select>
-      </b-col>
-      <b-col cols=2>
-        <label class="top-label">Item:</label>
-        <b-select option-value="id" option-text="label" :list="availableSaleItems" v-model="saleItem"></b-select>
-      </b-col>
-      <b-col cols=1>
-        <b-button style="padding-top: 30px; padding-left: 0px" variant="link" @click="addSaleItemKv(saleItem.id)">(+)</b-button>
-      </b-col>
-      <b-col>
-        <br>
-        <b>Total units:</b>
-        {{totalUnits}},
-        <b>Total cases:</b>
-        {{totalCases}},
-        <b>Total pallets:</b>
-        {{totalPallets}}
-        <b>Total weight:</b>
-        {{totalWeight}}
-      </b-col>
-    </b-row>
-    <br>
-    <b-row>
-      <b-col>
-        <b-table v-if="shipment.shipmentItems.length>0" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="shipment.shipmentItems" :fields="columns">
-          <template v-slot:cell(item)="row">
-            <b-button @click.stop="goToItem(row.item.saleItem.item.id)" variant="link">{{row.item.saleItem.item.number}}</b-button>
-          </template>
-          <template v-slot:cell(sale)="row">
-            <b-button @click.stop="goToSale(row.item.saleItem.sale.id)" variant="link">{{row.item.saleItem.sale.number}}</b-button>
-          </template>
-          <template v-slot:cell(units)="row">
-            <input class="form-control" style="width:100px" type="tel" v-model="row.item.units" @blur="unitsBlur(row.item)">
-          </template>
-          <template v-slot:cell(cases)="row">
-            <span>{{row.item.cases = Math.ceil(+row.item.units / +row.item.saleItem.item.casePack)}}</span>
-          </template>
-          <template v-slot:cell(pallets)="row">
-            <span>{{row.item.pallets = Math.ceil(+row.item.cases / (+row.item.saleItem.item.ti * +row.item.saleItem.item.hi))}}</span>
-          </template>
-          <template v-slot:cell(action)="row">
-            <b-button size="sm" @click.stop="removeSaleItem(row.item.saleItem.id)">x</b-button>
-          </template>
-        </b-table>
-      </b-col>
-    </b-row>
+    <div style="border: 1px solid #d6d3d3; margin-top: 10px;">
+      <b-row>
+        <b-col cols=3>
+          <label class="top-label">Sale:</label>
+          <b-select option-value="id" option-text="number" :list="availableSales" v-model="sale"></b-select>
+        </b-col>
+        <b-col cols=3>
+          <label class="top-label">Item:</label>
+          <b-select option-value="id" option-text="label" :list="availableSaleItems" v-model="saleItem"></b-select>
+        </b-col>
+        <b-col cols=1>
+          <b-button size="sm" style="margin-top: 30px;" variant="primary" @click="addSaleItemKv(saleItem.id)">Add &#x25BC;</b-button>
+        </b-col>
+        <b-col style="margin-top: 15px">
+          <b>Total units:</b>
+          {{totalUnits}},
+          <b>Total cases:</b>
+          {{totalCases}},<br/>
+          <b>Total pallets:</b>
+          {{totalPallets}}
+          <b>Total weight:</b>
+          {{totalWeight}}
+        </b-col>
+      </b-row>
+      <br>
+      <b-row>
+        <b-col>
+          <b-table v-if="shipment.shipmentItems.length>0" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="shipment.shipmentItems" :fields="columns">
+            <template v-slot:cell(item)="row">
+              <b-button @click.stop="goToItem(row.item.saleItem.item.id)" variant="link">{{row.item.saleItem.item.number}}</b-button>
+            </template>
+            <template v-slot:cell(sale)="row">
+              <b-button @click.stop="goToSale(row.item.saleItem.sale.id)" variant="link">{{row.item.saleItem.sale.number}}</b-button>
+            </template>
+            <template v-slot:cell(units)="row">
+              <input class="form-control" style="width:100px" type="tel" v-model="row.item.units" @blur="unitsBlur(row.item)">
+            </template>
+            <template v-slot:cell(cases)="row">
+              <span>{{row.item.cases = Math.ceil(+row.item.units / +row.item.saleItem.item.casePack)}}</span>
+            </template>
+            <template v-slot:cell(pallets)="row">
+              <span>{{row.item.pallets = Math.ceil(+row.item.cases / (+row.item.saleItem.item.ti * +row.item.saleItem.item.hi))}}</span>
+            </template>
+            <template v-slot:cell(action)="row">
+              <b-button size="sm" @click.stop="removeSaleItem(row.item.saleItem.id)">x</b-button>
+            </template>
+          </b-table>
+        </b-col>
+      </b-row>
+    </div>
     <div v-if="modalVisible">
 			<address-modal :address-id="freightAddress.id" v-on:closeModal="closeModal"></address-modal>
 		</div>
@@ -198,10 +199,13 @@ export default {
       this.getAvailableShippingAddresses(new_value.id)
     },
     sale(new_value, old_value) {
+      if(!new_value || !new_value.id){
+        return;
+      }
       if (new_value.id != old_value.id) {
         this.availableSaleItems = [];
         new_value.saleItems.forEach(si => {
-          si.label = si.item.number;
+          si.label = si.item.number +' ('+si.item.name+')';
           this.availableSaleItems.push(si);
         });
       }
@@ -304,8 +308,14 @@ export default {
         });
     },
     addSaleItemKv(saleItemId){
+      if(!saleItemId){
+        alert("Please select Sale and Item to add");
+        return;
+      }
       http.get("/saleItem/"+saleItemId).then(r => {
         this.addSaleItem(r.data);
+        this.sale = {};
+        this.saleItem = {};
       }).catch(e => {
         console.log("API error: " + e);
       })
