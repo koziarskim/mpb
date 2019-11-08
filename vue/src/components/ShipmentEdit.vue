@@ -229,7 +229,9 @@ export default {
     validate(){
       if(!this.shipment.number){
         alert("Shipping Number required.")
+        return false;
       }
+      return true;
     },
     saveShipment() {
       if(!this.validate()){
