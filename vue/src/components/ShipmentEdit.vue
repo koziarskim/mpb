@@ -296,6 +296,11 @@ export default {
         alert("Please select Sale and Item to add");
         return;
       }
+      var idx = this.shipment.shipmentItems.findIndex(shipmentItem => shipmentItem.saleItem.id == saleItemId);
+      if(idx > -1){
+        alert("Sale (Item) already added to the list");
+        return;
+      }
       http.get("/saleItem/"+saleItemId).then(r => {
         this.addSaleItem(r.data);
         this.sale = {};
