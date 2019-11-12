@@ -124,9 +124,9 @@ export default {
         return;
       }
       if (
-        this.modalData.scheduleEvent.totalProduced > 0 &&
+        this.modalData.scheduleEvent.unitsProduced > 0 &&
         this.modalData.scheduleEvent.unitsScheduled <
-          this.modalData.scheduleEvent.totalProduced
+          this.modalData.scheduleEvent.unitsProduced
       ) {
         alert("Units scheduled cannot be less that total produced");
         return;

@@ -44,6 +44,7 @@ public class ScheduleEvent {
 	LocalTime scheduleTime;
 	LocalTime startTime;
 	LocalTime finishTime;
+	Long unitsProduced; //Based on all productions.
 
 	@JsonIgnoreProperties(value = { "scheduleEvents" }, allowSetters = true)
 	@ManyToOne()
@@ -69,22 +70,19 @@ public class ScheduleEvent {
 	@Transient
 	int unitsShort = 0;
 
-	@Transient
-	Long totalProduced = 0L;
-
-	public Long getTotalProduced() {
+	public Long getUnitsProduced() {
 		Long units = 0L;
 		for (Production production : this.getProductions()) {
 			units += production.getUnitsProduced()==null?0L:production.getUnitsProduced();
 		}
 		return units;
 	}
-
+	
 	@Transient
 	boolean eventCompleted = false;
 
 	public boolean isEventCompleted() {
-		Long produced = this.getTotalProduced();
+		Long produced = this.getUnitsProduced();
 		Long scheduled = this.getUnitsScheduled()==null?0L:this.getUnitsScheduled();
 		return produced >= scheduled;
 	}

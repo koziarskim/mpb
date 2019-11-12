@@ -64,7 +64,7 @@ export default {
 				alert("Enter Finish Time!")
 				return false;
 			}
-			var totalUnits = +this.scheduleEvent.totalProduced + +this.production.units;
+			var totalUnits = +this.scheduleEvent.unitsProduced + +this.production.units;
 			if(totalUnits > this.scheduleEvent.unitsScheduled){
 				alert("Cannot enter more units than scheduled");
 				return false;

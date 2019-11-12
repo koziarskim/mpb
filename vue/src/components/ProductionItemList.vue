@@ -20,25 +20,24 @@
       <b-col cols=1>Perf. [u/h]<br/>Total/Daily</b-col>
       <b-col cols=1>Perf. %<br/>Total/Daily</b-col>
     </b-row>
-    <div v-for="item in items" v-bind:key="item.id">
+    <div v-for="treeItem in treeItems" v-bind:key="treeItem.id">
       <b-row>
         <b-col cols=4 style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
-          <b-button size="sm" @click="toggleRow(item)" variant="link">{{item.show?'[-]':'[+]'}}</b-button>{{item.name}}
+          <b-button size="sm" @click="toggleRow(treeItem)" variant="link">{{treeItem.show?'[-]':'[+]'}}</b-button>{{treeItem.name}}
         </b-col>
-        <b-col cols=1>{{item.totalSold}}</b-col>
+        <b-col cols=1>{{treeItem.totalSold}}</b-col>
         <b-col cols=1>
-          <!-- <a href="#" @click="goToProductionLine(item.id)">{{item.totalProduced}}</a> -->
-          {{item.totalProduced}}
+          {{treeItem.totalProduced}}
         </b-col>
-        <b-col cols=1>{{percOut(item.totalProduced,item.totalSold)}}</b-col>
-        <b-col cols=1>{{item.dailyScheduled+"/"+item.dailyProduced}}</b-col>
-        <b-col cols=1>{{percOut(item.dailyProduced,item.dailyScheduled)}}</b-col>
-        <b-col cols=1>{{formatter.secondsToTime(item.dailySeconds)}}</b-col>
-        <b-col cols=1>{{item.totalAverage+"/"+item.dailyAverage}}</b-col>
-        <b-col cols=1>{{percPerf(item.dailyAverage,item.totalAverage)}}</b-col>
+        <b-col cols=1>{{percOut(treeItem.totalProduced,treeItem.totalSold)}}</b-col>
+        <b-col cols=1>{{treeItem.dailyScheduled+"/"+treeItem.dailyProduced}}</b-col>
+        <b-col cols=1>{{percOut(treeItem.dailyProduced,treeItem.dailyScheduled)}}</b-col>
+        <b-col cols=1>{{formatter.secondsToTime(treeItem.dailySeconds)}}</b-col>
+        <b-col cols=1>{{treeItem.totalAverage+"/"+treeItem.dailyAverage}}</b-col>
+        <b-col cols=1>{{percPerf(treeItem.dailyAverage,treeItem.totalAverage)}}</b-col>
       </b-row>
-        <div v-for="event in item.events" v-bind:key="event.id">
-          <div v-if="item.show">
+        <div v-for="event in treeItem.events" v-bind:key="event.id">
+          <div v-if="treeItem.show">
           <b-row style="color: gray; font-style: italic">
             <b-col cols=4><div style="padding-left:50px">{{"Line "+event.lineNumber+": ("+event.saleNumber + " - " + event.customerName+")"}}</div></b-col>
             <b-col cols=1>{{event.unitsSold}}</b-col>
@@ -47,8 +46,8 @@
             <b-col cols=1><a href="#" @click="goToProductionLine(event.id)">{{event.dailyScheduled+"/"+event.dailyProduced}}</a></b-col>
             <b-col cols=1>{{percOut(event.dailyProduced,event.dailyScheduled)}}</b-col>
             <b-col cols=1>{{formatter.secondsToTime(event.dailySeconds)}}</b-col>
-            <b-col cols=1>{{item.totalAverage+"/"+event.dailyAverage}}</b-col>
-            <b-col cols=1>{{percPerf(event.dailyAverage,item.totalAverage)}}</b-col>
+            <b-col cols=1>{{treeItem.totalAverage+"/"+event.dailyAverage}}</b-col>
+            <b-col cols=1>{{percPerf(event.dailyAverage,treeItem.totalAverage)}}</b-col>
           </b-row>
         </div>
       </div>
@@ -71,7 +70,7 @@ export default {
       navigation: navigation,
       formatter: formatter,
       date: moment().format("YYYY-MM-DD"),
-      items: [],
+      treeItems: [],
       itemView: true,
     };
   },
@@ -91,7 +90,7 @@ export default {
     },
     getItemTree(date){
       http.get("/item/production/date/"+date).then(response => {
-        this.items = response.data;
+        this.treeItems = response.data;
       }).catch(e => {
          console.log("API error: " + e);
       });

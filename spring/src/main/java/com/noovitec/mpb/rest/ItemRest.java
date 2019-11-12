@@ -162,7 +162,7 @@ class ItemRest {
 				dtos.add(itemDto);
 			}
 			itemDto.setDailyScheduled(itemDto.getDailyScheduled()+se.getUnitsScheduled());
-			itemDto.setDailyProduced(itemDto.getDailyProduced()+se.getTotalProduced());
+			itemDto.setDailyProduced(itemDto.getDailyProduced()+se.getUnitsProduced());
 			itemDto.setDailySeconds(itemDto.getDailySeconds()+se.getDurationSeconds());
 			ScheduleEventTreeDto eventDto = new ScheduleEventTreeDto();
 			eventDto.setId(se.getId());
@@ -172,7 +172,7 @@ class ItemRest {
 			eventDto.setUnitsSold(se.getSaleItem().getSale().getUnitsSold());
 			eventDto.setSaleTotalProduced(se.getSaleItem().getSale().getUnitsProduced());
 			eventDto.setDailyScheduled(se.getUnitsScheduled());
-			eventDto.setDailyProduced(se.getTotalProduced());
+			eventDto.setDailyProduced(se.getUnitsProduced());
 			eventDto.setDailySeconds(se.getDurationSeconds());
 			itemDto.getEvents().add(eventDto);
 		}

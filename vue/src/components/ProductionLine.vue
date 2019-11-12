@@ -9,7 +9,7 @@
 					Started: <span style="font-weight: bold; margin-right: 5px;">{{scheduleEvent.startTime}}</span> 
 					Finished: <span style="font-weight: bold; margin-right: 5px;">{{scheduleEvent.finishTime}}</span> 
 					Units Scheduled: <span style="font-weight: bold; margin-right: 5px;">{{scheduleEvent.unitsScheduled}}</span> 
-					Total Produced: <span style="font-weight: bold">{{scheduleEvent.totalProduced}}</span> 
+					Total Produced: <span style="font-weight: bold">{{scheduleEvent.unitsProduced}}</span> 
 				</div>
 			</b-col>
 			<b-col>
@@ -267,7 +267,7 @@ export default {
 				});
 			},
 			finishProduction() {
-				if(this.scheduleEvent.totalProduced < this.scheduleEvent.unitsScheduled){
+				if(this.scheduleEvent.unitsProduced < this.scheduleEvent.unitsScheduled){
 					if(!confirm("There are more units scheduled that produced. \n Are you sure you want to finish it?")){
 						return;
 					}

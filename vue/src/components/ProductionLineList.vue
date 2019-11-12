@@ -15,8 +15,7 @@
         <b-select option-value="id" option-text="name" :list="availableItems" v-model="selectedItem"></b-select>
       </b-col>
     </b-row>
-    <div v-if="scheduleEvents.length==0">No lines set for this date</div>
-    <b-table v-if="scheduleEvents.length>0" :sticky-header="browserHeight()" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="scheduleEvents" :fields="fields">
+    <b-table :sticky-header="browserHeight()" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="scheduleEvents" :fields="fields">
       <template v-slot:cell(line.number)="row">
         <b-button size="sm" @click="goToProductionLine(row.item.line.id)" variant="link">{{row.item.line.id}}</b-button>
       </template>
@@ -76,7 +75,7 @@ export default {
 		    { key: "item", label: "Item (Sale & Customer)", sortable: false },
 		    { key: "saleItem.units", label: "Sold", sortable: true },
 		    { key: "unitsScheduled", label: "Scheduled", sortable: true },
-		    { key: "totalProduced", label: "Produced", sortable: true },
+		    { key: "unitsProduced", label: "Produced", sortable: true },
         { key: "unitsPending", label: "Still To Make", sortable: true },
         { key: "totalTime", label: "Total Time", sortable: true },
         { key: "action", label: "Action", sortable: false },
@@ -124,7 +123,7 @@ export default {
         alert("Cannot schedule more that sold");
         return;
       }
-      if(se.unitsScheduled < se.totalProduced){
+      if(se.unitsScheduled < se.unitsProduced){
         alert("Cannot schedule less than produced");
         return;
       }
@@ -137,7 +136,7 @@ export default {
       se.edit = false;
     },
     deleteDisabled(se){
-      return se.totalProduced > 0;
+      return se.unitsProduced > 0;
     },
     deleteScheduleEvent(se_id){
       if(!securite.hasRole(['SUPER_USER', 'PROD_ADMIN'])){
@@ -202,7 +201,7 @@ export default {
                 return;
               }
               this.totalScheduled += se.unitsScheduled;
-              this.totalProduced += se.totalProduced;
+              this.totalProduced += se.unitsProduced;
               this.scheduleEvents.push(se)
             })
           }

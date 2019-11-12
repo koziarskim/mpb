@@ -11,7 +11,7 @@
 			<div style="font-size:18px">Scheduled: {{scheduleEvent.schedule.date}} @ {{scheduleEvent.scheduleTime}}</div>
 			<div style="font-size:18px">Started: {{scheduleEvent.startTime}}</div>
 			<div style="font-size:18px">Units Scheduled: {{scheduleEvent.unitsScheduled}}</div>
-			<div style="font-size:18px">Total Produced: {{scheduleEvent.totalProduced}}</div>
+			<div style="font-size:18px">Total Produced: {{scheduleEvent.unitsProduced}}</div>
 		</b-col>
 		<b-col cols=8>
 			<b-row>
@@ -202,7 +202,7 @@ export default {
 				alert("Enter Assigned People!")
 				return;
 			}
-			var totalUnits = +this.scheduleEvent.totalProduced + +this.unitsToAdd;
+			var totalUnits = +this.scheduleEvent.unitsProduced + +this.unitsToAdd;
 			if(totalUnits > this.scheduleEvent.unitsScheduled){
 				alert("Cannot enter more units than scheduled");
 				return;

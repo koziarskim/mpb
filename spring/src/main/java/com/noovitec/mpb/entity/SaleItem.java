@@ -105,9 +105,7 @@ public class SaleItem {
 	public Long getUnitsProduced() {
 		this.unitsProduced = 0L;
 		for(ScheduleEvent se: this.getScheduleEvents()) {
-			for(Production p: se.getProductions()) {
-				this.unitsProduced += p.getUnitsProduced();
-			}
+			this.unitsProduced += se.getUnitsProduced();
 		}
 		return this.unitsProduced;
 	}

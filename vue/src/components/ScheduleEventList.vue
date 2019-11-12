@@ -17,7 +17,7 @@
     <b-row>
       <b-col>
         <label class="top-label"></label>
-        <b-table v-if="scheduleEvents.length>0" :sort-compare="sortCompare" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="scheduleEvents" :fields="columns">
+        <b-table :sort-compare="sortCompare" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="scheduleEvents" :fields="columns">
           <template v-slot:cell(sale)="row">
             <b-button size="sm" @click.stop="goToSale(row.item.saleItem.sale.id)" variant="link">{{row.item.saleItem.sale.number}}</b-button>
           </template>
@@ -65,7 +65,7 @@ export default {
         { key: "saleItem.sale.customer.name", label: "Customer", sortable: true },
         { key: "saleItem.units", label: "Sold", sortable: false },
         { key: "unitsScheduled", label: "Scheduled", sortable: false },
-        { key: "totalProduced", label: "Produced", sortable: false },
+        { key: "unitsProduced", label: "Produced", sortable: false },
         { key: "action", label: "Action", sortable: false },
       ]
     };
@@ -98,7 +98,7 @@ export default {
         alert("Cannot schedule more that sold");
         return;
       }
-      if(se.unitsScheduled < se.totalProduced){
+      if(se.unitsScheduled < se.unitsProduced){
         alert("Cannot schedule less than produced");
         return;
       }
@@ -110,7 +110,7 @@ export default {
       se.edit = false;
     },
     deleteDisabled(se){
-      return se.totalProduced > 0;
+      return se.unitsProduced > 0;
     },
     deleteScheduleEvent(se_id){
       this.$bvModal.msgBoxConfirm('Are you sure you want to delete?').then(value => {
