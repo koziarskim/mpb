@@ -13,9 +13,9 @@ import com.noovitec.mpb.entity.Production;
 import com.noovitec.mpb.entity.Receiving;
 import com.noovitec.mpb.repo.ProductionRepo;
 
-public class ReceivingListener {
+public class ScheduleEventListener {
 	
-	private final Logger log = LoggerFactory.getLogger(ReceivingListener.class);
+	private final Logger log = LoggerFactory.getLogger(ScheduleEventListener.class);
 	
     @PostPersist
     public void prePersist(Receiving target) {

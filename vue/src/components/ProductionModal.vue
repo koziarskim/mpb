@@ -107,7 +107,6 @@ export default {
 			}).catch(e => {
 				console.log("API error: " + e);
 			});
-      this.closeModal(this.production);
     },
     closeModal() {
       this.$emit("closeModal");
