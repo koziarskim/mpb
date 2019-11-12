@@ -20,11 +20,7 @@ public class ProductionListener {
     public void prePersist(Production production) {
     	ScheduleEventRepo scheduleEventRepo = BeanUtil.getBean(ScheduleEventRepo.class);
     	ScheduleEvent se = scheduleEventRepo.getOne(production.getScheduleEvent().getId());
-		Long units = 0L;
-		for (Production p : se.getProductions()) {
-			units += p.getUnitsProduced();
-		}
-		se.setUnitsProduced(units);
+		se.setUnitsProduced(se.getUnitsProduced() + production.getUnitsProduced());
 		scheduleEventRepo.save(se);
     }
     
