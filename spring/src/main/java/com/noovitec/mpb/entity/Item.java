@@ -7,6 +7,7 @@ import java.util.HashSet;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -59,6 +60,7 @@ public class Item {
 	private BigDecimal totalCost = BigDecimal.ZERO;
 	private String status = "NONE"; // This is "DYNAMIC" in DB because it is calculated on the GET.
 	private Long unitsOnStock = 0L;
+	private Long unitsProduced = 0L; //Updated by SaleItemListener.
 
 	@JsonIgnoreProperties(value = { "item" }, allowSetters = true)
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
@@ -121,17 +123,6 @@ public class Item {
 		return units;
 	}
 	
-	@Transient
-	private Long unitsProduced;
-	
-	public Long getUnitsProduced() {
-		Long units = 0L;
-		for(SaleItem si : this.getSaleItems()) {
-			units += si.getUnitsProduced();
-		}
-		return units;
-	}
-
 	@Transient
 	private Long unitsShipped = 0L;
 	

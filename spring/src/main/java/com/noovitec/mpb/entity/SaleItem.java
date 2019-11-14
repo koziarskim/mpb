@@ -5,13 +5,12 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
@@ -20,11 +19,13 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.noovitec.mpb.trigger.SaleItemListener;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@EntityListeners(SaleItemListener.class)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -41,7 +42,7 @@ public class SaleItem {
 	private int units; //Units sold.
 	private BigDecimal unitPrice = BigDecimal.ZERO;
 	private BigDecimal totalUnitPrice = BigDecimal.ZERO;
-	private Long unitsProduced = 0L;
+	private Long unitsProduced = 0L; //Updated by ScheduleEventListener.
 
 	@JsonIgnoreProperties(value={ "saleItems", "purchaseSales" }, allowSetters=true)
 	@ManyToOne()
@@ -63,15 +64,6 @@ public class SaleItem {
 	@JoinColumn(name = "sale_item_id")
 	private Collection<ShipmentItem> shipmentItems = new HashSet<ShipmentItem>();
 	
-	//TODO: Is this used?
-	@Transient
-	boolean itemCompleted = false;
-
-	//TODO: Is this used?
-	public boolean isItemProduced() {
-		return this.getUnitsScheduled() <= this.getUnitsProduced();
-	}
-
 	@Transient
 	private String label;
 	

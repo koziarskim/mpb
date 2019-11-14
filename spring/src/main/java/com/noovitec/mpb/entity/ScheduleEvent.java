@@ -47,7 +47,7 @@ public class ScheduleEvent {
 	LocalTime scheduleTime;
 	LocalTime startTime;
 	LocalTime finishTime;
-	Long unitsProduced = 0L; //Based on all productions.
+	Long unitsProduced = 0L; //Updated by ProductionListener.
 
 	@JsonIgnoreProperties(value = { "scheduleEvents" }, allowSetters = true)
 	@ManyToOne()
