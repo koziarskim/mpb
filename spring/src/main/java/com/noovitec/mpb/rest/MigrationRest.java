@@ -29,8 +29,6 @@ class MigrationRest {
 	ResponseEntity<?> migrate() {
 		Iterable<Item> items = itemRepo.findAll();
 		for(Item item: items) {
-			Long unitsProduced = item.getUnitsProduced();
-			itemRepo.updateUnitsOnStock(unitsProduced, item.getId());
 		}
 		return ResponseEntity.ok().build();
 	}

@@ -100,11 +100,6 @@ class ShipmentRest {
 		shipment.getAttachment().setType("BOL");
 		shipment.getAttachment().setName(fileName);
 		shipment = shipmentRepo.save(shipment);
-		for(ShipmentItem si: shipment.getShipmentItems()) {
-			Long units = si.getSaleItem().getItem().getUnitsOnStock();
-			units = units - si.getUnits();
-			itemRepo.updateUnitsOnStock(units, si.getSaleItem().getItem().getId());
-		}
 		return ResponseEntity.ok().body(shipment);
 	}
 

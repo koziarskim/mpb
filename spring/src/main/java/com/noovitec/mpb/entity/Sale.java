@@ -49,7 +49,8 @@ public class Sale {
 	private Long unitsProduced = 0L; //Updated by SaleItemListener.
 	private Long unitsSold = 0L; //Updated by SaleItemListener.
 	private Long unitsScheduled = 0L; //Updated by SaleItemListener;
-
+	private Long unitsShipped = 0L; //Updated by SaleItemListener;
+	
 	@JsonIgnoreProperties(value={ "sales" }, allowSetters=true)
 	@ManyToOne()
 	@JoinColumn(name = "customer_id", referencedColumnName = "id")

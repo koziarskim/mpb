@@ -26,7 +26,7 @@ public interface ItemRepo extends PagingAndSortingRepository<Item, Long> {
 	@Query(value = "select new com.noovitec.mpb.dto.KeyValueDto(i.id, i.name) from Item i")
 	public List<KeyValueDto> getAllKeyValueDtos();
 
-	@Query("select new com.noovitec.mpb.dto.ItemListDto(i.id, i.number, i.name, b.name, c.name, i.unitsOnStock, sum(si.units), sum(se.unitsScheduled), sum(p.unitsProduced)) from Item i "
+	@Query("select new com.noovitec.mpb.dto.ItemListDto(i.id, i.number, i.name, b.name, c.name, (i.unitsProduced - i.unitsShipped), sum(si.units), sum(se.unitsScheduled), sum(p.unitsProduced)) from Item i "
 			+ "left join Category c on c.id = i.category.id "
 			+ "left join Brand b on b.id = i.brand.id "
 			+ "left join SaleItem si on si.item.id = i.id "
@@ -35,7 +35,7 @@ public interface ItemRepo extends PagingAndSortingRepository<Item, Long> {
 			+ "group by i.id, c.id, b.id")
 	List<ItemListDto> getItemListDto();
 
-	@Query("select new com.noovitec.mpb.dto.ItemListDto(i.id, i.number, i.name, b.name, c.name, i.unitsOnStock, sum(si.units), sum(se.unitsScheduled), sum(p.unitsProduced)) from Item i "
+	@Query("select new com.noovitec.mpb.dto.ItemListDto(i.id, i.number, i.name, b.name, c.name, (i.unitsProduced - i.unitsShipped), sum(si.units), sum(se.unitsScheduled), sum(p.unitsProduced)) from Item i "
 			+ "left join Category c on c.id = i.category.id "
 			+ "left join Brand b on b.id = i.brand.id "
 			+ "left join SaleItem si on si.item.id = i.id "
@@ -44,7 +44,7 @@ public interface ItemRepo extends PagingAndSortingRepository<Item, Long> {
 			+ "group by i.id, c.id, b.id")
 	Page<ItemListDto> getItemListDtoPageable(Pageable pageable);
 
-	@Query("select new com.noovitec.mpb.dto.ItemListDto(i.id, i.number, i.name, b.name, c.name, i.unitsOnStock, sum(si.units), sum(se.unitsScheduled), sum(p.unitsProduced)) from Item i "
+	@Query("select new com.noovitec.mpb.dto.ItemListDto(i.id, i.number, i.name, b.name, c.name, (i.unitsProduced - i.unitsShipped), sum(si.units), sum(se.unitsScheduled), sum(p.unitsProduced)) from Item i "
 			+ "left join Category c on c.id = i.category.id "
 			+ "left join Brand b on b.id = i.brand.id "
 			+ "left join SaleItem si on si.item.id = i.id "
@@ -88,8 +88,4 @@ public interface ItemRepo extends PagingAndSortingRepository<Item, Long> {
 			+ "group by se.saleItem.item.id")
 	Long getItemsScheduledToDate(@Param("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date, @Param("item_id") Long item_id);
 	
-	@Modifying
-	@Transactional
-	@Query("update Item i set i.unitsOnStock = :units where i.id = :item_id")
-	void updateUnitsOnStock(@Param("units") Long units, @Param("item_id") Long item_id);
 }

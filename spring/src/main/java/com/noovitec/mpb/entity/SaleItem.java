@@ -44,6 +44,7 @@ public class SaleItem {
 	private BigDecimal totalUnitPrice = BigDecimal.ZERO;
 	private Long unitsProduced = 0L; //Updated by ScheduleEventListener.
 	private Long unitsScheduled = 0L; //Updated by ScheduleEventListener.
+	private Long unitsShipped = 0L; //Updated by ShipmentItemListener.
 
 	@JsonIgnoreProperties(value={ "saleItems", "purchaseSales" }, allowSetters=true)
 	@ManyToOne()
@@ -77,17 +78,6 @@ public class SaleItem {
 		return this.label;
 	}
 
-	@Transient
-	private Long unitsShipped = 0L;
-	
-	public Long getUnitsShipped() {
-		this.unitsShipped = 0L;
-		for(ShipmentItem si: this.getShipmentItems()) {
-			this.unitsShipped += si.getUnits();
-		}
-		return this.unitsShipped;
-	}
-	
 	@Transient
 	private Long unitsOnStock = 0L;
 	

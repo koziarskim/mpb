@@ -3,6 +3,7 @@ package com.noovitec.mpb.entity;
 import java.time.LocalDateTime;
 
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -13,11 +14,13 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.noovitec.mpb.trigger.ShipmentItemListener;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@EntityListeners(ShipmentItemListener.class)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

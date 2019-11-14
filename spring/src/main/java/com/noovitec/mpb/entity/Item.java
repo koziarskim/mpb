@@ -7,7 +7,6 @@ import java.util.HashSet;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -58,11 +57,10 @@ public class Item {
 	private BigDecimal laborCost = BigDecimal.ZERO;
 	private BigDecimal otherCost = BigDecimal.ZERO;
 	private BigDecimal totalCost = BigDecimal.ZERO;
-	private String status = "NONE"; // This is "DYNAMIC" in DB because it is calculated on the GET.
-	private Long unitsOnStock = 0L;
 	private Long unitsProduced = 0L; //Updated by SaleItemListener.
 	private Long unitsSold = 0L; //Updated by SaleItemListener.
 	private Long unitsScheduled = 0L; //Updated by SaleItemListener.
+	private Long unitsShipped = 0L; //Updated by SaleItemListener.
 
 	@JsonIgnoreProperties(value = { "item" }, allowSetters = true)
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
@@ -104,27 +102,12 @@ public class Item {
 	private Collection<SaleItem> saleItems = new HashSet<SaleItem>();
 
 	@Transient
-	private Long unitsShipped = 0L;
-	
-	public Long getUnitsShipped() {
-		Long units = 0L;
-		for(SaleItem si : this.getSaleItems()) {
-			units += si.getUnitsShipped();
-		}
-		return units;
-	}
-
-	@Transient
 	private String label;
 
 	public String getLabel() {
 		return this.getNumber() + " - " + this.getName();
 	}
 
-	public void setStatus(String status) {
-		this.status = "DYNAMIC";
-	}
-	
 	public Long getDurationSeconds() {
 		Long secs = 0L;
 		for(SaleItem si: this.getSaleItems()) {
@@ -135,11 +118,11 @@ public class Item {
 		return secs;
 	}
 
-	public void addUnitsOnStock(Long units) {
-		if (this.unitsOnStock == null) {
-			this.unitsOnStock = 0L;
-		}
-		this.unitsOnStock += units;
+	@Transient
+	private Long unitsOnStock = 0L;
+	
+	public Long getUnitsOnStock() {
+		this.unitsOnStock = this.getUnitsProduced() - this.getUnitsShipped();
+		return this.unitsOnStock;
 	}
-
 }
