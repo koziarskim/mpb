@@ -62,6 +62,7 @@ public class Item {
 	private Long unitsOnStock = 0L;
 	private Long unitsProduced = 0L; //Updated by SaleItemListener.
 	private Long unitsSold = 0L; //Updated by SaleItemListener.
+	private Long unitsScheduled = 0L; //Updated by SaleItemListener.
 
 	@JsonIgnoreProperties(value = { "item" }, allowSetters = true)
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
@@ -102,17 +103,6 @@ public class Item {
 	@JoinColumn(name = "item_id")
 	private Collection<SaleItem> saleItems = new HashSet<SaleItem>();
 
-	@Transient
-	private Long unitsScheduled = 0L;
-
-	public Long getUnitsScheduled() {
-		Long units = 0L;
-		for(SaleItem si : this.getSaleItems()) {
-			units += si.getUnitsScheduled();
-		}
-		return units;
-	}
-	
 	@Transient
 	private Long unitsShipped = 0L;
 	

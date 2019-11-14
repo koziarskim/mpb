@@ -43,6 +43,7 @@ public class SaleItem {
 	private BigDecimal unitPrice = BigDecimal.ZERO;
 	private BigDecimal totalUnitPrice = BigDecimal.ZERO;
 	private Long unitsProduced = 0L; //Updated by ScheduleEventListener.
+	private Long unitsScheduled = 0L; //Updated by ScheduleEventListener.
 
 	@JsonIgnoreProperties(value={ "saleItems", "purchaseSales" }, allowSetters=true)
 	@ManyToOne()
@@ -74,17 +75,6 @@ public class SaleItem {
 			this.label = "";
 		}
 		return this.label;
-	}
-
-	@Transient
-	private Long unitsScheduled = 0L; //This is total units scheduled (including all schedule events). Updated when saving ScheduleEvent (ScheduleEvent.unitsScheduled)
-
-	public Long getUnitsScheduled() {
-		this.unitsScheduled = 0L;
-		for(ScheduleEvent se: this.getScheduleEvents()) {
-			this.unitsScheduled += se.getUnitsScheduled();
-		}
-		return this.unitsScheduled;
 	}
 
 	@Transient

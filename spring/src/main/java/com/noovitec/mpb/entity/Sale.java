@@ -46,6 +46,9 @@ public class Sale {
 	private LocalDate expectedDate;
 	private BigDecimal totalPrice = BigDecimal.ZERO;
 	private boolean produced;
+	private Long unitsProduced = 0L; //Updated by SaleItemListener.
+	private Long unitsSold = 0L; //Updated by SaleItemListener.
+	private Long unitsScheduled = 0L; //Updated by SaleItemListener;
 
 	@JsonIgnoreProperties(value={ "sales" }, allowSetters=true)
 	@ManyToOne()
@@ -60,37 +63,4 @@ public class Sale {
 	@OneToMany(cascade=CascadeType.ALL, orphanRemoval=true)
 	@JoinColumn(name = "sale_id")
 	private Collection<SaleItem> saleItems = new HashSet<SaleItem>();
-	
-	@Transient
-	private Long unitsSold;
-	
-	public Long getUnitsSold() {
-		this.unitsSold = 0L;
-		for(SaleItem si: this.getSaleItems()) {
-			this.unitsSold += si.getUnits();
-		}
-		return this.unitsSold;
-	}
-	
-	@Transient
-	private Long unitsScheduled;
-	
-	public Long getUnitsScheduled() {
-		this.unitsScheduled = 0L;
-		for(SaleItem si: this.getSaleItems()) {
-			this.unitsScheduled += si.getUnitsScheduled();
-		}
-		return this.unitsScheduled;
-	}
-
-	@Transient
-	private Long unitsProduced;
-	
-	public Long getUnitsProduced() {
-		this.unitsProduced = 0L;
-		for(SaleItem si: this.getSaleItems()) {
-			this.unitsProduced += si.getUnitsProduced();
-		}
-		return this.unitsProduced;
-	}
 }

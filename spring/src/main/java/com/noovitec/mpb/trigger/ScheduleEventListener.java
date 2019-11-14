@@ -21,6 +21,7 @@ public class ScheduleEventListener {
     	SaleItemRepo saleItemRepo = BeanUtil.getBean(SaleItemRepo.class);
     	SaleItem si = saleItemRepo.findById(scheduleEvent.getSaleItem().getId()).get();
     	si.setUnitsProduced(si.getUnitsProduced() + scheduleEvent.getUnitsProduced());
+    	si.setUnitsScheduled(si.getUnitsScheduled() + scheduleEvent.getUnitsScheduled());
     	saleItemRepo.save(si);
     }
     
@@ -29,10 +30,13 @@ public class ScheduleEventListener {
     	SaleItemRepo saleItemRepo = BeanUtil.getBean(SaleItemRepo.class);
     	SaleItem si = saleItemRepo.findById(scheduleEvent.getSaleItem().getId()).get();
     	Long unitsProduced = 0L;
+    	Long unitsScheduled = 0L;
     	for(ScheduleEvent se: si.getScheduleEvents()) {
     		unitsProduced += se.getUnitsProduced();
+    		unitsScheduled += se.getUnitsScheduled();
     	}
     	si.setUnitsProduced(unitsProduced);
+    	si.setUnitsScheduled(unitsScheduled);
     	saleItemRepo.save(si);
     }
     
@@ -41,6 +45,7 @@ public class ScheduleEventListener {
     	SaleItemRepo saleItemRepo = BeanUtil.getBean(SaleItemRepo.class);
     	SaleItem si = saleItemRepo.findById(scheduleEvent.getSaleItem().getId()).get();
     	si.setUnitsProduced(si.getUnitsProduced() - scheduleEvent.getUnitsProduced());
+    	si.setUnitsScheduled(si.getUnitsScheduled() - scheduleEvent.getUnitsScheduled());
     	saleItemRepo.save(si);
     }
 }
