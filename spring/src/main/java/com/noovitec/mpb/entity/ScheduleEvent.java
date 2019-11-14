@@ -10,6 +10,7 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -22,11 +23,13 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.noovitec.mpb.trigger.ScheduleEventListener;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@EntityListeners(ScheduleEventListener.class)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -57,7 +60,7 @@ public class ScheduleEvent {
 	private Schedule schedule;
 
 	@JsonIgnoreProperties(value = { "scheduleEvent" }, allowSetters = true)
-	@OneToMany(cascade=CascadeType.ALL)
+	@OneToMany()
 	@JoinColumn(name = "schedule_event_id")
 	private Collection<Production> productions = new HashSet<Production>();
 
@@ -74,13 +77,9 @@ public class ScheduleEvent {
 	boolean eventCompleted = false;
 
 	public boolean isEventCompleted() {
-		try {
-			Long produced = this.getUnitsProduced();
-			Long scheduled = this.getUnitsScheduled();
-			return produced >= scheduled;
-		}catch(Exception e) {
-			return false;
-		}
+		Long produced = this.getUnitsProduced();
+		Long scheduled = this.getUnitsScheduled();
+		return produced >= scheduled;
 	}
 	
 	@Transient

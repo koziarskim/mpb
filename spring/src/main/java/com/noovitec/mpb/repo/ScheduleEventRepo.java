@@ -3,10 +3,7 @@ package com.noovitec.mpb.repo;
 import java.time.LocalDate;
 import java.util.List;
 
-import javax.transaction.Transactional;
-
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -57,9 +54,4 @@ public interface ScheduleEventRepo extends JpaRepository<ScheduleEvent, Long> {
 			+ "where s.date = :date")
 	public List<ScheduleEvent> findByDate(@Param("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date);
 	
-	@Modifying
-	@Transactional
-	@Query("update ScheduleEvent se set se.unitsProduced = :units where se.id = :se_id")
-	void updateUnitsProduced(@Param("units") Long units, @Param("se_id") Long se_id);
-
 }

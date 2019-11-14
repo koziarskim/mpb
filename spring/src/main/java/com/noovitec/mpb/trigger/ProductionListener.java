@@ -25,21 +25,22 @@ public class ProductionListener {
     }
     
     @PreUpdate
-    public void preUpdate(Production production) { 
+    public void preUpdate(Production production) {
     	ScheduleEventRepo scheduleEventRepo = BeanUtil.getBean(ScheduleEventRepo.class);
     	ScheduleEvent se = scheduleEventRepo.getOne(production.getScheduleEvent().getId());
-		Long units = 0L;
-		for (Production p : se.getProductions()) {
-			units += p.getUnitsProduced();
-		}
-		se.setUnitsProduced(units);
-    	scheduleEventRepo.save(se);
+    	Long unitsProduced = 0L;
+    	for(Production p: se.getProductions()) {
+    		unitsProduced += p.getUnitsProduced();
+    	}
+		se.setUnitsProduced(unitsProduced);
+		scheduleEventRepo.save(se);
     }
     
     @PreRemove
     public void preRemove(Production production) { 
     	ScheduleEventRepo scheduleEventRepo = BeanUtil.getBean(ScheduleEventRepo.class);
-		production.getScheduleEvent().setUnitsProduced(production.getScheduleEvent().getUnitsProduced() - production.getUnitsProduced());
-    	scheduleEventRepo.save(production.getScheduleEvent());
+    	ScheduleEvent se = scheduleEventRepo.getOne(production.getScheduleEvent().getId());
+		se.setUnitsProduced(se.getUnitsProduced() - production.getUnitsProduced());
+		scheduleEventRepo.save(se);
     }
 }

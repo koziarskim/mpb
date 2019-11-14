@@ -41,6 +41,7 @@ public class SaleItem {
 	private int units; //Units sold.
 	private BigDecimal unitPrice = BigDecimal.ZERO;
 	private BigDecimal totalUnitPrice = BigDecimal.ZERO;
+	private Long unitsProduced = 0L;
 
 	@JsonIgnoreProperties(value={ "saleItems", "purchaseSales" }, allowSetters=true)
 	@ManyToOne()
@@ -52,10 +53,6 @@ public class SaleItem {
 	@JoinColumn(name = "item_id", referencedColumnName = "id")
 	private Item item;
 	
-//	@OneToMany(cascade = CascadeType.ALL)
-//	@JoinTable(name = "purchase_sale_item", joinColumns = @JoinColumn(name = "sale_item_id"), inverseJoinColumns = @JoinColumn(name = "purchase_id"))
-//	private Collection<Purchase> purchases = new HashSet<Purchase>();
-
 	@JsonIgnoreProperties(value={ "saleItem"}, allowSetters=true)
 	@OneToMany()
 	@JoinColumn(name = "sale_item_id")
@@ -66,7 +63,6 @@ public class SaleItem {
 	@JoinColumn(name = "sale_item_id")
 	private Collection<ShipmentItem> shipmentItems = new HashSet<ShipmentItem>();
 	
-
 	//TODO: Is this used?
 	@Transient
 	boolean itemCompleted = false;
@@ -97,17 +93,6 @@ public class SaleItem {
 			this.unitsScheduled += se.getUnitsScheduled();
 		}
 		return this.unitsScheduled;
-	}
-
-	@Transient
-	private Long unitsProduced = 0L; //This should be updated on Production save/post (Production.unitsProduced)
-
-	public Long getUnitsProduced() {
-		this.unitsProduced = 0L;
-		for(ScheduleEvent se: this.getScheduleEvents()) {
-			this.unitsProduced += se.getUnitsProduced();
-		}
-		return this.unitsProduced;
 	}
 
 	@Transient
