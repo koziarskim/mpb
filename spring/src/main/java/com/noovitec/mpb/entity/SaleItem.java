@@ -39,7 +39,7 @@ public class SaleItem {
 	private LocalDateTime created;
 	@UpdateTimestamp
 	private LocalDateTime updated;
-	private int units; //Units sold.
+	private int units; //unitsSold.
 	private BigDecimal unitPrice = BigDecimal.ZERO;
 	private BigDecimal totalUnitPrice = BigDecimal.ZERO;
 	private Long unitsProduced = 0L; //Updated by ScheduleEventListener.

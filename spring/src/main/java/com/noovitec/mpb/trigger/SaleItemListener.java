@@ -21,6 +21,7 @@ public class SaleItemListener {
     	ItemRepo itemRepo = BeanUtil.getBean(ItemRepo.class);
     	Item item = itemRepo.findById(saleItem.getItem().getId()).get();
 		item.setUnitsProduced(item.getUnitsProduced() + saleItem.getUnitsProduced());
+		item.setUnitsSold(item.getUnitsSold() + saleItem.getUnits());
 		itemRepo.save(item);
     }
     
@@ -29,10 +30,13 @@ public class SaleItemListener {
     	ItemRepo itemRepo = BeanUtil.getBean(ItemRepo.class);
     	Item item = itemRepo.findById(saleItem.getItem().getId()).get();
     	Long unitsProduced = 0L;
+    	Long unitsSold = 0L;
     	for(SaleItem si: item.getSaleItems()) {
     		unitsProduced += si.getUnitsProduced();
+    		unitsSold += si.getUnits();
     	}
 		item.setUnitsProduced(unitsProduced);
+		item.setUnitsSold(unitsSold);
 		itemRepo.save(item);
     }
     
@@ -41,6 +45,7 @@ public class SaleItemListener {
     	ItemRepo itemRepo = BeanUtil.getBean(ItemRepo.class);
     	Item item = itemRepo.findById(saleItem.getItem().getId()).get();
     	item.setUnitsProduced(item.getUnitsProduced() - saleItem.getUnitsProduced());
+		item.setUnitsSold(item.getUnitsSold() - saleItem.getUnits());
     	itemRepo.save(item);
     }
 }

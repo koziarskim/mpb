@@ -61,6 +61,7 @@ public class Item {
 	private String status = "NONE"; // This is "DYNAMIC" in DB because it is calculated on the GET.
 	private Long unitsOnStock = 0L;
 	private Long unitsProduced = 0L; //Updated by SaleItemListener.
+	private Long unitsSold = 0L; //Updated by SaleItemListener.
 
 	@JsonIgnoreProperties(value = { "item" }, allowSetters = true)
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
@@ -100,17 +101,6 @@ public class Item {
 	@OneToMany()
 	@JoinColumn(name = "item_id")
 	private Collection<SaleItem> saleItems = new HashSet<SaleItem>();
-
-	@Transient
-	private Long unitsSold;
-	
-	public Long getUnitsSold() {
-		Long units = 0L;
-		for(SaleItem si : this.getSaleItems()) {
-			units += si.getUnits();
-		}
-		return units;
-	}
 
 	@Transient
 	private Long unitsScheduled = 0L;
