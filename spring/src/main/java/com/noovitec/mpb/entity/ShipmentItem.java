@@ -20,7 +20,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@EntityListeners(ShipmentItemListener.class)
+//@EntityListeners(ShipmentItemListener.class)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

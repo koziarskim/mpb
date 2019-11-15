@@ -22,9 +22,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.dto.SaleListDto;
+import com.noovitec.mpb.entity.Item;
 import com.noovitec.mpb.entity.Sale;
 import com.noovitec.mpb.entity.SaleItem;
 import com.noovitec.mpb.entity.ScheduleEvent;
+import com.noovitec.mpb.repo.ItemRepo;
 import com.noovitec.mpb.repo.SaleRepo;
 import com.noovitec.mpb.repo.ScheduleEventRepo;
 
@@ -34,6 +36,9 @@ class SaleRest {
 
 	private final Logger log = LoggerFactory.getLogger(SaleRest.class);
 	private SaleRepo saleRepo;
+	
+	@Autowired
+	ItemRepo itemRepo;
 
 	@Autowired
 	ScheduleEventRepo scheduleEventRpo;
@@ -101,6 +106,13 @@ class SaleRest {
 		// Needed for update.
 		for (SaleItem sa : sale.getSaleItems()) {
 			sa.setSale(sale);
+			//Update unitsSold on Sale and Item.
+			if(sa.unitsUpdated() != 0L) {
+				sale.setUnitsSold(sale.getUnitsSold() + sa.unitsUpdated());
+				Item item = itemRepo.findById(sa.getItem().getId()).get();
+				item.setUnitsSold(item.getUnitsSold() + sa.unitsUpdated());
+				itemRepo.save(item);
+			}
 		}
 		Sale result = saleRepo.save(sale);
 		return ResponseEntity.ok().body(result);

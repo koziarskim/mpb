@@ -29,7 +29,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@EntityListeners(ScheduleEventListener.class)
+//@EntityListeners(ScheduleEventListener.class)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

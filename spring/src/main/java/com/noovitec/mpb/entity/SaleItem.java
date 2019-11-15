@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.HashSet;
 
 import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -19,13 +18,12 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.noovitec.mpb.trigger.SaleItemListener;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@EntityListeners(SaleItemListener.class)
+//@EntityListeners(SaleItemListener.class)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -45,7 +43,7 @@ public class SaleItem {
 	private Long unitsProduced = 0L; //Updated by ScheduleEventListener.
 	private Long unitsScheduled = 0L; //Updated by ScheduleEventListener.
 	private Long unitsShipped = 0L; //Updated by ShipmentItemListener.
-
+	
 	@JsonIgnoreProperties(value={ "saleItems", "purchaseSales" }, allowSetters=true)
 	@ManyToOne()
 	@JoinColumn(name = "sale_id", referencedColumnName = "id")
@@ -65,6 +63,18 @@ public class SaleItem {
 	@OneToMany()
 	@JoinColumn(name = "sale_item_id")
 	private Collection<ShipmentItem> shipmentItems = new HashSet<ShipmentItem>();
+	
+	@Transient
+	private Long prevUnits = 0L;
+	
+	public Long getPrevUnits() {
+		this.prevUnits = Long.valueOf(this.units);
+		return this.prevUnits;
+	}
+	
+	public Long unitsUpdated() {
+		return Long.valueOf(this.units) - this.prevUnits;
+	}
 	
 	@Transient
 	private String label;
