@@ -63,7 +63,6 @@ export default {
         { key: "line.number", label: "Line", sortable: true },
         { key: "sale", label: "Sale", sortable: true },
         { key: "saleItem.sale.customer.name", label: "Customer", sortable: true },
-        { key: "saleItem.units", label: "Sold", sortable: false },
         { key: "unitsScheduled", label: "Scheduled", sortable: false },
         { key: "unitsProduced", label: "Produced", sortable: false },
         { key: "action", label: "Action", sortable: false },

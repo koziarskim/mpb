@@ -95,4 +95,53 @@ public class SaleItem {
 		return this.getUnitsProduced() - this.getUnitsShipped();
 	}
 	
+	public void updateUnits() {
+		this.unitsScheduled = 0L;
+		this.unitsProduced = 0L;
+		this.unitsShipped = 0L;
+		for(ScheduleEvent se : this.getScheduleEvents()) {
+			se.updateUnits();
+			this.unitsScheduled += se.getUnitsScheduled();
+			this.unitsProduced += se.getUnitsProduced();
+		}
+		for(ShipmentItem si: this.getShipmentItems()) {
+			this.unitsShipped += si.getUnits();
+		}
+	}
+	
+	public Long getUnitsProduced() {
+		this.unitsProduced = 0L;
+		for(ScheduleEvent se : this.getScheduleEvents()) {
+			this.unitsProduced += se.getUnitsProduced();
+		}
+		return this.unitsProduced;
+	}
+	
+	public Long getUnitsScheduled() {
+		this.unitsScheduled = 0L;
+		for(ScheduleEvent se : this.getScheduleEvents()) {
+			this.unitsScheduled += se.getUnitsScheduled();
+		}
+		return this.unitsScheduled;
+	}
+	
+	public Long getUnitsSchipped() {
+		this.unitsShipped = 0L;
+		for(ShipmentItem si : this.getShipmentItems()) {
+			this.unitsShipped += si.getUnits();
+		}
+		return this.unitsShipped;
+	}
+
+	
+//    @JsonIgnore
+//    @Transient
+//    private transient SaleItem savedState;
+//
+//    @PostLoad
+//    private void postLoad(){
+//    	System.out.print("@PostLoad");
+//    	this.savedState = (SaleItem) SerializationUtils.clone(this); // from apache commons-lang
+//    }
+	
 }

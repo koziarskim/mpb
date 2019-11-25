@@ -8,9 +8,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -23,7 +21,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.noovitec.mpb.trigger.ScheduleEventListener;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -121,5 +118,22 @@ public class ScheduleEvent {
 		}
 		return totalSecs;
 	}
+	
+	public void updateUnits() {
+		this.unitsProduced = 0L;
+		for(Production p: this.getProductions()) {
+			this.unitsProduced += p.getUnitsProduced();
+		}
+	}
+	
+	
+	public Long getUnitsProduced() {
+		this.unitsProduced = 0L;
+		for(Production p : this.getProductions()) {
+			this.unitsProduced += p.getUnitsProduced();
+		}
+		return this.unitsProduced;
+	}
+	
 	
 }

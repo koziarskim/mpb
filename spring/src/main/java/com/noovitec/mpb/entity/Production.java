@@ -4,24 +4,20 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Transient;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-
-import com.noovitec.mpb.trigger.ProductionListener;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@EntityListeners(ProductionListener.class)
+//@EntityListeners(ProductionListener.class)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

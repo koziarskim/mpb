@@ -14,7 +14,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.Transient;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -64,4 +63,48 @@ public class Sale {
 	@OneToMany(cascade=CascadeType.ALL, orphanRemoval=true)
 	@JoinColumn(name = "sale_id")
 	private Collection<SaleItem> saleItems = new HashSet<SaleItem>();
+	
+	public void updateUnits() {
+		this.unitsScheduled = 0L;
+		this.unitsProduced = 0L;
+		this.unitsShipped = 0L;
+		for(SaleItem sa: this.getSaleItems()) {
+			sa.updateUnits();
+			this.unitsScheduled += sa.getUnitsProduced();
+			this.unitsProduced += sa.getUnitsProduced();
+			this.unitsShipped += sa.getUnitsShipped();
+		}
+	}
+	
+	public Long getUnitsProduced() {
+		this.unitsProduced = 0L;
+		for(SaleItem si : this.getSaleItems()) {
+			this.unitsProduced += si.getUnitsProduced();
+		}
+		return this.unitsProduced;
+	}
+	
+	public Long getUnitsScheduled() {
+		this.unitsScheduled = 0L;
+		for(SaleItem si : this.getSaleItems()) {
+			this.unitsScheduled += si.getUnitsScheduled();
+		}
+		return this.unitsScheduled;
+	}
+	
+	public Long getUnitsSold() {
+		this.unitsSold = 0L;
+		for(SaleItem si : this.getSaleItems()) {
+			this.unitsSold += si.getUnits();
+		}
+		return this.unitsSold;
+	}
+	
+	public Long getUnitsShipped() {
+		this.unitsShipped = 0L;
+		for(SaleItem si : this.getSaleItems()) {
+			this.unitsShipped += si.getUnitsShipped();
+		}
+		return this.unitsShipped;
+	}
 }
