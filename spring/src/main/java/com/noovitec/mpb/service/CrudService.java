@@ -1,0 +1,45 @@
+package com.noovitec.mpb.service;
+
+import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.noovitec.mpb.entity.BaseEntity;
+import com.noovitec.mpb.repo.CrudRepo;
+
+public interface CrudService {
+	
+	public BaseEntity merge(BaseEntity baseEntity);
+	public void save(BaseEntity baseEntity);
+	public BaseEntity get(Long id);
+	public void delete(Long id);
+	
+	@Transactional
+	@Service
+	public class CrudServiceImp implements CrudService {
+		
+		@Autowired
+		EntityManager em;
+		@Autowired
+		CrudRepo crudRepo;
+
+		public BaseEntity merge(BaseEntity baseEntity) {
+			return em.merge(baseEntity);
+		}
+		
+		public void save(BaseEntity baseEntity) {
+			crudRepo.save(baseEntity);
+		}
+
+		public BaseEntity get(Long id) {
+			return crudRepo.findById(id).get();
+		}
+		
+		public void delete(Long id) {
+			crudRepo.deleteById(id);
+		}
+		
+	}
+}

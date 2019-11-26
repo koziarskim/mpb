@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,7 @@ import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.dto.SaleItemDto;
 import com.noovitec.mpb.entity.SaleItem;
 import com.noovitec.mpb.repo.SaleItemRepo;
+import com.noovitec.mpb.service.CrudService;
 
 @RestController
 @RequestMapping("/api")
@@ -29,6 +31,9 @@ class SaleItemRest {
 
 	private final Logger log = LoggerFactory.getLogger(SaleItemRest.class);
 	private SaleItemRepo saleItemRepo;
+	
+	@Autowired
+	CrudService crudService;
 
 	public SaleItemRest(SaleItemRepo saleItemRepo) {
 		this.saleItemRepo = saleItemRepo;
@@ -96,7 +101,9 @@ class SaleItemRest {
 	
 	@PostMapping("/saleItem")
 	ResponseEntity<SaleItem> postSaleItem(@RequestBody(required = false) SaleItem saleItem) {
-		saleItem = saleItemRepo.save(saleItem);
+		saleItem = (SaleItem) crudService.merge(saleItem);
+		saleItem.getItem().setName("MK"+saleItem.getUnits());
+		crudService.save(saleItem);
 		return ResponseEntity.ok().body(saleItem);
 	}
 

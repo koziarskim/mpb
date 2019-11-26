@@ -41,5 +41,6 @@ public interface SaleItemRepo extends PagingAndSortingRepository<SaleItem, Long>
 	
 	@Query("select si from SaleItem si where si.id in (:ids)")
 	public List<SaleItem> findAllByIds(Long[] ids);
-
+	
+	
 }

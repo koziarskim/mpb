@@ -70,11 +70,11 @@
       </b-col>
     </b-row>
     <b-row>
-      <b-col cols="4">
+      <b-col cols=4>
         <label class="top-label">Available Items:</label>
         <b-select option-value="id" option-text="name" :list="availableItems" v-model="itemDto" placeholder="Customer"></b-select>
       </b-col>
-      <b-col style="padding-top: 30px" cols="1">
+      <b-col cols=1 style="padding-top: 30px">
         <b-button variant="link" @click="addItem()">(+)</b-button>
       </b-col>
       <b-col cols=5 offset=1 style="padding-top: 44px; padding-left: 0px;">
@@ -115,6 +115,27 @@
         </b-table>
       </b-col>
     </b-row>
+    <b-modal centered size="lg" v-model="modalVisible" :hide-header="true" :hide-footer="true">
+      <b-row>
+        <b-col cols="2">
+          <label class="top-label">Units Sold:</label>
+          <input class="form-control" type="tel" v-model="unitsForSale" placeholder="0">
+        </b-col>
+        <b-col cols="2">
+          <label class="top-label">Unit Price:</label>
+          <input class="form-control" type="tel" v-model="unitPrice" placeholder="0.00">
+        </b-col>
+      </b-row>
+      <br/>
+      <b-row>
+        <b-col>
+          <div style="text-align: right;">
+            <b-button style="margin: 0 2px 0 2px" @click="closeModal()">Close</b-button>
+            <b-button style="margin: 0 2px 0 2px" @click="saveModal()" variant="success">Save</b-button>
+          </div>
+        </b-col>
+      </b-row>
+    </b-modal>
   </b-container>
 </template>
 
@@ -125,6 +146,7 @@ import router from "../router";
 export default {
   data() {
     return {
+      modalVisible: false,
       locked: false,
       sale: {
         saleItems: [],
@@ -154,6 +176,8 @@ export default {
       ],
       customerDto: {},
       itemDto: {},
+      unitsForSale: null,
+      unitPrice: null,
     };
   },
 
@@ -211,6 +235,18 @@ export default {
     }
   },
   methods: {
+    saveModal(){
+      this.saveSaleItem().then(si => {
+        this.getSaleData(this.sale.id).then(sale => {
+          this.closeModal();
+        })
+      })
+    },
+    closeModal(){
+      this.unitsForSale = null,
+      this.unitPrice = null,
+      this.modalVisible = false;
+    },
     getCustomer(customer_id){
       http.get("/customer/"+customer_id).then(response =>{
         this.customer = response.data;
@@ -226,9 +262,7 @@ export default {
       })
     },
     getSaleData(id) {
-      http
-        .get("/sale/" + id)
-        .then(response => {
+      return http.get("/sale/" + id).then(response => {
           this.sale = response.data;
           if (response.data.customer) {
             this.customerDto = {
@@ -239,20 +273,29 @@ export default {
           if (response.data.shippingAddress) {
             this.shippingAddress = response.data.shippingAddress;
           }
-        })
-        .catch(e => {
+          return response.data;
+        }).catch(e => {
+          console.log("API error: " + e);
+        });
+    },
+    saveSaleItem() {
+      var saleItem = {
+        sale: {id: this.sale.id},
+        item: {id: this.itemDto.id},
+        units: this.unitsForSale,
+        unitPrice: this.unitPrice,
+      };
+      return http.post("/saleItem", saleItem).then(r => {
+          return r;
+        }).catch(e => {
           console.log("API error: " + e);
         });
     },
     saveSale() {
       this.sale.totalPrice = this.totalPrice;
-      return http
-        .post("/sale", this.sale)
-        .then(response => {
-          return response;
-        })
-        .catch(e => {
-          alert("There was an error! "+e);
+      return http.post("/sale", this.sale).then(r => {
+          return r;
+        }).catch(e => {
           console.log("API error: " + e);
         });
     },
@@ -289,10 +332,11 @@ export default {
       if (item) {
         return;
       }
-      this.sale.saleItems.push({ 
-          units: 0,
-          unitPrice: 0.00,
-          item: this.item });
+      this.modalVisible = true;
+      // this.sale.saleItems.push({ 
+      //     units: 0,
+      //     unitPrice: 0.00,
+      //     item: this.item });
     },
     goToItem(item_id) {
       router.push("/itemEdit/" + item_id);

@@ -6,7 +6,6 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -60,7 +59,7 @@ public class Sale {
 	private Address shippingAddress;
 
 	@JsonIgnoreProperties(value={ "sale" }, allowSetters=true)
-	@OneToMany(cascade=CascadeType.ALL, orphanRemoval=true)
+	@OneToMany()
 	@JoinColumn(name = "sale_id")
 	private Collection<SaleItem> saleItems = new HashSet<SaleItem>();
 	
