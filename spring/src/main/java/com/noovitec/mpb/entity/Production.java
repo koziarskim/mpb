@@ -15,22 +15,17 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 //@EntityListeners(ProductionListener.class)
 @Data
+@EqualsAndHashCode(callSuper=false)
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Production {
+public class Production extends BaseEntity{
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-	@CreationTimestamp
-	private LocalDateTime created;
-	@UpdateTimestamp
-	private LocalDateTime updated;
 	private LocalTime finishTime;
 	private Long unitsProduced;
 	private Long people;

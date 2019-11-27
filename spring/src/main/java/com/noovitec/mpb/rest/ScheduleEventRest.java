@@ -94,6 +94,7 @@ class ScheduleEventRest {
 
 	@DeleteMapping("/scheduleEvent/{id}")
 	public ResponseEntity<?> delete(@PathVariable Long id) {
+		//TODO: Is there a better way of doing it?
 		ScheduleEvent scheduleEvent = scheduleEventRepo.getOne(id);
 		Item item = scheduleEvent.getSaleItem().getItem();
 		Sale sale = scheduleEvent.getSaleItem().getSale();
