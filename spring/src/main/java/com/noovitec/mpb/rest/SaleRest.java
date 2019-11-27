@@ -1,6 +1,8 @@
 package com.noovitec.mpb.rest;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -21,9 +23,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.dto.SaleListDto;
+import com.noovitec.mpb.entity.Item;
 import com.noovitec.mpb.entity.Sale;
 import com.noovitec.mpb.entity.SaleItem;
-import com.noovitec.mpb.entity.ScheduleEvent;
 import com.noovitec.mpb.repo.ItemRepo;
 import com.noovitec.mpb.repo.SaleRepo;
 import com.noovitec.mpb.repo.ScheduleEventRepo;
@@ -118,13 +120,17 @@ class SaleRest {
 
 	@DeleteMapping("/sale/{id}")
 	public ResponseEntity<?> delete(@PathVariable Long id) {
+		//TODO: Is there a better way of doing it?
+		List<Item> items = new ArrayList<Item>();
 		Sale sale = saleRepo.getOne(id);
-		for(SaleItem si: sale.getSaleItems()) {
-			for(ScheduleEvent se: si.getScheduleEvents()) {
-				scheduleEventRpo.deleteById(se.getId());
-			}
+		for(SaleItem sa: sale.getSaleItems()) {
+			items.add(sa.getItem());
 		}
 		saleRepo.deleteById(id);
+		for(Item item: items) {
+			item.updateUnits();
+			crudService.save(item);
+		}
 		return ResponseEntity.ok().build();
 	}
 }

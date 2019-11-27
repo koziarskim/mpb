@@ -31,7 +31,8 @@ import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfStamper;
 import com.noovitec.mpb.entity.Attachment;
-import com.noovitec.mpb.entity.SaleItem;
+import com.noovitec.mpb.entity.Item;
+import com.noovitec.mpb.entity.Sale;
 import com.noovitec.mpb.entity.Shipment;
 import com.noovitec.mpb.entity.ShipmentItem;
 import com.noovitec.mpb.repo.AttachmentRepo;
@@ -118,16 +119,21 @@ class ShipmentRest {
 	@DeleteMapping("/shipment/{id}")
 	public ResponseEntity<?> delete(@PathVariable Long id) {
 		//TODO: Is there a better way of doing it?
-		List<SaleItem> saleItems = new ArrayList<SaleItem>();
+		List<Item> items = new ArrayList<Item>();
+		List<Sale> sales = new ArrayList<Sale>();
 		Shipment shipment = shipmentRepo.getOne(id);
 		for(ShipmentItem si: shipment.getShipmentItems()) {
-			saleItems.add(si.getSaleItem());
+			items.add(si.getSaleItem().getItem());
+			sales.add(si.getSaleItem().getSale());
 		}
 		shipmentRepo.deleteById(id);
-		for(SaleItem si: saleItems) {
-			si.getItem().updateUnits();
-			si.getSale().updateUnits();
-			crudService.save(si);
+		for(Item item: items) {
+			item.updateUnits();
+			crudService.save(item);
+		}
+		for(Sale sale: sales) {
+			sale.updateUnits();
+			crudService.save(sale);
 		}
 		return ResponseEntity.ok().build();
 	}
