@@ -356,9 +356,9 @@ export default {
     var id = this.$route.params.sale_id;
     if (id) {
       this.getSaleData(id);
-      this.getAvailableCustomers();
-      this.getAvailableItems();
     }
+    this.getAvailableCustomers();
+    this.getAvailableItems();
   }
 };
 </script>

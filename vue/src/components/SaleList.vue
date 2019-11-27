@@ -114,14 +114,15 @@ export default {
     },
     goToSale(id){
         if(!id){
-            http
-            .post("/sale")
-            .then(response =>{
-                router.push('/saleEdit/'+response.data.id);
-            })
-            .catch(e =>{
-                console.log("API Error: "+e);
-            })
+            // http
+            // .post("/sale")
+            // .then(response =>{
+            //     router.push('/saleEdit/'+response.data.id);
+            // })
+            // .catch(e =>{
+            //     console.log("API Error: "+e);
+            // })
+            router.push('/saleEdit');
         }else{
             router.push('/saleEdit/'+id);
         }

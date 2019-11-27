@@ -107,11 +107,12 @@ class SaleRest {
 		if (sale == null) {
 			sale = new Sale();
 		}
-		sale = (Sale) crudService.merge(sale);
-		sale.updateUnits();
-		//TODO: Should the client be setting parent reference?
 		for (SaleItem sa : sale.getSaleItems()) {
 			sa.setSale(sale);
+		}
+		sale = (Sale) crudService.merge(sale);
+		sale.updateUnits();
+		for (SaleItem sa : sale.getSaleItems()) {
 			sa.getItem().updateUnits();
 		}
 		Sale result = (Sale) crudService.save(sale);
