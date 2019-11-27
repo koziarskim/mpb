@@ -1,6 +1,5 @@
 package com.noovitec.mpb.rest;
 
-import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -108,7 +107,7 @@ class SaleRest {
 		}
 		sale = (Sale) crudService.merge(sale);
 		sale.updateUnits();
-		// Needed for update.
+		//TODO: Should the client be setting parent reference?
 		for (SaleItem sa : sale.getSaleItems()) {
 			sa.setSale(sale);
 			sa.getItem().updateUnits();

@@ -34,6 +34,7 @@ import com.noovitec.mpb.entity.ShipmentItem;
 import com.noovitec.mpb.repo.AttachmentRepo;
 import com.noovitec.mpb.repo.ItemRepo;
 import com.noovitec.mpb.repo.ShipmentRepo;
+import com.noovitec.mpb.service.CrudService;
 
 @RestController
 @RequestMapping("/api")
@@ -45,6 +46,8 @@ class ShipmentRest {
 	private AttachmentRepo attachmentRepo;
 	@Autowired
 	private ItemRepo itemRepo;
+	@Autowired
+	private CrudService crudService;
 
 	public ShipmentRest(ShipmentRepo shipmentRepo) {
 		this.shipmentRepo = shipmentRepo;
@@ -84,8 +87,14 @@ class ShipmentRest {
 		for(ShipmentItem si: shipment.getShipmentItems()) {
 			si.setShipment(shipment);
 		}
+		shipment = (Shipment) crudService.merge(shipment);
+		for(ShipmentItem si: shipment.getShipmentItems()) {
+			si.getSaleItem().getItem().updateUnits();
+			si.getSaleItem().getSale().updateUnits();
+		}
 		shipment = shipmentRepo.save(shipment);
 		//TODO: We might need to keep the audit.
+		//TODO: See if it could be refactored after puting merge.
 		if(shipment.getAttachment()!=null && shipment.getAttachment().getId()!=null) {
 			Long attachmentId = shipment.getAttachment().getId();
 			shipment.setAttachment(null);

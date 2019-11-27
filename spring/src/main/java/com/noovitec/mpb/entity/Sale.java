@@ -48,7 +48,7 @@ public class Sale extends BaseEntity{
 	private Address shippingAddress;
 
 	@JsonIgnoreProperties(value={ "sale" }, allowSetters=true)
-	@OneToMany(cascade=CascadeType.MERGE)
+	@OneToMany(cascade=CascadeType.ALL, orphanRemoval=true)
 	@JoinColumn(name = "sale_id")
 	private Collection<SaleItem> saleItems = new HashSet<SaleItem>();
 	
