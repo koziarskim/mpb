@@ -18,11 +18,11 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
-@EqualsAndHashCode(callSuper=false)
+@EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Shipment extends BaseEntity{
+public class Shipment extends BaseEntity {
 
 	private String number;
 	private LocalDate date;
@@ -36,8 +36,8 @@ public class Shipment extends BaseEntity{
 	private Long totalCases = 0L;
 	private Long totalPallets = 0L;
 	private Long totalWeight = 0L;
-	
-	@JsonIgnoreProperties(value={ "sales" }, allowSetters=true)
+
+	@JsonIgnoreProperties(value = { "sales" }, allowSetters = true)
 	@ManyToOne()
 	@JoinColumn(name = "customer_id", referencedColumnName = "id")
 	private Customer customer;
@@ -56,7 +56,7 @@ public class Shipment extends BaseEntity{
 	private Address freightAddress;
 
 	@JsonIgnoreProperties(value = { "shipment" }, allowSetters = true)
-	@OneToMany(cascade=CascadeType.ALL, orphanRemoval=true)
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "shipment_id")
 	private Collection<ShipmentItem> shipmentItems = new HashSet<ShipmentItem>();
 

@@ -19,11 +19,11 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
-@EqualsAndHashCode(callSuper=false)
+@EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Sale extends BaseEntity{
+public class Sale extends BaseEntity {
 
 	private LocalDate date;
 	private String number;
@@ -32,13 +32,12 @@ public class Sale extends BaseEntity{
 	private String freightTerms;
 	private LocalDate expectedDate;
 	private BigDecimal totalPrice = BigDecimal.ZERO;
-	private boolean produced;
-	private Long unitsProduced = 0L; //Updated by SaleItemListener.
-	private Long unitsSold = 0L; //Updated by SaleItemListener.
-	private Long unitsScheduled = 0L; //Updated by SaleItemListener;
-	private Long unitsShipped = 0L; //Updated by SaleItemListener;
-	
-	@JsonIgnoreProperties(value={ "sales" }, allowSetters=true)
+	private Long unitsProduced = 0L;
+	private Long unitsSold = 0L;
+	private Long unitsScheduled = 0L;
+	private Long unitsShipped = 0L;
+
+	@JsonIgnoreProperties(value = { "sales" }, allowSetters = true)
 	@ManyToOne()
 	@JoinColumn(name = "customer_id", referencedColumnName = "id")
 	private Customer customer;
@@ -47,18 +46,17 @@ public class Sale extends BaseEntity{
 	@JoinColumn(name = "address_id", referencedColumnName = "id")
 	private Address shippingAddress;
 
-	@JsonIgnoreProperties(value={ "sale" }, allowSetters=true)
-	@OneToMany(cascade=CascadeType.ALL, orphanRemoval=true)
+	@JsonIgnoreProperties(value = { "sale" }, allowSetters = true)
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "sale_id")
 	private Collection<SaleItem> saleItems = new HashSet<SaleItem>();
-	
-	
+
 	public void updateUnits() {
 		this.unitsSold = 0L;
 		this.unitsScheduled = 0L;
 		this.unitsProduced = 0L;
 		this.unitsShipped = 0L;
-		for(SaleItem sa: this.getSaleItems()) {
+		for (SaleItem sa : this.getSaleItems()) {
 			sa.updateUnits();
 			this.unitsSold += sa.getUnits();
 			this.unitsScheduled += sa.getUnitsScheduled();
@@ -66,36 +64,5 @@ public class Sale extends BaseEntity{
 			this.unitsShipped += sa.getUnitsShipped();
 		}
 	}
-	
-//	public Long getUnitsProduced() {
-//		this.unitsProduced = 0L;
-//		for(SaleItem si : this.getSaleItems()) {
-//			this.unitsProduced += si.getUnitsProduced();
-//		}
-//		return this.unitsProduced;
-//	}
-//	
-//	public Long getUnitsScheduled() {
-//		this.unitsScheduled = 0L;
-//		for(SaleItem si : this.getSaleItems()) {
-//			this.unitsScheduled += si.getUnitsScheduled();
-//		}
-//		return this.unitsScheduled;
-//	}
-//	
-//	public Long getUnitsSold() {
-//		this.unitsSold = 0L;
-//		for(SaleItem si : this.getSaleItems()) {
-//			this.unitsSold += si.getUnits();
-//		}
-//		return this.unitsSold;
-//	}
-//	
-//	public Long getUnitsShipped() {
-//		this.unitsShipped = 0L;
-//		for(SaleItem si : this.getSaleItems()) {
-//			this.unitsShipped += si.getUnitsShipped();
-//		}
-//		return this.unitsShipped;
-//	}
+
 }

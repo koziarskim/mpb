@@ -20,11 +20,11 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
-@EqualsAndHashCode(callSuper=false)
+@EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Item extends BaseEntity{
+public class Item extends BaseEntity {
 
 	private String name;
 	private String number;
@@ -45,10 +45,10 @@ public class Item extends BaseEntity{
 	private BigDecimal laborCost = BigDecimal.ZERO;
 	private BigDecimal otherCost = BigDecimal.ZERO;
 	private BigDecimal totalCost = BigDecimal.ZERO;
-	private Long unitsProduced = 0L; //Updated by SaleItemListener.
-	private Long unitsSold = 0L; //Updated by SaleItemListener.
-	private Long unitsScheduled = 0L; //Updated by SaleItemListener.
-	private Long unitsShipped = 0L; //Updated by SaleItemListener.
+	private Long unitsProduced = 0L;
+	private Long unitsSold = 0L;
+	private Long unitsScheduled = 0L;
+	private Long unitsShipped = 0L;
 
 	@JsonIgnoreProperties(value = { "item" }, allowSetters = true)
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
@@ -89,17 +89,10 @@ public class Item extends BaseEntity{
 	@JoinColumn(name = "item_id")
 	private Collection<SaleItem> saleItems = new HashSet<SaleItem>();
 
-	@Transient
-	private String label;
-
-	public String getLabel() {
-		return this.getNumber() + " - " + this.getName();
-	}
-
 	public Long getDurationSeconds() {
 		Long secs = 0L;
-		for(SaleItem si: this.getSaleItems()) {
-			for(ScheduleEvent se: si.getScheduleEvents()) {
+		for (SaleItem si : this.getSaleItems()) {
+			for (ScheduleEvent se : si.getScheduleEvents()) {
 				secs += se.getDurationSeconds();
 			}
 		}
@@ -108,18 +101,18 @@ public class Item extends BaseEntity{
 
 	@Transient
 	private Long unitsOnStock = 0L;
-	
+
 	public Long getUnitsOnStock() {
 		this.unitsOnStock = this.getUnitsProduced() - this.getUnitsShipped();
 		return this.unitsOnStock;
 	}
-	
+
 	public void updateUnits() {
 		this.unitsSold = 0L;
 		this.unitsScheduled = 0L;
 		this.unitsProduced = 0L;
 		this.unitsShipped = 0L;
-		for(SaleItem sa: this.getSaleItems()) {
+		for (SaleItem sa : this.getSaleItems()) {
 			sa.updateUnits();
 			this.unitsSold += sa.getUnits();
 			this.unitsScheduled += sa.getUnitsScheduled();
@@ -127,36 +120,5 @@ public class Item extends BaseEntity{
 			this.unitsShipped += sa.getUnitsShipped();
 		}
 	}
-	
-//	public Long getUnitsProduced() {
-//		this.unitsProduced = 0L;
-//		for(SaleItem si : this.getSaleItems()) {
-//			this.unitsProduced += si.getUnitsProduced();
-//		}
-//		return this.unitsProduced;
-//	}
-//	
-//	public Long getUnitsScheduled() {
-//		this.unitsScheduled = 0L;
-//		for(SaleItem si : this.getSaleItems()) {
-//			this.unitsScheduled += si.getUnitsScheduled();
-//		}
-//		return this.unitsScheduled;
-//	}
-//	
-//	public Long getUnitsSold() {
-//		this.unitsSold = 0L;
-//		for(SaleItem si : this.getSaleItems()) {
-//			this.unitsSold += si.getUnits();
-//		}
-//		return this.unitsSold;
-//	}
-//	
-//	public Long getUnitsShipped() {
-//		this.unitsShipped = 0L;
-//		for(SaleItem si : this.getSaleItems()) {
-//			this.unitsShipped += si.getUnitsShipped();
-//		}
-//		return this.unitsShipped;
-//	}
+
 }
