@@ -132,7 +132,6 @@ public class Item {
 		this.unitsProduced = 0L;
 		this.unitsShipped = 0L;
 		for(SaleItem sa: this.getSaleItems()) {
-			sa.updateUnits();
 			this.unitsSold += sa.getUnits();
 			this.unitsScheduled += sa.getUnitsScheduled();
 			this.unitsProduced += sa.getUnitsScheduled();
@@ -140,35 +139,35 @@ public class Item {
 		}
 	}
 	
-	public Long getUnitsProduced() {
-		this.unitsProduced = 0L;
-		for(SaleItem si : this.getSaleItems()) {
-			this.unitsProduced += si.getUnitsProduced();
-		}
-		return this.unitsProduced;
-	}
-	
-	public Long getUnitsScheduled() {
-		this.unitsScheduled = 0L;
-		for(SaleItem si : this.getSaleItems()) {
-			this.unitsScheduled += si.getUnitsScheduled();
-		}
-		return this.unitsScheduled;
-	}
-	
-	public Long getUnitsSold() {
-		this.unitsSold = 0L;
-		for(SaleItem si : this.getSaleItems()) {
-			this.unitsSold += si.getUnits();
-		}
-		return this.unitsSold;
-	}
-	
-	public Long getUnitsShipped() {
-		this.unitsShipped = 0L;
-		for(SaleItem si : this.getSaleItems()) {
-			this.unitsShipped += si.getUnitsShipped();
-		}
-		return this.unitsShipped;
-	}
+//	public Long getUnitsProduced() {
+//		this.unitsProduced = 0L;
+//		for(SaleItem si : this.getSaleItems()) {
+//			this.unitsProduced += si.getUnitsProduced();
+//		}
+//		return this.unitsProduced;
+//	}
+//	
+//	public Long getUnitsScheduled() {
+//		this.unitsScheduled = 0L;
+//		for(SaleItem si : this.getSaleItems()) {
+//			this.unitsScheduled += si.getUnitsScheduled();
+//		}
+//		return this.unitsScheduled;
+//	}
+//	
+//	public Long getUnitsSold() {
+//		this.unitsSold = 0L;
+//		for(SaleItem si : this.getSaleItems()) {
+//			this.unitsSold += si.getUnits();
+//		}
+//		return this.unitsSold;
+//	}
+//	
+//	public Long getUnitsShipped() {
+//		this.unitsShipped = 0L;
+//		for(SaleItem si : this.getSaleItems()) {
+//			this.unitsShipped += si.getUnitsShipped();
+//		}
+//		return this.unitsShipped;
+//	}
 }

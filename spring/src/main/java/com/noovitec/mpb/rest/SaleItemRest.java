@@ -99,13 +99,13 @@ class SaleItemRest {
 		return saleDtos;
 	}
 	
-	@PostMapping("/saleItem")
-	ResponseEntity<SaleItem> postSaleItem(@RequestBody(required = false) SaleItem saleItem) {
-		saleItem = (SaleItem) crudService.merge(saleItem);
-		saleItem.getItem().setName("MK"+saleItem.getUnits());
-		crudService.save(saleItem);
-		return ResponseEntity.ok().body(saleItem);
-	}
+//	@PostMapping("/saleItem")
+//	ResponseEntity<SaleItem> postSaleItem(@RequestBody(required = false) SaleItem saleItem) {
+//		saleItem = (SaleItem) crudService.merge(saleItem);
+//		saleItem.getItem().setName("MK"+saleItem.getUnits());
+//		crudService.save(saleItem);
+//		return ResponseEntity.ok().body(saleItem);
+//	}
 
 	
 }

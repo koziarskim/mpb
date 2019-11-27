@@ -22,13 +22,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.dto.SaleListDto;
-import com.noovitec.mpb.entity.Item;
 import com.noovitec.mpb.entity.Sale;
 import com.noovitec.mpb.entity.SaleItem;
 import com.noovitec.mpb.entity.ScheduleEvent;
 import com.noovitec.mpb.repo.ItemRepo;
 import com.noovitec.mpb.repo.SaleRepo;
 import com.noovitec.mpb.repo.ScheduleEventRepo;
+import com.noovitec.mpb.service.CrudService;
 
 @RestController
 @RequestMapping("/api")
@@ -42,6 +42,9 @@ class SaleRest {
 
 	@Autowired
 	ScheduleEventRepo scheduleEventRpo;
+	
+	@Autowired
+	CrudService crudService;
 	
 	public SaleRest(SaleRepo saleRepo) {
 		this.saleRepo = saleRepo;
@@ -99,16 +102,18 @@ class SaleRest {
 	}
 
 	@PostMapping("/sale")
-	ResponseEntity<Sale> post(@RequestBody(required = false) Sale sale) throws URISyntaxException {
+	ResponseEntity<Sale> post(@RequestBody(required = false) Sale sale) {
 		if (sale == null) {
 			sale = new Sale();
 		}
+		sale = (Sale) crudService.merge(sale);
+		sale.updateUnits();
 		// Needed for update.
 		for (SaleItem sa : sale.getSaleItems()) {
 			sa.setSale(sale);
+			sa.getItem().updateUnits();
 		}
-		Sale result = saleRepo.save(sale);
-		
+		Sale result = (Sale) crudService.save(sale);
 		return ResponseEntity.ok().body(result);
 	}
 

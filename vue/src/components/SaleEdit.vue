@@ -332,11 +332,11 @@ export default {
       if (item) {
         return;
       }
-      this.modalVisible = true;
-      // this.sale.saleItems.push({ 
-      //     units: 0,
-      //     unitPrice: 0.00,
-      //     item: this.item });
+      // this.modalVisible = true;
+      this.sale.saleItems.push({ 
+          units: 0,
+          unitPrice: 0.00,
+          item: this.item });
     },
     goToItem(item_id) {
       router.push("/itemEdit/" + item_id);

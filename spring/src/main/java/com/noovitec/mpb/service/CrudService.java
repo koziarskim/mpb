@@ -12,7 +12,7 @@ import com.noovitec.mpb.repo.CrudRepo;
 public interface CrudService {
 	
 	public BaseEntity merge(BaseEntity baseEntity);
-	public void save(BaseEntity baseEntity);
+	public BaseEntity save(BaseEntity baseEntity);
 	public BaseEntity get(Long id);
 	public void delete(Long id);
 	
@@ -29,8 +29,8 @@ public interface CrudService {
 			return em.merge(baseEntity);
 		}
 		
-		public void save(BaseEntity baseEntity) {
-			crudRepo.save(baseEntity);
+		public BaseEntity save(BaseEntity baseEntity) {
+			return crudRepo.save(baseEntity);
 		}
 
 		public BaseEntity get(Long id) {
