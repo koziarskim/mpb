@@ -18,11 +18,11 @@
                     </b-col>
                     <b-col cols=4>
                         <label class="top-label">Name:</label>
-                        <input class="form-control" type="text" v-model="component.name" placeholder="Component name"/>
+                        <input class="form-control" type="tel" v-model="component.name"/>
                     </b-col>
                     <b-col cols=4>
                         <label class="top-label">Component#:</label>
-                        <input class="form-control" v-model="component.number" />
+                        <input class="form-control" type="tel" v-model="component.number" />
                     </b-col>
                 </b-row>
                 <b-row>
@@ -36,7 +36,11 @@
                     </b-col>
                     <b-col cols=4>
                         <label class="top-label">Dimension (H x W x D):</label>
-                        <input class="form-control" v-mask="/\d{1,100} x \d{1,100} x \d{1,100}/" v-model="dimension">
+                        <div style="display:flex">
+                          <input class="form-control" v-model="component.height" placeholder="0"><span style="padding:7px">x</span> 
+                          <input class="form-control" v-model="component.width" placeholder="0"><span style="padding:7px">x</span> 
+                          <input class="form-control" v-model="component.depth" placeholder="0">
+                        </div>
                     </b-col>
                 </b-row>
                 <b-row>
@@ -163,10 +167,7 @@ export default {
           otherCost: 0,
           casePack: 1,
           unitsPerContainer: 1,
-          number: 0,
           totalLandedCost: 0,
-          height: 0,
-          weight: 0,
           itemComponents: [],
       },
       uploadedFile: null,
@@ -218,57 +219,41 @@ export default {
     totalLandedCost: function(newValue, oldValue){
         this.component.totalLandedCost = newValue;
     },
-    dimension: function(newValue, oldValue){
-        var dimension = newValue.replace(/\s+/g, '').split("x");
-        this.component.height = dimension[0];
-        this.component.width = dimension[1];
-        this.component.depth = dimension[2];
-    }
   },
   methods: {
     addItem(){
       if (!this.item.id) {
         return;
       }
-      var item = this.component.itemComponents.find(it => it.item.id == this.item.id);
-      if (item) {
+      var found = this.component.itemComponents.find(it => it.item.id == this.item.id);
+      if (found) {
         alert("Item already added")
         return;
       }
-      this.save().then(r=> {
+      this.getItem(this.item.id).then(item => {
         var ic = {
-          item: {id: this.item.id},
-          component: {id: this.component.id},
+          item: item,
           units: this.icUnits
         }
-        http.post("/itemComponent", ic).then(response => {
-          this.item = {};
-          this.icUnits = 0;
-          this.getComponentData(this.component.id)
-        }).catch(e => {
-          console.log("API error: " + e);
-        })
-      });
+        this.component.itemComponents.push(ic);
+      })
     },
     onUpload(file){
       this.uploadedFile = file;
     },
     getComponentData(component_id) {
-      http
-        .get("/component/" + component_id)
-        .then(response => {
-          this.component = response.data;
-          this.dimension = response.data.height+" x "+response.data.width+" x "+response.data.depth;
-          if (response.data.supplier) {
-            this.supplier = response.data.supplier;
-          }
-          if (response.data.category) {
-            this.category = response.data.category;
-          }
-        })
-        .catch(e => {
-          console.log("API error: " + e);
-        });
+      return http.get("/component/" + component_id).then(r => {
+        this.component = r.data;
+        if (r.data.supplier) {
+          this.supplier = r.data.supplier;
+        }
+        if (r.data.category) {
+          this.category = r.data.category;
+        }
+        return r.data;
+      }).catch(e => {
+        console.log("API error: " + e);
+      });
     },
     getAvailableSuppliers() {
       http
@@ -301,46 +286,26 @@ export default {
         });
     },
     getItem(item_id) {
-      return http
-        .get("/item/"+item_id)
-        .then(response => {
-          return response;
-        })
-        .catch(e => {
-          console.log("API error: " + e);
-        });
+      return http.get("/item/"+item_id).then(r => {
+        return r.data;
+      }).catch(e => {
+        console.log("API error: " + e);
+      });
     },
     save() {
-       if(!this.component.name || !this.component.number){
-        alert("Please enter Component Name and Number");
-        return Promise.reject();
-      }
-      return http.post("/component/", this.component).then(response =>{
-        return Promise.resolve();
-        }).catch(e => {
-          console.log("API error: "+e);
-        });
-    },
-    saveAndUpload() {
       if(!this.component.name || !this.component.number){
         alert("Please enter Component Name and Number");
         return Promise.reject();
       }
-      let formData = new FormData();
+      var formData = new FormData();
       formData.append("image", this.uploadedFile);
       formData.append("jsonComponent", JSON.stringify(this.component));
-      return axios
-        .post(httpUtils.baseUrl + "/component/upload", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data"
-          }
-        })
-        .then(response =>{
-            this.getComponentData(this.component.id);
-        })
-        .catch(e => {
-          console.log("API error: "+e);
-        });
+      var headers = {headers: {"Content-Type": "multipart/form-data"}}
+      return axios.post(httpUtils.baseUrl + "/component/upload", formData, headers).then(r =>{
+        return r.data;
+      }).catch(e => {
+        console.log("API error: "+e);
+      });
     },
     deleteItemComponent(ic_id) {
       var idx = this.component.itemComponents.findIndex(ic => ic.id == ic_id);
@@ -352,8 +317,10 @@ export default {
         });
     },
     saveAndClose() {
-      this.saveAndUpload().then(r=>{
-          window.history.back();
+      this.save().then(c =>{
+        this.getComponentData(c.id).then(component => {
+          router.push("/componentList");
+        })
       })
     },
     goToItem(item_id) {

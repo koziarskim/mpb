@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.HashSet;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Index;
@@ -50,7 +51,7 @@ public class Component extends BaseEntity {
 	private int unitsReceived = 0; // All Purchases.
 
 	@JsonIgnoreProperties(value = { "component" }, allowSetters = true)
-	@OneToMany()
+	@OneToMany(cascade=CascadeType.ALL, orphanRemoval=true)
 	@JoinColumn(name = "component_id")
 	private Collection<ItemComponent> itemComponents = new HashSet<ItemComponent>();
 

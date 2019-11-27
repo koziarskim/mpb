@@ -202,31 +202,6 @@ class ItemRest {
 		return ResponseEntity.ok().body(result);
 	}
 	
-	@PostMapping("/item/update/units/type/{type}/entity/{id}")
-	ResponseEntity<?> postUpdate(@PathVariable String type, @PathVariable Long id)  {
-		Item item = null;
-		if(type == "item") {
-			item = itemRepo.findById(id).get();
-		} else if (type == "saleItem") {
-			//TODO: itemRepo.getBySaleItem(id); saleItem.item.id
-		} else if (type == "scheduleEvent") {
-			//TODO: scheduleEvent.saleItem.item.id;
-		} else if (type == "Production") {
-			//TODO: production.scheduleEvent.saleItem.item.id
-		} else if (type == "ShipmentItem") {
-			//TODO: shipmentItem.saleItem.item.id
-		}
-		item.updateUnits();
-		for(SaleItem si : item.getSaleItems()) {
-			if(si.getSale()!=null) {
-				si.getSale().updateUnits();
-			}
-		}
-		itemRepo.save(item);
-		return ResponseEntity.ok().body(item);
-	}
-	
-
 	// This includes image upload.
 	@PostMapping("/item/upload")
 	ResponseEntity<Item> postItemAndAttachment(@RequestParam(value = "image", required = false) MultipartFile image, @RequestParam("jsonItem") String jsonItem)

@@ -33,9 +33,11 @@ import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.entity.Attachment;
 import com.noovitec.mpb.entity.Category;
 import com.noovitec.mpb.entity.Component;
+import com.noovitec.mpb.entity.ItemComponent;
 import com.noovitec.mpb.repo.AttachmentRepo;
 import com.noovitec.mpb.repo.CategoryRepo;
 import com.noovitec.mpb.repo.ComponentRepo;
+import com.noovitec.mpb.service.CrudService;
 
 @RestController
 @RequestMapping("/api")
@@ -47,6 +49,8 @@ class ComponentRest {
 	AttachmentRepo attachmentRepo;
 	@Autowired
 	CategoryRepo categoryRepo;
+	@Autowired
+	CrudService crudService;
 
 	private final Logger log = LoggerFactory.getLogger(ComponentRest.class);
 	private ComponentRepo componentRepo;
@@ -76,8 +80,8 @@ class ComponentRest {
 			dto.setId(component.getId());
 			dto.setNumber(component.getNumber());
 			dto.setName(component.getName());
-			dto.setCategoryName(component.getCategory().getName());
-			dto.setSupplierName(component.getSupplier().getName());
+			dto.setCategoryName(component.getCategory()==null?"":component.getCategory().getName());
+			dto.setSupplierName(component.getSupplier()==null?"":component.getSupplier().getName());
 			dto.setUnitsOnStock(component.getUnitsOnStock());
 		    return dto;
 		});
@@ -125,6 +129,9 @@ class ComponentRest {
 	ResponseEntity<Component> postComponentAndAttachment(@RequestParam(value = "image", required = false) MultipartFile image,
 			@RequestParam("jsonComponent") String jsonComponent) throws URISyntaxException, JsonParseException, JsonMappingException, IOException {
 		Component component = objectMapper.readValue(jsonComponent, Component.class);
+		for(ItemComponent ic: component.getItemComponents()) {
+			ic.setComponent(component);
+		}
 		if (image != null) {
 			Attachment attachment = new Attachment();
 			attachment.setData(image.getBytes());
