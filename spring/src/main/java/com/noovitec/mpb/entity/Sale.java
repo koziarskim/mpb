@@ -61,7 +61,7 @@ public class Sale extends BaseEntity{
 		for(SaleItem sa: this.getSaleItems()) {
 			sa.updateUnits();
 			this.unitsSold += sa.getUnits();
-			this.unitsScheduled += sa.getUnitsProduced();
+			this.unitsScheduled += sa.getUnitsScheduled();
 			this.unitsProduced += sa.getUnitsProduced();
 			this.unitsShipped += sa.getUnitsShipped();
 		}

@@ -123,7 +123,7 @@ public class Item extends BaseEntity{
 			sa.updateUnits();
 			this.unitsSold += sa.getUnits();
 			this.unitsScheduled += sa.getUnitsScheduled();
-			this.unitsProduced += sa.getUnitsScheduled();
+			this.unitsProduced += sa.getUnitsProduced();
 			this.unitsShipped += sa.getUnitsShipped();
 		}
 	}
