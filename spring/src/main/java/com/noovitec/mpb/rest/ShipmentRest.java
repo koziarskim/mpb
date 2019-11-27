@@ -6,7 +6,9 @@ import java.io.InputStream;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -29,6 +31,7 @@ import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfStamper;
 import com.noovitec.mpb.entity.Attachment;
+import com.noovitec.mpb.entity.SaleItem;
 import com.noovitec.mpb.entity.Shipment;
 import com.noovitec.mpb.entity.ShipmentItem;
 import com.noovitec.mpb.repo.AttachmentRepo;
@@ -114,7 +117,18 @@ class ShipmentRest {
 
 	@DeleteMapping("/shipment/{id}")
 	public ResponseEntity<?> delete(@PathVariable Long id) {
+		//TODO: Is there a better way of doing it?
+		List<SaleItem> saleItems = new ArrayList<SaleItem>();
+		Shipment shipment = shipmentRepo.getOne(id);
+		for(ShipmentItem si: shipment.getShipmentItems()) {
+			saleItems.add(si.getSaleItem());
+		}
 		shipmentRepo.deleteById(id);
+		for(SaleItem si: saleItems) {
+			si.getItem().updateUnits();
+			si.getSale().updateUnits();
+			crudService.save(si);
+		}
 		return ResponseEntity.ok().build();
 	}
 	
