@@ -97,28 +97,28 @@ public class SaleItem extends BaseEntity{
 		}
 	}
 	
-	public Long getUnitsProduced() {
-		this.unitsProduced = 0L;
-		for(ScheduleEvent se : this.getScheduleEvents()) {
-			this.unitsProduced += se.getUnitsProduced();
-		}
-		return this.unitsProduced;
-	}
-	
-	public Long getUnitsScheduled() {
-		this.unitsScheduled = 0L;
-		for(ScheduleEvent se : this.getScheduleEvents()) {
-			this.unitsScheduled += se.getUnitsScheduled();
-		}
-		return this.unitsScheduled;
-	}
-	
-	public Long getUnitsSchipped() {
-		this.unitsShipped = 0L;
-		for(ShipmentItem si : this.getShipmentItems()) {
-			this.unitsShipped += si.getUnits();
-		}
-		return this.unitsShipped;
-	}
+//	public Long getUnitsProduced() {
+//		this.unitsProduced = 0L;
+//		for(ScheduleEvent se : this.getScheduleEvents()) {
+//			this.unitsProduced += se.getUnitsProduced();
+//		}
+//		return this.unitsProduced;
+//	}
+//	
+//	public Long getUnitsScheduled() {
+//		this.unitsScheduled = 0L;
+//		for(ScheduleEvent se : this.getScheduleEvents()) {
+//			this.unitsScheduled += se.getUnitsScheduled();
+//		}
+//		return this.unitsScheduled;
+//	}
+//	
+//	public Long getUnitsSchipped() {
+//		this.unitsShipped = 0L;
+//		for(ShipmentItem si : this.getShipmentItems()) {
+//			this.unitsShipped += si.getUnits();
+//		}
+//		return this.unitsShipped;
+//	}
 	
 }

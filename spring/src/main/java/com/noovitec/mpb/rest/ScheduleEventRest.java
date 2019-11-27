@@ -1,7 +1,6 @@
 package com.noovitec.mpb.rest;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -21,11 +20,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.noovitec.mpb.entity.Item;
 import com.noovitec.mpb.entity.Production;
+import com.noovitec.mpb.entity.Sale;
 import com.noovitec.mpb.entity.Schedule;
 import com.noovitec.mpb.entity.ScheduleEvent;
 import com.noovitec.mpb.repo.ScheduleEventRepo;
 import com.noovitec.mpb.repo.ScheduleRepo;
+import com.noovitec.mpb.service.CrudService;
 
 @RestController
 @RequestMapping("/api")
@@ -35,6 +37,9 @@ class ScheduleEventRest {
 	private ScheduleEventRepo scheduleEventRepo;
 	@Autowired
 	private ScheduleRepo scheduleRepo;
+	
+	@Autowired
+	private CrudService crudService;
 
 	public ScheduleEventRest(ScheduleEventRepo scheduleEventRepo) {
 		this.scheduleEventRepo = scheduleEventRepo;
@@ -80,13 +85,23 @@ class ScheduleEventRest {
 		for (Production production : scheduleEvent.getProductions()) {
 			production.setScheduleEvent(scheduleEvent);
 		}
-		ScheduleEvent result = scheduleEventRepo.save(scheduleEvent);
+		scheduleEvent = (ScheduleEvent) crudService.merge(scheduleEvent);
+		scheduleEvent.getSaleItem().getSale().updateUnits();
+		scheduleEvent.getSaleItem().getItem().updateUnits();
+		ScheduleEvent result = (ScheduleEvent) crudService.save(scheduleEvent);
 		return ResponseEntity.ok().body(result);
 	}
 
 	@DeleteMapping("/scheduleEvent/{id}")
 	public ResponseEntity<?> delete(@PathVariable Long id) {
+		ScheduleEvent scheduleEvent = scheduleEventRepo.getOne(id);
+		Item item = scheduleEvent.getSaleItem().getItem();
+		Sale sale = scheduleEvent.getSaleItem().getSale();
 		scheduleEventRepo.deleteById(id);
+		item.updateUnits();
+		sale.updateUnits();
+		crudService.save(item);
+		crudService.save(sale);
 		return ResponseEntity.ok().build();
 	}
 

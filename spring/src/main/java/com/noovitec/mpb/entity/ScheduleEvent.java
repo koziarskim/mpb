@@ -24,22 +24,17 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 //@EntityListeners(ScheduleEventListener.class)
 @Data
+@EqualsAndHashCode(callSuper=false)
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class ScheduleEvent {
+public class ScheduleEvent extends BaseEntity{
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-	@CreationTimestamp
-	private LocalDateTime created;
-	@UpdateTimestamp
-	private LocalDateTime updated;
 	Long unitsScheduled = 0L;
 	LocalTime scheduleTime;
 	LocalTime startTime;
@@ -127,13 +122,13 @@ public class ScheduleEvent {
 	}
 	
 	
-	public Long getUnitsProduced() {
-		this.unitsProduced = 0L;
-		for(Production p : this.getProductions()) {
-			this.unitsProduced += p.getUnitsProduced();
-		}
-		return this.unitsProduced;
-	}
-	
+//	public Long getUnitsProduced() {
+//		this.unitsProduced = 0L;
+//		for(Production p : this.getProductions()) {
+//			this.unitsProduced += p.getUnitsProduced();
+//		}
+//		return this.unitsProduced;
+//	}
+//	
 	
 }
