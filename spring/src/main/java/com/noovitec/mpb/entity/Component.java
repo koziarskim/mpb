@@ -51,7 +51,7 @@ public class Component extends BaseEntity {
 	private int unitsReceived = 0; // All Purchases.
 
 	@JsonIgnoreProperties(value = { "component" }, allowSetters = true)
-	@OneToMany(cascade=CascadeType.ALL, orphanRemoval=true)
+	@OneToMany()
 	@JoinColumn(name = "component_id")
 	private Collection<ItemComponent> itemComponents = new HashSet<ItemComponent>();
 

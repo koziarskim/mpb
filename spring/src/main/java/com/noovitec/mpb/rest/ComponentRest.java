@@ -33,6 +33,7 @@ import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.entity.Attachment;
 import com.noovitec.mpb.entity.Category;
 import com.noovitec.mpb.entity.Component;
+import com.noovitec.mpb.entity.Item;
 import com.noovitec.mpb.entity.ItemComponent;
 import com.noovitec.mpb.repo.AttachmentRepo;
 import com.noovitec.mpb.repo.CategoryRepo;
@@ -132,6 +133,7 @@ class ComponentRest {
 		for(ItemComponent ic: component.getItemComponents()) {
 			ic.setComponent(component);
 		}
+		component = (Component) crudService.merge(component);
 		if (image != null) {
 			Attachment attachment = new Attachment();
 			attachment.setData(image.getBytes());

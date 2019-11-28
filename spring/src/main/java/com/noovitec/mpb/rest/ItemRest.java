@@ -40,7 +40,7 @@ import com.noovitec.mpb.dto.ScheduleEventTreeDto;
 import com.noovitec.mpb.entity.Attachment;
 import com.noovitec.mpb.entity.Item;
 import com.noovitec.mpb.entity.ItemComponent;
-import com.noovitec.mpb.entity.SaleItem;
+import com.noovitec.mpb.entity.Sale;
 import com.noovitec.mpb.entity.ScheduleEvent;
 import com.noovitec.mpb.entity.Season;
 import com.noovitec.mpb.entity.Upc;
@@ -50,6 +50,7 @@ import com.noovitec.mpb.repo.ReceivingRepo;
 import com.noovitec.mpb.repo.ScheduleEventRepo;
 import com.noovitec.mpb.repo.SeasonRepo;
 import com.noovitec.mpb.repo.UpcRepo;
+import com.noovitec.mpb.service.CrudService;
 
 @RestController
 @RequestMapping("/api")
@@ -69,6 +70,8 @@ class ItemRest {
 	ScheduleEventRepo scheduleEventRepo;
 	@Autowired
 	private EntityManager entityManager;
+	@Autowired
+	CrudService crudService;
 
 	private final Logger log = LoggerFactory.getLogger(ItemRest.class);
 	private ItemRepo itemRepo;
@@ -207,11 +210,11 @@ class ItemRest {
 	ResponseEntity<Item> postItemAndAttachment(@RequestParam(value = "image", required = false) MultipartFile image, @RequestParam("jsonItem") String jsonItem)
 			throws URISyntaxException, JsonParseException, JsonMappingException, IOException {
 		Item item = objectMapper.readValue(jsonItem, Item.class);
+		
 		for (ItemComponent ic : item.getItemComponents()) {
-			if (ic.getId() != null) {
-				ic.setItem(item);
-			}
+			ic.setItem(item);
 		}
+		item = (Item) crudService.merge(item);
 		if (image != null) {
 			Attachment attachment = new Attachment();
 			attachment.setData(image.getBytes());
@@ -219,7 +222,6 @@ class ItemRest {
 			item.setAttachment(attachment);
 		}
 		Item result = itemRepo.save(item);
-//		this.postUpdate(item.getId());
 		return ResponseEntity.created(new URI("/api/item/" + result.getId())).body(result);
 	}
 

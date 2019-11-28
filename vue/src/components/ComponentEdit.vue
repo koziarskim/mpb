@@ -115,7 +115,7 @@
                 <input class="form-control" readOnly :value="caseCost" />
             </b-col>
         </b-row>
-        <b-row>
+        <!-- <b-row>
           <b-col cols="4">
             <label class="top-label">Available Items:</label>
             <b-select option-value="id" option-text="name" :list="availableItems" v-model="item" placeholder="Select Item"></b-select>
@@ -127,8 +127,8 @@
           <b-col style="padding-top: 30px" cols="1">
             <b-button variant="link" @click="addItem()">(+)</b-button>
           </b-col>
-        </b-row>
-        <b-row>
+        </b-row> -->
+        <!-- <b-row>
             <b-col>
               <label class="top-label">Items using this Component:</label>
               <b-table v-if="component.itemComponents.length>0"
@@ -145,7 +145,7 @@
 
               </b-table>
             </b-col>
-        </b-row>
+        </b-row> -->
     </b-container>
 </template>
 

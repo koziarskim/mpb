@@ -24,14 +24,14 @@
             <b-select option-value="id" option-text="name" :list="availableSeasons" v-model="season" placeholder="Select season"></b-select>
           </b-col>
           <b-col cols="3" offset="3">
-            <label class="top-label">Case UPC#</label>
+            <!-- <label class="top-label">Case UPC#</label>
             <br>
-            <img width="150px" :src="caseBarcodeUrl" fluid>
+            <img width="150px" :src="caseBarcodeUrl" fluid> -->
           </b-col>
           <b-col cols="3">
-            <label class="top-label">UPC#</label>
+            <!-- <label class="top-label">UPC#</label>
             <br>
-            <img width="150px" :src="barcodeUrl" fluid>
+            <img width="150px" :src="barcodeUrl" fluid> -->
           </b-col>
         </b-row>
         <b-row>
@@ -63,8 +63,12 @@
         <hr class="hr-text" data-content="Unit dimenstion">
         <b-row>
           <b-col cols="4">
-            <label class="top-label">Dimension (H x W x D):</label>
-            <input class="form-control" v-mask="/\d{1,100} x \d{1,100} x \d{1,100}/" v-model="dimension">
+            <label class="top-label">Item Dimension (H x W x D):</label>
+            <div style="display:flex">
+              <input class="form-control" v-model="item.height" placeholder="0"><span style="padding: 7px">x</span>
+              <input class="form-control" v-model="item.width" placeholder="0"><span style="padding: 7px">x</span>
+              <input class="form-control" v-model="item.depth" placeholder="0">
+            </div>
           </b-col>
           <b-col cols="2">
             <label class="top-label">Weight (lbs):</label>
@@ -77,9 +81,13 @@
         </b-row>
         <hr class="hr-text" data-content="Case dimenstion">
         <b-row>
-          <b-col cols="3">
-            <label class="top-label">Case Dimension:</label>
-            <input class="form-control" v-mask="/\d{1,100} x \d{1,100} x \d{1,100}/" v-model="caseDimension">
+          <b-col cols=4>
+            <label class="top-label">Case Dimension (H x W x D):</label>
+            <div style="display:flex">
+              <input class="form-control" v-model="item.caseHeight" placeholder="0"><span style="padding: 7px">x</span>
+              <input class="form-control" v-model="item.caseWidth" placeholder="0"><span style="padding: 7px">x</span>
+              <input class="form-control" v-model="item.caseDepth" placeholder="0">
+            </div>
           </b-col>
           <b-col cols="2">
             <label class="top-label">Case weight:</label>
@@ -101,7 +109,10 @@
         <b-row>
           <b-col cols="2">
             <label class="top-label">TI x HI (pcs):</label>
-            <input class="form-control" v-mask="/\d{1,100} x \d{1,100}/" v-model="tiHi">
+            <div style="display:flex">
+              <input class="form-control" v-model="item.ti" placeholder="0"><span style="padding: 7px">x</span>
+              <input class="form-control" v-model="item.hi" placeholder="0">
+            </div>
           </b-col>
           <b-col cols="2">
             <label class="top-label">Pallet cubic:</label>
@@ -155,7 +166,7 @@
               <div style="display: flex; border-bottom: 1px solid #ced4da" v-for="ic in getComponentsById(category.id)" v-bind:key="ic.id">
                 <div style="width:100%">
                   <input size="sm" style="border: 0px; width: 25px" min="1" max="9" v-model="ic.units" type="number">
-                  <b-button variant="link" @click="goTo('/componentEdit/'+ic.component.id)">{{ic.component.number}}</b-button>
+                  <b-button variant="link" @click="goToComponent(ic.component.id)">{{ic.component.number}}</b-button>
                   <label>{{" | "+ic.component.name+" | $"+ic.component.totalLandedCost}}</label>
                 </div>
                 <b-button size="sm" type="reset" variant="link" @click="removeItemComponent(ic.id)">(x)</b-button>
@@ -183,22 +194,10 @@ export default {
       selectedComp: null,
       item: {
         itemComponents: [],
-        number: 0,
-        upc: {},
-        caseUpc: {},
-        caseUpc: {},
-        height: 0,
-        width: 0,
-        depth: 0,
-        caseHeight: 0,
-        caseWidth: 0,
-        caseDepth: 0,
-        ti: 1,
-        hi: 1
+        // upc: {},
+        // caseUpc: {},
+        // caseUpc: {},
       },
-      dimension: "",
-      caseDimension: "",
-      tiHi: "",
       image: "",
       httpUtils: httpUtils,
       brand: {},
@@ -225,7 +224,7 @@ export default {
         +this.packageCost +
         +this.item.laborCost +
         +this.item.otherCost;
-      return totalCost.toFixed(2);
+      return totalCost?totalCost.toFixed(2):0.00;
     },
 
     palletHeight: function() {
@@ -306,23 +305,6 @@ export default {
         this.item.season = newValue;
       }
     },
-    dimension: function(newValue, oldValue) {
-      var dimension = newValue.replace(/\s+/g, "").split("x");
-      this.item.height = dimension[0];
-      this.item.width = dimension[1];
-      this.item.depth = dimension[2];
-    },
-    tiHi: function(newValue, oldValue) {
-      var tiHi = newValue.replace(/\s+/g, "").split("x");
-      this.item.ti = tiHi[0];
-      this.item.hi = tiHi[1];
-    },
-    caseDimension: function(newValue, oldValue) {
-      var dimension = newValue.replace(/\s+/g, "").split("x");
-      this.item.caseHeight = dimension[0];
-      this.item.caseWidth = dimension[1];
-      this.item.caseDepth = dimension[2];
-    }
   },
   methods: {
 	onUpload(file){
@@ -344,36 +326,21 @@ export default {
         });
     },
     getItemData(item_id) {
-      http
-        .get("/item/" + item_id)
-        .then(response => {
-          this.item = response.data;
-          this.dimension =
-            response.data.height +
-            " x " +
-            response.data.width +
-            " x " +
-            response.data.depth;
-          this.caseDimension =
-            response.data.caseHeight +
-            " x " +
-            response.data.caseWidth +
-            " x " +
-            response.data.caseDepth;
-          this.tiHi = response.data.ti + " x " + response.data.hi;
-          if (response.data.brand) {
-            this.brand = response.data.brand;
-          }
-          if (response.data.category) {
-            this.category = response.data.category;
-          }
-          if (response.data.season) {
-            this.season = response.data.season;
-          }
-        })
-        .catch(e => {
-          console.log("API error: " + e);
-        });
+      return http.get("/item/" + item_id).then(response => {
+        this.item = response.data;
+        if (response.data.brand) {
+          this.brand = response.data.brand;
+        }
+        if (response.data.category) {
+          this.category = response.data.category;
+        }
+        if (response.data.season) {
+          this.season = response.data.season;
+        }
+        return response.data;
+      }).catch(e => {
+        console.log("API error: " + e);
+      });
     },
     getAvailableBrands() {
       http
@@ -429,35 +396,30 @@ export default {
 
         return true;
     },
-    saveAndUpload() {
+    save() {
         if(!this.validate()){
             return Promise.reject();
         }
       this.item.totalCost = this.totalCost;
-      let formData = new FormData();
+      var formData = new FormData();
       formData.append("image", this.uploadedFile);
       formData.append("jsonItem", JSON.stringify(this.item));
-      return axios
-        .post(httpUtils.baseUrl + "/item/upload", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data"
-          }
-        })
-        .then(response => {
-          this.getItemData(this.item.id);
-        })
-        .catch(e => {
-          console.log("API error: " + e);
-        });
-    },
-    saveAndClose() {
-      this.saveAndUpload().then(r => {
-        window.history.back();
+      var headers = {"Content-Type": "multipart/form-data"};
+      return axios.post(httpUtils.baseUrl + "/item/upload", formData, headers).then(r => {
+        return r.data;
+      }).catch(e => {
+         console.log("API error: " + e);
       });
     },
-    goTo(view) {
-      this.saveAndUpload();
-      httpUtils.goTo(view);
+    saveAndClose() {
+      this.save().then(i => {
+        this.getItemData(i.id).then(item => {
+          router.push("/itemList");
+        })
+      });
+    },
+    goToComponent(componentId) {
+      router.push('/componentEdit/'+componentId);
     },
     removeItemComponent(ic_id) {
       var idx = this.item.itemComponents.findIndex(ic => ic.id == ic_id);
