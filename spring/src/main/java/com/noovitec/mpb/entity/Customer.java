@@ -11,8 +11,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -44,10 +42,4 @@ public class Customer extends BaseEntity {
 	@JoinColumn(name = "billig_address_id", referencedColumnName = "id")
 	private Address billingAddress;
 
-	// TODO: Do we need this?
-	@JsonIgnoreProperties(value = { "customer" }, allowSetters = true)
-	@OneToMany()
-	@JoinColumn(name = "customer_id")
-	@OrderBy("id DESC")
-	private Collection<Sale> sales = new HashSet<Sale>();
 }

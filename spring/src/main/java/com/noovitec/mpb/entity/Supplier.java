@@ -1,15 +1,9 @@
 package com.noovitec.mpb.entity;
 
-import java.util.Collection;
-import java.util.HashSet;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -43,10 +37,5 @@ public class Supplier extends BaseEntity {
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "address_id", referencedColumnName = "id")
 	private Address address;
-
-	@JsonIgnoreProperties(value = { "supplier" }, allowSetters = true)
-	@OneToMany()
-	@JoinColumn(name = "supplier_id")
-	private Collection<Component> components = new HashSet<Component>();
 
 }
