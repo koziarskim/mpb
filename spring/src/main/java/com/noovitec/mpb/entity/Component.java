@@ -33,7 +33,7 @@ public class Component extends BaseEntity {
 	private String number;
 	private String supplierStockNumber;
 	private String description;
-	private int unitsPerContainer = 1;
+	private Long unitsPerContainer = 1L;
 	private int height = 0;
 	private int width = 0;
 	private int depth = 0;
