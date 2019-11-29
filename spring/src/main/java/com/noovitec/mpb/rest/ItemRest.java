@@ -40,7 +40,6 @@ import com.noovitec.mpb.dto.ScheduleEventTreeDto;
 import com.noovitec.mpb.entity.Attachment;
 import com.noovitec.mpb.entity.Item;
 import com.noovitec.mpb.entity.ItemComponent;
-import com.noovitec.mpb.entity.Sale;
 import com.noovitec.mpb.entity.ScheduleEvent;
 import com.noovitec.mpb.entity.Season;
 import com.noovitec.mpb.entity.Upc;
@@ -51,6 +50,7 @@ import com.noovitec.mpb.repo.ScheduleEventRepo;
 import com.noovitec.mpb.repo.SeasonRepo;
 import com.noovitec.mpb.repo.UpcRepo;
 import com.noovitec.mpb.service.CrudService;
+import com.noovitec.mpb.service.ItemService;
 
 @RestController
 @RequestMapping("/api")
@@ -72,12 +72,13 @@ class ItemRest {
 	private EntityManager entityManager;
 	@Autowired
 	CrudService crudService;
-
-	private final Logger log = LoggerFactory.getLogger(ItemRest.class);
+	@Autowired
 	private ItemRepo itemRepo;
+	private final Logger log = LoggerFactory.getLogger(ItemRest.class);
+	private ItemService itemService;
 
-	public ItemRest(ItemRepo itemRepo) {
-		this.itemRepo = itemRepo;
+	public ItemRest(ItemService itemService) {
+		this.itemService = itemService;
 	}
 
 	@GetMapping("/item")
@@ -96,33 +97,32 @@ class ItemRest {
 	}
 
 	@GetMapping("/item/pageable")
-	Page<ItemListDto> getAllPageable(@RequestParam(name = "pageable", required = false) Pageable pageable, 
-			@RequestParam(name = "searchKey", required = false) String searchKey,
-			@RequestParam(name = "searchType", required = false) String searchType) {
+	Page<ItemListDto> getAllPageable(@RequestParam(name = "pageable", required = false) Pageable pageable,
+			@RequestParam(name = "searchKey", required = false) String searchKey, @RequestParam(name = "searchType", required = false) String searchType) {
 		Page<Item> items = null;
-		if(searchType==null || searchType.isBlank() || searchKey==null || searchKey.isBlank()) {
+		if (searchType == null || searchType.isBlank() || searchKey == null || searchKey.isBlank()) {
 			items = itemRepo.findPage(pageable);
-		}else if(searchType.equals("item") && !searchKey.isBlank()) {
+		} else if (searchType.equals("item") && !searchKey.isBlank()) {
 			items = itemRepo.findPageByItem(pageable, searchKey);
-		}else if(searchType.equals("component") && !searchKey.isBlank()){
+		} else if (searchType.equals("component") && !searchKey.isBlank()) {
 			items = itemRepo.findPageByComponent(pageable, searchKey);
 		}
-		if(items == null) {
-			 return Page.empty();
+		if (items == null) {
+			return Page.empty();
 		}
 		Page<ItemListDto> dtos = items.map(item -> {
 			ItemListDto dto = new ItemListDto();
 			dto.setId(item.getId());
 			dto.setNumber(item.getNumber());
 			dto.setName(item.getName());
-			dto.setBrand(item.getBrand()==null?"":item.getBrand().getName());
-			dto.setCategory(item.getCategory()==null?"":item.getCategory().getName());
+			dto.setBrand(item.getBrand() == null ? "" : item.getBrand().getName());
+			dto.setCategory(item.getCategory() == null ? "" : item.getCategory().getName());
 			dto.setUnitsOnStock(item.getUnitsOnStock());
 			dto.setUnitsSold(item.getUnitsSold());
 			dto.setUnitsScheduled(item.getUnitsScheduled());
 			dto.setUnitsProduced(item.getUnitsProduced());
 			dto.setUnitsShipped(item.getUnitsShipped());
-		    return dto;
+			return dto;
 		});
 		return dtos;
 	}
@@ -153,9 +153,9 @@ class ItemRest {
 	Collection<ItemTreeDto> getItemsByDate(@PathVariable(name = "date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
 		List<ItemTreeDto> dtos = new ArrayList<ItemTreeDto>();
 		List<ScheduleEvent> events = scheduleEventRepo.findByDate(date);
-		for(ScheduleEvent se: events) {
+		for (ScheduleEvent se : events) {
 			ItemTreeDto itemDto = dtos.stream().filter(existingDto -> existingDto.getId().equals(se.getSaleItem().getItem().getId())).findAny().orElse(null);
-			if(itemDto == null) {
+			if (itemDto == null) {
 				itemDto = new ItemTreeDto();
 				itemDto.setId(se.getSaleItem().getItem().getId());
 				itemDto.setName(se.getSaleItem().getItem().getName());
@@ -165,9 +165,9 @@ class ItemRest {
 				itemDto.setTotalSeconds(se.getSaleItem().getItem().getDurationSeconds());
 				dtos.add(itemDto);
 			}
-			itemDto.setDailyScheduled(itemDto.getDailyScheduled()+se.getUnitsScheduled());
-			itemDto.setDailyProduced(itemDto.getDailyProduced()+se.getUnitsProduced());
-			itemDto.setDailySeconds(itemDto.getDailySeconds()+se.getDurationSeconds());
+			itemDto.setDailyScheduled(itemDto.getDailyScheduled() + se.getUnitsScheduled());
+			itemDto.setDailyProduced(itemDto.getDailyProduced() + se.getUnitsProduced());
+			itemDto.setDailySeconds(itemDto.getDailySeconds() + se.getDurationSeconds());
 			ScheduleEventTreeDto eventDto = new ScheduleEventTreeDto();
 			eventDto.setId(se.getId());
 			eventDto.setCustomerName(se.getSaleItem().getSale().getCustomer().getName());
@@ -204,13 +204,13 @@ class ItemRest {
 		Item result = itemRepo.save(jsonItem);
 		return ResponseEntity.ok().body(result);
 	}
-	
+
 	// This includes image upload.
 	@PostMapping("/item/upload")
 	ResponseEntity<Item> postItemAndAttachment(@RequestParam(value = "image", required = false) MultipartFile image, @RequestParam("jsonItem") String jsonItem)
 			throws URISyntaxException, JsonParseException, JsonMappingException, IOException {
 		Item item = objectMapper.readValue(jsonItem, Item.class);
-		
+
 		for (ItemComponent ic : item.getItemComponents()) {
 			ic.setItem(item);
 		}
@@ -223,6 +223,17 @@ class ItemRest {
 		}
 		Item result = itemRepo.save(item);
 		return ResponseEntity.created(new URI("/api/item/" + result.getId())).body(result);
+	}
+
+	@GetMapping("/item/update/units")
+	ResponseEntity<?> postUpdateUnits() {
+		try {
+			itemService.updateUnits();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.ok().body("OK");
 	}
 
 	@DeleteMapping("/item/{id}")
