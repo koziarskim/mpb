@@ -168,13 +168,17 @@ class ShipmentRest {
 		stamper.getAcroFields().setField("itemDescription", itemDescription);
 		stamper.getAcroFields().setField("itemCases", itemCases);
 		stamper.getAcroFields().setField("itemPallets", itemPallets);
-		String shippingAddress = shipment.getCustomer().getName() + "\n" 
+		if(shipment.getShippingAddress()!=null) {
+			String shippingAddress = shipment.getCustomer().getName() + "\n" 
 				+ shipment.getShippingAddress().getStreet() + "\n" 
 				+ shipment.getShippingAddress().getCity() + ", " + shipment.getShippingAddress().getState() + " "+shipment.getShippingAddress().getZip();
-		stamper.getAcroFields().setField("shippingAddress", shippingAddress);
-		String freightAddress = shipment.getFreightAddress().getStreet() + "\n" 
+			stamper.getAcroFields().setField("shippingAddress", shippingAddress);
+		}
+		if(shipment.getFreightAddress()!=null) {
+			String freightAddress = shipment.getFreightAddress().getStreet() + "\n" 
 				+ shipment.getFreightAddress().getCity() + ", "+ shipment.getFreightAddress().getState() + " "+shipment.getFreightAddress().getZip();		
-		stamper.getAcroFields().setField("freightAddress", freightAddress);
+			stamper.getAcroFields().setField("freightAddress", freightAddress);
+		}
 		stamper.getAcroFields().setField("notes", shipment.getNotes());
 		stamper.getAcroFields().setField("totalUnits", shipment.getTotalUnits().toString());
 		stamper.getAcroFields().setField("totalCases", shipment.getTotalCases().toString());
