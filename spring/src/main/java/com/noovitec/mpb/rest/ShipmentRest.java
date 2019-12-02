@@ -14,6 +14,8 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -25,11 +27,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfStamper;
+import com.noovitec.mpb.dto.SaleItemDto;
+import com.noovitec.mpb.dto.ShipmentDto;
 import com.noovitec.mpb.entity.Attachment;
 import com.noovitec.mpb.entity.Item;
 import com.noovitec.mpb.entity.Sale;
@@ -57,17 +62,35 @@ class ShipmentRest {
 		this.shipmentRepo = shipmentRepo;
 	}
 
-	@GetMapping("/shipment")
-	Collection<Shipment> getAll() {
-		return shipmentRepo.findAll();
-	}
-
 	@GetMapping("/shipment/{id}")
 	ResponseEntity<Shipment> get(@PathVariable Long id) {
 		Optional<Shipment> result = shipmentRepo.findById(id);
 		return result.map(response -> ResponseEntity.ok().body(response)).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
 	}
 	
+	@GetMapping("/shipment/pageable")
+	Page<ShipmentDto> getAllPageable(
+			@RequestParam Pageable pageable, 
+			@RequestParam(name = "number", required = false) String number,
+			@RequestParam(name = "customerId", required = false) Long customerId,
+			@RequestParam(name = "saleId", required = false) Long saleId) {
+		List<Long> ids = shipmentRepo.findIds(number, customerId, saleId);
+		if(ids.isEmpty()) {
+			return Page.empty();
+		}
+		Page<Shipment> shipments = shipmentRepo.findPage(pageable, ids);
+		Page<ShipmentDto> all = shipments.map(ship -> {
+			ShipmentDto dto = new ShipmentDto();
+			dto.setId(ship.getId());
+			dto.setCustomerId(ship.getCustomer()==null?null:ship.getCustomer().getId());
+			dto.setNumber(ship.getNumber());
+			dto.setDate(ship.getDate());
+			dto.setCustomerName(ship.getCustomer()==null?"":ship.getCustomer().getName());
+		    return dto;
+		});
+		return all;
+	}
+
 	@GetMapping("/shipment/{shipmentId}/pdf")
 	HttpEntity<byte[]> getPdf(@PathVariable Long shipmentId) throws DocumentException, IOException {
 		Shipment shipment = shipmentRepo.findById(shipmentId).get();
@@ -121,7 +144,7 @@ class ShipmentRest {
 		//TODO: Is there a better way of doing it?
 		List<Item> items = new ArrayList<Item>();
 		List<Sale> sales = new ArrayList<Sale>();
-		Shipment shipment = shipmentRepo.getOne(id);
+		Shipment shipment = shipmentRepo.findById(id).get();
 		for(ShipmentItem si: shipment.getShipmentItems()) {
 			items.add(si.getSaleItem().getItem());
 			sales.add(si.getSaleItem().getSale());

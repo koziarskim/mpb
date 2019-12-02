@@ -6,9 +6,7 @@
                 <b-button type="submit" variant="primary" @click="goToShipment('new')">New Shipment</b-button>
             </div>
         </div>
-        <div v-if="shipments.length==0">Not found any data...</div>
-        <b-table v-if="shipments.length>0"
-                :sort-by.sync="sortBy"
+        <b-table :sort-by.sync="sortBy"
                 :sort-desc.sync="sortDesc"
                 :items="shipments"
                 :fields="fields">
@@ -19,6 +17,7 @@
                     <b-button size="sm" @click.stop="deleteShipment(row.item.id)">x</b-button>
                 </template>
         </b-table>
+     		<b-pagination v-model="pageable.currentPage" :per-page="pageable.perPage" :total-rows="pageable.totalElements" @change="paginationChange"></b-pagination>
     </b-container>
 </template>
 <script>
@@ -29,22 +28,29 @@ export default {
   data() {
     return {
       sortBy: "number",
+      pageable: {totalElements: 100, currentPage: 1, perPage: 7, sortBy: 'id', sortDesc: false},
       sortDesc: false,
       fields: [
         { key: "number", label: "Shipment #", sortable: false },
-        { key: "customer.name", label: "Customer", sortable: false },
+        { key: "customerName", label: "Customer", sortable: false },
         { key: "date", label: "Date", sortable: false },
         { key: "action", label: "Action", sortable: false }
       ],
-      shipments: []
+      shipments: [],
+      sale: {},
+      customer: {}
     };
   },
   methods: {
+    paginationChange(page){
+        this.pageable.currentPage = page;
+        this.getShipments();
+    },
     getShipments() {
       http
-        .get("/shipment")
-        .then(response => {
-          this.shipments = response.data;
+        .get("/shipment/pageable", {params: {pageable: this.pageable, number: this.number, customerId: this.customer.id, saleId: this.sale.id}}).then(r => {
+          this.shipments = r.data.content;
+          this.pageable.totalElements = r.data.totalElements;
         })
         .catch(e => {
           console.log("API error: " + e);
