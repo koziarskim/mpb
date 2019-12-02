@@ -57,6 +57,14 @@ export default {
       customer: {}
     };
   },
+  watch: {
+    sale(newValue, oldValue){
+      this.getShipments();
+    },
+    customer(newValue, oldValue){
+      this.getShipments();
+    }
+  },
   methods: {
     paginationChange(page){
         this.pageable.currentPage = page;
@@ -71,6 +79,20 @@ export default {
         .catch(e => {
           console.log("API error: " + e);
         });
+    },
+    getAvailableCustomers() {
+      http.get("/customer/kv").then(r => {
+        this.availableCustomers = r.data;
+      }).catch(e => {
+        console.log("API error: "+e);
+      });
+    },
+    getAvailableSales() {
+      http.get("/sale/kv").then(r => {
+        this.availableSales = r.data;
+      }).catch(e => {
+        console.log("API error: "+e);
+      });
     },
     deleteShipment(id) {
       http
@@ -90,6 +112,8 @@ export default {
   },
   mounted() {
     this.getShipments();
+    this.getAvailableCustomers();
+    this.getAvailableSales();
   }
 };
 </script>

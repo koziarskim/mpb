@@ -91,6 +91,11 @@ class SaleRest {
 		return saleRepo.findSalesForCustomer(customer_id);
 	}
 
+	@GetMapping("/sale/kv")
+	Collection<KeyValueDto> getKvs() {
+		return saleRepo.findKvs();
+	}
+
 	@GetMapping("/sale/{id}")
 	ResponseEntity<Sale> get(@PathVariable Long id) {
 		Optional<Sale> result = saleRepo.findById(id);
