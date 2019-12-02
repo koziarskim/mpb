@@ -30,7 +30,7 @@ public interface CustomShipmentRepo {
 					+ "left join ship.customer cu " 
 					+ "where ship.id is not null ";
 			if (number != null && !number.isEmpty()) {
-				q += "and (upper(ship.number) like concat('%',upper(:number),'%') ";
+				q += "and (upper(ship.number) like concat('%',upper(:number),'%')) ";
 			}
 			if (customerId != null) {
 				q += "and cu.id = :customerId ";

@@ -1,11 +1,24 @@
 <template>
     <b-container fluid>
-        <div class="d-flex justify-content-between align-items-center">
-            <span style="text-align: left; font-size: 18px; font-weight: bold">Shipments</span>
-            <div style="text-align: right;">
+        <b-row style="padding-bottom: 4px;">
+            <b-col cols=2>
+                <span style="text-align: left; font-size: 18px; font-weight: bold">Shipments</span>
+            </b-col>
+            <b-col cols="3">
+                <input class="form-control" type="tel" v-model="number" @keyup.enter="getShipments()" placeholder="Search Shipment Number"/>
+            </b-col>
+            <b-col cols=2>
+              <b-select option-value="id" option-text="name" :list="availableCustomers" v-model="customer" placeholder="Search Customer"></b-select>
+            </b-col>
+            <b-col cols=2>
+              <b-select option-value="id" option-text="name" :list="availableSales" v-model="sale" placeholder="Search Sale"></b-select>
+            </b-col>
+            <b-col>
+                <div style="text-align: right;">
                 <b-button type="submit" variant="primary" @click="goToShipment('new')">New Shipment</b-button>
-            </div>
-        </div>
+                </div>
+            </b-col>
+        </b-row>
         <b-table :sort-by.sync="sortBy"
                 :sort-desc.sync="sortDesc"
                 :items="shipments"
@@ -37,7 +50,10 @@ export default {
         { key: "action", label: "Action", sortable: false }
       ],
       shipments: [],
+      number: '',
+      availableSales: [],
       sale: {},
+      availableCustomers: [],
       customer: {}
     };
   },
