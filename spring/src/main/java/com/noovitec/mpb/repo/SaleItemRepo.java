@@ -33,7 +33,8 @@ public interface SaleItemRepo extends PagingAndSortingRepository<SaleItem, Long>
 			+ "join si.sale s "
 			+ "join s.customer cu "
 			+ "join si.item i "
-			+ "where cu.id = :customerId ")
+			+ "where cu.id = :customerId "
+			+ "and si.units > si.unitsShipped")
 	public List<KeyValueDto> findKvByCustomer(@Param("customerId") Long customerId);
 
 	@Query(value="select new com.noovitec.mpb.dto.KeyValueDto(si.id, si.sale.number) from SaleItem si ")

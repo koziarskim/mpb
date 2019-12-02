@@ -251,6 +251,7 @@ export default {
         }else{
           this.shipment = r.data;
         }
+        this.getAvailableSaleItems();
       }).catch(e => {
          console.log("API error: " + e);
       });
@@ -295,7 +296,13 @@ export default {
       return http
         .get("/saleItem/kv/customer/" + this.customer.id)
         .then(response => {
-          this.availableSaleItems = response.data;
+          this.availableSaleItems = [];
+          response.data.forEach(si => {
+            var found = this.shipment.shipmentItems.findIndex(shipItem =>  si.id == shipItem.saleItem.id);
+            if(found == -1){
+              this.availableSaleItems.push(si);
+            }
+          })
         })
         .catch(e => {
           console.log("API error: " + e);
@@ -306,15 +313,16 @@ export default {
         alert("Please select Sale and Item to add");
         return;
       }
-      var idx = this.shipment.shipmentItems.findIndex(shipmentItem => shipmentItem.saleItem.id == saleItemId);
-      if(idx > -1){
-        alert("Sale (Item) already added to the list");
-        return;
-      }
+      // var idx = this.shipment.shipmentItems.findIndex(shipmentItem => shipmentItem.saleItem.id == saleItemId);
+      // if(idx > -1){
+      //   alert("Sale (Item) already added to the list");
+      //   return;
+      // }
       http.get("/saleItem/"+saleItemId).then(r => {
         this.addSaleItem(r.data);
         this.sale = {};
         this.saleItem = {};
+        this.getAvailableSaleItems();
       }).catch(e => {
         console.log("API error: " + e);
       })
@@ -328,11 +336,12 @@ export default {
           cases: 0,
           pallets: 0
         }
-      )
+      );
     },
     removeSaleItem(saleItemId) {
       var idx = this.shipment.shipmentItems.findIndex(shipItem => shipItem.saleItem.id == saleItemId);
       this.shipment.shipmentItems.splice(idx, 1)
+      this.getAvailableSaleItems();
     },
     goToItem(item_id) {
       router.push("/itemEdit/" + item_id);
@@ -362,7 +371,7 @@ export default {
     }
     this.getAvailableCustomers();
     this.getAvailableFreightAddresses();
-    this.getSaleItems(saleItemIds);
+    // this.getSaleItems(saleItemIds);
   }
 };
 </script>
