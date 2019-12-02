@@ -6,6 +6,10 @@
 					<label class="top-label">Address Distribution Center</label>
 					<input class="form-control" type="tel" v-model="address.dc">
 				</b-col>
+				<b-col>
+					<label class="top-label">Keep it? </label><br/>
+					<input type="checkbox" v-model="address.visible">
+				</b-col>
         <b-col>
           <div style="text-align: right;">
             <b-button style="margin: 0 2px 0 2px" @click="closeModal()">Close</b-button>

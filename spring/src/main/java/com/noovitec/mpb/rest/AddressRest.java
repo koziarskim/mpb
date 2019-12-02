@@ -51,6 +51,9 @@ class AddressRest {
 	
 	@GetMapping("/address/type/{type}")
 	Collection<KeyValueDto> getByType(@PathVariable String type) {
+		if(type.equalsIgnoreCase("FRG")) {
+			return addressRepo.findFreightKv();
+		}
 		return addressRepo.findKvByType(type);
 	}
 

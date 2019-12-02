@@ -21,5 +21,6 @@ public class Address extends BaseEntity {
 	private String dc;
 	// FRG - Freight
 	private String type;
+	private boolean visible;
 	
 }
