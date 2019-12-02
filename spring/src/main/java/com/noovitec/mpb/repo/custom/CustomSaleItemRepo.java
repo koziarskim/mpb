@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 public interface CustomSaleItemRepo {
-	List<Long> findIds(String numberName, Long customerId, Long itemId);
+	List<Long> findIds(String numberName, Long customerId, Long itemId, boolean includeAll);
 
 	@Repository
 	public class SaleItemRepoImpl implements CustomSaleItemRepo {
@@ -22,8 +22,11 @@ public interface CustomSaleItemRepo {
 		EntityManager entityManager;
 
 		@Override
-		public List<Long> findIds(String numberName, Long customerId, Long itemId) {
+		public List<Long> findIds(String numberName, Long customerId, Long itemId, boolean includeAll) {
 			String q = "select distinct si.id from SaleItem si " + "join si.item i " + "join si.sale s " + "join s.customer cu " + "where si.id is not null ";
+			if(!includeAll) {
+				q += "and si.units > si.unitsShipped ";
+			}
 			if (numberName != null && !numberName.isEmpty()) {
 				q += "and (upper(s.number) like concat('%',upper(:numberName),'%') ";
 				q += "or upper(s.name) like concat('%',upper(:numberName),'%')) ";

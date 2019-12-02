@@ -14,6 +14,10 @@
             <b-col cols="2">
               <b-select option-value="id" option-text="name" :list="availableItems" v-model="item" placeholder="Search Item"></b-select>
             </b-col>
+            <b-col cols="1">
+              <label class="top-label">All?</label><br/>
+              <input type="checkbox" v-model="includeAll"/>
+            </b-col>
             <b-col>
                 <div style="text-align: right;">
                 <b-button type="submit" variant="primary" @click="newShipment()">New Shipment ({{selectedSaleItemIds.length}})</b-button>
@@ -46,6 +50,7 @@ export default {
       securite: securite,
       navigation: navigation,
       pageable: {totalElements: 100, currentPage: 1, perPage: 7, sortBy: 'id', sortDesc: false},
+      includeAll: false,
       searchSale: "",
       searchItem: "",
       itemView: true,
@@ -71,6 +76,9 @@ export default {
     };
   },
   watch: {
+    includeAll(newValue, oldValue){
+      this.getSaleItems();
+    },
     itemView(newValue, oldValue){
       if(newValue==false){
         navigation.goTo("/saleList/")
@@ -106,7 +114,7 @@ export default {
         this.getSaleItems();
     },
   getSaleItems(){
-    http.get("/saleItem/pageable", {params: {pageable: this.pageable, numberName: this.numberName, customerId: this.customer.id, itemId: this.item.id}}).then(r => {
+    http.get("/saleItem/pageable", {params: {pageable: this.pageable, numberName: this.numberName, customerId: this.customer.id, itemId: this.item.id, includeAll: this.includeAll}}).then(r => {
       this.saleItems = r.data.content;
       this.pageable.totalElements = r.data.totalElements;
     }).catch(e => {

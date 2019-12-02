@@ -375,7 +375,7 @@ export default {
     }
     this.getAvailableCustomers();
     this.getAvailableFreightAddresses();
-    // this.getSaleItems(saleItemIds);
+    this.getSaleItems(saleItemIds);
   }
 };
 </script>

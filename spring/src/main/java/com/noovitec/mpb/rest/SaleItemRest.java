@@ -49,8 +49,9 @@ class SaleItemRest {
 			@RequestParam Pageable pageable, 
 			@RequestParam(name = "numberName", required = false) String numberName, 
 			@RequestParam(name = "itemId", required = false) Long itemId,
-			@RequestParam(name = "customerId", required = false) Long customerId) {
-		List<Long> ids = saleItemRepo.findIds(numberName, customerId, itemId);
+			@RequestParam(name = "customerId", required = false) Long customerId,
+			@RequestParam(name = "includeAll", required = false) boolean includeAll) {
+		List<Long> ids = saleItemRepo.findIds(numberName, customerId, itemId, includeAll);
 		if(ids.isEmpty()) {
 			return Page.empty();
 		}
