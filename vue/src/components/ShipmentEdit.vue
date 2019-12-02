@@ -200,11 +200,12 @@ export default {
 			this.modalVisible = true;
 		},
 		closeModal(address){
-      this.getAvailableFreightAddresses();
       if(address){
+        this.shipment.freightAddress = address;
         this.freightAddress = address;
       }
-			this.modalVisible=false;
+      this.modalVisible=false;
+      this.getAvailableFreightAddresses()
 		},
     getShipment(id) {
       http.get("/shipment/" + id).then(response => {
@@ -282,6 +283,9 @@ export default {
       this.availableFreightAddresses = [];
       return http.get("/address/type/frg").then(r => {
         this.availableFreightAddresses = r.data;
+        if(this.shipment.freightAddress){
+          this.availableFreightAddresses.push({id: this.shipment.freightAddress.id, name: this.shipment.freightAddress.street});
+        }
         return r.data;
       }).catch(e => {
         console.log("API error: " + e);
