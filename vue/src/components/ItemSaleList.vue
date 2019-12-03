@@ -13,8 +13,8 @@
           <template v-slot:cell(sale)="row">
             <b-button size="sm" @click.stop="goToSale(row.item.sale.id)" variant="link">{{row.item.sale?row.item.sale.number:''}}</b-button>
           </template>
-          <template v-slot:cell(unitsScheduled)="row">
-            <b-button size="sm" @click.stop="goToScheduled(row.item.sale.id)" variant="link">{{row.item.unitsScheduled}}</b-button>
+          <template v-slot:cell(unitsSchedProd)="row">
+            <b-button size="sm" @click.stop="goToScheduled(row.item.sale.id)" variant="link">{{row.item.unitsScheduled}}/{{row.item.unitsProduced}}</b-button>
           </template>
           <template v-slot:cell(action)="row">
             <b-button size="sm" :disabled="disableSchedule(row.item)" type="submit" variant="primary" @click="toggleModal(row.item)">Schedule</b-button>
@@ -85,8 +85,7 @@ export default {
         { key: "sale.customer.name", label: "Customer", sortable: false },
         { key: "sale.shippingAddress.dc", label: "DC", sortable: false },
         { key: "units", label: "Sold", sortable: false },
-        { key: "unitsScheduled", label: "Scheduled", sortable: false },
-        { key: "unitsProduced", label: "Produced", sortable: false },
+        { key: "unitsSchedProd", label: "Sched/Prod", sortable: false },
         { key: "action", label: "Action", sortable: false },
       ],
       scheduleData: {

@@ -9,10 +9,10 @@
         <input class="form-control" type="date" v-model="date" placeholder="Date">
       </b-col>
       <b-col cols=1>
-        <b-select option-value="id" option-text="number" :list="availableLines" v-model="selectedLine"></b-select>
+        <b-select option-value="id" option-text="number" :list="availableLines" v-model="selectedLine" placeholder="Line"></b-select>
       </b-col>
       <b-col cols=3>
-        <b-select option-value="id" option-text="name" :list="availableItems" v-model="selectedItem"></b-select>
+        <b-select option-value="id" option-text="name" :list="availableItems" v-model="selectedItem" placeholder="Pick Item"></b-select>
       </b-col>
     </b-row>
     <b-table :sticky-header="browserHeight()" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="scheduleEvents" :fields="fields">

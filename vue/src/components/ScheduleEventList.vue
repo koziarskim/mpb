@@ -1,8 +1,8 @@
 <template>
   <b-container fluid>
     <b-row style="padding-bottom: 4px;">
-      <b-col cols=3>
-        <span style="font-size: 18px; font-weight: bold">Schedule Items: {{item.name}}</span>
+      <b-col cols=3 style="margin-top: -7px">
+        <span style="font-size: 18px; font-weight: bold;">Schedule for Item:</span><br/> {{item.name}}
       </b-col>
       <b-col cols=3>
         <b-select option-value="id" option-text="number" :list="availableSales" v-model="selectedSale" placeholder="Pick Sale"></b-select>
@@ -21,8 +21,8 @@
           <template v-slot:cell(sale)="row">
             <b-button size="sm" @click.stop="goToSale(row.item.saleItem.sale.id)" variant="link">{{row.item.saleItem.sale.number}}</b-button>
           </template>
-          <template v-slot:cell(startTime)="row">
-            <b-button size="sm" @click.stop="goToProduction(row.item.id)" variant="link">{{row.item.startTime}}</b-button>
+          <template v-slot:cell(unitsProduced)="row">
+            <b-button size="sm" @click.stop="goToProduction(row.item.id)" variant="link">{{row.item.unitsProduced}}</b-button>
           </template>
           <template v-slot:cell(unitsScheduled)="row">
             <b-button v-if="!row.item.edit" @click="editScheduleEvent(row.item)" variant="light">{{row.item.unitsScheduled}}</b-button>
@@ -63,6 +63,7 @@ export default {
         { key: "line.number", label: "Line", sortable: true },
         { key: "sale", label: "Sale", sortable: true },
         { key: "saleItem.sale.customer.name", label: "Customer", sortable: true },
+        { key: "saleItem.units", label: "Sold", sortable: false },
         { key: "unitsScheduled", label: "Scheduled", sortable: false },
         { key: "unitsProduced", label: "Produced", sortable: false },
         { key: "action", label: "Action", sortable: false },
