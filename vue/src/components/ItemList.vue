@@ -118,9 +118,10 @@ export default {
     goToItemScheduleList(item_id){
         router.push('./scheduleEventList/'+item_id);
     },
-    goToItemShippedList(item_id){
-        // router.push('./scheduleEventList/'+item_id);
-    }
+    goToItemShippedList(itemId){
+      var query = { itemId: itemId};
+      router.push({path: "/shipmentList", query: query})
+    },
   },
   mounted() {
      this.getItems();

@@ -31,6 +31,9 @@
           <template v-slot:cell(itemNumber)="row">
               <b-button size="sm" @click=goToItem(row.item.itemId) variant="link">{{row.item.itemNumber}} ({{row.item.itemName}})</b-button>
           </template>
+          <template v-slot:cell(unitsShipped)="row">
+              <b-button size="sm" @click=goToShipment(row.item.itemId,row.item.saleId) variant="link">{{row.item.unitsShipped}}</b-button>
+          </template>
           <template v-slot:cell(action)="row">
             <input type="checkbox" v-model="selectedSaleItemIds" :value="row.item.id" @change="checkboxSelected(row.item)" :disabled="checkboxDisabled(row.item)">
           </template>
@@ -138,6 +141,10 @@ export default {
   newShipment(){
     var query = { saleItemIds: this.selectedSaleItemIds.join(",") };
     router.push({ path: "/shipmentEdit/new", query: query })
+  },
+  goToShipment(itemId, saleId){
+    var query = { itemId: itemId, saleId: saleId };
+    router.push({path: "/shipmentList", query: query})
   },
     gotToItem(itemId){
       router.push("/itemEdit/"+itemId);

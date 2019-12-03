@@ -97,15 +97,17 @@ export default {
       });
     },
     getAvailableSales() {
-      http.get("/sale/kv").then(r => {
+      return http.get("/sale/kv").then(r => {
         this.availableSales = r.data;
+        return r.data;
       }).catch(e => {
         console.log("API error: "+e);
       });
     },
     getAvailableItems() {
-      http.get("/item/kv").then(r => {
+      return http.get("/item/kv").then(r => {
         this.availableItems = r.data;
+        return r.data;
       }).catch(e => {
         console.log("API error: "+e);
       });
@@ -127,10 +129,13 @@ export default {
     }
   },
   mounted() {
+    this.sale = {id: this.$route.query.saleId};
+    this.item = {id: this.$route.query.itemId};
+    window.history.replaceState({}, document.title, window.location.pathname);
     this.getShipments();
     this.getAvailableCustomers();
-    this.getAvailableSales();
-    this.getAvailableItems();
+    this.getAvailableSales()
+    this.getAvailableItems()
   }
 };
 </script>
