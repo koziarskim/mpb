@@ -36,7 +36,7 @@
             <b-select option-value="id" option-text="name" :list="availableShippingAddresses" v-model="shippingAddress" placeholder="Pick shipping address"></b-select>
           </b-col>
           <b-col cols=6>
-            <label class="top-label">Freight Address:<a href="#" @click="openModal()"> (Edit/New) </a></label>
+            <label class="top-label">Freight Address:<span style="cursor: pointer; color: blue" @click="openModal()"> (Edit/New) </span></label>
             <b-select option-value="id" option-text="name" :list="availableFreightAddresses" v-model="freightAddress" placeholder="Pick freight address"></b-select>
           </b-col>
         </b-row>
