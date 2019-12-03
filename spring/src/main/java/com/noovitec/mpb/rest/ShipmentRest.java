@@ -79,7 +79,9 @@ class ShipmentRest {
 		} else if(number.length()==2) {
 			number = "0"+number;
 		}
-		return ResponseEntity.ok().body(String.valueOf(date.getYear())+String.valueOf(date.getMonthValue())+String.valueOf(date.getDayOfMonth())+number);
+		String month = date.getMonthValue()<10?"0"+String.valueOf(date.getMonthValue()):String.valueOf(date.getMonthValue());
+		String day = date.getDayOfMonth()<10?"0"+String.valueOf(date.getDayOfMonth()):String.valueOf(date.getDayOfMonth());
+		return ResponseEntity.ok().body(String.valueOf(date.getYear())+month+day+number);
 	}
 	
 	@GetMapping("/shipment/pageable")
