@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -66,6 +68,18 @@ class ShipmentRest {
 	ResponseEntity<Shipment> get(@PathVariable Long id) {
 		Optional<Shipment> result = shipmentRepo.findById(id);
 		return result.map(response -> ResponseEntity.ok().body(response)).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+	}
+	
+	@GetMapping("/shipment/number/{date}")
+	ResponseEntity<String> getAvailableNumber(@PathVariable(name = "date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
+		Long result = shipmentRepo.getLastNumber(date);
+		String number = String.valueOf(result+1);
+		if(number.length()==1) {
+			number = "00"+number;
+		} else if(number.length()==2) {
+			number = "0"+number;
+		}
+		return ResponseEntity.ok().body(String.valueOf(date.getYear())+String.valueOf(date.getMonthValue())+String.valueOf(date.getDayOfMonth())+number);
 	}
 	
 	@GetMapping("/shipment/pageable")

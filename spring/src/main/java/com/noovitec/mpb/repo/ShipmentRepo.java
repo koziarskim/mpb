@@ -1,5 +1,6 @@
 package com.noovitec.mpb.repo;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -14,5 +15,8 @@ public interface ShipmentRepo extends PagingAndSortingRepository<Shipment, Long>
 
 	@Query("select ship from Shipment ship where ship.id in (:ids)")
 	Page<Shipment> findPage(Pageable pageable, List<Long> ids);
+
+	@Query("select count(*) from Shipment where date = :date")
+	Long getLastNumber(LocalDate date);
 
 }

@@ -125,9 +125,10 @@ export default {
   data() {
     return {
       modalVisible: false,
-      shipment: { 
+      shipment: {
+        number: 0, 
         shipmentItems: [],
-        date: moment().format("YYYY-MM-DD"),
+        date: null,
       },
       availableCustomers: [],
       availableShippingAddresses: [],
@@ -194,6 +195,11 @@ export default {
       this.getAvailableSaleItems();
       this.getAvailableShippingAddresses(new_value.id)
     },
+    "shipment.date"(new_value, old_value){
+      if(old_value){
+        this.getCount();
+      }
+    }
   },
   methods: {
     openModal(){
@@ -297,6 +303,9 @@ export default {
       })
     },
     getAvailableSaleItems() {
+      if(!this.customer.id){
+        return Promise.resolve();
+      }
       return http
         .get("/saleItem/kv/customer/" + this.customer.id)
         .then(response => {
@@ -312,16 +321,18 @@ export default {
           console.log("API error: " + e);
         });
     },
+    getCount() {
+      return http.get("/shipment/number/"+this.shipment.date).then(r => {
+        this.shipment.number = r.data;
+      }).catch(e => {
+        console.log("API error: " + e);
+      });
+    },
     addSaleItemKv(saleItemId){
       if(!saleItemId){
         alert("Please select Sale and Item to add");
         return;
       }
-      // var idx = this.shipment.shipmentItems.findIndex(shipmentItem => shipmentItem.saleItem.id == saleItemId);
-      // if(idx > -1){
-      //   alert("Sale (Item) already added to the list");
-      //   return;
-      // }
       http.get("/saleItem/"+saleItemId).then(r => {
         this.addSaleItem(r.data);
         this.sale = {};
@@ -372,6 +383,9 @@ export default {
     window.history.replaceState({}, document.title, window.location.pathname);
     if(id!="new"){
       this.getShipment(id);
+    }else{
+      this.shipment.date = moment().format("YYYY-MM-DD");
+      this.getCount();
     }
     this.getAvailableCustomers();
     this.getAvailableFreightAddresses();
