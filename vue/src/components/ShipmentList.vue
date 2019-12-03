@@ -1,10 +1,10 @@
 <template>
     <b-container fluid>
         <b-row style="padding-bottom: 4px;">
-            <b-col cols=2>
+            <b-col cols=1>
                 <span style="text-align: left; font-size: 18px; font-weight: bold">Shipments</span>
             </b-col>
-            <b-col cols="3">
+            <b-col cols=3>
                 <input class="form-control" type="tel" v-model="number" @keyup.enter="getShipments()" placeholder="Search Shipment Number"/>
             </b-col>
             <b-col cols=2>
@@ -12,6 +12,9 @@
             </b-col>
             <b-col cols=2>
               <b-select option-value="id" option-text="name" :list="availableSales" v-model="sale" placeholder="Search Sale"></b-select>
+            </b-col>
+            <b-col cols=2>
+              <b-select option-value="id" option-text="name" :list="availableItems" v-model="item" placeholder="Search Item"></b-select>
             </b-col>
             <b-col>
                 <div style="text-align: right;">
@@ -54,7 +57,9 @@ export default {
       availableSales: [],
       sale: {},
       availableCustomers: [],
-      customer: {}
+      customer: {},
+      availableItems: [],
+      item: {}
     };
   },
   watch: {
@@ -62,6 +67,9 @@ export default {
       this.getShipments();
     },
     customer(newValue, oldValue){
+      this.getShipments();
+    },
+    item(newValue, oldValue){
       this.getShipments();
     }
   },
@@ -72,7 +80,8 @@ export default {
     },
     getShipments() {
       http
-        .get("/shipment/pageable", {params: {pageable: this.pageable, number: this.number, customerId: this.customer.id, saleId: this.sale.id}}).then(r => {
+        .get("/shipment/pageable", {params: {pageable: this.pageable, 
+            number: this.number, customerId: this.customer.id, saleId: this.sale.id, itemId: this.item.id}}).then(r => {
           this.shipments = r.data.content;
           this.pageable.totalElements = r.data.totalElements;
         })
@@ -90,6 +99,13 @@ export default {
     getAvailableSales() {
       http.get("/sale/kv").then(r => {
         this.availableSales = r.data;
+      }).catch(e => {
+        console.log("API error: "+e);
+      });
+    },
+    getAvailableItems() {
+      http.get("/item/kv").then(r => {
+        this.availableItems = r.data;
       }).catch(e => {
         console.log("API error: "+e);
       });
@@ -114,6 +130,7 @@ export default {
     this.getShipments();
     this.getAvailableCustomers();
     this.getAvailableSales();
+    this.getAvailableItems();
   }
 };
 </script>

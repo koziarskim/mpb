@@ -73,8 +73,9 @@ class ShipmentRest {
 			@RequestParam Pageable pageable, 
 			@RequestParam(name = "number", required = false) String number,
 			@RequestParam(name = "customerId", required = false) Long customerId,
-			@RequestParam(name = "saleId", required = false) Long saleId) {
-		List<Long> ids = shipmentRepo.findIds(number, customerId, saleId);
+			@RequestParam(name = "saleId", required = false) Long saleId,
+			@RequestParam(name = "itemId", required = false) Long itemId) {
+		List<Long> ids = shipmentRepo.findIds(number, customerId, saleId, itemId);
 		if(ids.isEmpty()) {
 			return Page.empty();
 		}

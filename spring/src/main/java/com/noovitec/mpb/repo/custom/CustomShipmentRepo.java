@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 public interface CustomShipmentRepo {
-	List<Long> findIds(String number, Long customerId, Long saleId);
+	List<Long> findIds(String number, Long customerId, Long saleId, Long itemId);
 
 	@Repository
 	public class CustomShipmentRepoImpl implements CustomShipmentRepo {
@@ -22,11 +22,12 @@ public interface CustomShipmentRepo {
 		EntityManager entityManager;
 
 		@Override
-		public List<Long> findIds(String number, Long customerId, Long saleId) {
+		public List<Long> findIds(String number, Long customerId, Long saleId, Long itemId) {
 			String q = "select distinct ship.id from Shipment ship " 
 					+ "left join ship.shipmentItems shipItem " 
 					+ "left join shipItem.saleItem si "
-					+ "left join si.sale s " 
+					+ "left join si.sale s "
+					+ "left join si.item i " 
 					+ "left join ship.customer cu " 
 					+ "where ship.id is not null ";
 			if (number != null && !number.isEmpty()) {
@@ -38,6 +39,9 @@ public interface CustomShipmentRepo {
 			if (saleId != null) {
 				q += "and s.id = :saleId ";
 			}
+			if (itemId != null) {
+				q += "and i.id = :itemId ";
+			}
 			Query query = entityManager.createQuery(q);
 			if (number != null && !number.isEmpty()) {
 				query.setParameter("number", number);
@@ -47,6 +51,9 @@ public interface CustomShipmentRepo {
 			}
 			if (saleId != null) {
 				query.setParameter("saleId", saleId);
+			}
+			if (itemId != null) {
+				query.setParameter("itemId", itemId);
 			}
 			List<Long> list = query.getResultList();	
 			return list;
