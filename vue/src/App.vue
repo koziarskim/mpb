@@ -3,17 +3,17 @@
     <b-navbar toggleable="md" type="dark" variant="dark" style="height:35px">
       <b-collapse is-nav id="nav_collapse">
         <b-navbar-nav v-if="!hideNavBar()">
-          <b-nav-item v-on:click="goTo('/home')">Home</b-nav-item>
-          <b-nav-item v-on:click="goTo('/supplierList')">Supplier</b-nav-item>
-          <b-nav-item v-on:click="goTo('/componentList')">Component</b-nav-item>
-          <b-nav-item v-on:click="goTo('/itemList')">Item</b-nav-item>
-          <b-nav-item v-on:click="goTo('/customerList')">Customer</b-nav-item>
-          <b-nav-item v-on:click="goTo('/saleList')">Sale</b-nav-item>
-          <b-nav-item v-on:click="goTo('/purchaseList')">Purchase</b-nav-item>
-          <b-nav-item v-on:click="goTo('/receivingList')">Receiving</b-nav-item>
-          <b-nav-item v-on:click="goTo('/shipmentList')">Shipment</b-nav-item>
-          <b-nav-item v-on:click="goTo('/schedule')">Schedule</b-nav-item>
-		      <b-nav-item v-on:click="goTo('/productionLineList')">Production</b-nav-item>
+          <b-nav-item v-on:click="goTo('/home')" :class="navClass('home')">Home</b-nav-item>
+          <b-nav-item v-on:click="goTo('/supplierList')" :class="navClass('supplier')">Supplier</b-nav-item>
+          <b-nav-item v-on:click="goTo('/componentList')" :class="navClass('component')">Component</b-nav-item>
+          <b-nav-item v-on:click="goTo('/itemList')" :class="navClass('item')">Item</b-nav-item>
+          <b-nav-item v-on:click="goTo('/customerList')" :class="navClass('customer')">Customer</b-nav-item>
+          <b-nav-item v-on:click="goTo('/saleList')" :class="navClass('sale')">Sale</b-nav-item>
+          <b-nav-item v-on:click="goTo('/purchaseList')" :class="navClass('purchase')">Purchase</b-nav-item>
+          <b-nav-item v-on:click="goTo('/receivingList')" :class="navClass('receiving')">Receiving</b-nav-item>
+          <b-nav-item v-on:click="goTo('/shipmentList')" :class="navClass('shipment')">Shipment</b-nav-item>
+          <b-nav-item v-on:click="goTo('/schedule')" :class="navClass('schedule')">Schedule</b-nav-item>
+		      <b-nav-item v-on:click="goTo('/productionLineList')" :class="navClass('production')">Production</b-nav-item>
         </b-navbar-nav>
         <b-navbar-nav v-if="!hideNavBar()" style="margin:0px 0px 0px auto;">
           <b-nav-item-dropdown right :text="securite.getUser().fullName">
@@ -38,17 +38,22 @@
 import http from "./http-common";
 import router from "./router";
 import store from "./store";
-import securite from "./securite"
+import securite from "./securite";
+import navigate from "./utils/navigation";
 
 export default {
   name: "app",
   data() {
     return {
       securite: securite,
+      navigate: navigate,
     };
   },
   computed: {},
   methods: {
+    navClass(navName){
+      return navigate.selected == navName?'highlight':'';
+    },
     hideNavBar() {
       if(this.securite.getUser() == null){
         return true;
@@ -90,6 +95,9 @@ export default {
   }
 }
 // Custom MPB
+.highlight a {
+  color: #ffc44c !important;
+}
 .center {
   margin: auto;
   width: 95%;

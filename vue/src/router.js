@@ -1,5 +1,6 @@
 import Vue from "vue";
 import securite from "./securite";
+import navigate from "./utils/navigation";
 import Router from "vue-router";
 import Home from "./components/Home.vue";
 import ItemEdit from "./components/ItemEdit.vue";
@@ -55,7 +56,7 @@ const router = new Router({
     },
     {
       path: "/itemList",
-      name: "itemList",
+      name: "item",
       component: ItemList,
       meta: {
         roles: ["SUPER_USER"]
@@ -63,7 +64,7 @@ const router = new Router({
     },
     {
       path: "/itemComponentList/:item_id",
-      name: "itemComponentList",
+      name: "item",
       component: ItemComponentList,
       meta: {
         roles: ["SUPER_USER"]
@@ -71,7 +72,7 @@ const router = new Router({
     },
     {
       path: "/componentList",
-      name: "componentList",
+      name: "component",
       component: ComponentList,
       meta: {
         roles: ["SUPER_USER"]
@@ -79,7 +80,7 @@ const router = new Router({
     },
     {
       path: "/supplierList",
-      name: "supplierList",
+      name: "supplier",
       component: SupplierList,
       meta: {
         roles: ["SUPER_USER"]
@@ -87,7 +88,7 @@ const router = new Router({
     },
     {
       path: "/customerList",
-      name: "customerList",
+      name: "customer",
       component: CustomerList,
       meta: {
         roles: ["SUPER_USER"]
@@ -95,7 +96,7 @@ const router = new Router({
     },
     {
       path: "/saleList",
-      name: "saleList",
+      name: "sale",
       component: SaleList,
       meta: {
         roles: ["SUPER_USER"]
@@ -103,7 +104,7 @@ const router = new Router({
     },
     {
       path: "/saleItemList",
-      name: "saleItemList",
+      name: "sale",
       component: SaleItemList,
       meta: {
         roles: ["SUPER_USER"]
@@ -111,7 +112,7 @@ const router = new Router({
     },
     {
       path: "/purchaseList",
-      name: "purchaseList",
+      name: "purchase",
       component: PurchaseList,
       meta: {
         roles: ["SUPER_USER", "POADMIN"]
@@ -119,7 +120,7 @@ const router = new Router({
     },
     {
       path: "/componentEdit/:component_id?",
-      name: "componentEdit",
+      name: "component",
       component: ComponentEdit,
       meta: {
         roles: ["SUPER_USER"]
@@ -127,7 +128,7 @@ const router = new Router({
     },
     {
       path: "/itemEdit/:item_id?",
-      name: "itemEdit",
+      name: "item",
       component: ItemEdit,
       meta: {
         roles: ["SUPER_USER"]
@@ -135,7 +136,7 @@ const router = new Router({
     },
     {
       path: "/itemGraph/:item_id?",
-      name: "ItemGraph",
+      name: "item",
       component: ItemGraph,
       meta: {
         roles: ["SUPER_USER"]
@@ -143,7 +144,7 @@ const router = new Router({
     },
     {
       path: "/supplierEdit/:supplier_id?",
-      name: "SupplierEdit",
+      name: "supplier",
       component: SupplierEdit,
       meta: {
         roles: ["SUPER_USER"]
@@ -151,7 +152,7 @@ const router = new Router({
     },
     {
       path: "/customerEdit/:customer_id?",
-      name: "CustomerEdit",
+      name: "customer",
       component: CustomerEdit,
       meta: {
         roles: ["SUPER_USER"]
@@ -159,7 +160,7 @@ const router = new Router({
     },
     {
       path: "/saleEdit/:sale_id?",
-      name: "SaleEdit",
+      name: "sale",
       component: SaleEdit,
       meta: {
         roles: ["SUPER_USER"]
@@ -167,7 +168,7 @@ const router = new Router({
     },
     {
       path: "/purchaseEdit/:purchase_id",
-      name: "PurchaseEdit",
+      name: "purchase",
       component: PurchaseEdit,
       meta: {
         roles: ["SUPER_USER"]
@@ -175,7 +176,7 @@ const router = new Router({
     },
     {
       path: "/purchaseNew",
-      name: "PurchaseNew",
+      name: "purchase",
       component: PurchaseNew,
       meta: {
         roles: ["SUPER_USER"]
@@ -183,7 +184,7 @@ const router = new Router({
     },
     {
       path: "/itemSaleList/:item_id",
-      name: "ItemSaleList",
+      name: "item",
       component: ItemSaleList,
       meta: {
         roles: ["SUPER_USER"]
@@ -191,7 +192,7 @@ const router = new Router({
     },
     {
       path: "/PurchaseComponent/:purchase_id",
-      name: "PurchaseComponent",
+      name: "purchase",
       component: PurchaseComponent,
       meta: {
         roles: ["SUPER_USER"]
@@ -199,7 +200,7 @@ const router = new Router({
     },
     {
       path: "/PurchaseItem/:purchase_id",
-      name: "PurchaseItem",
+      name: "purchase",
       component: PurchaseItem,
       meta: {
         roles: ["SUPER_USER"]
@@ -207,7 +208,7 @@ const router = new Router({
     },
     {
       path: "/ReceivingList",
-      name: "ReceivingList",
+      name: "receiving",
       component: ReceivingList,
       meta: {
         roles: ["SUPER_USER"]
@@ -215,7 +216,7 @@ const router = new Router({
     },
     {
       path: "/ReceivingEdit/:receiving_id",
-      name: "ReceivingEdit",
+      name: "receiving",
       component: ReceivingEdit,
       meta: {
         roles: ["SUPER_USER"]
@@ -223,7 +224,7 @@ const router = new Router({
     },
     {
       path: "/ReceivingEdit/pc/:pc_id",
-      name: "ReceivingEditPc",
+      name: "receiving",
       component: ReceivingEdit,
       meta: {
         roles: ["SUPER_USER"]
@@ -231,7 +232,7 @@ const router = new Router({
     },
     {
       path: "/Users",
-      name: "Users",
+      name: "user",
       component: Users,
       meta: {
         roles: ["ADMIN"]
@@ -239,12 +240,12 @@ const router = new Router({
     },
     {
       path: "/Login",
-      name: "Login",
+      name: "login",
       component: Login
     },
     {
       path: "/Schedule",
-      name: "Schedule",
+      name: "schedule",
       component: Schedule,
       meta: {
         roles: ["SUPER_USER"]
@@ -252,12 +253,12 @@ const router = new Router({
     },
     {
       path: "/AccessDenied",
-      name: "AccessDenied",
+      name: "denied",
       component: AccessDenied
     },
     {
       path: "/ShipmentEdit/:shipment_id?",
-      name: "ShipmentEdit",
+      name: "shipment",
       component: ShipmentEdit,
       meta: {
         roles: ["SUPER_USER"]
@@ -265,7 +266,7 @@ const router = new Router({
     },
     {
       path: "/ShipmentList",
-      name: "ShipmentList",
+      name: "shipment",
       component: ShipmentList,
       meta: {
         roles: ["SUPER_USER"]
@@ -273,7 +274,7 @@ const router = new Router({
     },
     {
       path: "/ScheduleEventList/:item_id?/:sale?/:sale_id?",
-      name: "ScheduleEventList",
+      name: "schedule",
       component: ScheduleEventList,
       meta: {
         roles: ["SUPER_USER"]
@@ -281,7 +282,7 @@ const router = new Router({
     },
     {
       path: "/ProductionSale/:schedule_event_id",
-      name: "ProductionSale",
+      name: "production",
       component: ProductionSale,
       meta: {
         roles: ["SUPER_USER", "PRODUCTION_ADMIN", "PRODUCTION_LEADER"]
@@ -289,7 +290,7 @@ const router = new Router({
     },
     {
       path: "/ProductionLine/:line_id",
-      name: "ProductionLine",
+      name: "production",
       component: ProductionLine,
       meta: {
         roles: ["SUPER_USER", "PRODUCTION_ADMIN", "PRODUCTION_LEADER"]
@@ -297,7 +298,7 @@ const router = new Router({
     },
     {
       path: "/ProductionLineList/:date?",
-      name: "ProductionLineList",
+      name: "production",
       component: ProductionLineList,
       meta: {
         roles: ["SUPER_USER", "PRODUCTION_ADMIN", "PRODUCTION_LEADER"]
@@ -305,7 +306,7 @@ const router = new Router({
     },
     {
       path: "/ProductionItemList/:date?",
-      name: "ProductionItemList",
+      name: "production",
       component: ProductionItemList,
       meta: {
         roles: ["SUPER_USER", "PRODUCTION_ADMIN", "PRODUCTION_LEADER"]
@@ -313,32 +314,20 @@ const router = new Router({
     },
     {
       path: "/Profile",
-      name: "Profile",
+      name: "profile",
       component: Profile,
     },
     //public
     {
       path: "/DailyStatus",
-      name: "DailyStatus",
+      name: "status",
       component: DailyStatus
     }
   ]
 });
 
 router.beforeEach((to, from, next) => {
-  if (!to.meta.roles) {
-    next();
-    return;
-  }
-  var foundRole = false;
-  foundRole = securite.hasRole(to.meta.roles);
-  if (foundRole) {
-    next();
-  } else {
-    next({
-      path: "/AccessDenied"
-    });
-  }
+  navigate.before(to, from, next);
 });
 
 export default router;
