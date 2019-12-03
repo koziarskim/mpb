@@ -81,6 +81,7 @@ class SaleRest {
 			dto.setUnitsSold(sale.getUnitsSold());
 			dto.setUnitsScheduled(sale.getUnitsScheduled());
 			dto.setUnitsProduced(sale.getUnitsProduced());
+			dto.setUnitsShipped(sale.getUnitsShipped());
 			return dto;
 		});
 		return all;

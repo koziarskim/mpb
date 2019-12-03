@@ -21,6 +21,7 @@ public class SaleListDto {
 	private Long unitsSold;
 	private Long unitsScheduled;
 	private Long unitsProduced;
+	private Long unitsShipped;
 	
 	//TODO: Is this still used?
 	public String getStatus() {

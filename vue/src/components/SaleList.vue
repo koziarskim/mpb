@@ -19,7 +19,10 @@
       </b-row>
       <b-table :items="sales" :fields="fields" no-local-sorting @sort-changed="sorted">
         <template v-slot:cell(number)="row">
-            <b-button size="sm" @click.stop=goToSale(row.item.id) variant="link">{{row.item.number}} ({{row.item.name}})</b-button>
+            <b-button size="sm" @click=goToSale(row.item.id) variant="link">{{row.item.number}} ({{row.item.name}})</b-button>
+        </template>
+        <template v-slot:cell(unitsShipped)="row">
+            <b-button size="sm" @click=goToShipment(row.item.id) variant="link">{{row.item.unitsShipped}}</b-button>
         </template>
         <template v-slot:cell(action)="row">
             <b-button size="sm" @click.stop="deleteSale(row.item.id)">x</b-button>
@@ -51,6 +54,7 @@ export default {
         { key: "unitsSold", label: "Sold", sortable: false },
         { key: "unitsScheduled", label: "Scheduled", sortable: false },
         { key: "unitsProduced", label: "Produced", sortable: false },
+        { key: "unitsShipped", label: "Shipped", sortable: false },
         { key: "action", label: "Action", sortable: false}
       ],
       sales: []
@@ -114,18 +118,14 @@ export default {
     },
     goToSale(id){
         if(!id){
-            // http
-            // .post("/sale")
-            // .then(response =>{
-            //     router.push('/saleEdit/'+response.data.id);
-            // })
-            // .catch(e =>{
-            //     console.log("API Error: "+e);
-            // })
             router.push('/saleEdit');
         }else{
             router.push('/saleEdit/'+id);
         }
+    },
+    goToShipment(saleId){
+      var query = {saleId: saleId };
+      router.push({path: "/shipmentList", query: query})
     },
   },
   mounted() {
