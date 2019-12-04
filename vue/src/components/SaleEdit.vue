@@ -97,6 +97,9 @@
           <template v-slot:cell(cost)="row">
             <span>${{row.item.item.totalCost}}</span>
           </template>
+          <template v-slot:cell(unitsSchedProd)="row">
+            <span>{{row.item.unitsScheduled}}/{{row.item.unitsProduced}}</span>
+          </template>
           <template v-slot:cell(units)="row">
             <input class="form-control" style="width:100px" type="tel" v-model="row.item.units">
           </template>
@@ -165,11 +168,10 @@ export default {
       columns: [
         { key: "item.number", label: "Item", sortable: false },
         { key: "components", label: "Intentory", sortable: false },
-        { key: "unitsScheduled", label: "Scheduled", sortable: false },
-        { key: "unitsProduced", label: "Produced", sortable: false },
-        { key: "cost", label: "Cost", sortable: false },
-        { key: "units", label: "Units", sortable: false },
+        { key: "unitsSchedProd", label: "Sched/Prod", sortable: false },
+        { key: "units", label: "Sold", sortable: false },
         { key: "cases", label: "Cases", sortable: false },
+        { key: "cost", label: "Cost", sortable: false },
         { key: "unitPrice", label: "Unit Price", sortable: false },
         { key: "totalUnitPrice", label: "Total", sortable: false },
         { key: "action", label: "Action", sortable: false }
