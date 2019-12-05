@@ -1,7 +1,8 @@
 package com.noovitec.mpb.dto;
 
 import java.time.LocalDate;
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,6 +23,7 @@ public class SaleListDto {
 	private Long unitsScheduled;
 	private Long unitsProduced;
 	private Long unitsShipped;
+	private List saleItems;
 	
 	//TODO: Is this still used?
 	public String getStatus() {

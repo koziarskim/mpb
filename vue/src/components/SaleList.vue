@@ -19,7 +19,15 @@
       </b-row>
       <b-table :items="sales" :fields="fields" no-local-sorting @sort-changed="sorted">
         <template v-slot:cell(number)="row">
-            <b-button size="sm" @click=goToSale(row.item.id) variant="link">{{row.item.number}} ({{row.item.name}})</b-button>
+            <b-button size="sm" :id="'popover-button-variant'+row.item.id" @click="showPopover(row.item)" variant="link">{{row.item.number}}</b-button>
+            <b-popover placement="bottomright" :show="row.item.show" :target="'popover-button-variant'+row.item.id" variant="primary">
+              <template v-slot:title>
+                <b-button size="sm" @click=goToSale(row.item.id) variant="link">View Details</b-button>
+              </template>
+              <div v-for="si in row.item.saleItems" :key="si.id">
+                <div>{{si.item.number}} - {{si.item.name}}, Sold: {{si.units}}, Produced: {{si.unitsProduced}}, Price: ${{si.unitPrice}}</div>
+              </div>
+            </b-popover>
         </template>
         <template v-slot:cell(unitsShipped)="row">
             <b-button size="sm" @click=goToShipment(row.item.id) variant="link">{{row.item.unitsShipped}}</b-button>
@@ -68,11 +76,18 @@ export default {
     }
   },
   methods: {
-	sorted(e){
-        if(!e.sortBy){ return }
-        this.pageable.sortBy = e.sortBy;
-        this.pageable.sortDesc = e.sortDesc;
-        this.getSales();
+    showPopover(saleDto){
+      this.sales.forEach(sale => sale.show = false)
+      this.getSale(saleDto.id).then(sale => {
+        saleDto.saleItems = sale.saleItems;
+        saleDto.show = !saleDto.show;
+      })
+    },
+	  sorted(e){
+      if(!e.sortBy){ return }
+      this.pageable.sortBy = e.sortBy;
+      this.pageable.sortDesc = e.sortDesc;
+      this.getSales();
     },
     paginationChange(page){
         this.pageable.currentPage = page;
@@ -90,6 +105,11 @@ export default {
         .catch(e => {
           console.log("API error: "+e);
         });
+    },
+    getSale(saleId){
+      return http.get("/sale/"+saleId).then(r => {
+        return r.data;        
+      });  
     },
     getItem(component_id){
         var component;

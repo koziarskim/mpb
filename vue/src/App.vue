@@ -95,6 +95,9 @@ export default {
   }
 }
 // Custom MPB
+.popover {
+  max-width: 1000px !important;
+}
 .highlight a {
   color: #ffc44c !important;
 }
