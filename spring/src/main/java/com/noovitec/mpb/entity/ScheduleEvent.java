@@ -64,10 +64,10 @@ public class ScheduleEvent extends BaseEntity {
 	private Long totalTime = 0L; // In seconds.
 
 	public Long getTotalTime() {
-		if (this.finishTime != null) {
-			this.totalTime = ChronoUnit.SECONDS.between(this.startTime, this.finishTime);
+		if (this.finishTime == null) {
+			return null;
 		}
-		return totalTime;
+		return ChronoUnit.SECONDS.between(this.startTime, this.finishTime);
 	}
 
 	@Transient
@@ -95,7 +95,7 @@ public class ScheduleEvent extends BaseEntity {
 		}
 		return totalSecs;
 	}
-
+	
 	public void updateUnits() {
 		this.unitsProduced = 0L;
 		for (Production p : this.getProductions()) {

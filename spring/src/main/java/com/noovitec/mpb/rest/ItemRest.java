@@ -122,6 +122,7 @@ class ItemRest {
 			dto.setUnitsScheduled(item.getUnitsScheduled());
 			dto.setUnitsProduced(item.getUnitsProduced());
 			dto.setUnitsShipped(item.getUnitsShipped());
+			dto.setPerformance(item.getPerformance());
 			return dto;
 		});
 		return dtos;

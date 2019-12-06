@@ -55,6 +55,7 @@ export default {
         { key: 'unitsSold', sortable: false, label: 'Sold'},
         { key: 'unitsScheduled', sortable: false, label: 'Sched/Produced'},
         { key: 'unitsShipped', sortable: false, label: 'Shipped'},
+        { key: 'performance', sortable: false, label: 'Perf'},
         { key: 'action', sortable: false, label: 'Inventory'},
       ],
       items: [] //ItemListDto

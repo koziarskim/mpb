@@ -106,6 +106,30 @@ public class Item extends BaseEntity {
 		this.unitsOnStock = this.getUnitsProduced() - this.getUnitsShipped();
 		return this.unitsOnStock;
 	}
+	
+	@Transient
+	private Long performance;
+	
+	public Long getPerformance() {
+		Long average = 0L;
+		Long schedules = 0L;
+		Long perf = 0L;
+		for(SaleItem si: this.getSaleItems()) {
+			for(ScheduleEvent se: si.getScheduleEvents()) {
+				Long totalTime = se.getTotalTime();
+				if(totalTime != null) {
+					if(se.getUnitsProduced()>0) {
+						average += (totalTime*3600)/se.getUnitsProduced();
+					}
+					schedules++;
+				}
+			}
+		}
+		if(schedules >0) {
+			perf = average/schedules;
+		}
+		return perf;
+	}
 
 	public void updateUnits() {
 		this.unitsSold = 0L;
