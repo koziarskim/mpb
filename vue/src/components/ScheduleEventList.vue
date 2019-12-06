@@ -2,7 +2,14 @@
   <b-container fluid>
     <b-row style="padding-bottom: 4px;">
       <b-col cols=3 style="margin-top: -7px">
-        <span style="font-size: 18px; font-weight: bold;">Schedule for Item:</span><br/> {{item.name}}
+        <span style="font-size: 18px; font-weight: bold;">Schedule for Item:</span>
+            <b-button size="sm" id="item-popover" variant="link">{{item.name}}</b-button>
+            <b-popover placement="bottomright" target="item-popover" triggers="focus" variant="info">
+              <template v-slot:title>
+                <!-- <b-button size="sm" variant="link">View Details</b-button> -->
+              </template>
+              <div>Performance: {{item.performance}}</div>
+            </b-popover>
       </b-col>
       <b-col cols=3>
         <b-select option-value="id" option-text="number" :list="availableSales" v-model="selectedSale" placeholder="Pick Sale"></b-select>
@@ -23,6 +30,9 @@
           </template>
           <template v-slot:cell(unitsProduced)="row">
             <b-button size="sm" @click.stop="goToProduction(row.item.id)" variant="link">{{row.item.unitsProduced}}</b-button>
+          </template>
+          <template v-slot:cell(performance)="row">
+            <span style="">{{row.item.performance}} ({{row.item.efficiency}}%)</span>
           </template>
           <template v-slot:cell(unitsScheduled)="row">
             <b-button v-if="!row.item.edit" @click="editScheduleEvent(row.item)" variant="light">{{row.item.unitsScheduled}}</b-button>

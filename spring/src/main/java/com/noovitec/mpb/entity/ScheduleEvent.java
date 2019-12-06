@@ -73,6 +73,18 @@ public class ScheduleEvent extends BaseEntity {
 		}
 		return perf.longValue();
 	}
+	
+	@Transient
+	private BigDecimal efficency;
+	
+	public BigDecimal getEfficiency() {
+		BigDecimal eff = BigDecimal.ZERO;
+		eff = BigDecimal.valueOf(this.getPerformance())
+				.divide(BigDecimal.valueOf(this.getSaleItem().getItem().getPerformance()), 6, RoundingMode.HALF_UP)
+				.multiply(BigDecimal.valueOf(100));
+		
+		return eff.setScale(1, RoundingMode.HALF_UP);
+	}
 
 	@Transient
 	private Long totalTime = 0L; // In seconds.
