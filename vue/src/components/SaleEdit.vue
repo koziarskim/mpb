@@ -295,13 +295,29 @@ export default {
     },
     saveSale() {
       this.sale.totalPrice = this.totalPrice;
+      if(!this.sale.customer || !this.sale.customer.id){
+        this.sale.customer = null;
+      }
+      if(!this.sale.shippingAddress || !this.sale.shippingAddress.id){
+        this.sale.shippingAddress = null;
+      }
       return http.post("/sale", this.sale).then(r => {
           return r;
         }).catch(e => {
           console.log("API error: " + e);
         });
     },
+    validate(){
+      if(!this.sale.number || !this.sale.name){
+        alert("Sale Name and Number required");
+        return false;
+      }
+      return true;
+    },
     saveAndClose() {
+      if(!this.validate()){
+        return;
+      }
       this.saveSale().then(r => {
         window.history.back();
       });

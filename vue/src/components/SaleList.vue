@@ -19,8 +19,8 @@
       </b-row>
       <b-table :items="sales" :fields="fields" no-local-sorting @sort-changed="sorted">
         <template v-slot:cell(number)="row">
-            <b-button size="sm" :id="'popover-button-variant'+row.item.id" @click="showPopover(row.item)" variant="link">{{row.item.number}}</b-button>
-            <b-popover placement="bottomright" :show="row.item.show" :target="'popover-button-variant'+row.item.id" variant="primary">
+            <b-button size="sm" :id="'popover-button-variant'+row.item.id" @click="showPopover(row.item)" variant="link">{{row.item.number}} ({{row.item.name}})</b-button>
+            <b-popover placement="bottomright" :target="'popover-button-variant'+row.item.id" triggers="focus" variant="primary">
               <template v-slot:title>
                 <b-button size="sm" @click=goToSale(row.item.id) variant="link">View Details</b-button>
               </template>
@@ -50,7 +50,7 @@ export default {
     return {
       securite: securite,
       navigation: navigation,
-      pageable: {totalElements: 100, currentPage: 1, perPage: 7, sortBy: 'number', sortDesc: false},
+      pageable: {totalElements: 100, currentPage: 1, perPage: 7, sortBy: 'updated', sortDesc: true},
       searchSale: "",
       searchItem: "",
       itemView: false,
@@ -80,7 +80,6 @@ export default {
       this.sales.forEach(sale => sale.show = false)
       this.getSale(saleDto.id).then(sale => {
         saleDto.saleItems = sale.saleItems;
-        saleDto.show = !saleDto.show;
       })
     },
 	  sorted(e){

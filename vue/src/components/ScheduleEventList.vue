@@ -6,9 +6,9 @@
             <b-button size="sm" id="item-popover" variant="link">{{item.name}}</b-button>
             <b-popover placement="bottomright" target="item-popover" triggers="focus" variant="info">
               <template v-slot:title>
-                <b-button size="sm" @click="goToItem(item.id)" variant="link">View Details</b-button>
+                <b-button size="sm" @click="goToItem(item.id)" variant="link">View Item Details</b-button>
               </template>
-              <div>Performance: {{item.performance}} [units per hour]</div>
+              <div>Avg Performance: {{item.performance}} [units per hour]</div>
             </b-popover>
       </b-col>
       <b-col cols=3>

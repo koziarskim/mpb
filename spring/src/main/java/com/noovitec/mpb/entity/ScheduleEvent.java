@@ -91,7 +91,7 @@ public class ScheduleEvent extends BaseEntity {
 
 	public Long getTotalTime() {
 		if (this.finishTime == null) {
-			return null;
+			return 0L;
 		}
 		return ChronoUnit.SECONDS.between(this.startTime, this.finishTime);
 	}
