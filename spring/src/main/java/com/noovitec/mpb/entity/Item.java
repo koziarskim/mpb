@@ -1,6 +1,7 @@
 package com.noovitec.mpb.entity;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -113,22 +114,19 @@ public class Item extends BaseEntity {
 	public Long getPerformance() {
 		Long average = 0L;
 		Long schedules = 0L;
-		Long perf = 0L;
+		BigDecimal perf = BigDecimal.ZERO;
 		for(SaleItem si: this.getSaleItems()) {
 			for(ScheduleEvent se: si.getScheduleEvents()) {
-				Long totalTime = se.getTotalTime();
-				if(totalTime != null) {
-					if(se.getUnitsProduced()>0) {
-						average += (totalTime*3600)/se.getUnitsProduced();
-					}
+				if(se.getFinishTime()!=null) {
+					average += se.getPerformance();
 					schedules++;
 				}
 			}
 		}
 		if(schedules >0) {
-			perf = average/schedules;
+			perf = BigDecimal.valueOf(average).divide(BigDecimal.valueOf(schedules),2,RoundingMode.HALF_UP);
 		}
-		return perf;
+		return perf.longValue();
 	}
 
 	public void updateUnits() {

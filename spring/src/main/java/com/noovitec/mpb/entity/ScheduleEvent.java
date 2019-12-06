@@ -56,9 +56,9 @@ public class ScheduleEvent extends BaseEntity {
 	private SaleItem saleItem;
 
 	@Transient
-	boolean eventCompleted = false;
+	boolean completed = false;
 
-	public boolean isEventCompleted() {
+	public boolean isCompleted() {
 		return this.unitsProduced >= this.unitsScheduled;
 	}
 	
