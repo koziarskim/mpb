@@ -9,7 +9,7 @@
 	<b-row>
 		<b-col cols=4>
 			<div style="font-size:18px">Scheduled: {{scheduleEvent.schedule.date}} @ {{scheduleEvent.scheduleTime}}</div>
-			<div style="font-size:18px">Started: {{scheduleEvent.startTime}}</div>
+			<div style="font-size:18px">Started: {{scheduleEvent.startTime}}, Finished: {{scheduleEvent.finishTime}}</div>
 			<div style="font-size:18px">Units Scheduled: {{scheduleEvent.unitsScheduled}}</div>
 			<div style="font-size:18px">Total Produced: {{scheduleEvent.unitsProduced}}</div>
 		</b-col>

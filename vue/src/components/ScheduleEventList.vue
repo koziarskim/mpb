@@ -6,9 +6,9 @@
             <b-button size="sm" id="item-popover" variant="link">{{item.name}}</b-button>
             <b-popover placement="bottomright" target="item-popover" triggers="focus" variant="info">
               <template v-slot:title>
-                <!-- <b-button size="sm" variant="link">View Details</b-button> -->
+                <b-button size="sm" @click="goToItem(item.id)" variant="link">View Details</b-button>
               </template>
-              <div>Performance: {{item.performance}}</div>
+              <div>Performance: {{item.performance}} [units per hour]</div>
             </b-popover>
       </b-col>
       <b-col cols=3>
@@ -32,7 +32,7 @@
             <b-button size="sm" @click.stop="goToProduction(row.item.id)" variant="link">{{row.item.unitsProduced}}</b-button>
           </template>
           <template v-slot:cell(performance)="row">
-            <span style="">{{row.item.performance}} ({{row.item.efficiency}}%)</span>
+            <span :style="getEfficiencyStyle(row.item.efficiency)">{{row.item.performance}} ({{row.item.efficiency}}%)</span>
           </template>
           <template v-slot:cell(unitsScheduled)="row">
             <b-button v-if="!row.item.edit" @click="editScheduleEvent(row.item)" variant="light">{{row.item.unitsScheduled}}</b-button>
@@ -72,7 +72,7 @@ export default {
         { key: "schedule.date", label: "Date", sortable: true },
         { key: "startTime", label: "Started", sortable: false },
         { key: "finishTime", label: "Finished", sortable: false },
-        { key: "performance", label: "Perf", sortable: true },
+        { key: "performance", label: "Perform [u/h]", sortable: true },
         { key: "line.number", label: "Line", sortable: true },
         { key: "sale", label: "Sale", sortable: true },
         { key: "saleItem.units", label: "Sold", sortable: false },
@@ -96,6 +96,11 @@ export default {
         this.getSale(sale_id);
       }
       this.getScheduleEvents(item_id);
+    },
+    getEfficiencyStyle(eff){
+      var style = "color: ";
+      style += eff>=100?"#28a745":"#e25454";
+      return style;
     },
     sortCompare(a, b, key) {
       if (key === 'sale') {
@@ -181,6 +186,9 @@ export default {
     },
     goToSale(sale_id) {
       router.push("/saleEdit/" + sale_id);
+    },
+    goToItem(itemId){
+      router.push("/itemEdit/"+itemId);
     },
     goToProduction(se_id) {
       router.push("/productionSale/" + se_id);
