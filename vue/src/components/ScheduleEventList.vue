@@ -19,7 +19,7 @@
         <label class="top-label"></label>
         <b-table :sort-compare="sortCompare" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="scheduleEvents" :fields="columns">
           <template v-slot:cell(sale)="row">
-            <b-button size="sm" @click.stop="goToSale(row.item.saleItem.sale.id)" variant="link">{{row.item.saleItem.sale.number}}</b-button>
+            <b-button size="sm" @click.stop="goToSale(row.item.saleItem.sale.id)" variant="link">{{row.item.saleItem.sale.number}} ({{row.item.saleItem.sale.customer.name}})</b-button>
           </template>
           <template v-slot:cell(unitsProduced)="row">
             <b-button size="sm" @click.stop="goToProduction(row.item.id)" variant="link">{{row.item.unitsProduced}}</b-button>
@@ -58,11 +58,13 @@ export default {
       sortBy: "id",
       sortDesc: false,
       columns: [
+        { key: "sale", label: "Sale (Customer)", sortable: true },
         { key: "schedule.date", label: "Date", sortable: true },
         { key: "startTime", label: "Started", sortable: false },
+        { key: "finishTime", label: "Finished", sortable: false },
+        { key: "performance", label: "Perf", sortable: true },
         { key: "line.number", label: "Line", sortable: true },
         { key: "sale", label: "Sale", sortable: true },
-        { key: "saleItem.sale.customer.name", label: "Customer", sortable: true },
         { key: "saleItem.units", label: "Sold", sortable: false },
         { key: "unitsScheduled", label: "Scheduled", sortable: false },
         { key: "unitsProduced", label: "Produced", sortable: false },

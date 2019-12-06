@@ -1,5 +1,7 @@
 package com.noovitec.mpb.entity;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -58,6 +60,18 @@ public class ScheduleEvent extends BaseEntity {
 
 	public boolean isEventCompleted() {
 		return this.unitsProduced >= this.unitsScheduled;
+	}
+	
+	@Transient
+	private Long performance = 0L;
+	
+	public Long getPerformance() {
+		BigDecimal perf = BigDecimal.ZERO;
+		Long time = this.getTotalTime();
+		if(time > 0 && this.unitsProduced > 0) {
+			perf = BigDecimal.valueOf(this.unitsProduced).divide(BigDecimal.valueOf(time), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(3600));
+		}
+		return perf.longValue();
 	}
 
 	@Transient
