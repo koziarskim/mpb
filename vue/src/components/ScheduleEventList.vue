@@ -86,7 +86,9 @@ export default {
   computed: {},
   watch: {
     selectedSale(newValue, oldValue){
-      this.getScheduleEvents(this.item.id);
+      if(this.item.id){
+        this.getScheduleEvents(this.item.id);
+      }
     }
   },
   methods: {

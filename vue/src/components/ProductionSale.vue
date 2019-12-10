@@ -98,14 +98,14 @@ export default {
 					}
 				}
 			},
-			chartData: {datasets: []},
+			chartData: {labels: [], datasets: [{data: [], lineTension: 0}]},
 			chartOptions: {
 				legend: {display: false},
 				scales: {
 					yAxes: [{
 						scaleLabel: {
 							display: true,
-							labelString: 'Units Per Hour'
+							labelString: 'Units Produced'
 						}
 					}],
 					xAxes: [{
@@ -113,7 +113,6 @@ export default {
 						time: {
 							distribution: 'linear',
 							unit: 'hour',
-							// max: moment("00:00:00", "H:mm:ss").add(23, 'hours').add(59, 'minutes'),
 							stepSize: 1,
 							displayFormats: {hour : 'HH:mm'}
 						}
@@ -132,31 +131,26 @@ export default {
   watch: {},
   methods: {
 		updateChart(){
-			var prevTime = moment(this.scheduleEvent.startTime, 'HH:mm:ss');
-			this.chartOptions.scales.xAxes[0].time.min = moment(prevTime.hour(), "HH");
-			var tooltipLabel1 = "Started at "+ moment(this.scheduleEvent.startTime, 'HH:mm:ss').format('HH:mm');
-			var tooltipLabel2 = "Started at "+ moment(this.scheduleEvent.startTime, 'HH:mm:ss').format('HH:mm');
+			
+			this.chartOptions.scales.xAxes[0].time.min = moment(this.scheduleEvent.startTime, 'HH');
+			this.chartOptions.scales.xAxes[0].time.max = moment(this.scheduleEvent.finishTime, 'HH').add(1, 'hours')
+			var tooltipLabel = "Started at "+ moment(this.scheduleEvent.startTime, 'HH:mm:ss').format('HH:mm:ss');
 			this.chartData.datasets = [{
-				data: [{x: prevTime, y: 0, tooltipLabel: tooltipLabel1}], 
-				steppedLine: 'after',
+				data: [{x: moment(this.scheduleEvent.startTime, 'HH:mm:ss'), y: 0, tooltipLabel: tooltipLabel}], 
+				// steppedLine: 'after',
 				fill: false,
-				borderColor: '#C28535',
-			},
-			{
-				data: [{x: prevTime, y: 0, tooltipLabel: tooltipLabel2}], 
-				steppedLine: 'after',
-				fill: false,
+				lineTension: 0,
 				borderColor: '#C28535',
 			}];
 			var sumProduced = 0;
+			var prevTime = moment(this.scheduleEvent.startTime, 'HH:mm:ss');
 			this.sortedProductions.forEach(p => {
 				var secs = moment(p.finishTime, 'HH:mm:ss').diff(prevTime, 'seconds');
 				var time = moment().startOf('day').seconds(secs).format('HH:mm:ss')
 				var perf = !secs?0:((p.unitsProduced/secs)*3600).toFixed(0);
 				sumProduced += p.unitsProduced;
 				var tooltipLabel= perf+" u/h (" +p.unitsProduced+" units in "+time+")"
-				// this.chartData.datasets[0].data.push({x: moment(p.finishTime, 'HH:mm:ss'), y: perf, tooltipLabel: tooltipLabel});
-				this.chartData.datasets[1].data.push({x: moment(p.finishTime, 'HH:mm:ss'), y: sumProduced, tooltipLabel: tooltipLabel});
+				this.chartData.datasets[0].data.push({x: moment(p.finishTime, 'HH:mm:ss'), y: sumProduced, tooltipLabel: tooltipLabel});
 				prevTime = moment(p.finishTime, 'HH:mm:ss');
 			})
 		},
@@ -195,7 +189,8 @@ export default {
 				});
 			},
 			finishProduction() {
-				this.scheduleEvent.finishTime = moment().format("HH:mm:ss");
+				
+				this.scheduleEvent.finishTime = this.sortedProductions[this.sortedProductions.length-1].finishTime;
 				return http.post("/scheduleEvent", this.scheduleEvent).then(response => {
 					router.push("/productionLineList");
 				}).catch(e => {
