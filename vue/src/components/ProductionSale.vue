@@ -15,16 +15,8 @@
 		</b-col>
 		<b-col cols=8>
 			<b-row>
-				<b-col cols=2>
-					<label v-if="inProgress() && !isFinished()" class="top-label">Units Produced:</label>
-					<input v-if="inProgress() && !isFinished()" class="form-control"  type="tel" v-model="unitsToAdd">
-				</b-col>
-				<b-col cols="2">
-					<label v-if="inProgress() && !isFinished()" class="top-label">People Assigned:</label>
-					<input v-if="inProgress() && !isFinished()" class="form-control" type="tel" v-model="people">
-				</b-col>
 				<b-col cols="2" v-if="inProgress() && !isFinished()" style="margin-top: 25px">
-					<b-button v-if="inProgress() && !isFinished()" type="submit" variant="success" @click="saveOutput">Add Units</b-button>
+					<b-button v-if="inProgress() && !isFinished()" type="submit" variant="success" @click="openAddModal()">Add Units</b-button>
 				</b-col>
 				<b-col cols="4">
 					<b-button v-if="!inProgress() && !isFinished()" type="submit" style="margin-top: 25px" variant="success" @click="startProduction">Start Production</b-button>
@@ -69,6 +61,26 @@
 	</b-row>
 	</div>
 	<br/>
+	<div v-if="addModalVisible">
+		<production-modal :schedule-event="scheduleEvent" v-on:closeModal="closeModals()"></production-modal>
+	</div>
+	<b-modal centered size="lg" v-model="startModalVisible" :hide-header="true" :hide-footer="true">
+		<b-row>
+			<b-col>
+				<div style="text-align: right;">
+					<b-button style="margin: 0 2px 0 2px" @click="closeModals()">Close</b-button>
+					<b-button style="margin: 0 2px 0 2px" @click="saveStartProduction()" variant="success">Save</b-button>
+				</div>
+			</b-col>
+		</b-row>
+		<b-row>
+			<b-col cols="3">
+				<label class="top-label">Time Started:</label>
+				<input class="form-control" type="time" v-model="startTime">
+			</b-col>
+		</b-row>
+	</b-modal>
+
   </b-container>
 </template>
 
@@ -81,8 +93,14 @@ import store from "../store.js";
 import securite from "../securite";
 
 export default {
+	components: {
+    ProductionModal: () => import("./ProductionModal")
+  },
   data() {
     return {
+			addModalVisible: false,
+			startModalVisible: false,
+			startTime: moment().format("HH:mm:ss"),
 			securite: securite,
 			addInProgress: false,
 			sortedProductions: [],
@@ -130,8 +148,15 @@ export default {
   },
   watch: {},
   methods: {
+		openAddModal(){
+			this.addModalVisible = true;
+		},
+		closeModals(){
+			this.addModalVisible=false;
+			this.startModalVisible = false;
+			this.getScheduleEvent(this.scheduleEvent.id);
+		},
 		updateChart(){
-			
 			this.chartOptions.scales.xAxes[0].time.min = moment(this.scheduleEvent.startTime, 'HH');
 			this.chartOptions.scales.xAxes[0].time.max = moment(this.scheduleEvent.finishTime, 'HH').add(1, 'hours')
 			var tooltipLabel = "Started at "+ moment(this.scheduleEvent.startTime, 'HH:mm:ss').format('HH:mm:ss');
@@ -180,16 +205,23 @@ export default {
         console.log("API error: " + e);
       });
 		},
-		startProduction() {
-			this.scheduleEvent.startTime = moment().format("HH:mm:ss");
+		startProduction(){
+			this.startModalVisible = true;
+		},
+		saveStartProduction() {
+			this.scheduleEvent.startTime = this.startTime;
 				return http.post("/scheduleEvent", this.scheduleEvent).then(response => {
 					this.getScheduleEvent(this.scheduleEvent.id);
+					this.startModalVisible = false;
 				}).catch(e => {
 					console.log("API error: " + e);
 				});
 			},
 			finishProduction() {
-				
+				if(this.sortedProductions.length == 0){
+					alert("Nothing produced yet");
+					return;
+				}
 				this.scheduleEvent.finishTime = this.sortedProductions[this.sortedProductions.length-1].finishTime;
 				return http.post("/scheduleEvent", this.scheduleEvent).then(response => {
 					router.push("/productionLineList");

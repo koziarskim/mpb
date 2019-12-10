@@ -14,7 +14,7 @@
 			</b-col>
 			<b-col>
 				<b-button v-if="inProgress() && !isFinished()" style="margin-right: 3px" type="submit" variant="success" @click="openModal()">Add Units</b-button>
-				<b-button v-if="this.scheduleEvent.id !=null && !inProgress() && !isFinished()" type="submit" variant="success" @click="startProduction">Start</b-button>
+				<b-button v-if="this.scheduleEvent.id !=null && !inProgress() && !isFinished()" type="submit" variant="success" @click="startProduction()">Start</b-button>
 				<b-button v-if="inProgress() && !isFinished()" type="submit" variant="success" @click="finishProduction">Finish</b-button>
 			</b-col>
 		</b-row>
@@ -41,7 +41,7 @@
 			</b-col>
 		</b-row>
 		<div v-if="modalVisible">
-			<production-modal :schedule-event="scheduleEvent" v-on:closeModal="closeModal()"></production-modal>
+			<production-modal :schedule-event="scheduleEvent" v-on:closeModal="closeModals()"></production-modal>
 		</div>
 		<br/>
 		<div v-if="securite.hasRole(['PRODUCTION_ADMIN'])">
@@ -68,6 +68,22 @@
 		</b-row>
 	</div>
 	<br/>
+	<b-modal centered size="lg" v-model="startModalVisible" :hide-header="true" :hide-footer="true">
+		<b-row>
+			<b-col>
+				<div style="text-align: right;">
+					<b-button style="margin: 0 2px 0 2px" @click="closeModals()">Close</b-button>
+					<b-button style="margin: 0 2px 0 2px" @click="saveStartProduction()" variant="success">Save</b-button>
+				</div>
+			</b-col>
+		</b-row>
+		<b-row>
+			<b-col cols="3">
+				<label class="top-label">Time Started:</label>
+				<input class="form-control" type="time" v-model="startTime">
+			</b-col>
+		</b-row>
+	</b-modal>
   </b-container>
 </template>
 
@@ -86,7 +102,9 @@ export default {
   data() {
     return {
 			chartVisibility: "visibility: hidden",
+			startModalVisible: false,
 			date: moment().format("YYYY-MM-DD"),
+			startTime: moment().format("HH:mm:ss"),
 			line_id: "",
 			schedule: {},
 			modalVisible: false,
@@ -157,6 +175,9 @@ export default {
 		}
 	},
   methods: {
+		startProduction(){
+			this.startModalVisible = true;
+		},
 		setToday(){
 			this.date = moment().format("YYYY-MM-DD");
 		},
@@ -248,7 +269,7 @@ export default {
         console.log("API error: " + e);
       });
 		},
-		startProduction() {
+		saveStartProduction() {
 			var alreadyStarted = false;
 			this.scheduleEvents.forEach(se => {
 				if(se.startTime && !se.finishTime){
@@ -259,20 +280,25 @@ export default {
 				alert("There is another Sale in progress. Please, finish it before start next one");
 				return;
 			}
-			this.scheduleEvent.startTime = moment().format("HH:mm:ss");
+			this.scheduleEvent.startTime = this.startTime;
 				return http.post("/scheduleEvent", this.scheduleEvent).then(response => {
 					this.getScheduleEvent(this.scheduleEvent.id);
+					this.startModalVisible = false;
 				}).catch(e => {
 					console.log("API error: " + e);
 				});
 			},
 			finishProduction() {
+				if(this.sortedProductions.length==0){
+					alert("Nothing produced yet");
+					return;
+				}
 				if(this.scheduleEvent.unitsProduced < this.scheduleEvent.unitsScheduled){
 					if(!confirm("There are more units scheduled that produced. \n Are you sure you want to finish it?")){
 						return;
 					}
 				}
-				this.scheduleEvent.finishTime = moment().format("HH:mm:ss");
+				this.scheduleEvent.finishTime = this.sortedProductions[this.sortedProductions.length-1].finishTime;
 				return http.post("/scheduleEvent", this.scheduleEvent).then(response => {
 					this.getScheduleEvent(this.scheduleEvent.id);
 				}).catch(e => {
@@ -282,8 +308,9 @@ export default {
 		openModal(){
 			this.modalVisible = true;
 		},
-		closeModal(){
+		closeModals(){
 			this.modalVisible=false;
+			this.startModalVisible= false;
 			this.getScheduleEvent(this.scheduleEvent.id);
 		},
 		inProgress() {
