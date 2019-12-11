@@ -26,7 +26,7 @@
 						<div style="display:inline; color: #4bb316">&nbsp;&nbsp;&nbsp;&#9679;{{customer.name}}</div>
 						<div v-for="event in customer.events" :key="event.id">
 							<div style="cursor: pointer; display:inline; color:#e22626; font-weight: bold" :style="getTreeItemStyle(event.active)" @click="getScheduleEvent(event.id)">
-								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#9656;SO: {{event.saleItem.sale.number}} {{event.finishTime?" (Completed)":(event.startTime?" (Started)":" (Not Started)")}}
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SO: {{event.saleItem.sale.number}} {{event.finishTime?" (Completed)":(event.startTime?" (Started)":" (Not Started)")}}
 							</div>
 						</div>
 					</div>

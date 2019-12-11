@@ -7,17 +7,14 @@ import store from "./store";
 import "./registerServiceWorker";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
-import '../node_modules/nprogress/nprogress.css'
+import "../node_modules/nprogress/nprogress.css";
 import { ModelListSelect } from "vue-search-select";
 import { CustomMask } from "./directives/CustomMask";
 import UploadImage from "./directives/UploadImage";
 import ScheduleModal from "./components/ScheduleModal";
 import Chart from "./directives/Chart";
 
-
-Vue.use(BootstrapVue, {
-  prefix: "b"
-});
+Vue.use(BootstrapVue);
 Vue.directive("mask", CustomMask);
 Vue.component("chart", Chart);
 Vue.component("upload", UploadImage);

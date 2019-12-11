@@ -1,5 +1,4 @@
 import Vue from "vue";
-import securite from "./securite";
 import navigate from "./utils/navigation";
 import Router from "vue-router";
 import Home from "./components/Home.vue";
@@ -30,7 +29,7 @@ import ShipmentEdit from "./components/ShipmentEdit";
 import ShipmentList from "./components/ShipmentList";
 import ScheduleEventList from "./components/ScheduleEventList";
 import ProductionLine from "./components/ProductionLine";
-import ProductionSale from "./components/ProductionSale";
+// import ProductionSale from "./components/ProductionSale";
 import ProductionLineList from "./components/ProductionLineList";
 import ProductionItemList from "./components/ProductionItemList";
 import Profile from "./components/Profile";
@@ -47,275 +46,321 @@ const router = new Router({
     {
       path: "/",
       name: "root",
-      component: Login
-    },
-    {
-      path: "/home",
-      name: "home",
-      component: Home
-    },
-    {
-      path: "/itemList",
-      name: "item",
-      component: ItemList,
+      component: Login,
       meta: {
-        roles: ["SUPER_USER"]
-      }
-    },
-    {
-      path: "/itemComponentList/:item_id",
-      name: "item",
-      component: ItemComponentList,
-      meta: {
-        roles: ["SUPER_USER"]
-      }
-    },
-    {
-      path: "/componentList",
-      name: "component",
-      component: ComponentList,
-      meta: {
-        roles: ["SUPER_USER"]
-      }
-    },
-    {
-      path: "/supplierList",
-      name: "supplier",
-      component: SupplierList,
-      meta: {
-        roles: ["SUPER_USER"]
-      }
-    },
-    {
-      path: "/customerList",
-      name: "customer",
-      component: CustomerList,
-      meta: {
-        roles: ["SUPER_USER"]
-      }
-    },
-    {
-      path: "/saleList",
-      name: "sale",
-      component: SaleList,
-      meta: {
-        roles: ["SUPER_USER"]
-      }
-    },
-    {
-      path: "/saleItemList",
-      name: "sale",
-      component: SaleItemList,
-      meta: {
-        roles: ["SUPER_USER"]
-      }
-    },
-    {
-      path: "/purchaseList",
-      name: "purchase",
-      component: PurchaseList,
-      meta: {
-        roles: ["SUPER_USER", "POADMIN"]
-      }
-    },
-    {
-      path: "/componentEdit/:component_id?",
-      name: "component",
-      component: ComponentEdit,
-      meta: {
-        roles: ["SUPER_USER"]
-      }
-    },
-    {
-      path: "/itemEdit/:item_id?",
-      name: "item",
-      component: ItemEdit,
-      meta: {
-        roles: ["SUPER_USER"]
-      }
-    },
-    {
-      path: "/itemGraph/:item_id?",
-      name: "item",
-      component: ItemGraph,
-      meta: {
-        roles: ["SUPER_USER"]
-      }
-    },
-    {
-      path: "/supplierEdit/:supplier_id?",
-      name: "supplier",
-      component: SupplierEdit,
-      meta: {
-        roles: ["SUPER_USER"]
-      }
-    },
-    {
-      path: "/customerEdit/:customer_id?",
-      name: "customer",
-      component: CustomerEdit,
-      meta: {
-        roles: ["SUPER_USER"]
-      }
-    },
-    {
-      path: "/saleEdit/:sale_id?",
-      name: "sale",
-      component: SaleEdit,
-      meta: {
-        roles: ["SUPER_USER"]
-      }
-    },
-    {
-      path: "/purchaseEdit/:purchase_id",
-      name: "purchase",
-      component: PurchaseEdit,
-      meta: {
-        roles: ["SUPER_USER"]
-      }
-    },
-    {
-      path: "/purchaseNew",
-      name: "purchase",
-      component: PurchaseNew,
-      meta: {
-        roles: ["SUPER_USER"]
-      }
-    },
-    {
-      path: "/itemSaleList/:item_id",
-      name: "item",
-      component: ItemSaleList,
-      meta: {
-        roles: ["SUPER_USER"]
-      }
-    },
-    {
-      path: "/PurchaseComponent/:purchase_id",
-      name: "purchase",
-      component: PurchaseComponent,
-      meta: {
-        roles: ["SUPER_USER"]
-      }
-    },
-    {
-      path: "/PurchaseItem/:purchase_id",
-      name: "purchase",
-      component: PurchaseItem,
-      meta: {
-        roles: ["SUPER_USER"]
-      }
-    },
-    {
-      path: "/ReceivingList",
-      name: "receiving",
-      component: ReceivingList,
-      meta: {
-        roles: ["SUPER_USER"]
-      }
-    },
-    {
-      path: "/ReceivingEdit/:receiving_id",
-      name: "receiving",
-      component: ReceivingEdit,
-      meta: {
-        roles: ["SUPER_USER"]
-      }
-    },
-    {
-      path: "/ReceivingEdit/pc/:pc_id",
-      name: "receiving",
-      component: ReceivingEdit,
-      meta: {
-        roles: ["SUPER_USER"]
-      }
-    },
-    {
-      path: "/Users",
-      name: "user",
-      component: Users,
-      meta: {
-        roles: ["ADMIN"]
+        group: "login"
       }
     },
     {
       path: "/Login",
-      name: "login",
-      component: Login
+      name: "Login",
+      component: Login,
+      meta: {
+        group: "login"
+      }
+    },
+    {
+      path: "/home",
+      name: "Home",
+      component: Home,
+      meta: {
+        group: "home"
+      }
+    },
+    {
+      path: "/itemList",
+      name: "itemList",
+      component: ItemList,
+      meta: {
+        roles: ["SUPER_USER"],
+        group: "item"
+      }
+    },
+    {
+      path: "/itemComponentList/:item_id",
+      name: "ItemComponentList",
+      component: ItemComponentList,
+      meta: {
+        roles: ["SUPER_USER"],
+        group: "item"
+      }
+    },
+    {
+      path: "/itemEdit/:item_id?",
+      name: "ItemEdit",
+      component: ItemEdit,
+      meta: {
+        roles: ["SUPER_USER"],
+        group: "item"
+      }
+    },
+    {
+      path: "/itemGraph/:item_id?",
+      name: "ItemGraph",
+      component: ItemGraph,
+      meta: {
+        roles: ["SUPER_USER"],
+        group: "item"
+      }
+    },
+    {
+      path: "/itemSaleList/:item_id",
+      name: "ItemSaleList",
+      component: ItemSaleList,
+      meta: {
+        roles: ["SUPER_USER"],
+        group: "item"
+      }
+    },
+    {
+      path: "/componentList",
+      name: "ComponentList",
+      component: ComponentList,
+      meta: {
+        roles: ["SUPER_USER"],
+        group: "component"
+      }
+    },
+    {
+      path: "/componentEdit/:component_id?",
+      name: "ComponentEdit",
+      component: ComponentEdit,
+      meta: {
+        roles: ["SUPER_USER"],
+        group: "component"
+      }
+    },
+    {
+      path: "/supplierList",
+      name: "SupplierList",
+      component: SupplierList,
+      meta: {
+        roles: ["SUPER_USER"],
+        group: "supplier"
+      }
+    },
+    {
+      path: "/supplierEdit/:supplier_id?",
+      name: "SupplierEdit",
+      component: SupplierEdit,
+      meta: {
+        roles: ["SUPER_USER"],
+        group: "supplier"
+      }
+    },
+   {
+      path: "/customerList",
+      name: "CustomerList",
+      component: CustomerList,
+      meta: {
+        roles: ["SUPER_USER"],
+        group: "customer"
+      }
+    },
+    {
+      path: "/customerEdit/:customer_id?",
+      name: "CustomerEdit",
+      component: CustomerEdit,
+      meta: {
+        roles: ["SUPER_USER"],
+        group: "customer"
+      }
+    },
+    {
+      path: "/saleList",
+      name: "SaleList",
+      component: SaleList,
+      meta: {
+        roles: ["SUPER_USER"],
+        group: "sale"
+      }
+    },
+    {
+      path: "/saleItemList",
+      name: "SaleItemList",
+      component: SaleItemList,
+      meta: {
+        roles: ["SUPER_USER"],
+        group: "sale"
+      }
+    },
+    {
+      path: "/saleEdit/:sale_id?",
+      name: "SaleEdit",
+      component: SaleEdit,
+      meta: {
+        roles: ["SUPER_USER"],
+        group: "sale"
+      }
+    },
+    {
+      path: "/purchaseList",
+      name: "PurchaseList",
+      component: PurchaseList,
+      meta: {
+        roles: ["SUPER_USER", "POADMIN"],
+        group: "purchase"
+      }
+    },
+    {
+      path: "/purchaseEdit/:purchase_id",
+      name: "PurchaseEdit",
+      component: PurchaseEdit,
+      meta: {
+        roles: ["SUPER_USER"],
+        group: "purchase"
+      }
+    },
+    {
+      path: "/purchaseNew",
+      name: "PurchaseNew",
+      component: PurchaseNew,
+      meta: {
+        roles: ["SUPER_USER"],
+        group: "purchase"
+      }
+    },
+    {
+      path: "/PurchaseComponent/:purchase_id",
+      name: "PurchaseComponent",
+      component: PurchaseComponent,
+      meta: {
+        roles: ["SUPER_USER"],
+        group: "purchase"
+      }
+    },
+    {
+      path: "/PurchaseItem/:purchase_id",
+      name: "PurchaseItem",
+      component: PurchaseItem,
+      meta: {
+        roles: ["SUPER_USER"],
+        group: "purchase"
+      }
+    },
+    {
+      path: "/ReceivingList",
+      name: "ReceivingList",
+      component: ReceivingList,
+      meta: {
+        roles: ["SUPER_USER"],
+        group: "receiving"
+      }
+    },
+    {
+      path: "/ReceivingEdit/:receiving_id",
+      name: "ReceivingEdit",
+      component: ReceivingEdit,
+      meta: {
+        roles: ["SUPER_USER"],
+        group: "receiving"
+      }
+    },
+    {
+      path: "/ReceivingEdit/pc/:pc_id",
+      name: "ReceivingEditPc",
+      component: ReceivingEdit,
+      meta: {
+        roles: ["SUPER_USER"],
+        group: "receiving"
+      }
     },
     {
       path: "/Schedule",
-      name: "schedule",
+      name: "Schedule",
       component: Schedule,
       meta: {
-        roles: ["SUPER_USER"]
-      }
-    },
-    {
-      path: "/AccessDenied",
-      name: "denied",
-      component: AccessDenied
-    },
-    {
-      path: "/ShipmentEdit/:shipment_id?",
-      name: "shipment",
-      component: ShipmentEdit,
-      meta: {
-        roles: ["SUPER_USER"]
-      }
-    },
-    {
-      path: "/ShipmentList",
-      name: "shipment",
-      component: ShipmentList,
-      meta: {
-        roles: ["SUPER_USER"]
+        roles: ["SUPER_USER"],
+        group: "schedule"
       }
     },
     {
       path: "/ScheduleEventList/:item_id?/:sale?/:sale_id?",
-      name: "schedule",
+      name: "ScheduleEventList",
       component: ScheduleEventList,
       meta: {
-        roles: ["SUPER_USER"]
+        roles: ["SUPER_USER"],
+        group: "schedule"
       }
     },
     {
-      path: "/ProductionSale/:schedule_event_id",
-      name: "production",
-      component: ProductionSale,
+      path: "/ShipmentEdit/:shipment_id?",
+      name: "ShipmentEdit",
+      component: ShipmentEdit,
       meta: {
-        roles: ["SUPER_USER", "PRODUCTION_ADMIN", "PRODUCTION_LEADER"]
+        roles: ["SUPER_USER"],
+        group: "shipment"
       }
     },
+    {
+      path: "/ShipmentList",
+      name: "ShipmentList",
+      component: ShipmentList,
+      meta: {
+        roles: ["SUPER_USER"],
+        group: "shipment"
+      }
+    },
+    // {
+    //   path: "/ProductionSale/:schedule_event_id",
+    //   name: "ProductionSale",
+    //   component: ProductionSale,
+    //   meta: {
+    //     roles: ["SUPER_USER", "PRODUCTION_ADMIN", "PRODUCTION_LEADER"],
+    //     group: "production"
+    //   }
+    // },
     {
       path: "/ProductionLine/:line_id",
-      name: "production",
+      name: "ProductionLine",
       component: ProductionLine,
       meta: {
-        roles: ["SUPER_USER", "PRODUCTION_ADMIN", "PRODUCTION_LEADER"]
+        roles: ["SUPER_USER", "PRODUCTION_ADMIN", "PRODUCTION_LEADER"],
+        group: "production"
       }
     },
     {
       path: "/ProductionLineList/:date?",
-      name: "production",
+      name: "ProductionLineList",
       component: ProductionLineList,
       meta: {
-        roles: ["SUPER_USER", "PRODUCTION_ADMIN", "PRODUCTION_LEADER"]
+        roles: ["SUPER_USER", "PRODUCTION_ADMIN", "PRODUCTION_LEADER"],
+        group: "production"
       }
     },
     {
       path: "/ProductionItemList/:date?",
-      name: "production",
+      name: "ProductionItemList",
       component: ProductionItemList,
       meta: {
-        roles: ["SUPER_USER", "PRODUCTION_ADMIN", "PRODUCTION_LEADER"]
+        roles: ["SUPER_USER", "PRODUCTION_ADMIN", "PRODUCTION_LEADER"],
+        group: "production"
       }
     },
     {
       path: "/Profile",
-      name: "profile",
+      name: "Profile",
       component: Profile,
+      meta: {
+        group: "profile"
+      }
+    },
+    {
+      path: "/Users",
+      name: "Users",
+      component: Users,
+      meta: {
+        roles: ["ADMIN"],
+        group: "user"
+      }
+    },
+    {
+      path: "/AccessDenied",
+      name: "AccessDenied",
+      component: AccessDenied,
+      meta: {
+        group: "denied"
+      }
     },
     //public
     {
