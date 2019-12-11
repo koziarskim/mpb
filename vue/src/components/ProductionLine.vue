@@ -325,8 +325,12 @@ export default {
 		if(!this.date){
 			this.date = moment().format("YYYY-MM-DD");
 		}
+		var scheduleEventId = this.$route.query.seId;
 		this.line_id = this.$route.params.line_id;
 		this.getScheduleEvents();
+		if(scheduleEventId){
+			this.getScheduleEvent(scheduleEventId);
+		}
 		window.history.replaceState({}, document.title, window.location.pathname);
   }
 };

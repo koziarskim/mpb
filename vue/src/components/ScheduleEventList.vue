@@ -29,7 +29,7 @@
             <b-button size="sm" @click.stop="goToSale(row.item.saleItem.sale.id)" variant="link">{{row.item.saleItem.sale.number}} ({{row.item.saleItem.sale.customer.name}})</b-button>
           </template>
           <template v-slot:cell(unitsProduced)="row">
-            <b-button size="sm" @click.stop="goToProduction(row.item.id)" variant="link">{{row.item.unitsProduced}}</b-button>
+            <b-button size="sm" @click.stop="goToProduction(row.item)" variant="link">{{row.item.unitsProduced}}</b-button>
           </template>
           <template v-slot:cell(performance)="row">
             <span :style="getEfficiencyStyle(row.item.efficiency)">{{row.item.performance}} ({{row.item.efficiency}}%)</span>
@@ -192,8 +192,10 @@ export default {
     goToItem(itemId){
       router.push("/itemEdit/"+itemId);
     },
-    goToProduction(se_id) {
-      router.push("/productionSale/" + se_id);
+    goToProduction(se) {
+      // router.push("/productionSale/" + se_id);
+      var query = { date: se.schedule.date, seId: se.id };
+      router.push({ path: "/productionLine/"+se.line.id, query: query } );
     },
     goToGraph() {
       router.push("/itemGraph/" + this.item.id);
