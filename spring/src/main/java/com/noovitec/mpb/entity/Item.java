@@ -30,22 +30,22 @@ public class Item extends BaseEntity {
 	private String name;
 	private String number;
 	private String description;
-	private int height = 0;
-	private int width = 0;
-	private int depth = 0;
-	private BigDecimal weight = BigDecimal.ZERO;
+	private BigDecimal height;
+	private BigDecimal width;
+	private BigDecimal depth;
+	private BigDecimal weight;
 	private int casePack = 1;
-	private int caseHeight = 0;
-	private int caseWidth = 0;
-	private int caseDepth = 0;
-	private BigDecimal caseWeight = BigDecimal.ZERO;
+	private BigDecimal caseHeight;
+	private BigDecimal caseWidth;
+	private BigDecimal caseDepth;
+	private BigDecimal caseWeight;
 	private int ti = 1; // number of cases in single layer on pallet.
 	private int hi = 1; // number of layers on pallet.
 	private BigDecimal warehouseCost = new BigDecimal(12);
 	private BigDecimal packageCost = new BigDecimal(12);
-	private BigDecimal laborCost = BigDecimal.ZERO;
-	private BigDecimal otherCost = BigDecimal.ZERO;
-	private BigDecimal totalCost = BigDecimal.ZERO;
+	private BigDecimal laborCost;
+	private BigDecimal otherCost;
+	private BigDecimal totalCost;
 	private Long unitsProduced = 0L;
 	private Long unitsSold = 0L;
 	private Long unitsScheduled = 0L;

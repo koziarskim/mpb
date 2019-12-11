@@ -65,14 +65,14 @@
           <b-col cols="4">
             <label class="top-label">Item Dimension (H x W x D):</label>
             <div style="display:flex">
-              <input class="form-control" v-model="item.height" placeholder="0"><span style="padding: 7px">x</span>
-              <input class="form-control" v-model="item.width" placeholder="0"><span style="padding: 7px">x</span>
-              <input class="form-control" v-model="item.depth" placeholder="0">
+              <input class="form-control" v-model="item.height"><span style="padding: 7px">x</span>
+              <input class="form-control" v-model="item.width"><span style="padding: 7px">x</span>
+              <input class="form-control" v-model="item.depth">
             </div>
           </b-col>
           <b-col cols="2">
             <label class="top-label">Weight (lbs):</label>
-            <input class="form-control" type="number" min="0" v-model="item.weight">
+            <input class="form-control" type="tel" v-model="item.weight">
           </b-col>
           <b-col cols="2">
             <label class="top-label">Cubic (ft):</label>
@@ -84,9 +84,9 @@
           <b-col cols=4>
             <label class="top-label">Case Dimension (H x W x D):</label>
             <div style="display:flex">
-              <input class="form-control" v-model="item.caseHeight" placeholder="0"><span style="padding: 7px">x</span>
-              <input class="form-control" v-model="item.caseWidth" placeholder="0"><span style="padding: 7px">x</span>
-              <input class="form-control" v-model="item.caseDepth" placeholder="0">
+              <input class="form-control" v-model="item.caseHeight"><span style="padding: 7px">x</span>
+              <input class="form-control" v-model="item.caseWidth"><span style="padding: 7px">x</span>
+              <input class="form-control" v-model="item.caseDepth">
             </div>
           </b-col>
           <b-col cols="2">
