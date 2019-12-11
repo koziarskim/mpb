@@ -129,6 +129,7 @@ export default {
         number: 0, 
         shipmentItems: [],
         date: null,
+        fob: "Elk Grove Village"
       },
       availableCustomers: [],
       availableShippingAddresses: [],
