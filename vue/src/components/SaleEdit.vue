@@ -91,8 +91,8 @@
           <template v-slot:cell(item.number)="row">
             <b-button size="sm" @click.stop="goToItem(row.item.item.id)" variant="link">{{row.item.item.name}}</b-button>
           </template>
-          <template v-slot:cell(components)="row">
-            <b-button size="sm" variant="link" @click.stop="gotToItemComponentList(row.item.item.id)">View</b-button>
+          <template v-slot:cell(sku)="row">
+            <input class="form-control" style="width:100px" type="tel" v-model="row.item.sku">
           </template>
           <template v-slot:cell(cost)="row">
             <span>${{row.item.item.totalCost}}</span>
@@ -167,7 +167,7 @@ export default {
       sortDesc: false,
       columns: [
         { key: "item.number", label: "Item", sortable: false },
-        { key: "components", label: "Intentory", sortable: false },
+        { key: "sku", label: "SKU#", sortable: false },
         { key: "unitsSchedProd", label: "Sched/Prod", sortable: false },
         { key: "units", label: "Sold", sortable: false },
         { key: "cases", label: "Cases", sortable: false },
