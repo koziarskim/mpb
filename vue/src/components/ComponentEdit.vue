@@ -37,9 +37,9 @@
                     <b-col cols=4>
                         <label class="top-label">Dimension (H x W x D):</label>
                         <div style="display:flex">
-                          <input class="form-control" v-model="component.height" placeholder="0"><span style="padding:7px">x</span> 
-                          <input class="form-control" v-model="component.width" placeholder="0"><span style="padding:7px">x</span> 
-                          <input class="form-control" v-model="component.depth" placeholder="0">
+                          <input class="form-control" type="number" v-model="component.height"><span style="padding:7px">x</span> 
+                          <input class="form-control" type="number" v-model="component.width"><span style="padding:7px">x</span> 
+                          <input class="form-control" type="number" v-model="component.depth">
                         </div>
                     </b-col>
                 </b-row>
@@ -56,7 +56,7 @@
                             </b-col>                      
                             <b-col cols=6>
                                 <label class="top-label">Weight:</label>
-                                <input class="form-control" type="number" min=0 v-model="component.weight" placeholder="Weight"/>
+                                <input class="form-control" type="number" min=0 v-model="component.weight"/>
                             </b-col>                 
                         </b-row>
                         <b-row>
@@ -82,19 +82,19 @@
         <b-row>
             <b-col cols=2>
                 <label class="top-label">Unit Cost $:</label>
-                <input class="form-control" type="number" min=0 v-model="component.unitCost" placeholder="Price"/>
+                <input class="form-control" type="number" min=0 v-model="component.unitCost"/>
             </b-col>
             <b-col cols=2>
                 <label class="top-label">Duty %:</label>
-                <input class="form-control" type="number" min=0 v-model="component.dutyPercentage" placeholder="Duty"/>
+                <input class="form-control" type="number" min=0 v-model="component.dutyPercentage"/>
             </b-col>
             <b-col cols=2>
                 <label class="top-label">Container Cost $:</label>
-                <input class="form-control" type="number" min=0 v-model="component.containerCost" placeholder="Container"/>
+                <input class="form-control" type="number" min=0 v-model="component.containerCost"/>
             </b-col>
             <b-col cols=2>
                 <label class="top-label">Other $:</label>
-                <input class="form-control" type="number" min=0 v-model="component.otherCost" placeholder="Other"/>
+                <input class="form-control" type="number" min=0 v-model="component.otherCost"/>
             </b-col>
         </b-row>
         <b-row>

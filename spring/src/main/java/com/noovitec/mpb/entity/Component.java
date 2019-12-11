@@ -34,16 +34,16 @@ public class Component extends BaseEntity {
 	private String supplierStockNumber;
 	private String description;
 	private Long unitsPerContainer = 1L;
-	private int height = 0;
-	private int width = 0;
-	private int depth = 0;
-	private BigDecimal weight = BigDecimal.ZERO;
+	private BigDecimal height;
+	private BigDecimal width;
+	private BigDecimal depth;
+	private BigDecimal weight;
 	private int casePack = 1;
-	private BigDecimal unitCost = BigDecimal.ZERO;
-	private BigDecimal dutyPercentage = BigDecimal.ZERO;
+	private BigDecimal unitCost;
+	private BigDecimal dutyPercentage;
 	private BigDecimal deliveryCost = BigDecimal.ZERO;
-	private BigDecimal containerCost = BigDecimal.ZERO;
-	private BigDecimal otherCost = BigDecimal.ZERO;
+	private BigDecimal containerCost;
+	private BigDecimal otherCost;
 	private BigDecimal totalLandedCost = BigDecimal.ZERO;
 	private Long unitsOnStock = 0L;
 	private int unitsOrdered = 0; // All Purchases.
