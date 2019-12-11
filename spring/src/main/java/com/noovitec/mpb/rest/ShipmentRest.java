@@ -187,7 +187,8 @@ class ShipmentRest {
 		for (ShipmentItem si : shipment.getShipmentItems()) {
 			itemQuantity += si.getUnits() + "\n";
 			saleNumber += si.getSaleItem().getSale().getNumber() +"\n";
-			itemDescription += si.getSaleItem().getItem().getNumber() + " - " +si.getSaleItem().getItem().getName() + "\n";
+			itemDescription += si.getSaleItem().getItem().getNumber() + " - " +si.getSaleItem().getItem().getName() 
+					+ (si.getSaleItem().getSku()==null?"":"SKU# "+ si.getSaleItem().getSku()) + "\n";
 			itemCases += si.getCases() + "\n";
 			itemPallets += si.getPallets() + "\n";
 		}
