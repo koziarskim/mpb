@@ -17,7 +17,7 @@
     </b-row>
     <b-table :sticky-header="browserHeight()" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="scheduleEvents" :fields="fields">
       <template v-slot:cell(line.number)="row">
-        <b-button size="sm" @click="goToProductionLine(row.item.line.id)" variant="link">{{row.item.line.id}}</b-button>
+        <b-button size="sm" @click="goToProductionLine(row.item)" variant="link">{{row.item.line.id}}</b-button>
       </template>
       <template v-slot:cell(item)="row">
         <b-button size="sm" @click="goToItem(row.item.saleItem.item.id)" variant="link">{{row.item.saleItem.item.name}}</b-button>
@@ -214,9 +214,9 @@ export default {
     goToItem(item_id) {
       router.push("/itemEdit/" +item_id);
 	  },
-    goToProductionLine(line_id) {
-      var query = { date: this.schedule.date };
-      router.push({ path: "/productionLine/"+line_id, query: query } );
+    goToProductionLine(se) {
+      var query = { date: this.schedule.date, seId: se.id};
+      router.push({ path: "/productionLine/"+se.line.id, query: query } );
 	  },
   },
   mounted() {
