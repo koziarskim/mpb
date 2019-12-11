@@ -1,6 +1,7 @@
 package com.noovitec.mpb.entity;
 
 import javax.persistence.Entity;
+import javax.persistence.Transient;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,4 +24,10 @@ public class Address extends BaseEntity {
 	private String type;
 	private boolean visible;
 	
+	@Transient
+	private String label;
+
+	public String getLabel() {
+		return this.dc + " - " + this.street;
+	}
 }

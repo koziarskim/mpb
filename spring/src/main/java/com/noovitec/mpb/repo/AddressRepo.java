@@ -10,10 +10,15 @@ import com.noovitec.mpb.entity.Address;
 
 public interface AddressRepo extends JpaRepository<Address, Long> {
 	
-	@Query("select distinct new com.noovitec.mpb.dto.KeyValueDto(a.id, concat(a.street, ', ', a.city)) from Customer cu "
+	@Query("select distinct new com.noovitec.mpb.dto.KeyValueDto(a.id, a.dc) from Customer cu "
 			+ "join cu.addresses a "
 			+ "where cu.id = :customer_id")
 	List<KeyValueDto> findKvByCustomer(Long customer_id);
+
+	@Query("select a from Customer cu "
+			+ "left join cu.addresses a "
+			+ "where cu.id = :customer_id")
+	List<Address> findByCustomer(Long customer_id);
 
 	@Query("select distinct new com.noovitec.mpb.dto.KeyValueDto(a.id, concat(a.street, ', ', a.city)) from Address a "
 			+ "where upper(a.type) = upper(:type)")

@@ -15,7 +15,7 @@
       </b-col>
       <b-col cols=2>
         <label class="top-label">Freight Terms:</label>
-        <input class="form-control" type="tel" v-model="shipment.freightTerms">
+        <b-select option-value="id" option-text="name" :list="availableFreightTerms" v-model="shipment.freightTerms" placeholder="Pick Freight"></b-select>
       </b-col>
       <b-col cols=2>
         <label class="top-label">Load Number:</label>
@@ -50,7 +50,7 @@
             <input class="form-control" type="tel" v-model="shipment.fob">
           </b-col>
           <b-col cols=4>
-            <label class="top-label">Freight/NMFC:</label>
+            <label class="top-label">Freight Class/NMFC:</label>
             <input class="form-control" type="tel" v-model="shipment.freightNmfc">
           </b-col>
         </b-row>
@@ -154,6 +154,12 @@ export default {
         { key: "cases", label: "Cases", sortable: false },
         { key: "pallets", label: "Pallets", sortable: false },
         { key: "action", label: "Action", sortable: false }
+      ],
+      availableFreightTerms: [
+        {id: "TPB", name: "TP Bill"},
+        {id: "PRP", name: "Pre Paid"},
+        {id: "TPO", name: "TP Bill Other"},
+        {id: "COL", name: "Collect"}
       ]
     };
   },

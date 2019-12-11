@@ -210,18 +210,26 @@ export default {
 		},
 		updateProduction(production){
 			production.scheduleEvent = {id: this.scheduleEvent.id};
-      return http.post("/production", production).then(response => {
-				this.getScheduleEvent(this.scheduleEvent.id);
+      // http.post("/production", production).then(response => {
+				this.saveScheduleEvent();
+      // }).catch(e => {
+        // console.log("API error: " + e);
+      // });
+		},
+		deleteProduction(production_id){
+      http.delete("/production/"+production_id).then(response => {
+				this.saveScheduleEvent();
       }).catch(e => {
         console.log("API error: " + e);
       });
 		},
-		deleteProduction(production_id){
-      return http.delete("/production/"+production_id).then(response => {
-				this.getScheduleEvent(this.scheduleEvent.id);
-      }).catch(e => {
-        console.log("API error: " + e);
-      });
+		saveScheduleEvent(){
+				this.scheduleEvent.finishTime = this.sortedProductions[this.sortedProductions.length-1].finishTime;
+				http.post("/scheduleEvent", this.scheduleEvent).then(response => {
+					this.getScheduleEvent(this.scheduleEvent.id);
+				}).catch(e => {
+					console.log("API error: " + e);
+				});
 		},
     getScheduleEvents() {
       http.get("/scheduleEvent/date/"+this.date+"/line/" + this.line_id).then(response => {

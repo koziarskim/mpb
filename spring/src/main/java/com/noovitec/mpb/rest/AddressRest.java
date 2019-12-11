@@ -1,7 +1,9 @@
 package com.noovitec.mpb.rest;
 
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -46,7 +48,15 @@ class AddressRest {
 	
 	@GetMapping("/address/customer/{customer_id}")
 	Collection<KeyValueDto> getByCustomer(@PathVariable Long customer_id) {
-		return addressRepo.findKvByCustomer(customer_id);
+		List<KeyValueDto> dtos = new ArrayList<KeyValueDto>();
+		List<Address> addresses = addressRepo.findByCustomer(customer_id);
+		for(Address a: addresses) {
+			KeyValueDto dto = new KeyValueDto();
+			dto.setId(a.getId());
+			dto.setName(a.getDc() + " - "+ a.getStreet());
+			dtos.add(dto);
+		}
+		return dtos;
 	}
 	
 	@GetMapping("/address/type/{type}")

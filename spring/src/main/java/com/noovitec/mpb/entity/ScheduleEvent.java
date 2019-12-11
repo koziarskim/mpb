@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -46,7 +47,7 @@ public class ScheduleEvent extends BaseEntity {
 	private Schedule schedule;
 
 	@JsonIgnoreProperties(value = { "scheduleEvent" }, allowSetters = true)
-	@OneToMany()
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "schedule_event_id")
 	private Collection<Production> productions = new HashSet<Production>();
 
