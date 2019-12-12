@@ -1,14 +1,18 @@
 <template>
     <b-container fluid>
         <b-row style="padding-bottom: 4px;">
-            <b-col cols="2">
+            <b-col cols=2>
                 <span style="text-align: left; font-size: 18px; font-weight: bold">Items</span>
             </b-col>
-            <b-col cols="3">
-                <input class="form-control" type="tel" v-model="searchItem" @click="searchComponent = ''" @keyup.enter="getItems('item')" placeholder="Search Number, Name, Brand or Category"/>
+            <b-col cols=3>
+                <input class="form-control" type="tel" v-model="searchItem" @click="searchComponent = ''" @keyup.enter="getItems('item')" placeholder="Search Item Number or Name"/>
             </b-col>
-            <b-col cols="3">
+            <b-col cols=3>
                 <input class="form-control" type="tel" v-model="searchComponent" @click="searchItem = ''" @keyup.enter="getItems('component')" placeholder="Search Component Number or Name"/>
+            </b-col>
+            <b-col cols=2>
+              <div style="display:flex"><input style="margin-right: 7px" type="checkbox" v-model="hideProduction"/><label class="top-label">Hide Produced</label></div>
+              <div style="display:flex"><input style="margin-right: 7px" type="checkbox" v-model="hideShipped"/><label class="top-label">Hide Shipped </label></div>
             </b-col>
             <b-col>
                 <div style="text-align: right;">
@@ -47,6 +51,8 @@ export default {
       pageable: {totalElements: 100, currentPage: 1, perPage: 7, sortBy: 'name', sortDesc: false},
       searchItem: "",
       searchComponent: "",
+      hideProduction: true,
+      hideShipped: true,
       fields: [
         { key: 'name', sortable: true, label: 'Item # (Name)'},
         { key: 'brand', sortable: true, label: 'Brand'},
@@ -66,16 +72,16 @@ export default {
         if(!e.sortBy){ return }
         this.pageable.sortBy = e.sortBy;
         this.pageable.sortDesc = e.sortDesc;
-        this.getItems();
+        this.getItems("");
     },
     paginationChange(page){
         this.pageable.currentPage = page;
-        this.getItems();
+        this.getItems("");
     },
     getItems(type) {
       var searchKey = type=="item"?this.searchItem:this.searchComponent;
       http
-        .get("/item/pageable", {params: {pageable: this.pageable, searchKey: searchKey, searchType: type}})
+        .get("/item/pageable", {params: {pageable: this.pageable, searchKey: searchKey, searchType: type, hideProduction: this.hideProduction, hideShipped: this.hideShipped}})
         .then(response => {
           //ItemListDto
           this.items = response.data.content;
@@ -89,7 +95,7 @@ export default {
       this.$bvModal.msgBoxConfirm('Are you sure you want to delete Item?').then(ok => {
         if(ok){
           http.delete("/item/"+item_id).then(response => {
-              this.getItems();
+              this.getItems("");
             }).catch(e => {
               console.log("Error post");
             });
@@ -125,7 +131,7 @@ export default {
     },
   },
   mounted() {
-     this.getItems();
+     this.getItems("");
   }
 };
 </script>
