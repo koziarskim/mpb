@@ -86,11 +86,6 @@ class ItemRest {
 		return (Collection<Item>) itemRepo.findAll();
 	}
 
-	@GetMapping("/itemListDto")
-	Collection<ItemListDto> getDtos() {
-		return itemRepo.getItemListDto();
-	}
-
 	@GetMapping("/item/kv")
 	Collection<KeyValueDto> getAllKeyValueDtos() {
 		return itemRepo.getAllKeyValueDtos();
