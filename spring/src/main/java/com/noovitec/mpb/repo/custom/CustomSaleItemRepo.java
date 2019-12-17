@@ -22,10 +22,10 @@ public interface CustomSaleItemRepo {
 		EntityManager entityManager;
 
 		@Override
-		public List<Long> findIds(String numberName, Long customerId, Long itemId, boolean includeAll) {
+		public List<Long> findIds(String numberName, Long customerId, Long itemId, boolean hideShip) {
 			String q = "select distinct si.id from SaleItem si " + "join si.item i " + "join si.sale s " + "join s.customer cu " + "where si.id is not null ";
-			if(!includeAll) {
-				q += "and si.units > si.unitsShipped ";
+			if(hideShip) {
+				q += "and si.units <> si.unitsShipped ";
 			}
 			if (numberName != null && !numberName.isEmpty()) {
 				q += "and (upper(s.number) like concat('%',upper(:numberName),'%') ";

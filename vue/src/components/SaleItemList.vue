@@ -5,8 +5,8 @@
                 <span style="text-align: left; font-size: 18px; font-weight: bold">Sales by Item</span>
                 <b-form-checkbox size="sm" v-model="itemView">Item View</b-form-checkbox>
             </b-col>
-            <b-col cols="3">
-                <input class="form-control" type="tel" v-model="numberName" @keyup.enter="getSaleItems()" placeholder="Search Sale Number or Name"/>
+            <b-col cols="2">
+                <input class="form-control" type="tel" v-model="numberName" @keyup.enter="getSaleItems()" placeholder="Search Sale #, Name"/>
             </b-col>
             <b-col cols="2">
               <b-select option-value="id" option-text="name" :list="availableCustomers" v-model="customer" placeholder="Search Customer"></b-select>
@@ -14,9 +14,8 @@
             <b-col cols="2">
               <b-select option-value="id" option-text="name" :list="availableItems" v-model="item" placeholder="Search Item"></b-select>
             </b-col>
-            <b-col cols="1">
-              <label class="top-label">All?</label><br/>
-              <input type="checkbox" v-model="includeAll"/>
+            <b-col cols="2">
+              <div style="display:flex"><input style="margin-right: 7px; margin-top: 3px;" type="checkbox" v-model="hideShip"/><label class="top-label">Hide Shpped</label></div>
             </b-col>
             <b-col>
                 <div style="text-align: right;">
@@ -38,7 +37,10 @@
             <input type="checkbox" v-model="selectedSaleItemIds" :value="row.item.id" @change="checkboxSelected(row.item)" :disabled="checkboxDisabled(row.item)">
           </template>
         </b-table>
-		<b-pagination v-model="pageable.currentPage" :per-page="pageable.perPage" :total-rows="pageable.totalElements" @change="paginationChange"></b-pagination>
+        <div style="display: flex">
+		      <b-pagination size="sm" v-model="pageable.currentPage" :per-page="pageable.perPage" :total-rows="pageable.totalElements" @change="paginationChange"></b-pagination>
+          <span style="margin-top: 5px">Total of {{pageable.totalElements}} Items Sold</span>
+        </div>
     </b-container>
 </template>
 <script>
@@ -53,7 +55,7 @@ export default {
       securite: securite,
       navigation: navigation,
       pageable: {totalElements: 100, currentPage: 1, perPage: 7, sortBy: 'id', sortDesc: false},
-      includeAll: false,
+      hideShip: true,
       searchSale: "",
       searchItem: "",
       itemView: true,
@@ -79,7 +81,7 @@ export default {
     };
   },
   watch: {
-    includeAll(newValue, oldValue){
+    hideShip(newValue, oldValue){
       this.getSaleItems();
     },
     itemView(newValue, oldValue){
@@ -117,7 +119,7 @@ export default {
         this.getSaleItems();
     },
   getSaleItems(){
-    http.get("/saleItem/pageable", {params: {pageable: this.pageable, numberName: this.numberName, customerId: this.customer.id, itemId: this.item.id, includeAll: this.includeAll}}).then(r => {
+    http.get("/saleItem/pageable", {params: {pageable: this.pageable, numberName: this.numberName, customerId: this.customer.id, itemId: this.item.id, hideShip: this.hideShip}}).then(r => {
       this.saleItems = r.data.content;
       this.pageable.totalElements = r.data.totalElements;
     }).catch(e => {
