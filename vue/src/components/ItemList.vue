@@ -11,8 +11,8 @@
                 <input class="form-control" type="tel" v-model="searchComponent" @click="searchItem = ''" @keyup.enter="getItems('component')" placeholder="Search Component Number or Name"/>
             </b-col>
             <b-col cols=2>
-              <div style="display:flex"><input style="margin-right: 7px" type="checkbox" v-model="hideProduction"/><label class="top-label">Hide Produced</label></div>
-              <div style="display:flex"><input style="margin-right: 7px" type="checkbox" v-model="hideShipped"/><label class="top-label">Hide Shipped </label></div>
+              <div style="display:flex"><input style="margin-right: 7px" type="checkbox" v-model="hideProd"/><label class="top-label">Hide Produced</label></div>
+              <div style="display:flex"><input style="margin-right: 7px" type="checkbox" v-model="hideShip"/><label class="top-label">Hide Shipped </label></div>
             </b-col>
             <b-col>
                 <div style="text-align: right;">
@@ -38,7 +38,10 @@
               <b-button size="sm" style="margin-left: 3px" @click.stop="deleteItem(row.item.id)">x</b-button>
           </template>
         </b-table>
-        <b-pagination v-model="pageable.currentPage" :per-page="pageable.perPage" :total-rows="pageable.totalElements" @change="paginationChange"></b-pagination>
+        <div style="display: flex">
+          <b-pagination size="sm" v-model="pageable.currentPage" :per-page="pageable.perPage" :total-rows="pageable.totalElements" @change="paginationChange"></b-pagination>
+          <span style="margin-top: 5px">Total of {{pageable.totalElements}} Items</span>
+        </div>
     </b-container>
 </template>
 <script>
@@ -51,8 +54,8 @@ export default {
       pageable: {totalElements: 100, currentPage: 1, perPage: 7, sortBy: 'name', sortDesc: false},
       searchItem: "",
       searchComponent: "",
-      hideProduction: true,
-      hideShipped: true,
+      hideProd: true,
+      hideShip: true,
       fields: [
         { key: 'name', sortable: true, label: 'Item # (Name)'},
         { key: 'brand', sortable: true, label: 'Brand'},
@@ -67,6 +70,14 @@ export default {
       items: [] //ItemListDto
     };
   },
+  watch: {
+    hideProd(newValue, oldValue){
+      this.getItems("");
+    },
+    hideShip(newValue, oldValue){
+      this.getItems("");
+    }
+  },
   methods: {
     sorted(e){
         if(!e.sortBy){ return }
@@ -79,9 +90,10 @@ export default {
         this.getItems("");
     },
     getItems(type) {
-      var searchKey = type=="item"?this.searchItem:this.searchComponent;
+      var type = this.searchItem?"item":"component"
+      var searchKey = this.searchItem?this.searchItem:this.searchComponent;
       http
-        .get("/item/pageable", {params: {pageable: this.pageable, searchKey: searchKey, searchType: type, hideProduction: this.hideProduction, hideShipped: this.hideShipped}})
+        .get("/item/pageable", {params: {pageable: this.pageable, searchKey: searchKey, searchType: type, hideProd: this.hideProd, hideShip: this.hideShip}})
         .then(response => {
           //ItemListDto
           this.items = response.data.content;
