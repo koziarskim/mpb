@@ -11,6 +11,10 @@
         <b-col cols="2">
           <input class="form-control" type="tel" v-model="searchItem" @click="searchSale = ''" @keyup.enter="getSales('item')" placeholder="Search Item"/>
         </b-col>
+        <b-col cols=2>
+          <div style="display:flex"><input style="margin-right: 7px" type="checkbox" v-model="hideProd"/><label class="top-label">Hide Produced</label></div>
+          <div style="display:flex"><input style="margin-right: 7px" type="checkbox" v-model="hideShip"/><label class="top-label">Hide Shipped </label></div>
+        </b-col>
         <b-col>
           <div style="text-align: right;">
           <b-button type="submit" variant="primary" @click="goToSale('')">New S.O.</b-button>
@@ -36,7 +40,10 @@
             <b-button size="sm" @click.stop="deleteSale(row.item.id)">x</b-button>
         </template>
       </b-table>
-		<b-pagination v-model="pageable.currentPage" :per-page="pageable.perPage" :total-rows="pageable.totalElements" @change="paginationChange"></b-pagination>
+      <div style="display: flex">
+		    <b-pagination v-model="pageable.currentPage" :per-page="pageable.perPage" :total-rows="pageable.totalElements" @change="paginationChange"></b-pagination>
+        <span style="margin-top: 5px">Total of {{pageable.totalElements}} Sales</span>
+      </div>
     </b-container>
 </template>
 <script>
@@ -54,6 +61,8 @@ export default {
       searchSale: "",
       searchItem: "",
       itemView: false,
+      hideProd: true,
+      hideShip: true,
       fields: [
         { key: "number", label: "Sale # (Name)", sortable: false },
         { key: "customerName", label: "Customer", sortable: false },
@@ -73,6 +82,12 @@ export default {
       if(newValue==true){
         navigation.goTo("/saleItemList/")
       }
+    },
+    hideProd(newValue, oldValue){
+      this.getSales();
+    },
+    hideShip(newValue, oldValue){
+      this.getSales();
     }
   },
   methods: {
@@ -92,10 +107,11 @@ export default {
         this.pageable.currentPage = page;
         this.getSales();
     },
-	getSales(type) {
-    var searchKey = type=="sale"?this.searchSale:this.searchItem;
+	getSales() {
+    var type = this.searchSale?"sale":"item"
+    var searchKey = this.searchSale?this.searchSale:this.searchItem;
       http
-        .get("/sale/pageable", {params: {pageable: this.pageable, searchKey: searchKey, searchType: type}})
+        .get("/sale/pageable", {params: {pageable: this.pageable, searchKey: searchKey, searchType: type, hideProd: this.hideProd, hideShip: this.hideShip}})
         .then(response => {
           //SaleListDto
           this.sales = response.data.content;

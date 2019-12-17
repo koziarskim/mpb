@@ -57,19 +57,12 @@ class SaleRest {
 	}
 
 	@GetMapping("/sale/pageable")
-	Page<SaleListDto> getAllPageable(@RequestParam(name = "pageable", required = false) Pageable pageable,
-			@RequestParam(name = "searchKey", required = false) String searchKey, @RequestParam(name = "searchType", required = false) String searchType) {
-		Page<Sale> sales = null;
-		if (searchType == null || searchType.isBlank() || searchKey == null || searchKey.isBlank()) {
-			sales = saleRepo.findPage(pageable);
-		} else if (searchType.equals("sale") && !searchKey.isBlank()) {
-			sales = saleRepo.findPageBySale(pageable, searchKey);
-		} else if (searchType.equals("item") && !searchKey.isBlank()) {
-			sales = saleRepo.findPageByItem(pageable, searchKey);
-		}
-		if (sales == null) {
-			return Page.empty();
-		}
+	Page<SaleListDto> getAllPageable(@RequestParam(required = false) Pageable pageable,
+			@RequestParam(required = false) String searchKey,
+			@RequestParam(required = false) String searchType,
+			@RequestParam(required = false) boolean hideProd,
+			@RequestParam(required = false) boolean hideShip) {
+		Page<Sale> sales = saleRepo.findPagable(pageable, searchKey, searchType, hideProd, hideShip);
 		Page<SaleListDto> all = sales.map(sale -> {
 			SaleListDto dto = new SaleListDto();
 			dto.setId(sale.getId());
