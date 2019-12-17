@@ -6,7 +6,7 @@
           <b-form-checkbox size="sm" v-model="itemView">Item View</b-form-checkbox>
         </b-col>
         <b-col cols="3">
-          <input class="form-control" type="tel" v-model="searchSale" @click="searchItem = ''" @keyup.enter="getSales('sale')" placeholder="Search Number, Name or Customer"/>
+          <input class="form-control" type="tel" v-model="searchSale" @click="searchItem = ''" @keyup.enter="getSales('sale')" placeholder="Search Number or Name"/>
         </b-col>
         <b-col cols="2">
           <input class="form-control" type="tel" v-model="searchItem" @click="searchSale = ''" @keyup.enter="getSales('item')" placeholder="Search Item"/>
@@ -41,7 +41,7 @@
         </template>
       </b-table>
       <div style="display: flex">
-		    <b-pagination v-model="pageable.currentPage" :per-page="pageable.perPage" :total-rows="pageable.totalElements" @change="paginationChange"></b-pagination>
+		    <b-pagination size="sm" v-model="pageable.currentPage" :per-page="pageable.perPage" :total-rows="pageable.totalElements" @change="paginationChange"></b-pagination>
         <span style="margin-top: 5px">Total of {{pageable.totalElements}} Sales</span>
       </div>
     </b-container>

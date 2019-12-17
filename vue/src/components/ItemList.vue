@@ -8,7 +8,7 @@
                 <input class="form-control" type="tel" v-model="searchItem" @click="searchComponent = ''" @keyup.enter="getItems('item')" placeholder="Search Item Number or Name"/>
             </b-col>
             <b-col cols=3>
-                <input class="form-control" type="tel" v-model="searchComponent" @click="searchItem = ''" @keyup.enter="getItems('component')" placeholder="Search Component Number or Name"/>
+                <input class="form-control" type="tel" v-model="searchComponent" @click="searchItem = ''" @keyup.enter="getItems('component')" placeholder="Search Component"/>
             </b-col>
             <b-col cols=2>
               <div style="display:flex"><input style="margin-right: 7px" type="checkbox" v-model="hideProd"/><label class="top-label">Hide Produced</label></div>
