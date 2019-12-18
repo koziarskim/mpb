@@ -193,7 +193,6 @@ export default {
       router.push("/itemEdit/"+itemId);
     },
     goToProduction(se) {
-      // router.push("/productionSale/" + se_id);
       var query = { date: se.schedule.date, seId: se.id };
       router.push({ path: "/productionLine/"+se.line.id, query: query } );
     },
