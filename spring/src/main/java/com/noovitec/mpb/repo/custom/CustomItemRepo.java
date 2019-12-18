@@ -41,10 +41,10 @@ public interface CustomItemRepo {
 						+ "or upper(c.number) like concat('%',upper(:searchKey),'%')) ";
 			}
 			if(hideProd) {
-				q += "and i.unitsSold <> i.unitsProduced ";
+				q += "and i.unitsSold > i.unitsProduced ";
 			}
 			if(hideShip) {
-				q += "and i.unitsSold <> i.unitsShipped ";
+				q += "and i.unitsSold > i.unitsShipped ";
 			}
 			q += "order by i.name asc";
 			Query query = entityManager.createQuery(q);
