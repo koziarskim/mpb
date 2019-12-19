@@ -5,5 +5,3 @@
 /vue/node_modules
 /vue/yarn.lock
 /vue/dist
-/env/clean_schema.sql
-/env/clean_data.sql
