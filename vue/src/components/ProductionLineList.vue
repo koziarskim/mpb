@@ -23,6 +23,9 @@
         <b-button size="sm" @click="goToItem(row.item.saleItem.item.id)" variant="link">{{row.item.saleItem.item.name}}</b-button>
 		    <span>({{row.item.saleItem.sale.number}} - {{row.item.saleItem.sale.customer.name}})</span>
       </template>
+      <template v-slot:cell(dc)="row">
+		    <span>({{row.item.saleItem.sale.shippingAddress.dc}} ({{row.item.saleItem.sale.shippingAddress.state}})</span>
+      </template>
       <template v-slot:cell(totalTime)="row">
 		  <span>{{formatter.secondsToTime(row.item.totalTime)}}</span>
       </template>
@@ -72,7 +75,8 @@ export default {
       sortDesc: false,
       fields: [
         { key: "line.number", label: "Line", sortable: false },
-		    { key: "item", label: "Item (Sale & Customer)", sortable: false },
+        { key: "item", label: "Item (Sale & Customer)", sortable: false },
+        { key: "dc", label: "DC (State)", sortable: false },
 		    { key: "saleItem.units", label: "Sold", sortable: true },
 		    { key: "unitsScheduled", label: "Scheduled", sortable: true },
 		    { key: "unitsProduced", label: "Produced", sortable: true },

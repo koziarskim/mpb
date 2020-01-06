@@ -15,7 +15,6 @@ set DB_NAME=mpb_%DATE_FORMAT%
 echo Schema file name is %SCHEMA_FILE%
 echo Data file name is %DATA_FILE%
 echo DB name: %DB_NAME%
-echo Processing: %ARG%
 
 if "%ARG%"=="backup" (
 	set BACKUP=true
@@ -29,12 +28,14 @@ if "%ARG%"=="full" (
 )
 :backup
 if "%BACKUP%" == "true" (
+	echo Processing Backup...
 	if exist %SCHEMA_FILE% (echo Schema File already exist %SCHEMA_FILE% && GOTO import)
 	"C:\Program Files (x86)\pgAdmin 4\v4\runtime\pg_dump.exe" --file %SCHEMA_FILE% --host "mpb.noovitec.com" --port "5432" --username "postgres" --verbose --format=p --create --inserts --column-inserts --schema-only "mpb"
-	"C:\Program Files (x86)\pgAdmin 4\v4\runtime\pg_dump.exe" --file %DATA_FILE% --host "mpb.noovitec.com" --port "5432" --username "postgres" --verbose --format=p --create --inserts --column-inserts --data-only "mpb".
+	"C:\Program Files (x86)\pgAdmin 4\v4\runtime\pg_dump.exe" --file %DATA_FILE% --host "mpb.noovitec.com" --port "5432" --username "postgres" --verbose --format=p --create --inserts --column-inserts --data-only "mpb"
 )
 :import
 if "%IMPORT%" == "true" (
+	echo Processing Import...
 	findstr /v /b /c:"SET " /c:"CREATE DATABASE" /c:"ALTER DATABASE" /c:"\connect" /c:"REVOKE ALL" /c:"GRANT ALL" /c:"SELECT pg_catalog.set_config('search_path'" %SCHEMA_FILE% > %BACKUP_DIR%\clean_schema.sql
 	findstr /v /b /c:"SET " /c:"CREATE DATABASE" /c:"ALTER DATABASE" /c:"\connect" /c:"REVOKE ALL" /c:"GRANT ALL" /c:"SELECT pg_catalog.set_config('search_path'" %DATA_FILE% > %BACKUP_DIR%\clean_data.sql
 	createdb -h localhost -p 5432 -U postgres %DB_NAME% || (GOTO end)
@@ -42,3 +43,4 @@ if "%IMPORT%" == "true" (
 	psql -U postgres -d %DB_NAME% < %BACKUP_DIR%\clean_data.sql
 )
 :end
+echo Done!

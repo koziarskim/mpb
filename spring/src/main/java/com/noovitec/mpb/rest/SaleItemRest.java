@@ -67,6 +67,7 @@ class SaleItemRest {
 			dto.setItemName(saleItem.getItem().getName());
 			dto.setCustomerId(saleItem.getSale().getCustomer().getId());
 			dto.setCustomerName(saleItem.getSale().getCustomer().getName());
+			dto.setDc(saleItem.getSale().getShippingAddress()!=null?saleItem.getSale().getShippingAddress().getDc()+" ("+saleItem.getSale().getShippingAddress().getState():"");
 			dto.setUnitsSold(Long.valueOf(saleItem.getUnits()));
 			dto.setUnitsProduced(saleItem.getUnitsProduced());
 			dto.setUnitsShipped(saleItem.getUnitsShipped());

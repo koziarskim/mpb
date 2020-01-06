@@ -66,7 +66,7 @@ export default {
       fields: [
         { key: "number", label: "Sale # (Name)", sortable: false },
         { key: "customerName", label: "Customer", sortable: false },
-        { key: "dc", label: "DC", sortable: false },
+        { key: "dc", label: "DC (State)", sortable: false },
         { key: "date", label: "Date", sortable: false },
         { key: "unitsSold", label: "Sold", sortable: false },
         { key: "unitsScheduled", label: "Scheduled", sortable: false },
@@ -74,7 +74,7 @@ export default {
         { key: "unitsShipped", label: "Shipped", sortable: false },
         { key: "action", label: "Action", sortable: false}
       ],
-      sales: []
+      sales: [] //SaleListDto
     };
   },
   watch: {

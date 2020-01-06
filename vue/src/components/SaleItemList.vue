@@ -71,6 +71,7 @@ export default {
         { key: "number", label: "Sale # (Name)", sortable: false },
         { key: "itemNumber", label: "Item", sortable: false },
         { key: "customerName", label: "Customer", sortable: false },
+        { key: "dc", label: "DC (State)", sortable: false },
         { key: "unitsSold", label: "Sold", sortable: false },
         { key: "unitsProduced", label: "Produced", sortable: false },
         { key: "unitsShipped", label: "Shipped", sortable: false },

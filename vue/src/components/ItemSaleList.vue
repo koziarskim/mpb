@@ -13,6 +13,9 @@
           <template v-slot:cell(sale)="row">
             <b-button size="sm" @click.stop="goToSale(row.item.sale.id)" variant="link">{{row.item.sale?row.item.sale.number:''}}</b-button>
           </template>
+          <template v-slot:cell(dc)="row">
+            <span>{{getDc(row.item)}}</span>
+          </template>
           <template v-slot:cell(unitsSchedProd)="row">
             <b-button size="sm" @click.stop="goToScheduled(row.item.sale.id)" variant="link">{{row.item.unitsScheduled}}/{{row.item.unitsProduced}}</b-button>
           </template>
@@ -83,7 +86,7 @@ export default {
       columns: [
         { key: "sale", label: "Sale", sortable: false },
         { key: "sale.customer.name", label: "Customer", sortable: false },
-        { key: "sale.shippingAddress.dc", label: "DC", sortable: false },
+        { key: "dc", label: "DC (State)", sortable: false },
         { key: "units", label: "Sold", sortable: false },
         { key: "unitsSchedProd", label: "Sched/Prod", sortable: false },
         { key: "action", label: "Action", sortable: false },
@@ -119,6 +122,13 @@ export default {
   computed: {},
   watch: {},
   methods: {
+    getDc(si){
+      var dc = "";
+      if(si.sale.shippingAddress){
+        dc = si.sale.shippingAddress.dc + " ("+si.sale.shippingAddress.state+")";
+      }
+      return dc;
+    },
     toggleModal(saleItem){
       this.modalShow = !this.modalShow;
       this.scheduleData.units = +saleItem.units - +saleItem.unitsScheduled;

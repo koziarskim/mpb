@@ -68,7 +68,7 @@ class SaleRest {
 			dto.setId(sale.getId());
 			dto.setNumber(sale.getNumber());
 			dto.setName(sale.getName());
-			dto.setDc(sale.getShippingAddress() == null ? "" : sale.getShippingAddress().getDc());
+			dto.setDc(sale.getShippingAddress() == null ? "" : sale.getShippingAddress().getDc()+" ("+sale.getShippingAddress().getState()+")");
 			dto.setDate(sale.getDate());
 			dto.setCustomerName(sale.getCustomer() == null ? "" : sale.getCustomer().getName());
 			dto.setUnitsSold(sale.getUnitsSold());

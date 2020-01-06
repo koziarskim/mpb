@@ -18,6 +18,7 @@ public class SaleItemDto {
 	private String itemNumber;
 	private Long customerId;
 	private String customerName;
+	private String dc;
 	private Long unitsSold;
 	private Long unitsProduced;
 	private Long unitsShipped;
