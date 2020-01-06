@@ -24,7 +24,7 @@
         </b-navbar-nav>
         <b-navbar-nav v-if="hideNavBar()">
           <img style="height: 37px; margin-top: 5px" src="./assets/mpb-logo.png">
-          <span style="color: #d2cdcd; padding: 7px 20px; font-size: 20px">Marketplace Brands</span>
+          <span style="color: #d2cdcd; padding: 7px 20px; font-size: 20px">MIMS | Marketplace Inventory Management System</span>
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
