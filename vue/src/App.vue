@@ -16,7 +16,17 @@
 		      <b-nav-item v-on:click="goTo('/productionLineList')" :class="navClass('production')">Production</b-nav-item>
         </b-navbar-nav>
         <b-navbar-nav v-if="!hideNavBar()" style="margin:0px 0px 0px auto;">
-          <b-nav-item-dropdown right :text="securite.getUser().fullName">
+          <b-nav-item-dropdown right :text="navigate.getSeason().name">
+            <b-dropdown-item v-for="season in availableSeasons" :key="season.id" @click="changeSeason(season)">{{season.name}}</b-dropdown-item>
+          </b-nav-item-dropdown>
+        </b-navbar-nav>
+        <b-navbar-nav v-if="!hideNavBar()">
+          <b-nav-item-dropdown right :text="navigate.getYear().name">
+            <b-dropdown-item v-for="year in availableYears" :key="year.id" @click="changeYear(year)">{{year.name}}</b-dropdown-item>
+          </b-nav-item-dropdown>
+        </b-navbar-nav>
+        <b-navbar-nav v-if="!hideNavBar()">
+          <b-nav-item-dropdown right :text="getFullName()">
             <b-dropdown-item @click="goTo('/Profile')">Profile</b-dropdown-item>
             <b-dropdown-item v-if="securite.hasRole(['ADMIN'])" @click="goTo('/users')">Manage Users</b-dropdown-item>
             <b-dropdown-item @click="logout()">Signout</b-dropdown-item>
@@ -47,10 +57,45 @@ export default {
     return {
       securite: securite,
       navigate: navigate,
+      availableSeasons: [],
+      availableYears: [],
     };
   },
   computed: {},
   methods: {
+    getAvailableSeasons() {
+      http.get("/season").then(response => {
+        this.availableSeasons = response.data;
+      }).catch(e => {
+        console.log("API error: " + e);
+      });
+    },
+    getAvailableYears() {
+      http.get("/year").then(response => {
+        this.availableYears = response.data;
+      }).catch(e => {
+        console.log("API error: " + e);
+      });
+    },
+    getFullName(){
+      //Not sure why this creates infinite loop without if statement.
+      //Also, it would be good to make it work on watch() or mounted()
+      if(this.availableSeasons.length == 0){
+        this.getAvailableSeasons()
+      }
+      if(this.availableYears.length == 0){
+        this.getAvailableYears()
+      }
+      return securite.getUser().fullName;
+    },
+    changeSeason(season){
+      this.navigate.setSeason(season);
+      router.go()
+    },
+    changeYear(year){
+      this.navigate.setYear(year);
+      router.go()
+    },
     navClass(navName){
       return navigate.selected == navName?'highlight':'';
     },
@@ -70,7 +115,7 @@ export default {
     }
   },
   mounted(){
-      if(!this.securite.getUser()){
+      if(!this.securite.getUser() || !this.securite.getUser().id){
           this.goTo("/login");
       }
   }
