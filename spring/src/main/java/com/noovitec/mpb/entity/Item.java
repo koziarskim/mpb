@@ -73,6 +73,11 @@ public class Item extends BaseEntity {
 
 	@JsonIgnoreProperties(value = { "items" }, allowSetters = true)
 	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "year_id", referencedColumnName = "id")
+	private Year year;
+
+	@JsonIgnoreProperties(value = { "items" }, allowSetters = true)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "upc_id", referencedColumnName = "id")
 	private Upc upc;
 

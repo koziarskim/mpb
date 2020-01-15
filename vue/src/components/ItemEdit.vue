@@ -21,7 +21,11 @@
         <b-row>
           <b-col cols="3">
             <label class="top-label">Season:</label>
-            <b-select option-value="id" option-text="name" :list="availableSeasons" v-model="season" placeholder="Select season"></b-select>
+            <b-select option-value="id" option-text="name" :list="availableSeasons" v-model="item.season" placeholder="Season"></b-select>
+          </b-col>
+          <b-col cols="2">
+            <label class="top-label">Year:</label>
+            <b-select option-value="id" option-text="name" :list="availableYears" v-model="item.year" placeholder="Year"></b-select>
           </b-col>
           <b-col cols="3" offset="3">
             <!-- <label class="top-label">Case UPC#</label>
@@ -39,11 +43,11 @@
             <b-row>
               <b-col cols="4">
                 <label class="top-label">Category:</label>
-                <b-select option-value="id" option-text="value" :list="availableItemCs" v-model="category" placeholder="Select category"></b-select>
+                <b-select option-value="id" option-text="value" :list="availableItemCs" v-model="item.category" placeholder="Select category"></b-select>
               </b-col>
               <b-col cols="4">
                 <label class="top-label">Brand:</label>
-                <b-select option-value="id" option-text="name" :list="availableBrands" v-model="brand" placeholder="Select Brand"></b-select>
+                <b-select option-value="id" option-text="name" :list="availableBrands" v-model="item.brand" placeholder="Select Brand"></b-select>
               </b-col>
             </b-row>
             <b-row>
@@ -184,31 +188,35 @@ import http from "../http-common";
 import router from "../router";
 import axios from "axios";
 import httpUtils from "../httpUtils";
+import navigation from "../utils/navigation";
 
 export default {
   name: "edit-component",
   data() {
     return {
+      navigation: navigation,
       availableComp: [],
       query: "",
       selectedComp: null,
       item: {
         itemComponents: [],
+        brand: {},
+        category: {},
+        season: {},
+        year: {},
         // upc: {},
         // caseUpc: {},
         // caseUpc: {},
       },
       image: "",
       httpUtils: httpUtils,
-      brand: {},
-      season: {},
-      category: {},
       component: {},
       availableBrands: [],
       availableComponents: [],
       availableItemCs: [],
       availableComponentCs: [],
-	  availableSeasons: [],
+    availableSeasons: [],
+    availableYears: [],
 	  uploadedFile: null
     };
   },
@@ -294,17 +302,17 @@ export default {
         }
       }
     },
-    brand: function(newValue, oldValue) {
-      this.item.brand = newValue;
-    },
-    category: function(newValue, oldValue) {
-      this.item.category = newValue;
-    },
-    season: function(newValue, oldValue) {
-      if (!this.item.season || this.item.season.id != newValue.id) {
-        this.item.season = newValue;
-      }
-    },
+    // brand: function(newValue, oldValue) {
+    //   this.item.brand = newValue;
+    // },
+    // category: function(newValue, oldValue) {
+    //   this.item.category = newValue;
+    // },
+    // season: function(newValue, oldValue) {
+    //   if (!this.item.season || this.item.season.id != newValue.id) {
+    //     this.item.season = newValue;
+    //   }
+    // },
   },
   methods: {
 	onUpload(file){
@@ -328,15 +336,6 @@ export default {
     getItemData(item_id) {
       return http.get("/item/" + item_id).then(response => {
         this.item = response.data;
-        if (response.data.brand) {
-          this.brand = response.data.brand;
-        }
-        if (response.data.category) {
-          this.category = response.data.category;
-        }
-        if (response.data.season) {
-          this.season = response.data.season;
-        }
         return response.data;
       }).catch(e => {
         console.log("API error: " + e);
@@ -375,14 +374,18 @@ export default {
         });
     },
     getAvailableSeasons() {
-      http
-        .get("/season")
-        .then(response => {
-          this.availableSeasons = response.data;
-        })
-        .catch(e => {
-          console.log("API error: " + e);
-        });
+      http.get("/season").then(response => {
+        this.availableSeasons = response.data;
+      }).catch(e => {
+        console.log("API error: " + e);
+      });
+    },
+    getAvailableYears() {
+      http.get("/year").then(response => {
+        this.availableYears = response.data;
+      }).catch(e => {
+        console.log("API error: " + e);
+      });
     },
     validate(){
         if(!this.item.name || !this.item.number){
@@ -437,10 +440,14 @@ export default {
     var item_id = this.$route.params.item_id;
     if (item_id) {
       this.getItemData(item_id);
+    }else{
+      this.item.season = navigation.getSeason();
+      this.item.year = navigation.getYear();
     }
     this.getAvailableBrands();
     this.getAvailableCategories();
     this.getAvailableSeasons();
+    this.getAvailableYears();
   }
 };
 </script>
