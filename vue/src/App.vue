@@ -16,17 +16,17 @@
 		      <b-nav-item v-on:click="goTo('/productionLineList')" :class="navClass('production')">Production</b-nav-item>
         </b-navbar-nav>
         <b-navbar-nav v-if="!hideNavBar()" style="margin:0px 0px 0px auto;">
-          <b-nav-item-dropdown right :text="navigate.getSeason().name">
+          <b-nav-item-dropdown right :text="securite.getUser().season.name">
             <b-dropdown-item v-for="season in availableSeasons" :key="season.id" @click="changeSeason(season)">{{season.name}}</b-dropdown-item>
           </b-nav-item-dropdown>
         </b-navbar-nav>
         <b-navbar-nav v-if="!hideNavBar()">
-          <b-nav-item-dropdown right :text="navigate.getYear().name">
+          <b-nav-item-dropdown right :text="securite.getUser().year.name">
             <b-dropdown-item v-for="year in availableYears" :key="year.id" @click="changeYear(year)">{{year.name}}</b-dropdown-item>
           </b-nav-item-dropdown>
         </b-navbar-nav>
         <b-navbar-nav v-if="!hideNavBar()">
-          <b-nav-item-dropdown right :text="getFullName()">
+          <b-nav-item-dropdown right :text="securite.getUser().fullName">
             <b-dropdown-item @click="goTo('/Profile')">Profile</b-dropdown-item>
             <b-dropdown-item v-if="securite.hasRole(['ADMIN'])" @click="goTo('/users')">Manage Users</b-dropdown-item>
             <b-dropdown-item @click="logout()">Signout</b-dropdown-item>
@@ -88,11 +88,17 @@ export default {
       return securite.getUser().fullName;
     },
     changeSeason(season){
-      this.navigate.setSeason(season);
+      var user = this.securite.getUser();
+      user.season = season;
+      this.securite.setUser(user);
+      // this.navigate.setSeason(season);
       router.go()
     },
     changeYear(year){
-      this.navigate.setYear(year);
+      var user = this.securite.getUser();
+      user.year = year;
+      this.securite.setUser(user);
+      // this.navigate.setYear(year);
       router.go()
     },
     navClass(navName){
@@ -118,6 +124,8 @@ export default {
       if(!this.securite.getUser() || !this.securite.getUser().id){
           this.goTo("/login");
       }
+      this.getAvailableSeasons();
+      this.getAvailableYears();
   }
 };
 </script>
