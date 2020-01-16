@@ -1,13 +1,23 @@
 import store from "./store.js";
 
 export default {
-  hasRole(roles) {
+  hasRole(codes) {
     var found = false;
-    roles.forEach(role => {
-      if (store.getters.userContext.hasRole(role)) {
+    if (!this.getUser().roles) {
+      return false;
+    }
+    this.getUser().roles.forEach(ur => {
+      if (ur.code == "ADMIN") {
         found = true;
+        return;
       }
-    });
+      codes.forEach(code => {
+        if (ur.code == code) {
+          found = true;
+          return;
+        }
+      });
+    })
     return found;
   },
   getUser() {

@@ -7,23 +7,6 @@ export default new Vuex.Store({
   state: {
     userContext: {
       user: {},
-      hasRole(code) {
-        var roleFound = false;
-        if (!this.user.roles) {
-          return false;
-        }
-        this.user.roles.forEach(role => {
-          if (role.code == "ADMIN") {
-            roleFound = true;
-            return;
-          }
-          if (role.code === code) {
-            roleFound = true;
-            return;
-          }
-        });
-        return roleFound;
-      },
     }
   },
   getters: {
