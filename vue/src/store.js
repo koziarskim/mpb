@@ -24,16 +24,6 @@ export default new Vuex.Store({
         });
         return roleFound;
       },
-      hasRoles(roles) {
-        var roleFound = false;
-        roles.forEach(role => {
-          if (this.hasRole(role)) {
-            roleFound = true;
-            return;
-          }
-        });
-        return roleFound;
-      }
     }
   },
   getters: {
