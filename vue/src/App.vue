@@ -60,6 +60,11 @@ export default {
       availableYears: [],
     };
   },
+  watch: {
+    "securite.user"(old_value, new_value){
+      console.log("update user")
+    }
+  },
   computed: {},
   methods: {
     getAvailableSeasons() {

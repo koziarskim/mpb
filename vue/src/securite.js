@@ -1,3 +1,4 @@
+import session from "./utils/session";
 
 export default {
   hasRole(codes) {
@@ -20,9 +21,11 @@ export default {
     return found;
   },
   getUser() {
-    return JSON.parse(window.localStorage.getItem("user"));
+    return session.getUser();
+    // return JSON.parse(window.localStorage.getItem("user"));
   },
   setUser(user){
-    window.localStorage.setItem("user", JSON.stringify(user));
+    session.setUser(user);
+    // window.localStorage.setItem("user", JSON.stringify(user));
   }
 };
