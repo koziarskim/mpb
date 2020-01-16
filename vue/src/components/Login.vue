@@ -25,11 +25,13 @@
 import http from "../http-common";
 import router from "../router";
 import state from "../data/state";
+import securite from "../securite";
 
 export default {
   name: "add-component",
   data() {
     return {
+      securite: securite,
       user: {}
     };
   },
@@ -38,7 +40,8 @@ export default {
   methods: {
     login() {
       return http.post("/user/login", this.user).then(response => {
-        this.$store.dispatch("changeUser", response.data);
+        this.securite.setUser(response.data)
+        // this.$store.dispatch("changeUser", response.data);
         router.push("/home")
       }).catch(e => {
         console.log("API error: " + e);

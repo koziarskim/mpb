@@ -48,6 +48,7 @@ import securite from "../securite"
 export default {
   data() {
     return {
+      securite: securite,
       user: {},
     };
   },
@@ -59,7 +60,8 @@ export default {
       return http
         .post("/user", this.user)
         .then(response => {
-          this.$store.dispatch("changeUser", response.data);
+          this.securite.setUser(response.data)
+          // this.$store.dispatch("changeUser", response.data);
           this.getUser();
           return response;
         })

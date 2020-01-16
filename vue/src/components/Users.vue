@@ -60,10 +60,12 @@
 <script>
 import http from "../http-common";
 import router from "../router";
+import securite from "../securite"
 
 export default {
   data() {
     return {
+      securite: securite,
       sortBy: "id",
       sortDesc: false,
       fields: [
@@ -100,11 +102,11 @@ export default {
         }
       });
       return http
-        .post("/user", this.user)
-        .then(response => {
+        .post("/user", this.user).then(response => {
           this.getUsers();
-          if (this.user.id == this.$store.getters.userContext.user.id) {
-            this.$store.dispatch("changeUser", response.data);
+          if (this.user.id == this.securite.getUser().id) {
+            this.securite.setUser(response.data)
+            // this.$store.dispatch("changeUser", response.data);
           }
           return response;
         })

@@ -1,4 +1,3 @@
-import store from "./store.js";
 
 export default {
   hasRole(codes) {
@@ -21,6 +20,9 @@ export default {
     return found;
   },
   getUser() {
-    return store.getters.userContext.user;
+    return JSON.parse(window.localStorage.getItem("user"));
+  },
+  setUser(user){
+    window.localStorage.setItem("user", JSON.stringify(user));
   }
 };

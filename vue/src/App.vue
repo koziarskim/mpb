@@ -47,7 +47,6 @@
 <script>
 import http from "./http-common";
 import router from "./router";
-import store from "./store";
 import securite from "./securite";
 import navigate from "./utils/navigation";
 
@@ -110,7 +109,8 @@ export default {
     },
     logout() {
       document.cookie = "SID=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-      this.$store.dispatch("changeUser", {});
+      this.securite.setUser({})
+      // this.$store.dispatch("changeUser", {});
       this.goTo("/login");
     }
   },
