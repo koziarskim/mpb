@@ -58,9 +58,7 @@
 import http from "../http-common";
 import router from "../router";
 import httpUtils from "../httpUtils";
-import store from "../store.js";
 import moment from "moment";
-import securite from "../securite";
 import navigation from "../utils/navigation"
 import formatter from "../utils/formatter";
 

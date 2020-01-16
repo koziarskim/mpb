@@ -46,13 +46,11 @@
 <script>
 import http from "../http-common";
 import router from "../router";
-import securite from "../securite";
 import navigation from "../utils/navigation";
 
 export default {
   data() {
     return {
-      securite: securite,
       navigation: navigation,
       pageable: {totalElements: 100, currentPage: 1, perPage: 7, sortBy: 'id', sortDesc: false},
       hideShip: true,

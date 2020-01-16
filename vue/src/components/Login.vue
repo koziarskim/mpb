@@ -25,13 +25,11 @@
 import http from "../http-common";
 import router from "../router";
 import state from "../data/state";
-import securite from "../securite";
 
 export default {
   name: "add-component",
   data() {
     return {
-      securite: securite,
       user: {}
     };
   },
