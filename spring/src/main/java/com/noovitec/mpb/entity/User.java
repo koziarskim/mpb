@@ -4,9 +4,11 @@ import java.util.Collection;
 import java.util.HashSet;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -28,6 +30,17 @@ public class User extends BaseEntity {
 	private String password;
 	private String firstName;
 	private String lastName;
+	
+	@JsonIgnoreProperties(value = { "items" }, allowSetters = true)
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "season_id", referencedColumnName = "id")
+	private Season season;
+
+	@JsonIgnoreProperties(value = { "items" }, allowSetters = true)
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "year_id", referencedColumnName = "id")
+	private Year year;
+
 
 	@JsonIgnoreProperties(value = { "users" }, allowSetters = true)
 	@ManyToMany()
