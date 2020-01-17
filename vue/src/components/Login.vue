@@ -41,7 +41,6 @@ export default {
     login() {
       return http.post("/user/login", this.user).then(response => {
         this.securite.setUser(response.data)
-        // this.$store.dispatch("changeUser", response.data);
         router.push("/home")
       }).catch(e => {
         console.log("API error: " + e);

@@ -22,10 +22,8 @@ export default {
   },
   getUser() {
     return session.getUser();
-    // return JSON.parse(window.localStorage.getItem("user"));
   },
   setUser(user){
     session.setUser(user);
-    // window.localStorage.setItem("user", JSON.stringify(user));
   }
 };

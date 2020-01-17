@@ -81,30 +81,27 @@ export default {
         console.log("API error: " + e);
       });
     },
+    updateUser(user) {
+      http.post("/user", user).then(r => {
+        this.securite.setUser(user);
+      }).catch(e => {
+        console.log("API error: " + e);
+      });
+    },
     getFullName(){
-      //Not sure why this creates infinite loop without if statement.
-      //Also, it would be good to make it work on watch() or mounted()
-      if(this.availableSeasons.length == 0){
-        this.getAvailableSeasons()
-      }
-      if(this.availableYears.length == 0){
-        this.getAvailableYears()
-      }
       return securite.getUser().fullName;
     },
     changeSeason(season){
       var user = this.securite.getUser();
       user.season = season;
-      this.securite.setUser(user);
-      // this.navigate.setSeason(season);
-      router.go()
+      this.updateUser(user);
+      // router.go()
     },
     changeYear(year){
       var user = this.securite.getUser();
       user.year = year;
-      this.securite.setUser(user);
-      // this.navigate.setYear(year);
-      router.go()
+      this.updateUser(user);
+      // router.go()
     },
     navClass(navName){
       return navigate.selected == navName?'highlight':'';
@@ -121,7 +118,6 @@ export default {
     logout() {
       document.cookie = "SID=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
       this.securite.setUser({})
-      // this.$store.dispatch("changeUser", {});
       this.goTo("/login");
     }
   },
