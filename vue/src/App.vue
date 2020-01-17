@@ -16,17 +16,17 @@
 		      <b-nav-item v-on:click="goTo('/productionLineList')" :class="navClass('production')">Production</b-nav-item>
         </b-navbar-nav>
         <b-navbar-nav v-if="!hideNavBar()" style="margin:0px 0px 0px auto;">
-          <b-nav-item-dropdown right :text="securite.getUser().season.name">
+          <b-nav-item-dropdown right :text="user.season.name">
             <b-dropdown-item v-for="season in availableSeasons" :key="season.id" @click="changeSeason(season)">{{season.name}}</b-dropdown-item>
           </b-nav-item-dropdown>
         </b-navbar-nav>
         <b-navbar-nav v-if="!hideNavBar()">
-          <b-nav-item-dropdown right :text="securite.getUser().year.name">
+          <b-nav-item-dropdown right :text="user.year.name">
             <b-dropdown-item v-for="year in availableYears" :key="year.id" @click="changeYear(year)">{{year.name}}</b-dropdown-item>
           </b-nav-item-dropdown>
         </b-navbar-nav>
         <b-navbar-nav v-if="!hideNavBar()">
-          <b-nav-item-dropdown right :text="securite.getUser().fullName">
+          <b-nav-item-dropdown right :text="user.fullName">
             <b-dropdown-item @click="goTo('/Profile')">Profile</b-dropdown-item>
             <b-dropdown-item v-if="securite.hasRole(['ADMIN'])" @click="goTo('/users')">Manage Users</b-dropdown-item>
             <b-dropdown-item @click="logout()">Signout</b-dropdown-item>
@@ -49,6 +49,7 @@ import http from "./http-common";
 import router from "./router";
 import securite from "./securite";
 import navigate from "./utils/navigation";
+import { EventBus } from './utils/eventBus.js';
 
 export default {
   name: "app",
@@ -58,15 +59,19 @@ export default {
       navigate: navigate,
       availableSeasons: [],
       availableYears: [],
+      user: {
+        season: {},
+        year: {}
+      },
     };
-  },
-  watch: {
-    "securite.user"(old_value, new_value){
-      console.log("update user")
-    }
   },
   computed: {},
   methods: {
+    getUser() {
+      if(this.securite.getUser().id){
+        this.user = this.securite.getUser();
+      }
+    },
     getAvailableSeasons() {
       http.get("/season").then(response => {
         this.availableSeasons = response.data;
@@ -81,27 +86,22 @@ export default {
         console.log("API error: " + e);
       });
     },
-    updateUser(user) {
-      http.post("/user", user).then(r => {
-        this.securite.setUser(user);
+    updateUserSession() {
+      http.post("/user", this.user).then(r => {
+        this.securite.setUser(this.user);
       }).catch(e => {
         console.log("API error: " + e);
       });
     },
-    getFullName(){
-      return securite.getUser().fullName;
-    },
     changeSeason(season){
-      var user = this.securite.getUser();
-      user.season = season;
-      this.updateUser(user);
-      // router.go()
+      this.user.season = season;
+      this.updateUserSession();
+      //TODO: eventBus emit changeSeason to update any data like itemList
     },
     changeYear(year){
-      var user = this.securite.getUser();
-      user.year = year;
-      this.updateUser(user);
-      // router.go()
+      this.user.year = year;
+      this.updateUserSession();
+      //TODO: eventBus emit changeYear to update any data like itemList
     },
     navClass(navName){
       return navigate.selected == navName?'highlight':'';
@@ -119,14 +119,19 @@ export default {
       document.cookie = "SID=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
       this.securite.setUser({})
       this.goTo("/login");
+    },
+    userChangedListener(user){
+      this.getUser();
     }
   },
   mounted(){
-      if(!this.securite.getUser() || !this.securite.getUser().id){
-          this.goTo("/login");
-      }
-      this.getAvailableSeasons();
-      this.getAvailableYears();
+    EventBus.$on('userChanged', this.userChangedListener);
+    this.getUser();
+    if(!this.user || !this.user.id){
+        this.goTo("/login");
+    }
+    this.getAvailableSeasons();
+    this.getAvailableYears();
   }
 };
 </script>

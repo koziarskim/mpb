@@ -26,6 +26,7 @@ import http from "../http-common";
 import router from "../router";
 import state from "../data/state";
 import securite from "../securite";
+import { EventBus } from '../utils/eventBus.js';
 
 export default {
   name: "add-component",
@@ -41,6 +42,7 @@ export default {
     login() {
       return http.post("/user/login", this.user).then(response => {
         this.securite.setUser(response.data)
+        EventBus.$emit('userChanged', response.data);
         router.push("/home")
       }).catch(e => {
         console.log("API error: " + e);
