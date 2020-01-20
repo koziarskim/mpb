@@ -53,7 +53,7 @@ class AddressRest {
 		for(Address a: addresses) {
 			KeyValueDto dto = new KeyValueDto();
 			dto.setId(a.getId());
-			dto.setName(a.getDc() + " - "+ a.getStreet());
+			dto.setName(a.getDc() + " ("+ a.getCity()+", "+a.getState()+")");
 			dtos.add(dto);
 		}
 		return dtos;

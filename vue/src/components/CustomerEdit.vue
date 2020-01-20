@@ -83,7 +83,7 @@
                 <b-row>
                     <b-col cols=10>
                         <label class="top-label">Ship to Address:</label>
-                        <b-select option-value="id" option-text="dc" :list="customer.addresses" v-model="address" placeholder="Address"></b-select>
+                        <b-select option-value="id" option-text="label" :list="customer.addresses" v-model="address" placeholder="Address"></b-select>
                     </b-col>
                     <b-col cols=1 style="padding-top: 22px">
                         <b-button v-if="!addressEditFlag" variant="link" @click="addAddress()">(Add)</b-button>
