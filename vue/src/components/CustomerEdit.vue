@@ -96,27 +96,31 @@
                 <b-row v-if="addressEditFlag" >
                     <b-col cols=8>
                         <label class="top-label">Street:</label>
-                        <input class="form-control" type="search" v-model="newAddress.street" placeholder="Street"/>
+                        <input class="form-control" type="search" v-model="newAddress.street"/>
                     </b-col>
                     <b-col cols=4>
                         <label class="top-label">DC:</label>
-                        <input class="form-control" type="search" v-model="newAddress.dc" placeholder="DC"/>
+                        <input class="form-control" type="search" v-model="newAddress.dc"/>
                     </b-col>
-                </b-row>
-                <b-row>
                 </b-row>
                 <b-row v-if="addressEditFlag">
                     <b-col cols=7>
                         <label class="top-label">City:</label>
-                        <input class="form-control" type="tel" v-model="newAddress.city" placeholder="City"/>
+                        <input class="form-control" type="tel" v-model="newAddress.city"/>
                     </b-col>
                     <b-col cols=2>
                         <label class="top-label">State:</label>
-                        <input class="form-control" type="tel" v-model="newAddress.state" placeholder=""/>
+                        <input class="form-control" type="tel" v-model="newAddress.state"/>
                     </b-col>
                     <b-col cols=3>
                         <label class="top-label">Zip Code:</label>
-                        <input class="form-control" type="tel" v-model="newAddress.zip" placeholder="Zip"/>
+                        <input class="form-control" type="tel" v-model="newAddress.zip"/>
+                    </b-col>
+                </b-row>
+                <b-row v-if="addressEditFlag">
+                    <b-col cols=10>
+                        <label class="top-label">Note:</label>
+                        <input class="form-control" type="tel" v-model="newAddress.note"/>
                     </b-col>
                 </b-row>
             </b-col>
