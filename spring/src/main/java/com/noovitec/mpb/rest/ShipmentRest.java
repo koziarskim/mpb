@@ -210,11 +210,11 @@ class ShipmentRest {
 		stamper.getAcroFields().setField("itemCases", itemCases);
 		stamper.getAcroFields().setField("itemPallets", itemPallets);
 		if(shipment.getShippingAddress()!=null) {
-			String shippingAddress = shipment.getCustomer().getName() + "\n"
-				+ shipment.getShippingAddress().getDc() + "\n"
+			String shippingAddress = shipment.getCustomer().getName() + " - "+shipment.getShippingAddress().getDc() + "\n"
 				+ shipment.getShippingAddress().getStreet() + "\n" 
 				+ shipment.getShippingAddress().getCity() + ", " + shipment.getShippingAddress().getState() + " "+shipment.getShippingAddress().getZip() + "\n"
-				+ (shipment.getCustomer().getPhone()==null?"":shipment.getCustomer().getPhone());
+				+ (shipment.getCustomer().getPhone()==null?"":"Phone: "+shipment.getCustomer().getPhone()) + "\n"
+				+ shipment.getShippingAddress().getNote();
 			stamper.getAcroFields().setField("shippingAddress", shippingAddress);
 		}
 		if(shipment.getFreightAddress()!=null) {
