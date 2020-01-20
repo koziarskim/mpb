@@ -1,5 +1,6 @@
 package com.noovitec.mpb.entity;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashSet;
@@ -35,7 +36,7 @@ public class Shipment extends BaseEntity {
 	private Long totalUnits = 0L;
 	private Long totalCases = 0L;
 	private Long totalPallets = 0L;
-	private Long totalWeight = 0L;
+	private BigDecimal totalWeight = BigDecimal.ZERO;
 
 	@JsonIgnoreProperties(value = { "sales" }, allowSetters = true)
 	@ManyToOne()

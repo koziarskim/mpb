@@ -189,9 +189,10 @@ export default {
     totalWeight() {
       var total = 0;
       this.shipment.shipmentItems.forEach(si => {
-        total += +si.saleItem.item.weight;
+        var totalPaletWeight = +si.saleItem.item.palletWeight * +si.pallets
+        total += (+si.saleItem.item.weight * +si.units) + +totalPaletWeight;
       });
-      return total * +this.totalUnits;
+      return total;
     }
   },
   watch: {
