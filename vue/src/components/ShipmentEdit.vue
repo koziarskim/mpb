@@ -73,7 +73,7 @@
           <b>Total units:</b>
           {{totalUnits}},
           <b>Total cases:</b>
-          {{totalCases}},<br/>
+          {{totalCases}}<br/>
           <b>Total pallets:</b>
           {{totalPallets}}
           <b>Total weight:</b>
