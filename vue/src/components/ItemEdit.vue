@@ -105,10 +105,6 @@
             <label class="top-label">Case cubic:</label>
             <input class="form-control" readonly :value="caseCubic">
           </b-col>
-          <b-col cols="2">
-            <label class="top-label">Pallet height:</label>
-            <input class="form-control" readonly :value="palletHeight">
-          </b-col>
         </b-row>
         <b-row>
           <b-col cols="2">
@@ -129,6 +125,14 @@
           <b-col cols="2">
             <label class="top-label">Cases p/ pallet:</label>
             <input class="form-control" readonly :value="casesPerPallet">
+          </b-col>
+          <b-col cols="2">
+            <label class="top-label">Pallet height:</label>
+            <input class="form-control" readonly :value="palletHeight">
+          </b-col>
+          <b-col cols="2">
+            <label class="top-label">Pallet Weight:</label>
+            <input class="form-control" v-model="item.palletWeight">
           </b-col>
         </b-row>
         <hr class="hr-text" data-content="Prices are in USD">

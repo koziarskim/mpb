@@ -39,6 +39,7 @@ public class Item extends BaseEntity {
 	private BigDecimal caseWidth;
 	private BigDecimal caseDepth;
 	private BigDecimal caseWeight;
+	private BigDecimal palletWeight;
 	private int ti = 1; // number of cases in single layer on pallet.
 	private int hi = 1; // number of layers on pallet.
 	private BigDecimal warehouseCost = new BigDecimal(12);
