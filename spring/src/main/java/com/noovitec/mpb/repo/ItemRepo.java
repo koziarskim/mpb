@@ -15,7 +15,7 @@ public interface ItemRepo extends PagingAndSortingRepository<Item, Long>, Custom
 	@Query(value = "select i.* from Item i order by i.id desc limit 1", nativeQuery = true)
 	Item getLast();
 	
-	@Query(value = "select new com.noovitec.mpb.dto.KeyValueDto(i.id, i.name) from Item i")
+	@Query(value = "select new com.noovitec.mpb.dto.KeyValueDto(i.id, concat(i.number, ' (', i.name, ')')) from Item i")
 	public List<KeyValueDto> getAllKeyValueDtos();
 
 }
