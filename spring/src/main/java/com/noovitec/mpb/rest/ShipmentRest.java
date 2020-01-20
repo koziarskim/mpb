@@ -9,7 +9,9 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -179,6 +181,11 @@ class ShipmentRest {
 	}
 	
 	private byte[] generatePdf(Shipment shipment, boolean submitted) throws IOException, DocumentException {
+		Map<String, String> ft = new HashMap<String, String>();
+		ft.put("TPB", "TP Bill");
+		ft.put("PRP", "Pre Paid");
+		ft.put("TPO", "TP Bill Other");
+		ft.put("COL","Collect");
 		String itemQuantity = "";
 		String saleNumber = "";
 		String itemDescription = "";
@@ -188,7 +195,7 @@ class ShipmentRest {
 			itemQuantity += si.getUnits() + "\n";
 			saleNumber += si.getSaleItem().getSale().getNumber() +"\n";
 			itemDescription += si.getSaleItem().getItem().getNumber() + " - " +si.getSaleItem().getItem().getName() 
-					+ (si.getSaleItem().getSku()==null?"":"SKU# "+ si.getSaleItem().getSku()) + "\n";
+					+ (si.getSaleItem().getSku()==null?"":" SKU# "+ si.getSaleItem().getSku()) + "\n";
 			itemCases += si.getCases() + "\n";
 			itemPallets += si.getPallets() + "\n";
 		}
@@ -202,7 +209,7 @@ class ShipmentRest {
 		stamper.getAcroFields().setField("via", shipment.getVia());
 		stamper.getAcroFields().setField("fob", shipment.getFob());
 		stamper.getAcroFields().setField("freightNmfc", shipment.getFreightNmfc());
-		stamper.getAcroFields().setField("freightTerms", shipment.getFreightTerms());
+		stamper.getAcroFields().setField("freightTerms",  ft.get(shipment.getFreightTerms()));
 		stamper.getAcroFields().setField("loadNumber", shipment.getLoadNumber());
 		stamper.getAcroFields().setField("itemQuantity", itemQuantity);
 		stamper.getAcroFields().setField("saleNumber", saleNumber);
