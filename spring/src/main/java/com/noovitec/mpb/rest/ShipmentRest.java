@@ -119,7 +119,8 @@ class ShipmentRest {
 		if(shipment.getAttachment()==null) {
 			return null;
 		}
-		byte[] data = shipment.getAttachment().getData();
+//		byte[] data = shipment.getAttachment().getData();
+		byte[] data = this.generatePdf(shipment, false);
 		HttpHeaders header = new HttpHeaders();
 		header.setContentType(MediaType.APPLICATION_OCTET_STREAM);
 		String fileName = shipment.getAttachment() != null ? shipment.getAttachment().getName() : "BOL" + shipment.getNumber() + "-Draft.pdf";
