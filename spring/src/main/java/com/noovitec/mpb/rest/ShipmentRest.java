@@ -205,56 +205,48 @@ class ShipmentRest {
 			itemPallets += si.getPallets() + "\n";
 			totalCasePack += si.getSaleItem().getItem().getCasePack();
 		}
-		InputStream in = this.getClass().getClassLoader().getResourceAsStream("pdf/BOL-Template.pdf");
-		PdfReader pdfTemplate = new PdfReader(in);
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		PdfStamper stamper = new PdfStamper(pdfTemplate, baos);
-		stamper.setFormFlattening(true);
-		stamper.getAcroFields().setField("date", shipment.getShippingDate().format(DateTimeFormatter.ofPattern("MM/dd/yyy")));
-		stamper.getAcroFields().setField("number", shipment.getNumber());
-		stamper.getAcroFields().setField("via", shipment.getVia());
-		stamper.getAcroFields().setField("fob", shipment.getFob());
-		stamper.getAcroFields().setField("freightNmfc", shipment.getFreightNmfc());
-		stamper.getAcroFields().setField("freightTerms",  ft.get(shipment.getFreightTerms()));
-		stamper.getAcroFields().setField("loadNumber", shipment.getLoadNumber());
-		stamper.getAcroFields().setField("itemQuantity", itemQuantity);
-		stamper.getAcroFields().setField("saleNumber", saleNumber);
-		stamper.getAcroFields().setField("itemDescription", itemDescription);
-		stamper.getAcroFields().setField("itemCasePack", itemCasePack);
-		stamper.getAcroFields().setField("itemCases", itemCases);
-		stamper.getAcroFields().setField("itemPallets", itemPallets);
+		InputStream bosIn = this.getClass().getClassLoader().getResourceAsStream("pdf/BOL-Template.pdf");
+		PdfReader bosTemplate = new PdfReader(bosIn);
+		ByteArrayOutputStream bosBaos = new ByteArrayOutputStream();
+		PdfStamper bosStamper = new PdfStamper(bosTemplate, bosBaos);
+		bosStamper.setFormFlattening(true);
+		bosStamper.getAcroFields().setField("date", shipment.getShippingDate().format(DateTimeFormatter.ofPattern("MM/dd/yyy")));
+		bosStamper.getAcroFields().setField("number", shipment.getNumber());
+		bosStamper.getAcroFields().setField("via", shipment.getVia());
+		bosStamper.getAcroFields().setField("fob", shipment.getFob());
+		bosStamper.getAcroFields().setField("freightNmfc", shipment.getFreightNmfc());
+		bosStamper.getAcroFields().setField("freightTerms",  ft.get(shipment.getFreightTerms()));
+		bosStamper.getAcroFields().setField("loadNumber", shipment.getLoadNumber());
+		bosStamper.getAcroFields().setField("itemQuantity", itemQuantity);
+		bosStamper.getAcroFields().setField("saleNumber", saleNumber);
+		bosStamper.getAcroFields().setField("itemDescription", itemDescription);
+		bosStamper.getAcroFields().setField("itemCasePack", itemCasePack);
+		bosStamper.getAcroFields().setField("itemCases", itemCases);
+		bosStamper.getAcroFields().setField("itemPallets", itemPallets);
 		if(shipment.getShippingAddress()!=null) {
 			String shippingAddress = shipment.getCustomer().getName() + " - "+shipment.getShippingAddress().getDc() + "\n"
 				+ shipment.getShippingAddress().getStreet() + "\n" 
 				+ shipment.getShippingAddress().getCity() + ", " + shipment.getShippingAddress().getState() + " "+shipment.getShippingAddress().getZip() + "\n"
 				+ (shipment.getCustomer().getPhone()==null?"":"Phone: "+shipment.getCustomer().getPhone()) + "\n"
 				+ (shipment.getShippingAddress().getNote()==null?"":shipment.getShippingAddress().getNote());
-			stamper.getAcroFields().setField("shippingAddress", shippingAddress);
+			bosStamper.getAcroFields().setField("shippingAddress", shippingAddress);
 		}
 		if(shipment.getFreightAddress()!=null) {
 			String freightAddress = shipment.getFreightAddress().getDc() + "\n"
 				+ shipment.getFreightAddress().getStreet() + "\n" 
 				+ shipment.getFreightAddress().getCity() + ", "+ shipment.getFreightAddress().getState() + " "+shipment.getFreightAddress().getZip();		
-		stamper.getAcroFields().setField("freightAddress", freightAddress);
+			bosStamper.getAcroFields().setField("freightAddress", freightAddress);
 		}
-		stamper.getAcroFields().setField("notes", shipment.getNotes());
-		stamper.getAcroFields().setField("totalUnits", shipment.getTotalUnits().toString());
-		stamper.getAcroFields().setField("totalCasePack", String.valueOf(totalCasePack));
-		stamper.getAcroFields().setField("totalCases", shipment.getTotalCases().toString());
-		stamper.getAcroFields().setField("totalPallets", shipment.getTotalPallets().toString());
-		stamper.getAcroFields().setField("totalWeight", shipment.getTotalWeight().toString());
-//		if (!submitted) {
-//			PdfContentByte under = stamper.getUnderContent(1);
-//			PdfGState gs1 = new PdfGState();
-//			gs1.setFillOpacity(0.5f);
-//			under.setGState(gs1);
-//			Font f = new Font(FontFamily.HELVETICA, 15);
-//			Phrase p = new Phrase("DAFT...DRAFT...DRAFT...DRAFT...DRAFT...DRAFT...DRAFT...DRAFT...DRAFT...DRAFT...DRAFT...DRAFT", f);
-//			ColumnText.showTextAligned(under, Element.ALIGN_CENTER, p, 300, 400, 45f);
-//		}
-		stamper.close();
-		pdfTemplate.close();
-		return baos.toByteArray();
+		bosStamper.getAcroFields().setField("notes", shipment.getNotes());
+		bosStamper.getAcroFields().setField("totalUnits", shipment.getTotalUnits().toString());
+		bosStamper.getAcroFields().setField("totalCasePack", String.valueOf(totalCasePack));
+		bosStamper.getAcroFields().setField("totalCases", shipment.getTotalCases().toString());
+		bosStamper.getAcroFields().setField("totalPallets", shipment.getTotalPallets().toString());
+		bosStamper.getAcroFields().setField("totalWeight", shipment.getTotalWeight().toString());
+		bosStamper.close();
+		bosTemplate.close();
+		
+		return bosBaos.toByteArray();
 	}
 
 }
