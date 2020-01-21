@@ -189,15 +189,19 @@ class ShipmentRest {
 		String itemQuantity = "";
 		String saleNumber = "";
 		String itemDescription = "";
+		String itemCasePack = "";
 		String itemCases = "";
 		String itemPallets = "";
+		int totalCasePack = 0;
 		for (ShipmentItem si : shipment.getShipmentItems()) {
 			itemQuantity += si.getUnits() + "\n";
 			saleNumber += si.getSaleItem().getSale().getNumber() +"\n";
 			itemDescription += si.getSaleItem().getItem().getNumber() + " - " +si.getSaleItem().getItem().getName() 
 					+ (si.getSaleItem().getSku()==null?"":" SKU# "+ si.getSaleItem().getSku()) + "\n";
+			itemCasePack += si.getSaleItem().getItem().getCasePack() + "\n";
 			itemCases += si.getCases() + "\n";
 			itemPallets += si.getPallets() + "\n";
+			totalCasePack += si.getSaleItem().getItem().getCasePack();
 		}
 		InputStream in = this.getClass().getClassLoader().getResourceAsStream("pdf/BOL-Template.pdf");
 		PdfReader pdfTemplate = new PdfReader(in);
@@ -214,6 +218,7 @@ class ShipmentRest {
 		stamper.getAcroFields().setField("itemQuantity", itemQuantity);
 		stamper.getAcroFields().setField("saleNumber", saleNumber);
 		stamper.getAcroFields().setField("itemDescription", itemDescription);
+		stamper.getAcroFields().setField("itemCasePack", itemCasePack);
 		stamper.getAcroFields().setField("itemCases", itemCases);
 		stamper.getAcroFields().setField("itemPallets", itemPallets);
 		if(shipment.getShippingAddress()!=null) {
@@ -232,6 +237,7 @@ class ShipmentRest {
 		}
 		stamper.getAcroFields().setField("notes", shipment.getNotes());
 		stamper.getAcroFields().setField("totalUnits", shipment.getTotalUnits().toString());
+		stamper.getAcroFields().setField("totalCasePack", String.valueOf(totalCasePack));
 		stamper.getAcroFields().setField("totalCases", shipment.getTotalCases().toString());
 		stamper.getAcroFields().setField("totalPallets", shipment.getTotalPallets().toString());
 		stamper.getAcroFields().setField("totalWeight", shipment.getTotalWeight().toString());
