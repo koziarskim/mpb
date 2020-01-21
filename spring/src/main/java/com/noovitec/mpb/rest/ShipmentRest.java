@@ -221,13 +221,14 @@ class ShipmentRest {
 				+ shipment.getShippingAddress().getStreet() + "\n" 
 				+ shipment.getShippingAddress().getCity() + ", " + shipment.getShippingAddress().getState() + " "+shipment.getShippingAddress().getZip() + "\n"
 				+ (shipment.getCustomer().getPhone()==null?"":"Phone: "+shipment.getCustomer().getPhone()) + "\n"
-				+ shipment.getShippingAddress().getNote();
+				+ (shipment.getShippingAddress().getNote()==null?"":shipment.getShippingAddress().getNote());
 			stamper.getAcroFields().setField("shippingAddress", shippingAddress);
 		}
 		if(shipment.getFreightAddress()!=null) {
-			String freightAddress = shipment.getFreightAddress().getStreet() + "\n" 
+			String freightAddress = shipment.getFreightAddress().getDc() + "\n"
+				+ shipment.getFreightAddress().getStreet() + "\n" 
 				+ shipment.getFreightAddress().getCity() + ", "+ shipment.getFreightAddress().getState() + " "+shipment.getFreightAddress().getZip();		
-			stamper.getAcroFields().setField("freightAddress", freightAddress);
+		stamper.getAcroFields().setField("freightAddress", freightAddress);
 		}
 		stamper.getAcroFields().setField("notes", shipment.getNotes());
 		stamper.getAcroFields().setField("totalUnits", shipment.getTotalUnits().toString());
