@@ -9,15 +9,7 @@
         <label class="top-label">Customer:</label>
         <b-select option-value="id" option-text="name" :list="availableCustomers" v-model="customer" placeholder="Select Customer"></b-select>
       </b-col>
-      <b-col cols=2>
-        <label class="top-label">Shipping Date:</label>
-        <input class="form-control" type="date" v-model="shipment.shippingDate">
-      </b-col>
-      <b-col cols=2>
-        <label class="top-label">Shipped Date:</label>
-        <input class="form-control" type="date" v-model="shipment.shippedDate">
-      </b-col>
-      <b-col cols=1>
+      <b-col offset=4 cols=1>
         <label class="top-label">Ready To Ship</label><br/>
         <input type="checkbox" style="margin-left: 30px; margin-top: 10px" v-model="shipment.ready">
       </b-col>
@@ -37,6 +29,18 @@
         <label class="top-label">Load Number:</label>
         <input class="form-control" type="tel" v-model="shipment.loadNumber">
       </b-col>      
+      <b-col cols=2>
+        <label class="top-label">Shipping Date (Expected):</label>
+        <input class="form-control" type="date" v-model="shipment.shippingDate">
+      </b-col>
+      <b-col cols=2>
+        <label class="top-label">Shipped Date (Actual):</label>
+        <input class="form-control" type="date" v-model="shipment.shippedDate">
+      </b-col>
+      <b-col cols=2>
+        <label class="top-label">Last Modified:</label>
+        <input class="form-control" type="date" v-model="shipment.modifiedDate">
+      </b-col>
     </b-row>
     <b-row>
       <b-col>
