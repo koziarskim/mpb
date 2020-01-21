@@ -54,6 +54,7 @@ export default {
         { key: "customerName", label: "Customer", sortable: false },
         { key: "shippingDate", label: "Shipping Date", sortable: false },
         { key: "shippedDate", label: "Shippped", sortable: false },
+        { key: "modifiedDate", label: "Last Modified", sortable: false },
         { key: "status", label: "Status", sortable: false },
         { key: "action", label: "Action", sortable: false }
       ],

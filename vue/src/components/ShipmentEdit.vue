@@ -39,7 +39,7 @@
       </b-col>
       <b-col cols=2>
         <label class="top-label">Last Modified:</label>
-        <input class="form-control" type="date" v-model="shipment.modifiedDate">
+        <input class="form-control" type="date" readOnly v-model="shipment.modifiedDate">
       </b-col>
     </b-row>
     <b-row>
@@ -266,6 +266,7 @@ export default {
       if(!this.validate()){
         return;
       }
+      this.shipment.modifiedDate = moment().format("YYYY-MM-DD");
       this.shipment.customer = this.customer.id?{id: this.customer.id}:null;
       this.shipment.shippingAddress = this.shippingAddress.id?{ id: this.shippingAddress.id }:null;
       this.shipment.freightAddress = this.freightAddress.id?{ id: this.freightAddress.id }:null;
@@ -387,10 +388,8 @@ export default {
       router.push("/saleEdit/" + sale_id);
     },
     openPdf(){
-      this.saveShipment().then(r=>{
-        var url = httpUtils.baseUrl + "/shipment/" + this.shipment.id + "/pdf";
-        window.open(url, "_blank","")
-      })
+      var url = httpUtils.baseUrl + "/shipment/" + this.shipment.id + "/pdf";
+      window.open(url, "_blank","")
     },
     unitsBlur(si){
         if(si.units > si.saleItem.item.unitsOnStock){
