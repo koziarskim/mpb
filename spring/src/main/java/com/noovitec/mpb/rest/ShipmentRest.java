@@ -228,7 +228,8 @@ class ShipmentRest {
 				+ shipment.getShippingAddress().getStreet() + "\n" 
 				+ shipment.getShippingAddress().getCity() + ", " + shipment.getShippingAddress().getState() + " "+shipment.getShippingAddress().getZip() + "\n"
 				+ (shipment.getCustomer().getPhone()==null?"":"Phone: "+shipment.getCustomer().getPhone()) + "\n"
-				+ (shipment.getShippingAddress().getNote()==null?"":shipment.getShippingAddress().getNote());
+				+ (shipment.getShippingAddress().getPhone()==null?"":"Other Phone: "+shipment.getShippingAddress().getPhone()) + "\n"
+				+ (shipment.getShippingAddress().getNotes()==null?"":shipment.getShippingAddress().getNotes());
 			bolStamper.getAcroFields().setField("shippingAddress", shippingAddress);
 		}
 		if(shipment.getFreightAddress()!=null) {

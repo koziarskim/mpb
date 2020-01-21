@@ -78,7 +78,6 @@
                         <input class="form-control" type="tel" v-model="billingAddress.zip" placeholder="Zip"/>
                     </b-col>
                 </b-row>
-                <div style="padding-top: 43px"></div>
                 <hr class="hr-text" data-content="Shipping Address(es)">
                 <b-row>
                     <b-col cols=10>
@@ -119,12 +118,19 @@
                 </b-row>
                 <b-row v-if="addressEditFlag">
                     <b-col cols=10>
+                        <label class="top-label">Phone:</label>
+                        <input class="form-control" type="tel" v-model="newAddress.phone"/>
+                    </b-col>
+                </b-row>
+                <b-row v-if="addressEditFlag">
+                    <b-col cols=10>
                         <label class="top-label">Note:</label>
-                        <input class="form-control" type="tel" v-model="newAddress.note"/>
+                        <b-form-textarea type="text" :rows="3" v-model="newAddress.notes" placeholder="Special Notes"></b-form-textarea>
                     </b-col>
                 </b-row>
             </b-col>
         </b-row>
+        <br/>
     </b-container>
 </template>
 
