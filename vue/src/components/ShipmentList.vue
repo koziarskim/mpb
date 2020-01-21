@@ -49,7 +49,7 @@ export default {
       fields: [
         { key: "number", label: "Shipment #", sortable: false },
         { key: "customerName", label: "Customer", sortable: false },
-        { key: "date", label: "Date", sortable: false },
+        { key: "shippingDate", label: "Date", sortable: false },
         { key: "action", label: "Action", sortable: false }
       ],
       shipments: [],

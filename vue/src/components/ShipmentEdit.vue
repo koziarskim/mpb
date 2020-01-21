@@ -11,7 +11,7 @@
       </b-col>
       <b-col cols=2>
         <label class="top-label">Shipping Date:</label>
-        <input class="form-control" type="date" v-model="shipment.date">
+        <input class="form-control" type="date" v-model="shipment.shippingDate">
       </b-col>
       <b-col cols=2>
         <label class="top-label">Freight Terms:</label>
@@ -128,7 +128,7 @@ export default {
       shipment: {
         number: 0, 
         shipmentItems: [],
-        date: null,
+        shippingDate: null,
         fob: "Elk Grove Village"
       },
       availableCustomers: [],
@@ -203,7 +203,7 @@ export default {
       this.getAvailableSaleItems();
       this.getAvailableShippingAddresses(new_value.id)
     },
-    "shipment.date"(new_value, old_value){
+    "shipment.shippingDate"(new_value, old_value){
       if(old_value){
         this.getCount();
       }
@@ -330,7 +330,7 @@ export default {
         });
     },
     getCount() {
-      return http.get("/shipment/number/"+this.shipment.date).then(r => {
+      return http.get("/shipment/number/"+this.shipment.shippingDate).then(r => {
         this.shipment.number = r.data;
       }).catch(e => {
         console.log("API error: " + e);
@@ -392,7 +392,7 @@ export default {
     if(id!="new"){
       this.getShipment(id);
     }else{
-      this.shipment.date = moment().format("YYYY-MM-DD");
+      this.shipment.shippingDate = moment().format("YYYY-MM-DD");
       this.getCount();
     }
     this.getAvailableCustomers();

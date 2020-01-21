@@ -103,7 +103,7 @@ class ShipmentRest {
 			dto.setId(ship.getId());
 			dto.setCustomerId(ship.getCustomer()==null?null:ship.getCustomer().getId());
 			dto.setNumber(ship.getNumber());
-			dto.setDate(ship.getDate());
+			dto.setShippingDate(ship.getShippingDate());
 			dto.setCustomerName(ship.getCustomer()==null?"":ship.getCustomer().getName());
 		    return dto;
 		});
@@ -204,7 +204,7 @@ class ShipmentRest {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		PdfStamper stamper = new PdfStamper(pdfTemplate, baos);
 		stamper.setFormFlattening(true);
-		stamper.getAcroFields().setField("date", shipment.getDate().format(DateTimeFormatter.ofPattern("MM/dd/yyy")));
+		stamper.getAcroFields().setField("date", shipment.getShippingDate().format(DateTimeFormatter.ofPattern("MM/dd/yyy")));
 		stamper.getAcroFields().setField("number", shipment.getNumber());
 		stamper.getAcroFields().setField("via", shipment.getVia());
 		stamper.getAcroFields().setField("fob", shipment.getFob());

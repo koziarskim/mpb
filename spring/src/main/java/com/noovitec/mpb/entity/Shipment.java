@@ -26,7 +26,9 @@ import lombok.NoArgsConstructor;
 public class Shipment extends BaseEntity {
 
 	private String number;
-	private LocalDate date;
+	private LocalDate shippingDate;
+	private LocalDate shippedDate;
+	private boolean ready;
 	private String notes;
 	private String via;
 	private String fob;

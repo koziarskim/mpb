@@ -14,7 +14,7 @@ public class ShipmentDto {
 	private Long id;
 	private Long customerId;
 	private String number;
-	private LocalDate date;
+	private LocalDate shippingDate;
 	private String customerName;
 	
 }
