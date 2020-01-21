@@ -29,6 +29,9 @@
                 <template v-slot:cell(number)="row">
                     <b-button size="sm" @click.stop="goToShipment(row.item.id)" variant="link">{{row.item.number}}</b-button>
                 </template>
+                <template v-slot:cell(status)="row">
+                    <span>{{getStatus(row.item)}}</span>
+                </template>
                 <template v-slot:cell(action)="row">
                     <b-button size="sm" @click.stop="deleteShipment(row.item.id)">x</b-button>
                 </template>
@@ -49,7 +52,9 @@ export default {
       fields: [
         { key: "number", label: "Shipment #", sortable: false },
         { key: "customerName", label: "Customer", sortable: false },
-        { key: "shippingDate", label: "Date", sortable: false },
+        { key: "shippingDate", label: "Shipping Date", sortable: false },
+        { key: "shippedDate", label: "Shippped", sortable: false },
+        { key: "status", label: "Status", sortable: false },
         { key: "action", label: "Action", sortable: false }
       ],
       shipments: [],
@@ -74,6 +79,16 @@ export default {
     }
   },
   methods: {
+    getStatus(shipItem){
+      var status = "In Progress";
+      if(shipItem.ready){
+        status = "Ready To Ship";
+      }
+      if(shipItem.shippedDate){
+        status = "Shipped";
+      }
+      return status;
+    },
     paginationChange(page){
         this.pageable.currentPage = page;
         this.getShipments();
