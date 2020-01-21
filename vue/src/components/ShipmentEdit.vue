@@ -14,6 +14,22 @@
         <input class="form-control" type="date" v-model="shipment.shippingDate">
       </b-col>
       <b-col cols=2>
+        <label class="top-label">Shipped Date:</label>
+        <input class="form-control" type="date" v-model="shipment.shippedDate">
+      </b-col>
+      <b-col cols=1>
+        <label class="top-label">Ready To Ship</label><br/>
+        <input type="checkbox" style="margin-left: 30px; margin-top: 10px" v-model="shipment.ready">
+      </b-col>
+      <b-col cols=2>
+        <div style="margin-top: 22px; margin-left: 70px">
+          <b-button type="reset" variant="primary" @click="saveShipment()">Save</b-button>
+          <img @click="openPdf()" style="margin: 2px; cursor: pointer" src="../assets/pdf-download.png" width="25px">
+        </div>
+      </b-col>
+    </b-row>
+    <b-row>
+      <b-col cols=2>
         <label class="top-label">Freight Terms:</label>
         <b-select option-value="id" option-text="name" :list="availableFreightTerms" v-model="shipment.freightTerms" placeholder="Pick Freight"></b-select>
       </b-col>
@@ -21,12 +37,6 @@
         <label class="top-label">Load Number:</label>
         <input class="form-control" type="tel" v-model="shipment.loadNumber">
       </b-col>      
-      <b-col>
-        <div style="margin-top: 22px;">
-          <b-button type="reset" variant="primary" style="margin-left: -18px" @click="saveShipment()">Save</b-button>
-          <img @click="openPdf()" style="margin: 2px; cursor: pointer" src="../assets/pdf-download.png" width="25px">
-        </div>
-      </b-col>
     </b-row>
     <b-row>
       <b-col>
