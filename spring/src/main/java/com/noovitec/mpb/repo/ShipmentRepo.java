@@ -16,7 +16,7 @@ public interface ShipmentRepo extends PagingAndSortingRepository<Shipment, Long>
 	@Query("select ship from Shipment ship where ship.id in (:ids)")
 	Page<Shipment> findPage(Pageable pageable, List<Long> ids);
 
-	@Query("select count(*) from Shipment where date = :date")
+	@Query("select count(*) from Shipment where shippingDate = :date")
 	Long getLastNumber(LocalDate date);
 
 }

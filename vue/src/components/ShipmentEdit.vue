@@ -345,6 +345,9 @@ export default {
         });
     },
     getCount() {
+      if(this.shipment.number){
+        return
+      }
       return http.get("/shipment/number/"+this.shipment.shippingDate).then(r => {
         this.shipment.number = r.data;
       }).catch(e => {

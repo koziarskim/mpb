@@ -211,8 +211,8 @@ class ShipmentRest {
 		ByteArrayOutputStream bolBaos = new ByteArrayOutputStream();
 		PdfStamper bolStamper = new PdfStamper(bolTemplate, bolBaos);
 		bolStamper.setFormFlattening(true);
-		bolStamper.getAcroFields().setField("date", shipment.getModifiedDate().format(DateTimeFormatter.ofPattern("MM/dd/yyy")));
-		bolStamper.getAcroFields().setField("shippingDate", shipment.getShippingDate().format(DateTimeFormatter.ofPattern("MM/dd/yyy")));
+		bolStamper.getAcroFields().setField("date", (shipment.getModifiedDate()==null?"":shipment.getModifiedDate().format(DateTimeFormatter.ofPattern("MM/dd/yyy"))));
+		bolStamper.getAcroFields().setField("shippingDate", (shipment.getShippingDate()==null?"":shipment.getShippingDate().format(DateTimeFormatter.ofPattern("MM/dd/yyy"))));
 		bolStamper.getAcroFields().setField("number", shipment.getNumber());
 		bolStamper.getAcroFields().setField("via", shipment.getVia());
 		bolStamper.getAcroFields().setField("fob", shipment.getFob());
