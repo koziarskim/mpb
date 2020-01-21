@@ -9,3 +9,5 @@ alter table address alter column note type varchar(255);
 alter table address add column phone varchar(20);
 
 alter table address rename column note to notes;
+
+alter table shipment add column modified_date date;

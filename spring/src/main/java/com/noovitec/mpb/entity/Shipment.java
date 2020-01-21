@@ -28,6 +28,7 @@ public class Shipment extends BaseEntity {
 	private String number;
 	private LocalDate shippingDate;
 	private LocalDate shippedDate;
+	private LocalDate modifiedDate;
 	private boolean ready;
 	private String notes;
 	private String via;
