@@ -9,7 +9,11 @@
         <label class="top-label">Customer:</label>
         <b-select option-value="id" option-text="name" :list="availableCustomers" v-model="customer" placeholder="Select Customer"></b-select>
       </b-col>
-      <b-col offset=4 cols=1>
+      <b-col cols=2>
+        <label class="top-label">Load Number:</label>
+        <input class="form-control" type="tel" v-model="shipment.loadNumber">
+      </b-col>      
+      <b-col offset=2 cols=1>
         <label class="top-label">Ready To Ship</label><br/>
         <input type="checkbox" style="margin-left: 30px; margin-top: 10px" v-model="shipment.ready">
       </b-col>
@@ -25,11 +29,15 @@
         <label class="top-label">Freight Terms:</label>
         <b-select option-value="id" option-text="name" :list="availableFreightTerms" v-model="shipment.freightTerms" placeholder="Pick Freight"></b-select>
       </b-col>
-      <b-col cols=2>
-        <label class="top-label">Load Number:</label>
-        <input class="form-control" type="tel" v-model="shipment.loadNumber">
-      </b-col>      
-      <b-col cols=2>
+      <b-col cols=1>
+        <label class="top-label">Freight NMFC:</label>
+        <input class="form-control" type="tel" v-model="shipment.freightNmfc">
+      </b-col>
+      <b-col cols=1>
+        <label class="top-label">Freight Class:</label>
+        <input class="form-control" type="tel" v-model="shipment.freightClass">
+      </b-col>
+      <b-col offset=2 cols=2>
         <label class="top-label">Shipping Date (Expected):</label>
         <input class="form-control" type="date" v-model="shipment.shippingDate">
       </b-col>
@@ -62,10 +70,6 @@
           <b-col cols=4>
             <label class="top-label">FOB:</label>
             <input class="form-control" type="tel" v-model="shipment.fob">
-          </b-col>
-          <b-col cols=4>
-            <label class="top-label">Freight Class/NMFC:</label>
-            <input class="form-control" type="tel" v-model="shipment.freightNmfc">
           </b-col>
         </b-row>
       </b-col>
