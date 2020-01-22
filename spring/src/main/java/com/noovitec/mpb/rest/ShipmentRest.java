@@ -89,10 +89,10 @@ class ShipmentRest {
 	@GetMapping("/shipment/pageable")
 	Page<ShipmentDto> getAllPageable(
 			@RequestParam Pageable pageable, 
-			@RequestParam(name = "number", required = false) String number,
-			@RequestParam(name = "customerId", required = false) Long customerId,
-			@RequestParam(name = "saleId", required = false) Long saleId,
-			@RequestParam(name = "itemId", required = false) Long itemId) {
+			@RequestParam(required = false) String number,
+			@RequestParam(required = false) Long customerId,
+			@RequestParam(required = false) Long saleId,
+			@RequestParam(required = false) Long itemId) {
 		List<Long> ids = shipmentRepo.findIds(number, customerId, saleId, itemId);
 		if(ids.isEmpty()) {
 			return Page.empty();

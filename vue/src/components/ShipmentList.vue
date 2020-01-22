@@ -22,9 +22,7 @@
                 </div>
             </b-col>
         </b-row>
-        <b-table :sort-by.sync="sortBy"
-                :sort-desc.sync="sortDesc"
-                :items="shipments"
+        <b-table :items="shipments"
                 :fields="fields">
                 <template v-slot:cell(number)="row">
                     <b-button size="sm" @click.stop="goToShipment(row.item.id)" variant="link">{{row.item.number}}</b-button>
@@ -47,8 +45,7 @@ export default {
   data() {
     return {
       sortBy: "number",
-      pageable: {totalElements: 100, currentPage: 1, perPage: 7, sortBy: 'id', sortDesc: false},
-      sortDesc: false,
+      pageable: {totalElements: 100, currentPage: 1, perPage: 7, sortBy: 'modifiedDate', sortDesc: true},
       fields: [
         { key: "number", label: "Shipment #", sortable: false },
         { key: "customerName", label: "Customer", sortable: false },
