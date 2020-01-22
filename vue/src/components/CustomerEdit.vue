@@ -80,16 +80,17 @@
                 </b-row>
                 <hr class="hr-text" data-content="Shipping Address(es)">
                 <b-row>
-                    <b-col cols=10>
+                    <b-col cols=9>
                         <label class="top-label">Ship to Address:</label>
                         <b-select option-value="id" option-text="label" :list="customer.addresses" v-model="address" placeholder="Address"></b-select>
                     </b-col>
-                    <b-col cols=1 style="padding-top: 22px">
+                    <b-col cols=1 style="padding-top: 22px; margin-left:-15px">
+                      <div style="display:flex;">
                         <b-button v-if="!addressEditFlag" variant="link" @click="addAddress()">(Add)</b-button>
-                    </b-col>
-                    <b-col cols=1 style="padding-top: 22px">
+                        <b-button v-if="!addressEditFlag" variant="link" style="margin-left: -15px" @click="editAddress()">(Edit)</b-button>
                         <b-button v-if="addressEditFlag" variant="link" @click="saveAddress()">(Save)</b-button>
-                        <b-button v-if="!addressEditFlag" variant="link" @click="editAddress()">(Edit)</b-button>
+                        <b-button v-if="addressEditFlag" variant="link" style="margin-left: -15px" @click="deleteAddress()">(Delete)</b-button>
+                      </div>
                     </b-col>
                 </b-row>
                 <b-row v-if="addressEditFlag" >
@@ -205,13 +206,6 @@ export default {
     		window.history.back();
     	})
     },
-    updateAddress: function(address) {
-      var idx = this.customer.addresses.findIndex(item => item.id == address.id);
-      if (idx>-1) {
-        this.customer.addresses.splice(idx,1);
-      }
-      this.customer.addresses.push(address);
-    },
     getFreightById(code) {
       var freight = {};
       this.availableFreights.filter(it => {
@@ -230,16 +224,19 @@ export default {
       this.newAddress = this.address;
     },
     saveAddress() {
-      http
-        .post("/address", this.newAddress)
-        .then(response => {
-          this.updateAddress(response.data);
-          this.addressEditFlag = false;
-        })
-        .catch(e => {
-          console.log("API error: " + e);
-        });
-    }
+      this.newAddress.id = null;
+      this.newAddress.label = this.newAddress.dc + "("+this.newAddress.city + ", "+this.newAddress.state+")";
+      this.customer.addresses.push(this.newAddress);
+      this.addressEditFlag = false;
+    },
+    deleteAddress() {
+      var idx = this.customer.addresses.findIndex(address => address.id == this.newAddress.id);
+      if (idx>-1) {
+        this.customer.addresses.splice(idx,1);
+      }
+      this.addressEditFlag = false;
+      this.newAddress = {};
+    },
   },
   mounted() {
     var customer_id = this.$route.params.customer_id;
