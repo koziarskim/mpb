@@ -129,14 +129,15 @@ export default {
       });
     },
     deleteShipment(id) {
-      http
-        .delete("/shipment/" + id)
-        .then(() => {
-          this.getShipments();
-        })
-        .catch(e => {
-          console.log("API Error: " + e);
-        });
+      this.$bvModal.msgBoxConfirm('Are you sure you want to delete Shipment?').then(ok => {
+        if(ok){
+          http.delete("/shipment/" + id).then(() => {
+            this.getShipments();
+          }).catch(e => {
+            console.log("API Error: " + e);
+          });
+        }
+      })
     },
     goToShipment(id) {
       if (id) {
