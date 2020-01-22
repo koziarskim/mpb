@@ -61,8 +61,8 @@ export default {
       searchSale: "",
       searchItem: "",
       itemView: false,
-      hideProd: true,
-      hideShip: true,
+      hideProd: false,
+      hideShip: false,
       fields: [
         { key: "number", label: "Sale # (Name)", sortable: false },
         { key: "customerName", label: "Customer", sortable: false },

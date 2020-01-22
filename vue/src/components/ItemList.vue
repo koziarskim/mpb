@@ -54,8 +54,8 @@ export default {
       pageable: {totalElements: 100, currentPage: 1, perPage: 7, sortBy: 'name', sortDesc: false},
       searchItem: "",
       searchComponent: "",
-      hideProd: true,
-      hideShip: true,
+      hideProd: false,
+      hideShip: false,
       fields: [
         { key: 'name', sortable: true, label: 'Item # (Name)'},
         { key: 'brand', sortable: true, label: 'Brand'},
