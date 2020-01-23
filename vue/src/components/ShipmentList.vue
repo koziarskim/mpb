@@ -1,11 +1,8 @@
 <template>
     <b-container fluid>
-        <b-row style="padding-bottom: 4px;">
-            <b-col cols=1>
-                <span style="text-align: left; font-size: 18px; font-weight: bold">Shipments</span>
-            </b-col>
-            <b-col cols=3>
-                <input class="form-control" type="tel" v-model="number" @keyup.enter="getShipments()" placeholder="Search Shipment Number"/>
+        <b-row style="padding-bottom: 4px; font-size: 12px">
+            <b-col cols=2>
+                <input class="form-control" style="font-size: 12px" type="tel" v-model="number" @keyup.enter="getShipments()" placeholder="Search Number"/>
             </b-col>
             <b-col cols=2>
               <b-select option-value="id" option-text="name" :list="availableCustomers" v-model="customer" placeholder="Search Customer"></b-select>
@@ -16,9 +13,12 @@
             <b-col cols=2>
               <b-select option-value="id" option-text="name" :list="availableItems" v-model="item" placeholder="Search Item"></b-select>
             </b-col>
+            <b-col cols=2>
+              <b-select option-value="id" option-text="name" :list="availableStatuses" v-model="status" placeholder="Search Status"></b-select>
+            </b-col>
             <b-col>
                 <div style="text-align: right;">
-                <b-button type="submit" variant="primary" @click="goToShipment('new')">New Shipment</b-button>
+                <b-button size="sm" type="submit" variant="primary" @click="goToShipment('new')">New Shipment</b-button>
                 </div>
             </b-col>
         </b-row>
@@ -61,7 +61,9 @@ export default {
       availableCustomers: [],
       customer: {},
       availableItems: [],
-      item: {}
+      item: {},
+      availableStatuses: [],
+      status: {}
     };
   },
   watch: {
