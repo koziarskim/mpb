@@ -122,6 +122,10 @@ export default {
     },
     userChangedListener(user){
       this.getUser();
+      if(this.availableSeasons.length < 1 || this.availableYears.length < 1){
+        this.getAvailableSeasons();
+        this.getAvailableYears();
+      }
     }
   },
   mounted(){
@@ -130,8 +134,6 @@ export default {
     if(!this.user || !this.user.id){
         this.goTo("/login");
     }
-    this.getAvailableSeasons();
-    this.getAvailableYears();
   }
 };
 </script>
