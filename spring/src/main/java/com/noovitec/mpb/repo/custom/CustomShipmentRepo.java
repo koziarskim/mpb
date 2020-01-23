@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 public interface CustomShipmentRepo {
-	List<Long> findIds(String number, Long customerId, Long saleId, Long itemId);
+	List<Long> findIds(String number, Long customerId, Long saleId, Long itemId, String status);
 
 	@Repository
 	public class CustomShipmentRepoImpl implements CustomShipmentRepo {
@@ -22,7 +22,7 @@ public interface CustomShipmentRepo {
 		EntityManager entityManager;
 
 		@Override
-		public List<Long> findIds(String number, Long customerId, Long saleId, Long itemId) {
+		public List<Long> findIds(String number, Long customerId, Long saleId, Long itemId, String status) {
 			String q = "select distinct ship.id from Shipment ship " 
 					+ "left join ship.shipmentItems shipItem " 
 					+ "left join shipItem.saleItem si "
@@ -42,6 +42,9 @@ public interface CustomShipmentRepo {
 			if (itemId != null) {
 				q += "and i.id = :itemId ";
 			}
+			if (status != null) {
+				q += "and ship.status = :status ";
+			}
 			Query query = entityManager.createQuery(q);
 			if (number != null && !number.isEmpty()) {
 				query.setParameter("number", number);
@@ -54,6 +57,9 @@ public interface CustomShipmentRepo {
 			}
 			if (itemId != null) {
 				query.setParameter("itemId", itemId);
+			}
+			if (status != null) {
+				query.setParameter("status", status);
 			}
 			List<Long> list = query.getResultList();	
 			return list;

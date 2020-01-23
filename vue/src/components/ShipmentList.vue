@@ -79,6 +79,9 @@ export default {
     },
     item(newValue, oldValue){
       this.getShipments();
+    },
+    status(newValue, oldValue){
+      this.getShipments();
     }
   },
   methods: {
@@ -102,7 +105,8 @@ export default {
     getShipments() {
       http
         .get("/shipment/pageable", {params: {pageable: this.pageable, 
-            number: this.number, customerId: this.customer.id, saleId: this.sale.id, itemId: this.item.id}}).then(r => {
+            number: this.number, customerId: this.customer.id, saleId: this.sale.id, itemId: this.item.id, 
+            status: this.status.id}}).then(r => {
           this.shipments = r.data.content;
           this.pageable.totalElements = r.data.totalElements;
         })

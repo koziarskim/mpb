@@ -92,8 +92,9 @@ class ShipmentRest {
 			@RequestParam(required = false) String number,
 			@RequestParam(required = false) Long customerId,
 			@RequestParam(required = false) Long saleId,
-			@RequestParam(required = false) Long itemId) {
-		List<Long> ids = shipmentRepo.findIds(number, customerId, saleId, itemId);
+			@RequestParam(required = false) Long itemId, 
+			@RequestParam(required = false) String status) {
+		List<Long> ids = shipmentRepo.findIds(number, customerId, saleId, itemId, status);
 		if(ids.isEmpty()) {
 			return Page.empty();
 		}
