@@ -6,3 +6,5 @@ update shipment set status = 'REA' where ready is true;
 
 update shipment set status = 'SHP' where shipped_date is not null;
 
+alter table shipment alter column modified_date type timestamp without time zone;
+

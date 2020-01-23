@@ -47,7 +47,7 @@
       </b-col>
       <b-col cols=2>
         <label class="top-label">Last Modified:</label>
-        <input class="form-control" type="date" readOnly v-model="shipment.modifiedDate">
+        <input class="form-control" type="tel" readOnly :value="formatModifiedDate(shipment.modifiedDate)">
       </b-col>
     </b-row>
     <b-row>
@@ -228,6 +228,9 @@ export default {
     }
   },
   methods: {
+    formatModifiedDate(dateTime){
+      return moment(dateTime).format("YYYY/MM/DD HH:mm:ss")
+    },
     openModal(){
 			this.modalVisible = true;
 		},
@@ -270,7 +273,6 @@ export default {
       if(!this.validate()){
         return;
       }
-      this.shipment.modifiedDate = moment().format("YYYY-MM-DD");
       this.shipment.customer = this.customer.id?{id: this.customer.id}:null;
       this.shipment.shippingAddress = this.shippingAddress.id?{ id: this.shippingAddress.id }:null;
       this.shipment.freightAddress = this.freightAddress.id?{ id: this.freightAddress.id }:null;

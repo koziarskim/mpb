@@ -16,7 +16,7 @@ public class ShipmentDto {
 	private String number;
 	private LocalDate shippingDate;
 	private LocalDate shippedDate;
-	private LocalDate modifiedDate;
+	private String modifiedDate;
 	private String customerName;
 	private boolean ready;
 	private String status;

@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -99,6 +100,7 @@ class ShipmentRest {
 			return Page.empty();
 		}
 		Page<Shipment> shipments = shipmentRepo.findPage(pageable, ids);
+		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		Page<ShipmentDto> all = shipments.map(ship -> {
 			ShipmentDto dto = new ShipmentDto();
 			dto.setId(ship.getId());
@@ -106,7 +108,7 @@ class ShipmentRest {
 			dto.setNumber(ship.getNumber());
 			dto.setShippingDate(ship.getShippingDate());
 			dto.setShippedDate(ship.getShippedDate());
-			dto.setModifiedDate(ship.getModifiedDate());
+			dto.setModifiedDate(ship.getModifiedDate().format(dateFormat));
 			dto.setCustomerName(ship.getCustomer()==null?"":ship.getCustomer().getName());
 			dto.setReady(ship.isReady());
 			dto.setStatus(ship.getStatus());
@@ -144,6 +146,8 @@ class ShipmentRest {
 			si.getSaleItem().getItem().updateUnits();
 			si.getSaleItem().getSale().updateUnits();
 		}
+		//Set modifiedDate
+		shipment.setModifiedDate(LocalDateTime.now());
 		//Set Status
 		String status = "INP";
 		if(shipment.isReady()) {

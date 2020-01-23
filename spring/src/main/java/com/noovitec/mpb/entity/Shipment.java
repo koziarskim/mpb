@@ -2,6 +2,7 @@ package com.noovitec.mpb.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -28,7 +29,7 @@ public class Shipment extends BaseEntity {
 	private String number;
 	private LocalDate shippingDate;
 	private LocalDate shippedDate;
-	private LocalDate modifiedDate;
+	private LocalDateTime modifiedDate;
 	private boolean ready;
 	private String notes;
 	private String via;
