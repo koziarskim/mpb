@@ -1,1 +1,1 @@
-alter table shipment add column freight_class varchar(10);
+alter table shipment add column status char(3);

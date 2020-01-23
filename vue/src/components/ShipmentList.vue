@@ -62,7 +62,11 @@ export default {
       customer: {},
       availableItems: [],
       item: {},
-      availableStatuses: [],
+      availableStatuses: [
+        {id: 'INP', name: "Progress"},
+        {id: 'REA', name: "Ready"},
+        {id: "SHP", name: "Shipped"}
+      ],
       status: {}
     };
   },
@@ -83,10 +87,10 @@ export default {
     },
     getStatus(shipItem){
       var status = "In Progress";
-      if(shipItem.ready){
+      if(shipItem.status == "REA"){
         status = "Ready To Ship";
       }
-      if(shipItem.shippedDate){
+      if(shipItem.status == "SHP"){
         status = "Shipped";
       }
       return status;

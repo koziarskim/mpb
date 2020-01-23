@@ -108,6 +108,7 @@ class ShipmentRest {
 			dto.setModifiedDate(ship.getModifiedDate());
 			dto.setCustomerName(ship.getCustomer()==null?"":ship.getCustomer().getName());
 			dto.setReady(ship.isReady());
+			dto.setStatus(ship.getStatus());
 		    return dto;
 		});
 		return all;
@@ -142,6 +143,15 @@ class ShipmentRest {
 			si.getSaleItem().getItem().updateUnits();
 			si.getSaleItem().getSale().updateUnits();
 		}
+		//Set Status
+		String status = "INP";
+		if(shipment.isReady()) {
+			status = "REA";
+		}
+		if(shipment.getShippedDate()!=null) {
+			status = "SHP";
+		}
+		shipment.setStatus(status);
 		shipment = shipmentRepo.save(shipment);
 		//TODO: We might need to keep the audit.
 		//TODO: See if it could be refactored after puting merge.
