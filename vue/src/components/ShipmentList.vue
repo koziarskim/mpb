@@ -1,39 +1,52 @@
 <template>
     <b-container fluid>
         <b-row style="padding-bottom: 4px; font-size: 12px">
-            <b-col cols=2>
-                <input class="form-control" style="font-size: 12px" type="tel" v-model="number" @keyup.enter="getShipments()" placeholder="Search Number"/>
-            </b-col>
-            <b-col cols=2>
-              <b-select option-value="id" option-text="name" :list="availableCustomers" v-model="customer" placeholder="Search Customer"></b-select>
-            </b-col>
-            <b-col cols=2>
-              <b-select option-value="id" option-text="name" :list="availableSales" v-model="sale" placeholder="Search Sale"></b-select>
-            </b-col>
-            <b-col cols=2>
-              <b-select option-value="id" option-text="name" :list="availableItems" v-model="item" placeholder="Search Item"></b-select>
-            </b-col>
-            <b-col cols=2>
-              <b-select option-value="id" option-text="name" :list="availableStatuses" v-model="status" placeholder="Search Status"></b-select>
-            </b-col>
-            <b-col>
-                <div style="text-align: right;">
-                <b-button size="sm" type="submit" variant="primary" @click="goToShipment('new')">New Shipment</b-button>
-                </div>
-            </b-col>
-        </b-row>
-        <b-table :items="shipments" :fields="fields">
-          <template v-slot:cell(number)="row">
-              <b-button size="sm" @click.stop="goToShipment(row.item.id)" variant="link">{{row.item.number}}</b-button>
-          </template>
-          <template v-slot:cell(status)="row">
-              <span>{{getStatus(row.item)}}</span>
-          </template>
-          <template v-slot:cell(action)="row">
-              <b-button size="sm" @click.stop="deleteShipment(row.item.id)">x</b-button>
-          </template>
-        </b-table>
-     		<b-pagination v-model="pageable.currentPage" :per-page="pageable.perPage" :total-rows="pageable.totalElements" @change="paginationChange"></b-pagination>
+          <b-col cols=1 style="margin-right: -45px">
+            <b-button id="shipmentListMenu" size="sm" @click="openFilterMenu()">Filter</b-button>
+            <b-popover :show="showFilterMenu" placement="bottom" target="shipmentListMenu" variant="secondary">
+              <template v-slot:title>
+                <span>Advanced Filters</span>
+                <b-button style="margin-left: 185px" size="sm" @click="closeFilterMenu()">Search</b-button>
+                <b-button style="margin-left: 10px" size="sm" @click="closeFilterMenu()">X</b-button>
+              </template>
+              <div style="width: 400px">
+                Under Constraction...
+              </div>
+            </b-popover>
+          </b-col>
+          <b-col cols=2>
+              <input class="form-control" style="font-size: 12px" type="tel" v-model="number" @keyup.enter="getShipments()" placeholder="Search Number"/>
+          </b-col>
+          <b-col cols=2>
+            <b-select option-value="id" option-text="name" :list="availableCustomers" v-model="customer" placeholder="Search Customer"></b-select>
+          </b-col>
+          <b-col cols=2>
+            <b-select option-value="id" option-text="name" :list="availableSales" v-model="sale" placeholder="Search Sale"></b-select>
+          </b-col>
+          <b-col cols=2>
+            <b-select option-value="id" option-text="name" :list="availableItems" v-model="item" placeholder="Search Item"></b-select>
+          </b-col>
+          <b-col cols=2>
+            <b-select option-value="id" option-text="name" :list="availableStatuses" v-model="status" placeholder="Search Status"></b-select>
+          </b-col>
+          <b-col>
+              <div style="text-align: right;">
+              <b-button size="sm" type="submit" variant="primary" @click="goToShipment('new')">New</b-button>
+              </div>
+          </b-col>
+      </b-row>
+      <b-table :items="shipments" :fields="fields">
+        <template v-slot:cell(number)="row">
+            <b-button size="sm" @click.stop="goToShipment(row.item.id)" variant="link">{{row.item.number}}</b-button>
+        </template>
+        <template v-slot:cell(status)="row">
+            <span>{{getStatus(row.item)}}</span>
+        </template>
+        <template v-slot:cell(action)="row">
+            <b-button size="sm" @click.stop="deleteShipment(row.item.id)">x</b-button>
+        </template>
+      </b-table>
+      <b-pagination v-model="pageable.currentPage" :per-page="pageable.perPage" :total-rows="pageable.totalElements" @change="paginationChange"></b-pagination>
     </b-container>
 </template>
 <script>
@@ -67,7 +80,8 @@ export default {
         {id: 'REA', name: "Ready"},
         {id: "SHP", name: "Shipped"}
       ],
-      status: {}
+      status: {},
+      showFilterMenu: false,
     };
   },
   watch: {
@@ -85,6 +99,12 @@ export default {
     }
   },
   methods: {
+    openFilterMenu(){
+      this.showFilterMenu = true;
+    },
+    closeFilterMenu(){
+      this.showFilterMenu = false;
+    },
     browserHeight(){
       return +window.innerHeight - 170 +"px";
     },
