@@ -22,17 +22,16 @@
                 </div>
             </b-col>
         </b-row>
-        <b-table :items="shipments"
-                :fields="fields">
-                <template v-slot:cell(number)="row">
-                    <b-button size="sm" @click.stop="goToShipment(row.item.id)" variant="link">{{row.item.number}}</b-button>
-                </template>
-                <template v-slot:cell(status)="row">
-                    <span>{{getStatus(row.item)}}</span>
-                </template>
-                <template v-slot:cell(action)="row">
-                    <b-button size="sm" @click.stop="deleteShipment(row.item.id)">x</b-button>
-                </template>
+        <b-table :items="shipments" :fields="fields">
+          <template v-slot:cell(number)="row">
+              <b-button size="sm" @click.stop="goToShipment(row.item.id)" variant="link">{{row.item.number}}</b-button>
+          </template>
+          <template v-slot:cell(status)="row">
+              <span>{{getStatus(row.item)}}</span>
+          </template>
+          <template v-slot:cell(action)="row">
+              <b-button size="sm" @click.stop="deleteShipment(row.item.id)">x</b-button>
+          </template>
         </b-table>
      		<b-pagination v-model="pageable.currentPage" :per-page="pageable.perPage" :total-rows="pageable.totalElements" @change="paginationChange"></b-pagination>
     </b-container>
@@ -45,7 +44,7 @@ export default {
   data() {
     return {
       sortBy: "number",
-      pageable: {totalElements: 100, currentPage: 1, perPage: 7, sortBy: 'modifiedDate', sortDesc: true},
+      pageable: {totalElements: 100, currentPage: 1, perPage: 100, sortBy: 'modifiedDate', sortDesc: true},
       fields: [
         { key: "number", label: "Shipment #", sortable: false },
         { key: "customerName", label: "Customer", sortable: false },
@@ -77,6 +76,9 @@ export default {
     }
   },
   methods: {
+    browserHeight(){
+      return +window.innerHeight - 170 +"px";
+    },
     getStatus(shipItem){
       var status = "In Progress";
       if(shipItem.ready){
