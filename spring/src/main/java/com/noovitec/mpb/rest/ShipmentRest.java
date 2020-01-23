@@ -184,8 +184,10 @@ class ShipmentRest {
 		List<Sale> sales = new ArrayList<Sale>();
 		Shipment shipment = shipmentRepo.findById(id).get();
 		for(ShipmentItem si: shipment.getShipmentItems()) {
-			items.add(si.getSaleItem().getItem());
-			sales.add(si.getSaleItem().getSale());
+			if(si.getSaleItem()!=null) {
+				items.add(si.getSaleItem().getItem());
+				sales.add(si.getSaleItem().getSale());
+			}
 		}
 		shipmentRepo.deleteById(id);
 		for(Item item: items) {
