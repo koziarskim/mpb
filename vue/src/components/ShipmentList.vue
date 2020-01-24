@@ -66,7 +66,7 @@ export default {
   data() {
     return {
       sortBy: "number",
-      pageable: {totalElements: 100, currentPage: 1, perPage: 100, sortBy: 'modifiedDate', sortDesc: true},
+      pageable: {totalElements: 100, currentPage: 1, perPage: 20, sortBy: 'modifiedDate', sortDesc: true},
       fields: [
         { key: "number", label: "Shipment #", sortable: false },
         { key: "customerName", label: "Customer", sortable: false },
@@ -210,4 +210,8 @@ export default {
 .table th {
    text-align: left;   
 }
+/* .table tr {
+  font-size: 14px;
+  line-height: 0.5;
+} */
 </style>

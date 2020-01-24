@@ -1,5 +1,6 @@
 package com.noovitec.mpb.repo.custom;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -11,7 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 public interface CustomShipmentRepo {
-	List<Long> findIds(String number, Long customerId, Long saleId, Long itemId, String status);
+	List<Long> findIds(String number, Long customerId, Long saleId, Long itemId, String status, LocalDate shipFrom, LocalDate shipTo);
 
 	@Repository
 	public class CustomShipmentRepoImpl implements CustomShipmentRepo {
@@ -22,7 +23,7 @@ public interface CustomShipmentRepo {
 		EntityManager entityManager;
 
 		@Override
-		public List<Long> findIds(String number, Long customerId, Long saleId, Long itemId, String status) {
+		public List<Long> findIds(String number, Long customerId, Long saleId, Long itemId, String status, LocalDate shipFrom, LocalDate shipTo) {
 			String q = "select distinct ship.id from Shipment ship " 
 					+ "left join ship.shipmentItems shipItem " 
 					+ "left join shipItem.saleItem si "
@@ -45,6 +46,12 @@ public interface CustomShipmentRepo {
 			if (status != null) {
 				q += "and ship.status = :status ";
 			}
+			if(shipFrom != null) {
+				q += "and ship.shippedDate >= :shipFrom ";
+			}
+			if(shipTo !=null) {
+				q += "and ship.shippedDate <= :shipTo ";
+			}
 			Query query = entityManager.createQuery(q);
 			if (number != null && !number.isEmpty()) {
 				query.setParameter("number", number);
@@ -60,6 +67,12 @@ public interface CustomShipmentRepo {
 			}
 			if (status != null) {
 				query.setParameter("status", status);
+			}
+			if(shipFrom !=null) {
+				query.setParameter("shipFrom", shipFrom);
+			}
+			if(shipTo !=null) {
+				query.setParameter("shipTo", shipTo);
 			}
 			List<Long> list = query.getResultList();	
 			return list;
