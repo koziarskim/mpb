@@ -11,7 +11,7 @@
         <label class="top-label"></label>
         <b-table v-if="item.saleItems && item.saleItems.length>0" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="item.saleItems" :fields="columns">
           <template v-slot:cell(sale)="row">
-            <b-button size="sm" @click.stop="goToSale(row.item.sale.id)" variant="link">{{row.item.sale?row.item.sale.number:''}}</b-button>
+            <b-link role="button" @click.stop="goToSale(row.item.sale.id)">{{row.item.sale?row.item.sale.number:''}}</b-link>
           </template>
           <template v-slot:cell(dc)="row">
             <span>{{getDc(row.item)}}</span>

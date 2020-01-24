@@ -22,7 +22,8 @@
         </b-row>
         <b-table :items="items" :fields="fields" no-local-sorting @sort-changed="sorted">
           <template v-slot:cell(name)="row">
-              <b-button size="sm" variant="link" @click.stop="updateItem(row.item.id)">{{row.item.number}} ({{row.item.name}})</b-button>
+              <b-link role="button" @click.stop="updateItem(row.item.id)">{{row.item.number}}</b-link>
+              <span style="font-size: 11px"> ({{row.item.name}})</span>
           </template>
           <template v-slot:cell(unitsSold)="row">
               <b-button size="sm" variant="link" @click.stop="goToItemSaleList(row.item.id)">{{row.item.unitsSold}}</b-button>

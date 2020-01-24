@@ -26,7 +26,8 @@
         <label class="top-label"></label>
         <b-table :sort-compare="sortCompare" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="scheduleEvents" :fields="columns">
           <template v-slot:cell(sale)="row">
-            <b-button size="sm" @click.stop="goToSale(row.item.saleItem.sale.id)" variant="link">{{row.item.saleItem.sale.number}} ({{row.item.saleItem.sale.customer.name}})</b-button>
+            <b-link role="button" @click.stop="goToSale(row.item.saleItem.sale.id)">{{row.item.saleItem.sale.number}}</b-link>
+            <span style="font-size: 11px"> ({{row.item.saleItem.sale.customer.name}})</span>
           </template>
           <template v-slot:cell(unitsProduced)="row">
             <b-button size="sm" @click.stop="goToProduction(row.item)" variant="link">{{row.item.unitsProduced}}</b-button>

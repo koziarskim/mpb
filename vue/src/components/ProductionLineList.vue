@@ -17,14 +17,17 @@
     </b-row>
     <b-table :sticky-header="browserHeight()" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="scheduleEvents" :fields="fields">
       <template v-slot:cell(line.number)="row">
-        <b-button size="sm" @click="goToProductionLine(row.item)" variant="link">{{row.item.line.id}}</b-button>
+        <b-link role="button" @click="goToProductionLine(row.item)">{{row.item.line.id}}</b-link>
       </template>
       <template v-slot:cell(item)="row">
-        <b-button size="sm" @click="goToItem(row.item.saleItem.item.id)" variant="link">{{row.item.saleItem.item.name}}</b-button>
-		    <span>({{row.item.saleItem.sale.number}} - {{row.item.saleItem.sale.customer.name}})</span>
+        <b-link role="button" @click="goToItem(row.item.saleItem.item.id)">{{row.item.saleItem.item.number}}</b-link>
+		    <span> ({{row.item.saleItem.item.name}})</span>
+      </template>
+      <template v-slot:cell(sale)="row">
+		    <span>{{row.item.saleItem.sale.number}} - {{row.item.saleItem.sale.customer.name}}</span>
       </template>
       <template v-slot:cell(dc)="row">
-		    <span>({{row.item.saleItem.sale.shippingAddress.dc}} ({{row.item.saleItem.sale.shippingAddress.state}})</span>
+		    <span>{{row.item.saleItem.sale.shippingAddress.dc}} ({{row.item.saleItem.sale.shippingAddress.state}}</span>
       </template>
       <template v-slot:cell(totalTime)="row">
 		  <span>{{formatter.secondsToTime(row.item.totalTime)}}</span>
@@ -74,7 +77,8 @@ export default {
       sortDesc: false,
       fields: [
         { key: "line.number", label: "Line", sortable: false },
-        { key: "item", label: "Item (Sale & Customer)", sortable: false },
+        { key: "item", label: "Item # (Name)", sortable: false },
+        { key: "sale", label: "Sale - Customer", sortable: false },
         { key: "dc", label: "DC (State)", sortable: false },
 		    { key: "saleItem.units", label: "Sold", sortable: true },
 		    { key: "unitsScheduled", label: "Scheduled", sortable: true },

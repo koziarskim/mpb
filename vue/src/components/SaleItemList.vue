@@ -25,10 +25,10 @@
         </b-row>
         <b-table :items="saleItems" :fields="fields" no-local-sorting @sort-changed="sorted">
           <template v-slot:cell(number)="row">
-              <b-button size="sm" @click=goToSale(row.item.saleId) variant="link">{{row.item.saleNumber}} ({{row.item.saleName}})</b-button>
+              <b-link role="button" @click=goToSale(row.item.saleId)>{{row.item.saleNumber}}</b-link>
           </template>
           <template v-slot:cell(itemNumber)="row">
-              <b-button size="sm" @click=goToItem(row.item.itemId) variant="link">{{row.item.itemNumber}} ({{row.item.itemName}})</b-button>
+              <b-link role="button" @click=goToItem(row.item.itemId)>{{row.item.itemNumber}} ({{row.item.itemName}})</b-link>
           </template>
           <template v-slot:cell(unitsShipped)="row">
               <b-button size="sm" @click=goToShipment(row.item.itemId,row.item.saleId) variant="link">{{row.item.unitsShipped}}</b-button>
@@ -66,7 +66,7 @@ export default {
       customer: {},
       selectedCustomerId: null,
       fields: [
-        { key: "number", label: "Sale # (Name)", sortable: false },
+        { key: "number", label: "Sale #", sortable: false },
         { key: "itemNumber", label: "Item", sortable: false },
         { key: "customerName", label: "Customer", sortable: false },
         { key: "dc", label: "DC (State)", sortable: false },
