@@ -18,8 +18,8 @@
         <input type="checkbox" style="margin-left: 30px; margin-top: 10px" v-model="shipment.ready">
       </b-col>
       <b-col cols=2>
-        <div style="margin-top: 22px; margin-left: 70px">
-          <b-button type="reset" variant="primary" @click="saveShipment()">Save</b-button>
+        <div style="margin-top: 5px; margin-left: 10px">
+          <b-button type="reset" variant="success" @click="saveAndClose()">Save & Close</b-button>
           <img @click="openPdf()" style="margin: 2px; cursor: pointer" src="../assets/pdf-download.png" width="25px">
         </div>
       </b-col>
@@ -270,6 +270,11 @@ export default {
       }
       return true;
     },
+    saveAndClose(){
+      this.saveShipment().then(r => {
+        window.history.back();
+      });
+    },
     saveShipment() {
       if(!this.validate()){
         return;
@@ -282,12 +287,14 @@ export default {
       this.shipment.totalPallets = this.totalPallets;
       this.shipment.totalWeight = this.totalWeight;
       return http.post("/shipment", this.shipment).then(r => {
+        this.shipment = r.data;
+        return r.data;
         //This is to replace "new" with ID from url.
-        if(!this.shipment.id){
-          router.push("/shipmentEdit/"+r.data.id);
-        }else{
-          this.shipment = r.data;
-        }
+        // if(!this.shipment.id){
+        //   router.push("/shipmentEdit/"+r.data.id);
+        // }else{
+        //   this.shipment = r.data;
+        // }
         this.getAvailableSaleItems();
       }).catch(e => {
          console.log("API error: " + e);
@@ -398,8 +405,11 @@ export default {
       router.push("/saleEdit/" + sale_id);
     },
     openPdf(){
-      var url = httpUtils.baseUrl + "/shipment/" + this.shipment.id + "/pdf";
-      window.open(url, "_blank","")
+      this.saveShipment().then(shipment => {
+        this.shipment.id = shipment.id;
+        var url = httpUtils.baseUrl + "/shipment/" + this.shipment.id + "/pdf";
+        window.open(url, "_blank","")
+      })
     },
     unitsBlur(si){
         if(si.units > si.saleItem.item.unitsOnStock){
