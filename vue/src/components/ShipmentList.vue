@@ -56,6 +56,7 @@
         </template>
       </b-table>
       <b-pagination v-model="pageable.currentPage" :per-page="pageable.perPage" :total-rows="pageable.totalElements" @change="paginationChange"></b-pagination>
+      <span style="margin-top: 5px">Total of {{pageable.totalElements}} rows</span>
     </b-container>
 </template>
 <script>

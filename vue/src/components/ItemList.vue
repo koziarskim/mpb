@@ -40,7 +40,7 @@
         </b-table>
         <div style="display: flex">
           <b-pagination size="sm" v-model="pageable.currentPage" :per-page="pageable.perPage" :total-rows="pageable.totalElements" @change="paginationChange"></b-pagination>
-          <span style="margin-top: 5px">Total of {{pageable.totalElements}} Items</span>
+          <span style="margin-top: 5px">Total of {{pageable.totalElements}} rows</span>
         </div>
     </b-container>
 </template>
