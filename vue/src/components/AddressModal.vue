@@ -19,6 +19,12 @@
       </b-row>
 			<b-row>
 				<b-col cols=6>
+					<label class="top-label">Address Line</label>
+					<input class="form-control" type="tel" v-model="address.line">
+				</b-col>
+			</b-row>
+			<b-row>
+				<b-col cols=6>
 					<label class="top-label">Street</label>
 					<input class="form-control" type="tel" v-model="address.street">
 				</b-col>
@@ -35,6 +41,18 @@
 				<b-col cols=2>
 					<label class="top-label">Zip Code</label>
 					<input class="form-control" type="tel" v-model="address.zip">
+				</b-col>
+			</b-row>
+			<b-row>
+				<b-col cols=10>
+					<label class="top-label">Phone:</label>
+					<input class="form-control" type="tel" v-model="address.phone"/>
+				</b-col>
+			</b-row>
+			<b-row>
+				<b-col cols=10>
+					<label class="top-label">Note:</label>
+					<b-form-textarea type="text" :rows="3" v-model="address.notes"></b-form-textarea>
 				</b-col>
 			</b-row>
     </b-modal>

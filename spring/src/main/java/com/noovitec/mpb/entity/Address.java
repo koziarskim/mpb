@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 @Entity
 public class Address extends BaseEntity {
 
+	private String line;
 	private String street;
 	private String city;
 	private String state;

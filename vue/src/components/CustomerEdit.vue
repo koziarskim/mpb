@@ -126,7 +126,7 @@
                 <b-row v-if="addressEditFlag">
                     <b-col cols=10>
                         <label class="top-label">Note:</label>
-                        <b-form-textarea type="text" :rows="3" v-model="newAddress.notes" placeholder="Special Notes"></b-form-textarea>
+                        <b-form-textarea type="text" :rows="3" v-model="newAddress.notes"></b-form-textarea>
                     </b-col>
                 </b-row>
             </b-col>
