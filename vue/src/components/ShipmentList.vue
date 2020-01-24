@@ -6,18 +6,18 @@
             <b-popover :show="showFilterMenu" placement="bottom" target="shipmentListMenu" variant="secondary">
               <template v-slot:title>
                 <span>Advanced Filters</span>
-                <b-button style="margin-left: 185px" size="sm" @click="closeFilterMenu()">Search</b-button>
+                <b-button style="margin-left: 185px" size="sm" @click="searchFilterMenu()">Search</b-button>
                 <b-button style="margin-left: 10px" size="sm" @click="closeFilterMenu()">X</b-button>
               </template>
               <div style="width: 400px">
                 <b-row>
                   <b-col cols=6>
                     <label class="top-label">Ship From:</label>
-                    <input class="form-control" type="date" v-model="shipFrom">
+                    <input class="form-control" type="date" v-model="filter.shipFrom">
                   </b-col>
                   <b-col cols=6>
                     <label class="top-label">Ship To:</label>
-                    <input class="form-control" type="date" v-model="shipTo">
+                    <input class="form-control" type="date" v-model="filter.shipTo">
                   </b-col>
                 </b-row>
               </div>
@@ -76,6 +76,10 @@ export default {
         { key: "status", label: "Status", sortable: false },
         { key: "action", label: "Action", sortable: false }
       ],
+      filter: {
+        shipFrom: null,
+        shipTo: null,
+      },
       shipments: [],
       number: '',
       availableSales: [],
@@ -114,6 +118,10 @@ export default {
     closeFilterMenu(){
       this.showFilterMenu = false;
     },
+    searchFilterMenu(){
+      this.getShipments();
+      this.showFilterMenu = false;
+    },
     browserHeight(){
       return +window.innerHeight - 170 +"px";
     },
@@ -135,7 +143,7 @@ export default {
       http
         .get("/shipment/pageable", {params: {pageable: this.pageable, 
             number: this.number, customerId: this.customer.id, saleId: this.sale.id, itemId: this.item.id, 
-            status: this.status.id}}).then(r => {
+            status: this.status.id, shipFrom: this.filter.shipFrom, shipTo: this.filter.shipTo}}).then(r => {
           this.shipments = r.data.content;
           this.pageable.totalElements = r.data.totalElements;
         })

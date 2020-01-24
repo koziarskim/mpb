@@ -94,7 +94,9 @@ class ShipmentRest {
 			@RequestParam(required = false) Long customerId,
 			@RequestParam(required = false) Long saleId,
 			@RequestParam(required = false) Long itemId, 
-			@RequestParam(required = false) String status) {
+			@RequestParam(required = false) String status,
+			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") String shipFrom,
+			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") String shipTo) {
 		List<Long> ids = shipmentRepo.findIds(number, customerId, saleId, itemId, status);
 		if(ids.isEmpty()) {
 			return Page.empty();
