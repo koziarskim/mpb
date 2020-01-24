@@ -14,8 +14,8 @@
       </b-col>
     </b-row>
     <b-table :items="customers" :fields="fields" no-local-sorting>
-      <template v-slot:cell(account)="row">
-          <b-button size="sm" @click.stop="goTo(row.item.id)" variant="link">{{row.item.id}}</b-button>
+      <template v-slot:cell(name)="row">
+          <b-link role="button" @click.stop="goTo(row.item.id)">{{row.item.name}}</b-link>
       </template>
       <template v-slot:cell(action)="row">
           <b-button size="sm" @click.stop="remove(row.item.id)">x</b-button>
@@ -34,8 +34,8 @@ export default {
       pageable: {totalElements: 100, currentPage: 1, perPage: 7, sortBy: 'name', sortDesc: false},
       searchCustomer: "",
       fields: [
-        { key: "account", label: "Account", sortable: false },
         { key: "name", label: "Name", sortable: false },
+        { key: "addressName", label: "Address", sortable: false },
         { key: "phone", label: "Phone", sortable: false },
         { key: "action", label: "Action", sortable: false }
       ],

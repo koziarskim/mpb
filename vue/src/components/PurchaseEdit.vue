@@ -52,7 +52,8 @@
       <b-col>
         <b-table sort-by.sync="name" sort-desc.sync="false" :items="purchase.purchaseComponents" :fields="fields">
           <template v-slot:cell(name)="row">
-            <b-button size="sm" @click.stop="goToComponent(row.item.component.id)" variant="link">{{row.item.component.number}} - {{row.item.component.name}}</b-button>
+            <b-link @click.stop="goToComponent(row.item.component.id)">{{row.item.component.number}}</b-link>
+            <span style="font-size: 11px"> ({{row.item.component.name}})</span>
           </template>
           <template v-slot:cell(unitsReceived)="row">
             <b-button v-if="!receiveMode" size="sm" @click.stop="goToReceiving(purchase.id, row.item.component.id)" variant="link">{{row.item.unitsReceived}}</b-button>

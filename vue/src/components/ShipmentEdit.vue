@@ -103,10 +103,11 @@
         <b-col>
           <b-table v-if="shipment.shipmentItems.length>0" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="shipment.shipmentItems" :fields="columns">
             <template v-slot:cell(item)="row">
-              <b-button @click.stop="goToItem(row.item.saleItem.item.id)" variant="link">{{row.item.saleItem.item.number}}</b-button>
+              <b-link role="button" @click.stop="goToItem(row.item.saleItem.item.id)">{{row.item.saleItem.item.number}}</b-link>
+              <span style="font-size:11px"> {{row.item.saleItem.item.name}}</span>
             </template>
             <template v-slot:cell(sale)="row">
-              <b-button @click.stop="goToSale(row.item.saleItem.sale.id)" variant="link">{{row.item.saleItem.sale.number}}</b-button>
+              <b-link @click.stop="goToSale(row.item.saleItem.sale.id)">{{row.item.saleItem.sale.number}}</b-link>
             </template>
             <template v-slot:cell(units)="row">
               <input class="form-control" style="width:100px" type="tel" v-model="row.item.units" @blur="unitsBlur(row.item)">

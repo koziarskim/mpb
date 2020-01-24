@@ -13,4 +13,5 @@ public class CustomerDto {
 	private String account;
 	private String name;
 	private String phone;
+	private String addressName;
 }

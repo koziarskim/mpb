@@ -80,6 +80,7 @@ class CustomerRest {
 			dto.setAccount(customer.getAccount());
 			dto.setName(customer.getName());
 			dto.setPhone(customer.getPhone());
+			dto.setAddressName(customer.getBillingAddress()==null?"":(customer.getBillingAddress().getCity()+", "+customer.getBillingAddress().getState()));
 			return dto;
 		});
 		return dtos;
