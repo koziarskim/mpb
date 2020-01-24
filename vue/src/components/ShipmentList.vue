@@ -10,7 +10,16 @@
                 <b-button style="margin-left: 10px" size="sm" @click="closeFilterMenu()">X</b-button>
               </template>
               <div style="width: 400px">
-                Under Constraction...
+                <b-row>
+                  <b-col cols=6>
+                    <label class="top-label">Ship From:</label>
+                    <input class="form-control" type="date" v-model="shipFrom">
+                  </b-col>
+                  <b-col cols=6>
+                    <label class="top-label">Ship To:</label>
+                    <input class="form-control" type="date" v-model="shipTo">
+                  </b-col>
+                </b-row>
               </div>
             </b-popover>
           </b-col>
