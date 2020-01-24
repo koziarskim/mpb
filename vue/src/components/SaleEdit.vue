@@ -89,7 +89,8 @@
         <label class="top-label"></label>
         <b-table v-if="sale.saleItems.length>0" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="sale.saleItems" :fields="columns">
           <template v-slot:cell(item.number)="row">
-            <b-button size="sm" @click.stop="goToItem(row.item.item.id)" variant="link">{{row.item.item.name}}</b-button>
+            <b-link role="button" @click.stop="goToItem(row.item.item.id)">{{row.item.item.number}}</b-link>
+            <span> ({{row.item.item.name}})</span>
           </template>
           <template v-slot:cell(sku)="row">
             <input class="form-control" style="width:100px" type="tel" v-model="row.item.sku">

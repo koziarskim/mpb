@@ -19,8 +19,11 @@
                 :sort-desc.sync="sortDesc"
                 :items="suppliers"
                 :fields="fields">
-                <template v-slot:cell(account)="row">
-                    <b-button size="sm" @click.stop="goToSupplier(row.item.id)" variant="link">{{row.item.account}}</b-button>
+                <template v-slot:cell(name)="row">
+                    <b-link role="button" @click.stop="goToSupplier(row.item.id)">{{row.item.name}}</b-link>
+                </template>
+                <template v-slot:cell(addressName)="row">
+                    <span>{{row.item.city+", "+row.item.state}}</span>
                 </template>
                 <template v-slot:cell(action)="row">
                     <b-button size="sm" @click.stop="deleteSupplier(row.item.id)">x</b-button>
@@ -41,9 +44,8 @@ export default {
       sortBy: "account",
       sortDesc: false,
       fields: [
-        { key: "account", label: "Account", sortable: false },
         { key: "name", label: "Name", sortable: false },
-        { key: "city", label: "City", sortable: false },
+        { key: "addressName", label: "Address", sortable: false },
         { key: "phone", label: "Phone", sortable: false },
         { key: "action", label: "Action", sortable: false }
       ],
