@@ -55,8 +55,10 @@
             <b-button size="sm" @click.stop="deleteShipment(row.item.id)">x</b-button>
         </template>
       </b-table>
-      <b-pagination v-model="pageable.currentPage" :per-page="pageable.perPage" :total-rows="pageable.totalElements" @change="paginationChange"></b-pagination>
-      <span style="margin-top: 5px">Total of {{pageable.totalElements}} rows</span>
+      <div style="display: flex">
+        <b-pagination v-model="pageable.currentPage" :per-page="pageable.perPage" :total-rows="pageable.totalElements" @change="paginationChange"></b-pagination>
+        <span style="margin-top: 5px">Total of {{pageable.totalElements}} rows</span>
+      </div>
     </b-container>
 </template>
 <script>
