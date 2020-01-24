@@ -251,14 +251,17 @@ class ShipmentRest {
 			String shippingAddress = shipment.getCustomer().getName() + " - "+shipment.getShippingAddress().getDc() + "\n"
 				+ shipment.getShippingAddress().getStreet() + "\n" 
 				+ shipment.getShippingAddress().getCity() + ", " + shipment.getShippingAddress().getState() + " "+shipment.getShippingAddress().getZip() + "\n"
-				+ (phone==null?"":"Phone: "+phone) + "\n"
+				+ (phone==null?"":("Phone: "+phone + "\n"))
 				+ (shipment.getShippingAddress().getNotes()==null?"":shipment.getShippingAddress().getNotes());
 			bolStamper.getAcroFields().setField("shippingAddress", shippingAddress);
 		}
 		if(shipment.getFreightAddress()!=null) {
 			String freightAddress = shipment.getFreightAddress().getDc() + "\n"
+				+ (shipment.getFreightAddress().getLine()==null?"":(shipment.getFreightAddress().getLine() + "\n"))
 				+ shipment.getFreightAddress().getStreet() + "\n" 
-				+ shipment.getFreightAddress().getCity() + ", "+ shipment.getFreightAddress().getState() + " "+shipment.getFreightAddress().getZip();		
+				+ shipment.getFreightAddress().getCity() + ", "+ shipment.getFreightAddress().getState() + " "+shipment.getFreightAddress().getZip() + "\n"		
+				+ (shipment.getFreightAddress().getPhone()==null?"":("Phone: "+shipment.getFreightAddress().getPhone() + "\n"))
+				+ (shipment.getFreightAddress().getNotes()==null?"":shipment.getFreightAddress().getNotes());
 			bolStamper.getAcroFields().setField("freightAddress", freightAddress);
 		}
 		bolStamper.getAcroFields().setField("notes", shipment.getNotes());
