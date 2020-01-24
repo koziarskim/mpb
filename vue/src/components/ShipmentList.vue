@@ -46,7 +46,24 @@
       </b-row>
       <b-table :items="shipments" :fields="fields">
         <template v-slot:cell(number)="row">
-            <b-button size="sm" @click.stop="goToShipment(row.item.id)" variant="link">{{row.item.number}}</b-button>
+            <b-link role="button" :id="'popover-'+row.item.id" @click="getShipmentItems(row.item)">{{row.item.number}}</b-link>
+            <b-popover placement="bottomright" :target="'popover-'+row.item.id" triggers="focus" variant="primary">
+              <template v-slot:title>
+                <b-button size="sm" @click="goToShipment(row.item.id)" variant="link">View/Edit Details</b-button>
+              </template>
+              <div class = "shipItemTable">
+              <table>
+                <tr><th>Sale</th><th>Item</th><th>Sold</th><th>Produced</th><th>Shipped</th></tr>
+              <tr v-for="si in row.item.shipmentItems" :key="si.id">
+                <td>{{si.saleItem.sale.number}}</td>
+                <td>{{si.saleItem.item.number}} ({{si.saleItem.item.name}})</td>
+                <td>{{si.saleItem.units}}</td>
+                <td>{{si.saleItem.unitsProduced}}</td>
+                <td>{{si.units}}</td>
+              </tr>
+              </table>
+              </div>
+            </b-popover>
         </template>
         <template v-slot:cell(status)="row">
             <span>{{getStatus(row.item)}}</span>
@@ -115,6 +132,13 @@ export default {
     }
   },
   methods: {
+    getShipmentItems(shipmentDto){
+      http.get("/shipment/"+shipmentDto.id).then(r => {
+        shipmentDto.shipmentItems = r.data.shipmentItems
+      }).catch(e => {
+        console.log("API error: " + e);
+      });
+    },
     openFilterMenu(){
       this.showFilterMenu = true;
     },
@@ -143,16 +167,17 @@ export default {
         this.getShipments();
     },
     getShipments() {
-      http
-        .get("/shipment/pageable", {params: {pageable: this.pageable, 
-            number: this.number, customerId: this.customer.id, saleId: this.sale.id, itemId: this.item.id, 
-            status: this.status.id, shipFrom: this.filter.shipFrom, shipTo: this.filter.shipTo}}).then(r => {
-          this.shipments = r.data.content;
-          this.pageable.totalElements = r.data.totalElements;
+      http.get("/shipment/pageable", {params: {pageable: this.pageable, 
+          number: this.number, customerId: this.customer.id, saleId: this.sale.id, itemId: this.item.id, 
+          status: this.status.id, shipFrom: this.filter.shipFrom, shipTo: this.filter.shipTo}}).then(r => {
+        r.data.content.forEach(ship => {
+          ship.shipmentItems = []
         })
-        .catch(e => {
-          console.log("API error: " + e);
-        });
+        this.shipments = r.data.content;
+        this.pageable.totalElements = r.data.totalElements;
+      }).catch(e => {
+        console.log("API error: " + e);
+      });
     },
     getAvailableCustomers() {
       http.get("/customer/kv").then(r => {
@@ -212,6 +237,15 @@ export default {
 }
 .table th {
    text-align: left;   
+}
+.shipItemTable table{
+  border: 1px solid black;
+}
+.shipItemTable th{
+  border: 1px solid black;
+}
+.shipItemTable td{
+  border: 1px solid black;
 }
 /* .table tr {
   font-size: 14px;

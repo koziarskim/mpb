@@ -26,7 +26,7 @@
             <b-button size="sm" :id="'popover-button-variant'+row.item.id" @click="showPopover(row.item)" variant="link">{{row.item.number}} ({{row.item.name}})</b-button>
             <b-popover placement="bottomright" :target="'popover-button-variant'+row.item.id" triggers="focus" variant="primary">
               <template v-slot:title>
-                <b-button size="sm" @click=goToSale(row.item.id) variant="link">View Details</b-button>
+                <b-button size="sm" @click="goToSale(row.item.id)" variant="link">View/Edit Details</b-button>
               </template>
               <div v-for="si in row.item.saleItems" :key="si.id">
                 <div>{{si.item.number}} - {{si.item.name}}, Sold: {{si.units}}, Produced: {{si.unitsProduced}}, Price: ${{si.unitPrice}}</div>
@@ -92,7 +92,7 @@ export default {
   },
   methods: {
     showPopover(saleDto){
-      this.sales.forEach(sale => sale.show = false)
+      // this.sales.forEach(sale => sale.show = false)
       this.getSale(saleDto.id).then(sale => {
         saleDto.saleItems = sale.saleItems;
       })
