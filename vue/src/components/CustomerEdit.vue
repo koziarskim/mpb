@@ -224,9 +224,11 @@ export default {
       this.newAddress = this.address;
     },
     saveAddress() {
-      this.newAddress.id = null;
-      this.newAddress.label = this.newAddress.dc + "("+this.newAddress.city + ", "+this.newAddress.state+")";
-      this.customer.addresses.push(this.newAddress);
+      if(!this.newAddress.id){
+        this.newAddress.id = null;
+        this.newAddress.label = this.newAddress.dc + "("+this.newAddress.city + ", "+this.newAddress.state+")";
+        this.customer.addresses.push(this.newAddress);
+      }
       this.addressEditFlag = false;
     },
     deleteAddress() {
