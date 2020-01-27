@@ -1,0 +1,101 @@
+In Progress:
+Shipment (screen & PDF):
+- Persist filter search or show shipment in popup.
+- Allow to search/filter by Season
+- Allow to upload documents.
+Item screen:
+- Allow to enter upc for item (manually entered)
+- Allow to enter upc for case (manually entered)
+Global:
+- Allow to search/filter by Season and Year context for currently logged in user (partially done).
+- Assigned units 
+- Short production
+- Keep search options persisted (until page refreshed or logged out).
+Production Line:
+- Allow to finish production even if the units produced are short.
+- Show box with large percentage (On target/slow (based on hours scheduled and units), %Performance/Efficiency, %Production done).
+
+Done:
+Shipment (screen & PDF):
++ Show Notes in BOL PDF (done)
++ Show Flight Term Name instead of ID in BOL PDF (done)
++ Increase the size of Via in BOL PDF (done)
++ Switch Sale # column with Quantity column on BOL PDF (done)
++ Add space in from on SKU on BOL PDF (done)
++ Add "PH:" to BOL PDF (done)
++ Add Palet Weight to Total Weight in Shipment screen: (+ (# of palets x palet weight)) (done).
++ Change PDF Layout (done)
++ Make Special Notes bold font (done)
++ Add frieight number (PDF) (done)
++ Make Date and BOS larger
++ Add Shipped Date
++ Add checkbox (ready to ship).
++ Add Case Pack column to PDF
++ Shipment list: Add columns (Ready To Ship, Shipped Date).
++ Add Packing Slip as second page.
++ Make note in address 3 lines.
++ Make several changes to PDF Layout
++ Add Ship Date to PDF
++ Add Last Modified date to Shipment screen (update based on last save).
++ Split Flireight/NMFC to separate fields (NMFC and Class).
++ Change layout to fit Class Column (screen and pdfs)
++ Bold font for all title fields on PDF.
++ Display single phone in Ship to address (if no address phone, display customer)
++ Add "*Contiain foot" to botton of Special Notes.
++ Remove Case total on PDF
++ Add confirmation to shipment delete
++ Sort shipments by Modified Date (last first)
++ Add Advanced Filter Menu.
++ Allow to filter by Moified Date range.
++ Allow to filter by status.
++ Increase table size to 20 per page
++ Add time to Last Modified
++ Fix Contains Foot(d).
++ Fix deleting shipment.
++ Remove customer name from Sale search drop down
++ Fix pdf long line (Send Freight Bill To).
++ Allow to enter Phone, Notes and Address Line to Freight Address.
++ Allow to view Sales and Items as popup for each Shipment.
+Address screen:
++ Add Notes input to each Ship Address for Customer (done)
+Customer screen:
++ Customer screen: Show DC (city, state) in ship to address (done)
++ Allow to delete shipping address
++ Fix edit address
++ Remove account from the list
+Item screen:
++ Add Palet Weight to Item Edit screen (done)
++ Change Hide Production and Hide Shipped unchecked
+Sale screen:
++ Show Item # and Item Name in Sale add item (done)
++ Change Hide Production and Hide Shipped unchecked
+Supplier screen:
++ Remove account from the list
+Global:
++ Increase logged in session to 8 hours.
++ Allow to copy links (Item, Sale, Shipment). Copy: highlight text, click (CTR+C), Paste: CTR+V
+
+Backlog:
+Component entity:
+	persist unitsInOrder
+	change all int to Long
+Item entity:
+	remove eager loding
+	chage all int to Long
+	persist unitsOnStack
+Purchase entity:
+	persist isReceived
+PurchaseComponent entity
+	change units to unitsPurchased
+	persist unitsReceived	
+Receiving entity
+	change units to unitsReceived	
+SaleItem enitty
+	change all int to Long
+	change units to unitsSold
+Shipment entity
+	change totalUnits to unitsShipped
+	add to updateUnits methods instead of doing on client.
+ShipmentItem entity
+	change units to unitsShipped;
+
