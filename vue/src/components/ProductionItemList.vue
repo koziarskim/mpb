@@ -93,8 +93,19 @@ export default {
          console.log("API error: " + e);
       });
     },
-    goToProductionLine(schedule_event_id) {
-      router.push("/productionLine/" + schedule_event_id);
+    getScheduleEvent(seId){
+      return http.get("/scheduleEvent/"+seId).then(response => {
+        return response.data;
+      }).catch(e => {
+         console.log("API error: " + e);
+      });
+    },
+    goToProductionLine(seId) {
+      var se = this.getScheduleEvent(seId).then(se => {
+        var query = { date: se.schedule.date, seId: se.id };
+        router.push({ path: "/productionLine/"+se.line.id, query: query } );
+      })
+      // router.push("/productionLine/" + schedule_event_id);
     },
     percPerf(high, low){
       if(high==0 || low==0){
