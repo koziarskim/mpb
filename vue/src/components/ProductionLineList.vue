@@ -27,7 +27,7 @@
 		    <span>{{row.item.saleItem.sale.number}} - {{row.item.saleItem.sale.customer.name}}</span>
       </template>
       <template v-slot:cell(dc)="row">
-		    <span>{{row.item.saleItem.sale.shippingAddress.dc}} ({{row.item.saleItem.sale.shippingAddress.state}}</span>
+		    <span>{{getAddress(row.item.saleItem.sale)}}</span>
       </template>
       <template v-slot:cell(totalTime)="row">
 		  <span>{{formatter.secondsToTime(row.item.totalTime)}}</span>
@@ -115,6 +115,13 @@ export default {
     }
   },
   methods: {
+    getAddress(sale){
+      var addressName = "";
+      if(sale.shippingAddress){
+       sale.shippingAddress.dc + " ("+sale.shippingAddress.state+")";
+      }
+      return addressName;
+    },
     browserHeight(){
       return +window.innerHeight - 150 +"px";
     },
