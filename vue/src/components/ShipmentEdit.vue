@@ -18,8 +18,9 @@
         <input type="checkbox" style="margin-left: 30px; margin-top: 10px" v-model="shipment.ready">
       </b-col>
       <b-col cols=2>
-        <div style="margin-top: 5px; margin-left: 10px">
-          <b-button type="reset" variant="success" @click="saveAndClose()">Save & Close</b-button>
+        <div style="margin-top: 5px; margin-left: 50px">
+          <b-button size="sm" variant="success" @click="back()">Back</b-button>
+          <b-button size="sm" style="margin-left: 5px" variant="success" @click="saveAndClose()">Save</b-button>
           <img @click="openPdf()" style="margin: 2px; cursor: pointer" src="../assets/pdf-download.png" width="25px">
         </div>
       </b-col>
@@ -274,6 +275,9 @@ export default {
       this.saveShipment().then(r => {
         window.history.back();
       });
+    },
+    back(){
+      window.history.back();
     },
     saveShipment() {
       if(!this.validate()){
