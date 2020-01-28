@@ -88,7 +88,7 @@ public class SaleItem extends BaseEntity {
 			this.unitsTransfered += sit.getUnitsTransfered();
 		}
 		for (SaleItemTransfer sit: this.getTransfersTo()) {
-			this.unitsTransfered += sit.getUnitsTransfered();
+			this.unitsTransfered -= sit.getUnitsTransfered();
 		}
 	}
 
