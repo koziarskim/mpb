@@ -3,6 +3,7 @@ package com.noovitec.mpb.entity;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -53,6 +54,16 @@ public class SaleItem extends BaseEntity {
 	@JoinColumn(name = "sale_item_id")
 	private Collection<ShipmentItem> shipmentItems = new HashSet<ShipmentItem>();
 
+	@JsonIgnoreProperties(value = { "saleItemTo", "saleItemFrom" }, allowSetters = true)
+	@OneToMany()
+	@JoinColumn(name = "sale_item_from_id")
+	private Set<SaleItemTransfer> transfersFrom = new HashSet<SaleItemTransfer>();
+
+	@JsonIgnoreProperties(value = { "saleItemTo", "saleItemFrom" }, allowSetters = true)
+	@OneToMany()
+	@JoinColumn(name = "sale_item_to_id")
+	private Set<SaleItemTransfer> transfersTo = new HashSet<SaleItemTransfer>();
+
 	@Transient
 	private Long unitsOnStock = 0L;
 
@@ -64,6 +75,7 @@ public class SaleItem extends BaseEntity {
 		this.unitsScheduled = 0L;
 		this.unitsProduced = 0L;
 		this.unitsShipped = 0L;
+		this.unitsTransfered = 0L;
 		for (ScheduleEvent se : this.getScheduleEvents()) {
 			se.updateUnits();
 			this.unitsScheduled += se.getUnitsScheduled();
@@ -71,6 +83,12 @@ public class SaleItem extends BaseEntity {
 		}
 		for (ShipmentItem si : this.getShipmentItems()) {
 			this.unitsShipped += si.getUnits();
+		}
+		for (SaleItemTransfer sit: this.getTransfersFrom()) {
+			this.unitsTransfered += sit.getUnitsTransfered();
+		}
+		for (SaleItemTransfer sit: this.getTransfersTo()) {
+			this.unitsTransfered += sit.getUnitsTransfered();
 		}
 	}
 
