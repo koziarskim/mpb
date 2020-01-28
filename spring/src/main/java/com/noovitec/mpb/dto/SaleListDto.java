@@ -23,6 +23,7 @@ public class SaleListDto {
 	private Long unitsScheduled;
 	private Long unitsProduced;
 	private Long unitsShipped;
+	private Long unitsTransfered;
 	private List saleItems;
 	
 	//TODO: Is this still used?

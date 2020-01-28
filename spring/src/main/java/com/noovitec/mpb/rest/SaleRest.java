@@ -75,6 +75,7 @@ class SaleRest {
 			dto.setUnitsSold(sale.getUnitsSold());
 			dto.setUnitsScheduled(sale.getUnitsScheduled());
 			dto.setUnitsProduced(sale.getUnitsProduced());
+			dto.setUnitsTransfered(sale.getUnitsTransfered());
 			dto.setUnitsShipped(sale.getUnitsShipped());
 			return dto;
 		});
@@ -115,6 +116,14 @@ class SaleRest {
 		return ResponseEntity.ok().body("OK");
 	}
 
+	@PostMapping("/sale/units/{saleId}")
+	ResponseEntity<?> updateUnits(@PathVariable Long saleId) {
+		Sale sale = saleRepo.getOne(saleId);
+		sale.updateUnits();
+		saleRepo.save(sale);
+		return ResponseEntity.ok().body("OK");
+	}
+	
 	@PostMapping("/sale")
 	ResponseEntity<Sale> post(@RequestBody(required = false) Sale sale) {
 		if (sale == null) {

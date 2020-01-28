@@ -33,6 +33,9 @@
               </div>
             </b-popover>
         </template>
+        <template v-slot:cell(unitsSchPro)="row">
+            <span>{{row.item.unitsScheduled}}/{{row.item.unitsProduced}}</span>
+        </template>
         <template v-slot:cell(unitsShipped)="row">
             <b-button size="sm" @click=goToShipment(row.item.id) variant="link">{{row.item.unitsShipped}}</b-button>
         </template>
@@ -69,8 +72,8 @@ export default {
         { key: "dc", label: "DC (State)", sortable: false },
         { key: "date", label: "Date", sortable: false },
         { key: "unitsSold", label: "Sold", sortable: false },
-        { key: "unitsScheduled", label: "Scheduled", sortable: false },
-        { key: "unitsProduced", label: "Produced", sortable: false },
+        { key: "unitsSchPro", label: "Sched/Produced", sortable: false },
+        { key: "unitsTransfered", label: "Transfered", sortable: false },
         { key: "unitsShipped", label: "Shipped", sortable: false },
         { key: "action", label: "Action", sortable: false}
       ],

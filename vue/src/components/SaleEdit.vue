@@ -340,8 +340,16 @@ export default {
         return;
       }
       this.saveSale().then(r => {
+        this.sale.saleItems.forEach(si => {
+          si.transfersTo.forEach(sit => {
+            this.updateSale(sit.saleFromId);
+          })
+        })
         window.history.back();
       });
+    },
+    updateSale(saleId){
+      http.post("/sale/units/"+saleId);
     },
     getAvailableCustomers() {
       http

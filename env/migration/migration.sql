@@ -12,3 +12,5 @@ CREATE TABLE public.sale_item_transfer
     CONSTRAINT fk_saleItem_saleItemTrasferTo FOREIGN KEY (sale_item_to_id) REFERENCES public.sale_item (id),
 	CONSTRAINT fk_saleItem_saleItemTrasferFrom FOREIGN KEY (sale_item_from_id) REFERENCES public.sale_item (id)
 );
+
+alter table sale add column units_transfered integer default 0;

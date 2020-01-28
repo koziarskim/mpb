@@ -43,4 +43,11 @@ public class SaleItemTransfer extends BaseEntity {
 		return this.getSaleItemFrom().getSale().getNumber() + "("+ this.getSaleItemFrom().getSale().getCustomer().getName()+")";
 	}
 
+	@Transient
+	private Long saleId;
+	
+	public Long getSaleFromId() {
+		return this.getSaleItemFrom().getSale().getId();
+	}
+
 }
