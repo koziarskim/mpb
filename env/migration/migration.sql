@@ -1,1 +1,1 @@
-alter table address add column line varchar(50);
+alter table sale_item add column units_transfered integer default 0;

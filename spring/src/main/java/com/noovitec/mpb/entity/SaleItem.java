@@ -30,6 +30,7 @@ public class SaleItem extends BaseEntity {
 	private Long unitsProduced = 0L;
 	private Long unitsScheduled = 0L;
 	private Long unitsShipped = 0L;
+	private Long unitsTransfered = 0L;
 	private String sku;
 
 	@JsonIgnoreProperties(value = { "saleItems", "purchaseSales" }, allowSetters = true)

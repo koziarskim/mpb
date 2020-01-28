@@ -169,8 +169,9 @@ export default {
       columns: [
         { key: "item.number", label: "Item", sortable: false },
         { key: "sku", label: "SKU#", sortable: false },
-        { key: "unitsSchedProd", label: "Sched/Prod", sortable: false },
         { key: "units", label: "Sold", sortable: false },
+        { key: "unitsSchedProd", label: "Sched/Prod", sortable: false },
+        { key: "unitsTransfered", label: "Trans", sortable: false },
         { key: "cases", label: "Cases", sortable: false },
         { key: "cost", label: "Cost", sortable: false },
         { key: "unitPrice", label: "Unit Price", sortable: false },

@@ -1,8 +1,14 @@
+Done:
++ Fix production line
+
 In Progress:
 Shipment (screen & PDF):
+- Pre-fill Shipping Notes based on Customer.
 - Persist filter search or show shipment in popup.
 - Allow to search/filter by Season
 - Allow to upload documents.
+Customer:
+- Allow to enter Special Notes (for shipment).
 Item screen:
 - Allow to enter upc for item (manually entered)
 - Allow to enter upc for case (manually entered)
@@ -11,6 +17,7 @@ Global:
 - Assigned units 
 - Short production
 - Keep search options persisted (until page refreshed or logged out).
+- Search by name "like" and "exact" (Item, Sale).
 Production Line:
 - Allow to finish production even if the units produced are short.
 - Show box with large percentage (On target/slow (based on hours scheduled and units), %Performance/Efficiency, %Production done).
