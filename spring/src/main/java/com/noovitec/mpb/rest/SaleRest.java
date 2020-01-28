@@ -26,6 +26,7 @@ import com.noovitec.mpb.dto.SaleListDto;
 import com.noovitec.mpb.entity.Item;
 import com.noovitec.mpb.entity.Sale;
 import com.noovitec.mpb.entity.SaleItem;
+import com.noovitec.mpb.entity.SaleItemTransfer;
 import com.noovitec.mpb.repo.ItemRepo;
 import com.noovitec.mpb.repo.SaleRepo;
 import com.noovitec.mpb.repo.ScheduleEventRepo;
@@ -121,6 +122,30 @@ class SaleRest {
 		}
 		for (SaleItem sa : sale.getSaleItems()) {
 			sa.setSale(sale);
+			for(SaleItemTransfer t: sa.getTransfersTo()) {
+				if(t.getSaleItemTo()==null) {
+					SaleItem saTo = new SaleItem();
+					saTo.setId(t.getSaleItemToId());
+					t.setSaleItemTo(saTo);
+				}
+				if(t.getSaleItemFrom()==null) {
+					SaleItem saFrom = new SaleItem();
+					saFrom.setId(t.getSaleItemFromId());
+					t.setSaleItemFrom(saFrom);
+				}
+			}
+			for(SaleItemTransfer t: sa.getTransfersFrom()) {
+				if(t.getSaleItemTo()==null) {
+					SaleItem saTo = new SaleItem();
+					saTo.setId(t.getSaleItemToId());
+					t.setSaleItemTo(saTo);
+				}
+				if(t.getSaleItemFrom()==null) {
+					SaleItem saFrom = new SaleItem();
+					saFrom.setId(t.getSaleItemFromId());
+					t.setSaleItemFrom(saFrom);
+				}
+			}
 		}
 		sale = (Sale) crudService.merge(sale);
 		sale.updateUnits();

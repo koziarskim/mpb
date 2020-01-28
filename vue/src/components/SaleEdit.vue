@@ -144,7 +144,7 @@
       </b-row>
     </b-modal>
     <div v-if="transferModalVisible">
-			<transfer-modal :item-id="saleItemTransfer.id" v-on:closeModal="closeTransferModal" v-on:saveModal="saveTransferModal"></transfer-modal>
+			<transfer-modal :sale-item-to="saleItemTo" v-on:closeModal="closeTransferModal" v-on:saveModal="saveTransferModal"></transfer-modal>
 		</div>
   </b-container>
 </template>
@@ -192,7 +192,7 @@ export default {
       itemDto: {},
       unitsForSale: null,
       unitPrice: null,
-      saleItemTransfer: {}
+      saleItemTo: {}
     };
   },
 
@@ -251,15 +251,15 @@ export default {
   },
   methods: {
     openTransferModal(saleItem){
-      this.saleItemTransfer = saleItem;
+      this.saleItemTo = saleItem;
       this.transferModalVisible = true;
     },
     closeTransferModal(){
-      this.saleItemTransfer = {},
+      this.saleItemTo = {},
       this.transferModalVisible = false;
     },
-    saveTransferModal(){
-      this.saleItemTransfer = {},
+    saveTransferModal(saleItemTo){
+      this.saleItemTo = {},
       this.transferModalVisible = false;
     },
     saveModal(){

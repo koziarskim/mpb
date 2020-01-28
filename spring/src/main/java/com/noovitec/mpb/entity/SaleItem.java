@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -55,14 +56,14 @@ public class SaleItem extends BaseEntity {
 	private Collection<ShipmentItem> shipmentItems = new HashSet<ShipmentItem>();
 
 	@JsonIgnoreProperties(value = { "saleItemTo", "saleItemFrom" }, allowSetters = true)
-	@OneToMany()
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "sale_item_from_id")
-	private Set<SaleItemTransfer> transfersFrom = new HashSet<SaleItemTransfer>();
+	private Collection<SaleItemTransfer> transfersFrom = new HashSet<SaleItemTransfer>();
 
 	@JsonIgnoreProperties(value = { "saleItemTo", "saleItemFrom" }, allowSetters = true)
-	@OneToMany()
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "sale_item_to_id")
-	private Set<SaleItemTransfer> transfersTo = new HashSet<SaleItemTransfer>();
+	private Collection<SaleItemTransfer> transfersTo = new HashSet<SaleItemTransfer>();
 
 	@Transient
 	private Long unitsOnStock = 0L;
@@ -85,10 +86,10 @@ public class SaleItem extends BaseEntity {
 			this.unitsShipped += si.getUnits();
 		}
 		for (SaleItemTransfer sit: this.getTransfersFrom()) {
-			this.unitsTransfered += sit.getUnitsTransfered();
+			this.unitsTransfered -= sit.getUnitsTransfered();
 		}
 		for (SaleItemTransfer sit: this.getTransfersTo()) {
-			this.unitsTransfered -= sit.getUnitsTransfered();
+			this.unitsTransfered += sit.getUnitsTransfered();
 		}
 	}
 
