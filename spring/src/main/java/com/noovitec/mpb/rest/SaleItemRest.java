@@ -13,8 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,28 +29,24 @@ class SaleItemRest {
 
 	private final Logger log = LoggerFactory.getLogger(SaleItemRest.class);
 	private SaleItemRepo saleItemRepo;
-	
+
 	@Autowired
 	CrudService crudService;
 
 	public SaleItemRest(SaleItemRepo saleItemRepo) {
 		this.saleItemRepo = saleItemRepo;
 	}
-	
+
 	@GetMapping("/saleItem")
 	List<SaleItem> getAll(@RequestParam(name = "ids", required = false) Long[] ids) {
-		return  saleItemRepo.findAllByIds(ids);
+		return saleItemRepo.findAllByIds(ids);
 	}
-	
+
 	@GetMapping("/saleItem/pageable")
-	Page<SaleItemDto> getAllPageable(
-			@RequestParam Pageable pageable, 
-			@RequestParam(required = false) String numberName, 
-			@RequestParam(required = false) Long itemId,
-			@RequestParam(required = false) Long customerId,
-			@RequestParam(required = false) boolean hideShip) {
+	Page<SaleItemDto> getAllPageable(@RequestParam Pageable pageable, @RequestParam(required = false) String numberName,
+			@RequestParam(required = false) Long itemId, @RequestParam(required = false) Long customerId, @RequestParam(required = false) boolean hideShip) {
 		List<Long> ids = saleItemRepo.findIds(numberName, customerId, itemId, hideShip);
-		if(ids.isEmpty()) {
+		if (ids.isEmpty()) {
 			return Page.empty();
 		}
 		Page<SaleItem> saleItems = saleItemRepo.findPage(pageable, ids);
@@ -67,12 +61,14 @@ class SaleItemRest {
 			dto.setItemName(saleItem.getItem().getName());
 			dto.setCustomerId(saleItem.getSale().getCustomer().getId());
 			dto.setCustomerName(saleItem.getSale().getCustomer().getName());
-			dto.setDc(saleItem.getSale().getShippingAddress()!=null?saleItem.getSale().getShippingAddress().getDc()+" ("+saleItem.getSale().getShippingAddress().getState():"");
+			dto.setDc(saleItem.getSale().getShippingAddress() != null
+					? saleItem.getSale().getShippingAddress().getDc() + " (" + saleItem.getSale().getShippingAddress().getState()
+					: "");
 			dto.setUnitsSold(Long.valueOf(saleItem.getUnits()));
 			dto.setUnitsProduced(saleItem.getUnitsProduced());
 			dto.setUnitsShipped(saleItem.getUnitsShipped());
 			dto.setUnitsOnStock(saleItem.getUnitsOnStock());
-		    return dto;
+			return dto;
 		});
 		return all;
 	}
@@ -90,9 +86,15 @@ class SaleItemRest {
 	}
 
 	@GetMapping("/saleItem/sale/{sale_id}")
-	Collection<KeyValueDto> getAllByItem(@PathVariable Long sale_id) {
+	Collection<KeyValueDto> getAllBySale(@PathVariable Long sale_id) {
 		Collection<KeyValueDto> saleDtos = saleItemRepo.findSaleItemsBySale(sale_id);
 		return saleDtos;
+	}
+
+	@GetMapping("/saleItem/kv/item/{item_id}")
+	Collection<KeyValueDto> getAllByItem(@PathVariable Long item_id) {
+		Collection<KeyValueDto> dtos = saleItemRepo.findKvByItem(item_id);
+		return dtos;
 	}
 
 	@GetMapping("/saleItem/kv")
@@ -100,7 +102,7 @@ class SaleItemRest {
 		Collection<KeyValueDto> saleDtos = saleItemRepo.findAllKvs();
 		return saleDtos;
 	}
-	
+
 //	@PostMapping("/saleItem")
 //	ResponseEntity<SaleItem> postSaleItem(@RequestBody(required = false) SaleItem saleItem) {
 //		saleItem = (SaleItem) crudService.merge(saleItem);
@@ -109,5 +111,4 @@ class SaleItemRest {
 //		return ResponseEntity.ok().body(saleItem);
 //	}
 
-	
 }

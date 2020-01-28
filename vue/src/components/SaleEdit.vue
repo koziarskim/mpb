@@ -113,8 +113,11 @@
           <template v-slot:cell(totalUnitPrice)="row">
             <span>${{row.item.totalUnitPrice = (+row.item.unitPrice * +row.item.units).toFixed(2)}}</span>
           </template>
+          <template v-slot:cell(unitsTransfered)="row">
+            <b-button size="sm" variant="link" @click="openTransferModal(row.item)">{{row.item.unitsTransfered}}</b-button>
+          </template>
           <template v-slot:cell(action)="row">
-            <b-button size="sm" @click.stop="deleteItem(row.item.item.id)">x</b-button>
+            <b-button size="sm" @click="deleteItem(row.item.item.id)">x</b-button>
           </template>
         </b-table>
       </b-col>
@@ -140,6 +143,9 @@
         </b-col>
       </b-row>
     </b-modal>
+    <div v-if="transferModalVisible">
+			<transfer-modal :item-id="saleItemTransfer.id" v-on:closeModal="closeTransferModal" v-on:saveModal="saveTransferModal"></transfer-modal>
+		</div>
   </b-container>
 </template>
 
@@ -148,9 +154,13 @@ import http from "../http-common";
 import router from "../router";
 
 export default {
+  components: {
+    TransferModal: () => import("./TransferModal")
+  },
   data() {
     return {
       modalVisible: false,
+      transferModalVisible: false,
       locked: false,
       sale: {
         saleItems: [],
@@ -182,6 +192,7 @@ export default {
       itemDto: {},
       unitsForSale: null,
       unitPrice: null,
+      saleItemTransfer: {}
     };
   },
 
@@ -239,6 +250,18 @@ export default {
     }
   },
   methods: {
+    openTransferModal(saleItem){
+      this.saleItemTransfer = saleItem;
+      this.transferModalVisible = true;
+    },
+    closeTransferModal(){
+      this.saleItemTransfer = {},
+      this.transferModalVisible = false;
+    },
+    saveTransferModal(){
+      this.saleItemTransfer = {},
+      this.transferModalVisible = false;
+    },
     saveModal(){
       this.saveSaleItem().then(si => {
         this.getSaleData(this.sale.id).then(sale => {
