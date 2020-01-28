@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -34,5 +35,12 @@ public class SaleItemTransfer extends BaseEntity {
 	@ManyToOne()
 	@JoinColumn(name = "sale_item_to_id", referencedColumnName = "id")
 	private SaleItem saleItemTo;
+	
+	@Transient
+	private String labelFrom;
+	
+	public String getLabelFrom() {
+		return this.getSaleItemFrom().getSale().getNumber() + "("+ this.getSaleItemFrom().getSale().getCustomer().getName()+")";
+	}
 
 }
