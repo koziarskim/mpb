@@ -192,7 +192,8 @@ export default {
       itemDto: {},
       unitsForSale: null,
       unitPrice: null,
-      saleItemTo: {}
+      saleItemTo: {},
+      saleFromIds: [],
     };
   },
 
@@ -287,6 +288,7 @@ export default {
     getSaleData(id) {
       return http.get("/sale/" + id).then(response => {
           this.sale = response.data;
+          this.setSaleFromIds();
           if (response.data.customer) {
             this.customerDto = {
               id: response.data.customer.id,
@@ -300,6 +302,13 @@ export default {
         }).catch(e => {
           console.log("API error: " + e);
         });
+    },
+    setSaleFromIds(){
+      this.sale.saleItems.forEach(si => {
+        si.transfersTo.forEach(sit => {
+          this.saleFromIds.push(sit.saleFromId);
+        })
+      })
     },
     saveSaleItem() {
       var saleItem = {
@@ -340,10 +349,10 @@ export default {
         return;
       }
       this.saveSale().then(r => {
-        this.sale.saleItems.forEach(si => {
-          si.transfersTo.forEach(sit => {
-            this.updateSale(sit.saleFromId);
-          })
+        this.setSaleFromIds();
+        var uniqueIds = [...new Set(this.saleFromIds)]
+        uniqueIds.forEach(id => {
+          this.updateSale(id);
         })
         window.history.back();
       });

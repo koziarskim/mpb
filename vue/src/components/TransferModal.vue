@@ -58,7 +58,13 @@ export default {
   methods: {
 		addSaleItem(){
 			this.getSaleItem().then(si => {
-				var saleItemTransfer = {labelFrom: si.sale.number+" ("+si.sale.customer.name+")", saleItemFrom: si, saleItemTo: {id: this.saleItemTo.id}, unitsTransfered: 20}
+				var saleItemTransfer = {
+					labelFrom: si.sale.number+" ("+si.sale.customer.name+")", 
+					saleItemFrom: si,
+					saleFromId: si.sale.id, 
+					saleItemTo: {id: this.saleItemTo.id}, 
+					unitsTransfered: 20
+				}
 				this.saleItemTo.transfersTo.push(saleItemTransfer);
 				this.saleItemTo.unitsTransfered += saleItemTransfer.unitsTransfered;
 			});
