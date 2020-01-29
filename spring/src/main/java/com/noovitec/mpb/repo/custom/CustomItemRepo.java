@@ -46,7 +46,7 @@ public interface CustomItemRepo {
 			if(hideShip) {
 				q += "and i.unitsSold > i.unitsShipped ";
 			}
-			q += "order by i.name asc";
+			q += "order by i.updated desc";
 			Query query = entityManager.createQuery(q);
 			if(searchType.equals("item") && !searchKey.isBlank()) {
 				query.setParameter("searchKey", searchKey);
