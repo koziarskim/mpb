@@ -12,6 +12,12 @@
           <b-select option-value="id" option-text="name" :list="availableSaleItems" v-model="saleItemFrom"></b-select>
         </b-col>
         <b-col cols=2>
+					<div v-if="saleItemFrom.id">
+						<label class="top-label">Transfer Units</label>
+						<input class="form-control" type="tel" v-model="unitsTrasfered">
+					</div>
+        </b-col>
+        <b-col cols=2>
           <b-button size="sm" style="margin-top: 30px;" variant="primary" @click="addSaleItem()">Add &#x25BC;</b-button>
         </b-col>
       </b-row>
@@ -44,6 +50,7 @@ export default {
     return {
 			availableSaleItems: [], //kv
 			saleItemFrom: {},
+			unitsTrasfered: null,
 			visible: true,
 			columns: [
 				{ key: "labelFrom", label: "Sale", sortable: false },
@@ -63,10 +70,12 @@ export default {
 					saleItemFrom: si,
 					saleFromId: si.sale.id, 
 					saleItemTo: {id: this.saleItemTo.id}, 
-					unitsTransfered: 20
+					unitsTransfered: this.unitsTrasfered,
 				}
 				this.saleItemTo.transfersTo.push(saleItemTransfer);
-				this.saleItemTo.unitsTransfered += saleItemTransfer.unitsTransfered;
+				this.saleItemTo.unitsTransfered += +saleItemTransfer.unitsTransfered;
+				this.saleItemFrom = {};
+				this.unitsTrasfered = null;
 			});
 		},
 		deleteSaleItemTransfer(saleItemTransfer){

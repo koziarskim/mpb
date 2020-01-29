@@ -41,7 +41,7 @@ public class SaleItemTransfer extends BaseEntity {
 	private String labelFrom;
 	
 	public String getLabelFrom() {
-		return this.getSaleItemFrom().getSale().getNumber() + " ("+ this.getSaleItemFrom().getSale().getCustomer().getName()+")";
+		return this.getSaleItemFrom().getSale().getNumber() + " ("+ this.getSaleItemFrom().getSale().getCustomer()==null?"":this.getSaleItemFrom().getSale().getCustomer().getName()+")";
 	}
 
 	@Transient
