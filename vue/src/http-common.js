@@ -14,6 +14,7 @@ http.interceptors.request.use(
   },
   error => {
     console.log("Interceptor Request Error: " + error);
+    alert("There was an error! /n"+error);
     return Promise.reject(error);
   }
 );
@@ -29,6 +30,8 @@ http.interceptors.response.use(
     if (error.response.status === 401) {
       router.push("/login");
       NProgress.done();
+    } else {
+      alert("There was an error!\n" + error.response.data.message);
     }
     return Promise.reject(error);
   }
