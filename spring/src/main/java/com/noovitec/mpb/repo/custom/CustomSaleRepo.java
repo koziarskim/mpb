@@ -31,7 +31,7 @@ public interface CustomSaleRepo {
 			String q = "select distinct s from Sale s "
 					+ "left join s.saleItems si "
 					+ "left join si.item i "
-					+ "where i.id is not null ";
+					+ "where s.id is not null ";
 			if(searchType.equals("sale") && !searchKey.isBlank()) {
 				q += "and (upper(s.name) like concat('%',upper(:searchKey),'%') "
 					+ "or upper(s.number) like concat('%',upper(:searchKey),'%')) ";
@@ -46,7 +46,7 @@ public interface CustomSaleRepo {
 			if(hideShip) {
 				q += "and s.unitsSold > s.unitsShipped ";
 			}
-			q += "order by s.name asc";
+			q += "order by s.updated desc";
 			Query query = entityManager.createQuery(q);
 			if(searchType.equals("sale") && !searchKey.isBlank()) {
 				query.setParameter("searchKey", searchKey);

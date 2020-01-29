@@ -40,7 +40,7 @@
             <b-button size="sm" @click=goToShipment(row.item.id) variant="link">{{row.item.unitsShipped}}</b-button>
         </template>
         <template v-slot:cell(action)="row">
-            <b-button size="sm" @click.stop="deleteSale(row.item.id)">x</b-button>
+            <b-button size="sm" @click.stop="deleteSale(row.item)">x</b-button>
         </template>
       </b-table>
       <div style="display: flex">
@@ -138,15 +138,19 @@ export default {
         });
         return component;
     },
-    deleteSale(id) {
+    deleteSale(sale) {
       if(!securite.hasRole(["ADMIN"])){
         alert("Don't have permission to delete sale");
+        return;
+      }
+      if(sale.unitsTransfered != 0){
+        alert("There are Transfered Sale(s). Please, remove any transfers.");
         return;
       }
       this.$bvModal.msgBoxConfirm('Are you sure you want to delete this Sale? '+
       'This will also delete all Schedules and Productions associated with this Sale').then(ok => {
         if(ok){
-          http.delete("/sale/"+id).then(response => {
+          http.delete("/sale/"+sale.id).then(response => {
             this.getSales();
           }).catch(e => {
             console.log("API Error: "+e);

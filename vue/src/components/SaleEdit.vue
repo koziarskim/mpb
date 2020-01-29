@@ -392,7 +392,10 @@ export default {
       this.sale.saleItems.push({ 
           units: 0,
           unitPrice: 0.00,
-          item: this.item });
+          item: this.item,
+          unitsTransfered: 0,
+          transfersTo: [],
+          transfersFrom: [] });
     },
     goToItem(item_id) {
       router.push("/itemEdit/" + item_id);
