@@ -1,5 +1,6 @@
 package com.noovitec.mpb.entity;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -27,12 +28,12 @@ public class SaleItemTransfer extends BaseEntity {
 	private Long saleItemToId;
 
 	@JsonIgnoreProperties(value = { "transfersTo", "transfersFrom" }, allowSetters = true)
-	@ManyToOne()
+	@ManyToOne(cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "sale_item_from_id", referencedColumnName = "id")
 	private SaleItem saleItemFrom;
 
 	@JsonIgnoreProperties(value = { "transfersTo", "transfersFrom" }, allowSetters = true)
-	@ManyToOne()
+	@ManyToOne(cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "sale_item_to_id", referencedColumnName = "id")
 	private SaleItem saleItemTo;
 	
