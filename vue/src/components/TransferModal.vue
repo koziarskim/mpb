@@ -110,7 +110,7 @@ export default {
 		deleteSaleItemTransfer(saleItemTransfer){
       var idx = this.saleItemTo.transfersTo.findIndex(sit => sit.id == saleItemTransfer.id);
 			this.saleItemTo.transfersTo.splice(idx, 1);
-			this.saleItemTo.unitsTransfered -= saleItemTransfer.unitsTransfered;
+			this.saleItemTo.unitsTransferedTo -= saleItemTransfer.unitsTransfered;
 		},
 		getSaleItem(id){
 			return http.get("/saleItem/"+id).then(r => {
