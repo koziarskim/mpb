@@ -91,19 +91,21 @@ export default {
 			return this.saleItemTo.transfersTo.concat(this.saleItemTo.transfersFrom)
 		},
 		addSaleItem(){
-			this.getSaleItem(this.saleItemFromDto.id).then(si => {
-				var saleItemTransfer = {
-					labelFrom: si.sale.number+" ("+si.sale.customer.name+")", 
-					saleItemFrom: si,
-					saleFromId: si.sale.id, 
-					saleItemTo: {id: this.saleItemTo.id}, 
-					unitsTransfered: this.unitsTrasfered,
-				}
-				this.saleItemTo.transfersTo.push(saleItemTransfer);
-				this.saleItemTo.unitsTransfered += +saleItemTransfer.unitsTransfered;
-				this.saleItemFromDto = {};
-				this.unitsTrasfered = null;
-			});
+			if(!this.unitsTrasfered){
+				alert("Enter units to transfer");
+				return;
+			}
+			var saleItemTransfer = {
+				labelFrom: this.saleItemFrom.sale.number+" ("+this.saleItemFrom.sale.customer.name+")", 
+				saleItemFrom: this.saleItemFrom,
+				saleFromId: this.saleItemFrom.sale.id, 
+				saleItemTo: {id: this.saleItemTo.id}, 
+				unitsTransfered: this.unitsTrasfered,
+			}
+			this.saleItemTo.transfersTo.push(saleItemTransfer);
+			this.saleItemTo.unitsTransfered += +saleItemTransfer.unitsTransfered;
+			this.saleItemFromDto = {};
+			this.unitsTrasfered = null;
 		},
 		deleteSaleItemTransfer(saleItemTransfer){
       var idx = this.saleItemTo.transfersTo.findIndex(sit => sit.id == saleItemTransfer.id);
