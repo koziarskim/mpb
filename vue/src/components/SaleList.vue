@@ -36,6 +36,9 @@
         <template v-slot:cell(unitsSchPro)="row">
             <span>{{row.item.unitsScheduled}}/{{row.item.unitsProduced}}</span>
         </template>
+        <template v-slot:cell(unitsTransfered)="row">
+            <span>{{row.item.unitsTransfered}}</span>
+        </template>
         <template v-slot:cell(unitsShipped)="row">
             <b-button size="sm" @click=goToShipment(row.item.id) variant="link">{{row.item.unitsShipped}}</b-button>
         </template>
@@ -143,7 +146,7 @@ export default {
         alert("Don't have permission to delete sale");
         return;
       }
-      if(sale.unitsTransfered != 0){
+      if(sale.unitsTransferedTo != 0 || sale.unitsTransferedFrom != 0){
         alert("There are Transfered Sale(s). Please, remove any transfers.");
         return;
       }

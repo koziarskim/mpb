@@ -35,7 +35,8 @@ public class Sale extends BaseEntity {
 	private Long unitsProduced = 0L;
 	private Long unitsSold = 0L;
 	private Long unitsScheduled = 0L;
-	private Long unitsTransfered = 0L;
+	private Long unitsTransferedTo = 0L;
+	private Long unitsTransferedFrom = 0L;
 	private Long unitsShipped = 0L;
 
 	@JsonIgnoreProperties(value = { "sales" }, allowSetters = true)
@@ -57,14 +58,16 @@ public class Sale extends BaseEntity {
 		this.unitsScheduled = 0L;
 		this.unitsProduced = 0L;
 		this.unitsShipped = 0L;
-		this.unitsTransfered = 0L;
+		this.unitsTransferedTo = 0L;
+		this.unitsTransferedFrom = 0L;
 		for (SaleItem sa : this.getSaleItems()) {
 			sa.updateUnits();
 			this.unitsSold += sa.getUnits();
 			this.unitsScheduled += sa.getUnitsScheduled();
 			this.unitsProduced += sa.getUnitsProduced();
 			this.unitsShipped += sa.getUnitsShipped();
-			this.unitsTransfered += sa.getUnitsTransfered();
+			this.unitsTransferedTo += sa.getUnitsTransferedTo();
+			this.unitsTransferedFrom += sa.getUnitsTransferedFrom();
 		}
 	}
 

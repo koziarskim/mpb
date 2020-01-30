@@ -91,8 +91,8 @@ export default {
 			return this.saleItemTo.transfersTo.concat(this.saleItemTo.transfersFrom)
 		},
 		addSaleItem(){
-			if(!this.unitsTrasfered){
-				alert("Enter units to transfer");
+			if(!this.unitsTrasfered || this.unitsTrasfered < 0){
+				alert("Enter positive number of units to transfer");
 				return;
 			}
 			var saleItemTransfer = {
@@ -103,7 +103,7 @@ export default {
 				unitsTransfered: this.unitsTrasfered,
 			}
 			this.saleItemTo.transfersTo.push(saleItemTransfer);
-			this.saleItemTo.unitsTransfered += +saleItemTransfer.unitsTransfered;
+			this.saleItemTo.unitsTransferedTo += +saleItemTransfer.unitsTransfered;
 			this.saleItemFromDto = {};
 			this.unitsTrasfered = null;
 		},

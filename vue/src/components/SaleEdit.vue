@@ -114,7 +114,7 @@
             <span>${{row.item.totalUnitPrice = (+row.item.unitPrice * +row.item.units).toFixed(2)}}</span>
           </template>
           <template v-slot:cell(unitsTransfered)="row">
-            <b-button size="sm" variant="link" @click="openTransferModal(row.item)">{{row.item.unitsTransfered}}</b-button>
+            <b-button size="sm" variant="link" @click="openTransferModal(row.item)">{{row.item.unitsTransferedTo}}/{{row.item.unitsTransferedFrom}}</b-button>
           </template>
           <template v-slot:cell(action)="row">
             <b-button size="sm" @click="deleteItem(row.item.item.id)">x</b-button>
@@ -394,7 +394,8 @@ export default {
           units: 0,
           unitPrice: 0.00,
           item: this.item,
-          unitsTransfered: 0,
+          unitsTransferedTo: 0,
+          unitsTransferedFrom: 0,
           transfersTo: [],
           transfersFrom: [] });
     },

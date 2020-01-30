@@ -32,7 +32,8 @@ public class SaleItem extends BaseEntity {
 	private Long unitsProduced = 0L;
 	private Long unitsScheduled = 0L;
 	private Long unitsShipped = 0L;
-	private Long unitsTransfered = 0L;
+	private Long unitsTransferedTo = 0L;
+	private Long unitsTransferedFrom = 0L;
 	private String sku;
 
 	@JsonIgnoreProperties(value = { "saleItems", "purchaseSales" }, allowSetters = true)
@@ -76,7 +77,8 @@ public class SaleItem extends BaseEntity {
 		this.unitsScheduled = 0L;
 		this.unitsProduced = 0L;
 		this.unitsShipped = 0L;
-		this.unitsTransfered = 0L;
+		this.unitsTransferedTo = 0L;
+		this.unitsTransferedFrom = 0L;
 		for (ScheduleEvent se : this.getScheduleEvents()) {
 			se.updateUnits();
 			this.unitsScheduled += se.getUnitsScheduled();
@@ -86,11 +88,10 @@ public class SaleItem extends BaseEntity {
 			this.unitsShipped += si.getUnits();
 		}
 		for (SaleItemTransfer sit: this.getTransfersFrom()) {
-			this.unitsTransfered -= sit.getUnitsTransfered();
+			this.unitsTransferedFrom -= sit.getUnitsTransfered();
 		}
 		for (SaleItemTransfer sit: this.getTransfersTo()) {
-			System.out.println(this.unitsTransfered);
-			this.unitsTransfered += sit.getUnitsTransfered();
+			this.unitsTransferedTo += sit.getUnitsTransfered();
 		}
 	}
 
