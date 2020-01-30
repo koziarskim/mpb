@@ -253,6 +253,7 @@ export default {
   methods: {
     openTransferModal(saleItem){
       this.saleItemTo = saleItem;
+      this.saleItemTo.saleNumber = this.sale.number
       this.transferModalVisible = true;
     },
     saveTransferModal(saleItemTo){
