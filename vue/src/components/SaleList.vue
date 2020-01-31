@@ -75,8 +75,8 @@ export default {
         { key: "dc", label: "DC (State)", sortable: false },
         { key: "date", label: "Date", sortable: false },
         { key: "unitsSold", label: "Sold", sortable: false },
-        { key: "unitsSchPro", label: "Sched/Produced", sortable: false },
-        { key: "unitsTransfered", label: "Transfered", sortable: false },
+        { key: "unitsSchPro", label: "Sched/Prod", sortable: false },
+        { key: "unitsTransfered", label: "Transfers", sortable: false },
         { key: "unitsShipped", label: "Shipped", sortable: false },
         { key: "action", label: "Action", sortable: false}
       ],
