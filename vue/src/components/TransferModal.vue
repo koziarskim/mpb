@@ -16,14 +16,14 @@
       <b-row v-if="saleItemFrom.id">
         <b-col cols=2 style="margin-top: 5px">
 					<label class="top-label">Sold: {{saleItemFrom.units}}</label><br/>
-					<label class="top-label">Trasfered: {{saleItemFrom.unitsTransfered}}</label>
+					<label class="top-label">Trasfered: {{saleItemFrom.unitsTransferedTo}}-{{saleItemFrom.unitsTransferedFrom}}</label>
         </b-col>
         <b-col cols=2 style="margin-top: 5px">
 					<label class="top-label">Produced: {{saleItemFrom.unitsProduced}}</label><br/>
 					<label class="top-label">Shipped: {{saleItemFrom.unitsShipped}}</label>
         </b-col>
         <b-col cols=2 style="margin-top: 5px">
-					<label class="top-label">Stock: {{+saleItemFrom.unitsProduced - +saleItemFrom.unitsTransfered - +saleItemFrom.unitsShipped}}</label><br/>
+					<label class="top-label">Stock: {{saleItemFrom.unitsOnStock}}</label><br/>
         </b-col>
         <b-col cols=3  style="margin-top: -7px; margin-bottom: 3px">
 					<label class="top-label">Units To Transfer</label>
