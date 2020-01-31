@@ -22,3 +22,5 @@ alter table sale_item add column units_transfered_from integer default 0;
 alter table sale add column units_transfered_to integer default 0;
 
 alter table sale add column units_transfered_from integer default 0;
+
+alter table sale drop column freight_terms;

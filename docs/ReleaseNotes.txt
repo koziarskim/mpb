@@ -7,19 +7,19 @@ Shipment (screen & PDF):
 - Persist filter search or show shipment in popup.
 - Allow to search/filter by Season
 - Allow to upload documents.
-- Allow to specifiy Shipment Window Date.
-- Fix Shipmnet number auto generation (duplicates).
+- Allow to specifiy Shipment Window Date (is it on sale or shipment)?
++ Fix Shipmnet number auto generation (duplicates).
 Customer:
 - Allow to enter Special Notes (for shipment).
 Item screen:
 - Allow to enter upc for item (manually entered)
 - Allow to enter upc for case (manually entered)
 Sale:
-- Allow to pick Pay Terms (Same as shipment Ship Terms).
-- Remove FOB.
++ Allow to pick Pay Terms (Same as shipment Ship Terms).
++ Remove FOB.
++ Allow to transfer units from different sale.
 Global:
 - Allow to search/filter by Season and Year context for currently logged in user (partially done).
-- Assigned units 
 - Short production
 - Keep search options persisted (until page refreshed or logged out).
 - Search by name "like" and "exact" (Item, Sale).

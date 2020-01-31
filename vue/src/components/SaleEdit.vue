@@ -26,9 +26,9 @@
         <label class="top-label">Sale Number:</label>
         <input class="form-control" type="tel" v-model="sale.number" placeholder="Number">
       </b-col>
-      <b-col cols="2" offset="2">
+      <b-col cols=2>
         <label class="top-label">Pay Terms:</label>
-        <input class="form-control" type="tel" v-model="sale.paymentTerms" placeholder="Pay Terms">
+        <b-select option-value="id" option-text="name" :list="availablePayTerms" v-model="sale.paymentTerms" placeholder="Pick Freight"></b-select>
       </b-col>
     </b-row>
     <b-row>
@@ -41,7 +41,7 @@
         <label class="top-label">shipping to Address:</label>
         <b-select option-value="id" option-text="dc" :list="customer.addresses" v-model="shippingAddress" placeholder="shipping to address"></b-select>
       </b-col>
-      <b-col cols="2" offset="2">
+      <b-col cols="2">
         <label class="top-label">Expected Date:</label>
         <input class="form-control" type="date" v-model="sale.expectedDate" placeholder="Date">
       </b-col>
@@ -51,11 +51,6 @@
         <label class="top-label">Street:</label>
         <input class="form-control" type="tel" readonly :value="shippingAddress.street" placeholder="City">
       </b-col>
-      <b-col cols="2" offset="2">
-        <label class="top-label">FOB:</label>
-        <input class="form-control" type="tel" v-model="sale.freightTerms" placeholder="Flight Terms">
-      </b-col>
-      <b-row></b-row>
       <b-col cols="2" offset="4">
         <label class="top-label">City:</label>
         <input class="form-control" type="tel" readonly :value="shippingAddress.city" placeholder="City">
@@ -194,6 +189,12 @@ export default {
       unitPrice: null,
       saleItem: {},
       saleFromIds: [],
+      availablePayTerms: [
+        {id: "TPB", name: "TP Bill"},
+        {id: "PRP", name: "Pre Paid"},
+        {id: "TPO", name: "TP Bill Other"},
+        {id: "COL", name: "Collect"}
+      ]
     };
   },
 
