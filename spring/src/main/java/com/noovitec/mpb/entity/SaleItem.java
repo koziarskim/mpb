@@ -70,7 +70,7 @@ public class SaleItem extends BaseEntity {
 	private Long unitsOnStock = 0L;
 
 	public Long getUnitsOnStock() {
-		return this.getUnitsProduced() - this.getUnitsShipped();
+		return this.getUnitsProduced() + this.unitsTransferedTo - this.unitsTransferedFrom - this.getUnitsShipped();
 	}
 
 	public void updateUnits() {
