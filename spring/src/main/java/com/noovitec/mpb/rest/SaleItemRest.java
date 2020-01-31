@@ -45,11 +45,7 @@ class SaleItemRest {
 	@GetMapping("/saleItem/pageable")
 	Page<SaleItemDto> getAllPageable(@RequestParam Pageable pageable, @RequestParam(required = false) String numberName,
 			@RequestParam(required = false) Long itemId, @RequestParam(required = false) Long customerId, @RequestParam(required = false) boolean hideShip) {
-		List<Long> ids = saleItemRepo.findIds(numberName, customerId, itemId, hideShip);
-		if (ids.isEmpty()) {
-			return Page.empty();
-		}
-		Page<SaleItem> saleItems = saleItemRepo.findPage(pageable, ids);
+		Page<SaleItem> saleItems = saleItemRepo.findPageable(pageable, numberName, customerId, itemId, hideShip);
 		Page<SaleItemDto> all = saleItems.map(saleItem -> {
 			SaleItemDto dto = new SaleItemDto();
 			dto.setId(saleItem.getId());

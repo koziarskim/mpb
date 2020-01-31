@@ -8,10 +8,16 @@ import javax.persistence.Query;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import com.noovitec.mpb.entity.Sale;
+import com.noovitec.mpb.entity.SaleItem;
+
 public interface CustomSaleItemRepo {
-	List<Long> findIds(String numberName, Long customerId, Long itemId, boolean includeAll);
+	Page<SaleItem> findPageable(Pageable pageable, String numberName, Long customerId, Long itemId, boolean includeAll);
 
 	@Repository
 	public class SaleItemRepoImpl implements CustomSaleItemRepo {
@@ -22,8 +28,8 @@ public interface CustomSaleItemRepo {
 		EntityManager entityManager;
 
 		@Override
-		public List<Long> findIds(String numberName, Long customerId, Long itemId, boolean hideShip) {
-			String q = "select distinct si.id from SaleItem si " + "join si.item i " + "join si.sale s " + "join s.customer cu " + "where si.id is not null ";
+		public Page<SaleItem> findPageable(Pageable pageable, String numberName, Long customerId, Long itemId, boolean hideShip) {
+			String q = "select distinct si from SaleItem si " + "join si.item i " + "join si.sale s " + "join s.customer cu " + "where si.id is not null ";
 			if(hideShip) {
 				q += "and si.units <> si.unitsShipped ";
 			}
@@ -37,6 +43,7 @@ public interface CustomSaleItemRepo {
 			if (itemId != null) {
 				q += "and i.id = :itemId ";
 			}
+			q += "order by si.updated desc ";
 			Query query = entityManager.createQuery(q);
 			if (numberName != null && !numberName.isEmpty()) {
 				query.setParameter("numberName", numberName);
@@ -47,8 +54,12 @@ public interface CustomSaleItemRepo {
 			if (itemId != null) {
 				query.setParameter("itemId", itemId);
 			}
-			List<Long> list = query.getResultList();
-			return list;
+			long total = query.getResultStream().count();
+			@SuppressWarnings("unchecked")
+			List<SaleItem> result = query.setFirstResult(pageable.getPageNumber()*pageable.getPageSize())
+				.setMaxResults(pageable.getPageSize()).getResultList();
+			Page<SaleItem> page = new PageImpl<SaleItem>(result, pageable, total);
+			return page;
 		}
 	}
 }

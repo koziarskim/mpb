@@ -56,7 +56,7 @@ export default {
     return {
       navigation: navigation,
       pageable: {totalElements: 100, currentPage: 1, perPage: 7, sortBy: 'id', sortDesc: false},
-      hideShip: true,
+      hideShip: false,
       searchSale: "",
       searchItem: "",
       itemView: true,
