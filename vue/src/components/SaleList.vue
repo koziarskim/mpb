@@ -37,7 +37,7 @@
             <span>{{row.item.unitsScheduled}}/{{row.item.unitsProduced}}</span>
         </template>
         <template v-slot:cell(unitsTransfered)="row">
-            <span>{{row.item.unitsTransfered}}</span>
+            <span>{{row.item.unitsTransferedTo}}/{{row.item.unitsTransferedFrom}}</span>
         </template>
         <template v-slot:cell(unitsShipped)="row">
             <b-button size="sm" @click=goToShipment(row.item.id) variant="link">{{row.item.unitsShipped}}</b-button>

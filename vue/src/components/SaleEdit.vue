@@ -181,7 +181,7 @@ export default {
         { key: "sku", label: "SKU#", sortable: false },
         { key: "units", label: "Sold", sortable: false },
         { key: "unitsSchedProd", label: "Sched/Prod", sortable: false },
-        { key: "unitsTransfered", label: "Trans", sortable: false },
+        { key: "unitsTransfered", label: "Transfered", sortable: false },
         { key: "cases", label: "Cases", sortable: false },
         { key: "cost", label: "Cost", sortable: false },
         { key: "unitPrice", label: "Unit Price", sortable: false },
