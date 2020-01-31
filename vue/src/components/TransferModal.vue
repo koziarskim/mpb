@@ -3,7 +3,7 @@
     <b-modal centered size="lg" v-model="visible" :hide-header="true" :hide-footer="true">
 			<b-row>
 				<b-col cols=4 style="margin-top: 10px">
-					<span>{{saleItemTo.item.name}}</span>
+					<span>{{saleItemTo.item.number}}</span><span style="font-size: 11px"> {{saleItemTo.item.name}}</span>
 				</b-col>
         <b-col cols=6>
           <b-select option-value="id" option-text="name" :list="availableSaleItems" v-model="saleItemFromDto"></b-select>
@@ -33,7 +33,7 @@
           <b-button size="sm" style="margin-top: 30px;" variant="primary" @click="addSaleItem()">Add &#x25BC;</b-button>
         </b-col>
       </b-row>
-			<label class="top-label" style="font-weight: bold">Transfers to/from Sale: {{saleItemTo.saleNumber}}</label>
+			<label class="top-label" style="font-weight: bold">Transfers for Sale: {{saleItemTo.saleNumber}}</label>
 			<b-row>
 				<b-col>
 					<b-table style="font-size: 12px" :items="getSaleItems()" :fields="columns">
@@ -67,7 +67,7 @@ export default {
 			unitsTrasfered: null,
 			visible: true,
 			columns: [
-				{ key: "labelFrom", label: "Sale", sortable: false },
+				{ key: "saleFromToName", label: "Sale", sortable: false },
 				{ key: "unitsTransfered", label: "Transfered", sortable: false },
         { key: "action", label: "Action", sortable: false },
       ],
@@ -88,6 +88,12 @@ export default {
 	},
   methods: {
 		getSaleItems(){
+			this.saleItemTo.transfersTo.forEach(sit => {
+				sit.saleFromToName = sit.saleFromName;
+			})
+			this.saleItemTo.transfersFrom.forEach(sit => {
+				sit.saleFromToName = sit.saleToName;
+			})
 			return this.saleItemTo.transfersTo.concat(this.saleItemTo.transfersFrom)
 		},
 		addSaleItem(){
@@ -96,7 +102,7 @@ export default {
 				return;
 			}
 			var saleItemTransfer = {
-				labelFrom: this.saleItemFrom.sale.number+" ("+this.saleItemFrom.sale.customer.name+")", 
+				saleFromName: this.saleItemFrom.sale.number+" ("+this.saleItemFrom.sale.customer.name+")",  
 				saleItemFrom: this.saleItemFrom,
 				saleFromId: this.saleItemFrom.sale.id, 
 				saleItemTo: {id: this.saleItemTo.id}, 
