@@ -3,7 +3,7 @@
     <b-modal centered size="lg" v-model="visible" :hide-header="true" :hide-footer="true">
 			<b-row>
 				<b-col cols=4 style="margin-top: 10px">
-					<span>{{saleItemTo.item.number}}</span><span style="font-size: 11px"> {{saleItemTo.item.name}}</span>
+					<span>{{saleItem.item.number}}</span><span style="font-size: 11px"> {{saleItem.item.name}}</span>
 				</b-col>
         <b-col cols=6>
           <b-select option-value="id" option-text="name" :list="availableSaleItems" v-model="saleItemFromDto"></b-select>
@@ -33,7 +33,7 @@
           <b-button size="sm" style="margin-top: 30px;" variant="primary" @click="addSaleItem()">Add &#x25BC;</b-button>
         </b-col>
       </b-row>
-			<label class="top-label" style="font-weight: bold">Transfers for Sale: {{saleItemTo.saleNumber}}</label>
+			<label class="top-label" style="font-weight: bold">Transfers for Sale: {{saleItem.saleNumber}}</label>
 			<b-row>
 				<b-col>
 					<b-table style="font-size: 12px" :items="getSaleItems()" :fields="columns">
@@ -57,7 +57,7 @@ import moment from "moment";
 
 export default {
   props: {
-		saleItemTo: Object,
+		saleItem: Object,
   },
   data() {
     return {
@@ -88,13 +88,13 @@ export default {
 	},
   methods: {
 		getSaleItems(){
-			this.saleItemTo.transfersTo.forEach(sit => {
+			this.saleItem.transfersTo.forEach(sit => {
 				sit.saleFromToName = sit.saleFromName;
 			})
-			this.saleItemTo.transfersFrom.forEach(sit => {
+			this.saleItem.transfersFrom.forEach(sit => {
 				sit.saleFromToName = sit.saleToName;
 			})
-			return this.saleItemTo.transfersTo.concat(this.saleItemTo.transfersFrom)
+			return this.saleItem.transfersTo.concat(this.saleItem.transfersFrom)
 		},
 		addSaleItem(){
 			if(!this.unitsTrasfered || this.unitsTrasfered < 0){
@@ -105,18 +105,18 @@ export default {
 				saleFromName: this.saleItemFrom.sale.number+" ("+this.saleItemFrom.sale.customer.name+")",  
 				saleItemFrom: this.saleItemFrom,
 				saleFromId: this.saleItemFrom.sale.id, 
-				saleItemTo: {id: this.saleItemTo.id}, 
+				saleItemTo: {id: this.saleItem.id}, 
 				unitsTransfered: this.unitsTrasfered,
 			}
-			this.saleItemTo.transfersTo.push(saleItemTransfer);
-			this.saleItemTo.unitsTransferedTo += +saleItemTransfer.unitsTransfered;
+			this.saleItem.transfersTo.push(saleItemTransfer);
+			this.saleItem.unitsTransferedTo += +saleItemTransfer.unitsTransfered;
 			this.saleItemFromDto = {};
 			this.unitsTrasfered = null;
 		},
 		deleteSaleItemTransfer(saleItemTransfer){
-      var idx = this.saleItemTo.transfersTo.findIndex(sit => sit.id == saleItemTransfer.id);
-			this.saleItemTo.transfersTo.splice(idx, 1);
-			this.saleItemTo.unitsTransferedTo -= saleItemTransfer.unitsTransfered;
+      var idx = this.saleItem.transfersTo.findIndex(sit => sit.id == saleItemTransfer.id);
+			this.saleItem.transfersTo.splice(idx, 1);
+			this.saleItem.unitsTransferedTo -= saleItemTransfer.unitsTransfered;
 		},
 		getSaleItem(id){
 			return http.get("/saleItem/"+id).then(r => {
@@ -126,8 +126,8 @@ export default {
 			})
 		},
 		getAvailableSaleItems(){
-			http.get("/saleItem/kv/item/"+this.saleItemTo.item.id).then(r => {
-				this.availableSaleItems = r.data.filter(si => si.id != this.saleItemTo.id);
+			http.get("/saleItem/kv/item/"+this.saleItem.item.id).then(r => {
+				this.availableSaleItems = r.data.filter(si => si.id != this.saleItem.id);
 			}).catch(e => {
 				console.log("API error: " + e)
 			})
@@ -143,7 +143,7 @@ export default {
     },
   },
   mounted() {
-		this.saleItemTo.transfersFrom.forEach(sit => {
+		this.saleItem.transfersFrom.forEach(sit => {
 			sit.negative = '-';
 		})
 		this.getAvailableSaleItems();

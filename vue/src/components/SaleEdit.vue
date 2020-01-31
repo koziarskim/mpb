@@ -114,7 +114,7 @@
             <span>${{row.item.totalUnitPrice = (+row.item.unitPrice * +row.item.units).toFixed(2)}}</span>
           </template>
           <template v-slot:cell(unitsTransfered)="row">
-            <b-button size="sm" variant="link" @click="openTransferModal(row.item)">{{row.item.unitsTransferedTo}}/{{row.item.unitsTransferedFrom}}</b-button>
+            <b-button size="sm" variant="link" @click="openTransferModal(row.item)">{{row.item.unitsTransferedTo}}-{{row.item.unitsTransferedFrom}}</b-button>
           </template>
           <template v-slot:cell(action)="row">
             <b-button size="sm" @click="deleteItem(row.item.item.id)">x</b-button>
@@ -144,7 +144,7 @@
       </b-row>
     </b-modal>
     <div v-if="transferModalVisible">
-			<transfer-modal :sale-item-to="saleItemTo" v-on:saveModal="saveTransferModal"></transfer-modal>
+			<transfer-modal :sale-item="saleItem" v-on:saveModal="saveTransferModal"></transfer-modal>
 		</div>
   </b-container>
 </template>
@@ -192,7 +192,7 @@ export default {
       itemDto: {},
       unitsForSale: null,
       unitPrice: null,
-      saleItemTo: {},
+      saleItem: {},
       saleFromIds: [],
     };
   },
@@ -252,12 +252,12 @@ export default {
   },
   methods: {
     openTransferModal(saleItem){
-      this.saleItemTo = saleItem;
-      this.saleItemTo.saleNumber = this.sale.number
+      this.saleItem = saleItem;
+      this.saleItem.saleNumber = this.sale.number
       this.transferModalVisible = true;
     },
-    saveTransferModal(saleItemTo){
-      this.saleItemTo = {},
+    saveTransferModal(saleItem){
+      this.saleItem = {},
       this.transferModalVisible = false;
     },
     saveModal(){
