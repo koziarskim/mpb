@@ -28,36 +28,30 @@ public interface CustomSaleRepo {
 
 		@Override
 		public Page<Sale> findPagable(Pageable pageable, String searchKey, String searchType, boolean hideProd, boolean hideShip) {
-			String q = "select distinct s from Sale s "
-					+ "left join s.saleItems si "
-					+ "left join si.item i "
-					+ "where s.id is not null ";
-			if(searchType.equals("sale") && !searchKey.isBlank()) {
-				q += "and (upper(s.name) like concat('%',upper(:searchKey),'%') "
-					+ "or upper(s.number) like concat('%',upper(:searchKey),'%')) ";
+			String q = "select distinct s from Sale s " + "left join s.saleItems si " + "left join si.item i " + "where s.id is not null ";
+			if (searchType.equals("sale") && !searchKey.isBlank()) {
+				q += "and (upper(s.name) like concat('%',upper(:searchKey),'%') " + "or upper(s.number) like concat('%',upper(:searchKey),'%')) ";
 			}
-			if(searchType.equals("item") && !searchKey.isBlank()) {
-				q += "and (upper(i.name) like concat('%',upper(:searchKey),'%') "
-						+ "or upper(i.number) like concat('%',upper(:searchKey),'%')) ";
+			if (searchType.equals("item") && !searchKey.isBlank()) {
+				q += "and (upper(i.name) like concat('%',upper(:searchKey),'%') " + "or upper(i.number) like concat('%',upper(:searchKey),'%')) ";
 			}
-			if(hideProd) {
+			if (hideProd) {
 				q += "and s.unitsSold > s.unitsProduced ";
 			}
-			if(hideShip) {
+			if (hideShip) {
 				q += "and s.unitsSold > s.unitsShipped ";
 			}
 			q += "order by s.updated desc";
 			Query query = entityManager.createQuery(q);
-			if(searchType.equals("sale") && !searchKey.isBlank()) {
+			if (searchType.equals("sale") && !searchKey.isBlank()) {
 				query.setParameter("searchKey", searchKey);
 			}
-			if(searchType.equals("item") && !searchKey.isBlank()) {
+			if (searchType.equals("item") && !searchKey.isBlank()) {
 				query.setParameter("searchKey", searchKey);
 			}
 			long total = query.getResultStream().count();
 			@SuppressWarnings("unchecked")
-			List<Sale> result = query.setFirstResult(pageable.getPageNumber()*pageable.getPageSize())
-				.setMaxResults(pageable.getPageSize()).getResultList();
+			List<Sale> result = query.setFirstResult(pageable.getPageNumber() * pageable.getPageSize()).setMaxResults(pageable.getPageSize()).getResultList();
 			Page<Sale> page = new PageImpl<Sale>(result, pageable, total);
 			return page;
 		}

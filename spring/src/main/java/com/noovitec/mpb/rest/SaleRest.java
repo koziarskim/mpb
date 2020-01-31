@@ -58,10 +58,8 @@ class SaleRest {
 	}
 
 	@GetMapping("/sale/pageable")
-	Page<SaleListDto> getAllPageable(@RequestParam(required = false) Pageable pageable,
-			@RequestParam(required = false) String searchKey,
-			@RequestParam(required = false) String searchType,
-			@RequestParam(required = false) boolean hideProd,
+	Page<SaleListDto> getAllPageable(@RequestParam(required = false) Pageable pageable, @RequestParam(required = false) String searchKey,
+			@RequestParam(required = false) String searchType, @RequestParam(required = false) boolean hideProd,
 			@RequestParam(required = false) boolean hideShip) {
 		Page<Sale> sales = saleRepo.findPagable(pageable, searchKey, searchType, hideProd, hideShip);
 		Page<SaleListDto> all = sales.map(sale -> {
@@ -69,7 +67,7 @@ class SaleRest {
 			dto.setId(sale.getId());
 			dto.setNumber(sale.getNumber());
 			dto.setName(sale.getName());
-			dto.setDc(sale.getShippingAddress() == null ? "" : sale.getShippingAddress().getDc()+" ("+sale.getShippingAddress().getState()+")");
+			dto.setDc(sale.getShippingAddress() == null ? "" : sale.getShippingAddress().getDc() + " (" + sale.getShippingAddress().getState() + ")");
 			dto.setDate(sale.getDate());
 			dto.setCustomerName(sale.getCustomer() == null ? "" : sale.getCustomer().getName());
 			dto.setUnitsSold(sale.getUnitsSold());
@@ -124,7 +122,7 @@ class SaleRest {
 		saleRepo.save(sale);
 		return ResponseEntity.ok().body("OK");
 	}
-	
+
 	@PostMapping("/sale")
 	ResponseEntity<Sale> post(@RequestBody(required = false) Sale sale) {
 		if (sale == null) {
@@ -132,25 +130,25 @@ class SaleRest {
 		}
 		for (SaleItem sa : sale.getSaleItems()) {
 			sa.setSale(sale);
-			for(SaleItemTransfer t: sa.getTransfersTo()) {
-				if(t.getSaleItemTo()==null) {
+			for (SaleItemTransfer t : sa.getTransfersTo()) {
+				if (t.getSaleItemTo() == null) {
 					SaleItem saTo = new SaleItem();
 					saTo.setId(t.getSaleItemToId());
 					t.setSaleItemTo(saTo);
 				}
-				if(t.getSaleItemFrom()==null) {
+				if (t.getSaleItemFrom() == null) {
 					SaleItem saFrom = new SaleItem();
 					saFrom.setId(t.getSaleItemFromId());
 					t.setSaleItemFrom(saFrom);
 				}
 			}
-			for(SaleItemTransfer t: sa.getTransfersFrom()) {
-				if(t.getSaleItemTo()==null) {
+			for (SaleItemTransfer t : sa.getTransfersFrom()) {
+				if (t.getSaleItemTo() == null) {
 					SaleItem saTo = new SaleItem();
 					saTo.setId(t.getSaleItemToId());
 					t.setSaleItemTo(saTo);
 				}
-				if(t.getSaleItemFrom()==null) {
+				if (t.getSaleItemFrom() == null) {
 					SaleItem saFrom = new SaleItem();
 					saFrom.setId(t.getSaleItemFromId());
 					t.setSaleItemFrom(saFrom);

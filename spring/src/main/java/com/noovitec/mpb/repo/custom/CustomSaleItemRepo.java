@@ -13,7 +13,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-import com.noovitec.mpb.entity.Sale;
 import com.noovitec.mpb.entity.SaleItem;
 
 public interface CustomSaleItemRepo {
@@ -30,7 +29,7 @@ public interface CustomSaleItemRepo {
 		@Override
 		public Page<SaleItem> findPageable(Pageable pageable, String numberName, Long customerId, Long itemId, boolean hideShip) {
 			String q = "select distinct si from SaleItem si " + "join si.item i " + "join si.sale s " + "join s.customer cu " + "where si.id is not null ";
-			if(hideShip) {
+			if (hideShip) {
 				q += "and si.units <> si.unitsShipped ";
 			}
 			if (numberName != null && !numberName.isEmpty()) {
@@ -56,8 +55,8 @@ public interface CustomSaleItemRepo {
 			}
 			long total = query.getResultStream().count();
 			@SuppressWarnings("unchecked")
-			List<SaleItem> result = query.setFirstResult(pageable.getPageNumber()*pageable.getPageSize())
-				.setMaxResults(pageable.getPageSize()).getResultList();
+			List<SaleItem> result = query.setFirstResult(pageable.getPageNumber() * pageable.getPageSize()).setMaxResults(pageable.getPageSize())
+					.getResultList();
 			Page<SaleItem> page = new PageImpl<SaleItem>(result, pageable, total);
 			return page;
 		}
