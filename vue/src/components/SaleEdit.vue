@@ -88,9 +88,9 @@
       <b-col>
         <label class="top-label"></label>
         <b-table v-if="sale.saleItems.length>0" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="sale.saleItems" :fields="columns">
-          <template v-slot:cell(item.number)="row">
+          <template v-slot:cell(item)="row">
             <b-link role="button" @click.stop="goToItem(row.item.item.id)">{{row.item.item.number}}</b-link>
-            <span> ({{row.item.item.name}})</span>
+            <span style="font-size: 11px"> ({{row.item.item.name}})</span>
           </template>
           <template v-slot:cell(sku)="row">
             <input class="form-control" style="width:100px" type="tel" v-model="row.item.sku">
@@ -177,7 +177,7 @@ export default {
       sortBy: "id",
       sortDesc: false,
       columns: [
-        { key: "item.number", label: "Item", sortable: false },
+        { key: "item", label: "Item", sortable: false },
         { key: "sku", label: "SKU#", sortable: false },
         { key: "units", label: "Sold", sortable: false },
         { key: "unitsSchedProd", label: "Sched/Prod", sortable: false },
