@@ -9,6 +9,7 @@ Shipment (screen & PDF):
 - Allow to upload documents.
 - Allow to specifiy Shipment Window Date (is it on sale or shipment)?
 + Fix Shipmnet number auto generation (duplicates).
+- Show date, time for transfer.
 Customer:
 - Allow to enter Special Notes (for shipment).
 Item screen:
@@ -22,7 +23,6 @@ Global:
 - Allow to search/filter by Season and Year context for currently logged in user (partially done).
 - Short production
 - Keep search options persisted (until page refreshed or logged out).
-- Search by name "like" and "exact" (Item, Sale).
 Production Line:
 - Allow to finish production even if the units produced are short.
 - Show box with large percentage (On target/slow (based on hours scheduled and units), %Performance/Efficiency, %Production done).

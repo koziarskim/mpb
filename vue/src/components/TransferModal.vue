@@ -101,6 +101,10 @@ export default {
 				alert("Enter positive number of units to transfer");
 				return;
 			}
+			if(+this.saleItemFrom.unitsOnStock - +this.unitsTrasfered < 0){
+				alert("Cannot transfer more that on Stock");
+				return;
+			}
 			var saleItemTransfer = {
 				saleFromName: this.saleItemFrom.sale.number+" ("+this.saleItemFrom.sale.customer.name+")",  
 				saleItemFrom: this.saleItemFrom,
@@ -127,6 +131,12 @@ export default {
 		},
 		getAvailableSaleItems(){
 			http.get("/saleItem/kv/item/"+this.saleItem.item.id).then(r => {
+				r.data.forEach(function(si,i){
+					if(si.name.includes("Marketplace Brands")){
+						r.data.splice(i, 1);
+						r.data.unshift(si);
+					}
+				});
 				this.availableSaleItems = r.data.filter(si => si.id != this.saleItem.id);
 			}).catch(e => {
 				console.log("API error: " + e)
