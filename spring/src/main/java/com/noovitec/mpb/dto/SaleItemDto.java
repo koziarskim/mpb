@@ -22,6 +22,8 @@ public class SaleItemDto {
 	private Long unitsSold;
 	private Long unitsProduced;
 	private Long unitsShipped;
-	private Long unitsOnStock; //this.unitsProduced - this..unitsShipped;
+	private Long unitsOnStock;
+	private Long unitsTransferedTo;
+	private Long unitsTranferedFrom;
 	
 }

@@ -30,6 +30,9 @@
           <template v-slot:cell(itemNumber)="row">
               <b-link role="button" @click=goToItem(row.item.itemId)>{{row.item.itemNumber}} ({{row.item.itemName}})</b-link>
           </template>
+          <template v-slot:cell(unitsTrasfered)="row">
+              <span>{{row.item.unitsTransferedTo}}-{{row.item.unitsTranferedFrom}}</span>
+          </template>
           <template v-slot:cell(unitsShipped)="row">
               <b-button size="sm" @click=goToShipment(row.item.itemId,row.item.saleId) variant="link">{{row.item.unitsShipped}}</b-button>
           </template>
@@ -58,7 +61,7 @@ export default {
       searchItem: "",
       itemView: true,
       selectedSaleItemIds: [],
-      saleItems: [],
+      saleItems: [], //SaleItemDto
       numberName: "",
       availableItems: [],
       item: {},
@@ -72,6 +75,7 @@ export default {
         { key: "dc", label: "DC (State)", sortable: false },
         { key: "unitsSold", label: "Sold", sortable: false },
         { key: "unitsProduced", label: "Produced", sortable: false },
+        { key: "unitsTrasfered", label: "Transfers", sortable: false },
         { key: "unitsShipped", label: "Shipped", sortable: false },
         { key: "unitsOnStock", label: "On Stock", sortable: false },
         { key: "action", label: "Action", sortable: false}
