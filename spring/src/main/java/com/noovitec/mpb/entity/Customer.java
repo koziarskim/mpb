@@ -32,6 +32,7 @@ public class Customer extends BaseEntity {
 	private String email;
 	private String email2;
 	private String contactName;
+	private String shipmentNotes;
 
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "customer_address", joinColumns = @JoinColumn(name = "customer_id"), inverseJoinColumns = @JoinColumn(name = "address_id"))

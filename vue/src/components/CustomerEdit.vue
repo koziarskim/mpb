@@ -129,6 +129,12 @@
                         <b-form-textarea type="text" :rows="3" v-model="newAddress.notes"></b-form-textarea>
                     </b-col>
                 </b-row>
+                <b-row>
+                  <b-col cols="12">
+                    <label class="top-label">Shipment Notes:</label>
+                    <b-form-textarea type="text" :rows="4" v-model="customer.shipmentNotes"></b-form-textarea>
+                  </b-col>
+                </b-row>
             </b-col>
         </b-row>
         <br/>
