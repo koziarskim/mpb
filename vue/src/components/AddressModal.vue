@@ -6,7 +6,7 @@
 					<label class="top-label">Address Distribution Center</label>
 					<input class="form-control" type="tel" v-model="address.dc">
 				</b-col>
-				<b-col>
+				<b-col v-if="addressType=='FRG'">
 					<label class="top-label">Keep it? </label><br/>
 					<input type="checkbox" v-model="address.visible">
 				</b-col>
@@ -66,7 +66,8 @@ import moment from "moment";
 
 export default {
   props: {
-    addressId: Number,
+		addressId: Number,
+		addressType: String,
   },
   data() {
     return {
@@ -93,7 +94,7 @@ export default {
       if (!this.validate()) {
         return;
 			}
-			this.address.type = "FRG";
+			this.address.type = this.addressType;
       http.post("/address", this.address).then(response => {
         this.closeModal(response.data);
 			}).catch(e => {

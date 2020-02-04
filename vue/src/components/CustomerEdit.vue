@@ -80,63 +80,25 @@
                 </b-row>
                 <hr class="hr-text" data-content="Shipping Address(es)">
                 <b-row>
-                    <b-col cols=9>
-                        <label class="top-label">Ship to Address:</label>
-                        <b-select option-value="id" option-text="label" :list="customer.addresses" v-model="address" placeholder="Address"></b-select>
-                    </b-col>
-                    <b-col cols=1 style="padding-top: 22px; margin-left:-15px">
-                      <div style="display:flex;">
-                        <b-button v-if="!addressEditFlag" variant="link" @click="addAddress()">(Add)</b-button>
-                        <b-button v-if="!addressEditFlag" variant="link" style="margin-left: -15px" @click="editAddress()">(Edit)</b-button>
-                        <b-button v-if="addressEditFlag" variant="link" @click="saveAddress()">(Save)</b-button>
-                        <b-button v-if="addressEditFlag" variant="link" style="margin-left: -15px" @click="deleteAddress()">(Delete)</b-button>
-                      </div>
-                    </b-col>
-                </b-row>
-                <b-row v-if="addressEditFlag" >
-                    <b-col cols=8>
-                        <label class="top-label">Street:</label>
-                        <input class="form-control" type="search" v-model="newAddress.street"/>
-                    </b-col>
-                    <b-col cols=4>
-                        <label class="top-label">DC:</label>
-                        <input class="form-control" type="search" v-model="newAddress.dc"/>
-                    </b-col>
-                </b-row>
-                <b-row v-if="addressEditFlag">
-                    <b-col cols=7>
-                        <label class="top-label">City:</label>
-                        <input class="form-control" type="tel" v-model="newAddress.city"/>
-                    </b-col>
-                    <b-col cols=2>
-                        <label class="top-label">State:</label>
-                        <input class="form-control" type="tel" v-model="newAddress.state"/>
-                    </b-col>
-                    <b-col cols=3>
-                        <label class="top-label">Zip Code:</label>
-                        <input class="form-control" type="tel" v-model="newAddress.zip"/>
-                    </b-col>
-                </b-row>
-                <b-row v-if="addressEditFlag">
-                    <b-col cols=10>
-                        <label class="top-label">Phone:</label>
-                        <input class="form-control" type="tel" v-model="newAddress.phone"/>
-                    </b-col>
-                </b-row>
-                <b-row v-if="addressEditFlag">
-                    <b-col cols=10>
-                        <label class="top-label">Note:</label>
-                        <b-form-textarea type="text" :rows="3" v-model="newAddress.notes"></b-form-textarea>
-                    </b-col>
+                  <b-col cols=9>
+                      <label class="top-label">Ship to Address:
+                        <span style="cursor: pointer; color: blue" @click="openShipAddressModal()"> (Edit/New) </span>
+                        <span v-if="shipAddress.id" style="cursor: pointer; color: blue" @click="deleteShipAddress()"> (Delete) </span>
+                      </label>
+                      <b-select option-value="id" option-text="label" :list="customer.addresses" v-model="shipAddress" placeholder="Address"></b-select>
+                  </b-col>
                 </b-row>
                 <b-row>
-                  <b-col cols="12">
+                  <b-col cols=12>
                     <label class="top-label">Shipment Notes:</label>
                     <b-form-textarea type="text" :rows="4" v-model="customer.shipmentNotes"></b-form-textarea>
                   </b-col>
                 </b-row>
             </b-col>
         </b-row>
+        <div v-if="shipAddressModalVisible">
+  		  	<address-modal :address-id="shipAddress.id" address-type="SHP" v-on:closeModal="closeShipAddressModal"></address-modal>
+	    	</div>
         <br/>
     </b-container>
 </template>
@@ -147,8 +109,12 @@ import router from "../router";
 import state from "../data/state";
 
 export default {
+  components: {
+    AddressModal: () => import("./AddressModal")
+  },
   data() {
     return {
+      shipAddressModalVisible: false,
       customer: {
         name: "",
         account: "",
@@ -158,9 +124,7 @@ export default {
         freightTerms: 'Collect',
         addresses: []
       },
-      addressEditFlag: false,
-      address: {},
-      newAddress: {},
+      shipAddress: {},
       billingAddress: {},
       freightTerms: {},
       availableStates: state.states,
@@ -221,29 +185,26 @@ export default {
       });
       return freight;
     },
-    addAddress() {
-      this.addressEditFlag = true;
-      this.newAddress = {};
+    openShipAddressModal(){
+      this.shipAddressModalVisible = true;
     },
-    editAddress() {
-      this.addressEditFlag = true;
-      this.newAddress = this.address;
-    },
-    saveAddress() {
-      if(!this.newAddress.id){
-        this.newAddress.id = null;
-        this.newAddress.label = this.newAddress.dc + "("+this.newAddress.city + ", "+this.newAddress.state+")";
-        this.customer.addresses.push(this.newAddress);
+    closeShipAddressModal(address){
+      if(address && address.id){
+        var idx = this.customer.addresses.findIndex(a => a.id == address.id);
+        if (idx>-1) {
+          this.customer.addresses.splice(idx,1);
+        }
+        this.customer.addresses.push(address)
       }
-      this.addressEditFlag = false;
-    },
-    deleteAddress() {
-      var idx = this.customer.addresses.findIndex(address => address.id == this.newAddress.id);
+      this.shipAddressModalVisible=false;
+      this.shipAddress = {};
+		},
+    deleteShipAddress() {
+      var idx = this.customer.addresses.findIndex(a => a.id == this.shipAddress.id);
       if (idx>-1) {
         this.customer.addresses.splice(idx,1);
       }
-      this.addressEditFlag = false;
-      this.newAddress = {};
+      this.shipAddress = {};
     },
   },
   mounted() {
