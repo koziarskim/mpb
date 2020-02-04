@@ -1,17 +1,14 @@
-Done:
-+ Fix production line
-
-In Progress:
+In Progress/Done:
 Shipment (screen & PDF):
-- Pre-fill Shipping Notes based on Customer.
-- Persist filter search or show shipment in popup.
++ Pre-fill Shipping Notes based on Customer.
++ Fix Shipmnet number auto generation (duplicates).
 - Allow to search/filter by Season
 - Allow to upload documents.
 - Allow to specifiy Shipment Window Date (is it on sale or shipment)?
-+ Fix Shipmnet number auto generation (duplicates).
 - Show date, time for transfer.
+- Add "Loaded by..." to BOL.
 Customer:
-- Allow to enter Special Notes (for shipment).
++ Allow to enter Special Notes (for shipment).
 Item screen:
 - Allow to enter upc for item (manually entered)
 - Allow to enter upc for case (manually entered)
@@ -19,75 +16,23 @@ Sale:
 + Allow to pick Pay Terms (Same as shipment Ship Terms).
 + Remove FOB.
 + Allow to transfer units from different sale.
+Item:
+- Allow to search/filter by Season
 Global:
-- Allow to search/filter by Season and Year context for currently logged in user (partially done).
-- Short production
-- Keep search options persisted (until page refreshed or logged out).
+- Email notifications based on certain actions.
 Production Line:
++ Fix production line
 - Allow to finish production even if the units produced are short.
+
+Backlog functionality:
+Production:
 - Show box with large percentage (On target/slow (based on hours scheduled and units), %Performance/Efficiency, %Production done).
-
-Done:
-Shipment (screen & PDF):
-+ Show Notes in BOL PDF (done)
-+ Show Flight Term Name instead of ID in BOL PDF (done)
-+ Increase the size of Via in BOL PDF (done)
-+ Switch Sale # column with Quantity column on BOL PDF (done)
-+ Add space in from on SKU on BOL PDF (done)
-+ Add "PH:" to BOL PDF (done)
-+ Add Palet Weight to Total Weight in Shipment screen: (+ (# of palets x palet weight)) (done).
-+ Change PDF Layout (done)
-+ Make Special Notes bold font (done)
-+ Add frieight number (PDF) (done)
-+ Make Date and BOS larger
-+ Add Shipped Date
-+ Add checkbox (ready to ship).
-+ Add Case Pack column to PDF
-+ Shipment list: Add columns (Ready To Ship, Shipped Date).
-+ Add Packing Slip as second page.
-+ Make note in address 3 lines.
-+ Make several changes to PDF Layout
-+ Add Ship Date to PDF
-+ Add Last Modified date to Shipment screen (update based on last save).
-+ Split Flireight/NMFC to separate fields (NMFC and Class).
-+ Change layout to fit Class Column (screen and pdfs)
-+ Bold font for all title fields on PDF.
-+ Display single phone in Ship to address (if no address phone, display customer)
-+ Add "*Contiain foot" to botton of Special Notes.
-+ Remove Case total on PDF
-+ Add confirmation to shipment delete
-+ Sort shipments by Modified Date (last first)
-+ Add Advanced Filter Menu.
-+ Allow to filter by Moified Date range.
-+ Allow to filter by status.
-+ Increase table size to 20 per page
-+ Add time to Last Modified
-+ Fix Contains Foot(d).
-+ Fix deleting shipment.
-+ Remove customer name from Sale search drop down
-+ Fix pdf long line (Send Freight Bill To).
-+ Allow to enter Phone, Notes and Address Line to Freight Address.
-+ Allow to view Sales and Items as popup for each Shipment.
-Address screen:
-+ Add Notes input to each Ship Address for Customer (done)
-Customer screen:
-+ Customer screen: Show DC (city, state) in ship to address (done)
-+ Allow to delete shipping address
-+ Fix edit address
-+ Remove account from the list
-Item screen:
-+ Add Palet Weight to Item Edit screen (done)
-+ Change Hide Production and Hide Shipped unchecked
-Sale screen:
-+ Show Item # and Item Name in Sale add item (done)
-+ Change Hide Production and Hide Shipped unchecked
-Supplier screen:
-+ Remove account from the list
+Shipment:
+- Persist filter search or show shipment in popup.
 Global:
-+ Increase logged in session to 8 hours.
-+ Allow to copy links (Item, Sale, Shipment). Copy: highlight text, click (CTR+C), Paste: CTR+V
+- Keep search options persisted (until page refreshed or logged out).
 
-Backlog:
+Backlog tech-dead:
 Component entity:
 	persist unitsInOrder
 	change all int to Long
