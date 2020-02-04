@@ -81,7 +81,7 @@
                 <hr class="hr-text" data-content="Shipping Address(es)">
                 <b-row>
                   <b-col cols=9>
-                      <label class="top-label">Ship to Address:
+                      <label class="top-label">Shipping Addresses:
                         <span style="cursor: pointer; color: blue" @click="openShipAddressModal()"> (Edit/New) </span>
                         <span v-if="shipAddress.id" style="cursor: pointer; color: blue" @click="deleteShipAddress()"> (Delete) </span>
                       </label>
