@@ -217,9 +217,13 @@ export default {
   },
   watch: {
     customer(new_value, old_value) {
+      this.shipment.notes = "";
       if (!new_value.id || new_value.id == old_value.id) {
         return;
       }
+      this.getCustomer(new_value.id).then(c => {
+        this.shipment.notes =  c.shipmentNotes;
+      })
       this.getAvailableSaleItems();
       this.getAvailableShippingAddresses(new_value.id)
     },
@@ -244,7 +248,14 @@ export default {
       this.modalVisible=false;
       this.getAvailableFreightAddresses()
 		},
-    getShipment(id) {
+    getCustomer(customerId) {
+      return http.get("/customer/" + customerId).then(r => {
+        return r.data;
+      }).catch(e => {
+        console.log("API error: " + e);
+      });
+    },
+     getShipment(id) {
       http.get("/shipment/" + id).then(response => {
         response.data.shipmentItems.forEach(si => {
           si.existingUnits = si.units;
