@@ -3,6 +3,7 @@
         <b-row>
             <b-col cols=2>
                 <div style="width: 200px; height: 490px; background-color: #3062ae; text-align: right; color: white;"><span style="padding-right: 15px">Announcements</span></div>
+                <div @click="sendMail()">send mail</div>
             </b-col>
             <b-col cols=10>
                 <b-row style="width: 1500px">
@@ -52,6 +53,10 @@ export default {
   methods: {
     goTo(view) {
       router.push(view);
+    },
+    sendMail(){
+      http.post("/mail").then(r => {
+      })
     },
   }
 };
