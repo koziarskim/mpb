@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -51,6 +52,13 @@ public class Sale extends BaseEntity {
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "sale_id")
 	private Collection<SaleItem> saleItems = new HashSet<SaleItem>();
+
+	@Transient
+	private Long unitsOnStock = 0L;
+
+	public Long getUnitsOnStock() {
+		return this.getUnitsProduced() + this.unitsTransferedTo - this.unitsTransferedFrom - this.getUnitsShipped();
+	}
 
 	public void updateUnits() {
 		this.unitsSold = 0L;
