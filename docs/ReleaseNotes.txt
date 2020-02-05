@@ -7,8 +7,11 @@ Shipment (screen & PDF):
 - Allow to specifiy Shipment Window Date (is it on sale or shipment)?
 - Show date, time for transfer.
 - Add "Loaded by..." to BOL.
+- Sorty by "Progress, Ready, Shipped".
 Customer:
 + Allow to enter Special Notes (for shipment).
+- Payment terms as dropdown.
+- Organize layout (Generic info, Billing info, Shipping info).
 Item screen:
 - Allow to enter upc for item (manually entered)
 - Allow to enter upc for case (manually entered)
@@ -16,6 +19,7 @@ Sale:
 + Allow to pick Pay Terms (Same as shipment Ship Terms).
 + Remove FOB.
 + Allow to transfer units from different sale.
+- Set pay terms when Customer is set.
 Item:
 - Allow to search/filter by Season
 Global:
@@ -23,6 +27,19 @@ Global:
 Production Line:
 + Fix production line
 - Allow to finish production even if the units produced are short.
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 Backlog functionality:
 Production:

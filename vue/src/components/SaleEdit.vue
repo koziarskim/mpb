@@ -2,12 +2,22 @@
   <b-container fluid>
     <b-row>
       <b-col cols="2">
-        <h4 style="text-align: left;">Sale Order:</h4>
+        <label class="top-label">Sale Number:</label>
+        <input class="form-control" type="tel" v-model="sale.number" placeholder="Number">
       </b-col>
-      <b-col cols="3">
-        <input class="form-control" type="text" v-model="sale.name" placeholder="Sale name/description">
+      <b-col cols="2">
+        <label class="top-label">Sale Date:</label>
+        <input class="form-control" type="date" v-model="sale.date" placeholder="Date">
       </b-col>
-      <b-col cols="2" offset="5">
+      <b-col cols="2">
+        <label class="top-label">Expected Date:</label>
+        <input class="form-control" type="date" v-model="sale.expectedDate" placeholder="Date">
+      </b-col>
+      <b-col cols=2>
+        <label class="top-label">Pay Terms:</label>
+        <b-select option-value="id" option-text="name" :list="availablePayTerms" v-model="sale.paymentTerms" placeholder="Pick Freight"></b-select>
+      </b-col>
+      <b-col cols=2 offset=2 style="margin-top: 20px">
         <div style="text-align: right;">
           <b-button type="reset" variant="success" @click="saveAndClose()">Save & Close</b-button>
         </div>
@@ -18,52 +28,18 @@
         <label class="top-label">Customer:</label>
         <b-select option-value="id" option-text="value" :list="availableCustomers" v-model="customerDto" placeholder="Customer"></b-select>
       </b-col>
-      <b-col cols="2">
-        <label class="top-label">Date:</label>
-        <input class="form-control" type="date" v-model="sale.date" placeholder="Date">
-      </b-col>
-      <b-col cols="2">
-        <label class="top-label">Sale Number:</label>
-        <input class="form-control" type="tel" v-model="sale.number" placeholder="Number">
-      </b-col>
-      <b-col cols=2>
-        <label class="top-label">Pay Terms:</label>
-        <b-select option-value="id" option-text="name" :list="availablePayTerms" v-model="sale.paymentTerms" placeholder="Pick Freight"></b-select>
-      </b-col>
-    </b-row>
-    <b-row>
-      <b-col cols="4" style="border: ">
-        <label class="top-label">Vendor:</label>
-        <br>
-        <label class="top-label">Marketplace Brands LLC</label>
-      </b-col>
       <b-col cols="4">
         <label class="top-label">shipping to Address:</label>
-        <b-select option-value="id" option-text="dc" :list="customer.addresses" v-model="shippingAddress" placeholder="shipping to address"></b-select>
-      </b-col>
-      <b-col cols="2">
-        <label class="top-label">Expected Date:</label>
-        <input class="form-control" type="date" v-model="sale.expectedDate" placeholder="Date">
+        <b-select option-value="id" option-text="label" :list="customer.addresses" v-model="shippingAddress" placeholder="shipping to address"></b-select>
       </b-col>
     </b-row>
     <b-row>
-      <b-col cols="4" offset="4">
-        <label class="top-label">Street:</label>
-        <input class="form-control" type="tel" readonly :value="shippingAddress.street" placeholder="City">
-      </b-col>
-      <b-col cols="2" offset="4">
-        <label class="top-label">City:</label>
-        <input class="form-control" type="tel" readonly :value="shippingAddress.city" placeholder="City">
-      </b-col>
-      <b-col cols="1">
-        <label class="top-label">State:</label>
-        <input class="form-control" type="tel" readonly :value="shippingAddress.state" placeholder>
-      </b-col>
-      <b-col cols="2">
-        <label class="top-label">Zip Code:</label>
-        <input class="form-control" type="tel" readonly :value="shippingAddress.zip" placeholder="Zip">
+      <b-col cols=4 offset=4>
+        <label class="top-label">{{shippingAddress.street}}</label>
+        <label class="top-label">, {{shippingAddress.city}}</label> <label class="top-label">, {{shippingAddress.state}}</label> <label class="top-label">&nbsp;{{shippingAddress.zip}}</label>
       </b-col>
     </b-row>
+    <hr class="hr-text" data-content="Sale Items">
     <b-row>
       <b-col cols=4>
         <label class="top-label">Available Items:</label>
@@ -110,6 +86,9 @@
           </template>
           <template v-slot:cell(unitsTransfered)="row">
             <b-button size="sm" variant="link" @click="openTransferModal(row.item)">{{row.item.unitsTransferedTo}}-{{row.item.unitsTransferedFrom}}</b-button>
+          </template>
+          <template v-slot:cell(unitsShipped)="row">
+            <b-button size="sm" variant="link" @click="goToShipment(row.item)">{{row.item.unitsShipped}}</b-button>
           </template>
           <template v-slot:cell(action)="row">
             <b-button size="sm" @click="deleteItem(row.item.item.id)">x</b-button>
@@ -177,6 +156,7 @@ export default {
         { key: "units", label: "Sold", sortable: false },
         { key: "unitsSchedProd", label: "Sched/Prod", sortable: false },
         { key: "unitsTransfered", label: "Transfers", sortable: false },
+        { key: "unitsShipped", label: "Shipped", sortable: false },
         { key: "cases", label: "Cases", sortable: false },
         { key: "cost", label: "Cost", sortable: false },
         { key: "unitPrice", label: "Unit Price", sortable: false },
@@ -252,6 +232,10 @@ export default {
     }
   },
   methods: {
+    goToShipment(si){
+      var query = { itemId: si.item.id, saleId: this.sale.id };
+      router.push({path: "/shipmentList", query: query})
+    },
     openTransferModal(saleItem){
       this.saleItem = saleItem;
       this.saleItem.saleNumber = this.sale.number
@@ -340,8 +324,8 @@ export default {
         });
     },
     validate(){
-      if(!this.sale.number || !this.sale.name){
-        alert("Sale Name and Number required");
+      if(!this.sale.number){
+        alert("Sale Number required");
         return false;
       }
       return true;
