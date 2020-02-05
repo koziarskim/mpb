@@ -19,9 +19,9 @@
       </b-col>
         <b-col cols=3 style="margin-top: 5px">
         <label class="top-label">Stock: {{sale.unitsOnStock}},&nbsp;&nbsp;</label>
-        <label class="top-label">Shed/Prod: <b-link role="button" @click="goToItemScheduleList()">{{sale.unitsScheduled}}/{{sale.unitsProduced}}</b-link></label><br/>
-        <label class="top-label">Sold: <b-link role="button" @click="goToItemSaleList()">{{sale.unitsSold}}</b-link>,&nbsp;&nbsp;</label>
-        <label class="top-label">Shipped: <b-link role="button" @click="goToItemShippedList()">{{sale.unitsShipped}}</b-link></label>
+        <label class="top-label">Shed/Prod: {{sale.unitsScheduled}}/{{sale.unitsProduced}}</label><br/>
+        <label class="top-label">Sold: {{sale.unitsSold}},&nbsp;&nbsp;</label>
+        <label class="top-label">Shipped: <b-link role="button" @click="goToShipment()">{{sale.unitsShipped}}</b-link></label>
       </b-col>
       <b-col cols=1 style="margin-top: 20px">
         <div style="text-align: right;">
@@ -243,7 +243,10 @@ export default {
       router.push("/scheduleEventList/" + si.item.id + "/sale/" + this.sale.id);
     },
     goToShipment(si){
-      var query = { itemId: si.item.id, saleId: this.sale.id };
+      var query = { saleId: this.sale.id };
+      if(si){
+        query.itemId = si.item.id;
+      }
       router.push({path: "/shipmentList", query: query})
     },
     openTransferModal(saleItem){
