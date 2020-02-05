@@ -17,9 +17,15 @@
         <label class="top-label">Year:</label>
         <b-select option-value="id" option-text="name" :list="availableYears" v-model="item.year" placeholder="Year"></b-select>
       </b-col>
-      <b-col cols=2 offset=3 style="margin-top: 20px">
+      <b-col cols=3 offset=1 style="margin-top: 5px">
+        <label class="top-label">Stock: {{item.unitsOnStock}},&nbsp;&nbsp;</label>
+        <label class="top-label">Shed/Prod: <b-link role="button" @click="goToItemScheduleList()">{{item.unitsScheduled}}/{{item.unitsProduced}}</b-link></label><br/>
+        <label class="top-label">Sold: <b-link role="button" @click="goToItemSaleList()">{{item.unitsSold}}</b-link>,&nbsp;&nbsp;</label>
+        <label class="top-label">Shipped: <b-link role="button" @click="goToItemShippedList()">{{item.unitsShipped}}</b-link></label>
+      </b-col>
+      <b-col cols=1 style="margin-top: 20px">
         <div style="text-align: right;">
-          <b-button type="reset" variant="success" @click="saveAndClose">Save & Close</b-button>
+          <b-button size="sm" type="reset" variant="success" @click="saveAndClose">Save</b-button>
         </div>
       </b-col>
     </b-row>
@@ -160,8 +166,7 @@
       <b-col cols="4" style="border-left: 1px solid #dededf;">
         <b-row>
           <b-col cols="12">
-            <label class="top-label">Components:</label>
-            <b-select option-value="id" option-text="value" :list="availableComponents" v-model="component" placeholder="Select component"></b-select>
+            <b-select option-value="id" option-text="value" :list="availableComponents" v-model="component" placeholder="Pick Component"></b-select>
           </b-col>
         </b-row>
         <b-row>
@@ -316,9 +321,19 @@ export default {
     // },
   },
   methods: {
-	onUpload(file){
-		this.uploadedFile = file;
-	},
+    goToItemSaleList(){
+        router.push('/itemSaleList/'+this.item.id);
+    },
+    goToItemScheduleList(){
+        router.push('/scheduleEventList/'+this.item.id);
+    },
+    goToItemShippedList(){
+      var query = { itemId: this.item.id};
+      router.push({path: "/shipmentList", query: query})
+    },
+    onUpload(file){
+      this.uploadedFile = file;
+    },
     getComponentsById: function(id) {
       return this.item.itemComponents.filter(ic => {
         return ic.component.category.id == id;

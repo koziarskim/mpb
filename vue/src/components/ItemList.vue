@@ -127,16 +127,16 @@ export default {
         router.push('/itemEdit');
     },
     updateItem(item_id){
-        router.push('./itemEdit/'+item_id);
+        router.push('/itemEdit/'+item_id);
     },
     gotToInventory(item_id){
-        router.push('./itemComponentList/'+item_id);
+        router.push('/itemComponentList/'+item_id);
     },
     goToItemSaleList(item_id){
-        router.push('./itemSaleList/'+item_id);
+        router.push('/itemSaleList/'+item_id);
     },
     goToItemScheduleList(item_id){
-        router.push('./scheduleEventList/'+item_id);
+        router.push('/scheduleEventList/'+item_id);
     },
     goToItemShippedList(itemId){
       var query = { itemId: itemId};

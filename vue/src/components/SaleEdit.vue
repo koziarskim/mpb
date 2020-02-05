@@ -70,7 +70,7 @@
             <span>${{row.item.item.totalCost}}</span>
           </template>
           <template v-slot:cell(unitsSchedProd)="row">
-            <span>{{row.item.unitsScheduled}}/{{row.item.unitsProduced}}</span>
+            <b-button size="sm" variant="link" @click="goToScheduled(row.item)">{{row.item.unitsScheduled}}/{{row.item.unitsProduced}}</b-button>
           </template>
           <template v-slot:cell(units)="row">
             <input class="form-control" style="width:100px" type="tel" v-model="row.item.units">
@@ -232,6 +232,9 @@ export default {
     }
   },
   methods: {
+    goToScheduled(si) {
+      router.push("/scheduleEventList/" + si.item.id + "/sale/" + this.sale.id);
+    },
     goToShipment(si){
       var query = { itemId: si.item.id, saleId: this.sale.id };
       router.push({path: "/shipmentList", query: query})
