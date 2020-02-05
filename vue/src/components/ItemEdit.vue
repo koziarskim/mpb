@@ -1,16 +1,23 @@
 <template>
   <b-container fluid>
-    <b-row>
-      <b-col cols="1">
-        <h4 style="text-align: left;">Item:</h4>
+    <b-row style="margin-top:-5px">
+      <b-col cols=1>
+        <label class="top-label">Item Number:</label>
+        <input class="form-control" type="text" v-model="item.number">
       </b-col>
-      <b-col cols="2">
-        <input class="form-control" type="text" v-model="item.number" placeholder="Item number">
+      <b-col cols=3>
+        <label class="top-label">Item Name:</label>
+        <input class="form-control" type="text" v-model="item.name">
       </b-col>
-      <b-col cols="3">
-        <input class="form-control" type="text" v-model="item.name" placeholder="Item name">
+      <b-col cols=2>
+        <label class="top-label">Season:</label>
+        <b-select option-value="id" option-text="name" :list="availableSeasons" v-model="item.season" placeholder="Season"></b-select>
       </b-col>
-      <b-col cols="2" offset="4">
+      <b-col cols=1>
+        <label class="top-label">Year:</label>
+        <b-select option-value="id" option-text="name" :list="availableYears" v-model="item.year" placeholder="Year"></b-select>
+      </b-col>
+      <b-col cols=2 offset=3 style="margin-top: 20px">
         <div style="text-align: right;">
           <b-button type="reset" variant="success" @click="saveAndClose">Save & Close</b-button>
         </div>
@@ -19,14 +26,6 @@
     <b-row>
       <b-col cols="8">
         <b-row>
-          <b-col cols="3">
-            <label class="top-label">Season:</label>
-            <b-select option-value="id" option-text="name" :list="availableSeasons" v-model="item.season" placeholder="Season"></b-select>
-          </b-col>
-          <b-col cols="2">
-            <label class="top-label">Year:</label>
-            <b-select option-value="id" option-text="name" :list="availableYears" v-model="item.year" placeholder="Year"></b-select>
-          </b-col>
           <b-col cols="3" offset="3">
             <!-- <label class="top-label">Case UPC#</label>
             <br>
@@ -51,17 +50,15 @@
               </b-col>
             </b-row>
             <b-row>
-              <b-col cols="8" style="padding-top: 5px;">
+              <b-col cols="8" style="margin-top: 5px;">
                 <b-form-textarea type="text" :rows="3" v-model="item.description" placeholder="Enter short description"></b-form-textarea>
               </b-col>
             </b-row>
           </b-col>
           <b-col cols="3">
-            <b-row>
-              <b-col>
-				<upload :on-upload="onUpload" :file-url="getImageUrl()"></upload>
+              <b-col style="margin-top: 10px; margin-left: -13px">
+				        <upload :on-upload="onUpload" :file-url="getImageUrl()"></upload>
               </b-col>
-            </b-row>
           </b-col>
         </b-row>
         <hr class="hr-text" data-content="Unit dimenstion">
