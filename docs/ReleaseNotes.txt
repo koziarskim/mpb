@@ -19,10 +19,11 @@ Item screen:
 - Allow to enter upc for case (manually entered)
 Sale:
 + Reorganize screen layout.
++ Show units sold for each item (including link to details).
++ Show units on stock for each item 
 + Allow to pick Pay Terms (Same as shipment Ship Terms).
 + Remove FOB.
 + Allow to transfer units from different sale.
-+ Show units sold for each item (including link to details).
 - Set pay terms when Customer is set.
 Item:
 - Allow to search/filter by Season
