@@ -1,7 +1,6 @@
 package com.noovitec.mpb.rest;
 
 import java.net.URISyntaxException;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,13 +20,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.noovitec.mpb.entity.Component;
 import com.noovitec.mpb.entity.Purchase;
-import com.noovitec.mpb.entity.PurchaseComponent;
 import com.noovitec.mpb.entity.Receiving;
 import com.noovitec.mpb.repo.ComponentRepo;
 import com.noovitec.mpb.repo.PurchaseRepo;
 import com.noovitec.mpb.repo.ReceivingRepo;
+import com.noovitec.mpb.service.ReceivingService;
 
 
 @RestController
@@ -40,6 +38,8 @@ class ReceivingRest {
 	PurchaseRepo purchaseRepo;
 	@Autowired
 	ComponentRepo componentRepo;
+	@Autowired
+	ReceivingService receivingService;
 
 	public ReceivingRest(ReceivingRepo receivingRepo) {
 		this.receivingRepo = receivingRepo;
@@ -87,19 +87,8 @@ class ReceivingRest {
 	}
 
 	@PostMapping("/receiving")
-	ResponseEntity<?> post(@RequestBody(required = false) Receiving receiving) throws URISyntaxException {
-		if (receiving == null) {
-			receiving = new Receiving();
-		}
-		Receiving result = receivingRepo.save(receiving);
-		result = receivingRepo.save(receiving);
-		if(receiving.getPurchaseComponent()!=null && receiving.getPurchaseComponent().getComponent() != null) {
-			Component component = componentRepo.findById(receiving.getPurchaseComponent().getComponent().getId()).get();
-			if (receiving.getReceivingDate()!=null) {
-				component.addUnitsOnStock(receiving.getUnits());
-			}
-			componentRepo.save(component);
-		}
+	ResponseEntity<?> post(@RequestBody Receiving receiving) throws URISyntaxException {
+		Receiving result = receivingService.save(receiving);
 		return ResponseEntity.ok().body(result);
 	}
 

@@ -70,9 +70,15 @@
           <template v-slot:cell(totalPrice)="row">
             ${{row.item.totalPrice = getTotalPrice(row.item)}}
           </template>
+          <template v-slot:cell(action)="row">
+            <b-button v-if="!editMode" size="sm" @click="openReceivingModal(row.item)" variant="primary">Receive</b-button>
+          </template>
         </b-table>
       </b-col>
     </b-row>
+    <div v-if="receiveModalVisible">
+      <receiving-modal :purchase-component="purchaseComponent" v-on:closeModal="closeReceivingModal"></receiving-modal>
+    </div>
   </b-container>
 </template>
 
@@ -84,13 +90,18 @@ import vue from "vue";
 import ComponentSearch from "./ComponentSearch";
 
 export default {
+  components: {
+    ReceivingModal: () => import("./ReceivingModal")
+  },
   data() {
     return {
+      receiveModalVisible: false,
       receivingDate: '',
       editMode: false,
       receiveMode: false,
       purchase: {},
       purchaseComponents: [],
+      purchaseComponent: {},
       fields: [
         { key: "name", label: "Name", sortable: false },
         { key: "component.unitCost", label: "Unit Cost", sortable: false },
@@ -98,6 +109,7 @@ export default {
         { key: "units", label: "P.O. Units", sortable: false },
         { key: "unitsReceived", label: "Received", sortable: false },
         { key: "totalPrice", label: "Total", sortable: false },
+        // { key: "action", label: "Action", sortable: false },
       ],
     };
   },
@@ -105,6 +117,14 @@ export default {
   watch: {
   },
   methods: {
+    openReceivingModal(pc){
+      this.purchaseComponent = pc;
+      this.receiveModalVisible = true;
+    },
+    closeReceivingModal(pc){
+      this.receiveModalVisible = false;
+      this.getPurchase(this.purchase.id);
+    },
     getTotalPrice(item){
       return (item.units * item.unitPrice).toFixed(2);
     },

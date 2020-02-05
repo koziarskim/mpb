@@ -1,2 +1,4 @@
-alter table customer add column shipment_notes varchar(255);
+update receiving set name = invoice_number where name is null;
+
+update receiving set name = container_number where name is null;
 
