@@ -11,14 +11,18 @@ Shipment (screen & PDF):
 Customer:
 + Allow to enter Special Notes (for shipment).
 - Payment terms as dropdown.
-- Organize layout (Generic info, Billing info, Shipping info).
+- Reorganize screen layout (Generic info, Billing info, Shipping info).
 Item screen:
++ Reorganize screen layout.
++ Show Stock, Sold, Scheduled, Produced and Shipped (including link to details).
 - Allow to enter upc for item (manually entered)
 - Allow to enter upc for case (manually entered)
 Sale:
++ Reorganize screen layout.
 + Allow to pick Pay Terms (Same as shipment Ship Terms).
 + Remove FOB.
 + Allow to transfer units from different sale.
++ Show units sold for each item (including link to details).
 - Set pay terms when Customer is set.
 Item:
 - Allow to search/filter by Season

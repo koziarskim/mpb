@@ -17,9 +17,15 @@
         <label class="top-label">Pay Terms:</label>
         <b-select option-value="id" option-text="name" :list="availablePayTerms" v-model="sale.paymentTerms" placeholder="Pick Freight"></b-select>
       </b-col>
-      <b-col cols=2 offset=2 style="margin-top: 20px">
+        <b-col cols=3 style="margin-top: 5px">
+        <label class="top-label">Stock: {{sale.unitsOnStock}},&nbsp;&nbsp;</label>
+        <label class="top-label">Shed/Prod: <b-link role="button" @click="goToItemScheduleList()">{{sale.unitsScheduled}}/{{sale.unitsProduced}}</b-link></label><br/>
+        <label class="top-label">Sold: <b-link role="button" @click="goToItemSaleList()">{{sale.unitsSold}}</b-link>,&nbsp;&nbsp;</label>
+        <label class="top-label">Shipped: <b-link role="button" @click="goToItemShippedList()">{{sale.unitsShipped}}</b-link></label>
+      </b-col>
+      <b-col cols=1 style="margin-top: 20px">
         <div style="text-align: right;">
-          <b-button type="reset" variant="success" @click="saveAndClose()">Save & Close</b-button>
+          <b-button size="sm" type="reset" variant="success" @click="saveAndClose()">Save</b-button>
         </div>
       </b-col>
     </b-row>
@@ -154,6 +160,7 @@ export default {
         { key: "item", label: "Item", sortable: false },
         { key: "sku", label: "SKU#", sortable: false },
         { key: "units", label: "Sold", sortable: false },
+        { key: "unitsOnStock", label: "Stock", sortable: false },
         { key: "unitsSchedProd", label: "Sched/Prod", sortable: false },
         { key: "unitsTransfered", label: "Transfers", sortable: false },
         { key: "unitsShipped", label: "Shipped", sortable: false },
