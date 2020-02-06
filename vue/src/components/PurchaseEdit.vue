@@ -136,7 +136,15 @@ export default {
       })
     },
     edit(){
-      if(this.purchase.receivingDate){
+      var received = false;
+      this.purchase.purchaseComponents.forEach(pc=> {
+        pc.receivings.forEach(rec=> {
+          if(rec.units>0){
+            received = true;
+          }
+        })
+      })
+      if(received){
         alert("Purchase is partially received. Action not allowed!");
         return;
       }

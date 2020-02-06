@@ -30,6 +30,9 @@ Item:
 Purchase:
 + Allow to receive multiple components per purchase (enter only units received).
 + Allow to modify receiving number, container number and invoice number for receiving.
+- Sort by last mofied
+Receiving:
+- Sort by last modified
 Global:
 - Email notifications based on certain actions.
 Production Line:
