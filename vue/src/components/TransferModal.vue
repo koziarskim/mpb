@@ -40,6 +40,9 @@
 						<template v-slot:cell(unitsTransfered)="row">
 							<span>{{row.item.negative}}{{row.item.unitsTransfered}}</span>
 						</template>
+						<template v-slot:cell(date)="row">
+							<span>{{getDateTime(row.item)}}</span>
+						</template>
 						<template v-slot:cell(action)="row">
 							<b-button v-if="!row.item.negative" size="sm" @click="deleteSaleItemTransfer(row.item)">x</b-button>
 						</template>
@@ -69,6 +72,7 @@ export default {
 			columns: [
 				{ key: "saleFromToName", label: "Sale", sortable: false },
 				{ key: "unitsTransfered", label: "Transfered", sortable: false },
+				{ key: "date", label: "Date & Time", sortable: false },
         { key: "action", label: "Action", sortable: false },
       ],
     };
@@ -87,6 +91,9 @@ export default {
 		}
 	},
   methods: {
+		getDateTime(transfer){
+			return moment.utc(transfer.date).local().format("YYYY-MM-DD @ HH:mm")
+		},
 		getSaleItems(){
 			this.saleItem.transfersTo.forEach(sit => {
 				sit.saleFromToName = sit.saleFromName;
@@ -111,6 +118,7 @@ export default {
 				saleFromId: this.saleItemFrom.sale.id, 
 				saleItemTo: {id: this.saleItem.id}, 
 				unitsTransfered: this.unitsTrasfered,
+				date: moment.utc()
 			}
 			this.saleItem.transfersTo.push(saleItemTransfer);
 			this.saleItem.unitsTransferedTo += +saleItemTransfer.unitsTransfered;

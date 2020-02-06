@@ -1,5 +1,7 @@
 package com.noovitec.mpb.entity;
 
+import java.time.LocalDateTime;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -22,6 +24,7 @@ import lombok.NoArgsConstructor;
 public class SaleItemTransfer extends BaseEntity {
 
 	private Long unitsTransfered = 0L;
+	private LocalDateTime date;
 	@Column(name="sale_item_from_id", insertable=false, updatable=false)
 	private Long saleItemFromId;
 	@Column(name="sale_item_to_id", insertable=false, updatable=false)
