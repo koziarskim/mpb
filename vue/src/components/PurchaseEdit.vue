@@ -57,7 +57,10 @@
           </template>
           <template v-slot:cell(unitsReceived)="row">
             <b-button v-if="!receiveMode" size="sm" @click.stop="goToReceiving(purchase.id, row.item.component.id)" variant="link">{{row.item.unitsReceived}}</b-button>
-            <input v-if="receiveMode" class="form-control" style="width: 120px" type="tel" v-model="row.item.units">          
+            <div v-if="receiveMode" style="display:flex">
+              <span style="margin-top:10px">{{row.item.unitsReceived}}&nbsp;</span>
+              <input class="form-control" style="width: 80px" type="tel" v-model="row.item.unitsToReceive" placeholder="0">
+            </div>          
           </template>
           <template v-slot:cell(unitPrice)="row">
             <input v-if="editMode" class="form-control" style="width: 120px" type="tel" v-model="row.item.unitPrice">          
@@ -70,15 +73,9 @@
           <template v-slot:cell(totalPrice)="row">
             ${{row.item.totalPrice = getTotalPrice(row.item)}}
           </template>
-          <template v-slot:cell(action)="row">
-            <b-button v-if="!editMode" size="sm" @click="openReceivingModal(row.item)" variant="primary">Receive</b-button>
-          </template>
         </b-table>
       </b-col>
     </b-row>
-    <div v-if="receiveModalVisible">
-      <receiving-modal :purchase-component="purchaseComponent" v-on:closeModal="closeReceivingModal"></receiving-modal>
-    </div>
   </b-container>
 </template>
 
@@ -90,12 +87,8 @@ import vue from "vue";
 import ComponentSearch from "./ComponentSearch";
 
 export default {
-  components: {
-    ReceivingModal: () => import("./ReceivingModal")
-  },
   data() {
     return {
-      receiveModalVisible: false,
       receivingDate: '',
       editMode: false,
       receiveMode: false,
@@ -109,7 +102,6 @@ export default {
         { key: "units", label: "P.O. Units", sortable: false },
         { key: "unitsReceived", label: "Received", sortable: false },
         { key: "totalPrice", label: "Total", sortable: false },
-        // { key: "action", label: "Action", sortable: false },
       ],
     };
   },
@@ -117,14 +109,6 @@ export default {
   watch: {
   },
   methods: {
-    openReceivingModal(pc){
-      this.purchaseComponent = pc;
-      this.receiveModalVisible = true;
-    },
-    closeReceivingModal(pc){
-      this.receiveModalVisible = false;
-      this.getPurchase(this.purchase.id);
-    },
     getTotalPrice(item){
       return (item.units * item.unitPrice).toFixed(2);
     },
@@ -142,10 +126,10 @@ export default {
       this.editMode = true;
     },
     receive(){
-      if(this.purchase.receivingDate){
-        alert("Purchase is partially received. Action not allowed!");
-        return;
-      }
+      this.purchase.purchaseComponents.forEach(pc=> {
+        pc.unitsToReceive = null;
+      })
+      this.receivingDate = null;
       this.receiveMode = true;
     },
     save(){
@@ -170,25 +154,27 @@ export default {
         return Promise.reject();
       }
       var receivings = [];
-      var noUnits = false;
+      var isNegative = false;
       this.purchase.purchaseComponents.forEach(pc => {
-        if(!pc.unitsToReceive){
-          noUnits = true;
-          return;
+        if(pc.unitsToReceive){
+          if(pc.unitsToReceive < 0){
+            isNegative = true;
+            return;
+          }
+          var receiving = {purchaseComponent: pc}
+          receiving.name = "Rec-"+this.purchase.name+"-"+pc.component.name;
+          receiving.containerNumber = this.purchase.containerNumber;
+          receiving.invoiceNumber = this.purchase.invoiceNumber;
+          receiving.shippingDate = this.purchase.shippingDate;
+          receiving.etaDate = this.purchase.expectedDate;
+          receiving.receivingDate = this.receivingDate;
+          receiving.units = pc.unitsToReceive;
+          receivings.push(receiving);
         }
-        var receiving = {purchaseComponent: pc}
-        receiving.name = "Rec-"+this.purchase.name+"-"+pc.component.name;
-        receiving.containerNumber = this.purchase.containerNumber;
-        receiving.invoiceNumber = this.purchase.invoiceNumber;
-        receiving.shippingDate = this.purchase.shippingDate;
-        receiving.etaDate = this.purchase.expectedDate;
-        receiving.receivingDate = this.receivingDate;
-        receiving.units = pc.unitsToReceive;
-        receivings.push(receiving);
       })
-      if(noUnits){
-          alert("One of the Components has no Received Units set");
-          return Promise.reject();
+      if(isNegative){
+        alert("Units have to be positive");
+        return Promise.reject();
       }
       return http.post("/receivings/purchase/"+this.purchase.id, receivings).then(r => {
         this.purchase = r.data;
@@ -203,9 +189,9 @@ export default {
     },
     getPurchase(purchase_id) {
       return http.get("/purchase/" + purchase_id).then(r => {
-        r.data.purchaseComponents.forEach(pc => {
-          pc.unitsToReceive = pc.units;
-        })
+        // r.data.purchaseComponents.forEach(pc => {
+        //   pc.unitsToReceive = 0;
+        // })
         this.purchase = r.data;
         this.receivingDate = r.data.receivingDate;
         return r.data;
