@@ -6,7 +6,7 @@ Shipment (screen & PDF):
 - Allow to upload documents.
 - Allow to specifiy Shipment Window Date (is it on sale or shipment)?
 - Show date, time for transfer.
-- Add "Loaded by..." to BOL.
++ Add "Loaded by..." to BOL.
 - Sorty by "Progress, Ready, Shipped".
 Customer:
 + Allow to enter Special Notes (for shipment).
@@ -27,6 +27,9 @@ Sale:
 - Set pay terms when Customer is set.
 Item:
 - Allow to search/filter by Season
+Purchase:
++ Allow to receive multiple components per purchase (enter only units received).
++ Allow to modify receiving number, container number and invoice number for receiving.
 Global:
 - Email notifications based on certain actions.
 Production Line:
