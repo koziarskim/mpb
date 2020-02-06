@@ -5,35 +5,49 @@
         <div style="display:flex">
           <div style="margin-top:-5px;">
             <span style="font-size: 18px; font-weight: bold">Purchase Order</span>
-            <input style="width: 150px" class="form-control" type="text" v-model="purchase.number" :disabled="!editMode">
+            <input style="width: 175px" class="form-control" type="text" v-model="purchase.number" :disabled="!editMode">
           </div>
-          <div style="width: 200px; padding-left: 3px; padding-right: 3px;">
-            <label class="top-label">P.O. Name:</label>
-            <input class="form-control" type="text" v-model="purchase.name" :disabled="!editMode">
+          <div v-if="receiveMode" style="display:flex">
+            <div style="margin-top:-2px; margin-left: 8px;">
+              <label class="top-label">Receiving Number:</label>
+              <input style="width: 175px" class="form-control" type="text" v-model="receivingNumber">
+            </div>
+            <div style="margin-top:-2px; margin-left: 8px;">
+              <label class="top-label">Container Number:</label>
+              <input style="width: 175px" class="form-control" type="text" v-model="receivingContainerNumber">
+            </div>
+            <div style="margin-top:-2px; margin-left: 8px;">
+              <label class="top-label">Invoice Number:</label>
+              <input style="width: 175px" class="form-control" type="text" v-model="receivingInvoiceNumber">
+            </div>
+            <div style="margin-top:-2px; margin-left: 8px;">
+              <label class="top-label">Received Date:</label>
+              <input style="width: 175px" class="form-control" type="date" v-model="receivingDate">
+            </div>
+            <div style="width: 300px"></div>
           </div>
-          <div v-if="!receiveMode" style="width: 175px; padding-left: 3px; padding-right: 3px;">
-            <label class="top-label">P.O. Date:</label>
-            <input class="form-control" type="date" v-model="purchase.date" :disabled="!editMode">
-          </div>
-          <div v-if="!receiveMode" style="width: 175px; padding-left: 3px; padding-right: 3px;">
-            <label class="top-label">Shipping Date:</label>
-            <input class="form-control" type="date" v-model="purchase.shippingDate" :disabled="!editMode">
-          </div>
-          <div v-if="!receiveMode" style="width: 175px; padding-left: 3px; padding-right: 3px;">
-            <label class="top-label">ETA Date:</label>
-            <input class="form-control" type="date" v-model="purchase.expectedDate" :disabled="!editMode">
-          </div>
-          <div v-if="!receiveMode" style="width: 160px; padding-left: 3px; padding-right: 3px;">
-            <label class="top-label">Container:</label>
-            <input class="form-control" type="text" v-model="purchase.containerNumber" :disabled="!editMode">
-          </div>
-          <div v-if="!receiveMode" style="width: 160px; padding-left: 3px; padding-right: 3px;">
-            <label class="top-label">Invoice:</label>
-            <input class="form-control" type="text" v-model="purchase.invoiceNumber" :disabled="!editMode">
-          </div>
-          <div v-if="receiveMode" style="margin-left: 680px; width: 175px; padding-left: 3px; padding-right: 3px;">
-            <label class="top-label">Received:</label>
-            <input class="form-control" type="date" v-model="receivingDate">
+          <div v-if="!receiveMode" style="display:flex">
+            <div style="width: 175px; padding-left: 3px; padding-right: 3px;">
+              <label class="top-label">P.O. Date:</label>
+              <input class="form-control" type="date" v-model="purchase.date" :disabled="!editMode">
+            </div>
+            <div style="width: 175px; padding-left: 3px; padding-right: 3px;">
+              <label class="top-label">Shipping Date:</label>
+              <input class="form-control" type="date" v-model="purchase.shippingDate" :disabled="!editMode">
+            </div>
+            <div style="width: 175px; padding-left: 3px; padding-right: 3px;">
+              <label class="top-label">ETA Date:</label>
+              <input class="form-control" type="date" v-model="purchase.expectedDate" :disabled="!editMode">
+            </div>
+            <div style="width: 175px; padding-left: 3px; padding-right: 3px;">
+              <label class="top-label">Container:</label>
+              <input class="form-control" type="text" v-model="purchase.containerNumber" :disabled="!editMode">
+            </div>
+            <div style="width: 175px; padding-left: 3px; padding-right: 3px;">
+              <label class="top-label">Invoice:</label>
+              <input class="form-control" type="text" v-model="purchase.invoiceNumber" :disabled="!editMode">
+            </div>
+            <div style="width: 155px"></div>
           </div>
           <div style="text-align: right;">
             <div v-if="!editMode && !receiveMode">
@@ -89,7 +103,10 @@ import ComponentSearch from "./ComponentSearch";
 export default {
   data() {
     return {
-      receivingDate: '',
+      receivingDate: null,
+      receivingNumber: null,
+      receivingContainerNumber: null,
+      receivingInvoiceNumber: null,
       editMode: false,
       receiveMode: false,
       purchase: {},
@@ -129,6 +146,9 @@ export default {
       this.purchase.purchaseComponents.forEach(pc=> {
         pc.unitsToReceive = null;
       })
+      this.receivingNumber = "Rec-"+this.purchase.number;
+      this.receivingContainerNumber = this.purchase.containerNumber;
+      this.receivingInvoiceNumber = this.purchase.invoiceNumber;
       this.receivingDate = null;
       this.receiveMode = true;
     },
@@ -162,9 +182,9 @@ export default {
             return;
           }
           var receiving = {purchaseComponent: pc}
-          receiving.name = "Rec-"+this.purchase.name+"-"+pc.component.name;
-          receiving.containerNumber = this.purchase.containerNumber;
-          receiving.invoiceNumber = this.purchase.invoiceNumber;
+          receiving.number = this.receivingNumber;
+          receiving.containerNumber = this.receivingContainerNumber;
+          receiving.invoiceNumber = this.receivingInvoiceNumber;
           receiving.shippingDate = this.purchase.shippingDate;
           receiving.etaDate = this.purchase.expectedDate;
           receiving.receivingDate = this.receivingDate;
@@ -176,22 +196,23 @@ export default {
         alert("Units have to be positive");
         return Promise.reject();
       }
-      return http.post("/receivings/purchase/"+this.purchase.id, receivings).then(r => {
-        this.purchase = r.data;
-        this.editMode = false;
-        this.receiveMode = false;
-      }).catch(e => {
-        console.log("API error: " + e);
-      });
+      if(receivings.length<1){
+        alert("Nothing to save");
+      }else{
+        return http.post("/receivings/purchase/"+this.purchase.id, receivings).then(r => {
+          this.purchase = r.data;
+          this.editMode = false;
+          this.receiveMode = false;
+        }).catch(e => {
+          console.log("API error: " + e);
+        });
+      }
     },
     getTotalPrice(pc){
       return (pc.units * pc.unitPrice).toFixed(2);
     },
     getPurchase(purchase_id) {
       return http.get("/purchase/" + purchase_id).then(r => {
-        // r.data.purchaseComponents.forEach(pc => {
-        //   pc.unitsToReceive = 0;
-        // })
         this.purchase = r.data;
         this.receivingDate = r.data.receivingDate;
         return r.data;
