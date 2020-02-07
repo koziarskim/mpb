@@ -9,10 +9,15 @@ import javax.persistence.Query;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import com.noovitec.mpb.entity.Shipment;
+
 public interface CustomShipmentRepo {
-	List<Long> findIds(String number, Long customerId, Long saleId, Long itemId, String status, LocalDate shipFrom, LocalDate shipTo);
+	Page<Shipment> findIds(Pageable pageable, String number, Long customerId, Long saleId, Long itemId, String status, LocalDate shipFrom, LocalDate shipTo);
 
 	@Repository
 	public class CustomShipmentRepoImpl implements CustomShipmentRepo {
@@ -23,8 +28,8 @@ public interface CustomShipmentRepo {
 		EntityManager entityManager;
 
 		@Override
-		public List<Long> findIds(String number, Long customerId, Long saleId, Long itemId, String status, LocalDate shipFrom, LocalDate shipTo) {
-			String q = "select distinct ship.id from Shipment ship " 
+		public Page<Shipment> findIds(Pageable pageable, String number, Long customerId, Long saleId, Long itemId, String status, LocalDate shipFrom, LocalDate shipTo) {
+			String q = "select distinct ship from Shipment ship " 
 					+ "left join ship.shipmentItems shipItem " 
 					+ "left join shipItem.saleItem si "
 					+ "left join si.sale s "
@@ -52,6 +57,7 @@ public interface CustomShipmentRepo {
 			if(shipTo !=null) {
 				q += "and ship.shippedDate <= :shipTo ";
 			}
+			q += "order by ship.status, ship.modifiedDate desc";
 			Query query = entityManager.createQuery(q);
 			if (number != null && !number.isEmpty()) {
 				query.setParameter("number", number);
@@ -74,8 +80,12 @@ public interface CustomShipmentRepo {
 			if(shipTo !=null) {
 				query.setParameter("shipTo", shipTo);
 			}
-			List<Long> list = query.getResultList();	
-			return list;
+			long total = query.getResultStream().count();
+			@SuppressWarnings("unchecked")
+			List<Shipment> result = query.setFirstResult(pageable.getPageNumber() * pageable.getPageSize()).setMaxResults(pageable.getPageSize()).getResultList();
+			Page<Shipment> page = new PageImpl<Shipment>(result, pageable, total);
+			return page;
+
 		}
 	}
 }

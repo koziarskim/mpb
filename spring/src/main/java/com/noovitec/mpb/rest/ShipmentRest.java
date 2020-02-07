@@ -9,7 +9,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +37,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfStamper;
-import com.noovitec.mpb.dto.SaleItemDto;
 import com.noovitec.mpb.dto.ShipmentDto;
 import com.noovitec.mpb.entity.Attachment;
 import com.noovitec.mpb.entity.Item;
@@ -97,12 +95,8 @@ class ShipmentRest {
 			@RequestParam(required = false) String status,
 			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate shipFrom,
 			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate shipTo) {
-		List<Long> ids = shipmentRepo.findIds(number, customerId, saleId, itemId, status, shipFrom, shipTo);
-		if(ids.isEmpty()) {
-			return Page.empty();
-		}
-		Page<Shipment> shipments = shipmentRepo.findPage(pageable, ids);
-		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		Page<Shipment> shipments = shipmentRepo.findIds(pageable, number, customerId, saleId, itemId, status, shipFrom, shipTo);
+		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		Page<ShipmentDto> all = shipments.map(ship -> {
 			ShipmentDto dto = new ShipmentDto();
 			dto.setId(ship.getId());

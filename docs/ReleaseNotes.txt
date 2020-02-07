@@ -5,10 +5,10 @@ Shipment (screen & PDF):
 + Show date, time for transfer.
 + Add "Loaded by..." to BOL.
 + Fix shipment number count.
++ Sorty by "Progress, Ready, Shipped" and Last Modified.
 - Allow to search/filter by Season
 - Allow to upload documents.
 - Allow to specifiy Shipment Window Date (is it on sale or shipment)?
-- Sorty by "Progress, Ready, Shipped".
 Customer:
 + Allow to enter Special Notes (for shipment).
 - Payment terms as dropdown.
