@@ -4,6 +4,7 @@ Shipment (screen & PDF):
 + Fix Shipmnet number auto generation (duplicates).
 + Show date, time for transfer.
 + Add "Loaded by..." to BOL.
++ Fix shipment number count.
 - Allow to search/filter by Season
 - Allow to upload documents.
 - Allow to specifiy Shipment Window Date (is it on sale or shipment)?
@@ -26,7 +27,9 @@ Sale:
 + Allow to transfer units from different sale.
 - Set pay terms when Customer is set.
 Item:
++ Pallet weight = 60 by default.
 - Allow to search/filter by Season
+- Validate brand and category.
 Purchase:
 + Allow to receive multiple components per purchase (enter only units received).
 + Allow to modify receiving number, container number and invoice number for receiving.

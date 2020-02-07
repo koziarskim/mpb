@@ -210,6 +210,7 @@ export default {
         category: {},
         season: {},
         year: {},
+        palletWeight: 60,
         // upc: {},
         // caseUpc: {},
         // caseUpc: {},
