@@ -16,6 +16,7 @@ public class ShipmentDto {
 	private String number;
 	private LocalDate shippingDate;
 	private LocalDate shippedDate;
+	private String shippingWindow;
 	private String modifiedDate;
 	private String customerName;
 	private boolean ready;

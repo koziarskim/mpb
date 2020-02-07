@@ -6,9 +6,10 @@ Shipment (screen & PDF):
 + Add "Loaded by..." to BOL.
 + Fix shipment number count.
 + Sorty by "Progress, Ready, Shipped" and Last Modified.
++ Allow to specifiy Shipment Window Date (is it on sale or shipment)?
+- Allow to search by window.
 - Allow to search/filter by Season
 - Allow to upload documents.
-- Allow to specifiy Shipment Window Date (is it on sale or shipment)?
 Customer:
 + Allow to enter Special Notes (for shipment).
 - Payment terms as dropdown.

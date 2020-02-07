@@ -91,7 +91,7 @@ export default {
         { key: "number", label: "Shipment #", sortable: false },
         { key: "customerName", label: "Customer", sortable: false },
         { key: "shippingDate", label: "Expected", sortable: false },
-        { key: "shippingWindow", label: "Shipping Window", sortable: false },
+        { key: "shippingWindow", label: "Ship Window", sortable: false },
         { key: "shippedDate", label: "Shippped", sortable: false },
         { key: "status", label: "Status", sortable: false },
         { key: "action", label: "Action", sortable: false }

@@ -55,7 +55,7 @@
         <input class="form-control" type="date" v-model="shipment.shippingTo">
       </b-col>
       <b-col cols=2>
-        <label class="top-label">Shipped (Load Sent):</label>
+        <label class="top-label">Shipped (Actual Load Sent):</label>
         <input class="form-control" type="date" v-model="shipment.shippedDate">
       </b-col>
     </b-row>

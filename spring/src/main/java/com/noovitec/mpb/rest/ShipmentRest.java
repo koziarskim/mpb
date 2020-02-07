@@ -97,6 +97,7 @@ class ShipmentRest {
 			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate shipTo) {
 		Page<Shipment> shipments = shipmentRepo.findIds(pageable, number, customerId, saleId, itemId, status, shipFrom, shipTo);
 		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		DateTimeFormatter windowFormat = DateTimeFormatter.ofPattern("MM/dd");
 		Page<ShipmentDto> all = shipments.map(ship -> {
 			ShipmentDto dto = new ShipmentDto();
 			dto.setId(ship.getId());
@@ -105,6 +106,9 @@ class ShipmentRest {
 			dto.setShippingDate(ship.getShippingDate());
 			dto.setShippedDate(ship.getShippedDate());
 			dto.setModifiedDate(ship.getModifiedDate().format(dateFormat));
+			String shippingFrom = ship.getShippingFrom()==null?"":ship.getShippingFrom().format(windowFormat);
+			String shippingTo = ship.getShippingTo()==null?"":ship.getShippingTo().format(windowFormat);
+			dto.setShippingWindow(shippingFrom +" - "+shippingTo);
 			dto.setCustomerName(ship.getCustomer()==null?"":ship.getCustomer().getName());
 			dto.setReady(ship.isReady());
 			dto.setStatus(ship.getStatus());
