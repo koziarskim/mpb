@@ -25,6 +25,7 @@ public class Customer extends BaseEntity {
 
 	private String name;
 	private String account;
+	private String vendor;
 	private String phone;
 	private String phone2;
 	private String paymentTerms;

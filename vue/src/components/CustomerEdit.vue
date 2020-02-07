@@ -11,21 +11,25 @@
                 <b-row>
                     <b-col cols=7>
                         <label class="top-label">Name:</label>
-                        <input class="form-control" type="search" v-model="customer.name" placeholder="Name"/>
+                        <input class="form-control" type="search" v-model="customer.name"/>
                     </b-col>
-                    <b-col cols=5>
+                    <b-col cols=2>
                         <label class="top-label">Account #:</label>
-                        <input class="form-control" disabled type="text" v-model="customer.account" placeholder="Account #"/>
+                        <input class="form-control" disabled type="text" v-model="customer.account"/>
+                    </b-col>
+                    <b-col cols=3>
+                        <label class="top-label">Vendor #:</label>
+                        <input class="form-control" type="text" v-model="customer.vendor"/>
                     </b-col>
                 </b-row>
                 <b-row>
                     <b-col cols=4>
-                        <label class="top-label">Pay Terms:</label>
-                        <input class="form-control" type="text" v-model="customer.paymentTerms" placeholder="Payment Terms"/>
+                      <label class="top-label">Pay Terms:</label>
+                      <b-select option-value="id" option-text="name" :list="availablePayTerms" v-model="customer.paymentTerms"></b-select>
                     </b-col>
                     <b-col cols=4>
                         <label class="top-label">Freight Terms:</label>
-                        <b-select option-value="code" option-text="name" :list="availableFreights" v-model="freightTerms" placeholder="Freight terms"></b-select>
+                        <b-select option-value="code" option-text="name" :list="availableFreights" v-model="freightTerms"></b-select>
                     </b-col>
                 </b-row>
                 <b-row>
@@ -131,6 +135,12 @@ export default {
       availableFreights: [
         { code: "Delivered", name: "Delivered" },
         { code: "Collect", name: "Collect" }
+      ],
+      availablePayTerms: [
+        {id: "TPB", name: "TP Bill"},
+        {id: "PRP", name: "Pre Paid"},
+        {id: "TPO", name: "TP Bill Other"},
+        {id: "COL", name: "Collect"}
       ]
     };
   },

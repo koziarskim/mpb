@@ -12,7 +12,8 @@ Shipment (screen & PDF):
 - Allow to upload documents.
 Customer:
 + Allow to enter Special Notes (for shipment).
-- Payment terms as dropdown.
++ Payment terms as dropdown.
++ Add vendor number.
 - Reorganize screen layout (Generic info, Billing info, Shipping info).
 Item screen:
 + Reorganize screen layout.
