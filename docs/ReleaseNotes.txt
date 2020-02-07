@@ -2,11 +2,11 @@ In Progress/Done:
 Shipment (screen & PDF):
 + Pre-fill Shipping Notes based on Customer.
 + Fix Shipmnet number auto generation (duplicates).
++ Show date, time for transfer.
++ Add "Loaded by..." to BOL.
 - Allow to search/filter by Season
 - Allow to upload documents.
 - Allow to specifiy Shipment Window Date (is it on sale or shipment)?
-- Show date, time for transfer.
-+ Add "Loaded by..." to BOL.
 - Sorty by "Progress, Ready, Shipped".
 Customer:
 + Allow to enter Special Notes (for shipment).

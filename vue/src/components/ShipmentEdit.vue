@@ -227,11 +227,6 @@ export default {
       this.getAvailableSaleItems();
       this.getAvailableShippingAddresses(new_value.id)
     },
-    "shipment.shippingDate"(new_value, old_value){
-      if(old_value){
-        this.getCount();
-      }
-    }
   },
   methods: {
     formatModifiedDate(dateTime){
@@ -377,7 +372,7 @@ export default {
       if(this.shipment.number){
         return
       }
-      return http.get("/shipment/number/"+this.shipment.shippingDate).then(r => {
+      return http.get("/shipment/number/"+moment.utc().local().format("YYYY-MM-DD")).then(r => {
         this.shipment.number = r.data;
       }).catch(e => {
         console.log("API error: " + e);
