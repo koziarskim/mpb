@@ -13,11 +13,7 @@
         <label class="top-label">Expected Date:</label>
         <input class="form-control" type="date" v-model="sale.expectedDate" placeholder="Date">
       </b-col>
-      <b-col cols=2>
-        <label class="top-label">Pay Terms:</label>
-        <b-select option-value="id" option-text="name" :list="availablePayTerms" v-model="sale.paymentTerms" placeholder="Pick Freight"></b-select>
-      </b-col>
-        <b-col cols=3 style="margin-top: 5px">
+      <b-col cols=3 offset=2 style="margin-top: 5px">
         <label class="top-label">Stock: {{sale.unitsOnStock}},&nbsp;&nbsp;</label>
         <label class="top-label">Shed/Prod: {{sale.unitsScheduled}}/{{sale.unitsProduced}}</label><br/>
         <label class="top-label">Sold: {{sale.unitsSold}},&nbsp;&nbsp;</label>
@@ -33,6 +29,10 @@
       <b-col cols="4">
         <label class="top-label">Customer:</label>
         <b-select option-value="id" option-text="value" :list="availableCustomers" v-model="customerDto" placeholder="Customer"></b-select>
+      </b-col>
+      <b-col cols=2>
+        <label class="top-label">Pay Terms:</label>
+        <b-select option-value="id" option-text="name" :list="availablePayTerms" v-model="sale.paymentTerms" placeholder="Pick Freight"></b-select>
       </b-col>
       <b-col cols="4">
         <label class="top-label">shipping to Address:</label>
@@ -230,6 +230,7 @@ export default {
       this.sale.customer = new_value;
       if (old_value.id && new_value.id != old_value.id) {
         this.shippingAddress = {};
+        this.sale.paymentTerms = new_value.paymentTerms;
       }
     },
     itemDto(new_value, old_value){

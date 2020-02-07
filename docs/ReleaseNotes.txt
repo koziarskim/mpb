@@ -27,7 +27,7 @@ Sale:
 + Allow to pick Pay Terms (Same as shipment Ship Terms).
 + Remove FOB.
 + Allow to transfer units from different sale.
-- Set pay terms when Customer is set.
++ Set pay terms when Customer is set.
 Item:
 + Pallet weight = 60 by default.
 - Allow to search/filter by Season
