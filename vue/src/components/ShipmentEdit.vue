@@ -13,7 +13,11 @@
         <label class="top-label">Load Number:</label>
         <input class="form-control" type="tel" v-model="shipment.loadNumber">
       </b-col>      
-      <b-col offset=2 cols=1>
+      <b-col cols=2>
+        <label class="top-label">Last Modified:</label>
+        <input class="form-control" type="tel" readOnly :value="formatModifiedDate(shipment.modifiedDate)">
+      </b-col>
+      <b-col cols=1>
         <label class="top-label">Ready To Ship</label><br/>
         <input type="checkbox" style="margin-left: 30px; margin-top: 10px" v-model="shipment.ready">
       </b-col>
@@ -38,17 +42,21 @@
         <label class="top-label">Freight Class:</label>
         <input class="form-control" type="tel" v-model="shipment.freightClass">
       </b-col>
-      <b-col offset=2 cols=2>
-        <label class="top-label">Shipping Date (Expected):</label>
+      <b-col cols=2>
+        <label class="top-label">Expected Date:</label>
         <input class="form-control" type="date" v-model="shipment.shippingDate">
       </b-col>
       <b-col cols=2>
-        <label class="top-label">Shipped Date (Actual):</label>
-        <input class="form-control" type="date" v-model="shipment.shippedDate">
+        <label class="top-label">Shipping Window From:</label>
+        <input class="form-control" type="date" v-model="shipment.shippingFrom">
       </b-col>
       <b-col cols=2>
-        <label class="top-label">Last Modified:</label>
-        <input class="form-control" type="tel" readOnly :value="formatModifiedDate(shipment.modifiedDate)">
+        <label class="top-label">Shipping Window To:</label>
+        <input class="form-control" type="date" v-model="shipment.shippingTo">
+      </b-col>
+      <b-col cols=2>
+        <label class="top-label">Shipped (Load Sent):</label>
+        <input class="form-control" type="date" v-model="shipment.shippedDate">
       </b-col>
     </b-row>
     <b-row>
