@@ -16,6 +16,9 @@ echo Schema file name is %SCHEMA_FILE%
 echo Data file name is %DATA_FILE%
 echo DB name: %DB_NAME%
 
+if "%ARG%"=="" (
+	set BACKUP=true
+)
 if "%ARG%"=="backup" (
 	set BACKUP=true
 )
