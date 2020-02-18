@@ -1,47 +1,40 @@
 In Progress/Done:
 Shipment (screen & PDF):
-+ Pre-fill Shipping Notes based on Customer.
-+ Fix Shipmnet number auto generation (duplicates).
-+ Show date, time for transfer.
-+ Add "Loaded by..." to BOL.
-+ Fix shipment number count.
-+ Sorty by "Progress, Ready, Shipped" and Last Modified.
-+ Allow to specifiy Shipment Window Date (is it on sale or shipment)?
-- Allow to search by window.
+- Fix Special Notes not saved for existing shipment.
+- Add Comments section (like notes).
+- Show Address Line in BOL Shipment Address.
+- Allow to select multiple items when adding.
+- Allow to search by window date.
 - Allow to search/filter by Season
 - Allow to upload documents.
+- Shipment schedule/calendar.
+- Add freight cost (input amount).
+- Allow to print BOL from list.
 Customer:
-+ Allow to enter Special Notes (for shipment).
-+ Payment terms as dropdown.
-+ Add vendor number.
 - Reorganize screen layout (Generic info, Billing info, Shipping info).
 Item screen:
-+ Reorganize screen layout.
-+ Show Stock, Sold, Scheduled, Produced and Shipped (including link to details).
 - Allow to enter upc for item (manually entered)
 - Allow to enter upc for case (manually entered)
+Components:
+- Price history/average.
 Sale:
-+ Reorganize screen layout.
-+ Show units sold for each item (including link to details).
-+ Show units on stock for each item 
-+ Allow to pick Pay Terms (Same as shipment Ship Terms).
-+ Remove FOB.
-+ Allow to transfer units from different sale.
-+ Set pay terms when Customer is set.
+- Show sale status (Open, Shipped). Open = Less shipped than Sold, Shipped = Fully shipped.
+- Allow to filter by Status.
+- Change column Shipped to Shipped/Open. (Open = still to shipped).
+- Ability to create RGA (Return Merchandise Authorization) - need to think more about it.
+- Ability to create OC (Order Complement) - need to think more about it.
+- Combine two sale screens.
+- Allow to enter notes when save.
 Item:
-+ Pallet weight = 60 by default.
 - Allow to search/filter by Season
 - Validate brand and category.
 Purchase:
-+ Allow to receive multiple components per purchase (enter only units received).
-+ Allow to modify receiving number, container number and invoice number for receiving.
 - Sort by last mofied
 Receiving:
 - Sort by last modified
 Global:
 - Email notifications based on certain actions.
 Production Line:
-+ Fix production line
 - Allow to finish production even if the units produced are short.
 
 
