@@ -5,3 +5,4 @@
 /vue/node_modules
 /vue/yarn.lock
 /vue/dist
+/spring/src/main/resources/oauth
