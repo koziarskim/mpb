@@ -225,13 +225,14 @@ export default {
   },
   watch: {
     customer(new_value, old_value) {
-      this.shipment.notes = "";
       this.shipment.payTerms = null;
       if (!new_value.id || new_value.id == old_value.id) {
         return;
       }
       this.getCustomer(new_value.id).then(c => {
-        this.shipment.notes =  c.shipmentNotes;
+        if(this.shipment.customer.id != new_value.id){
+          this.shipment.notes =  c.shipmentNotes;
+        }
         this.shipment.payTemrs = c.payTerms;
       })
       this.getAvailableSaleItems();
