@@ -60,31 +60,31 @@
       </b-col>
     </b-row>
     <b-row>
-      <b-col>
-        <b-row>
-          <b-col cols=6>
-            <label class="top-label">Ship To:</label>
-            <b-select option-value="id" option-text="name" :list="availableShippingAddresses" v-model="shippingAddress" placeholder="Pick shipping address"></b-select>
-          </b-col>
-          <b-col cols=6>
-            <label class="top-label">Freight Address:<span style="cursor: pointer; color: blue" @click="openModal()"> (Edit/New) </span></label>
-            <b-select option-value="id" option-text="name" :list="availableFreightAddresses" v-model="freightAddress" placeholder="Pick freight address"></b-select>
-          </b-col>
-        </b-row>
-        <b-row>
-          <b-col cols=4>
-            <label class="top-label">Via:</label>
-            <input class="form-control" type="tel" v-model="shipment.via">
-          </b-col>
-          <b-col cols=4>
-            <label class="top-label">FOB:</label>
-            <input class="form-control" type="tel" v-model="shipment.fob">
-          </b-col>
-        </b-row>
+      <b-col cols=3>
+        <label class="top-label">Ship To:</label>
+        <b-select option-value="id" option-text="name" :list="availableShippingAddresses" v-model="shippingAddress" placeholder="Pick shipping address"></b-select>
       </b-col>
-      <b-col>
-        <label class="top-label">Special Notes:</label>
-        <b-form-textarea style="padding-bottom: -15px;" type="text" :rows="4" v-model="shipment.notes" placeholder="Special Notes"></b-form-textarea>
+      <b-col cols=3>
+        <label class="top-label">Freight Address:<span style="cursor: pointer; color: blue" @click="openModal()"> (Edit/New) </span></label>
+        <b-select option-value="id" option-text="name" :list="availableFreightAddresses" v-model="freightAddress" placeholder="Pick freight address"></b-select>
+      </b-col>
+      <b-col cols=2>
+        <label class="top-label">Via:</label>
+        <input class="form-control" type="tel" v-model="shipment.via">
+      </b-col>
+      <b-col cols=2>
+        <label class="top-label">FOB:</label>
+        <input class="form-control" type="tel" v-model="shipment.fob">
+      </b-col>
+    </b-row>
+    <b-row>
+      <b-col cols=6>
+        <label class="top-label">Comments (Excluded from BOL):</label>
+        <b-form-textarea type="text" :rows="4" v-model="shipment.comments"></b-form-textarea>
+      </b-col>
+      <b-col cols=6>
+        <label class="top-label">Special Notes (Included on BOL):</label>
+        <b-form-textarea type="text" :rows="4" v-model="shipment.notes"></b-form-textarea>
       </b-col>
     </b-row>
     <div style="border: 1px solid #d6d3d3; margin-top: 10px;">

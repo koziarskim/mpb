@@ -2,14 +2,13 @@ In Progress/Done:
 Shipment (screen & PDF):
 + Save without close.
 + Fix Special Notes not saved for existing shipment.
-- Add Comments section (like notes).
++ Add Comments section (like notes).
 + Show Address Line in BOL Shipment Address.
 - Allow to select multiple items when adding.
 - Allow to search by window date.
 - Allow to search/filter by Season
 - Allow to upload documents.
 - Shipment schedule/calendar.
-- Add freight cost (input amount).
 - Allow to print BOL from list.
 Customer:
 - Reorganize screen layout (Generic info, Billing info, Shipping info).
