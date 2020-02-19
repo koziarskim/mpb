@@ -230,7 +230,7 @@ export default {
         return;
       }
       this.getCustomer(new_value.id).then(c => {
-        if(this.shipment.customer.id != new_value.id){
+        if(this.shipment.customer && this.shipment.customer.id != new_value.id){
           this.shipment.notes =  c.shipmentNotes;
         }
         this.shipment.payTemrs = c.payTerms;
