@@ -40,9 +40,9 @@ class MailRest {
 
 	private final Logger log = LoggerFactory.getLogger(MailRest.class);
 	private static final List<String> SCOPES = Arrays.asList(GmailScopes.GMAIL_SEND, GmailScopes.GMAIL_LABELS);
-	private static final String USCG_JSON_SERVICE_CREDENTIAL_FILE_PATH = "mail/oauth-project-268605-d9f44c2e6932.json";
-	private static final String USCG_P12_SERVICE_CREDENTIAL_FILE_PATH = "mail/mims-268617-499ba269d364.p12";
-	private static final String MIMS_JSON_KEY = "mail/mims-268617-0ecb1dec6a2e.json";
+	private static final String USCG_JSON_SERVICE_CREDENTIAL_FILE_PATH = "oauth/oauth-project-268605-d9f44c2e6932.json";
+	private static final String USCG_P12_SERVICE_CREDENTIAL_FILE_PATH = "oauth/mims-268617-499ba269d364.p12";
+	private static final String MIMS_JSON_KEY = "oauth/mims-268617-0ecb1dec6a2e.json";
 
 	@Autowired
 	HttpServletRequest request;

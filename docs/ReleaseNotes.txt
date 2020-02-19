@@ -1,5 +1,6 @@
 In Progress/Done:
 Shipment (screen & PDF):
+- Save without close.
 - Fix Special Notes not saved for existing shipment.
 - Add Comments section (like notes).
 - Show Address Line in BOL Shipment Address.
