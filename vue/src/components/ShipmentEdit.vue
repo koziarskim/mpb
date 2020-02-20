@@ -91,7 +91,9 @@
       <b-row>
         <b-col cols=6>
           <label class="top-label">Sale ( Item ):</label>
-          <b-select option-value="id" option-text="name" :list="availableSaleItems" v-model="saleItem"></b-select>
+          <div @keyup="keyDown">
+            <b-select ref="bselect" option-value="id" option-text="name" :list="availableSaleItems" v-model="saleItem"></b-select>
+          </div>
         </b-col>
         <b-col cols=1>
           <b-button size="sm" style="margin-top: 30px;" variant="primary" @click="addSaleItemKv(saleItem.id)">Add &#x25BC;</b-button>
@@ -189,7 +191,8 @@ export default {
         {id: "PRP", name: "Pre Paid"},
         {id: "TPO", name: "TP Bill Other"},
         {id: "COL", name: "Collect"}
-      ]
+      ],
+      itemText: ""
     };
   },
   computed: {
@@ -240,6 +243,24 @@ export default {
     },
   },
   methods: {
+    keyDown(event){
+      this.itemText = event.target.value;
+    },
+    addSaleItemKv(saleItemId){
+      if(!saleItemId){
+        alert("Please select Sale and Item to add");
+        return;
+      }
+      http.get("/saleItem/"+saleItemId).then(r => {
+        this.addSaleItem(r.data);
+        this.sale = {};
+        this.saleItem = {};
+        this.getAvailableSaleItems();
+        this.$refs.bselect.$children[0].searchText = this.itemText
+      }).catch(e => {
+        console.log("API error: " + e);
+      })
+    },
     formatModifiedDate(dateTime){
       return moment(dateTime).format("YYYY/MM/DD HH:mm:ss")
     },
@@ -383,20 +404,6 @@ export default {
       }).catch(e => {
         console.log("API error: " + e);
       });
-    },
-    addSaleItemKv(saleItemId){
-      if(!saleItemId){
-        alert("Please select Sale and Item to add");
-        return;
-      }
-      http.get("/saleItem/"+saleItemId).then(r => {
-        this.addSaleItem(r.data);
-        this.sale = {};
-        this.saleItem = {};
-        this.getAvailableSaleItems();
-      }).catch(e => {
-        console.log("API error: " + e);
-      })
     },
     addSaleItem(saleItem){
       this.shipment.shipmentItems.push(
