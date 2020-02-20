@@ -4,7 +4,7 @@ Shipment (screen & PDF):
 + Fix Special Notes not saved for existing shipment.
 + Add Comments section (like notes).
 + Show Address Line in BOL Shipment Address.
-- Allow to select multiple items when adding.
++ Allow to select multiple items when adding.
 - Allow to search by window date.
 - Allow to search/filter by Season
 - Allow to upload documents.
@@ -35,7 +35,7 @@ Purchase:
 Receiving:
 - Sort by last modified
 Global:
-+ Allow Email notifications
++ Allow Email notifications (setup is done, need specific requirements).
 Production Line:
 - Allow to finish production even if the units produced are short.
 
@@ -47,9 +47,11 @@ View items (and sale) ready for productions based on component inventory:
 	CUD receiving MIN(r.unitsReceived * ic.units):
 		if create, r.purchaseComponent.component.itemComponents.each i.unitsReady ++
 		if delete, r.purchaseComponent.component.itemComponents.each i.unitsReady --
-		if delete, r.purchaseComponent.component.itemComponents.each i.unitsReady ++/--
-	CUD production (p.unitsProduced):
-		if create, p.se.saleItem.item.itemComponents.each c.unitsLocked --, c.unitsOnStock --
+		if update, r.purchaseComponent.component.itemComponents.each i.unitsReady ++/--
+	CUD production MIN(p.unitsProduced * ic.units):
+		if create, p.se.saleItem.item.itemComponents.each i.unitsReady --
+		if delete, p.se.saleItem.item.itemComponents.each i.unitsReady ++
+		if update, p.se.saleItem.item.itemComponents.each i.unitsReady ++/--
 
 - update Comp.unitsLocked when: 
 	CUD scheduleEvent (se.unitsScheduled)
