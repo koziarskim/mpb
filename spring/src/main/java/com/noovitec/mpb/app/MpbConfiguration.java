@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.exception.VelocityException;
+import org.apache.velocity.runtime.log.NullLogChute;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -30,6 +31,7 @@ public class MpbConfiguration implements WebMvcConfigurer {
 		VelocityEngine velocityEngine = new VelocityEngine();
 		velocityEngine.setProperty("resource.loader", "class");
 		velocityEngine.setProperty("class.resource.loader.class", "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
+		velocityEngine.setProperty("runtime.log.logsystem.class", NullLogChute.class.getName());
 		velocityEngine.init();
 		return velocityEngine;
 	}
