@@ -16,14 +16,14 @@
 		      <b-nav-item v-on:click="goTo('/productionLineList')" :class="navClass('production')">Production</b-nav-item>
         </b-navbar-nav>
         <b-navbar-nav v-if="!hideNavBar()" style="margin:0px 0px 0px auto;">
-          <b-nav-item-dropdown right :text="user.season.name">
+          <!-- <b-nav-item-dropdown right :text="user.season.name">
             <b-dropdown-item v-for="season in availableSeasons" :key="season.id" @click="changeSeason(season)">{{season.name}}</b-dropdown-item>
-          </b-nav-item-dropdown>
+          </b-nav-item-dropdown> -->
         </b-navbar-nav>
         <b-navbar-nav v-if="!hideNavBar()">
-          <b-nav-item-dropdown right :text="user.year.name">
+          <!-- <b-nav-item-dropdown right :text="user.year.name">
             <b-dropdown-item v-for="year in availableYears" :key="year.id" @click="changeYear(year)">{{year.name}}</b-dropdown-item>
-          </b-nav-item-dropdown>
+          </b-nav-item-dropdown> -->
         </b-navbar-nav>
         <b-navbar-nav v-if="!hideNavBar()">
           <b-nav-item-dropdown right :text="user.fullName">
