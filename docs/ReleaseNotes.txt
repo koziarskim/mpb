@@ -13,10 +13,12 @@ Shipment (screen & PDF):
 Customer:
 - Reorganize screen layout (Generic info, Billing info, Shipping info).
 Item screen:
+- Allow to view Units Ready Production
 - Allow to enter upc for item (manually entered)
 - Allow to enter upc for case (manually entered)
 Components:
 - Price history/average.
+- Allow to view Units Locked (used for scheduled items).
 Sale:
 - Show sale status (Open, Shipped). Open = Less shipped than Sold, Shipped = Fully shipped.
 - Allow to filter by Status.
@@ -33,11 +35,31 @@ Purchase:
 Receiving:
 - Sort by last modified
 Global:
-- Email notifications based on certain actions.
++ Allow Email notifications
 Production Line:
 - Allow to finish production even if the units produced are short.
 
+View items (and sale) ready for productions based on component inventory:
+- new field Item.unitsReadyProd
+- new field Comp.unitsLocked
+- calculate Item.unitsReadyProd based on (Comps.unitsOnStock - Comps.unitsLocked) = lowest win * # itemComponent
+- update Item.unitsReadyProd when:
+	CUD receiving MIN(r.unitsReceived * ic.units):
+		if create, r.purchaseComponent.component.itemComponents.each i.unitsReady ++
+		if delete, r.purchaseComponent.component.itemComponents.each i.unitsReady --
+		if delete, r.purchaseComponent.component.itemComponents.each i.unitsReady ++/--
+	CUD production (p.unitsProduced):
+		if create, p.se.saleItem.item.itemComponents.each c.unitsLocked --, c.unitsOnStock --
 
+- update Comp.unitsLocked when: 
+	CUD scheduleEvent (se.unitsScheduled)
+		if create, se.saleItem.item.itemComponents.each c.unitsLocked ++
+		if delete, se.saleItem.item.itemComponents.each c.unitsLocked --
+		if update, se.saleItem.item.itemComponents.each c.unitsLocked ++/--
+	CUD production (p.unitsProduced)
+		if create, p.se.saleItem.item.itemComponents.each c.unitsLocked --, c.unitsOnStock --
+		if delete, p.se.saleItem.item.itemComponents.each c.unitsLocked ++ c.unitsOnStock ++
+		if update, p.se.saleItem.item.itemComponents.each c.unitsLocked ++/--, c.unitsOnStock ++/--
 
 
 
