@@ -116,14 +116,6 @@ export default {
       })
     },
     createNewItem(){
-        // http
-        // .post("/item")
-        // .then(response => {
-        //     router.push('/itemEdit/'+response.data.id);
-        // })
-        // .catch(e =>{
-        //     console.log("Error post" + e)
-        // })
         router.push('/itemEdit');
     },
     updateItem(item_id){

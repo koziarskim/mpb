@@ -1,16 +1,25 @@
 package com.noovitec.mpb.service;
 
+import java.io.IOException;
+
 import javax.transaction.Transactional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.noovitec.mpb.entity.Attachment;
 import com.noovitec.mpb.entity.Item;
+import com.noovitec.mpb.entity.ItemComponent;
+import com.noovitec.mpb.repo.AttachmentRepo;
 import com.noovitec.mpb.repo.ItemRepo;
 
 public interface ItemService {
 
+	public Item save(Item item, MultipartFile image) throws IOException;
+	public void delete(Long id);
 	public void updateUnits();
 
 	@Transactional
@@ -19,9 +28,33 @@ public interface ItemService {
 
 		private final Logger log = LoggerFactory.getLogger(ItemServiceImp.class);
 		private ItemRepo itemRepo;
+		@Autowired
+		CrudService crudService;
+		@Autowired
+		AttachmentRepo attachmentRepo;
 
 		public ItemServiceImp(ItemRepo itemRepo) {
 			this.itemRepo = itemRepo;
+		}
+		
+		public Item save(Item item, MultipartFile image) throws IOException {
+			for (ItemComponent ic : item.getItemComponents()) {
+				ic.setItem(item);
+			}
+			item = (Item) crudService.merge(item);
+			if (image != null) {
+				Attachment attachment = new Attachment();
+				attachment.setData(image.getBytes());
+				attachmentRepo.save(attachment);
+				item.setAttachment(attachment);
+			}
+			item = itemRepo.save(item);
+			item.updateUnits();
+			return itemRepo.save(item);
+		}
+		
+		public void delete(Long id) {
+			itemRepo.deleteById(id);
 		}
 
 		public void updateUnits() {
