@@ -2,8 +2,13 @@ package com.noovitec.mpb.entity;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -51,6 +56,7 @@ public class Item extends BaseEntity {
 	private Long unitsSold = 0L;
 	private Long unitsScheduled = 0L;
 	private Long unitsShipped = 0L;
+	private Long unitsReadyProd;
 
 	@JsonIgnoreProperties(value = { "item" }, allowSetters = true)
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
@@ -147,6 +153,13 @@ public class Item extends BaseEntity {
 			this.unitsProduced += sa.getUnitsProduced();
 			this.unitsShipped += sa.getUnitsShipped();
 		}
+		List<Long> units = Stream.of(0L).collect(Collectors.toList());
+		for (ItemComponent ic: this.getItemComponents()) {
+			Long uts = (ic.getComponent().getUnitsOnStock() - ic.getComponent().getUnitsLocked()) * ic.getUnits().longValue();
+			units.add(uts);
+		}
+		units.sort(Collections.reverseOrder());
+		this.unitsReadyProd = units.get(0);
 	}
 
 }
