@@ -141,6 +141,16 @@ public class Item extends BaseEntity {
 		return perf.longValue();
 	}
 
+	public void updateUnitsReadyProd() {
+		List<Long> units = Stream.of(0L).collect(Collectors.toList());
+		for (ItemComponent ic: this.getItemComponents()) {
+			Long uts = (ic.getComponent().getUnitsOnStock() - ic.getComponent().getUnitsLocked()) * ic.getUnits().longValue();
+			units.add(uts);
+		}
+		units.sort(Collections.reverseOrder());
+		this.unitsReadyProd = units.get(0);
+	}
+	
 	public void updateUnits() {
 		this.unitsSold = 0L;
 		this.unitsScheduled = 0L;
@@ -153,13 +163,7 @@ public class Item extends BaseEntity {
 			this.unitsProduced += sa.getUnitsProduced();
 			this.unitsShipped += sa.getUnitsShipped();
 		}
-		List<Long> units = Stream.of(0L).collect(Collectors.toList());
-		for (ItemComponent ic: this.getItemComponents()) {
-			Long uts = (ic.getComponent().getUnitsOnStock() - ic.getComponent().getUnitsLocked()) * ic.getUnits().longValue();
-			units.add(uts);
-		}
-		units.sort(Collections.reverseOrder());
-		this.unitsReadyProd = units.get(0);
+		this.updateUnitsReadyProd();
 	}
 
 }

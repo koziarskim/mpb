@@ -1,6 +1,7 @@
 package com.noovitec.mpb.service;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.transaction.Transactional;
 
@@ -20,7 +21,7 @@ public interface ItemService {
 
 	public Item save(Item item, MultipartFile image) throws IOException;
 	public void delete(Long id);
-	public void updateUnits(Iterable<Item> items);
+	public void updateUnits(List<Long> itemIds);
 
 	@Transactional
 	@Service("itemServiceImpl")
@@ -55,11 +56,9 @@ public interface ItemService {
 			itemRepo.deleteById(id);
 		}
 
-		public void updateUnits(Iterable<Item> items) {
+		public void updateUnits(List<Long> itemIds) {
 			Long counter = 0L;
-			if(items == null) {
-				items = itemRepo.findAll();
-			}
+			Iterable<Item> items = itemIds==null?itemRepo.findAll():itemRepo.findByIds(itemIds);
 			for (Item item : items) {
 				item.updateUnits();
 				itemRepo.save(item);

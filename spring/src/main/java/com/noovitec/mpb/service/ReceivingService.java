@@ -16,6 +16,7 @@ import com.noovitec.mpb.repo.ReceivingRepo;
 public interface ReceivingService {
 
 	public Receiving save(Receiving receiving);
+	public void delete(Long id);
 
 	@Transactional
 	@Service("receivingServiceImpl")
@@ -35,7 +36,6 @@ public interface ReceivingService {
 			this.receivingRepo = receivingRepo;
 		}
 
-		@Override
 		public Receiving save(Receiving receiving) {
 			if (receiving == null) {
 				receiving = new Receiving();
@@ -50,6 +50,10 @@ public interface ReceivingService {
 			}
 			return result;
 		}
-
+		
+		public void delete(Long id) {
+			Receiving receiving = receivingRepo.findById(id).get();
+			receivingRepo.delete(receiving);
+		}
 	}
 }

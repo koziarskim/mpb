@@ -1,6 +1,7 @@
 package com.noovitec.mpb.rest;
 
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,8 +26,9 @@ import com.noovitec.mpb.entity.Receiving;
 import com.noovitec.mpb.repo.ComponentRepo;
 import com.noovitec.mpb.repo.PurchaseRepo;
 import com.noovitec.mpb.repo.ReceivingRepo;
+import com.noovitec.mpb.service.CrudService;
+import com.noovitec.mpb.service.ItemService;
 import com.noovitec.mpb.service.ReceivingService;
-
 
 @RestController
 @RequestMapping("/api")
@@ -40,7 +42,11 @@ class ReceivingRest {
 	ComponentRepo componentRepo;
 	@Autowired
 	ReceivingService receivingService;
-
+	@Autowired
+	ItemService itemService;
+	@Autowired
+	CrudService crudService;
+	
 	public ReceivingRest(ReceivingRepo receivingRepo) {
 		this.receivingRepo = receivingRepo;
 	}
@@ -89,19 +95,28 @@ class ReceivingRest {
 	@PostMapping("/receiving")
 	ResponseEntity<?> post(@RequestBody Receiving receiving) throws URISyntaxException {
 		Receiving result = receivingService.save(receiving);
+		List<Long> itemIds = new ArrayList<Long>();
+		result.getPurchaseComponent().getComponent().getItemComponents().forEach(ic -> {
+			itemIds.add(ic.getItem().getId());
+		});
+		itemService.updateUnits(itemIds);
 		return ResponseEntity.ok().body(result);
 	}
 
 	@DeleteMapping("/receiving/{id}")
 	public ResponseEntity<?> delete(@PathVariable Long id) {
-		Receiving existingReceiving = receivingRepo.findById(id).get();
-		if (existingReceiving.getReceivingDate()!=null) {
-			Long unitsOnStock = existingReceiving.getPurchaseComponent().getComponent().getUnitsOnStock() - existingReceiving.getUnits();
-			existingReceiving.getPurchaseComponent().getComponent().setUnitsOnStock(unitsOnStock);
+		Receiving receiving = receivingRepo.getOne(id);
+		if (receiving.getReceivingDate()!=null) {
+			Long unitsOnStock = receiving.getPurchaseComponent().getComponent().getUnitsOnStock() - receiving.getUnits();
+			receiving.getPurchaseComponent().getComponent().setUnitsOnStock(unitsOnStock);
 		}
-		receivingRepo.save(existingReceiving);
-		Receiving receiving = receivingRepo.findById(id).get();
-		receivingRepo.delete(receiving);
+		receivingRepo.save(receiving);
+		List<Long> itemIds = new ArrayList<Long>();
+		receiving.getPurchaseComponent().getComponent().getItemComponents().forEach(ic -> {
+			itemIds.add(ic.getItem().getId());
+		});
+		receivingService.delete(id);
+		itemService.updateUnits(itemIds);
 		return ResponseEntity.ok().build();
 	}
 }

@@ -15,6 +15,8 @@ public interface CrudService {
 	public BaseEntity save(BaseEntity baseEntity);
 	public BaseEntity get(Long id);
 	public void delete(Long id);
+	public void flush();
+	public void persist(BaseEntity baseEntity);
 	
 	@Transactional
 	@Service
@@ -41,5 +43,12 @@ public interface CrudService {
 			crudRepo.deleteById(id);
 		}
 		
+		public void flush() {
+			em.flush();
+		}
+		
+		public void persist(BaseEntity baseEntity) {
+			em.persist(baseEntity);
+		}
 	}
 }
