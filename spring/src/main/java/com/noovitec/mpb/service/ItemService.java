@@ -20,7 +20,7 @@ public interface ItemService {
 
 	public Item save(Item item, MultipartFile image) throws IOException;
 	public void delete(Long id);
-	public void updateUnits();
+	public void updateUnits(Iterable<Item> items);
 
 	@Transactional
 	@Service("itemServiceImpl")
@@ -48,8 +48,6 @@ public interface ItemService {
 				attachmentRepo.save(attachment);
 				item.setAttachment(attachment);
 			}
-			item = itemRepo.save(item);
-			item.updateUnits();
 			return itemRepo.save(item);
 		}
 		
@@ -57,9 +55,11 @@ public interface ItemService {
 			itemRepo.deleteById(id);
 		}
 
-		public void updateUnits() {
+		public void updateUnits(Iterable<Item> items) {
 			Long counter = 0L;
-			Iterable<Item> items = itemRepo.findAll();
+			if(items == null) {
+				items = itemRepo.findAll();
+			}
 			for (Item item : items) {
 				item.updateUnits();
 				itemRepo.save(item);

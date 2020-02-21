@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -158,6 +159,7 @@ class ItemRest {
 	ResponseEntity<Item> postItemAndAttachment(@RequestParam(value = "image", required = false) MultipartFile image, @RequestParam("jsonItem") String jsonItem) throws JsonParseException, JsonMappingException, IOException, URISyntaxException {
 		Item item = objectMapper.readValue(jsonItem, Item.class);
 		Item result = itemService.save(item, image);
+		itemService.updateUnits(Arrays.asList(result));
 		return ResponseEntity.ok(result);
 	}
 
@@ -172,7 +174,7 @@ class ItemRest {
 	@GetMapping("/item/update/units")
 	ResponseEntity<?> postUpdateUnits() {
 		try {
-			itemService.updateUnits();
+			itemService.updateUnits(null);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
