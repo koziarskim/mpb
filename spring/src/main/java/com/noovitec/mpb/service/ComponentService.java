@@ -22,7 +22,7 @@ public interface ComponentService {
 
 	public Component save(Component component, MultipartFile image) throws IOException;
 	public void delete(Long id);
-	public void postProductionUpdate(Long productionId, Long unitsDiff);
+	public void updateForProduction(Long productionId, Long unitsDiff);
 
 	@Transactional
 	@Service("componentServiceImpl")
@@ -31,11 +31,11 @@ public interface ComponentService {
 		private final Logger log = LoggerFactory.getLogger(ComponentServiceImp.class);
 		private ComponentRepo componentRepo;
 		@Autowired
-		CrudService crudService;
+		private CrudService crudService;
 		@Autowired
-		AttachmentRepo attachmentRepo;
+		private AttachmentRepo attachmentRepo;
 		@Autowired
-		ItemComponentRepo itemComponentRepo;
+		private ItemComponentRepo itemComponentRepo;
 
 		public ComponentServiceImp(ComponentRepo componentRepo) {
 			this.componentRepo = componentRepo;
@@ -60,7 +60,10 @@ public interface ComponentService {
 			componentRepo.deleteById(id);
 		}
 		
-		public void postProductionUpdate(Long productionId, Long unitsDiff) {
+		public void updateForProduction(Long productionId, Long unitsDiff) {
+			if(unitsDiff == 0) {
+				return;
+			}
 			List<ItemComponent> itemComponents = itemComponentRepo.findByProduction(productionId);
 			itemComponents.forEach(ic -> {
 				Component c = ic.getComponent();

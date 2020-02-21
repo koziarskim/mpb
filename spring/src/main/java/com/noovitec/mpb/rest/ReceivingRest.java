@@ -37,15 +37,15 @@ class ReceivingRest {
 	private final Logger log = LoggerFactory.getLogger(ReceivingRest.class);
 	private ReceivingRepo receivingRepo;
 	@Autowired
-	PurchaseRepo purchaseRepo;
+	private PurchaseRepo purchaseRepo;
 	@Autowired
-	ComponentRepo componentRepo;
+	private ComponentRepo componentRepo;
 	@Autowired
-	ReceivingService receivingService;
+	private ReceivingService receivingService;
 	@Autowired
-	ItemService itemService;
+	private ItemService itemService;
 	@Autowired
-	CrudService crudService;
+	private CrudService crudService;
 	
 	public ReceivingRest(ReceivingRepo receivingRepo) {
 		this.receivingRepo = receivingRepo;

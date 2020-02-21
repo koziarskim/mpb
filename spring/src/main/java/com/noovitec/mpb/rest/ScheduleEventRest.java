@@ -1,6 +1,7 @@
 package com.noovitec.mpb.rest;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -20,29 +21,28 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.noovitec.mpb.entity.Item;
 import com.noovitec.mpb.entity.Production;
-import com.noovitec.mpb.entity.Sale;
-import com.noovitec.mpb.entity.Schedule;
 import com.noovitec.mpb.entity.ScheduleEvent;
 import com.noovitec.mpb.repo.ScheduleEventRepo;
-import com.noovitec.mpb.repo.ScheduleRepo;
 import com.noovitec.mpb.service.ComponentService;
-import com.noovitec.mpb.service.CrudService;
+import com.noovitec.mpb.service.ItemService;
+import com.noovitec.mpb.service.SaleService;
+import com.noovitec.mpb.service.ScheduleEventService;
 
 @RestController
 @RequestMapping("/api")
 class ScheduleEventRest {
 
-	final Logger log = LoggerFactory.getLogger(ScheduleEventRest.class);
-	ScheduleEventRepo scheduleEventRepo;
+	private final Logger log = LoggerFactory.getLogger(ScheduleEventRest.class);
+	private ScheduleEventRepo scheduleEventRepo;
 	@Autowired
-	ScheduleRepo scheduleRepo;
+	private ComponentService componentService;
 	@Autowired
-	ComponentService componentService;
-	
+	private ItemService itemService;
 	@Autowired
-	CrudService crudService;
+	private SaleService saleService;
+	@Autowired
+	private ScheduleEventService scheduleEventService;
 
 	public ScheduleEventRest(ScheduleEventRepo scheduleEventRepo) {
 		this.scheduleEventRepo = scheduleEventRepo;
@@ -73,40 +73,31 @@ class ScheduleEventRest {
 		return sorted;
 	}
 
-	// Save and update.
 	@PostMapping("/scheduleEvent")
 	ResponseEntity<ScheduleEvent> post(@RequestBody ScheduleEvent scheduleEvent) {
-		if(scheduleEvent.getSchedule().getId()==null) {
-			List<Schedule> exSchedules = scheduleRepo.findByDate(scheduleEvent.getSchedule().getDate());
-			if(exSchedules!=null) {
-				scheduleEvent.setSchedule(exSchedules.get(0));
-			}
-		}
 		for (Production production : scheduleEvent.getProductions()) {
 			production.setScheduleEvent(scheduleEvent);
 			Long unitsDiff = production.getUnitsProduced() - production.getPreUnitsProduced();
-			if(unitsDiff != 0L) {
-				componentService.postProductionUpdate(production.getId(), unitsDiff);
-			}
+			componentService.updateForProduction(production.getId(), unitsDiff);
 		}
-		scheduleEvent = (ScheduleEvent) crudService.merge(scheduleEvent);
-		scheduleEvent.getSaleItem().getSale().updateUnits();
-		scheduleEvent.getSaleItem().getItem().updateUnits();
-		ScheduleEvent result = (ScheduleEvent) crudService.save(scheduleEvent);
-		return ResponseEntity.ok().body(result);
+		scheduleEvent = scheduleEventService.save(scheduleEvent);
+		itemService.updateUnits(Arrays.asList(scheduleEvent.getSaleItem().getSale().getId()));
+		saleService.updateUnits(Arrays.asList(scheduleEvent.getSaleItem().getItem().getId()));
+		return ResponseEntity.ok(scheduleEvent);
 	}
 
 	@DeleteMapping("/scheduleEvent/{id}")
 	ResponseEntity<?> delete(@PathVariable Long id) {
-		//TODO: Is there a better way of doing it?
 		ScheduleEvent scheduleEvent = scheduleEventRepo.getOne(id);
-		Item item = scheduleEvent.getSaleItem().getItem();
-		Sale sale = scheduleEvent.getSaleItem().getSale();
-		scheduleEventRepo.deleteById(id);
-		item.updateUnits();
-		sale.updateUnits();
-		crudService.save(item);
-		crudService.save(sale);
+		for (Production production : scheduleEvent.getProductions()) {
+			Long unitsDiff = production.getUnitsProduced() - production.getPreUnitsProduced();
+			componentService.updateForProduction(production.getId(), unitsDiff * (-1));
+		}
+		Long itemId = scheduleEvent.getSaleItem().getItem().getId();
+		Long saleId = scheduleEvent.getSaleItem().getSale().getId();
+		scheduleEventService.delete(id);
+		itemService.updateUnits(Arrays.asList(itemId));
+		saleService.updateUnits(Arrays.asList(saleId));
 		return ResponseEntity.ok().build();
 	}
 

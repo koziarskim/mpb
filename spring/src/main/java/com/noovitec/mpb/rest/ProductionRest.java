@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.noovitec.mpb.entity.Production;
 import com.noovitec.mpb.repo.ProductionRepo;
 import com.noovitec.mpb.service.ComponentService;
-import com.noovitec.mpb.service.CrudService;
 import com.noovitec.mpb.service.ItemService;
 import com.noovitec.mpb.service.ProductionService;
 import com.noovitec.mpb.service.SaleService;
@@ -29,19 +28,16 @@ import com.noovitec.mpb.service.SaleService;
 @RequestMapping("/api")
 class ProductionRest {
 
-	final Logger log = LoggerFactory.getLogger(ProductionRest.class);
-	
-	ProductionRepo productionRepo;
+	private final Logger log = LoggerFactory.getLogger(ProductionRest.class);
+	private ProductionRepo productionRepo;
 	@Autowired
-	CrudService crudService;
+	private ProductionService productionService;
 	@Autowired
-	ProductionService productionService;
+	private ItemService itemService;
 	@Autowired
-	ItemService itemService;
+	private SaleService saleService;
 	@Autowired
-	SaleService saleService;
-	@Autowired
-	ComponentService componentService;
+	private ComponentService componentService;
 
 	ProductionRest(ProductionRepo productionRepo) {
 		this.productionRepo = productionRepo;
@@ -61,8 +57,8 @@ class ProductionRest {
 	@PostMapping("/production")
 	ResponseEntity<Production> post(@RequestBody Production production) {
 		Long unitsDiff = production.getUnitsProduced() - production.getPreUnitsProduced();
+		componentService.updateForProduction(production.getId(), unitsDiff);
 		production = productionService.save(production);
-		componentService.postProductionUpdate(production.getId(), unitsDiff);
 		Long itemId = production.getScheduleEvent().getSaleItem().getItem().getId();
 		Long saleId = production.getScheduleEvent().getSaleItem().getSale().getId();
 		itemService.updateUnits(Arrays.asList(itemId));
@@ -74,9 +70,9 @@ class ProductionRest {
 	ResponseEntity<?> delete(@PathVariable Long id) {
 		Production production = productionRepo.getOne(id);
 		Long unitsDiff = production.getUnitsProduced() * (-1);
+		componentService.updateForProduction(production.getId(), unitsDiff);
 		Long itemId = production.getScheduleEvent().getSaleItem().getItem().getId();
 		Long saleId = production.getScheduleEvent().getSaleItem().getSale().getId();
-		componentService.postProductionUpdate(production.getId(), unitsDiff);
 		productionService.delete(id);
 		itemService.updateUnits(Arrays.asList(itemId));
 		saleService.updateUnits(Arrays.asList(saleId));
