@@ -88,6 +88,10 @@ export default {
 			})
 		},
     validate() {
+			if(!this.address.dc || !this.address.street || !this.address.city || !this.address.state || !this.address.zip){
+				alert("Required: DC Name, Street, City, Zip, State");
+				return false;
+			}
       return true;
     },
     saveModal() {

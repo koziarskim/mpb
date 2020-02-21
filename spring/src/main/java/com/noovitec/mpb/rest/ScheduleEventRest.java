@@ -81,8 +81,8 @@ class ScheduleEventRest {
 			componentService.updateForProduction(production.getId(), unitsDiff);
 		}
 		scheduleEvent = scheduleEventService.save(scheduleEvent);
-		itemService.updateUnits(Arrays.asList(scheduleEvent.getSaleItem().getSale().getId()));
-		saleService.updateUnits(Arrays.asList(scheduleEvent.getSaleItem().getItem().getId()));
+		itemService.updateUnits(Arrays.asList(scheduleEvent.getSaleItem().getItem().getId()));
+		saleService.updateUnits(Arrays.asList(scheduleEvent.getSaleItem().getSale().getId()));
 		return ResponseEntity.ok(scheduleEvent);
 	}
 

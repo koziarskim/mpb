@@ -171,7 +171,17 @@ export default {
           console.log("API error: " + e);
         });
     },
+    validate(){
+      if(this.customer.addresses.length < 1){
+        alert("At least one shipping address is required");
+        return false;
+      }
+      return true;
+    },
     save() {
+      if(!this.validate()){
+        return Promise.reject();
+      }
       return http
         .post("/customer", this.customer)
         .then(response => {
