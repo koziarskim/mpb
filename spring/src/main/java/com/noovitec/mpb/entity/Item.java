@@ -147,7 +147,7 @@ public class Item extends BaseEntity {
 			Long uts = (ic.getComponent().getUnitsOnStock() - ic.getComponent().getUnitsLocked()) * ic.getUnits().longValue();
 			units.add(uts);
 		}
-		units.sort(Collections.reverseOrder());
+		Collections.sort(units);
 		this.unitsReadyProd = units.get(0);
 	}
 	
