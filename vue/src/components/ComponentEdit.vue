@@ -128,14 +128,10 @@
             <b-button variant="link" @click="addItem()">(+)</b-button>
           </b-col>
         </b-row> -->
-        <!-- <b-row>
+        <b-row>
             <b-col>
               <label class="top-label">Items using this Component:</label>
-              <b-table v-if="component.itemComponents.length>0"
-                  :sort-by.sync="sortBy"
-                  :sort-desc.sync="sortDesc"
-                  :items="component.itemComponents"
-                  :fields="columns">
+              <b-table :items="component.itemComponents" :fields="columns">
                   <template v-slot:cell(item.number)="row">
                       <b-button size="sm" @click.stop="goToItem(row.item.item.id)" variant="link">{{row.item.item.number}}</b-button>
                   </template>
@@ -145,7 +141,7 @@
 
               </b-table>
             </b-col>
-        </b-row> -->
+        </b-row>
     </b-container>
 </template>
 
@@ -184,9 +180,10 @@ export default {
       columns: [
         { key: "item.number", label: "Item #", sortable: false },
         { key: "item.name", label: "Name", sortable: false },
-        { key: "units", label: "Units", sortable: false },
+        { key: "units", label: "Qty", sortable: false },
         { key: "item.brand.name", label: "Brand", sortable: false },
-        { key: "action", label: "Action", sortable: false },
+        { key: "item.unitsReadyProd", label: "RFP", sortable: false },
+        // { key: "action", label: "Action", sortable: false },
       ]
     };
   },
