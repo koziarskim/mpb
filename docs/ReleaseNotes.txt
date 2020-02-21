@@ -1,10 +1,5 @@
 In Progress/Done:
 Shipment (screen & PDF):
-+ Save without close.
-+ Fix Special Notes not saved for existing shipment.
-+ Add Comments section (like notes).
-+ Show Address Line in BOL Shipment Address.
-+ Allow to select multiple items when adding.
 - Allow to search by window date.
 - Allow to search/filter by Season
 - Allow to upload documents.
@@ -35,7 +30,7 @@ Purchase:
 Receiving:
 - Sort by last modified
 Global:
-+ Allow Email notifications (setup is done, need specific requirements).
+- none.
 Production Line:
 - Allow to finish production even if the units produced are short.
 
@@ -64,6 +59,11 @@ View items (and sale) ready for productions based on component inventory:
 		if update, p.se.saleItem.item.itemComponents.each c.unitsLocked ++/--, c.unitsOnStock ++/--
 ----------------------
 - update Item.unitsReadyProd when:
+	CUD item:
+		item.updateUnits()
+			item.itemComponents.each 
+				units = (ic.component.unitsOnStock - ic.component.unitsLocked) * ic.units
+				if(units < item.unitsReadyProd) item.unitsReadyProd = units
 	CUD receiving:
 		r.purchaseComponent.component.itemComponents.each ic.updateUnitsReadyProd()
 			units = (ic.component.unitsOnStock - ic.component.unitsLocked) * ic.units
@@ -73,11 +73,6 @@ View items (and sale) ready for productions based on component inventory:
 	CUD production:
 		p.se.saleItem.item.updateUnits()
 			based on c.unitsOnStock - c.unitsLocked
-	CUD item:
-		item.updateUnits()
-			item.itemComponents.each 
-				units = (ic.component.unitsOnStock - ic.component.unitsLocked) * ic.units
-				if(units < item.unitsReadyProd) item.unitsReadyProd = units
 
 - update Comp.unitsLocked when: 
 	CUD scheduleEvent
