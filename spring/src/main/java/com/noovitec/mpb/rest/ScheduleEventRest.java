@@ -27,19 +27,22 @@ import com.noovitec.mpb.entity.Schedule;
 import com.noovitec.mpb.entity.ScheduleEvent;
 import com.noovitec.mpb.repo.ScheduleEventRepo;
 import com.noovitec.mpb.repo.ScheduleRepo;
+import com.noovitec.mpb.service.ComponentService;
 import com.noovitec.mpb.service.CrudService;
 
 @RestController
 @RequestMapping("/api")
 class ScheduleEventRest {
 
-	private final Logger log = LoggerFactory.getLogger(ScheduleEventRest.class);
-	private ScheduleEventRepo scheduleEventRepo;
+	final Logger log = LoggerFactory.getLogger(ScheduleEventRest.class);
+	ScheduleEventRepo scheduleEventRepo;
 	@Autowired
-	private ScheduleRepo scheduleRepo;
+	ScheduleRepo scheduleRepo;
+	@Autowired
+	ComponentService componentService;
 	
 	@Autowired
-	private CrudService crudService;
+	CrudService crudService;
 
 	public ScheduleEventRest(ScheduleEventRepo scheduleEventRepo) {
 		this.scheduleEventRepo = scheduleEventRepo;
@@ -73,9 +76,6 @@ class ScheduleEventRest {
 	// Save and update.
 	@PostMapping("/scheduleEvent")
 	ResponseEntity<ScheduleEvent> post(@RequestBody ScheduleEvent scheduleEvent) {
-		if (scheduleEvent == null) {
-			scheduleEvent = new ScheduleEvent();
-		}
 		if(scheduleEvent.getSchedule().getId()==null) {
 			List<Schedule> exSchedules = scheduleRepo.findByDate(scheduleEvent.getSchedule().getDate());
 			if(exSchedules!=null) {
@@ -84,6 +84,10 @@ class ScheduleEventRest {
 		}
 		for (Production production : scheduleEvent.getProductions()) {
 			production.setScheduleEvent(scheduleEvent);
+			Long unitsDiff = production.getUnitsProduced() - production.getPreUnitsProduced();
+			if(unitsDiff != 0L) {
+				componentService.postProductionUpdate(production.getId(), unitsDiff);
+			}
 		}
 		scheduleEvent = (ScheduleEvent) crudService.merge(scheduleEvent);
 		scheduleEvent.getSaleItem().getSale().updateUnits();
@@ -93,7 +97,7 @@ class ScheduleEventRest {
 	}
 
 	@DeleteMapping("/scheduleEvent/{id}")
-	public ResponseEntity<?> delete(@PathVariable Long id) {
+	ResponseEntity<?> delete(@PathVariable Long id) {
 		//TODO: Is there a better way of doing it?
 		ScheduleEvent scheduleEvent = scheduleEventRepo.getOne(id);
 		Item item = scheduleEvent.getSaleItem().getItem();

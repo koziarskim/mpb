@@ -107,7 +107,7 @@ class SaleRest {
 	@GetMapping("/sale/update/units")
 	ResponseEntity<?> postUpdateUnits() {
 		try {
-			saleService.updateUnits();
+			saleService.updateUnits(null);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

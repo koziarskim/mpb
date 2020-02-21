@@ -1,8 +1,6 @@
 package com.noovitec.mpb.rest;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -19,7 +17,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,14 +27,12 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.noovitec.mpb.dto.ComponentDto;
 import com.noovitec.mpb.dto.KeyValueDto;
-import com.noovitec.mpb.entity.Attachment;
 import com.noovitec.mpb.entity.Category;
 import com.noovitec.mpb.entity.Component;
-import com.noovitec.mpb.entity.Item;
-import com.noovitec.mpb.entity.ItemComponent;
 import com.noovitec.mpb.repo.AttachmentRepo;
 import com.noovitec.mpb.repo.CategoryRepo;
 import com.noovitec.mpb.repo.ComponentRepo;
+import com.noovitec.mpb.service.ComponentService;
 import com.noovitec.mpb.service.CrudService;
 
 @RestController
@@ -52,6 +47,8 @@ class ComponentRest {
 	CategoryRepo categoryRepo;
 	@Autowired
 	CrudService crudService;
+	@Autowired
+	ComponentService componentService;
 
 	private final Logger log = LoggerFactory.getLogger(ComponentRest.class);
 	private ComponentRepo componentRepo;
@@ -117,36 +114,15 @@ class ComponentRest {
 	}
 
 	@PostMapping("/component")
-	ResponseEntity<Component> post(@RequestBody(required = false) Component component) throws URISyntaxException {
-		if (component == null) {
-			component = new Component();
-		}
-		Component result = componentRepo.save(component);
-		return ResponseEntity.ok().body(result);
-	}
-
-	// This includes image upload.
-	@PostMapping("/component/upload")
-	ResponseEntity<Component> postComponentAndAttachment(@RequestParam(value = "image", required = false) MultipartFile image,
-			@RequestParam("jsonComponent") String jsonComponent) throws URISyntaxException, JsonParseException, JsonMappingException, IOException {
+	ResponseEntity<Component> postComponentAndAttachment(@RequestParam(required = false) MultipartFile image, @RequestParam String jsonComponent) throws JsonParseException, JsonMappingException, IOException{
 		Component component = objectMapper.readValue(jsonComponent, Component.class);
-		for(ItemComponent ic: component.getItemComponents()) {
-			ic.setComponent(component);
-		}
-		component = (Component) crudService.merge(component);
-		if (image != null) {
-			Attachment attachment = new Attachment();
-			attachment.setData(image.getBytes());
-			attachmentRepo.save(attachment);
-			component.setAttachment(attachment);
-		}
-		Component result = componentRepo.save(component);
-		return ResponseEntity.created(new URI("/api/component/" + result.getId())).body(result);
+		component = componentService.save(component, image);
+		return ResponseEntity.ok(component);
 	}
 
 	@DeleteMapping("/component/{id}")
 	public ResponseEntity<?> delete(@PathVariable Long id) {
-		componentRepo.deleteById(id);
+		componentService.delete(id);
 		return ResponseEntity.ok().build();
 	}
 }

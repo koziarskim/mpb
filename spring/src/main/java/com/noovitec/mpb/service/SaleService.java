@@ -1,5 +1,7 @@
 package com.noovitec.mpb.service;
 
+import java.util.List;
+
 import javax.transaction.Transactional;
 
 import org.slf4j.Logger;
@@ -10,7 +12,7 @@ import com.noovitec.mpb.entity.Sale;
 import com.noovitec.mpb.repo.SaleRepo;
 
 public interface SaleService {
-	public void updateUnits();
+	public void updateUnits(List<Long> salIds);
 
 	@Transactional
 	@Service
@@ -23,9 +25,10 @@ public interface SaleService {
 			this.saleRepo = saleRepo;
 		}
 
-		public void updateUnits() {
+		public void updateUnits(List<Long> salIds) {
 			Long counter = 0L;
-			Iterable<Sale> sales = saleRepo.findAll();
+			Iterable<Sale> items = salIds==null?saleRepo.findAll():saleRepo.findByIds(salIds);
+			Iterable<Sale> sales = items;
 			for (Sale sale : sales) {
 				sale.updateUnits();
 				saleRepo.save(sale);

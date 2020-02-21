@@ -1,5 +1,6 @@
 package com.noovitec.mpb.rest;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -16,24 +17,33 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.noovitec.mpb.entity.Item;
 import com.noovitec.mpb.entity.Production;
-import com.noovitec.mpb.entity.Sale;
 import com.noovitec.mpb.repo.ProductionRepo;
+import com.noovitec.mpb.service.ComponentService;
 import com.noovitec.mpb.service.CrudService;
+import com.noovitec.mpb.service.ItemService;
+import com.noovitec.mpb.service.ProductionService;
+import com.noovitec.mpb.service.SaleService;
 
 @RestController
 @RequestMapping("/api")
 class ProductionRest {
 
-	private final Logger log = LoggerFactory.getLogger(ProductionRest.class);
+	final Logger log = LoggerFactory.getLogger(ProductionRest.class);
 	
-	private ProductionRepo productionRepo;
-	
+	ProductionRepo productionRepo;
 	@Autowired
-	private CrudService crudService;
+	CrudService crudService;
+	@Autowired
+	ProductionService productionService;
+	@Autowired
+	ItemService itemService;
+	@Autowired
+	SaleService saleService;
+	@Autowired
+	ComponentService componentService;
 
-	public ProductionRest(ProductionRepo productionRepo) {
+	ProductionRest(ProductionRepo productionRepo) {
 		this.productionRepo = productionRepo;
 	}
 
@@ -48,31 +58,29 @@ class ProductionRest {
 		return result.map(response -> ResponseEntity.ok().body(response)).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
 	}
 
-	// Save and update.
 	@PostMapping("/production")
 	ResponseEntity<Production> post(@RequestBody Production production) {
-		if (production == null) {
-			production = new Production();
-		}
-		production = (Production) crudService.merge(production);
-		production.getScheduleEvent().getSaleItem().getItem().updateUnits();
-		production.getScheduleEvent().getSaleItem().getSale().updateUnits();
-		Production result = productionRepo.save(production);
-		return ResponseEntity.ok().body(result);
+		Long unitsDiff = production.getUnitsProduced() - production.getPreUnitsProduced();
+		production = productionService.save(production);
+		componentService.postProductionUpdate(production.getId(), unitsDiff);
+		Long itemId = production.getScheduleEvent().getSaleItem().getItem().getId();
+		Long saleId = production.getScheduleEvent().getSaleItem().getSale().getId();
+		itemService.updateUnits(Arrays.asList(itemId));
+		saleService.updateUnits(Arrays.asList(saleId));
+		return ResponseEntity.ok().body(production);
 	}
 
 	@DeleteMapping("/production/{id}")
-	public ResponseEntity<?> delete(@PathVariable Long id) {
-		//TODO: Is there a better way of doing it?
+	ResponseEntity<?> delete(@PathVariable Long id) {
 		Production production = productionRepo.getOne(id);
-		Item item = production.getScheduleEvent().getSaleItem().getItem();
-		Sale sale = production.getScheduleEvent().getSaleItem().getSale();
-		productionRepo.deleteById(id);
-		item.updateUnits();
-		sale.updateUnits();
-		crudService.save(item);
-		crudService.save(sale);
+		Long unitsDiff = production.getUnitsProduced() * (-1);
+		Long itemId = production.getScheduleEvent().getSaleItem().getItem().getId();
+		Long saleId = production.getScheduleEvent().getSaleItem().getSale().getId();
+		componentService.postProductionUpdate(production.getId(), unitsDiff);
+		productionService.delete(id);
+		itemService.updateUnits(Arrays.asList(itemId));
+		saleService.updateUnits(Arrays.asList(saleId));
 		return ResponseEntity.ok().build();
 	}
-
+	
 }

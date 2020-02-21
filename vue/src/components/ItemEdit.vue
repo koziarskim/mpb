@@ -425,7 +425,7 @@ export default {
       formData.append("image", this.uploadedFile);
       formData.append("jsonItem", JSON.stringify(this.item));
       var headers = {"Content-Type": "multipart/form-data"};
-      return axios.post(httpUtils.baseUrl + "/item/upload", formData, headers).then(r => {
+      return axios.post(httpUtils.baseUrl + "/item", formData, headers).then(r => {
         return r.data;
       }).catch(e => {
          console.log("API error: " + e);

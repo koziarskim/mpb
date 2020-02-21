@@ -155,8 +155,8 @@ class ItemRest {
 		return dtos;
 	}
 
-	@PostMapping("/item/upload")
-	ResponseEntity<Item> postItemAndAttachment(@RequestParam(value = "image", required = false) MultipartFile image, @RequestParam("jsonItem") String jsonItem) throws JsonParseException, JsonMappingException, IOException, URISyntaxException {
+	@PostMapping("/item")
+	ResponseEntity<Item> postItemAndAttachment(@RequestParam(required = false) MultipartFile image, @RequestParam String jsonItem) throws JsonParseException, JsonMappingException, IOException, URISyntaxException {
 		Item item = objectMapper.readValue(jsonItem, Item.class);
 		Item result = itemService.save(item, image);
 		itemService.updateUnits(Arrays.asList(result.getId()));

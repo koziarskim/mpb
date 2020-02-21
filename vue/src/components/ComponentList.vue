@@ -112,14 +112,6 @@ export default {
     },
     goToComponent(component_id) {
       if (!component_id) {
-        // http
-        //   .post("/component")
-        //   .then(response => {
-        //     router.push("/componentEdit/" + response.data.id);
-        //   })
-        //   .catch(e => {
-        //     console.log("API Error: " + e);
-        //   });
         router.push("/componentEdit");
       } else {
         router.push("/componentEdit/" + component_id);
