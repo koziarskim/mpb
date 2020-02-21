@@ -1,0 +1,92 @@
+View items (and sale) ready for productions based on component inventory:
+- new field Item.unitsReadyProd
+- new field Comp.unitsLocked
+- calculate Item.unitsReadyProd based on (Comps.unitsOnStock - Comps.unitsLocked) = lowest win * # itemComponent
+- update Item.unitsReadyProd when:
+	CUD receiving MIN(r.unitsReceived * ic.units):
+		if create, r.purchaseComponent.component.itemComponents.each i.unitsReady ++
+		if delete, r.purchaseComponent.component.itemComponents.each i.unitsReady --
+		if update, r.purchaseComponent.component.itemComponents.each i.unitsReady ++/--
+	CUD production MIN(p.unitsProduced * ic.units):
+		if create, p.se.saleItem.item.itemComponents.each i.unitsReady --
+		if delete, p.se.saleItem.item.itemComponents.each i.unitsReady ++
+		if update, p.se.saleItem.item.itemComponents.each i.unitsReady ++/--
+
+- update Comp.unitsLocked when: 
+	CUD scheduleEvent (se.unitsScheduled)
+		if create, se.saleItem.item.itemComponents.each c.unitsLocked ++
+		if delete, se.saleItem.item.itemComponents.each c.unitsLocked --
+		if update, se.saleItem.item.itemComponents.each c.unitsLocked ++/--
+	CUD production (p.unitsProduced)
+		if create, p.se.saleItem.item.itemComponents.each c.unitsLocked --, c.unitsOnStock --
+		if delete, p.se.saleItem.item.itemComponents.each c.unitsLocked ++ c.unitsOnStock ++
+		if update, p.se.saleItem.item.itemComponents.each c.unitsLocked ++/--, c.unitsOnStock ++/--
+----------------------
+- update Item.unitsReadyProd when:
+	CUD item:
+		item.updateUnits()
+			item.itemComponents.each 
+				units = (ic.component.unitsOnStock - ic.component.unitsLocked) * ic.units
+				if(units < item.unitsReadyProd) item.unitsReadyProd = units
+	CUD receiving:
+		r.purchaseComponent.component.itemComponents.each ic.updateUnitsReadyProd()
+			units = (ic.component.unitsOnStock - ic.component.unitsLocked) * ic.units
+			if(units < item.unitsReadyProd) item.unitsReadyProd = units
+	CUD receiving/purchase:
+		same as above
+	CUD production:
+		p.se.saleItem.item.updateUnits()
+			based on c.unitsOnStock - c.unitsLocked
+
+- update Comp.unitsLocked when: 
+	CUD scheduleEvent
+		se.saleItem.item.updateUnits()
+			based on item.unitsScheduled - item.unitsProduced
+	CUD production
+		p.se.saleItem.item.updateUnits()
+			based on item.unitsScheduled - item.unitsProduced
+		
+
+
+
+
+
+
+
+
+
+
+
+
+Backlog functionality:
+Production:
+- Show box with large percentage (On target/slow (based on hours scheduled and units), %Performance/Efficiency, %Production done).
+Shipment:
+- Persist filter search or show shipment in popup.
+Global:
+- Keep search options persisted (until page refreshed or logged out).
+
+Backlog tech-dead:
+Component entity:
+	persist unitsInOrder
+	change all int to Long
+Item entity:
+	remove eager loding
+	chage all int to Long
+	persist unitsOnStack
+Purchase entity:
+	persist isReceived
+PurchaseComponent entity
+	change units to unitsPurchased
+	persist unitsReceived	
+Receiving entity
+	change units to unitsReceived	
+SaleItem enitty
+	change all int to Long
+	change units to unitsSold
+Shipment entity
+	change totalUnits to unitsShipped
+	add to updateUnits methods instead of doing on client.
+ShipmentItem entity
+	change units to unitsShipped;
+
