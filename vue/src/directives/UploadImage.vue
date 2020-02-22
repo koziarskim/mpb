@@ -1,5 +1,5 @@
 <template>
-  <div style="border: solid 1px #c1c4c7; width: 150px; height:150px;" @click="openFileSelect">
+  <div style="width: 130px; height:130px;" @click="openFileSelect">
     <a href="#" v-b-popover.hover="'Click to select new image'">
       <img :src="imageUrl" height="100%">
     </a>
