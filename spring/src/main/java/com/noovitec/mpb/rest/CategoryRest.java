@@ -37,7 +37,7 @@ class CategoryRest {
 		return categoryRepo.findAll();
 	}
 
-	@GetMapping("/category/item/keyValue")
+	@GetMapping("/category/item/kv")
 	Collection<KeyValueDto> getAllForItemKeyValue() {
 		return categoryRepo.getAllForItemKeyValue();
 	}

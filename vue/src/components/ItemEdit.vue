@@ -48,7 +48,7 @@
             <b-row>
               <b-col cols="4">
                 <label class="top-label">Category:</label>
-                <b-select option-value="id" option-text="value" :list="availableItemCs" v-model="item.category" placeholder="Select category"></b-select>
+                <b-select option-value="id" option-text="value" :list="availableItemCategories" v-model="item.category" placeholder="Select category"></b-select>
               </b-col>
               <b-col cols="4">
                 <label class="top-label">Brand:</label>
@@ -163,15 +163,15 @@
         </b-row>
       </b-col>
       <!-- Column 2 -->
-      <b-col cols="4" style="border-left: 1px solid #dededf;">
+      <!-- <b-col cols="4" style="border-left: 1px solid #dededf;">
         <b-row>
           <b-col cols="12">
-            <b-select option-value="id" option-text="value" :list="availableComponents" v-model="component" placeholder="Pick Component"></b-select>
+            <b-select option-value="id" option-text="value" :list="availableComponents" v-model="componentKv" placeholder="Pick Component"></b-select>
           </b-col>
         </b-row>
         <b-row>
           <b-col cols="12">
-            <div v-for="category in availableComponentCs" v-bind:key="category.id">
+            <div v-for="category in availableCompCategories" v-bind:key="category.id">
               <div style="color: #91c959; font-style: italic; font-weight: bold" v-if="getComponentsById(category.id).length>0">{{category.value}}</div>
               <div style="display: flex; border-bottom: 1px solid #ced4da" v-for="ic in getComponentsById(category.id)" v-bind:key="ic.id">
                 <div style="width:100%">
@@ -184,8 +184,36 @@
             </div>
           </b-col>
         </b-row>
-      </b-col>
+      </b-col> -->
     </b-row>
+    <div style="border: 1px solid #d6d3d3; margin-top: 10px;">
+      <b-row>
+        <b-col cols=6>
+          <label class="top-label">Component:</label>
+          <b-select option-value="id" option-text="name" :list="availableComponents" v-model="componentKv"></b-select>
+        </b-col>
+        <b-col cols=1>
+          <b-button size="sm" style="margin-top: 30px;" variant="primary" @click="addComponent()">Add &#x25BC;</b-button>
+        </b-col>
+      </b-row>
+      <br>
+      <b-row>
+        <b-col>
+          <b-table v-if="item.itemComponents.length>0" :items="item.itemComponents" :fields="columns" sort-by="component.category.name">
+            <template v-slot:cell(component)="row">
+              <b-link role="button" @click="goToComponent(row.item.component.id)">{{row.item.component.number}}</b-link>
+              <span style="font-size:11px"> {{row.item.component.name}}</span>
+            </template>
+            <template v-slot:cell(units)="row">
+              <input class="form-control" style="width:100px" type="tel" v-model="row.item.units">
+            </template>
+            <template v-slot:cell(action)="row">
+              <b-button size="sm" @click.stop="removeItemComponent(row.item.id)">x</b-button>
+            </template>
+          </b-table>
+        </b-col>
+      </b-row>
+    </div>
   </b-container>
 </template>
 
@@ -197,7 +225,6 @@ import httpUtils from "../httpUtils";
 import navigation from "../utils/navigation";
 
 export default {
-  name: "edit-component",
   data() {
     return {
       navigation: navigation,
@@ -217,18 +244,25 @@ export default {
       },
       image: "",
       httpUtils: httpUtils,
-      component: {},
+      componentKv: {},
       availableBrands: [],
       availableComponents: [],
-      availableItemCs: [],
-      availableComponentCs: [],
+      availableItemCategories: [],
+      availableCompCategories: [],
     availableSeasons: [],
     availableYears: [],
-	  uploadedFile: null
+    uploadedFile: null,
+    columns: [
+        { key: "component", label: "Component", sortable: false },
+        { key: "component.category.name", label: "Component", sortable: false },
+        { key: "units", label: "Units", sortable: false },
+        { key: "component.totalLandedCost", label: "Cost", sortable: false },
+        { key: "action", label: "Action", sortable: false }
+      ],
     };
   },
   computed: {
-    totalCost: function() {
+    totalCost() {
       var totalCost = 0;
       this.item.itemComponents.forEach(ic => {
         totalCost = +totalCost + +ic.component.totalLandedCost * +ic.units;
@@ -242,86 +276,74 @@ export default {
       return totalCost?totalCost.toFixed(2):0.00;
     },
 
-    palletHeight: function() {
+    palletHeight() {
       return +this.item.caseHeight * +this.item.ti;
     },
-    itemCubic: function() {
+    itemCubic() {
       return (
         (+this.item.height * +this.item.width * +this.item.depth) /
         1728
       ).toFixed(2);
     },
-    caseCubic: function() {
+    caseCubic() {
       return (
         (+this.item.caseHeight * +this.item.caseWidth * +this.item.caseDepth) /
         1728
       ).toFixed(2);
     },
-    palletCubic: function() {
+    palletCubic() {
       return (+this.item.hi * +this.item.ti * +this.caseCubic).toFixed(2);
     },
-    unitsPerPallet: function() {
+    unitsPerPallet() {
       return +this.item.hi * +this.item.ti * +this.item.casePack;
     },
-    casesPerPallet: function() {
+    casesPerPallet() {
       return +this.item.hi * +this.item.ti;
     },
-    caseWeight: function() {
+    caseWeight() {
       return (+this.item.casePack * +this.item.weight).toFixed(2);
     },
-    warehouseCost: function() {
+    warehouseCost() {
       var cost = 12 / +this.unitsPerPallet;
       return cost.toFixed(2);
     },
-    packageCost: function() {
+    packageCost() {
       var cost = 12 / +this.unitsPerPallet;
       return cost.toFixed(2);
     },
-    barcodeUrl: function() {
+    barcodeUrl() {
       if (this.item.upc.code) {
         return httpUtils.baseUrl + "/upc/image/" + this.item.upc.code;
       }
     },
-    caseBarcodeUrl: function() {
+    caseBarcodeUrl() {
       if (this.item.caseUpc.code) {
         return httpUtils.baseUrl + "/upc/image/" + this.item.caseUpc.code;
       }
     },
   },
-  watch: {
-    component: function(new_component, old_component) {
-      if (new_component.id) {
-        var found = this.item.itemComponents.find(
-          ic => ic.component.id === new_component.id
-        );
-        if (!found) {
-          http
-            .get("/component/" + new_component.id)
-            .then(response => {
-              this.item.itemComponents.push({
-                units: 1, //Default value
-                component: response.data
-              });
-            })
-            .catch(e => {
-              console.log("API error: " + e);
-            });
-        }
-      }
-    },
-    // brand: function(newValue, oldValue) {
-    //   this.item.brand = newValue;
-    // },
-    // category: function(newValue, oldValue) {
-    //   this.item.category = newValue;
-    // },
-    // season: function(newValue, oldValue) {
-    //   if (!this.item.season || this.item.season.id != newValue.id) {
-    //     this.item.season = newValue;
-    //   }
-    // },
-  },
+  watch: {},
   methods: {
+    addComponent(){
+      if(!this.componentKv){
+        alert("Select Component to Add");
+        return;
+      }
+      this.getComponent(this.componentKv.id).then(c=> {
+        this.item.itemComponents.push({
+          units: 1,
+          component: c
+        })
+        this.getAvailableComponents();
+      })
+    },
+    getComponent(componentId){
+      return http.get("/component/" + componentId).then(r => {
+        return r.data;
+      }).catch(e => {
+        console.log("API error: " + e);
+      });
+    },
     goToItemSaleList(){
         router.push('/itemSaleList/'+this.item.id);
     },
@@ -335,20 +357,23 @@ export default {
     onUpload(file){
       this.uploadedFile = file;
     },
-    getComponentsById: function(id) {
+    getComponentsById(id) {
       return this.item.itemComponents.filter(ic => {
         return ic.component.category.id == id;
       });
     },
-    getComponentsData() {
-      http
-        .get("/component/kv")
-        .then(response => {
-          this.availableComponents = response.data;
+    getAvailableComponents() {
+      http.get("/component/kv").then(response => {
+        this.availableComponents = [];
+        response.data.forEach(c => {
+          var found = this.item.itemComponents.findIndex(ic =>  ic.component.id == c.id);
+          if(found == -1){
+            this.availableComponents.push(c);
+          }
         })
-        .catch(e => {
-          console.log("API error: " + e);
-        });
+      }).catch(e => {
+        console.log("API error: " + e);
+      });
     },
     getItemData(item_id) {
       return http.get("/item/" + item_id).then(response => {
@@ -359,35 +384,26 @@ export default {
       });
     },
     getAvailableBrands() {
-      http
-        .get("/brand")
-        .then(response => {
-          this.availableBrands = response.data;
-        })
-        .catch(e => {
-          console.log("API error: " + e);
-        });
+      http.get("/brand").then(response => {
+        this.availableBrands = response.data;
+      }).catch(e => {
+        console.log("API error: " + e);
+      });
     },
     getAvailableCategories() {
-      http
-        .get("/category/item/keyValue")
-        .then(response => {
-          response.data.forEach(category => {
-            this.availableItemCs.push(category);
-          });
-        })
-        .catch(e => {
-          console.log("API error: " + e);
+      http.get("/category/item/kv").then(response => {
+        response.data.forEach(category => {
+          this.availableItemCategories.push(category);
         });
-      http
-        .get("/category/component/kv")
-        .then(response => {
-          response.data.forEach(category => {
-            this.availableComponentCs.push(category);
-          });
-        })
-        .catch(e => {
-          console.log("API error: " + e);
+      }).catch(e => {
+        console.log("API error: " + e);
+      });
+      http.get("/category/component/kv").then(response => {
+        response.data.forEach(category => {
+          this.availableCompCategories.push(category);
+        });
+      }).catch(e => {
+        console.log("API error: " + e);
         });
     },
     getAvailableSeasons() {
@@ -453,7 +469,7 @@ export default {
 	}
   },
   mounted() {
-    this.getComponentsData();
+    this.getAvailableComponents();
     var item_id = this.$route.params.item_id;
     if (item_id) {
       this.getItemData(item_id);
