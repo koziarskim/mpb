@@ -57,7 +57,7 @@ class ProductionRest {
 	@PostMapping("/production")
 	ResponseEntity<Production> post(@RequestBody Production production) {
 		Long unitsDiff = production.getUnitsProduced() - production.getPreUnitsProduced();
-		componentService.updateForProduction(production.getId(), unitsDiff);
+		componentService.updateUnitsOnStockByProduction(production.getId(), unitsDiff);
 		production = productionService.save(production);
 		Long itemId = production.getScheduleEvent().getSaleItem().getItem().getId();
 		Long saleId = production.getScheduleEvent().getSaleItem().getSale().getId();
@@ -70,7 +70,7 @@ class ProductionRest {
 	ResponseEntity<?> delete(@PathVariable Long id) {
 		Production production = productionRepo.getOne(id);
 		Long unitsDiff = production.getUnitsProduced() * (-1);
-		componentService.updateForProduction(production.getId(), unitsDiff);
+		componentService.updateUnitsOnStockByProduction(production.getId(), unitsDiff);
 		Long itemId = production.getScheduleEvent().getSaleItem().getItem().getId();
 		Long saleId = production.getScheduleEvent().getSaleItem().getSale().getId();
 		productionService.delete(id);

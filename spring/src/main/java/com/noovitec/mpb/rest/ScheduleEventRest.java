@@ -78,7 +78,7 @@ class ScheduleEventRest {
 		for (Production production : scheduleEvent.getProductions()) {
 			production.setScheduleEvent(scheduleEvent);
 			Long unitsDiff = production.getUnitsProduced() - production.getPreUnitsProduced();
-			componentService.updateForProduction(production.getId(), unitsDiff);
+			componentService.updateUnitsOnStockByProduction(production.getId(), unitsDiff);
 		}
 		scheduleEvent = scheduleEventService.save(scheduleEvent);
 		itemService.updateUnits(Arrays.asList(scheduleEvent.getSaleItem().getItem().getId()));
@@ -91,7 +91,7 @@ class ScheduleEventRest {
 		ScheduleEvent scheduleEvent = scheduleEventRepo.getOne(id);
 		for (Production production : scheduleEvent.getProductions()) {
 			Long unitsDiff = production.getUnitsProduced() - production.getPreUnitsProduced();
-			componentService.updateForProduction(production.getId(), unitsDiff * (-1));
+			componentService.updateUnitsOnStockByProduction(production.getId(), unitsDiff * (-1));
 		}
 		Long itemId = scheduleEvent.getSaleItem().getItem().getId();
 		Long saleId = scheduleEvent.getSaleItem().getSale().getId();

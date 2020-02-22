@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -33,5 +34,14 @@ public class Receiving extends BaseEntity {
 	@ManyToOne()
 	@JoinColumn(name = "purchaseComponent_id", referencedColumnName = "id")
 	private PurchaseComponent purchaseComponent;
+
+	@Transient private Long preUnits;
+
+	public Long getPreUnits() {
+		if(this.preUnits == null) {
+			this.preUnits = this.units;
+		}
+		return this.preUnits;
+	}
 
 }

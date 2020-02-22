@@ -22,12 +22,13 @@ public class Production extends BaseEntity {
 	private LocalTime finishTime;
 	private Long unitsProduced;
 	private Long people;
-	@Transient private Long preUnitsProduced;
 
 	@ManyToOne()
 	@JoinColumn(name = "schedule_event_id", referencedColumnName = "id")
 	private ScheduleEvent scheduleEvent;
-	
+
+	@Transient private Long preUnitsProduced;
+
 	public Long getPreUnitsProduced() {
 		if(this.preUnitsProduced == null) {
 			this.preUnitsProduced = this.unitsProduced;

@@ -22,7 +22,8 @@ public interface ComponentService {
 
 	public Component save(Component component, MultipartFile image) throws IOException;
 	public void delete(Long id);
-	public void updateForProduction(Long productionId, Long unitsDiff);
+	public void updateUnitsOnStockByProduction(Long productionId, Long units);
+	public void updateUnitsOnStock(Long componentId, Long units);
 
 	@Transactional
 	@Service("componentServiceImpl")
@@ -60,16 +61,22 @@ public interface ComponentService {
 			componentRepo.deleteById(id);
 		}
 		
-		public void updateForProduction(Long productionId, Long unitsDiff) {
-			if(unitsDiff == 0) {
+		public void updateUnitsOnStockByProduction(Long productionId, Long units) {
+			if(units == 0) {
 				return;
 			}
 			List<ItemComponent> itemComponents = itemComponentRepo.findByProduction(productionId);
-			itemComponents.forEach(ic -> {
+			for(ItemComponent ic: itemComponents) {
 				Component c = ic.getComponent();
-				c.setUnitsOnStock(c.getUnitsOnStock() - (unitsDiff * ic.getUnits()));
+				c.setUnitsOnStock(c.getUnitsOnStock() - (units * ic.getUnits()));
 				componentRepo.save(c);
-			});
+			};
+		}
+		
+		public void updateUnitsOnStock(Long componentId, Long units) {
+			Component component = componentRepo.findById(componentId).get();
+			component.setUnitsOnStock(component.getUnitsOnStock() + units);
+			componentRepo.save(component);
 		}
 	}
 }

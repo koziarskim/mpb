@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.HashSet;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Index;
@@ -87,8 +86,10 @@ public class Component extends BaseEntity {
 		return units;
 	}
 
-	// Returns extra units.
-	public void addUnitsOnStock(Long units) {
-		this.unitsOnStock += units;
+	public void updateUnitsLocked() {
+		this.unitsLocked = 0L;
+		for(ItemComponent ic: this.getItemComponents()) {
+			this.unitsLocked += (ic.getItem().getUnitsProduced() - ic.getItem().getUnitsScheduled()) * ic.getUnits();
+		}
 	}
 }

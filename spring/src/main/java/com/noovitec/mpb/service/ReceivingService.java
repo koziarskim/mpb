@@ -38,14 +38,7 @@ public interface ReceivingService {
 
 		public Receiving save(Receiving receiving) {
 			receiving = (Receiving) crudService.merge(receiving);
-			if(receiving.getPurchaseComponent()!=null && receiving.getPurchaseComponent().getComponent() != null) {
-				Component component = componentRepo.findById(receiving.getPurchaseComponent().getComponent().getId()).get();
-				if (receiving.getReceivingDate()!=null) {
-					component.addUnitsOnStock(receiving.getUnits());
-				}
-				componentRepo.save(component);
-			}
-			return receiving;
+			return receivingRepo.save(receiving);
 		}
 		
 		public void delete(Long id) {

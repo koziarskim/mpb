@@ -21,11 +21,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.noovitec.mpb.entity.Component;
 import com.noovitec.mpb.entity.Purchase;
 import com.noovitec.mpb.entity.Receiving;
-import com.noovitec.mpb.repo.ComponentRepo;
 import com.noovitec.mpb.repo.PurchaseRepo;
 import com.noovitec.mpb.repo.ReceivingRepo;
+import com.noovitec.mpb.service.ComponentService;
 import com.noovitec.mpb.service.CrudService;
 import com.noovitec.mpb.service.ItemService;
 import com.noovitec.mpb.service.ReceivingService;
@@ -39,7 +40,7 @@ class ReceivingRest {
 	@Autowired
 	private PurchaseRepo purchaseRepo;
 	@Autowired
-	private ComponentRepo componentRepo;
+	private ComponentService componentService;
 	@Autowired
 	private ReceivingService receivingService;
 	@Autowired
@@ -93,8 +94,12 @@ class ReceivingRest {
 	}
 
 	@PostMapping("/receiving")
-	ResponseEntity<?> post(@RequestBody Receiving receiving) throws URISyntaxException {
+	ResponseEntity<?> post(@RequestBody Receiving receiving) {
 		Receiving result = receivingService.save(receiving);
+		if (receiving.getReceivingDate()!=null) {
+			Long unitsDiff = receiving.getUnits() - receiving.getPreUnits();
+			componentService.updateUnitsOnStock(receiving.getPurchaseComponent().getComponent().getId(), unitsDiff);
+		}
 		List<Long> itemIds = new ArrayList<Long>();
 		result.getPurchaseComponent().getComponent().getItemComponents().forEach(ic -> {
 			itemIds.add(ic.getItem().getId());
@@ -107,10 +112,8 @@ class ReceivingRest {
 	public ResponseEntity<?> delete(@PathVariable Long id) {
 		Receiving receiving = receivingRepo.getOne(id);
 		if (receiving.getReceivingDate()!=null) {
-			Long unitsOnStock = receiving.getPurchaseComponent().getComponent().getUnitsOnStock() - receiving.getUnits();
-			receiving.getPurchaseComponent().getComponent().setUnitsOnStock(unitsOnStock);
+			componentService.updateUnitsOnStock(receiving.getPurchaseComponent().getComponent().getId(), receiving.getUnits() * (-1));
 		}
-		receivingRepo.save(receiving);
 		List<Long> itemIds = new ArrayList<Long>();
 		receiving.getPurchaseComponent().getComponent().getItemComponents().forEach(ic -> {
 			itemIds.add(ic.getItem().getId());
