@@ -74,7 +74,7 @@ export default {
         { key: "unitsReceived", label: "Received", sortable: false },
         { key: "unitPrice", label: "Unit Cost", sortable: false },
         { key: "totalPrice", label: "Amount", sortable: false },
-        { key: "action", label: "Action", sortable: false }
+        { key: "action", label: "", sortable: false }
       ],
       expectedDate: ""
     };

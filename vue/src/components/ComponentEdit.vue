@@ -175,7 +175,7 @@ export default {
         { key: "units", label: "Qty", sortable: false },
         { key: "item.brand.name", label: "Brand", sortable: false },
         { key: "item.unitsReadyProd", label: "RFP", sortable: false },
-        // { key: "action", label: "Action", sortable: false },
+        // { key: "action", label: "", sortable: false },
       ]
     };
   },

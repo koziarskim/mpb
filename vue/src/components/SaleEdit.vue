@@ -168,7 +168,7 @@ export default {
         { key: "cost", label: "Cost", sortable: false },
         { key: "unitPrice", label: "Unit Price", sortable: false },
         { key: "totalUnitPrice", label: "Total", sortable: false },
-        { key: "action", label: "Action", sortable: false }
+        { key: "action", label: "", sortable: false }
       ],
       customerDto: {},
       itemDto: {},

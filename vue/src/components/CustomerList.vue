@@ -37,7 +37,7 @@ export default {
         { key: "name", label: "Name", sortable: false },
         { key: "addressName", label: "Address", sortable: false },
         { key: "phone", label: "Phone", sortable: false },
-        { key: "action", label: "Action", sortable: false }
+        { key: "action", label: "", sortable: false }
       ],
       customers: []
     };

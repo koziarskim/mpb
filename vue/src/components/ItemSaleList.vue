@@ -89,7 +89,7 @@ export default {
         { key: "dc", label: "DC (State)", sortable: false },
         { key: "units", label: "Sold", sortable: false },
         { key: "unitsSchedProd", label: "Sched/Prod", sortable: false },
-        { key: "action", label: "Action", sortable: false },
+        { key: "action", label: "", sortable: false },
       ],
       scheduleData: {
         date: moment().format("YYYY-MM-DD"),

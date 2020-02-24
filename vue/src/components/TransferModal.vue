@@ -73,7 +73,7 @@ export default {
 				{ key: "saleFromToName", label: "Sale", sortable: false },
 				{ key: "unitsTransfered", label: "Transfered", sortable: false },
 				{ key: "date", label: "Date & Time", sortable: false },
-        { key: "action", label: "Action", sortable: false },
+        { key: "action", label: "", sortable: false },
       ],
     };
   },

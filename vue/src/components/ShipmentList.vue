@@ -94,7 +94,7 @@ export default {
         { key: "shippingWindow", label: "Ship Window", sortable: false },
         { key: "shippedDate", label: "Shippped", sortable: false },
         { key: "status", label: "Status", sortable: false },
-        { key: "action", label: "Action", sortable: false }
+        { key: "action", label: "", sortable: false }
       ],
       filter: {
         shipFrom: null,

@@ -70,7 +70,7 @@ export default {
         { key: "shippingDate", label: "Shipped", sortable: false },
         { key: "receivingDate", label: "Received", sortable: false },
         { key: "units", label: "Units", sortable: false },
-        { key: "action", label: "Action", sortable: false }
+        { key: "action", label: "", sortable: false }
       ],
       availablePurchases: [],
       purchase: {},

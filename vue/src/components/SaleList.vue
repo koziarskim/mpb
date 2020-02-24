@@ -78,7 +78,7 @@ export default {
         { key: "unitsSchPro", label: "Sched/Prod", sortable: false },
         { key: "unitsTransfered", label: "Transfers", sortable: false },
         { key: "unitsShipped", label: "Shipped", sortable: false },
-        { key: "action", label: "Action", sortable: false}
+        { key: "action", label: "", sortable: false}
       ],
       sales: [] //SaleListDto
     };

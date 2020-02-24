@@ -78,7 +78,7 @@ export default {
         { key: "unitsTrasfered", label: "Transfers", sortable: false },
         { key: "unitsShipped", label: "Shipped", sortable: false },
         { key: "unitsOnStock", label: "On Stock", sortable: false },
-        { key: "action", label: "Action", sortable: false}
+        { key: "action", label: "", sortable: false}
       ],
       sales: []
     };

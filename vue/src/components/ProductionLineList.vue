@@ -85,7 +85,7 @@ export default {
 		    { key: "unitsProduced", label: "Produced", sortable: true },
         { key: "unitsPending", label: "Still To Make", sortable: true },
         { key: "totalTime", label: "Total Time", sortable: true },
-        { key: "action", label: "Action", sortable: false },
+        { key: "action", label: "", sortable: false },
     ],
     schedule: {},
     scheduleEvents: [],

@@ -184,7 +184,7 @@ export default {
         { key: "saleItem.item.casePack", label: "Case Pack", sortable: false },
         { key: "cases", label: "Cases", sortable: false },
         { key: "pallets", label: "Pallets", sortable: false },
-        { key: "action", label: "Action", sortable: false }
+        { key: "action", label: "", sortable: false }
       ],
       availableFreightTerms: [
         {id: "TPB", name: "TP Bill"},

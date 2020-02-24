@@ -71,7 +71,7 @@ export default {
       fields: [
         { key: "number", label: "Account", sortable: false },
         { key: "fullName", label: "Name", sortable: false },
-        { key: "action", label: "Action", sortable: false }
+        { key: "action", label: "", sortable: false }
       ],
       users: [],
       availableRoles: [],

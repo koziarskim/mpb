@@ -79,7 +79,7 @@ export default {
         { key: "saleItem.units", label: "Sold", sortable: false },
         { key: "unitsScheduled", label: "Scheduled", sortable: false },
         { key: "unitsProduced", label: "Produced", sortable: false },
-        { key: "action", label: "Action", sortable: false },
+        { key: "action", label: "", sortable: false },
       ]
     };
   },

@@ -224,7 +224,7 @@ export default {
         { key: "component.category.name", label: "Component", sortable: false },
         { key: "units", label: "Units", sortable: false },
         { key: "component.totalLandedCost", label: "Cost", sortable: false },
-        { key: "action", label: "Action", sortable: false }
+        { key: "action", label: "", sortable: false }
       ],
     };
   },

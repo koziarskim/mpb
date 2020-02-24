@@ -63,7 +63,7 @@ export default {
         { key: "shippingDate", label: "Shipping", sortable: false },
         { key: "received", label: "Received", sortable: false },
         { key: "pdf", label: "PDF", sortable: false },
-        { key: "action", label: "Action", sortable: false }
+        { key: "action", label: "", sortable: false }
       ],
       availableComponents: [],
       component: {},

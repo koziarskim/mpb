@@ -35,7 +35,7 @@
               <b-button size="sm" variant="link" @click.stop="goToItemShippedList(row.item.id)">{{row.item.unitsShipped}}</b-button>
           </template>
           <template v-slot:cell(action)="row">
-              <b-button size="sm" @click.stop="gotToInventory(row.item.id)">view</b-button>
+              <!-- <b-button size="sm" @click.stop="gotToInventory(row.item.id)">view</b-button> -->
               <b-button size="sm" style="margin-left: 3px" @click.stop="deleteItem(row.item.id)">x</b-button>
           </template>
         </b-table>
@@ -66,7 +66,7 @@ export default {
         { key: 'unitsScheduled', sortable: false, label: 'Sched/Produced'},
         { key: 'unitsShipped', sortable: false, label: 'Shipped'},
         { key: 'unitsReadyProd', sortable: false, label: 'RFP'},
-        { key: 'action', sortable: false, label: 'Inventory'},
+        { key: 'action', sortable: false, label: ''},
       ],
       items: [] //ItemListDto
     };
