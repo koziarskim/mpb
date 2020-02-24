@@ -12,7 +12,7 @@ import com.noovitec.mpb.repo.custom.CustomItemRepo;
 public interface ItemRepo extends PagingAndSortingRepository<Item, Long>, CustomItemRepo {
 	Item findByName(String name);
 
-	@Query("select i from Item i where i.id in :itemIds")
+	@Query("select distinct i from Item i where i.id in :itemIds")
 	List<Item> findByIds(List<Long> itemIds);
 
 	@Query(value = "select i.* from Item i order by i.id desc limit 1", nativeQuery = true)

@@ -81,6 +81,7 @@ class ScheduleEventRest {
 			componentService.updateUnitsOnStockByProduction(production.getId(), unitsDiff);
 		}
 		scheduleEvent = scheduleEventService.save(scheduleEvent);
+		componentService.updateUnitsLockedByItem(scheduleEvent.getSaleItem().getItem().getId());
 		itemService.updateUnits(Arrays.asList(scheduleEvent.getSaleItem().getItem().getId()));
 		saleService.updateUnits(Arrays.asList(scheduleEvent.getSaleItem().getSale().getId()));
 		return ResponseEntity.ok(scheduleEvent);
@@ -96,6 +97,7 @@ class ScheduleEventRest {
 		Long itemId = scheduleEvent.getSaleItem().getItem().getId();
 		Long saleId = scheduleEvent.getSaleItem().getSale().getId();
 		scheduleEventService.delete(id);
+		componentService.updateUnitsLockedByItem(itemId);
 		itemService.updateUnits(Arrays.asList(itemId));
 		saleService.updateUnits(Arrays.asList(saleId));
 		return ResponseEntity.ok().build();

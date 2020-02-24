@@ -13,6 +13,12 @@ import com.noovitec.mpb.entity.Component;
 
 public interface ComponentRepo extends PagingAndSortingRepository<Component, Long> {
 
+	@Query("select distinct c from Component c where c.id in :componentIds")
+	List<Component> findByIds(List<Long> componentIds);
+
+	@Query("select distinct ic.component from ItemComponent ic where ic.item.id = :itemId")
+	List<Component> findIdsByItem(Long itemId);
+
 	@Query("select c from Component c "
 			+ "left join c.supplier s "
 			+ "where upper(c.name) LIKE CONCAT('%',UPPER(:nameSearch),'%') "

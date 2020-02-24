@@ -125,4 +125,16 @@ class ComponentRest {
 		componentService.delete(id);
 		return ResponseEntity.ok().build();
 	}
+	
+	//This is update
+	@GetMapping("/component/update/units")
+	ResponseEntity<?> postUpdateUnits() {
+		try {
+			componentService.updateUnitsLocked(null);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.ok().body("OK");
+	}
 }

@@ -1,6 +1,7 @@
 package com.noovitec.mpb.service;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -24,6 +25,8 @@ public interface ComponentService {
 	public void delete(Long id);
 	public void updateUnitsOnStockByProduction(Long productionId, Long units);
 	public void updateUnitsOnStock(Long componentId, Long units);
+	public void updateUnitsLocked(List<Long> componentIds);
+	public void updateUnitsLockedByItem(Long itemId);
 
 	@Transactional
 	@Service("componentServiceImpl")
@@ -77,6 +80,30 @@ public interface ComponentService {
 			Component component = componentRepo.findById(componentId).get();
 			component.setUnitsOnStock(component.getUnitsOnStock() + units);
 			componentRepo.save(component);
+		}
+
+		public void updateUnitsLocked(List<Long> componentIds) {
+			Long counter = 0L;
+			Iterable<Component> components = componentIds==null?componentRepo.findAll():componentRepo.findByIds(componentIds);
+			for (Component component : components) {
+				component.updateUnitsLocked();
+				componentRepo.save(component);
+				counter++;
+				log.info("Updated Component: " + component.getId());
+			}
+			log.info("Total components: " + counter);
+		}
+
+		public void updateUnitsLockedByItem(Long itemId) {
+			Long counter = 0L;
+			Iterable<Component> components = componentRepo.findIdsByItem(itemId);
+			for (Component component : components) {
+				component.updateUnitsLocked();
+				componentRepo.save(component);
+				counter++;
+				log.info("Updated Component: " + component.getId());
+			}
+			log.info("Total components: " + counter);
 		}
 	}
 }
