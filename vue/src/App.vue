@@ -38,7 +38,7 @@
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
-    <div class="center" style="background-color: #e9ecef; padding-left: 15px !important; padding-right: 15px !important">
+    <div class="center pagebase" :class="getViewClass()">
       <router-view :key="$route.fullPath"></router-view>
     </div>
   </div>
@@ -67,6 +67,9 @@ export default {
   },
   computed: {},
   methods: {
+    getViewClass(){
+      return navigate.viewClass;
+    },
     getUser() {
       if(this.securite.getUser().id){
         this.user = this.securite.getUser();
@@ -156,6 +159,44 @@ export default {
   }
 }
 // Custom MPB
+.pagebase {
+  padding-left: 15px !important; 
+  padding-right: 15px !important; 
+  min-height: 580px
+}
+.view-supplier {
+  background-color: #ffc1074f;
+}
+.view-component {
+  background-color: #f4433638;
+}
+.view-item {
+  background-color: #9c27b04a;
+}
+.view-customer {
+  background-color: #ff98006b;
+}
+.view-sale {
+  background-color: #03a9f440;
+}
+.view-purchase {
+  background-color: #4caf507d;
+}
+.view-receiving {
+  background-color: #607d8b66;
+}
+.view-schedule {
+  background-color: #9e9e9e7d;
+}
+.view-production {
+  background-color: #79554873;
+}
+.view-shipment {
+  background-color: #cddc3982;
+}
+.page-link {
+  background-color: transparent !important;
+}
 .popover {
   max-width: 1000px !important;
 }

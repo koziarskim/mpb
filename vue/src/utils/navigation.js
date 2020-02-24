@@ -3,6 +3,7 @@ import securite from "../securite";
 
 export default {
   selected: "home",
+  viewClass: "",
   baseUrl: process.env.VUE_APP_API_BASE_URL,
   getSeason() {
     var season = JSON.parse(window.localStorage.getItem("season"));
@@ -45,6 +46,7 @@ export default {
   },
   goNext(to, from, next, path) {
     this.selected = to.meta.group;
+    this.viewClass = to.meta.viewClass;
     if (path) {
       next(path);
     } else {

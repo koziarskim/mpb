@@ -72,7 +72,8 @@ const router = new Router({
       component: ItemList,
       meta: {
         roles: ["SUPER_USER"],
-        group: "item"
+        group: "item",
+        viewClass: "view-item"
       }
     },
     {
@@ -81,7 +82,8 @@ const router = new Router({
       component: ItemComponentList,
       meta: {
         roles: ["SUPER_USER"],
-        group: "item"
+        group: "item",
+        viewClass: "view-item"
       }
     },
     {
@@ -90,7 +92,8 @@ const router = new Router({
       component: ItemEdit,
       meta: {
         roles: ["SUPER_USER"],
-        group: "item"
+        group: "item",
+        viewClass: "view-item"
       }
     },
     {
@@ -99,7 +102,8 @@ const router = new Router({
       component: ItemGraph,
       meta: {
         roles: ["SUPER_USER"],
-        group: "item"
+        group: "item",
+        viewClass: "view-item"
       }
     },
     {
@@ -108,7 +112,8 @@ const router = new Router({
       component: ItemSaleList,
       meta: {
         roles: ["SUPER_USER"],
-        group: "item"
+        group: "item",
+        viewClass: "view-item"
       }
     },
     {
@@ -117,7 +122,8 @@ const router = new Router({
       component: ComponentList,
       meta: {
         roles: ["SUPER_USER"],
-        group: "component"
+        group: "component",
+        viewClass: "view-component"
       }
     },
     {
@@ -126,7 +132,8 @@ const router = new Router({
       component: ComponentEdit,
       meta: {
         roles: ["SUPER_USER"],
-        group: "component"
+        group: "component",
+        viewClass: "view-component"
       }
     },
     {
@@ -135,7 +142,8 @@ const router = new Router({
       component: SupplierList,
       meta: {
         roles: ["SUPER_USER"],
-        group: "supplier"
+        group: "supplier",
+        viewClass: "view-supplier"
       }
     },
     {
@@ -144,7 +152,8 @@ const router = new Router({
       component: SupplierEdit,
       meta: {
         roles: ["SUPER_USER"],
-        group: "supplier"
+        group: "supplier",
+        viewClass: "view-supplier"
       }
     },
    {
@@ -153,7 +162,8 @@ const router = new Router({
       component: CustomerList,
       meta: {
         roles: ["SUPER_USER"],
-        group: "customer"
+        group: "customer",
+        viewClass: "view-customer"
       }
     },
     {
@@ -162,7 +172,8 @@ const router = new Router({
       component: CustomerEdit,
       meta: {
         roles: ["SUPER_USER"],
-        group: "customer"
+        group: "customer",
+        viewClass: "view-customer"
       }
     },
     {
@@ -171,7 +182,8 @@ const router = new Router({
       component: SaleList,
       meta: {
         roles: ["SUPER_USER"],
-        group: "sale"
+        group: "sale",
+        viewClass: "view-sale"
       }
     },
     {
@@ -180,7 +192,8 @@ const router = new Router({
       component: SaleItemList,
       meta: {
         roles: ["SUPER_USER"],
-        group: "sale"
+        group: "sale",
+        viewClass: "view-sale"
       }
     },
     {
@@ -189,7 +202,8 @@ const router = new Router({
       component: SaleEdit,
       meta: {
         roles: ["SUPER_USER"],
-        group: "sale"
+        group: "sale",
+        viewClass: "view-sale"
       }
     },
     {
@@ -198,7 +212,8 @@ const router = new Router({
       component: PurchaseList,
       meta: {
         roles: ["SUPER_USER", "POADMIN"],
-        group: "purchase"
+        group: "purchase",
+        viewClass: "view-purchase"
       }
     },
     {
@@ -207,7 +222,8 @@ const router = new Router({
       component: PurchaseEdit,
       meta: {
         roles: ["SUPER_USER"],
-        group: "purchase"
+        group: "purchase",
+        viewClass: "view-purchase"
       }
     },
     {
@@ -216,7 +232,8 @@ const router = new Router({
       component: PurchaseNew,
       meta: {
         roles: ["SUPER_USER"],
-        group: "purchase"
+        group: "purchase",
+        viewClass: "view-purchase"
       }
     },
     {
@@ -225,7 +242,8 @@ const router = new Router({
       component: PurchaseComponent,
       meta: {
         roles: ["SUPER_USER"],
-        group: "purchase"
+        group: "purchase",
+        viewClass: "view-purchase"
       }
     },
     {
@@ -234,7 +252,8 @@ const router = new Router({
       component: PurchaseItem,
       meta: {
         roles: ["SUPER_USER"],
-        group: "purchase"
+        group: "purchase",
+        viewClass: "view-purchase"
       }
     },
     {
@@ -243,7 +262,8 @@ const router = new Router({
       component: ReceivingList,
       meta: {
         roles: ["SUPER_USER"],
-        group: "receiving"
+        group: "receiving",
+        viewClass: "view-receiving"
       }
     },
     {
@@ -252,7 +272,8 @@ const router = new Router({
       component: ReceivingEdit,
       meta: {
         roles: ["SUPER_USER"],
-        group: "receiving"
+        group: "receiving",
+        viewClass: "view-receiving"
       }
     },
     {
@@ -261,7 +282,8 @@ const router = new Router({
       component: ReceivingEdit,
       meta: {
         roles: ["SUPER_USER"],
-        group: "receiving"
+        group: "receiving",
+        viewClass: "view-receiving"
       }
     },
     {
@@ -270,7 +292,8 @@ const router = new Router({
       component: Schedule,
       meta: {
         roles: ["SUPER_USER"],
-        group: "schedule"
+        group: "schedule",
+        viewClass: "view-schedule"
       }
     },
     {
@@ -279,7 +302,8 @@ const router = new Router({
       component: ScheduleEventList,
       meta: {
         roles: ["SUPER_USER"],
-        group: "schedule"
+        group: "schedule",
+        viewClass: "view-schedule"
       }
     },
     {
@@ -288,7 +312,8 @@ const router = new Router({
       component: ShipmentEdit,
       meta: {
         roles: ["SUPER_USER"],
-        group: "shipment"
+        group: "shipment",
+        viewClass: "view-shipment"
       }
     },
     {
@@ -297,7 +322,8 @@ const router = new Router({
       component: ShipmentList,
       meta: {
         roles: ["SUPER_USER"],
-        group: "shipment"
+        group: "shipment",
+        viewClass: "view-shipment"
       }
     },
     {
@@ -306,7 +332,8 @@ const router = new Router({
       component: ProductionLine,
       meta: {
         roles: ["SUPER_USER", "PRODUCTION_ADMIN", "PRODUCTION_LEADER"],
-        group: "production"
+        group: "production",
+        viewClass: "view-production"
       }
     },
     {
@@ -315,7 +342,8 @@ const router = new Router({
       component: ProductionLineList,
       meta: {
         roles: ["SUPER_USER", "PRODUCTION_ADMIN", "PRODUCTION_LEADER"],
-        group: "production"
+        group: "production",
+        viewClass: "view-production"
       }
     },
     {
@@ -324,7 +352,8 @@ const router = new Router({
       component: ProductionItemList,
       meta: {
         roles: ["SUPER_USER", "PRODUCTION_ADMIN", "PRODUCTION_LEADER"],
-        group: "production"
+        group: "production",
+        viewClass: "view-production"
       }
     },
     {
