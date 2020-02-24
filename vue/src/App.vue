@@ -38,7 +38,7 @@
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
-    <div class="center">
+    <div class="center" style="background-color: #e9ecef; padding-left: 15px !important; padding-right: 15px !important">
       <router-view :key="$route.fullPath"></router-view>
     </div>
   </div>

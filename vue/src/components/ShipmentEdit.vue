@@ -1,5 +1,5 @@
 <template>
-  <b-container fluid style="background-color: #f9f9f9; padding-left: 5px !important; padding-right: 5px !important; height: 90vh;">
+  <b-container fluid>
     <b-row>
       <b-col cols=2>
           <label style="font-size: 18px; font-weight: bold; margin-top: -10px">Shipment #:</label>

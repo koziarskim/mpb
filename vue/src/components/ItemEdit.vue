@@ -50,76 +50,91 @@
         </b-row>
       </b-col>
     </b-row>
-    <!-- Units Section -->
-    <hr class="hr-text" data-content="Unit dimenstion">
     <b-row>
-      <b-col cols="4">
-        <label class="top-label">Item Dimension (H x W x D):</label>
-        <div style="display:flex">
-          <input class="form-control" type="number" v-model="item.height"><span style="padding: 7px">x</span>
-          <input class="form-control" type="number" v-model="item.width"><span style="padding: 7px">x</span>
-          <input class="form-control" type="number" v-model="item.depth">
-        </div>
+      <b-col cols=3 style="border-right: 1px solid #c5c5c5">
+        <!-- Units Section -->
+        <hr class="hr-text" data-content="Unit dimenstion">
+        <b-row>
+          <b-col cols=12>
+            <label class="top-label">Item Dimension (H x W x D):</label>
+            <div style="display:flex">
+              <input class="form-control" v-model="item.height"><span style="margin-top: 7px">x</span>
+              <input class="form-control" v-model="item.width"><span style="margin-top: 7px">x</span>
+              <input class="form-control" v-model="item.depth">
+            </div>
+          </b-col>
+        </b-row>
+        <b-row>
+          <b-col cols=5>
+            <label class="top-label">Weight (lbs):</label>
+            <input class="form-control" v-model="item.weight">
+          </b-col>
+          <b-col cols=5>
+            <label class="top-label">Cubic (ft):</label>
+            <input class="form-control" readonly :value="itemCubic">
+          </b-col>
+        </b-row>
       </b-col>
-      <b-col cols="2">
-        <label class="top-label">Weight (lbs):</label>
-        <input class="form-control" type="number" v-model="item.weight">
+      <b-col cols=3 style="border-right: 1px solid #c5c5c5">
+        <hr class="hr-text" data-content="Case dimenstion">
+        <b-row>
+          <b-col cols=12>
+            <label class="top-label">Case Dimension (H x W x D):</label>
+            <div style="display:flex">
+              <input class="form-control" v-model="item.caseHeight"><span style="margin-top: 7px">x</span>
+              <input class="form-control" v-model="item.caseWidth"><span style="margin-top: 7px">x</span>
+              <input class="form-control" v-model="item.caseDepth">
+            </div>
+          </b-col>
+        </b-row>
+        <b-row>
+          <b-col cols=4>
+            <label class="top-label">Case weight:</label>
+            <input class="form-control" readonly :value="caseWeight">
+          </b-col>
+          <b-col cols=4>
+            <label class="top-label">Case Pack:</label>
+            <input class="form-control" v-model="item.casePack">
+          </b-col>
+          <b-col cols=4>
+            <label class="top-label">Case cubic:</label>
+            <input class="form-control" readonly :value="caseCubic">
+          </b-col>
+        </b-row>
       </b-col>
-      <b-col cols="2">
-        <label class="top-label">Cubic (ft):</label>
-        <input class="form-control" readonly :value="itemCubic">
-      </b-col>
-    </b-row>
-    <hr class="hr-text" data-content="Case dimenstion">
-    <b-row>
-      <b-col cols=4>
-        <label class="top-label">Case Dimension (H x W x D):</label>
-        <div style="display:flex">
-          <input class="form-control" type="number" v-model="item.caseHeight"><span style="padding: 7px">x</span>
-          <input class="form-control" type="number" v-model="item.caseWidth"><span style="padding: 7px">x</span>
-          <input class="form-control" type="number" v-model="item.caseDepth">
-        </div>
-      </b-col>
-      <b-col cols="2">
-        <label class="top-label">Case weight:</label>
-        <input class="form-control" readonly :value="caseWeight">
-      </b-col>
-      <b-col cols="2">
-        <label class="top-label">Case Pack:</label>
-        <input class="form-control" type="number" min="0" v-model="item.casePack">
-      </b-col>
-      <b-col cols="2">
-        <label class="top-label">Case cubic:</label>
-        <input class="form-control" readonly :value="caseCubic">
-      </b-col>
-    </b-row>
-    <b-row>
-      <b-col cols="2">
-        <label class="top-label">TI x HI (pcs):</label>
-        <div style="display:flex">
-          <input class="form-control" v-model="item.ti" placeholder="0"><span style="padding: 7px">x</span>
-          <input class="form-control" v-model="item.hi" placeholder="0">
-        </div>
-      </b-col>
-      <b-col cols="2">
-        <label class="top-label">Pallet cubic:</label>
-        <input class="form-control" readonly :value="palletCubic">
-      </b-col>
-      <b-col cols="2">
-        <label class="top-label">Units p/ pallet:</label>
-        <input class="form-control" readonly :value="unitsPerPallet">
-      </b-col>
-      <b-col cols="2">
-        <label class="top-label">Cases p/ pallet:</label>
-        <input class="form-control" readonly :value="casesPerPallet">
-      </b-col>
-      <b-col cols="2">
-        <label class="top-label">Pallet height:</label>
-        <input class="form-control" readonly :value="palletHeight">
-      </b-col>
-      <b-col cols="2">
-        <label class="top-label">Pallet Weight:</label>
-        <input class="form-control" v-model="item.palletWeight">
+      <b-col cols=5>
+        <hr class="hr-text" data-content="Pallet dimenstion">
+        <b-row>
+          <b-col cols=4>
+            <label class="top-label">TI x HI (pcs):</label>
+            <div style="display:flex">
+              <input class="form-control" v-model="item.ti" placeholder="0"><span style="margin-top: 7px">x</span>
+              <input class="form-control" v-model="item.hi" placeholder="0">
+            </div>
+          </b-col>
+          <b-col cols=3>
+            <label class="top-label">Pallet cubic:</label>
+            <input class="form-control" readonly :value="palletCubic">
+          </b-col>
+        </b-row>
+        <b-row>
+          <b-col cols=3>
+            <label class="top-label">Units p/ pallet:</label>
+            <input class="form-control" readonly :value="unitsPerPallet">
+          </b-col>
+          <b-col cols=3>
+            <label class="top-label">Cases p/p:</label>
+            <input class="form-control" readonly :value="casesPerPallet">
+          </b-col>
+          <b-col cols=3>
+            <label class="top-label">Pallet height:</label>
+            <input class="form-control" readonly :value="palletHeight">
+          </b-col>
+          <b-col cols=3>
+            <label class="top-label">Pallet Weight:</label>
+            <input class="form-control" v-model="item.palletWeight">
+          </b-col>
+        </b-row>
       </b-col>
     </b-row>
     <hr class="hr-text" data-content="Prices are in USD">
@@ -134,11 +149,11 @@
       </b-col>
       <b-col cols="2">
         <label class="top-label">Labor ($):</label>
-        <input class="form-control" type="number" min="0" v-model="item.laborCost">
+        <input class="form-control" v-model="item.laborCost">
       </b-col>
       <b-col cols="2">
         <label class="top-label">Other ($):</label>
-        <input class="form-control" type="number" min="0" v-model="item.otherCost">
+        <input class="form-control" v-model="item.otherCost">
       </b-col>
       <b-col cols="2">
         <label class="top-label">Total Cost:</label>
@@ -149,7 +164,7 @@
     <div style="border: 1px solid #d6d3d3; margin-top: 10px;">
       <b-row>
         <b-col cols=6>
-          <label class="top-label">Component:</label>
+          <label class="top-label">Components:</label>
           <b-select option-value="id" option-text="name" :list="availableComponents" v-model="componentKv"></b-select>
         </b-col>
         <b-col cols=1>
