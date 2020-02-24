@@ -89,7 +89,7 @@ public class Component extends BaseEntity {
 	public void updateUnitsLocked() {
 		this.unitsLocked = 0L;
 		for(ItemComponent ic: this.getItemComponents()) {
-			this.unitsLocked += (ic.getItem().getUnitsProduced() - ic.getItem().getUnitsScheduled()) * ic.getUnits();
+			this.unitsLocked += (ic.getItem().getUnitsScheduled() - ic.getItem().getUnitsProduced()) * ic.getUnits();
 		}
 	}
 }
