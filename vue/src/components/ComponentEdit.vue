@@ -81,38 +81,30 @@
         <hr class="hr-text" data-content="Unit prices/fees are in USD ($)">
         <b-row>
             <b-col cols=2>
-                <label class="top-label">Unit Cost $:</label>
-                <input class="form-control" type="number" min=0 v-model="component.unitCost"/>
+              <label class="top-label">Unit Cost $:</label>
+              <input class="form-control" type="number" min=0 v-model="component.unitCost"/>
             </b-col>
             <b-col cols=2>
-                <label class="top-label">Duty %:</label>
-                <input class="form-control" type="number" min=0 v-model="component.dutyPercentage"/>
+              <label class="top-label">Duty %:</label>
+              <input class="form-control" type="number" min=0 v-model="component.dutyPercentage"/>
             </b-col>
             <b-col cols=2>
-                <label class="top-label">Container Cost $:</label>
-                <input class="form-control" type="number" min=0 v-model="component.containerCost"/>
+              <label class="top-label">Container Cost $:</label>
+              <input class="form-control" type="number" min=0 v-model="component.containerCost"/>
             </b-col>
             <b-col cols=2>
-                <label class="top-label">Other $:</label>
-                <input class="form-control" type="number" min=0 v-model="component.otherCost"/>
-            </b-col>
-        </b-row>
-        <b-row>
-            <b-col cols=2>
-                <label class="top-label">Delivery $:</label>
-                <input class="form-control" readOnly :value="deliveryCost" />
+              <label class="top-label">Other $:</label>
+              <input class="form-control" type="number" min=0 v-model="component.otherCost"/>
             </b-col>
             <b-col cols=2>
-                <label class="top-label">Duty cost $:</label>
-                <input class="form-control" readOnly :value="dutyCost" />
+              <br/>
+              <label class="top-label">Delivery $: {{deliveryCost}}</label><br/>
+              <label class="top-label">Duty cost $: {{dutyCost}}</label>
             </b-col>
             <b-col cols=2>
-                <label class="top-label">Total Landed Cost $:</label>
-                <input class="form-control" readOnly :value="totalLandedCost" />
-            </b-col>
-            <b-col cols=2>
-                <label class="top-label">Case Cost $:</label>
-                <input class="form-control" readOnly :value="caseCost" />
+              <br/>
+              <label class="top-label">Case Cost $: {{caseCost}}</label>
+              <label class="top-label">Total Landed Cost $: {{totalLandedCost}}</label><br/>
             </b-col>
         </b-row>
         <!-- <b-row>
@@ -130,7 +122,7 @@
         </b-row> -->
         <b-row>
             <b-col>
-              <label class="top-label">Items using this Component:</label>
+              <label class="top-label">Component is used in following Items:</label>
               <b-table :items="component.itemComponents" :fields="columns">
                   <template v-slot:cell(item.number)="row">
                       <b-button size="sm" @click.stop="goToItem(row.item.item.id)" variant="link">{{row.item.item.number}}</b-button>
