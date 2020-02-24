@@ -70,8 +70,8 @@
             <input class="form-control" v-model="item.weight">
           </b-col>
           <b-col cols=5>
-            <label class="top-label">Cubic (ft):</label>
-            <input class="form-control" readonly :value="itemCubic">
+            <br/>
+            <label class="top-label">Cubic (ft): {{itemCubic}}</label>
           </b-col>
         </b-row>
       </b-col>
@@ -89,75 +89,67 @@
         </b-row>
         <b-row>
           <b-col cols=4>
-            <label class="top-label">Case weight:</label>
-            <input class="form-control" readonly :value="caseWeight">
-          </b-col>
-          <b-col cols=4>
             <label class="top-label">Case Pack:</label>
             <input class="form-control" v-model="item.casePack">
           </b-col>
-          <b-col cols=4>
-            <label class="top-label">Case cubic:</label>
-            <input class="form-control" readonly :value="caseCubic">
+          <b-col cols=8>
+            <br/>
+            <label class="top-label">Case weight: {{caseWeight}}</label><br/>
+            <label class="top-label">Case cubic: {{caseCubic}}</label>
           </b-col>
         </b-row>
       </b-col>
-      <b-col cols=5>
+      <b-col cols=3 style="border-right: 1px solid #c5c5c5">
         <hr class="hr-text" data-content="Pallet dimenstion">
         <b-row>
-          <b-col cols=4>
+          <b-col cols=6>
             <label class="top-label">TI x HI (pcs):</label>
             <div style="display:flex">
               <input class="form-control" v-model="item.ti" placeholder="0"><span style="margin-top: 7px">x</span>
               <input class="form-control" v-model="item.hi" placeholder="0">
             </div>
           </b-col>
-          <b-col cols=3>
-            <label class="top-label">Pallet cubic:</label>
-            <input class="form-control" readonly :value="palletCubic">
-          </b-col>
-        </b-row>
-        <b-row>
-          <b-col cols=3>
-            <label class="top-label">Units p/ pallet:</label>
-            <input class="form-control" readonly :value="unitsPerPallet">
-          </b-col>
-          <b-col cols=3>
-            <label class="top-label">Cases p/p:</label>
-            <input class="form-control" readonly :value="casesPerPallet">
-          </b-col>
-          <b-col cols=3>
-            <label class="top-label">Pallet height:</label>
-            <input class="form-control" readonly :value="palletHeight">
-          </b-col>
-          <b-col cols=3>
+          <b-col cols=6>
             <label class="top-label">Pallet Weight:</label>
             <input class="form-control" v-model="item.palletWeight">
           </b-col>
         </b-row>
+        <b-row>
+          <b-col cols=6>
+            <br/>
+            <label class="top-label">Units p/ pallet: {{unitsPerPallet}}</label><br/>
+            <label class="top-label">Pallet height: {{palletHeight}}</label>
+          </b-col>
+          <b-col cols=6>
+            <br/>
+            <label class="top-label">Cases p/p: {{casesPerPallet}}</label><br/>
+            <label class="top-label">Pallet cubic: {{palletCubic}}</label>
+          </b-col>
+        </b-row>
       </b-col>
-    </b-row>
-    <hr class="hr-text" data-content="Prices are in USD">
-    <b-row>
-      <b-col cols="2">
-        <label class="top-label">Warehouse ($):</label>
-        <input class="form-control" readonly :value="warehouseCost">
-      </b-col>
-      <b-col cols="2">
-        <label class="top-label">Package/mat. ($):</label>
-        <input class="form-control" readonly :value="packageCost">
-      </b-col>
-      <b-col cols="2">
-        <label class="top-label">Labor ($):</label>
-        <input class="form-control" v-model="item.laborCost">
-      </b-col>
-      <b-col cols="2">
-        <label class="top-label">Other ($):</label>
-        <input class="form-control" v-model="item.otherCost">
-      </b-col>
-      <b-col cols="2">
-        <label class="top-label">Total Cost:</label>
-        <input class="form-control" readonly :value="totalCost">
+      <b-col cols=3>
+        <hr class="hr-text" data-content="Prices are in USD">
+        <b-row>
+          <b-col cols=6>
+            <label class="top-label">Labor ($):</label>
+            <input class="form-control" v-model="item.laborCost">
+          </b-col>
+          <b-col cols=6>
+            <label class="top-label">Other ($):</label>
+            <input class="form-control" v-model="item.otherCost">
+          </b-col>
+        </b-row>
+        <b-row>
+          <b-col cols=6>
+            <br/>
+            <label class="top-label">Warehouse ($): {{warehouseCost}}</label><br/>
+            <label class="top-label">Package/mat. ($): {{packageCost}}</label>
+          </b-col>
+          <b-col cols=6>
+            <br/>
+            <label class="top-label">Total Cost: {{totalCost}}</label>
+          </b-col>
+        </b-row>
       </b-col>
     </b-row>
     <!-- Item Components -->
