@@ -81,6 +81,7 @@ class ComponentRest {
 			dto.setCategoryName(component.getCategory()==null?"":component.getCategory().getName());
 			dto.setSupplierName(component.getSupplier()==null?"":component.getSupplier().getName());
 			dto.setUnitsOnStock(component.getUnitsOnStock());
+			dto.setUnitsLocked(component.getUnitsLocked());
 		    return dto;
 		});
 		return dtos;

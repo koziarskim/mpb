@@ -54,6 +54,7 @@ export default {
         { key: "categoryName", label: "Category", sortable: true },
         { key: "supplierName", label: "Supplier", sortable: true },
         { key: "unitsOnStock", label: "On Stock", sortable: false },
+        { key: "unitsLocked", label: "Locked", sortable: false },
         { key: "action", label: "", sortable: false }
       ],
       components: []

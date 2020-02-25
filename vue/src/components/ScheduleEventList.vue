@@ -36,7 +36,7 @@
             <span :style="getEfficiencyStyle(row.item.efficiency)">{{row.item.performance}} ({{row.item.efficiency}}%)</span>
           </template>
           <template v-slot:cell(unitsScheduled)="row">
-            <b-button v-if="!row.item.edit" @click="editScheduleEvent(row.item)" variant="light">{{row.item.unitsScheduled}}</b-button>
+            <b-button :class="getScheduledClass(row.item)" v-if="!row.item.edit" @click="editScheduleEvent(row.item)" variant="light">{{row.item.unitsScheduled}}</b-button>
             <b-input-group>
               <b-form-input style="width:100px" v-if="row.item.edit" class="form-control" type="tel" v-model="row.item.unitsScheduled">
               </b-form-input>
@@ -93,6 +93,12 @@ export default {
     }
   },
   methods: {
+    getScheduledClass(se){
+      if(se.unitsScheduled > se.unitsProduced){
+        return "schedule-red";
+      }
+      return "";
+    },
     setup(item_id, sale_id){
       this.getItem(item_id);
       if(sale_id){
@@ -210,4 +216,7 @@ export default {
 </script>
 
 <style>
+.schedule-red {
+  background-color: #ff00004d !important;
+}
 </style>

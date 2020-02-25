@@ -71,11 +71,16 @@
                 </b-row>
             </b-col>
             <b-col cols=4 style="border-left: 1px solid #dededf;">
-                <b-row>
-                    <b-col cols=12>
-						<upload :on-upload="onUpload" :file-url="getImageUrl()"></upload>
-                    </b-col>
-                </b-row>
+              <b-row>
+                <b-col cols=6>
+						      <upload :on-upload="onUpload" :file-url="getImageUrl()"></upload>
+                </b-col>
+                <b-col cols=6>
+                  <br/>
+                  <label class="top-label">Stock: <b-link role="button" @click="goToReceiving(component.id)">{{component.unitsOnStock}}</b-link></label><br/>
+                  <label class="top-label">Locked: {{component.unitsLocked}}</label>
+                </b-col>
+              </b-row>
             </b-col>
         </b-row>
         <hr class="hr-text" data-content="Unit prices/fees are in USD ($)">
@@ -125,12 +130,14 @@
               <label class="top-label">Component is used in following Items:</label>
               <b-table :items="component.itemComponents" :fields="columns">
                   <template v-slot:cell(item.number)="row">
-                      <b-button size="sm" @click.stop="goToItem(row.item.item.id)" variant="link">{{row.item.item.number}}</b-button>
+                      <b-button size="sm" @click="goToItem(row.item.item.id)" variant="link">{{row.item.item.number}}</b-button>
                   </template>
                   <template v-slot:cell(action)="row">
-                    <b-button size="sm" @click.stop="deleteItemComponent(row.item.id)">x</b-button>
+                    <b-button size="sm" @click="deleteItemComponent(row.item.id)">x</b-button>
                   </template>
-
+                  <template v-slot:cell(unitsSchProd)="row">
+                      <b-button size="sm" @click="goToItemScheduleList(row.item.item.id)" variant="link">{{row.item.item.unitsScheduled}} / {{row.item.item.unitsProduced}}</b-button>
+                  </template>
               </b-table>
             </b-col>
         </b-row>
@@ -172,10 +179,10 @@ export default {
       columns: [
         { key: "item.number", label: "Item #", sortable: false },
         { key: "item.name", label: "Name", sortable: false },
-        { key: "units", label: "Qty", sortable: false },
+        { key: "units", label: "Assembly", sortable: false },
         { key: "item.brand.name", label: "Brand", sortable: false },
         { key: "item.unitsReadyProd", label: "RFP", sortable: false },
-        // { key: "action", label: "", sortable: false },
+        { key: "unitsSchProd", label: "Sch/Prod", sortable: false },
       ]
     };
   },
@@ -210,6 +217,13 @@ export default {
     },
   },
   methods: {
+    goToReceiving(componentId){
+      var query = { component_id: componentId };
+      router.push({ path: "/receivingList", query: query });
+    },
+    goToItemScheduleList(itemId){
+        router.push('/scheduleEventList/'+itemId);
+    },
     addItem(){
       if (!this.item.id) {
         return;
