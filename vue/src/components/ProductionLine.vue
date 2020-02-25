@@ -298,7 +298,9 @@ export default {
 					return;
 				}
 				if(this.scheduleEvent.unitsProduced < this.scheduleEvent.unitsScheduled){
-					if(!confirm("There are more units scheduled that produced. \n Are you sure you want to finish it?")){
+					if(!confirm("There are more units scheduled that produced. \n"+
+					"Please adjust units scheduled to unlock units reserved! \n"+
+					"Are you sure you want to finish it?")){
 						return;
 					}
 				}

@@ -1,19 +1,22 @@
 In Progress/Done:
 Shipment (screen & PDF):
-- Allow to search by window date.
-- Allow to search/filter by Season
+- Multiple pages for BOL and SS
+- Overwrite Total pallets
+- Overwrite Total weight
+- Udate PDF to show overwritten Total pallets and weight
+- Don't show pallets if Total Pallets overwritten
+- Allow to print BOL from list.
 - Allow to upload documents.
 - Shipment schedule/calendar.
-- Allow to print BOL from list.
 Customer:
-- Reorganize screen layout (Generic info, Billing info, Shipping info).
+- Reorganize screen layout (Generic info, Billing info, Shipping info) - Need more info.
 Item screen:
-- Allow to view Units Ready Production
++ Allow to view Units Ready Production
 - Allow to enter upc for item (manually entered)
 - Allow to enter upc for case (manually entered)
 Components:
-- Price history/average.
-- Allow to view Units Locked (used for scheduled items).
+- Price history/average (based on PO).
++ Allow to view Units Reserved (used for scheduled items).
 Sale:
 - Show sale status (Open, Shipped). Open = Less shipped than Sold, Shipped = Fully shipped.
 - Allow to filter by Status.
@@ -23,12 +26,12 @@ Sale:
 - Combine two sale screens.
 - Allow to enter notes when save.
 Item:
-- Allow to search/filter by Season
-- Validate brand and category.
+- Allow to search/filter by Season and Year.
++ Validate brand and category.
 Purchase:
-- Sort by last mofied
++ Sort by last mofied
 Receiving:
-- Sort by last modified
++ Sort by last modified
 Global:
 - none.
 Production Line:

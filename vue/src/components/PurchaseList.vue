@@ -51,7 +51,7 @@ import httpUtils from "../httpUtils";
 export default {
   data() {
     return {
-      pageable: {totalElements: 100, currentPage: 1, perPage: 7, sortBy: 'number', sortDesc: false},
+      pageable: {totalElements: 100, currentPage: 1, perPage: 7, sortBy: 'updated', sortDesc: true},
       searchPurchase: "",
       searchComponent: "",
       fields: [
