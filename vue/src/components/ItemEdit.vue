@@ -225,7 +225,7 @@ export default {
         { key: "units", label: "Assembly", sortable: false },
         { key: "component.totalLandedCost", label: "Cost", sortable: false },
         { key: "component.unitsOnStock", label: "Stock", sortable: false },
-        { key: "component.unitsLocked", label: "Locked", sortable: false },
+        { key: "component.unitsLocked", label: "Reserved", sortable: false },
         { key: "action", label: "", sortable: false }
       ],
     };

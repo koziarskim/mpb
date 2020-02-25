@@ -78,7 +78,7 @@
                 <b-col cols=6>
                   <br/>
                   <label class="top-label">Stock: <b-link role="button" @click="goToReceiving(component.id)">{{component.unitsOnStock}}</b-link></label><br/>
-                  <label class="top-label">Locked: {{component.unitsLocked}}</label>
+                  <label class="top-label">Reserved: {{component.unitsLocked}}</label>
                 </b-col>
               </b-row>
             </b-col>
