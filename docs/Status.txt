@@ -8,6 +8,8 @@ Shipment (screen & PDF):
 - Allow to print BOL from list.
 - Allow to upload documents.
 - Shipment schedule/calendar.
+- Allow to enter shipment cost (estimated and invoiced).
+- Allow to add multiple items to BOL at once
 Customer:
 - Reorganize screen layout (Generic info, Billing info, Shipping info) - Need more info.
 - Allow to create Pallet Tag - Need to talk more.
@@ -24,6 +26,7 @@ Sale:
 - Ability to create OC (Order Complement) - Need to think more about it.
 - Combine two sale screens.
 - Allow to enter notes when save.
+- Sample order
 Item:
 - Allow to search/filter by Season and Year.
 Production Line:
