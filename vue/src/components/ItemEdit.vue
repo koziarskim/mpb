@@ -397,13 +397,9 @@ export default {
       });
     },
     validate(){
-        if(!this.item.name || !this.item.number){
-            alert("Item Name and Number is required");
-            return false;
-        }
-        if(!this.item.season || !this.item.season.id){
-            alert("Season is required");
-            return false;
+        if(!this.item.name || !this.item.number || !this.item.season.id || !this.item.year.id || !this.item.brand.id || !this.item.category.id){
+          alert("Item Name, Number, Season, Year, Brand and Category are required");
+          return false;
         }
 
         return true;
@@ -450,8 +446,8 @@ export default {
     if (item_id) {
       this.getItemData(item_id);
     }else{
-      this.item.season = navigation.getSeason();
-      this.item.year = navigation.getYear();
+      // this.item.season = navigation.getSeason();
+      // this.item.year = navigation.getYear();
     }
     this.getAvailableBrands();
     this.getAvailableCategories();
