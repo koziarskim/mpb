@@ -10,29 +10,27 @@ Shipment (screen & PDF):
 - Shipment schedule/calendar.
 Customer:
 - Reorganize screen layout (Generic info, Billing info, Shipping info) - Need more info.
+- Allow to create Pallet Tag - Need to talk more.
 Item screen:
-+ Allow to view Units Ready Production
 - Allow to enter upc for item (manually entered)
 - Allow to enter upc for case (manually entered)
 Components:
 - Price history/average (based on PO).
-+ Allow to view Units Reserved (used for scheduled items).
 Sale:
 - Show sale status (Open, Shipped). Open = Less shipped than Sold, Shipped = Fully shipped.
 - Allow to filter by Status.
 - Change column Shipped to Shipped/Open. (Open = still to shipped).
-- Ability to create RGA (Return Merchandise Authorization) - need to think more about it.
-- Ability to create OC (Order Complement) - need to think more about it.
+- Ability to create RGA (Return Merchandise Authorization) - Need to think more about it.
+- Ability to create OC (Order Complement) - Need to think more about it.
 - Combine two sale screens.
 - Allow to enter notes when save.
 Item:
 - Allow to search/filter by Season and Year.
-+ Validate brand and category.
+Production Line:
+- Aloow to adjust units when finish production short.
 Purchase:
-+ Sort by last mofied
+- none
 Receiving:
-+ Sort by last modified
+- none
 Global:
 - none.
-Production Line:
-- Allow to finish production even if the units produced are short.
