@@ -174,6 +174,9 @@
             <template v-slot:cell(units)="row">
               <input class="form-control" style="width:100px" type="tel" v-model="row.item.units">
             </template>
+            <template v-slot:cell(unitsOnStock)="row">
+              <b-link role="button" @click="goToReceiving(row.item.component.id)">{{row.item.component.unitsOnStock}}</b-link>
+            </template>
             <template v-slot:cell(action)="row">
               <b-button size="sm" @click.stop="removeItemComponent(row.item.id)">x</b-button>
             </template>
@@ -224,7 +227,7 @@ export default {
         { key: "component.category.name", label: "Component", sortable: false },
         { key: "units", label: "Assembly", sortable: false },
         { key: "component.totalLandedCost", label: "Cost", sortable: false },
-        { key: "component.unitsOnStock", label: "Stock", sortable: false },
+        { key: "unitsOnStock", label: "Stock", sortable: false },
         { key: "component.unitsLocked", label: "Reserved", sortable: false },
         { key: "action", label: "", sortable: false }
       ],
@@ -293,6 +296,10 @@ export default {
   },
   watch: {},
   methods: {
+    goToReceiving(componentId){
+      var query = { component_id: componentId };
+      router.push({ path: "/receivingList", query: query });
+    },
     addComponent(){
       if(!this.componentKv){
         alert("Select Component to Add");
