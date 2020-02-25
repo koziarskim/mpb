@@ -4,11 +4,11 @@
       <b-col cols="2">
         <span style="text-align: left; font-size: 18px; font-weight: bold">Receivings</span>
       </b-col>
-      <b-col cols="2" style="margin-top: -12px">
+      <b-col cols=3 style="margin-top: -12px">
         <label class="top-label">Purchase:</label>
         <b-select option-value="id" option-text="name" :list="availablePurchases" v-model="purchase"></b-select>
       </b-col>
-      <b-col cols="2" style="margin-top: -12px">
+      <b-col cols=3 style="margin-top: -12px">
         <label class="top-label">Component:</label>
         <b-select option-value="id" option-text="name" :list="availableComponents" v-model="component"></b-select>
       </b-col>
@@ -61,7 +61,7 @@ import moment from "moment";
 export default {
   data() {
     return {
-      pageable: {totalElements: 100, currentPage: 1, perPage: 7, sortBy: 'number', sortDesc: false},
+      pageable: {totalElements: 100, currentPage: 1, perPage: 7, sortBy: 'updated', sortDesc: true},
       fields: [
         { key: "name", label: "Receiving # (Name)", sortable: false },
         { key: "purchase", label: "Purchase", sortable: false },

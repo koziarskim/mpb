@@ -2,10 +2,10 @@
   <b-container fluid>
     <b-row>
       <b-col cols="2">
-        <h4 style="text-align: left;">Receiving: {{receiving.number}}</h4>
+        <h4 style="text-align: left;">Receiving: </h4>
       </b-col>
       <b-col cols="3">
-        <input class="form-control" type="text" v-model="receiving.name" :disabled="!editMode" placeholder="Name/Description">
+        <input class="form-control" type="text" v-model="receiving.number" :disabled="!editMode" placeholder="Name/Description">
       </b-col>
       <b-col cols="2" offset="4">
         <div style="text-align: right;">
@@ -126,6 +126,9 @@ export default {
           this.receiving.etaData = r.data.purchase.expectedDate;
           this.receiving.containerNumber = r.data.purchase.containerNumber;
           this.receiving.invoiceNumber = r.data.purchase.invoiceNumber;
+          if(!this.receiving.number){
+            this.receiving.number = r.data.purchase.number + "-" + r.data.component.number;
+          }
         }).catch(e => {
           console.log("API error: " + e);
         });
@@ -140,6 +143,7 @@ export default {
     if(receiving_id){
       this.getReceiving(receiving_id);
     }
+    
   }
 };
 </script>
