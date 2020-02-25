@@ -22,6 +22,7 @@ public interface ItemService {
 	public Item save(Item item, MultipartFile image) throws IOException;
 	public void delete(Long id);
 	public void updateUnits(List<Long> itemIds);
+	public void updateUnitsReadyProd(List<Long> itemIds);
 
 	@Transactional
 	@Service("itemServiceImpl")
@@ -54,6 +55,19 @@ public interface ItemService {
 		
 		public void delete(Long id) {
 			itemRepo.deleteById(id);
+		}
+
+		public void updateUnitsReadyProd(List<Long> itemIds) {
+			Long counter = 0L;
+			Iterable<Item> items = itemIds==null?itemRepo.findAll():itemRepo.findByIds(itemIds);
+			for (Item item : items) {
+				item.updateUnitsReadyProd();
+				itemRepo.save(item);
+				counter++;
+				log.info("Updated Item: " + item.getId());
+			}
+			;
+			log.info("Total items: " + counter);
 		}
 
 		public void updateUnits(List<Long> itemIds) {

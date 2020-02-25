@@ -57,11 +57,12 @@ class ProductionRest {
 	@PostMapping("/production")
 	ResponseEntity<Production> post(@RequestBody Production production) {
 		Long unitsDiff = production.getUnitsProduced() - production.getPreUnitsProduced();
-		componentService.updateUnitsOnStockByProduction(production.getId(), unitsDiff);
 		production = productionService.save(production);
-		componentService.updateUnitsLockedByItem(production.getScheduleEvent().getSaleItem().getItem().getId());
+		componentService.updateUnitsOnStockByProduction(production.getId(), unitsDiff);
 		itemService.updateUnits(Arrays.asList(production.getScheduleEvent().getSaleItem().getItem().getId()));
 		saleService.updateUnits(Arrays.asList(production.getScheduleEvent().getSaleItem().getSale().getId()));
+		componentService.updateUnitsLockedByItem(production.getScheduleEvent().getSaleItem().getItem().getId());
+		itemService.updateUnitsReadyProd(Arrays.asList(production.getScheduleEvent().getSaleItem().getItem().getId()));
 		return ResponseEntity.ok().body(production);
 	}
 
@@ -73,9 +74,10 @@ class ProductionRest {
 		Long itemId = production.getScheduleEvent().getSaleItem().getItem().getId();
 		Long saleId = production.getScheduleEvent().getSaleItem().getSale().getId();
 		productionService.delete(id);
-		componentService.updateUnitsLockedByItem(itemId);
 		itemService.updateUnits(Arrays.asList(itemId));
 		saleService.updateUnits(Arrays.asList(saleId));
+		componentService.updateUnitsLockedByItem(itemId);
+		itemService.updateUnitsReadyProd(Arrays.asList(itemId));
 		return ResponseEntity.ok().build();
 	}
 	

@@ -163,7 +163,7 @@ public class Item extends BaseEntity {
 			this.unitsProduced += sa.getUnitsProduced();
 			this.unitsShipped += sa.getUnitsShipped();
 		}
-		this.updateUnitsReadyProd();
+//		this.updateUnitsReadyProd();
 	}
 
 }

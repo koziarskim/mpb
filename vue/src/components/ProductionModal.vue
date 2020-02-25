@@ -100,6 +100,7 @@ export default {
 				scheduleEvent: {id: this.scheduleEvent.id},
 				finishTime: moment(this.production.finishTime,'HH:mm:ss').format("HH:mm:ss"),
 				unitsProduced: this.production.units,
+				preUnitsProduced: 0,
 				people: this.production.people
 			};
       http.post("/production", production).then(response => {

@@ -161,6 +161,7 @@ class ItemRest {
 		Item item = objectMapper.readValue(jsonItem, Item.class);
 		Item result = itemService.save(item, image);
 		itemService.updateUnits(Arrays.asList(result.getId()));
+		itemService.updateUnitsReadyProd(Arrays.asList(result.getId()));
 		return ResponseEntity.ok(result);
 	}
 
@@ -176,6 +177,7 @@ class ItemRest {
 	ResponseEntity<?> postUpdateUnits() {
 		try {
 			itemService.updateUnits(null);
+			itemService.updateUnitsReadyProd(null);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

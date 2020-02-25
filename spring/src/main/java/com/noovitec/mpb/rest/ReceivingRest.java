@@ -105,6 +105,7 @@ class ReceivingRest {
 			itemIds.add(ic.getItem().getId());
 		});
 		itemService.updateUnits(itemIds);
+		itemService.updateUnitsReadyProd(itemIds);
 		return ResponseEntity.ok().body(result);
 	}
 
@@ -120,6 +121,7 @@ class ReceivingRest {
 		});
 		receivingService.delete(id);
 		itemService.updateUnits(itemIds);
+		itemService.updateUnitsReadyProd(itemIds);
 		return ResponseEntity.ok().build();
 	}
 }
