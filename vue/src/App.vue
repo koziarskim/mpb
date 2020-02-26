@@ -164,39 +164,42 @@ export default {
   padding-right: 15px !important; 
   min-height: 580px
 }
+.view-default {
+  background-color: #0000001f;
+}
 .view-supplier {
-  background-color: #ffffff;
+  background-color: #0000001f;
 }
 .view-component {
-  background-color: #ffffff;
+  background-color: #0000001f;
 }
 .view-item {
-  background-color: #ffffff;
+  background-color: #0000001f;
 }
 .view-customer {
-  background-color: #ffffff;
+  background-color: #0000001f;
 }
 .view-sale {
-  background-color: #ffffff;
+  background-color: #0000001f;
 }
 .view-purchase {
-  background-color: #ffffff;
+  background-color: #0000001f;
 }
 .view-receiving {
-  background-color: #ffffff;
+  background-color: #0000001f;
 }
 .view-schedule {
-  background-color: #ffffff;
+  background-color: #0000001f;
 }
 .view-production {
-  background-color: #ffffff;
+  background-color: #0000001f;
 }
 .view-shipment {
-  background-color: #ffffff;
+  background-color: #0000001f;
 }
-// .page-link {
-//   background-color: transparent !important;
-// }
+.page-link {
+  background-color: transparent !important;
+}
 .popover {
   max-width: 1000px !important;
 }

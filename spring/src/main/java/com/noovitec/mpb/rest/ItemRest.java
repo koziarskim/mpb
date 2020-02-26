@@ -41,6 +41,7 @@ import com.noovitec.mpb.repo.ItemRepo;
 import com.noovitec.mpb.repo.ScheduleEventRepo;
 import com.noovitec.mpb.repo.SeasonRepo;
 import com.noovitec.mpb.repo.UpcRepo;
+import com.noovitec.mpb.service.ComponentService;
 import com.noovitec.mpb.service.ItemService;
 
 @RestController
@@ -57,6 +58,9 @@ class ItemRest {
 	ScheduleEventRepo scheduleEventRepo;
 	@Autowired
 	private ItemRepo itemRepo;
+	@Autowired
+	private ComponentService componentService;
+	
 	private ItemService itemService;
 	private final Logger log = LoggerFactory.getLogger(ItemRest.class);
 	
@@ -177,6 +181,7 @@ class ItemRest {
 	ResponseEntity<?> postUpdateUnits() {
 		try {
 			itemService.updateUnits(null);
+			componentService.updateUnits(null);
 			itemService.updateUnitsReadyProd(null);
 		} catch (Exception e) {
 			e.printStackTrace();

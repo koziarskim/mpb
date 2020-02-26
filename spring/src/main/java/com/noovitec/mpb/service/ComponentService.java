@@ -118,7 +118,9 @@ public interface ComponentService {
 				Long unitsProduced = 0L;
 				for(PurchaseComponent pc: component.getPurchaseComponents()) {
 					for(Receiving r: pc.getReceivings()) {
-						unitsReceived += r.getUnits();
+						if(r.getReceivingDate()!=null) {
+							unitsReceived += r.getUnits();
+						}
 					}
 				}
 				for(ItemComponent ic: component.getItemComponents()) {
