@@ -2,10 +2,10 @@
   <b-container fluid>
     <b-row>
       <b-col cols=2>
-          <label style="font-size: 18px; font-weight: bold; margin-top: -10px">Shipment #:</label>
-          <input class="form-control" style="margin-top: -7px;" type="tel" v-model="shipment.number">
+          <label class="top-label">Shipment:</label>
+          <input class="form-control" type="tel" v-model="shipment.number">
       </b-col>
-      <b-col cols=3>
+      <b-col cols=2>
         <label class="top-label">Customer:</label>
         <b-select option-value="id" option-text="name" :list="availableCustomers" v-model="customer" placeholder="Select Customer"></b-select>
       </b-col>
@@ -14,18 +14,22 @@
         <input class="form-control" type="tel" v-model="shipment.loadNumber">
       </b-col>      
       <b-col cols=2>
-        <label class="top-label">Last Modified:</label>
-        <input class="form-control" type="tel" readOnly :value="formatModifiedDate(shipment.modifiedDate)">
-      </b-col>
-      <b-col cols=1>
-        <label class="top-label">Ready To Ship</label><br/>
-        <input type="checkbox" style="margin-left: 30px; margin-top: 10px" v-model="shipment.ready">
+        <label class="top-label">Est. Cost:</label>
+        <input class="form-control" type="tel" v-model="shipment.estimatedCost">
       </b-col>
       <b-col cols=2>
-        <div style="margin-top: 5px; margin-left: 50px">
+        <label class="top-label">Invoiced Cost:</label>
+        <input class="form-control" type="tel" v-model="shipment.invoicedCost">
+      </b-col>
+      <b-col cols=2>
+        <div style="margin-left: 50px">
           <b-button size="sm" variant="success" @click="back()">Back</b-button>
-          <b-button size="sm" style="margin-left: 5px" variant="success" @click="saveShipment()">Save</b-button>
-          <img @click="openPdf()" style="margin: 2px; cursor: pointer" src="../assets/pdf-download.png" width="25px">
+          <b-button :title="'Modified: '+formatModifiedDate(shipment.modifiedDate)" size="sm" style="margin-left: 5px" variant="success" @click="saveShipment()">Save</b-button>
+          <img @click="openPdf()" style="margin: 2px; cursor: pointer" src="../assets/pdf-download.png" width="25px"><br/>
+          <div style="display: flex">
+            <label class="top-label">Ready To Ship</label>
+            <input type="checkbox" style="margin-left: 3px; margin-top: 3px" v-model="shipment.ready">
+          </div>
         </div>
       </b-col>
     </b-row>
@@ -35,7 +39,7 @@
         <b-select option-value="id" option-text="name" :list="availableFreightTerms" v-model="shipment.freightTerms" placeholder="Pick Freight"></b-select>
       </b-col>
       <b-col cols=1>
-        <label class="top-label">Freight NMFC:</label>
+        <label class="top-label">NMFC:</label>
         <input class="form-control" type="tel" v-model="shipment.freightNmfc">
       </b-col>
       <b-col cols=1>
@@ -292,7 +296,7 @@ export default {
       })
     },
     formatModifiedDate(dateTime){
-      return moment(dateTime).format("YYYY/MM/DD HH:mm:ss")
+      return moment(dateTime).format("YYYY/MM/DD HH:mm")
     },
     openModal(){
 			this.modalVisible = true;
