@@ -44,7 +44,9 @@ public class Shipment extends BaseEntity {
 	private Long totalUnits = 0L;
 	private Long totalCases = 0L;
 	private Long totalPallets = 0L;
+	private Long totalPalletsCustom = 0L;
 	private BigDecimal totalWeight = BigDecimal.ZERO;
+	private BigDecimal totalWeightCustom = BigDecimal.ZERO;
 	private String status;
 
 	@JsonIgnoreProperties(value = { "sales" }, allowSetters = true)

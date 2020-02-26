@@ -232,7 +232,7 @@ class ShipmentRest {
 						+ (si.getSaleItem().getSku()==null?"":" SKU# "+ si.getSaleItem().getSku()) + "\n";
 				itemCasePack += si.getSaleItem().getItem().getCasePack() + "\n";
 				itemCases += si.getCases() + "\n";
-				itemPallets += si.getPallets() + "\n";
+				itemPallets += si.getPallets()==null?"":si.getPallets() + "\n";
 			}else {
 				saleNumber2 += si.getSaleItem().getSale().getNumber() +"\n";
 				itemQuantity2 += si.getUnits() + "\n";
@@ -240,7 +240,7 @@ class ShipmentRest {
 						+ (si.getSaleItem().getSku()==null?"":" SKU# "+ si.getSaleItem().getSku()) + "\n";
 				itemCasePack2 += si.getSaleItem().getItem().getCasePack() + "\n";
 				itemCases2 += si.getCases() + "\n";
-				itemPallets2 += si.getPallets() + "\n";
+				itemPallets2 += si.getPallets()==null?"":si.getPallets() + "\n";
 			}
 			totalCasePack += si.getSaleItem().getItem().getCasePack();
 		}
@@ -298,8 +298,8 @@ class ShipmentRest {
 		bolStamper.getAcroFields().setField("totalUnits", shipment.getTotalUnits().toString());
 		bolStamper.getAcroFields().setField("totalCasePack", String.valueOf(totalCasePack));
 		bolStamper.getAcroFields().setField("totalCases", shipment.getTotalCases().toString());
-		bolStamper.getAcroFields().setField("totalPallets", shipment.getTotalPallets().toString());
-		bolStamper.getAcroFields().setField("totalWeight", shipment.getTotalWeight().toString());
+		bolStamper.getAcroFields().setField("totalPallets", shipment.getTotalPalletsCustom().toString());
+		bolStamper.getAcroFields().setField("totalWeight", shipment.getTotalWeightCustom().toString());
 		bolStamper.close();
 		bolTemplate.close();
 		

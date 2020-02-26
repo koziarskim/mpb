@@ -1,10 +1,10 @@
 In Progress/Done:
 Shipment (screen & PDF):
-- Multiple pages for BOL and SS
-- Overwrite Total pallets
-- Overwrite Total weight
-- Udate PDF to show overwritten Total pallets and weight
-- Don't show pallets if Total Pallets overwritten
++ Multiple pages for BOL and PS
++ Overwrite Total pallets
++ Overwrite Total weight 
++ Udate PDF to show overwritten Total pallets and weight
++ Don't show pallets if Total Pallets overwritten
 - Allow to print BOL from list.
 - Allow to upload documents.
 - Shipment schedule/calendar.

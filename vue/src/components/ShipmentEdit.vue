@@ -108,11 +108,15 @@
           <b>Total units:</b>
           {{totalUnits}},
           <b>Total cases:</b>
-          {{totalCases}}<br/>
-          <b>Total pallets:</b>
-          {{totalPallets}}
-          <b>Total weight:</b>
-          {{totalWeight}}
+          {{totalCases}}
+          <span style="visibility: hidden">{{totalPallets}}</span>
+          <span style="visibility: hidden">{{totalWeight}}</span><br/>
+          <div style="display: flex">
+            <b style="margin-top: 7px">Total pallets:</b>
+            <input class="form-control" style="width: 60px" type="tel" v-model="totalPalletsCustom" @input="totalPalletsOverwrite=true">&nbsp;
+            <b style="margin-top: 7px">Total weight:</b>
+            <input class="form-control" style="width: 80px" type="tel" v-model="totalWeightCustom" @input="totalWeightOverwrite=true">
+          </div>
         </b-col>
       </b-row>
       <br>
@@ -133,7 +137,7 @@
               <span>{{row.item.cases = Math.ceil(+row.item.units / +row.item.saleItem.item.casePack)}}</span>
             </template>
             <template v-slot:cell(pallets)="row">
-              <span>{{row.item.pallets = Math.ceil(+row.item.cases / (+row.item.saleItem.item.ti * +row.item.saleItem.item.hi))}}</span>
+              <span>{{row.item.pallets = getNumberOfPallets(row.item)}}</span>
             </template>
             <template v-slot:cell(action)="row">
               <b-button size="sm" @click.stop="removeSaleItem(row.item.saleItem.id)">x</b-button>
@@ -160,6 +164,10 @@ export default {
   },
   data() {
     return {
+      totalPalletsOverwrite: false,
+      totalWeightOverwrite: false,
+      totalPalletsCustom: 0,
+      totalWeightCustom: 0,
       selectionVisible: false,
       selected: [],
       modalVisible: false,
@@ -224,6 +232,9 @@ export default {
       this.shipment.shipmentItems.forEach(si => {
         total += +si.pallets;
       });
+      if(!this.totalPalletsOverwrite){
+        this.totalPalletsCustom = total;
+      }
       return total;
     },
     totalWeight() {
@@ -232,7 +243,10 @@ export default {
         var totalPaletWeight = +si.saleItem.item.palletWeight * +si.pallets
         total += (+si.saleItem.item.weight * +si.units) + +totalPaletWeight;
       });
-      return total;
+      if(!this.totalWeightOverwrite){
+        this.totalWeightCustom = total.toFixed();
+      }
+      return total.toFixed();
     }
   },
   watch: {
@@ -252,6 +266,13 @@ export default {
     },
   },
   methods: {
+    getNumberOfPallets(shipmentItem){
+      var number = null;
+      if(!this.totalPalletsOverwrite){
+        number = Math.ceil(+shipmentItem.cases / (+shipmentItem.saleItem.item.ti * +shipmentItem.saleItem.item.hi))
+      }
+      return number;
+    },
     keyDown(event){
       this.itemText = event.target.value;
     },
@@ -306,6 +327,14 @@ export default {
         if (response.data.freightAddress){
           this.freightAddress = response.data.freightAddress;
         }
+        if(response.data.totalPallets != response.data.totalPalletsCustom){
+          this.totalPalletsOverwrite = true;
+          this.totalPalletsCustom = response.data.totalPalletsCustom;
+        }
+        if(response.data.totalWeight != response.data.totalWeightCustom){
+          this.totalWeightOverwrite = true;
+          this.totalWeightCustom = response.data.totalWeightCustom;
+        }
       })
       .catch(e => {
         console.log("API error: " + e);
@@ -332,6 +361,8 @@ export default {
       this.shipment.totalCases = this.totalCases;
       this.shipment.totalPallets = this.totalPallets;
       this.shipment.totalWeight = this.totalWeight;
+      this.shipment.totalPalletsCustom = this.totalPalletsCustom;
+      this.shipment.totalWeightCustom = this.totalWeightCustom;
       return http.post("/shipment", this.shipment).then(r => {
         this.shipment = r.data;
         return r.data;
