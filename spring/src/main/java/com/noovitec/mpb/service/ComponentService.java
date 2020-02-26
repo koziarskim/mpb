@@ -1,7 +1,7 @@
 package com.noovitec.mpb.service;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -15,6 +15,8 @@ import org.springframework.web.multipart.MultipartFile;
 import com.noovitec.mpb.entity.Attachment;
 import com.noovitec.mpb.entity.Component;
 import com.noovitec.mpb.entity.ItemComponent;
+import com.noovitec.mpb.entity.PurchaseComponent;
+import com.noovitec.mpb.entity.Receiving;
 import com.noovitec.mpb.repo.AttachmentRepo;
 import com.noovitec.mpb.repo.ComponentRepo;
 import com.noovitec.mpb.repo.ItemComponentRepo;
@@ -27,6 +29,7 @@ public interface ComponentService {
 	public void updateUnitsOnStock(Long componentId, Long units);
 	public void updateUnitsLocked(List<Long> componentIds);
 	public void updateUnitsLockedByItem(Long itemId);
+	public void updateUnits(List<Long> componentIds);
 
 	@Transactional
 	@Service("componentServiceImpl")
@@ -57,7 +60,9 @@ public interface ComponentService {
 				attachmentRepo.save(attachment);
 				component.setAttachment(attachment);
 			}
-			return componentRepo.save(component);
+			component = componentRepo.save(component);
+			this.updateUnits(Arrays.asList(component.getId()));
+			return component;
 		}
 		
 		public void delete(Long id) {
@@ -105,5 +110,31 @@ public interface ComponentService {
 			}
 			log.info("Total components: " + counter);
 		}
+
+		public void updateUnits(List<Long> componentIds) {
+			Long counter = 0L;
+			Iterable<Component> components = componentIds==null?componentRepo.findAll():componentRepo.findByIds(componentIds);
+			for (Component component : components) {
+				Long unitsReceived = 0L;
+				Long unitsScheduled = 0L;
+				Long unitsProduced = 0L;
+				for(PurchaseComponent pc: component.getPurchaseComponents()) {
+					for(Receiving r: pc.getReceivings()) {
+						unitsReceived += r.getUnits();
+					}
+				}
+				for(ItemComponent ic: component.getItemComponents()) {
+					unitsScheduled += (ic.getUnits() * ic.getItem().getUnitsScheduled());
+					unitsProduced += (ic.getUnits() * ic.getItem().getUnitsProduced());
+				}
+				component.setUnitsOnStock(unitsReceived - unitsProduced);
+				component.setUnitsLocked(unitsScheduled - unitsProduced);
+				componentRepo.save(component);
+				counter++;
+				log.info("Updated Component: " + component.getId());
+			}
+			log.info("Total components: " + counter);
+		}
+
 	}
 }

@@ -131,7 +131,7 @@ class ComponentRest {
 	@GetMapping("/component/update/units")
 	ResponseEntity<?> postUpdateUnits() {
 		try {
-			componentService.updateUnitsLocked(null);
+			componentService.updateUnits(null);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

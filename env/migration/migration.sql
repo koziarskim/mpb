@@ -9,3 +9,5 @@ update shipment set total_weight_custom = total_weight;
 alter table shipment add column estimated_cost numeric(19,2) default 0.00;
 
 alter table shipment add column invoiced_cost numeric(19,2) default 0.00;
+
+update sale set number = '000000' where number is null;

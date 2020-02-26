@@ -9,7 +9,8 @@
 					Started: <span style="font-weight: bold; margin-right: 5px;">{{scheduleEvent.startTime}}</span> 
 					Finished: <span style="font-weight: bold; margin-right: 5px;">{{scheduleEvent.finishTime}}</span> 
 					Units Scheduled: <span style="font-weight: bold; margin-right: 5px;">{{scheduleEvent.unitsScheduled}}</span> 
-					Total Produced: <span style="font-weight: bold">{{scheduleEvent.unitsProduced}}</span> 
+					Total Produced: <span style="font-weight: bold; margin-right: 5px;">{{scheduleEvent.unitsProduced}}</span>
+					Diff: <span style="font-weight: bold; margin-right: 5px;">{{(+scheduleEvent.unitsProduced - +scheduleEvent.unitsScheduled)}}</span>
 				</div>
 			</b-col>
 			<b-col>
@@ -35,7 +36,7 @@
 			<b-col cols=8>
 				<div v-if="!scheduleEvent.id" style="margin-top: 120px; font-weight: bold">Please select sale order (SO) on the left (red)</div>
 				<div id="1234" :style="chartVisibility">
-					<div style="font-size: 12px; margin-left: 260px">{{scheduleEvent.saleItem.item.name}} ({{scheduleEvent.saleItem.sale.customer.name}} - {{scheduleEvent.saleItem.sale.number}})</div>
+					<div style="font-size: 12px; margin-left: 260px">{{scheduleEvent.saleItem.item.number}} ({{scheduleEvent.saleItem.sale.customer.name}} - {{scheduleEvent.saleItem.sale.number}})</div>
 					<chart :chartdata="chartData" :options="chartOptions" :width="600" :height="300"></chart>
 				</div>
 			</b-col>
@@ -236,7 +237,7 @@ export default {
 					if(!itemEvent){
 						itemEvent = {
 							id: event.saleItem.item.id,
-							name: event.saleItem.item.name,
+							name: event.saleItem.item.number +" ("+event.saleItem.item.name+")",
 							active: this.scheduleEvent.saleItem.item.id == event.saleItem.item.id?true:false,
 							customers: [],
 						}

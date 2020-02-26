@@ -97,6 +97,9 @@ export default {
       if(se.unitsScheduled > se.unitsProduced){
         return "schedule-red";
       }
+      if(se.unitsScheduled < se.unitsProduced){
+        return "schedule-yellow"
+      }
       return "";
     },
     setup(item_id, sale_id){
@@ -218,5 +221,8 @@ export default {
 <style>
 .schedule-red {
   background-color: #ff00004d !important;
+}
+.schedule-yellow {
+  background-color: #e4d171 !important;
 }
 </style>

@@ -5,12 +5,7 @@ Shipment (screen & PDF):
 + Overwrite Total weight 
 + Udate PDF to show overwritten Total pallets and weight
 + Don't show pallets if Total Pallets overwritten
-- Allow to print BOL from list.
-- Allow to upload documents.
-- Shipment schedule/calendar.
 + Allow to enter shipment cost (estimated and invoiced).
-- Allow to add multiple items to BOL at once
-- Allow to search by Sale number (without picking sale).
 + BOL and PS layout changes:
 	+ remove last note
 	+ move Loaded By down
@@ -18,6 +13,11 @@ Shipment (screen & PDF):
 	+ expand Load/Ref#
 	+ add Frieigh address to PS
 	+ connect both address boxes)
+- Allow to print BOL from list.
+- Allow to upload documents.
+- Shipment schedule/calendar.
+- Allow to add multiple items to BOL at once
+- Allow to search by Sale number (without picking sale).
 Customer:
 - Reorganize screen layout (Generic info, Billing info, Shipping info) - Need more info.
 - Allow to create Pallet Tag - Need to talk more.
