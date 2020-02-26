@@ -15,6 +15,11 @@ public interface ItemRepo extends PagingAndSortingRepository<Item, Long>, Custom
 	@Query("select distinct i from Item i where i.id in :itemIds")
 	List<Item> findByIds(List<Long> itemIds);
 
+	@Query("select distinct i from Item i "
+			+ "join i.itemComponents ic "
+			+ "where ic.component.id = :componentId")
+	List<Item> findByComponent(Long componentId);
+
 	@Query(value = "select i.* from Item i order by i.id desc limit 1", nativeQuery = true)
 	Item getLast();
 	

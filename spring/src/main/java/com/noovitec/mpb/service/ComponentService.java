@@ -60,9 +60,7 @@ public interface ComponentService {
 				attachmentRepo.save(attachment);
 				component.setAttachment(attachment);
 			}
-			component = componentRepo.save(component);
-			this.updateUnits(Arrays.asList(component.getId()));
-			return component;
+			return componentRepo.save(component);
 		}
 		
 		public void delete(Long id) {

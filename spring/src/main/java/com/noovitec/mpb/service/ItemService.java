@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.noovitec.mpb.entity.Attachment;
+import com.noovitec.mpb.entity.Component;
 import com.noovitec.mpb.entity.Item;
 import com.noovitec.mpb.entity.ItemComponent;
 import com.noovitec.mpb.repo.AttachmentRepo;
@@ -23,6 +24,8 @@ public interface ItemService {
 	public void delete(Long id);
 	public void updateUnits(List<Long> itemIds);
 	public void updateUnitsReadyProd(List<Long> itemIds);
+	public void updateUnitsByComponent(Long componentId);
+	public void updateUnitsReadyProdByComponent(Long componentId);
 
 	@Transactional
 	@Service("itemServiceImpl")
@@ -83,5 +86,18 @@ public interface ItemService {
 			log.info("Total items: " + counter);
 		}
 
+		public void updateUnitsByComponent(Long componentId) {
+			for(Item item: itemRepo.findByComponent(componentId)) {
+				item.updateUnits();
+				crudService.save(item);
+			}
+		}
+
+		public void updateUnitsReadyProdByComponent(Long componentId) {
+			for(Item item: itemRepo.findByComponent(componentId)) {
+				item.updateUnitsReadyProd();
+				crudService.save(item);
+			}
+		}
 	}
 }

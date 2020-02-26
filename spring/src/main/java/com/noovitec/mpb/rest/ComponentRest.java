@@ -1,6 +1,7 @@
 package com.noovitec.mpb.rest;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -34,6 +35,7 @@ import com.noovitec.mpb.repo.CategoryRepo;
 import com.noovitec.mpb.repo.ComponentRepo;
 import com.noovitec.mpb.service.ComponentService;
 import com.noovitec.mpb.service.CrudService;
+import com.noovitec.mpb.service.ItemService;
 
 @RestController
 @RequestMapping("/api")
@@ -49,6 +51,8 @@ class ComponentRest {
 	CrudService crudService;
 	@Autowired
 	ComponentService componentService;
+	@Autowired
+	ItemService itemService;
 
 	private final Logger log = LoggerFactory.getLogger(ComponentRest.class);
 	private ComponentRepo componentRepo;
@@ -118,6 +122,9 @@ class ComponentRest {
 	ResponseEntity<Component> postComponentAndAttachment(@RequestParam(required = false) MultipartFile image, @RequestParam String jsonComponent) throws JsonParseException, JsonMappingException, IOException{
 		Component component = objectMapper.readValue(jsonComponent, Component.class);
 		component = componentService.save(component, image);
+		itemService.updateUnitsByComponent(component.getId());
+		componentService.updateUnits(Arrays.asList(component.getId()));
+		itemService.updateUnitsReadyProdByComponent(component.getId());
 		return ResponseEntity.ok(component);
 	}
 
