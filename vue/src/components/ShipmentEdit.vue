@@ -91,6 +91,12 @@
       <b-row>
         <b-col cols=6>
           <label class="top-label">Sale ( Item ):</label>
+          <!-- <div @blur="selectionVisible=false">
+            <input @focus="selectionVisible=true"/>
+            <select v-if="selectionVisible" v-model="selected" multiple>
+              <option v-for="si in availableSaleItems" :value="si" :key="si.id">{{si.name}}</option>
+            </select>
+          </div> -->
           <div @keyup="keyDown">
             <b-select ref="bselect" option-value="id" option-text="name" :list="availableSaleItems" v-model="saleItem"></b-select>
           </div>
@@ -154,6 +160,8 @@ export default {
   },
   data() {
     return {
+      selectionVisible: false,
+      selected: [],
       modalVisible: false,
       shipment: {
         number: 0, 
@@ -172,6 +180,7 @@ export default {
       sale: {},
       availableSaleItems: [],
       saleItem: {},
+      saleItems: [],
       sortBy: "id",
       sortDesc: false,
       columns: [
