@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -213,18 +214,42 @@ class ShipmentRest {
 		String itemCasePack = "";
 		String itemCases = "";
 		String itemPallets = "";
+		String itemQuantity2 = "";
+		String saleNumber2 = "";
+		String itemDescription2 = "";
+		String itemCasePack2 = "";
+		String itemCases2 = "";
+		String itemPallets2 = "";
 		int totalCasePack = 0;
-		for (ShipmentItem si : shipment.getShipmentItems()) {
-			itemQuantity += si.getUnits() + "\n";
-			saleNumber += si.getSaleItem().getSale().getNumber() +"\n";
-			itemDescription += si.getSaleItem().getItem().getNumber() + " - " +si.getSaleItem().getItem().getName() 
-					+ (si.getSaleItem().getSku()==null?"":" SKU# "+ si.getSaleItem().getSku()) + "\n";
-			itemCasePack += si.getSaleItem().getItem().getCasePack() + "\n";
-			itemCases += si.getCases() + "\n";
-			itemPallets += si.getPallets() + "\n";
+		Collection<ShipmentItem> shipmentItems = shipment.getShipmentItems();
+		int count = 0;
+		for (ShipmentItem si : shipmentItems) {
+			count++;
+			if(count <= 27) {
+				saleNumber += si.getSaleItem().getSale().getNumber() +"\n";
+				itemQuantity += si.getUnits() + "\n";
+				itemDescription += si.getSaleItem().getItem().getNumber() + " - " +si.getSaleItem().getItem().getName() 
+						+ (si.getSaleItem().getSku()==null?"":" SKU# "+ si.getSaleItem().getSku()) + "\n";
+				itemCasePack += si.getSaleItem().getItem().getCasePack() + "\n";
+				itemCases += si.getCases() + "\n";
+				itemPallets += si.getPallets() + "\n";
+			}else {
+				saleNumber2 += si.getSaleItem().getSale().getNumber() +"\n";
+				itemQuantity2 += si.getUnits() + "\n";
+				itemDescription2 += si.getSaleItem().getItem().getNumber() + " - " +si.getSaleItem().getItem().getName() 
+						+ (si.getSaleItem().getSku()==null?"":" SKU# "+ si.getSaleItem().getSku()) + "\n";
+				itemCasePack2 += si.getSaleItem().getItem().getCasePack() + "\n";
+				itemCases2 += si.getCases() + "\n";
+				itemPallets2 += si.getPallets() + "\n";
+			}
 			totalCasePack += si.getSaleItem().getItem().getCasePack();
 		}
-		InputStream bolIn = this.getClass().getClassLoader().getResourceAsStream("pdf/BOL-Template.pdf");
+		InputStream bolIn = null;
+		if(shipmentItems.size() <= 27) {
+			bolIn = this.getClass().getClassLoader().getResourceAsStream("pdf/BOL-Template-1.pdf");
+		}else {
+			bolIn = this.getClass().getClassLoader().getResourceAsStream("pdf/BOL-Template-2.pdf");
+		}
 		PdfReader bolTemplate = new PdfReader(bolIn);
 		ByteArrayOutputStream bolBaos = new ByteArrayOutputStream();
 		PdfStamper bolStamper = new PdfStamper(bolTemplate, bolBaos);
@@ -238,12 +263,18 @@ class ShipmentRest {
 		bolStamper.getAcroFields().setField("freightClass", shipment.getFreightClass());
 		bolStamper.getAcroFields().setField("freightTerms",  ft.get(shipment.getFreightTerms()));
 		bolStamper.getAcroFields().setField("loadNumber", shipment.getLoadNumber());
-		bolStamper.getAcroFields().setField("itemQuantity", itemQuantity);
 		bolStamper.getAcroFields().setField("saleNumber", saleNumber);
+		bolStamper.getAcroFields().setField("itemQuantity", itemQuantity);
 		bolStamper.getAcroFields().setField("itemDescription", itemDescription);
 		bolStamper.getAcroFields().setField("itemCasePack", itemCasePack);
 		bolStamper.getAcroFields().setField("itemCases", itemCases);
 		bolStamper.getAcroFields().setField("itemPallets", itemPallets);
+		bolStamper.getAcroFields().setField("saleNumber2", saleNumber2);
+		bolStamper.getAcroFields().setField("itemQuantity2", itemQuantity2);
+		bolStamper.getAcroFields().setField("itemDescription2", itemDescription2);
+		bolStamper.getAcroFields().setField("itemCasePack2", itemCasePack2);
+		bolStamper.getAcroFields().setField("itemCases2", itemCases2);
+		bolStamper.getAcroFields().setField("itemPallets2", itemPallets2);
 		if(shipment.getShippingAddress()!=null) {
 			String phone = shipment.getShippingAddress().getPhone()==null?shipment.getCustomer().getPhone():shipment.getShippingAddress().getPhone();
 			String shippingAddress = shipment.getCustomer().getName() + " - "+shipment.getShippingAddress().getDc() + "\n"
