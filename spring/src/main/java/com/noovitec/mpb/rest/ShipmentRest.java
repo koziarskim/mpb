@@ -225,7 +225,7 @@ class ShipmentRest {
 		int count = 0;
 		for (ShipmentItem si : shipmentItems) {
 			count++;
-			if(count <= 27) {
+			if(count <= 30) {
 				saleNumber += si.getSaleItem().getSale().getNumber() +"\n";
 				itemQuantity += si.getUnits() + "\n";
 				itemDescription += si.getSaleItem().getItem().getNumber() + " - " +si.getSaleItem().getItem().getName() 
@@ -245,7 +245,7 @@ class ShipmentRest {
 			totalCasePack += si.getSaleItem().getItem().getCasePack();
 		}
 		InputStream bolIn = null;
-		if(shipmentItems.size() <= 27) {
+		if(shipmentItems.size() <= 30) {
 			bolIn = this.getClass().getClassLoader().getResourceAsStream("pdf/BOL-Template-1.pdf");
 		}else {
 			bolIn = this.getClass().getClassLoader().getResourceAsStream("pdf/BOL-Template-2.pdf");

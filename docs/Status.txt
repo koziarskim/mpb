@@ -8,8 +8,16 @@ Shipment (screen & PDF):
 - Allow to print BOL from list.
 - Allow to upload documents.
 - Shipment schedule/calendar.
-- Allow to enter shipment cost (estimated and invoiced).
++ Allow to enter shipment cost (estimated and invoiced).
 - Allow to add multiple items to BOL at once
+- Allow to search by Sale number (without picking sale).
++ BOL and PS layout changes:
+	+ remove last note
+	+ move Loaded By down
+	+ move Ship Date next to FOB
+	+ expand Load/Ref#
+	+ add Frieigh address to PS
+	+ connect both address boxes)
 Customer:
 - Reorganize screen layout (Generic info, Billing info, Shipping info) - Need more info.
 - Allow to create Pallet Tag - Need to talk more.
@@ -19,6 +27,7 @@ Item screen:
 Components:
 - Price history/average (based on PO).
 Sale:
+- Validate unique sale number.
 - Show sale status (Open, Shipped). Open = Less shipped than Sold, Shipped = Fully shipped.
 - Allow to filter by Status.
 - Change column Shipped to Shipped/Open. (Open = still to shipped).
