@@ -182,6 +182,12 @@ export default {
     },
   },
   mounted() {
+    var componentIds = this.$route.query.componentIds;
+    window.history.replaceState({}, document.title, window.location.pathname);
+    if(componentIds){
+      var searchDto = {components: componentIds.split(',')}
+      this.getPoComponents(searchDto);
+    }
   }
 };
 </script>

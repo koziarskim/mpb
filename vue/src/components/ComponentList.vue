@@ -12,7 +12,8 @@
       </b-col>
       <b-col>
         <div style="text-align: right;">
-          <b-button type="submit" variant="primary" @click="goToComponent('')">New Component</b-button>
+          <b-button size="sm" type="submit" variant="primary" @click="createNewPurchase()">New P.O.({{selectedComponents.length}})</b-button>&nbsp;
+          <b-button size="sm" type="submit" variant="primary" @click="goToComponent('')">New Component</b-button>
         </div>
       </b-col>
     </b-row>
@@ -25,16 +26,11 @@
         <b-button size="sm" @click.stop="goToReceiving(row.item.id)" variant="link">{{row.item.unitsOnStock}}</b-button>
       </template>
       <template v-slot:cell(action)="row">
-        <b-button size="sm" @click.stop="deleteComponent(row.item.id)" :disabled="row.item.locked" >x</b-button>
+        <input type="checkbox" v-model="selectedComponents" :value="row.item">&nbsp;
+        <b-button size="sm" @click.stop="deleteComponent(row.item.id)" :disabled="row.item.locked">x</b-button>
       </template>
     </b-table>
-    <b-pagination
-      v-model="pageable.currentPage"
-      :per-page= "pageable.perPage"
-      :total-rows="pageable.totalElements"
-      @change="paginationChange"
-    ></b-pagination>
-    <b-alert :show="alertSecs" dismissible variant="warning" @dismiss-count-down="(secs) => { alertSecs = secs }">{{alertMessage}}</b-alert>
+    <b-pagination v-model="pageable.currentPage" :per-page= "pageable.perPage" :total-rows="pageable.totalElements" @change="paginationChange"></b-pagination>
   </b-container>
 </template>
 <script>
@@ -53,16 +49,17 @@ export default {
       sortBy: "age",
       sortDesc: false,
       fields: [
-        { key: "name", label: "Component # (Name)", sortable: true },
-        { key: "categoryName", label: "Category", sortable: true },
-        { key: "supplierName", label: "Supplier", sortable: true },
+        { key: "name", label: "Component # (Name)", sortable: false },
+        { key: "categoryName", label: "Category", sortable: false },
+        { key: "supplierName", label: "Supplier", sortable: false },
         { key: "unitsOnStock", label: "On Stock", sortable: false },
         { key: "unitsLocked", label: "Reserved", sortable: false },
         { key: "action", label: "", sortable: false }
       ],
       components: [],
       availableSuppliers: [],
-      supplierKv: {}
+      supplierKv: {},
+      selectedComponents: []
     };
   },
   watch: {
@@ -71,6 +68,16 @@ export default {
     }
   },
   methods: {
+    createNewPurchase(){
+      var supplierId = this.selectedComponents[0].supplierId;
+      var supplierIds = this.selectedComponents.filter(c=> c.supplierId != this.selectedComponents[0].supplierId);
+      if(supplierIds.length>0){
+        alert("Supplier missmatch! Only components to single supplier are allowed!");
+        return false;
+      }
+      var query = { componentIds: this.selectedComponents.map(c=> c.id).join(",") };
+      router.push({ path: "/purchaseNew", query: query })
+    },
     sorted(e){
         if(!e.sortBy){ return }
         this.pageable.sortBy = e.sortBy;
