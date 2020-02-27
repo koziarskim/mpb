@@ -10,8 +10,9 @@ import org.springframework.data.repository.query.Param;
 
 import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.entity.Component;
+import com.noovitec.mpb.repo.custom.CustomComponentRepo;
 
-public interface ComponentRepo extends PagingAndSortingRepository<Component, Long> {
+public interface ComponentRepo extends PagingAndSortingRepository<Component, Long>, CustomComponentRepo {
 
 	@Query("select distinct c from Component c where c.id in :componentIds")
 	List<Component> findByIds(List<Long> componentIds);

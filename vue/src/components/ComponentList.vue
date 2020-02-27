@@ -4,8 +4,11 @@
       <b-col cols="2">
         <span style="text-align: left; font-size: 18px; font-weight: bold">Components</span>
       </b-col>
-      <b-col cols="3">
-        <input class="form-control" type="tel" v-model="nameSearch" @keyup.enter="getComponentsData" placeholder="Search by Number, Name or Supplier"/>
+      <b-col cols=2>
+        <input class="form-control" type="tel" v-model="nameSearch" @keyup.enter="getComponents()" placeholder="Number or Name"/>
+      </b-col>
+      <b-col cols=3>
+        <b-select option-value="id" option-text="name" :list="availableSuppliers" v-model="supplierKv" placeholder="Supplier"></b-select>
       </b-col>
       <b-col>
         <div style="text-align: right;">
@@ -57,33 +60,45 @@ export default {
         { key: "unitsLocked", label: "Reserved", sortable: false },
         { key: "action", label: "", sortable: false }
       ],
-      components: []
+      components: [],
+      availableSuppliers: [],
+      supplierKv: {}
     };
+  },
+  watch: {
+    supplierKv(old_value, new_value){
+      this.getComponents();
+    }
   },
   methods: {
     sorted(e){
         if(!e.sortBy){ return }
         this.pageable.sortBy = e.sortBy;
         this.pageable.sortDesc = e.sortDesc;
-        this.getComponentsData();
+        this.getComponents();
     },
     paginationChange(page){
         this.pageable.currentPage = page;
-        this.getComponentsData();
+        this.getComponents();
     },
     showAlert(message) {
       (this.alertSecs = 3), (this.alertMessage = message);
     },
-    getComponentsData() {
-      http
-        .get("/component/pageable", {params: {pageable: this.pageable, nameSearch: this.nameSearch}})
-        .then(response => {
-          this.components = response.data.content;
-          this.pageable.totalElements = response.data.totalElements;
-        })
-        .catch(e => {
-          console.log("API error: " + e);
-        });
+    getComponents() {
+      var query = {params: {pageable: this.pageable, nameSearch: this.nameSearch, supplierId: this.supplierKv.id}};
+      http.get("/component/pageable", query).then(response => {
+        this.components = response.data.content;
+        this.pageable.totalElements = response.data.totalElements;
+      }).catch(e => {
+        console.log("API error: " + e);
+      });
+    },
+    getAvailableSuppliers() {
+      http.get("/supplier/kv").then(r => {
+        this.availableSuppliers = r.data;
+      }).catch(e => {
+        console.log("API error: " + e);
+      });
     },
     getItem(component_id) {
       var component;
@@ -104,7 +119,7 @@ export default {
           }
           http
               .delete("/component/" + component_id)
-              .then(response => {this.getComponentsData();})
+              .then(response => {this.getComponents();})
               .catch(e => {
               console.log("API Error: " + e);
               });
@@ -124,7 +139,8 @@ export default {
     }
   },
   mounted() {
-    this.getComponentsData();
+    this.getComponents();
+    this.getAvailableSuppliers();
   }
 };
 </script>
