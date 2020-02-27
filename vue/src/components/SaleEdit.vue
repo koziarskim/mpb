@@ -21,6 +21,7 @@
       </b-col>
       <b-col cols=1 style="margin-top: 20px">
         <div style="text-align: right;">
+          <b-button v-if="sale.saleItems.length==0" size="sm" type="reset" variant="danger" @click="deleteSale()">x</b-button>
           <b-button size="sm" type="reset" variant="success" @click="saveAndClose()">Save</b-button>
         </div>
       </b-col>
@@ -85,7 +86,9 @@
             <span>{{getCases(row.item)}}</span>
           </template>
           <template v-slot:cell(unitPrice)="row">
+            <div style="display:flex">
             $<input class="form-control" style="display: inline; width:100px" type="tel" v-model="row.item.unitPrice">
+            </div>
           </template>
           <template v-slot:cell(totalUnitPrice)="row">
             <span>${{row.item.totalUnitPrice = (+row.item.unitPrice * +row.item.units).toFixed(2)}}</span>
@@ -97,7 +100,16 @@
             <b-button size="sm" variant="link" @click="goToShipment(row.item)">{{row.item.unitsShipped}}</b-button>
           </template>
           <template v-slot:cell(action)="row">
-            <b-button size="sm" @click="deleteItem(row.item.item.id)">x</b-button>
+            <b-button size="sm" :id="'popover-'+row.item.id">...</b-button>
+            <b-popover placement="left" :target="'popover-'+row.item.id" variant="light">
+              <div style="width: 340px">
+                <b-button size="sm" @click="deleteItem(row.item.item.id)" variant="link">Delete Item</b-button><br/>
+                <div style="display:flex;">
+                  <b-button size="sm" @click="moveItem(row.item)" variant="link">Move Item</b-button>
+                  <b-select style="width: 250px" option-value="id" option-text="name" :list="availableSales" v-model="saleKv"></b-select>
+                </div>
+              </div>
+            </b-popover>
           </template>
         </b-table>
       </b-col>
@@ -181,7 +193,9 @@ export default {
         {id: "PRP", name: "Pre Paid"},
         {id: "TPO", name: "TP Bill Other"},
         {id: "COL", name: "Collect"}
-      ]
+      ],
+      availableSales: [],
+      saleKv: {},
     };
   },
 
@@ -294,6 +308,7 @@ export default {
               id: response.data.customer.id,
               value: response.data.customer.name
             }
+            this.getAvailableSales();
           }
           if (response.data.shippingAddress) {
             this.shippingAddress = response.data.shippingAddress;
@@ -344,6 +359,21 @@ export default {
       }
       return true;
     },
+    deleteSale() {
+      if(this.sale.saleItems.length > 0 ){
+        alert("There are existing items. Please, move or delete items first");
+        return;
+      }
+      this.$bvModal.msgBoxConfirm("Are you sure you want to delete this Sale?").then(ok => {
+        if(ok){
+          http.delete("/sale/"+this.sale.id).then(r => {
+            router.push('/saleList/');
+          }).catch(e => {
+            console.log("API Error: "+e);
+          });
+            }
+        })
+    },
     saveAndClose() {
       if(!this.validate()){
         return;
@@ -371,14 +401,26 @@ export default {
         });
     },
     getAvailableItems() {
-      http
-        .get("/item/kv")
-        .then(response => {
-          this.availableItems = response.data;
-        })
-        .catch(e => {
-          console.log("API error: " + e);
-        });
+      http.get("/item/kv").then(r => {
+        this.availableItems = r.data;
+      }).catch(e => {
+        console.log("API error: " + e);
+      });
+    },
+    getAvailableSales() {
+      http.get("/kv/sale/customer/"+this.sale.customer.id).then(r => {
+        this.availableSales = r.data.filter(s => s.id != this.sale.id);
+      }).catch(e => {
+        console.log("API error: " + e);
+      });
+    },
+    moveItem(saleItem){
+      http.post("/saleItem/"+saleItem.id+"/move/to/sale/"+this.saleKv.id).then(r => {
+        this.saleKv = {};
+        this.getSaleData(this.sale.id);
+      }).catch(e => {
+        console.log("API error: " + e);
+      });
     },
     addItem() {
       if (!this.item.id) {

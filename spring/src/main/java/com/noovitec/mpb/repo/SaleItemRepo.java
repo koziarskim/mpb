@@ -3,8 +3,11 @@ package com.noovitec.mpb.repo;
 import java.util.List;
 import java.util.Optional;
 
+import javax.transaction.Transactional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
@@ -40,5 +43,10 @@ public interface SaleItemRepo extends PagingAndSortingRepository<SaleItem, Long>
 
 	@Query("select si from SaleItem si where si.id in (:ids)")
 	public List<SaleItem> findAllByIds(Long[] ids);
+	
+	@Transactional
+	@Modifying
+	@Query("update SaleItem si set si.sale.id = :saleId where si.id = :saleItemId")
+	public void moveSaleItem(Long saleItemId, Long saleId);
 
 }
