@@ -1,14 +1,14 @@
 <template>
   <b-container fluid>
-      <b-row style="padding-bottom: 4px;">
-      <b-col cols="2">
-        <span style="text-align: left; font-size: 18px; font-weight: bold">Components</span>
+    <b-row style="padding-bottom: 4px; font-size: 12px">
+      <b-col cols=2>
+        <input class="form-control" style="font-size: 12px" type="tel" v-model="nameSearch" @keyup.enter="getComponents()" placeholder="Number or Name"/>
       </b-col>
       <b-col cols=2>
-        <input class="form-control" type="tel" v-model="nameSearch" @keyup.enter="getComponents()" placeholder="Number or Name"/>
+        <b-select option-value="id" option-text="name" :list="availableSuppliers" v-model="supplierKv" placeholder="Supplier"></b-select>
       </b-col>
       <b-col cols=3>
-        <b-select option-value="id" option-text="name" :list="availableSuppliers" v-model="supplierKv" placeholder="Supplier"></b-select>
+        <b-select option-value="id" option-text="name" :list="availableItems" v-model="itemKv" placeholder="Item"></b-select>
       </b-col>
       <b-col>
         <div style="text-align: right;">
@@ -59,11 +59,16 @@ export default {
       components: [],
       availableSuppliers: [],
       supplierKv: {},
+      availableItems: [],
+      itemKv: {},
       selectedComponents: []
     };
   },
   watch: {
     supplierKv(old_value, new_value){
+      this.getComponents();
+    },
+    itemKv(old_value, new_value){
       this.getComponents();
     }
   },
@@ -92,7 +97,8 @@ export default {
       (this.alertSecs = 3), (this.alertMessage = message);
     },
     getComponents() {
-      var query = {params: {pageable: this.pageable, nameSearch: this.nameSearch, supplierId: this.supplierKv.id}};
+      var query = {params: {pageable: this.pageable, nameSearch: this.nameSearch, supplierId: this.supplierKv.id,
+          itemId: this.itemKv.id}};
       http.get("/component/pageable", query).then(response => {
         this.components = response.data.content;
         this.pageable.totalElements = response.data.totalElements;
@@ -103,6 +109,13 @@ export default {
     getAvailableSuppliers() {
       http.get("/supplier/kv").then(r => {
         this.availableSuppliers = r.data;
+      }).catch(e => {
+        console.log("API error: " + e);
+      });
+    },
+    getAvailableItems() {
+      http.get("/item/kv").then(r => {
+        this.availableItems = r.data;
       }).catch(e => {
         console.log("API error: " + e);
       });
@@ -148,6 +161,7 @@ export default {
   mounted() {
     this.getComponents();
     this.getAvailableSuppliers();
+    this.getAvailableItems();
   }
 };
 </script>
