@@ -25,7 +25,7 @@
         <span>{{row.item.received?"Yes":"No"}}</span>
       </template>
       <template v-slot:cell(action)="row">
-        <b-button size="sm" @click.stop="deletePurchase(row.item.id)">x</b-button>&nbsp;
+        <b-button size="sm" @click.stop="deletePurchase(row.item)">x</b-button>&nbsp;
         <b-button size="sm" @click.stop="goToReceiving(row.item.id)">Receivings</b-button>
       </template>
       <template v-slot:cell(pdf)="row">
@@ -61,7 +61,8 @@ export default {
         { key: "date", label: "P.O. Date", sortable: false },
         { key: "expectedDate", label: "Expected", sortable: false },
         { key: "shippingDate", label: "Shipping", sortable: false },
-        { key: "received", label: "Received", sortable: false },
+        { key: "unitsPurchased", label: "Purchased", sortable: false },
+        { key: "unitsReceived", label: "Received", sortable: false },
         { key: "pdf", label: "PDF", sortable: false },
         { key: "action", label: "", sortable: false }
       ],
@@ -104,15 +105,16 @@ export default {
           console.log("API error: " + e);
         });
     },
-    deletePurchase(id) {
-      http
-        .delete("/purchase/" + id)
-        .then(response => {
-          this.getPurchases();
-        })
-        .catch(e => {
-          console.log("API Error: " + e);
-        });
+    deletePurchase(purchase) {
+      if(purchase.unitsReceived > 0){
+        alert("There are units already received. Please delete receiving first");
+        return;
+      }
+      http.delete("/purchase/" + purchase.id).then(response => {
+        this.getPurchases();
+      }).catch(e => {
+        console.log("API Error: " + e);
+      });
     },
     goToPurchaseNew() {
       router.push("/purchaseNew");

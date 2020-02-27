@@ -177,8 +177,8 @@ export default {
       });
     },
     saveReceive(){
-      if(!this.receivingDate){
-        alert("Please enter Receiving Date");
+      if(!this.receivingDate || moment(this.receivingDate).isAfter(moment.utc())){
+        alert("Received Date cannot be in future");
         return Promise.reject();
       }
       var receivings = [];

@@ -51,6 +51,28 @@ public class Purchase extends BaseEntity {
 	private Collection<PurchaseComponent> purchaseComponents = new HashSet<PurchaseComponent>();
 
 	@Transient
+	private Long unitsReceived;
+	
+	public Long getUnitsReceived() {
+		Long units = 0L;
+		for (PurchaseComponent pc : this.getPurchaseComponents()) {
+			units += pc.getUnitsReceived();
+		}
+		return units;
+	}
+
+	@Transient
+	private Long unitsPurchased;
+	
+	public Long getUnitsPurchased() {
+		Long units = 0L;
+		for (PurchaseComponent pc : this.getPurchaseComponents()) {
+			units += pc.getUnits();
+		}
+		return units;
+	}
+
+	@Transient
 	private boolean received;
 
 	public boolean isReceived() {

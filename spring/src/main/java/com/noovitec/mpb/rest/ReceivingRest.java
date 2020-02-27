@@ -2,6 +2,7 @@ package com.noovitec.mpb.rest;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -96,15 +97,12 @@ class ReceivingRest {
 	@PostMapping("/receiving")
 	ResponseEntity<?> post(@RequestBody Receiving receiving) {
 		Receiving result = receivingService.save(receiving);
-		if (receiving.getReceivingDate()!=null) {
-			Long unitsDiff = receiving.getUnits() - receiving.getPreUnits();
-			componentService.updateUnitsOnStock(receiving.getPurchaseComponent().getComponent().getId(), unitsDiff);
-		}
 		List<Long> itemIds = new ArrayList<Long>();
 		result.getPurchaseComponent().getComponent().getItemComponents().forEach(ic -> {
 			itemIds.add(ic.getItem().getId());
 		});
 		itemService.updateUnits(itemIds);
+		componentService.updateUnits(Arrays.asList(receiving.getPurchaseComponent().getComponent().getId()));
 		itemService.updateUnitsReadyProd(itemIds);
 		return ResponseEntity.ok().body(result);
 	}
@@ -112,15 +110,14 @@ class ReceivingRest {
 	@DeleteMapping("/receiving/{id}")
 	public ResponseEntity<?> delete(@PathVariable Long id) {
 		Receiving receiving = receivingRepo.getOne(id);
-		if (receiving.getReceivingDate()!=null) {
-			componentService.updateUnitsOnStock(receiving.getPurchaseComponent().getComponent().getId(), receiving.getUnits() * (-1));
-		}
+		Long componentId = receiving.getPurchaseComponent().getComponent().getId();
 		List<Long> itemIds = new ArrayList<Long>();
 		receiving.getPurchaseComponent().getComponent().getItemComponents().forEach(ic -> {
 			itemIds.add(ic.getItem().getId());
 		});
 		receivingService.delete(id);
 		itemService.updateUnits(itemIds);
+		componentService.updateUnits(Arrays.asList(componentId));
 		itemService.updateUnitsReadyProd(itemIds);
 		return ResponseEntity.ok().build();
 	}
