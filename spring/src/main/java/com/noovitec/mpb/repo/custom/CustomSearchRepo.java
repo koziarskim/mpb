@@ -289,7 +289,7 @@ public interface CustomSearchRepo {
 				dto.setName(c.getName());
 				dto.setUnitsOnStock(Long.valueOf(c.getUnitsOnStock()));
 				dto.setUnitsInOrder(c.getUnitsInOrder());
-				dto.setUnitPrice(c.getUnitCost());
+				dto.setUnitPrice(c.getUnitCost()==null?BigDecimal.ZERO:c.getUnitCost());
 				dto.setUnitCost(c.getUnitCost());
 				Long unitsSold = 0L;
 				Long unitsProduced = 0L;

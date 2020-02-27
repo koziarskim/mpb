@@ -176,7 +176,15 @@ class ItemRest {
 	}
 
 	//----Triggers----
-	
+
+	@GetMapping("/item/update/units/async")
+	ResponseEntity<?> postUpdateAsync() {
+		log.info("API Called");
+		itemService.asyncUpdateUnits();
+		log.info("API Return");
+		return ResponseEntity.ok().body("OK");
+	}
+
 	@GetMapping("/item/update/units")
 	ResponseEntity<?> postUpdateUnits() {
 		try {

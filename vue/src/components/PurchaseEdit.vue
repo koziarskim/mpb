@@ -152,7 +152,7 @@ export default {
     },
     receive(){
       this.purchase.purchaseComponents.forEach(pc=> {
-        pc.unitsToReceive = null;
+        pc.unitsToReceive = +pc.units - +pc.unitsReceived;
       })
       this.receivingNumber = "Rec-"+this.purchase.number;
       this.receivingContainerNumber = this.purchase.containerNumber;

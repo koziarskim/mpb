@@ -32,7 +32,7 @@
             <input class="form-control" type="text" v-model="purchase.invoiceNumber" placeholder="Invoice">
           </div>
           <div style="text-align: right;">
-            <b-button style="margin: 2px; margin-top:22px" type="reset" variant="success" @click="saveAndClose">Save</b-button>
+            <b-button style="margin: 2px; margin-top:22px" type="reset" variant="success" @click="saveAndClose()">Save</b-button>
           </div>
         </div>
       </b-col>
@@ -162,13 +162,14 @@ export default {
       })
       return http.post("/purchase", this.purchase).then(r => {
         this.purchase = r.data;
+        return r.data;
       }).catch(e => {
         console.log("API error: " + e);
       });
     },
     saveAndClose() {
-      this.savePurchase().then(r => {
-        router.push("/purchaseList");
+      this.savePurchase().then(purchase => {
+        router.push("/purchaseEdit/" + purchase.id);
       }).catch(e => {
         //TODO: Do nothing.
       });

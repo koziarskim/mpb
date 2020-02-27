@@ -8,6 +8,7 @@ import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,7 +27,8 @@ public interface ItemService {
 	public void updateUnitsReadyProd(List<Long> itemIds);
 	public void updateUnitsByComponent(Long componentId);
 	public void updateUnitsReadyProdByComponent(Long componentId);
-
+	public void asyncUpdateUnits();
+	
 	@Transactional
 	@Service("itemServiceImpl")
 	public class ItemServiceImp implements ItemService {
@@ -98,6 +100,16 @@ public interface ItemService {
 				item.updateUnitsReadyProd();
 				crudService.save(item);
 			}
+		}
+		
+		@Async
+		public void asyncUpdateUnits() {
+			log.info("Running async.....");
+			Long count = 1000000000L;
+			while(count > 0L) {
+				count--;
+			}
+			log.info("Service done");
 		}
 	}
 }
