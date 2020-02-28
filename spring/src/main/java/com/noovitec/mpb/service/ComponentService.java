@@ -138,7 +138,7 @@ public interface ComponentService {
 				component.setUnitsReceived(unitsReceived);
 				component.setUnitsForProduction(unitsForProduction);
 				component.setUnitsForSale(unitsForSale);
-				component.setUnitsShort(unitsForSale - unitsForProduction - unitsReceived - unitsForProduction - unitsOrdered - unitsReceived);
+				component.setUnitsShort((unitsForSale - unitsForProduction) - (unitsReceived - unitsForProduction) - (unitsOrdered - unitsReceived));
 				componentRepo.save(component);
 				counter++;
 				log.info("Updated Component: " + component.getId());

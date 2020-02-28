@@ -8,6 +8,7 @@ import java.sql.Timestamp;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -41,14 +42,17 @@ import com.itextpdf.text.pdf.PdfStamper;
 import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.entity.Attachment;
 import com.noovitec.mpb.entity.Component;
+import com.noovitec.mpb.entity.ItemComponent;
 import com.noovitec.mpb.entity.Purchase;
 import com.noovitec.mpb.entity.PurchaseComponent;
-import com.noovitec.mpb.entity.Sale;
 import com.noovitec.mpb.entity.Supplier;
 import com.noovitec.mpb.repo.AttachmentRepo;
 import com.noovitec.mpb.repo.ComponentRepo;
 import com.noovitec.mpb.repo.PurchaseRepo;
 import com.noovitec.mpb.repo.SupplierRepo;
+import com.noovitec.mpb.service.ComponentService;
+import com.noovitec.mpb.service.CrudService;
+import com.noovitec.mpb.service.ItemService;
 
 
 @RestController
@@ -67,7 +71,13 @@ class PurchaseRest {
 	ComponentRepo componentRepo;
 	@Autowired
 	SupplierRepo supplierRepo;
-
+	@Autowired
+	ItemService itemService;
+	@Autowired
+	ComponentService componentService;
+	@Autowired
+	CrudService crudService;
+	
 	public PurchaseRest(PurchaseRepo purchaseRepo) {
 		this.purchaseRepo = purchaseRepo;
 	}
@@ -150,10 +160,21 @@ class PurchaseRest {
 		if (purchase == null) {
 			purchase = new Purchase();
 		}
+		purchase = (Purchase) crudService.merge(purchase);
+		List<Long> itemIds = new ArrayList<Long>();
+		List<Long> componentIds = new ArrayList<Long>();
 		for (PurchaseComponent pc : purchase.getPurchaseComponents()) {
 			pc.setPurchase(purchase);
+			componentIds.add(pc.getComponent().getId());
+			for(ItemComponent ic: pc.getComponent().getItemComponents()) {
+				itemIds.add(ic.getItem().getId());
+			}
 		}
 		Purchase result = purchaseRepo.save(purchase);
+		itemService.updateUnits(itemIds);
+		componentService.updateUnits(componentIds);
+		itemService.updateUnitsReadyProd(itemIds);
+
 		byte[] data = this.generatePdf(result);
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
@@ -169,7 +190,20 @@ class PurchaseRest {
 
 	@DeleteMapping("/purchase/{id}")
 	public ResponseEntity<?> delete(@PathVariable Long id) {
+		Purchase purchase = purchaseRepo.getOne(id);
+		List<Long> itemIds = new ArrayList<Long>();
+		List<Long> componentIds = new ArrayList<Long>();
+		for (PurchaseComponent pc : purchase.getPurchaseComponents()) {
+			pc.setPurchase(purchase);
+			componentIds.add(pc.getComponent().getId());
+			for(ItemComponent ic: pc.getComponent().getItemComponents()) {
+				itemIds.add(ic.getItem().getId());
+			}
+		}
 		purchaseRepo.deleteById(id);
+		itemService.updateUnits(itemIds);
+		componentService.updateUnits(componentIds);
+		itemService.updateUnitsReadyProd(itemIds);
 		return ResponseEntity.ok().build();
 	}
 
