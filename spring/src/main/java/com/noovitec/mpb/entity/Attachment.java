@@ -1,16 +1,11 @@
 package com.noovitec.mpb.entity;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 
-import org.hibernate.annotations.Type;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.AllArgsConstructor;
@@ -27,12 +22,7 @@ public class Attachment extends BaseEntity {
 
 	private String name;
 	private String type;
-//	@JsonIgnore // Don't send it to client.
-//	@Column(insertable = true, updatable = false)
-//	@Lob
-//	@Type(type = "org.hibernate.type.BinaryType")
-//	private byte[] data;
-//	
+	
 	@JsonIgnoreProperties(value = { "data" }, allowSetters = true)
 	@ManyToOne(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "doc_content_id", referencedColumnName = "id")
