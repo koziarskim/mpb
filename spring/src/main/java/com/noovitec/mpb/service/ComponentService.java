@@ -133,11 +133,12 @@ public interface ComponentService {
 				}
 				component.setUnitsOnStock(unitsReceived - unitsForProduction);
 				component.setUnitsLocked(unitsScheduled - unitsForProduction);
-				component.setUnitsShort(unitsForSale - unitsForProduction);
+				component.setUnitsSoldNotProd(unitsForSale - unitsForProduction);
 				component.setUnitsOrdered(unitsOrdered);
 				component.setUnitsReceived(unitsReceived);
 				component.setUnitsForProduction(unitsForProduction);
 				component.setUnitsForSale(unitsForSale);
+				component.setUnitsShort(unitsForSale - unitsForProduction - unitsReceived - unitsForProduction - unitsOrdered - unitsReceived);
 				componentRepo.save(component);
 				counter++;
 				log.info("Updated Component: " + component.getId());

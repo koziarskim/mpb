@@ -1,3 +1,5 @@
+alter table component add column units_sold_not_prod bigint default 0;
+
 alter table component add column units_short bigint default 0;
 
 alter table component alter column units_ordered type bigint;
@@ -20,3 +22,6 @@ update component set units_locked = 0 where units_locked is null;
 
 alter table component alter column units_locked set default 0;
 
+alter table component add column units_for_production bigint default 0;
+
+alter table component add column units_for_sale bigint default 0;

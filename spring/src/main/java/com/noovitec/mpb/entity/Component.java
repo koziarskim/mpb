@@ -50,7 +50,8 @@ public class Component extends BaseEntity {
 	private Long unitsLocked = 0L; //unitsScheduled - unitsProduced
 	private Long unitsForProduction = 0L;
 	private Long unitsForSale = 0L;
-	private Long unitsShort = 0L; //unitsForSale - unitsForProduction
+	private Long unitsSoldNotProd = 0L; //unitsForSale - unitsForProduction
+	private Long unitsShort = 0L; //unitsSoldNotProduced - unitsOnStock - unitsOrdered - unitsReceived
 
 	@JsonIgnoreProperties(value = { "component" }, allowSetters = true)
 	@OneToMany()
