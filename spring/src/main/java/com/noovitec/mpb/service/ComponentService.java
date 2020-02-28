@@ -115,8 +115,11 @@ public interface ComponentService {
 			for (Component component : components) {
 				Long unitsReceived = 0L;
 				Long unitsScheduled = 0L;
-				Long unitsProduced = 0L;
+				Long unitsForProduction = 0L;
+				Long unitsForSale = 0L;
+				Long unitsOrdered = 0L;
 				for(PurchaseComponent pc: component.getPurchaseComponents()) {
+					unitsOrdered += pc.getUnits();
 					for(Receiving r: pc.getReceivings()) {
 						if(r.getReceivingDate()!=null) {
 							unitsReceived += r.getUnits();
@@ -125,10 +128,16 @@ public interface ComponentService {
 				}
 				for(ItemComponent ic: component.getItemComponents()) {
 					unitsScheduled += (ic.getUnits() * ic.getItem().getUnitsScheduled());
-					unitsProduced += (ic.getUnits() * ic.getItem().getUnitsProduced());
+					unitsForProduction += (ic.getUnits() * ic.getItem().getUnitsProduced());
+					unitsForSale += (ic.getUnits() * ic.getItem().getUnitsSold());
 				}
-				component.setUnitsOnStock(unitsReceived - unitsProduced);
-				component.setUnitsLocked(unitsScheduled - unitsProduced);
+				component.setUnitsOnStock(unitsReceived - unitsForProduction);
+				component.setUnitsLocked(unitsScheduled - unitsForProduction);
+				component.setUnitsShort(unitsForSale - unitsForProduction);
+				component.setUnitsOrdered(unitsOrdered);
+				component.setUnitsReceived(unitsReceived);
+				component.setUnitsForProduction(unitsForProduction);
+				component.setUnitsForSale(unitsForSale);
 				componentRepo.save(component);
 				counter++;
 				log.info("Updated Component: " + component.getId());

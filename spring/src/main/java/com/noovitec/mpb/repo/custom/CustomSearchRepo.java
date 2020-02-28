@@ -288,7 +288,7 @@ public interface CustomSearchRepo {
 				dto.setSupplierId(c.getSupplier() == null ? null : c.getSupplier().getId());
 				dto.setName(c.getName());
 				dto.setUnitsOnStock(Long.valueOf(c.getUnitsOnStock()));
-				dto.setUnitsInOrder(c.getUnitsInOrder());
+				dto.setUnitsInOrder(c.getUnitsOrdered()-c.getUnitsReceived());
 				dto.setUnitPrice(c.getUnitCost()==null?BigDecimal.ZERO:c.getUnitCost());
 				dto.setUnitCost(c.getUnitCost());
 				Long unitsSold = 0L;

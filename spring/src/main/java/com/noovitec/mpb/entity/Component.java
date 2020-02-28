@@ -44,11 +44,13 @@ public class Component extends BaseEntity {
 	private BigDecimal containerCost;
 	private BigDecimal otherCost;
 	private BigDecimal totalLandedCost = BigDecimal.ZERO;
-	private Long unitsOnStock = 0L;
-	private int unitsOrdered = 0; // All Purchases.
-	private int unitsInTransit = 0; // All Purchases.
-	private int unitsReceived = 0; // All Purchases.
-	private Long unitsLocked;
+	private Long unitsOnStock = 0L; //unitsReceived - unitsForProduction
+	private Long unitsOrdered = 0L;
+	private Long unitsReceived = 0L;
+	private Long unitsLocked = 0L; //unitsScheduled - unitsProduced
+	private Long unitsForProduction = 0L;
+	private Long unitsForSale = 0L;
+	private Long unitsShort = 0L; //unitsForSale - unitsForProduction
 
 	@JsonIgnoreProperties(value = { "component" }, allowSetters = true)
 	@OneToMany()
@@ -73,18 +75,6 @@ public class Component extends BaseEntity {
 	@OneToMany()
 	@JoinColumn(name = "component_id")
 	private Collection<PurchaseComponent> purchaseComponents = new HashSet<PurchaseComponent>();
-
-	// TODO: Need to persist it.
-	@Transient
-	private Long unitsInOrder = 0L;
-
-	public Long getUnitsInOrder() {
-		Long units = 0L;
-		for (PurchaseComponent pc : this.getPurchaseComponents()) {
-			units += (pc.getUnits() - pc.getUnitsReceived());
-		}
-		return units;
-	}
 
 	public void updateUnitsLocked() {
 		this.unitsLocked = 0L;

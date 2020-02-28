@@ -197,5 +197,4 @@ class ItemRest {
 		}
 		return ResponseEntity.ok().body("OK");
 	}
-
 }

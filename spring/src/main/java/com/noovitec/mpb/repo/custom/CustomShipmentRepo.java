@@ -80,9 +80,9 @@ public interface CustomShipmentRepo {
 			if(shipTo !=null) {
 				query.setParameter("shipTo", shipTo);
 			}
+			long total = query.getResultStream().count();
 			@SuppressWarnings("unchecked")
 			List<Shipment> result = query.setFirstResult(pageable.getPageNumber() * pageable.getPageSize()).setMaxResults(pageable.getPageSize()).getResultList();
-			long total = query.getResultStream().count();
 			Page<Shipment> page = new PageImpl<Shipment>(result, pageable, total);
 			return page;
 

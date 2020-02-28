@@ -52,12 +52,12 @@ public interface CustomComponentRepo {
 			if (itemId != null) {
 				query.setParameter("itemId", itemId);
 			}
-			@SuppressWarnings("unchecked")
-			List<Component> result = query.setFirstResult(pageable.getPageNumber() * pageable.getPageSize()).setMaxResults(pageable.getPageSize()).getResultList();
 			long total = query.getResultStream().count();
+			@SuppressWarnings("unchecked")
+			List<Component> result = query.setFirstResult(pageable.getPageNumber()*pageable.getPageSize())
+				.setMaxResults(pageable.getPageSize()).getResultList();
 			Page<Component> page = new PageImpl<Component>(result, pageable, total);
 			return page;
-
 		}
 	}
 }
