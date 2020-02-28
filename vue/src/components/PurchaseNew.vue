@@ -43,13 +43,7 @@
       </b-col>
       <b-col cols=10>
         <label class="top-label">Components:</label>
-        <b-table sort-by.sync="name" sort-desc.sync="false" :items="selectedComponents" :fields="fields">
-          <template v-slot:cell(totalNeeded)="row">
-            {{row.item.totalSold - row.item.totalProduced}} ({{row.item.totalSold}} - {{row.item.totalProduced}})
-          </template>
-          <template v-slot:cell(unitsNeeded)="row">
-            {{row.item.unitsSold - row.item.unitsProduced}} ({{row.item.unitsSold}} - {{row.item.unitsProduced}})
-          </template>
+        <b-table sort-by.sync="name" sort-desc.sync="false" :items="componentDtos" :fields="fields">
           <template v-slot:cell(unitPrice)="row">
             <div style="display: flex">
               $<b-form-input style="width:100px" class="form-control" type="tel" v-model="row.item.unitPrice"></b-form-input>
@@ -81,13 +75,11 @@ export default {
         date: moment().format("YYYY-MM-DD"),
         supplier: {}
       },
-      selectedComponents: [],
+      componentDtos: [],
       fields: [
         { key: "name", label: "Name", sortable: false },
-        { key: "totalNeeded", label: "Total Needed", sortable: false },
-        { key: "unitsNeeded", label: "Needed (S-P)", sortable: false },
-        { key: "unitsInOrder", label: "Orders", sortable: false },
         { key: "unitsOnStock", label: "Stock", sortable: false },
+        { key: "unitsShort", label: "Short", sortable: false },
         { key: "unitCost", label: "Unit Cost", sortable: false },
         { key: "unitPrice", label: "P.O. Price", sortable: false },
         { key: "units", label: "P.O. Units", sortable: false },
@@ -106,10 +98,10 @@ export default {
       return (item.units * item.unitPrice).toFixed(2);
     },
     updateComponents(searchDto){
-      this.getPoComponents(searchDto);
+      this.getComponentDtos(searchDto.components.join(","));
     },
-    getPoComponents(searchDto){
-      return http.post("/search/po/component", searchDto).then(r => {
+    getComponentDtos(componentIds){
+      http.get("/components/dto/", {params: {componentIds: componentIds}}).then(r=> {
         if(!this.purchase.supplier.id){
           this.purchase.supplier = {id: r.data[0].supplierId}
         }
@@ -121,23 +113,25 @@ export default {
         })
         if(missmatch){
             alert("Supplier missmatch! Only components to single supplier are allowed!");
-            if(this.selectedComponents.length==0){
+            if(this.componentDtos.length==0){
               this.purchase.supplier = {};
             }
             return Promise.reject();
         }
         r.data.forEach(dto => {
-          var existing = this.selectedComponents.find(selected => selected.id == dto.id)
+          var existing = this.componentDtos.find(selected => selected.id == dto.id)
           if(!existing){
-            this.selectedComponents.push(dto);
+            dto.units = dto.unitsShort;
+            dto.unitPrice = dto.unitCost;
+            this.componentDtos.push(dto);
           }
         })
-      }).catch(e => {
-        console.log("API error: " + e);
-      });
+      }).catch(e=> {
+        console.log("API error: "+e);
+      })
     },
     validate(){
-      if(this.selectedComponents.length == 0){
+      if(this.componentDtos.length == 0){
         alert("No Component selected.");
         return false;
       }
@@ -145,9 +139,9 @@ export default {
         alert("Purchase Number not entered");
         return false;
       }
-      var empty = this.selectedComponents.find(c => c.units < 0);
+      var empty = this.componentDtos.find(c => c.units <= 0 || c.unitPrice <=0);
       if(empty){
-          alert("One of the Compnents has negative number of P.O. Units! Please fix.");
+          alert("Enter positive units and price for each component");
           return false;
       }
       return true;
@@ -157,7 +151,7 @@ export default {
         return Promise.reject();
       }
       this.purchase.purchaseComponents = [];
-      this.selectedComponents.forEach(c => {
+      this.componentDtos.forEach(c => {
        this.purchase.purchaseComponents.push({component: {id: c.id}, units: c.units, unitPrice: c.unitPrice});
       })
       return http.post("/purchase", this.purchase).then(r => {
@@ -185,8 +179,7 @@ export default {
     var componentIds = this.$route.query.componentIds;
     window.history.replaceState({}, document.title, window.location.pathname);
     if(componentIds){
-      var searchDto = {components: componentIds.split(',')}
-      this.getPoComponents(searchDto);
+      this.getComponentDtos(componentIds);
     }
   }
 };

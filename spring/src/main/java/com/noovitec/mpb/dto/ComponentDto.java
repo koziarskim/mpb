@@ -1,5 +1,7 @@
 package com.noovitec.mpb.dto;
 
+import java.math.BigDecimal;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,4 +22,5 @@ public class ComponentDto {
 	private Long unitsPendingPo;
 	private Long unitsLocked;
 	private Long unitsShort;
+	private BigDecimal unitCost;
 }

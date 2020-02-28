@@ -1,6 +1,7 @@
 package com.noovitec.mpb.rest;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -85,6 +86,7 @@ class ComponentRest {
 			dto.setUnitsPendingPo(component.getUnitsOrdered() - component.getUnitsReceived());
 			dto.setUnitsLocked(component.getUnitsLocked());
 			dto.setUnitsShort(component.getUnitsShort());
+			dto.setUnitCost(component.getUnitCost());
 		    return dto;
 		});
 		return dtos;
@@ -98,6 +100,29 @@ class ComponentRest {
 		}else {
 			dtos = componentRepo.findKvByPurchase(purchase_id);
 		}
+		return dtos;
+	}
+
+	@GetMapping("/components/dto")
+	List<ComponentDto> get(@RequestParam Long[] componentIds) {
+		Iterable<Component> components = componentRepo.findAllById(Arrays.asList(componentIds));
+		List<ComponentDto> dtos = new ArrayList<ComponentDto>();
+		components.forEach(component -> {
+			ComponentDto dto = new ComponentDto();
+			dto.setId(component.getId());
+			dto.setNumber(component.getNumber());
+			dto.setName(component.getName());
+			dto.setCategoryName(component.getCategory()==null?"":component.getCategory().getName());
+			dto.setSupplierName(component.getSupplier()==null?"":component.getSupplier().getName());
+			dto.setSupplierId(component.getSupplier().getId());
+			dto.setUnitsSoldNotProd(component.getUnitsSoldNotProd());
+			dto.setUnitsOnStock(component.getUnitsOnStock());
+			dto.setUnitsPendingPo(component.getUnitsOrdered() - component.getUnitsReceived());
+			dto.setUnitsLocked(component.getUnitsLocked());
+			dto.setUnitsShort(component.getUnitsShort());
+			dto.setUnitCost(component.getUnitCost());
+			dtos.add(dto);
+		});
 		return dtos;
 	}
 

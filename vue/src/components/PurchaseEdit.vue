@@ -47,7 +47,7 @@
               <label class="top-label">Invoice:</label>
               <input class="form-control" type="text" v-model="purchase.invoiceNumber" :disabled="!editMode">
             </div>
-            <div style="width: 155px"></div>
+            <div style="width: 125px"></div>
           </div>
           <div style="text-align: right;">
             <div v-if="!editMode && !receiveMode">
@@ -184,21 +184,19 @@ export default {
       var receivings = [];
       var isNegative = false;
       this.purchase.purchaseComponents.forEach(pc => {
-        if(pc.unitsToReceive){
-          if(pc.unitsToReceive < 0){
-            isNegative = true;
-            return;
-          }
-          var receiving = {purchaseComponent: pc}
-          receiving.number = this.receivingNumber;
-          receiving.containerNumber = this.receivingContainerNumber;
-          receiving.invoiceNumber = this.receivingInvoiceNumber;
-          receiving.shippingDate = this.purchase.shippingDate;
-          receiving.etaDate = this.purchase.expectedDate;
-          receiving.receivingDate = this.receivingDate;
-          receiving.units = pc.unitsToReceive;
-          receivings.push(receiving);
+        if(pc.unitsToReceive <= 0){
+          isNegative = true;
+          return;
         }
+        var receiving = {purchaseComponent: pc}
+        receiving.number = this.receivingNumber;
+        receiving.containerNumber = this.receivingContainerNumber;
+        receiving.invoiceNumber = this.receivingInvoiceNumber;
+        receiving.shippingDate = this.purchase.shippingDate;
+        receiving.etaDate = this.purchase.expectedDate;
+        receiving.receivingDate = this.receivingDate;
+        receiving.units = pc.unitsToReceive;
+        receivings.push(receiving);
       })
       if(isNegative){
         alert("Units have to be positive");
