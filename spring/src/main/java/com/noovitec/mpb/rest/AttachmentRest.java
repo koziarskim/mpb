@@ -34,7 +34,7 @@ class AttachmentRest {
 	@ResponseBody
 	HttpEntity<byte[]> downloadImage(@PathVariable Long id) throws IOException {
 		Optional<Attachment> attachment = attachmentRepo.findById(id);
-		byte[] data = attachment.get().getData();
+		byte[] data = attachment.get().getDocContent().getData();
 		HttpHeaders header = new HttpHeaders();
 		header.setContentType(MediaType.APPLICATION_OCTET_STREAM);
 		header.set("Content-Disposition", "inline; filename=" + "filename.jpg");

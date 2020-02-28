@@ -1,7 +1,6 @@
 package com.noovitec.mpb.service;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -14,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.noovitec.mpb.entity.Attachment;
 import com.noovitec.mpb.entity.Component;
+import com.noovitec.mpb.entity.DocContent;
 import com.noovitec.mpb.entity.ItemComponent;
 import com.noovitec.mpb.entity.PurchaseComponent;
 import com.noovitec.mpb.entity.Receiving;
@@ -56,7 +56,9 @@ public interface ComponentService {
 			component = (Component) crudService.merge(component);
 			if (image != null) {
 				Attachment attachment = new Attachment();
-				attachment.setData(image.getBytes());
+				DocContent docContent = new DocContent();
+				docContent.setData(image.getBytes());
+				attachment.setDocContent(docContent);
 				attachmentRepo.save(attachment);
 				component.setAttachment(attachment);
 			}

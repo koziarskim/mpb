@@ -40,6 +40,7 @@ import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfStamper;
 import com.noovitec.mpb.dto.ShipmentDto;
 import com.noovitec.mpb.entity.Attachment;
+import com.noovitec.mpb.entity.DocContent;
 import com.noovitec.mpb.entity.Item;
 import com.noovitec.mpb.entity.Sale;
 import com.noovitec.mpb.entity.Shipment;
@@ -171,7 +172,9 @@ class ShipmentRest {
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 		String fileName = "BOL" + shipment.getNumber() + "-" + sdf.format(timestamp) + ".pdf";
 		shipment.setAttachment(new Attachment());
-		shipment.getAttachment().setData(data);
+		DocContent docContent = new DocContent();
+		docContent.setData(data);
+		shipment.getAttachment().setDocContent(docContent);
 		shipment.getAttachment().setType("BOL");
 		shipment.getAttachment().setName(fileName);
 		shipment = shipmentRepo.save(shipment);

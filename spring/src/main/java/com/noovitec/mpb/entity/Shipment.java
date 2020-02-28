@@ -56,7 +56,6 @@ public class Shipment extends BaseEntity {
 	@JoinColumn(name = "customer_id", referencedColumnName = "id")
 	private Customer customer;
 
-	@JsonIgnoreProperties(value = { "data" }, allowSetters = true)
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "attachment_id", referencedColumnName = "id")
 	private Attachment attachment;

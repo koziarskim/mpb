@@ -42,6 +42,7 @@ import com.itextpdf.text.pdf.PdfStamper;
 import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.entity.Attachment;
 import com.noovitec.mpb.entity.Component;
+import com.noovitec.mpb.entity.DocContent;
 import com.noovitec.mpb.entity.ItemComponent;
 import com.noovitec.mpb.entity.Purchase;
 import com.noovitec.mpb.entity.PurchaseComponent;
@@ -144,7 +145,7 @@ class PurchaseRest {
 		Purchase purchase = purchaseRepo.findById(id).get();
 		byte[] data = null;
 		Attachment attachment = attachmentRepo.findById(purchase.getAttachment().getId()).get();
-		data = attachment.getData();
+		data = attachment.getDocContent().getData();
 		HttpHeaders header = new HttpHeaders();
 		header.setContentType(MediaType.APPLICATION_OCTET_STREAM);
 		String fileName = attachment.getName();
@@ -180,7 +181,9 @@ class PurchaseRest {
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 		String fileName = "PO" + purchase.getNumber() + "-" + sdf.format(timestamp) + ".pdf";
 		Attachment attachment = new Attachment();
-		attachment.setData(data);
+		DocContent docContent = new DocContent();
+		docContent.setData(data);
+		attachment.setDocContent(docContent);
 		attachment.setType("POR");
 		attachment.setName(fileName);
 		purchase.setAttachment(attachment);
