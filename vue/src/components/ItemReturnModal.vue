@@ -80,6 +80,10 @@ export default {
   watch:{
   },
   methods: {
+    deleteSaleItemReturn(sirId) {
+      var idx = this.itemReturn.saleItemReturns.findIndex(sir => sir.id == sirId);
+      this.itemReturn.saleItemReturns.splice(idx, 1);
+    },
     addSaleItem(){
 			http.get("/saleItem/"+this.saleItemKv.id).then(r=> {
         var sir = {
