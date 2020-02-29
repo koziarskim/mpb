@@ -3,7 +3,6 @@ package com.noovitec.mpb.entity;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -51,10 +50,15 @@ public class SaleItem extends BaseEntity {
 	@JoinColumn(name = "sale_item_id")
 	private Collection<ScheduleEvent> scheduleEvents = new HashSet<ScheduleEvent>();
 
-	@JsonIgnoreProperties(value = { "shipment" }, allowSetters = true)
+	@JsonIgnoreProperties(value = { "saleItem", "shipment" }, allowSetters = true)
 	@OneToMany()
 	@JoinColumn(name = "sale_item_id")
 	private Collection<ShipmentItem> shipmentItems = new HashSet<ShipmentItem>();
+
+	@JsonIgnoreProperties(value = { "saleItem", "itemReturn" }, allowSetters = true)
+	@OneToMany()
+	@JoinColumn(name = "sale_item_id")
+	private Collection<SaleItemReturn> saleItemReturns = new HashSet<SaleItemReturn>();
 
 	@JsonIgnoreProperties(value = { "saleItemTo", "saleItemFrom" }, allowSetters = true)
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)

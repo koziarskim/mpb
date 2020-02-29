@@ -143,9 +143,9 @@ class PurchaseRest {
 	@GetMapping("/purchase/{id}/pdf")
 	HttpEntity<byte[]> getPdf(@PathVariable Long id) throws DocumentException, IOException {
 		Purchase purchase = purchaseRepo.findById(id).get();
-		byte[] data = null;
 		Attachment attachment = attachmentRepo.findById(purchase.getAttachment().getId()).get();
-		data = attachment.getDocContent().getData();
+//		byte[] data = attachment.getDocContent().getData();
+		byte[] data = this.generatePdf(purchase);
 		HttpHeaders header = new HttpHeaders();
 		header.setContentType(MediaType.APPLICATION_OCTET_STREAM);
 		String fileName = attachment.getName();
