@@ -300,7 +300,8 @@ export default {
   watch: {},
   methods: {
     goToItemReturnList(){
-      router.push("/itemReturnList");
+      var query = { itemId: this.item.id };
+      router.push({path: "/itemReturnList", query: query});
     },
     goToReceiving(componentId){
       var query = { component_id: componentId };

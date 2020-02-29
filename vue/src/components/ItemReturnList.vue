@@ -6,7 +6,7 @@
             </b-col>
             <b-col>
                 <div style="text-align: right;">
-                <b-button type="submit" variant="primary" @click="createItemReturn('')">New Return</b-button>
+                <b-button type="submit" variant="primary" @click="openItemReturnModal()">New Return</b-button>
                 </div>
             </b-col>
         </b-row>
@@ -20,6 +20,9 @@
           <b-pagination size="sm" v-model="pageable.currentPage" :per-page="pageable.perPage" :total-rows="pageable.totalElements" @change="paginationChange"></b-pagination>
           <span style="margin-top: 5px">Total of {{pageable.totalElements}} rows</span>
         </div>
+        <div v-if="itemReturnModalVisible">
+  		  	<item-return-modal :item-return-id="itemReturnId" :item-id="itemId" v-on:closeModal="closeItemReturnModal"></item-return-modal>
+	    	</div>
     </b-container>
 </template>
 <script>
@@ -27,6 +30,9 @@ import http from "../http-common";
 import router from "../router";
 
 export default {
+  components: {
+    ItemReturnModal: () => import("./ItemReturnModal")
+  },
   data() {
     return {
       pageable: {totalElements: 100, currentPage: 1, perPage: 7, sortBy: 'updated', sortDesc: true},
@@ -36,12 +42,22 @@ export default {
         { key: 'unitsReturned', sortable: false, label: 'Returned'},
         { key: 'action', sortable: false, label: ''},
       ],
-      itemReturns: []
+      itemReturns: [],
+      itemReturnModalVisible: false,
+      itemReturnId: null,
     };
   },
   watch: {
   },
   methods: {
+    openItemReturnModal(itemReturnId){
+      this.itemReturnId = itemReturnId;
+      this.itemReturnModalVisible = true;
+    },
+    closeItemReturnModal(){
+      this.itemReturnModalVisible = false;
+      this.itemReturnId = null;
+    },
     paginationChange(page){
         this.pageable.currentPage = page;
         this.getItemReturns();
@@ -73,7 +89,12 @@ export default {
     },
   },
   mounted() {
-     this.getItemReturns();
+    var itemId = this.$route.query.itemId;
+    if(itemId){
+      this.itemId = itemId;
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+    this.getItemReturns();
   }
 };
 </script>
