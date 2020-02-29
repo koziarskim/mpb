@@ -56,6 +56,7 @@ public class Item extends BaseEntity {
 	private Long unitsScheduled = 0L;
 	private Long unitsShipped = 0L;
 	private Long unitsReadyProd;
+	private Long unitsReturned;
 
 	@JsonIgnoreProperties(value = { "item" }, allowSetters = true)
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)

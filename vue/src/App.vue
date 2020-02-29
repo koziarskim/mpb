@@ -197,6 +197,9 @@ export default {
 .view-shipment {
   background-color: #0000001f;
 }
+.view-item-return {
+  background-color: #0000001f;
+}
 .page-link {
   background-color: transparent !important;
 }

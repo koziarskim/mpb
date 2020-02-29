@@ -35,6 +35,7 @@ import Profile from "./components/Profile";
 import DailyStatus from "./components/public/DailyStatus";
 import PurchaseNew from "./components/PurchaseNew";
 import ItemGraph from "./components/ItemGraph";
+import ItemReturnList from "./components/ItemReturnList";
 
 Vue.use(Router);
 
@@ -354,6 +355,16 @@ const router = new Router({
         roles: ["SUPER_USER", "PRODUCTION_ADMIN", "PRODUCTION_LEADER"],
         group: "production",
         viewClass: "view-production"
+      }
+    },
+    {
+      path: "/ItemReturnList/:itemId?",
+      name: "ItemReturnList",
+      component: ItemReturnList,
+      meta: {
+        roles: ["SUPER_USER"],
+        group: "itemReturn",
+        viewClass: "view-item-return"
       }
     },
     {

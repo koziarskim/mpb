@@ -33,18 +33,18 @@
       </b-col>
       <b-col cols=6>
         <b-row>
-          <b-col cols=5>
+          <b-col cols=5 style="margin-left: -20px">
             <label class="top-label">Notes:</label>
             <b-form-textarea type="text" :rows="4" v-model="item.description"></b-form-textarea>
           </b-col>
-          <b-col cols=3>
+          <b-col cols=3 style="margin-left: -25px; margin-top:3px">
             <upload :on-upload="onUpload" :file-url="getImageUrl()"></upload>
           </b-col>
-          <b-col cols=4 style="margin-top: 10px">
+          <b-col cols=4 style="margin-top: 10px; margin-left: 20px">
             <b-button style="margin-left: 70%" size="sm" type="reset" variant="success" @click="saveAndClose">Save</b-button>
             <label class="top-label">Stock: {{item.unitsOnStock}}</label><br/>
             <label class="top-label">Sch/Pro: <b-link role="button" @click="goToItemScheduleList()">{{item.unitsScheduled}}/{{item.unitsProduced}}</b-link></label><br/>
-            <label class="top-label">Sold: <b-link role="button" @click="goToItemSaleList()">{{item.unitsSold}}</b-link></label><br/>
+            <label class="top-label">Sold: <b-link role="button" @click="goToItemSaleList()">{{item.unitsSold}}</b-link>&nbsp;</label><label class="top-label">Ret: <b-link role="button" @click="goToItemReturnList()">{{item.unitsReturned}}</b-link></label><br/>
             <label class="top-label">Shipped: <b-link role="button" @click="goToItemShippedList()">{{item.unitsShipped}}</b-link></label>
           </b-col>
         </b-row>
@@ -299,6 +299,9 @@ export default {
   },
   watch: {},
   methods: {
+    goToItemReturnList(){
+      router.push("/itemReturnList");
+    },
     goToReceiving(componentId){
       var query = { component_id: componentId };
       router.push({ path: "/receivingList", query: query });
