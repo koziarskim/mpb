@@ -33,6 +33,7 @@ public class SaleItem extends BaseEntity {
 	private Long unitsShipped = 0L;
 	private Long unitsTransferedTo = 0L;
 	private Long unitsTransferedFrom = 0L;
+	private Long unitsReturned = 0L;
 	private String sku;
 
 	@JsonIgnoreProperties(value = { "saleItems", "purchaseSales" }, allowSetters = true)
@@ -74,7 +75,7 @@ public class SaleItem extends BaseEntity {
 	private Long unitsOnStock = 0L;
 
 	public Long getUnitsOnStock() {
-		return this.getUnitsProduced() + this.unitsTransferedTo - this.unitsTransferedFrom - this.getUnitsShipped();
+		return this.getUnitsProduced() + this.unitsTransferedTo - this.unitsTransferedFrom - this.getUnitsShipped() + this.getUnitsReturned();
 	}
 
 	public void updateUnits() {
@@ -83,6 +84,10 @@ public class SaleItem extends BaseEntity {
 		this.unitsShipped = 0L;
 		this.unitsTransferedTo = 0L;
 		this.unitsTransferedFrom = 0L;
+		this.unitsReturned = 0L;
+		for(SaleItemReturn sir: this.getSaleItemReturns()) {
+			this.unitsReturned += sir.getUnitsReturned();
+		}
 		for (ScheduleEvent se : this.getScheduleEvents()) {
 			se.updateUnits();
 			this.unitsScheduled += se.getUnitsScheduled();

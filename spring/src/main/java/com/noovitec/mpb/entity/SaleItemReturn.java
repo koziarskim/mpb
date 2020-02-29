@@ -29,5 +29,5 @@ public class SaleItemReturn extends BaseEntity{
 	@ManyToOne()
 	@JoinColumn(name = "sale_item_id", referencedColumnName = "id")
 	private SaleItem saleItem;
-
+	
 }

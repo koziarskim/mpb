@@ -132,7 +132,7 @@ public class Item extends BaseEntity {
 	private Long unitsOnStock = 0L;
 
 	public Long getUnitsOnStock() {
-		this.unitsOnStock = this.getUnitsProduced() - this.getUnitsShipped();
+		this.unitsOnStock = this.getUnitsProduced() - this.getUnitsShipped() + this.getUnitsReturned();
 		return this.unitsOnStock;
 	}
 	
@@ -172,8 +172,13 @@ public class Item extends BaseEntity {
 		this.unitsScheduled = 0L;
 		this.unitsProduced = 0L;
 		this.unitsShipped = 0L;
+		this.unitsReturned = 0L;
+		for(ItemReturn ir: this.getItemReturns()) {
+			ir.updateUnits();
+		}
 		for (SaleItem sa : this.getSaleItems()) {
 			sa.updateUnits();
+			this.unitsReturned += sa.getUnitsReturned();
 			this.unitsSold += sa.getUnits();
 			this.unitsScheduled += sa.getUnitsScheduled();
 			this.unitsProduced += sa.getUnitsProduced();

@@ -37,5 +37,12 @@ public class ItemReturn extends BaseEntity {
 	@OneToMany(cascade=CascadeType.ALL, orphanRemoval=true)
 	@JoinColumn(name = "item_return_id")
 	private Collection<SaleItemReturn> saleItemReturns = new HashSet<SaleItemReturn>();
+	
+	public void updateUnits() {
+		this.unitsReturned = 0L;
+		for(SaleItemReturn sir: this.getSaleItemReturns()) {
+			this.unitsReturned += sir.getUnitsReturned();
+		}
+	}
 
 }
