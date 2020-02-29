@@ -102,8 +102,8 @@ public class Item extends BaseEntity {
 	@JoinColumn(name = "item_id")
 	private Collection<SaleItem> saleItems = new HashSet<SaleItem>();
 
-	@JsonIgnoreProperties(value = { "item" }, allowSetters = true)
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonIgnoreProperties(value = { "item", "saleItemReturns" }, allowSetters = true)
+	@OneToMany()
 	@JoinColumn(name = "item_id")
 	private Collection<ItemReturn> itemReturns = new HashSet<ItemReturn>();
 

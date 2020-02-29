@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class SaleItemReturn extends BaseEntity {
+public class SaleItemReturn extends BaseEntity{
 
 	private Long unitsReturned;
 
@@ -25,7 +25,7 @@ public class SaleItemReturn extends BaseEntity {
 	@JoinColumn(name = "item_return_id", referencedColumnName = "id")
 	private ItemReturn itemReturn;
 
-	@JsonIgnoreProperties(value = { "saleItemReturns" }, allowSetters = true)
+	@JsonIgnoreProperties(value = { "saleItemReturns", "shipmentItems", "scheduleEvents", "transfersFrom", "transfersTo" }, allowSetters = true)
 	@ManyToOne()
 	@JoinColumn(name = "sale_item_id", referencedColumnName = "id")
 	private SaleItem saleItem;

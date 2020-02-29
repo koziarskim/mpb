@@ -162,9 +162,6 @@
         <b-col cols=1>
           <b-button size="sm" style="margin-top: 30px;" variant="primary" @click="addComponent()">Add &#x25BC;</b-button>
         </b-col>
-        <b-col cols=1 offset=4>
-          <b-button size="sm" style="margin-top: 30px;" variant="primary" @click="createReturn()">Return</b-button>
-        </b-col>
       </b-row>
       <br>
       <b-row>

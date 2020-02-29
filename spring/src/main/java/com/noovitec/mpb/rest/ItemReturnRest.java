@@ -1,6 +1,7 @@
 package com.noovitec.mpb.rest;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -31,8 +32,9 @@ class ItemReturnRest {
 	}
 
 	@GetMapping("/itemReturn")
-	Collection<ItemReturn> getAll() {
-		return (Collection<ItemReturn>) itemReturnRepo.findAll();
+	ResponseEntity<List<ItemReturn>> getAll() {
+		List<ItemReturn> itemReturns = itemReturnRepo.findAll();
+		return ResponseEntity.ok(itemReturns);
 	}
 
 	@GetMapping("/itemReturn/{id}")
