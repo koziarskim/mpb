@@ -2,7 +2,6 @@ package com.noovitec.mpb.entity;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -101,6 +100,11 @@ public class Item extends BaseEntity {
 	@OneToMany()
 	@JoinColumn(name = "item_id")
 	private Collection<SaleItem> saleItems = new HashSet<SaleItem>();
+
+	@JsonIgnoreProperties(value = { "item" }, allowSetters = true)
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name = "item_id")
+	private Collection<ItemReturn> itemReturns = new HashSet<ItemReturn>();
 
 	public Long getDurationSeconds() {
 		Long secs = 0L;

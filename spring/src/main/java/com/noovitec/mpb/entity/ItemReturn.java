@@ -36,8 +36,8 @@ public class ItemReturn extends BaseEntity {
 	private Item item;
 
 	@JsonIgnoreProperties(value = { "itemReturn" }, allowSetters = true)
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany()
 	@JoinColumn(name = "item_return_id")
-	private Collection<SaleItem> saleItems = new HashSet<SaleItem>();
+	private Collection<SaleItemReturn> saleItemReturns = new HashSet<SaleItemReturn>();
 
 }
