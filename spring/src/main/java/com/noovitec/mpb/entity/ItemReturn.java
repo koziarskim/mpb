@@ -26,8 +26,8 @@ import lombok.NoArgsConstructor;
 @Entity
 public class ItemReturn extends BaseEntity {
 
-	private Long unitsReceived;
-	private Long unitsReturned;
+	private Long unitsReceived = 0L;
+	private Long unitsReturned = 0L;
 	private LocalDate dateReturned;
 
 	@JsonIgnoreProperties(value = { "itemReturns" }, allowSetters = true)

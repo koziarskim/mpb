@@ -2,7 +2,7 @@
     <b-container fluid>
         <b-row style="padding-bottom: 4px;">
             <b-col cols=2>
-                <span style="text-align: left; font-size: 18px; font-weight: bold">Item Returns</span>
+                <span style="text-align: left; font-size: 18px; font-weight: bold">Item Returns {{itemId}}</span>
             </b-col>
             <b-col>
                 <div style="text-align: right;">
@@ -12,8 +12,11 @@
         </b-row>
         <b-table :items="itemReturns" :fields="fields" no-local-sorting>
           <template v-slot:cell(item)="row">
-              <b-link role="button" @click="goToItem(row.item.item.id)">{{row.item.item.number}}</b-link>
-              <span style="font-size: 11px"> ({{row.item.item.name}})</span>
+            <b-link role="button" @click="goToItem(row.item.item.id)">{{row.item.item.number}}</b-link>
+            <span style="font-size: 11px"> ({{row.item.item.name}})</span>
+          </template>
+          <template v-slot:cell(action)="row">
+            <b-button size="sm" @click.stop="deleteItemReturn(row.item.id)">x</b-button>
           </template>
         </b-table>
         <div style="display: flex">
@@ -37,11 +40,12 @@ export default {
     return {
       pageable: {totalElements: 100, currentPage: 1, perPage: 7, sortBy: 'updated', sortDesc: true},
       fields: [
-        { key: 'name', sortable: true, label: 'Item # (Name)'},
+        { key: 'item', sortable: true, label: 'Item # (Name)'},
         { key: 'unitsReceived', sortable: false, label: 'Received'},
         { key: 'unitsReturned', sortable: false, label: 'Returned'},
         { key: 'action', sortable: false, label: ''},
       ],
+      itemId: null,
       itemReturns: [],
       itemReturnModalVisible: false,
       itemReturnId: null,
@@ -57,6 +61,7 @@ export default {
     closeItemReturnModal(){
       this.itemReturnModalVisible = false;
       this.itemReturnId = null;
+      this.getItemReturns();
     },
     paginationChange(page){
         this.pageable.currentPage = page;
@@ -70,7 +75,7 @@ export default {
         console.log("API error: "+e);
       });
     },
-    deleteItem(itemReturnId) {
+    deleteItemReturn(itemReturnId) {
       this.$bvModal.msgBoxConfirm('Are you sure you want to delete Return?').then(ok => {
         if(ok){
           http.delete("/itemReturn/"+itemReturnId).then(r => {
@@ -84,8 +89,8 @@ export default {
     createItemReturn(){
       //TODO: ItemReturnModal
     },
-    gotToItem(itemId){
-        router.push('/item/'+itemId);
+    goToItem(itemId){
+        router.push('/itemEdit/'+itemId);
     },
   },
   mounted() {

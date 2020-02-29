@@ -2,13 +2,8 @@
   <b-container fluid>
     <b-modal centered size="lg" v-model="visible" :hide-header="true" :hide-footer="true">
       <b-row>
-				<b-col cols=4>
-					<label class="top-label">Address Distribution Center</label>
-					<input class="form-control" type="tel" v-model="address.dc">
-				</b-col>
-				<b-col v-if="addressType=='FRG'">
-					<label class="top-label">Keep it? </label><br/>
-					<input type="checkbox" v-model="address.visible">
+				<b-col cols=2>
+					<span>Returns for Item: {{item.number}}</span>
 				</b-col>
         <b-col>
           <div style="text-align: right;">
@@ -19,40 +14,11 @@
       </b-row>
 			<b-row>
 				<b-col cols=6>
-					<label class="top-label">Address Line</label>
-					<input class="form-control" type="tel" v-model="address.line">
-				</b-col>
-			</b-row>
-			<b-row>
-				<b-col cols=6>
-					<label class="top-label">Street</label>
-					<input class="form-control" type="tel" v-model="address.street">
-				</b-col>
-			</b-row>
-			<b-row>
-				<b-col cols=4>
-					<label class="top-label">City</label>
-					<input class="form-control" type="tel" v-model="address.city">
-				</b-col>
-				<b-col cols=1.5>
-					<label class="top-label">State</label>
-					<input style="width:60px;" class="form-control" type="tel" v-model="address.state">
+					<label class="top-label">Units Received</label>
+					<input class="form-control" type="tel" v-model="itemReturn.unitsReceived">
 				</b-col>
 				<b-col cols=2>
-					<label class="top-label">Zip Code</label>
-					<input class="form-control" type="tel" v-model="address.zip">
-				</b-col>
-			</b-row>
-			<b-row>
-				<b-col cols=10>
-					<label class="top-label">Phone:</label>
-					<input class="form-control" type="tel" v-model="address.phone"/>
-				</b-col>
-			</b-row>
-			<b-row>
-				<b-col cols=10>
-					<label class="top-label">Note:</label>
-					<b-form-textarea type="text" :rows="3" v-model="address.notes"></b-form-textarea>
+					<span>Units Returned: {{itemReturn.unitsReturned}}</span>
 				</b-col>
 			</b-row>
     </b-modal>
@@ -66,13 +32,16 @@ import moment from "moment";
 
 export default {
   props: {
-		addressId: Number,
-		addressType: String,
+		itemId: Number,
+		itemReturnId: Number,
   },
   data() {
     return {
-			address: {},
-			addresses: [],
+			item: {},
+			itemReturn: {
+				saleItemReturns: [],
+				item: {}
+			},
 	    visible: true,
     };
   },
@@ -80,38 +49,42 @@ export default {
   },
   watch:{},
   methods: {
-		getAddress(){
-			http.get("/address/"+this.addressId).then(r => {
-				this.address = r.data;
+		getItem(){
+			http.get("/item/"+this.itemId).then(r=> {
+				this.item = r.data;
+			}).catch(e => {
+				console.log("API error: " + e)
+			})
+		},
+		getItemReturn(){
+			http.get("/itemReturn/"+this.itemReturnId).then(r=> {
+				this.itemReturn = r.data;
 			}).catch(e => {
 				console.log("API error: " + e)
 			})
 		},
     validate() {
-			if(!this.address.dc || !this.address.street || !this.address.city || !this.address.state || !this.address.zip){
-				alert("Required: DC Name, Street, City, Zip, State");
-				return false;
-			}
       return true;
     },
     saveModal() {
       if (!this.validate()) {
         return;
 			}
-			this.address.type = this.addressType;
-      http.post("/address", this.address).then(response => {
-        this.closeModal(response.data);
+			this.itemReturn.item.id = this.item.id;
+      http.post("/itemReturn", this.itemReturn).then(r=> {
+        this.closeModal();
 			}).catch(e => {
 				console.log("API error: " + e);
 			});
     },
-    closeModal(address) {
-      this.$emit("closeModal", address);
+    closeModal() {
+      this.$emit("closeModal");
     }
   },
   mounted() {
-		if(this.addressId){
-			this.getAddress();
+		this.getItem();
+		if(this.itemReturnId){
+			this.getItemReturn();
 		}
   }
 };

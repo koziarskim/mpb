@@ -33,8 +33,8 @@ create table item_return (
 	id bigint NOT NULL DEFAULT nextval('item_return_id_seq'::regclass),
 	created timestamp without time zone,
 	updated timestamp without time zone,
-	units_returned bigint,
-	units_received bigint,
+	units_returned bigint default 0,
+	units_received bigint default 0,
 	date_returned date,
 	item_id bigint
 );
@@ -49,7 +49,7 @@ create table sale_item_return (
 	id bigint NOT NULL DEFAULT nextval('sale_item_return_id_seq'::regclass),
 	created timestamp without time zone,
 	updated timestamp without time zone,
-	units_returned bigint,
+	units_returned bigint default 0,
 	sale_item_id bigint,
 	item_return_id bigint
 );
