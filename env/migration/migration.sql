@@ -32,4 +32,4 @@ alter table doc_content add column created timestamp without time zone;
 
 alter table doc_content add column updated timestamp without time zone;
 
-alter table attachment drop column data;
+--alter table attachment drop column data;

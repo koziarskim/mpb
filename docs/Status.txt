@@ -13,6 +13,9 @@ Shipment (screen & PDF):
 	+ expand Load/Ref#
 	+ add Frieigh address to PS
 	+ connect both address boxes)
++ Speed up Shipment screen.
+- Ability to create return for each sale (enter unitsReturned).
+- Include unitsReturned when calculating units.
 - Allow to print BOL from list.
 - Allow to upload documents.
 - Shipment schedule/calendar.
@@ -31,7 +34,7 @@ Sale:
 - Show sale status (Open, Shipped). Open = Less shipped than Sold, Shipped = Fully shipped.
 - Allow to filter by Status.
 - Change column Shipped to Shipped/Open. (Open = still to shipped).
-- Ability to create RGA (Return Merchandise Authorization) - Need to think more about it.
+- Allow to search by item and customer (default view).
 - Ability to create OC (Order Complement) - Need to think more about it.
 - Combine two sale screens.
 - Allow to enter notes when save.
