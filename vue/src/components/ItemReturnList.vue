@@ -15,6 +15,9 @@
             <b-link role="button" @click="goToItem(row.item.item.id)">{{row.item.item.number}}</b-link>
             <span style="font-size: 11px"> ({{row.item.item.name}})</span>
           </template>
+          <template v-slot:cell(unitsReturned)="row">
+            <b-link role="button" @click="openItemReturnModal(row.item.id)">{{row.item.unitsReturned}}</b-link>
+          </template>
           <template v-slot:cell(action)="row">
             <b-button size="sm" @click.stop="deleteItemReturn(row.item.id)">x</b-button>
           </template>
