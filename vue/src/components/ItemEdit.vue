@@ -44,7 +44,7 @@
             <b-button style="margin-left: 70%" size="sm" type="reset" variant="success" @click="saveAndClose">Save</b-button>
             <label class="top-label">Stock: {{item.unitsOnStock}}</label><br/>
             <label class="top-label">Sch/Pro: <b-link role="button" @click="goToItemScheduleList()">{{item.unitsScheduled}}/{{item.unitsProduced}}</b-link></label><br/>
-            <label class="top-label">Sold: <b-link role="button" @click="goToItemSaleList()">{{item.unitsSold}}</b-link>&nbsp;</label><label class="top-label">Ret: <b-link role="button" @click="goToItemReturnList()">{{item.unitsReturned}}</b-link></label><br/>
+            <label class="top-label">Sold: <b-link role="button" @click="goToItemSaleList()">{{item.unitsSold}}</b-link>&nbsp;</label><label class="top-label" :class="getReturnClass()"><b-link role="button" @click="goToItemReturnList()">Ret: {{item.unitsReturned}}</b-link></label><br/>
             <label class="top-label">Shipped: <b-link role="button" @click="goToItemShippedList()">{{item.unitsShipped}}</b-link></label>
           </b-col>
         </b-row>
@@ -442,7 +442,13 @@ export default {
         	return httpUtils.baseUrl + "/attachment/" + this.item.attachment.id;
 		}
 		return null;
-	}
+  },
+  getReturnClass(){
+    if(this.item.unitsReceived > this.item.unitsReturned){
+      return "return-red";
+    }
+    return "";
+  }
   },
   mounted() {
     this.getAvailableComponents();
@@ -462,4 +468,7 @@ export default {
 </script>
 
 <style>
+.return-red {
+  background-color: red;
+}
 </style>

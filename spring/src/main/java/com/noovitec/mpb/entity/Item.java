@@ -118,6 +118,17 @@ public class Item extends BaseEntity {
 	}
 
 	@Transient
+	private Long unitsReceived = 0L;
+	
+	public Long getUnitsReceived() {
+		Long units = 0L;
+		for(ItemReturn ir: this.getItemReturns()) {
+			units += ir.getUnitsReceived();
+		}
+		return units;
+	}
+	
+	@Transient
 	private Long unitsOnStock = 0L;
 
 	public Long getUnitsOnStock() {
