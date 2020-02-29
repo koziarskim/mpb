@@ -14,8 +14,6 @@ Shipment (screen & PDF):
 	+ add Frieigh address to PS
 	+ connect both address boxes)
 + Speed up Shipment screen.
-- Ability to create return for each sale (enter unitsReturned).
-- Include unitsReturned when calculating units.
 - Allow to print BOL from list.
 - Allow to upload documents.
 - Shipment schedule/calendar.
@@ -25,6 +23,8 @@ Customer:
 - Reorganize screen layout (Generic info, Billing info, Shipping info) - Need more info.
 - Allow to create Pallet Tag - Need to talk more.
 Item screen:
+- Ability to create return by sale.
+- Include unitsReturned when calculating units.
 - Allow to enter upc for item (manually entered)
 - Allow to enter upc for case (manually entered)
 Components:
@@ -48,4 +48,4 @@ Purchase:
 Receiving:
 - none
 Global:
-- none.
+- Change file storage from db to filesystem.
