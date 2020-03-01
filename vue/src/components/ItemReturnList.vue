@@ -58,14 +58,18 @@ export default {
   },
   methods: {
     openItemReturnModal(itemReturnId){
-      return http.get("/itemReturn/"+itemReturnId).then(r=> {
-        this.itemId = r.data.item.id;
-        this.itemReturnId = itemReturnId;
+      this.itemReturnId = itemReturnId;
+      if(itemReturnId){
+        http.get("/itemReturn/"+itemReturnId).then(r=> {
+          this.itemId = r.data.item.id;
+          this.itemReturnModalVisible = true;
+        }).catch(e => {
+          console.log("API error: " + e)
+        })
+      }else{
         this.itemReturnModalVisible = true;
-        return r.data;
-			}).catch(e => {
-				console.log("API error: " + e)
-			})
+      }
+      
     },
     closeItemReturnModal(){
       this.itemReturnModalVisible = false;

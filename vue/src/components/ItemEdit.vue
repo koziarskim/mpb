@@ -37,10 +37,10 @@
             <label class="top-label">Notes:</label>
             <b-form-textarea type="text" :rows="4" v-model="item.description"></b-form-textarea>
           </b-col>
-          <b-col cols=3 style="margin-left: -25px; margin-top:3px">
+          <b-col cols=3 style="margin-top:3px">
             <upload :on-upload="onUpload" :file-url="getImageUrl()"></upload>
           </b-col>
-          <b-col cols=4 style="margin-top: 10px; margin-left: 20px">
+          <b-col cols=4 style="margin-top: 10px">
             <b-button style="margin-left: 70%" size="sm" type="reset" variant="success" @click="saveAndClose">Save</b-button>
             <label class="top-label">Stock: {{item.unitsOnStock}}</label><br/>
             <label class="top-label">Sch/Pro: <b-link role="button" @click="goToItemScheduleList()">{{item.unitsScheduled}}/{{item.unitsProduced}}</b-link></label><br/>

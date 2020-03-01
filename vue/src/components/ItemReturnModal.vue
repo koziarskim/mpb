@@ -2,9 +2,14 @@
   <b-container fluid>
     <b-modal centered size="lg" v-model="visible" :hide-header="true" :hide-footer="true">
       <b-row>
-				<b-col cols=6>
-					<span>Returns for Item: {{item.number}}</span>
+				<b-col cols=4>
+					<span style="font-weight: bold">Returns for Item:</span><br/>
+          <span>{{item.number}}</span>
 				</b-col>
+        <b-col cols=3>
+          <label class="top-label">Returned Date:</label>
+          <input class="form-control" type="date" v-model="itemReturn.dateReturned" placeholder="Date">
+        </b-col>
         <b-col>
           <div style="text-align: right;">
             <b-button style="margin: 0 2px 0 2px" @click="closeModal()">Close</b-button>
@@ -65,7 +70,8 @@ export default {
 			item: {},
 			itemReturn: {
 				saleItemReturns: [],
-				item: {}
+        item: {},
+        dateReturned: moment.utc().format("YYYY-MM-DD")
 			},
 			availableSaleItems: [],
       saleItemKv: {},

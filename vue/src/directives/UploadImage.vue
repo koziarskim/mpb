@@ -1,7 +1,7 @@
 <template>
   <div style="width: 130px; height:130px;" @click="openFileSelect">
     <a href="#" v-b-popover.hover="'Click to select new image'">
-      <img :src="imageUrl" height="100%">
+      <img :src="imageUrl" style="width: 100%; height: 100%">
     </a>
   </div>
 </template>

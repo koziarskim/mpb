@@ -132,7 +132,7 @@ public class Item extends BaseEntity {
 	private Long unitsOnStock = 0L;
 
 	public Long getUnitsOnStock() {
-		this.unitsOnStock = this.getUnitsProduced() - this.getUnitsShipped() + this.getUnitsReturned();
+		this.unitsOnStock = this.getUnitsProduced() - this.getUnitsShipped() + (this.getUnitsReturned()==null?0L:this.getUnitsReturned());
 		return this.unitsOnStock;
 	}
 	
