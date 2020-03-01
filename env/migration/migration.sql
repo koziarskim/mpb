@@ -63,3 +63,7 @@ ALTER TABLE ONLY sale_item_return ADD CONSTRAINT fk_sale_item_return_sale_item_i
 alter table item add column units_returned bigint default 0;
 
 alter table sale_item add column units_returned bigint default 0;
+
+alter table item_return add column customer_id bigint;
+
+ALTER TABLE ONLY item_return ADD CONSTRAINT fk_item_return_customer_id FOREIGN KEY (customer_id) REFERENCES customer(id);

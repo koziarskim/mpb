@@ -54,6 +54,11 @@ class CustomerRest {
 		return customerRepo.findAllCustomers();
 	}
 
+	@GetMapping("/customer/kv/item/{itemId}")
+	Collection<KeyValueDto> findByItem(@PathVariable Long itemId) {
+		return customerRepo.findByItem(itemId);
+	}
+
 	@GetMapping("/customer/{id}")
 	ResponseEntity<Customer> get(@PathVariable Long id) {
 		Optional<Customer> result = customerRepo.findById(id);

@@ -33,6 +33,11 @@ public class ItemReturn extends BaseEntity {
 	@JoinColumn(name = "item_id", referencedColumnName = "id")
 	private Item item;
 
+	@JsonIgnoreProperties(value = { "itemReturns" }, allowSetters = true)
+	@ManyToOne()
+	@JoinColumn(name = "customer_id", referencedColumnName = "id")
+	private Customer customer;
+
 	@JsonIgnoreProperties(value = { "itemReturn" }, allowSetters = true)
 	@OneToMany(cascade=CascadeType.ALL, orphanRemoval=true)
 	@JoinColumn(name = "item_return_id")

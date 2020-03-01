@@ -100,6 +100,12 @@ class SaleItemRest {
 		return dtos;
 	}
 
+	@GetMapping("/saleItem/kv/item/{itemId}/customer/{customerId}")
+	Collection<KeyValueDto> getAllByItemAndCustomer(@PathVariable Long itemId, @PathVariable Long customerId) {
+		Collection<KeyValueDto> dtos = saleItemRepo.findKvByItemAndCustomer(itemId, customerId);
+		return dtos;
+	}
+
 	@GetMapping("/saleItem/kv")
 	Collection<KeyValueDto> getAllKvs() {
 		Collection<KeyValueDto> saleDtos = saleItemRepo.findAllKvs();

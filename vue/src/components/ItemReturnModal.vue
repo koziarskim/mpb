@@ -2,7 +2,7 @@
   <b-container fluid>
     <b-modal centered size="lg" v-model="visible" :hide-header="true" :hide-footer="true">
       <b-row>
-				<b-col cols=2>
+				<b-col cols=6>
 					<span>Returns for Item: {{item.number}}</span>
 				</b-col>
         <b-col>
@@ -13,15 +13,19 @@
         </b-col>
       </b-row>
 			<b-row>
-				<b-col cols=6>
+        <b-col cols=4>
+          <label class="top-label">Customer:</label>
+          <b-select option-value="id" option-text="name" :list="availableCustomers" v-model="customerKv"></b-select>
+        </b-col>
+				<b-col cols=2>
 					<label class="top-label">Units Received</label>
 					<input class="form-control" type="tel" v-model="itemReturn.unitsReceived">
 				</b-col>
 				<b-col cols=2>
-					<span>Units Returned: {{itemReturn.unitsReturned}}</span>
+          <label class="top-label">Units Returned <br/> (Assigned to Sale)</label>
+					<span>{{itemReturn.unitsReturned}}</span>
 				</b-col>
 			</b-row>
-			<br/>
       <b-row>
         <b-col cols=6>
           <label class="top-label">Item sales:</label>
@@ -64,7 +68,9 @@ export default {
 				item: {}
 			},
 			availableSaleItems: [],
-			saleItemKv: {},
+      saleItemKv: {},
+      availableCustomers: [],
+      customerKv: {},
 			visible: true,
 			fields: [
         { key: 'saleItem.sale.number', sortable: true, label: 'Sale #'},
@@ -78,6 +84,9 @@ export default {
   computed: {
   },
   watch:{
+    customerKv(old_value, new_value){
+      this.getAvailableSaleItems();
+    }
   },
   methods: {
     deleteSaleItemReturn(sirId) {
@@ -97,22 +106,34 @@ export default {
 			})
     },
 		getAvailableSaleItems(){
-			http.get("/saleItem/kv/item/"+this.itemId).then(r=> {
+      console.log("Customer: "+this.customerKv.id)
+			http.get("/saleItem/kv/item/"+this.itemId+"/customer/"+this.customerKv.id).then(r=> {
 				this.availableSaleItems = r.data;
 			}).catch(e => {
 				console.log("API error: " + e)
 			})
 		},
+		getAvailableCustomers(){
+			http.get("/customer/kv/item/"+this.itemId).then(r=> {
+				this.availableCustomers = r.data;
+			}).catch(e => {
+				console.log("API error: " + e)
+			})
+		},
 		getItem(){
-			http.get("/item/"+this.itemId).then(r=> {
-				this.item = r.data;
+			return http.get("/item/"+this.itemId).then(r=> {
+        this.item = r.data;
+        return r.data;
 			}).catch(e => {
 				console.log("API error: " + e)
 			})
 		},
 		getItemReturn(){
-			http.get("/itemReturn/"+this.itemReturnId).then(r=> {
-				this.itemReturn = r.data;
+			return http.get("/itemReturn/"+this.itemReturnId).then(r=> {
+        this.itemReturn = r.data;
+        this.customerKv = {id: r.data.customer.id};
+        // this.getAvailableSaleItems();
+        return r.data;
 			}).catch(e => {
 				console.log("API error: " + e)
 			})
@@ -124,7 +145,8 @@ export default {
       if (!this.validate()) {
         return;
 			}
-			this.itemReturn.item.id = this.item.id;
+      this.itemReturn.item.id = this.item.id;
+      this.itemReturn.customer = {id: this.customerKv.id};
       http.post("/itemReturn", this.itemReturn).then(r=> {
         this.closeModal();
 			}).catch(e => {
@@ -137,7 +159,7 @@ export default {
   },
   mounted() {
     this.getItem();
-    this.getAvailableSaleItems();
+    this.getAvailableCustomers();
 		if(this.itemReturnId){
 			this.getItemReturn();
 		}
