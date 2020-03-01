@@ -16,7 +16,7 @@ import org.springframework.stereotype.Repository;
 import com.noovitec.mpb.entity.Sale;
 
 public interface CustomSaleRepo {
-	Page<Sale> findPagable(Pageable pageable, String searchKey, String searchType, boolean hideProd, boolean hideShip);
+	Page<Sale> findPagable(Pageable pageable, String saleNumber, Long itemId, Long customerId, boolean hideProd, boolean hideShip);
 
 	@Repository
 	public class CustomSaleRepoImpl implements CustomSaleRepo {
@@ -27,13 +27,20 @@ public interface CustomSaleRepo {
 		EntityManager entityManager;
 
 		@Override
-		public Page<Sale> findPagable(Pageable pageable, String searchKey, String searchType, boolean hideProd, boolean hideShip) {
-			String q = "select distinct s from Sale s " + "left join s.saleItems si " + "left join si.item i " + "where s.id is not null ";
-			if (searchType.equals("sale") && !searchKey.isBlank()) {
-				q += "and (upper(s.name) like concat('%',upper(:searchKey),'%') " + "or upper(s.number) like concat('%',upper(:searchKey),'%')) ";
+		public Page<Sale> findPagable(Pageable pageable, String saleNumber, Long itemId, Long customerId, boolean hideProd, boolean hideShip) {
+			String q = "select distinct s from Sale s " 
+					+ "left join s.saleItems si " 
+					+ "left join si.item i "
+					+ "left join s.customer c " 
+					+ "where s.id is not null ";
+			if (saleNumber !=null && !saleNumber.isBlank()) {
+				q += "and upper(s.number) like concat('%',upper(:saleNumber),'%') ";
 			}
-			if (searchType.equals("item") && !searchKey.isBlank()) {
-				q += "and (upper(i.name) like concat('%',upper(:searchKey),'%') " + "or upper(i.number) like concat('%',upper(:searchKey),'%')) ";
+			if (itemId !=null) {
+				q += "and i.id = :itemId ";
+			}
+			if (customerId !=null) {
+				q += "and c.id = :customerId ";
 			}
 			if (hideProd) {
 				q += "and s.unitsSold > s.unitsProduced ";
@@ -43,11 +50,14 @@ public interface CustomSaleRepo {
 			}
 			q += "order by s.updated desc";
 			Query query = entityManager.createQuery(q);
-			if (searchType.equals("sale") && !searchKey.isBlank()) {
-				query.setParameter("searchKey", searchKey);
+			if (saleNumber !=null && !saleNumber.isBlank()) {
+				query.setParameter("saleNumber", saleNumber);
 			}
-			if (searchType.equals("item") && !searchKey.isBlank()) {
-				query.setParameter("searchKey", searchKey);
+			if (itemId !=null) {
+				query.setParameter("itemId", itemId);
+			}
+			if (customerId !=null) {
+				query.setParameter("customerId", customerId);
 			}
 			long total = query.getResultStream().count();
 			@SuppressWarnings("unchecked")

@@ -6,10 +6,13 @@
           <b-form-checkbox size="sm" v-model="itemView">Item View</b-form-checkbox>
         </b-col>
         <b-col cols="3">
-          <input class="form-control" type="tel" v-model="searchSale" @click="searchItem = ''" @keyup.enter="getSales('sale')" placeholder="Search Number or Name"/>
+          <input class="form-control" type="tel" v-model="saleNumber" @keyup.enter="getSales()" placeholder="Sale"/>
         </b-col>
         <b-col cols="2">
-          <input class="form-control" type="tel" v-model="searchItem" @click="searchSale = ''" @keyup.enter="getSales('item')" placeholder="Search Item"/>
+          <b-select option-value="id" option-text="name" :list="availableItems" v-model="itemKv" placeholder="Item"></b-select>
+        </b-col>
+        <b-col cols="2">
+          <b-select option-value="id" option-text="name" :list="availableCustomers" v-model="customerKv" placeholder="Customer"></b-select>
         </b-col>
         <b-col cols=2>
           <div style="display:flex"><input style="margin-right: 7px" type="checkbox" v-model="hideProd"/><label class="top-label">Hide Produced</label></div>
@@ -64,8 +67,11 @@ export default {
       securite: securite,
       navigation: navigation,
       pageable: {totalElements: 100, currentPage: 1, perPage: 7, sortBy: 'updated', sortDesc: true},
-      searchSale: "",
-      searchItem: "",
+      saleNumber: null,
+      availableItems: [],
+      itemKv: {},
+      availableCustomers: [],
+      customerKv: {},
       itemView: false,
       hideProd: false,
       hideShip: false,
@@ -84,6 +90,12 @@ export default {
     };
   },
   watch: {
+    itemKv(old_value, new_value){
+      this.getSales();      
+    },
+    customerKv(old_value, new_value){
+      this.getSales();      
+    },
     itemView(newValue, oldValue){
       if(newValue==true){
         navigation.goTo("/saleItemList/")
@@ -114,19 +126,35 @@ export default {
         this.getSales();
     },
 	getSales() {
-    var type = this.searchSale?"sale":"item"
-    var searchKey = this.searchSale?this.searchSale:this.searchItem;
-      http
-        .get("/sale/pageable", {params: {pageable: this.pageable, searchKey: searchKey, searchType: type, hideProd: this.hideProd, hideShip: this.hideShip}})
-        .then(response => {
-          //SaleListDto
-          this.sales = response.data.content;
-          this.pageable.totalElements = response.data.totalElements;
-        })
-        .catch(e => {
-          console.log("API error: "+e);
-        });
-    },
+    var query = {params: {
+      pageable: this.pageable, 
+      saleNumber: this.saleNumber, 
+      itemId: this.itemKv.id,
+      customerId: this.customerKv.id, 
+      hideProd: this.hideProd, 
+      hideShip: this.hideShip
+    }}
+    http.get("/sale/pageable", query).then(r => {
+      this.sales = r.data.content;
+      this.pageable.totalElements = r.data.totalElements;
+    }).catch(e => {
+      console.log("API error: "+e);
+    });
+  },
+	getAvailableItems() {
+    http.get("/item/kv").then(r => {
+      this.availableItems = r.data;
+    }).catch(e => {
+      console.log("API error: "+e);
+    });
+  },
+	getAvailableCustomers() {
+    http.get("/customer/kv").then(r => {
+      this.availableCustomers = r.data;
+    }).catch(e => {
+      console.log("API error: "+e);
+    });
+  },
     getSale(saleId){
       return http.get("/sale/"+saleId).then(r => {
         return r.data;        
@@ -174,7 +202,9 @@ export default {
     },
   },
   mounted() {
-     this.getSales();
+    this.getAvailableItems();
+    this.getAvailableCustomers();
+    this.getSales();
   }
 };
 </script>
