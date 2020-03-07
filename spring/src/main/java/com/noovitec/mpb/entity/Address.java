@@ -31,7 +31,6 @@ public class Address extends BaseEntity {
 	private String label;
 
 	public String getLabel() {
-//		return this.dc + " (" + this.city + ", " + this.state+")";
-		return "test";
+		return this.dc + " (" + this.city + ", " + this.state+")";
 	}
 }
