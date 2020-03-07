@@ -13,11 +13,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.noovitec.mpb.entity.Attachment;
 import com.noovitec.mpb.entity.Component;
-import com.noovitec.mpb.entity.DocContent;
 import com.noovitec.mpb.entity.ItemComponent;
 import com.noovitec.mpb.entity.PurchaseComponent;
 import com.noovitec.mpb.entity.Receiving;
-import com.noovitec.mpb.repo.AttachmentRepo;
 import com.noovitec.mpb.repo.ComponentRepo;
 import com.noovitec.mpb.repo.ItemComponentRepo;
 
@@ -40,7 +38,7 @@ public interface ComponentService {
 		@Autowired
 		private CrudService crudService;
 		@Autowired
-		private AttachmentRepo attachmentRepo;
+		private AttachmentService attachmentService;
 		@Autowired
 		private ItemComponentRepo itemComponentRepo;
 
@@ -56,10 +54,10 @@ public interface ComponentService {
 			component = (Component) crudService.merge(component);
 			if (image != null) {
 				Attachment attachment = new Attachment();
-				DocContent docContent = new DocContent();
-				docContent.setData(image.getBytes());
-				attachment.setDocContent(docContent);
-				attachmentRepo.save(attachment);
+				attachment.setType("COMPONENT");
+				attachment.setName("COM_"+component.getNumber()+"_"+component.getId());
+				attachment.setMimeType("JPG");
+				attachmentService.save(attachment, image.getBytes());
 				component.setAttachment(attachment);
 			}
 			return componentRepo.save(component);

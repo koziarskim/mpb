@@ -13,10 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.noovitec.mpb.entity.Attachment;
-import com.noovitec.mpb.entity.DocContent;
 import com.noovitec.mpb.entity.Item;
 import com.noovitec.mpb.entity.ItemComponent;
-import com.noovitec.mpb.repo.AttachmentRepo;
 import com.noovitec.mpb.repo.ItemRepo;
 
 public interface ItemService {
@@ -38,7 +36,7 @@ public interface ItemService {
 		@Autowired
 		CrudService crudService;
 		@Autowired
-		AttachmentRepo attachmentRepo;
+		AttachmentService attachmentService;
 
 		public ItemServiceImp(ItemRepo itemRepo) {
 			this.itemRepo = itemRepo;
@@ -51,10 +49,10 @@ public interface ItemService {
 			item = (Item) crudService.merge(item);
 			if (image != null) {
 				Attachment attachment = new Attachment();
-				DocContent docContent = new DocContent();
-				docContent.setData(image.getBytes());
-				attachment.setDocContent(docContent);
-				attachmentRepo.save(attachment);
+				attachment.setType("ITEM");
+				attachment.setName("ITM_"+item.getNumber()+"_"+item.getId());
+				attachment.setMimeType("JPG");
+				attachmentService.save(attachment, image.getBytes());
 				item.setAttachment(attachment);
 			}
 			return itemRepo.save(item);

@@ -1,12 +1,12 @@
 package com.noovitec.mpb.entity;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import javax.persistence.Entity;
+import javax.persistence.Transient;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,11 +22,16 @@ public class Attachment extends BaseEntity {
 
 	private String name;
 	private String type;
+	private String mimeType;
+	private Long docContentId;
 	
-	@JsonIgnoreProperties(value = { "data" }, allowSetters = true)
-	@ManyToOne(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinColumn(name = "doc_content_id", referencedColumnName = "id")
+	@Transient
+	@JsonIgnore
 	private DocContent docContent;
 
-
+	public String getFileName() {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+		return this.getName() + "-" + sdf.format(timestamp) +"."+ this.getMimeType();
+	}
 }

@@ -3,7 +3,6 @@ package com.noovitec.mpb.rest;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URISyntaxException;
 import java.sql.Timestamp;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -33,8 +32,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.PdfReader;
@@ -51,6 +48,7 @@ import com.noovitec.mpb.repo.AttachmentRepo;
 import com.noovitec.mpb.repo.ComponentRepo;
 import com.noovitec.mpb.repo.PurchaseRepo;
 import com.noovitec.mpb.repo.SupplierRepo;
+import com.noovitec.mpb.service.AttachmentService;
 import com.noovitec.mpb.service.ComponentService;
 import com.noovitec.mpb.service.CrudService;
 import com.noovitec.mpb.service.ItemService;
@@ -78,6 +76,8 @@ class PurchaseRest {
 	ComponentService componentService;
 	@Autowired
 	CrudService crudService;
+	@Autowired
+	AttachmentService attachmentService;
 	
 	public PurchaseRest(PurchaseRepo purchaseRepo) {
 		this.purchaseRepo = purchaseRepo;
@@ -143,25 +143,26 @@ class PurchaseRest {
 	@GetMapping("/purchase/{id}/pdf")
 	HttpEntity<byte[]> getPdf(@PathVariable Long id) throws DocumentException, IOException {
 		Purchase purchase = purchaseRepo.findById(id).get();
-		Attachment attachment = attachmentRepo.findById(purchase.getAttachment().getId()).get();
-//		byte[] data = attachment.getDocContent().getData();
+		Attachment attachment = attachmentService.getById(purchase.getAttachment().getId());
+		if(attachment == null) {
+			attachment = new Attachment();
+			attachment.setType("PO");
+			attachment.setMimeType("PDF");
+			attachment.setName("PO_"+purchase.getNumber()+"_"+purchase.getId());
+		}
 		byte[] data = this.generatePdf(purchase);
+		attachmentService.save(attachment, data);
 		HttpHeaders header = new HttpHeaders();
 		header.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-		String fileName = attachment.getName();
-		header.set("Content-Disposition", "inline; filename=" + fileName);
+		header.set("Content-Disposition", "inline; filename=" + attachment.getFileName());
 		header.setContentLength(data.length);
 		return new HttpEntity<byte[]>(data, header);
 	}
 
 	// Save and update.
 	@PostMapping("/purchase")
-	ResponseEntity<Purchase> post(@RequestBody(required = false) Purchase purchase)
-			throws URISyntaxException, JsonParseException, JsonMappingException, IOException, DocumentException {
-		if (purchase == null) {
-			purchase = new Purchase();
-		}
-		purchase = (Purchase) crudService.merge(purchase);
+	ResponseEntity<Purchase> post(@RequestBody(required = false) Purchase purchase) throws IOException, DocumentException{
+		purchase = purchaseRepo.save(purchase);
 		List<Long> itemIds = new ArrayList<Long>();
 		List<Long> componentIds = new ArrayList<Long>();
 		for (PurchaseComponent pc : purchase.getPurchaseComponents()) {
@@ -171,24 +172,21 @@ class PurchaseRest {
 				itemIds.add(ic.getItem().getId());
 			}
 		}
-		Purchase result = purchaseRepo.save(purchase);
+		byte[] data = this.generatePdf(purchase);
+		Attachment attachment = purchase.getAttachment();
+		if(attachment == null) {
+			attachment = new Attachment();
+			attachment.setType("POR");
+			attachment.setMimeType("PDF");
+			attachment.setName("PO_" + purchase.getNumber() + "_" + purchase.getId());
+			attachment = attachmentService.save(attachment, data);
+			purchase.setAttachment(attachment);
+		}
+		purchase = purchaseRepo.save(purchase);
 		itemService.updateUnits(itemIds);
 		componentService.updateUnits(componentIds);
 		itemService.updateUnitsReadyProd(itemIds);
-
-		byte[] data = this.generatePdf(result);
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
-		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-		String fileName = "PO" + purchase.getNumber() + "-" + sdf.format(timestamp) + ".pdf";
-		Attachment attachment = new Attachment();
-		DocContent docContent = new DocContent();
-		docContent.setData(data);
-		attachment.setDocContent(docContent);
-		attachment.setType("POR");
-		attachment.setName(fileName);
-		purchase.setAttachment(attachment);
-		result = purchaseRepo.save(purchase);
-		return ResponseEntity.ok().body(result);
+		return ResponseEntity.ok().body(purchase);
 	}
 
 	@DeleteMapping("/purchase/{id}")

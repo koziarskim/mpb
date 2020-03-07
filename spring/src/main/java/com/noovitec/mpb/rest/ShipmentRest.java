@@ -3,8 +3,6 @@ package com.noovitec.mpb.rest;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -40,15 +38,15 @@ import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfStamper;
 import com.noovitec.mpb.dto.ShipmentDto;
 import com.noovitec.mpb.entity.Attachment;
-import com.noovitec.mpb.entity.DocContent;
 import com.noovitec.mpb.entity.Item;
 import com.noovitec.mpb.entity.Sale;
 import com.noovitec.mpb.entity.Shipment;
 import com.noovitec.mpb.entity.ShipmentItem;
-import com.noovitec.mpb.repo.AttachmentRepo;
 import com.noovitec.mpb.repo.ItemRepo;
 import com.noovitec.mpb.repo.ShipmentRepo;
+import com.noovitec.mpb.service.AttachmentService;
 import com.noovitec.mpb.service.CrudService;
+import com.noovitec.mpb.service.ShipmentService;
 
 @RestController
 @RequestMapping("/api")
@@ -57,12 +55,14 @@ class ShipmentRest {
 	private final Logger log = LoggerFactory.getLogger(ShipmentRest.class);
 	private ShipmentRepo shipmentRepo;
 	@Autowired
-	private AttachmentRepo attachmentRepo;
+	private AttachmentService attachmentService;
 	@Autowired
 	private ItemRepo itemRepo;
 	@Autowired
 	private CrudService crudService;
-
+	@Autowired
+	private ShipmentService shipmentService;
+	
 	public ShipmentRest(ShipmentRepo shipmentRepo) {
 		this.shipmentRepo = shipmentRepo;
 	}
@@ -122,15 +122,18 @@ class ShipmentRest {
 	@GetMapping("/shipment/{shipmentId}/pdf")
 	HttpEntity<byte[]> getPdf(@PathVariable Long shipmentId) throws DocumentException, IOException {
 		Shipment shipment = shipmentRepo.findById(shipmentId).get();
-		if(shipment.getAttachment()==null) {
-			return null;
+		Attachment attachment = attachmentService.getById(shipment.getAttachment().getId());
+		if(attachment == null) {
+			attachment = new Attachment();
+			attachment.setType("SHIPMENT");
+			attachment.setMimeType("PDF");
+			attachment.setName("BOL_"+shipment.getNumber()+"_"+shipment.getId());
 		}
-//		byte[] data = shipment.getAttachment().getDocContent().getData();
-		byte[] data = this.generatePdf(shipment, false);
+		byte[] data = this.generatePdf(shipment, true);
+		attachmentService.save(attachment, data);
 		HttpHeaders header = new HttpHeaders();
 		header.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-		String fileName = shipment.getAttachment() != null ? shipment.getAttachment().getName() : "BOL" + shipment.getNumber() + "-Draft.pdf";
-		header.set("Content-Disposition", "inline; filename=" + fileName);
+		header.set("Content-Disposition", "inline; filename=" + attachment.getFileName());
 		header.setContentLength(data.length);
 		return new HttpEntity<byte[]>(data, header);
 	}
@@ -160,23 +163,16 @@ class ShipmentRest {
 		}
 		shipment.setStatus(status);
 		shipment = shipmentRepo.save(shipment);
-		//TODO: We might need to keep the audit.
-		//TODO: See if it could be refactored after puting merge.
-		if(shipment.getAttachment()!=null && shipment.getAttachment().getId()!=null) {
-			Long attachmentId = shipment.getAttachment().getId();
-			shipment.setAttachment(null);
-			attachmentRepo.deleteById(attachmentId);
-		}
 		byte[] data = this.generatePdf(shipment, true);
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
-		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-		String fileName = "BOL" + shipment.getNumber() + "-" + sdf.format(timestamp) + ".pdf";
-		shipment.setAttachment(new Attachment());
-		DocContent docContent = new DocContent();
-		docContent.setData(data);
-		shipment.getAttachment().setDocContent(docContent);
-		shipment.getAttachment().setType("BOL");
-		shipment.getAttachment().setName(fileName);
+		Attachment attachment = shipment.getAttachment();
+		if(attachment == null) {
+			attachment = new Attachment();
+			attachment.setType("SHP");
+			attachment.setMimeType("PDF");
+			attachment.setName("BOL_" + shipment.getNumber() + "_" + shipment.getId());
+			attachment = attachmentService.save(attachment, data);
+			shipment.setAttachment(attachment);
+		}
 		shipment = shipmentRepo.save(shipment);
 		return ResponseEntity.ok().body(shipment);
 	}
