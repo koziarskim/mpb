@@ -39,10 +39,10 @@ if "%BACKUP%" == "true" (
 :import
 if "%IMPORT%" == "true" (
 	echo Processing Import...
-rem	findstr /v /b /c:"SET " /c:"CREATE DATABASE" /c:"ALTER DATABASE" /c:"\connect" /c:"REVOKE ALL" /c:"GRANT ALL" /c:"SELECT pg_catalog.set_config('search_path'" %SCHEMA_FILE% > %BACKUP_DIR%\clean_schema.sql
-rem	findstr /v /b /c:"SET " /c:"CREATE DATABASE" /c:"ALTER DATABASE" /c:"\connect" /c:"REVOKE ALL" /c:"GRANT ALL" /c:"SELECT pg_catalog.set_config('search_path'" %DATA_FILE% > %BACKUP_DIR%\clean_data.sql
-rem	createdb -h localhost -p 5432 -U postgres %DB_NAME% || (GOTO end)
-rem	psql -U postgres -d %DB_NAME% < %BACKUP_DIR%\clean_schema.sql
+	findstr /v /b /c:"SET " /c:"CREATE DATABASE" /c:"ALTER DATABASE" /c:"\connect" /c:"REVOKE ALL" /c:"GRANT ALL" /c:"SELECT pg_catalog.set_config('search_path'" %SCHEMA_FILE% > %BACKUP_DIR%\clean_schema.sql
+	findstr /v /b /c:"SET " /c:"CREATE DATABASE" /c:"ALTER DATABASE" /c:"\connect" /c:"REVOKE ALL" /c:"GRANT ALL" /c:"SELECT pg_catalog.set_config('search_path'" %DATA_FILE% > %BACKUP_DIR%\clean_data.sql
+	createdb -h localhost -p 5432 -U postgres %DB_NAME% || (GOTO end)
+	psql -U postgres -d %DB_NAME% < %BACKUP_DIR%\clean_schema.sql
 	psql -U postgres -d %DB_NAME% < %BACKUP_DIR%\clean_data.sql
 )
 :end

@@ -13,7 +13,11 @@
         <label class="top-label">Expected Date:</label>
         <input class="form-control" type="date" v-model="sale.expectedDate" placeholder="Date">
       </b-col>
-      <b-col cols=3 offset=2 style="margin-top: 5px">
+      <b-col cols=2>
+        <label class="top-label">Status:</label><br/>
+        <span style="font-weight: bold">{{sale.status}}</span>
+      </b-col>
+      <b-col cols=3 style="margin-top: 5px">
         <label class="top-label">Stock: {{sale.unitsOnStock}},&nbsp;&nbsp;</label>
         <label class="top-label">Shed/Prod: {{sale.unitsScheduled}}/{{sale.unitsProduced}}</label><br/>
         <label class="top-label">Sold: {{sale.unitsSold}},&nbsp;&nbsp;</label>

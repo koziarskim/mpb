@@ -10,7 +10,7 @@ update attachment set type = 'PURCHASE', mime_type='PDF' where id in (select att
 
 update attachment set type = 'SHIPMENT', mime_type='PDF' where id in (select attachment_id from shipment where attachment_id in (select id from attachment));
 
-update attachment set name = 'image', mime_type = 'JPG' where name = 'images.jpg'
+update attachment set name = 'image', mime_type = 'JPG' where name = 'images.jpg';
 
 update attachment set mime_type = 'PDF' where type in ('BOL', 'POR') and mime_type is null;
 
@@ -21,3 +21,9 @@ update attachment set type = 'UNKONW' where name = 'image' and type is null;
 update attachment set type = 'SHIPMENT' where type = 'BOL';
 
 update attachment set type = 'PURCHASE' where type = 'POR';
+
+alter table sale add column status varchar(50) default 'PENDING_APPROVAL';
+
+alter table sale add column approved boolean default false;
+
+update sale set approved = true where (units_produced + units_transfered_to - units_transfered_from - units_shipped) > 0;

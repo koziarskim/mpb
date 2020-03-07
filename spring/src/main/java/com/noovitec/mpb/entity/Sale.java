@@ -38,7 +38,9 @@ public class Sale extends BaseEntity {
 	private Long unitsTransferedTo = 0L;
 	private Long unitsTransferedFrom = 0L;
 	private Long unitsShipped = 0L;
-
+	private String status;
+	private boolean approved;
+	
 	@JsonIgnoreProperties(value = { "sales" }, allowSetters = true)
 	@ManyToOne()
 	@JoinColumn(name = "customer_id", referencedColumnName = "id")
@@ -75,6 +77,38 @@ public class Sale extends BaseEntity {
 			this.unitsShipped += sa.getUnitsShipped();
 			this.unitsTransferedTo += sa.getUnitsTransferedTo();
 			this.unitsTransferedFrom += sa.getUnitsTransferedFrom();
+		}
+		this.updateStatus();
+	}
+	
+	private void updateStatus() {
+		this.status = "PENDING_APPROVAL";
+		if(this.approved) {
+			this.status = "APPROVED";
+		}
+		if(this.getUnitsOnStock() > 0) {
+			this.status = "PARTIAL_ORDER";
+		}
+		if(this.getUnitsOnStock() >= this.unitsSold) {
+			this.status = "ORDERED";
+		}
+		if(this.unitsScheduled > 0) {
+			this.status = "PARTIAL_SCHEDULE";
+		}
+		if(this.unitsScheduled >= this.unitsSold) {
+			this.status = "SCHEDULED";
+		}
+		if(this.unitsProduced > 0) {
+			this.status = "PARTIAL_PROD";
+		}
+		if(this.unitsProduced >= this.unitsSold) {
+			this.status = "PRODUCED";
+		}
+		if(this.unitsShipped > 0) {
+			this.status = "PARTIAL_SHIPPED";
+		}
+		if(this.unitsShipped >= this.unitsSold) {
+			status = "SHIPPED";
 		}
 	}
 
