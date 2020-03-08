@@ -1,12 +1,11 @@
 <template>
     <b-container fluid>
-      <b-row style="padding-bottom: 4px;">
-        <b-col cols="2">
-          <span style="text-align: left; font-size: 18px; font-weight: bold">Sale Orders</span>
+      <b-row style="padding-bottom: 4px; font-size: 12px">
+        <b-col cols=2>
           <b-form-checkbox size="sm" v-model="itemView">Item View</b-form-checkbox>
         </b-col>
-        <b-col cols="3">
-          <input class="form-control" type="tel" v-model="saleNumber" @keyup.enter="getSales()" placeholder="Sale"/>
+        <b-col cols=2 style="margin-left: -85px">
+          <input class="form-control" style="font-size: 12px" type="tel" v-model="saleNumber" @keyup.enter="getSales()" placeholder="Sale"/>
         </b-col>
         <b-col cols="2">
           <b-select option-value="id" option-text="name" :list="availableItems" v-model="itemKv" placeholder="Item"></b-select>
@@ -14,13 +13,16 @@
         <b-col cols="2">
           <b-select option-value="id" option-text="name" :list="availableCustomers" v-model="customerKv" placeholder="Customer"></b-select>
         </b-col>
-        <b-col cols=2>
+        <b-col cols="2">
+          <b-select option-value="id" option-text="name" :list="availableStatus" v-model="statusKv" placeholder="Status"></b-select>
+        </b-col>
+        <!-- <b-col cols=2>
           <div style="display:flex"><input style="margin-right: 7px" type="checkbox" v-model="hideProd"/><label class="top-label">Hide Produced</label></div>
           <div style="display:flex"><input style="margin-right: 7px" type="checkbox" v-model="hideShip"/><label class="top-label">Hide Shipped </label></div>
-        </b-col>
+        </b-col> -->
         <b-col>
           <div style="text-align: right;">
-          <b-button type="submit" variant="primary" @click="goToSale('')">New S.O.</b-button>
+          <b-button type="submit" variant="primary" size="sm" @click="goToSale('')">New S.O.</b-button>
           </div>
         </b-col>
       </b-row>
@@ -44,6 +46,9 @@
         </template>
         <template v-slot:cell(unitsShipped)="row">
             <b-button size="sm" @click=goToShipment(row.item.id) variant="link">{{row.item.unitsShipped}}</b-button>
+        </template>
+        <template v-slot:cell(status)="row">
+            <span>{{getStatus(row.item.status)}}</span>
         </template>
         <template v-slot:cell(action)="row">
             <b-button size="sm" @click.stop="deleteSale(row.item)">x</b-button>
@@ -72,9 +77,18 @@ export default {
       itemKv: {},
       availableCustomers: [],
       customerKv: {},
+      availableStatus: [
+        {id: 'PENDING_APPROVAL', name: 'Pending Approval'},
+        {id: 'APPROVED', name: 'Approved'},
+        {id: 'PARTIAL_SCHEDULE', name: 'Partial Scheduled'},
+        {id: 'SCHEDULED', name: 'Fully Scheduled'},
+        {id: 'PARTIAL_PROD', name: 'Partial Prod'},
+        {id: 'PRODUCED', name: 'Fully Produced'},
+        {id: 'PARTIAL_SHIPPED', name: 'Partial Shipped'},
+        {id: 'SHIPPED', name: 'Fully Shipped'}
+      ],
+      statusKv: {},
       itemView: false,
-      hideProd: false,
-      hideShip: false,
       fields: [
         { key: "number", label: "Sale #", sortable: false },
         { key: "customerName", label: "Customer", sortable: false },
@@ -84,6 +98,7 @@ export default {
         { key: "unitsSchPro", label: "Sched/Prod", sortable: false },
         { key: "unitsTransfered", label: "Transfers", sortable: false },
         { key: "unitsShipped", label: "Shipped", sortable: false },
+        { key: "status", label: "Status", sortable: false },
         { key: "action", label: "", sortable: false}
       ],
       sales: [] //SaleListDto
@@ -101,14 +116,15 @@ export default {
         navigation.goTo("/saleItemList/")
       }
     },
-    hideProd(newValue, oldValue){
-      this.getSales();
+    statusKv(old_value, new_value){
+      this.getSales();      
     },
-    hideShip(newValue, oldValue){
-      this.getSales();
-    }
   },
   methods: {
+    getStatus(statusId){
+      var statusKv = this.availableStatus.find(stat => stat.id == statusId)
+      return statusKv.name
+    },
     showPopover(saleDto){
       // this.sales.forEach(sale => sale.show = false)
       this.getSale(saleDto.id).then(sale => {
@@ -130,9 +146,8 @@ export default {
       pageable: this.pageable, 
       saleNumber: this.saleNumber, 
       itemId: this.itemKv.id,
-      customerId: this.customerKv.id, 
-      hideProd: this.hideProd, 
-      hideShip: this.hideShip
+      customerId: this.customerKv.id,
+      status: this.statusKv.id 
     }}
     http.get("/sale/pageable", query).then(r => {
       this.sales = r.data.content;

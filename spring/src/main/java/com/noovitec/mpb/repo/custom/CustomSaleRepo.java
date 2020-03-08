@@ -16,7 +16,7 @@ import org.springframework.stereotype.Repository;
 import com.noovitec.mpb.entity.Sale;
 
 public interface CustomSaleRepo {
-	Page<Sale> findPagable(Pageable pageable, String saleNumber, Long itemId, Long customerId, boolean hideProd, boolean hideShip);
+	Page<Sale> findPagable(Pageable pageable, String saleNumber, Long itemId, Long customerId, String status);
 
 	@Repository
 	public class CustomSaleRepoImpl implements CustomSaleRepo {
@@ -27,7 +27,7 @@ public interface CustomSaleRepo {
 		EntityManager entityManager;
 
 		@Override
-		public Page<Sale> findPagable(Pageable pageable, String saleNumber, Long itemId, Long customerId, boolean hideProd, boolean hideShip) {
+		public Page<Sale> findPagable(Pageable pageable, String saleNumber, Long itemId, Long customerId, String status) {
 			String q = "select distinct s from Sale s " 
 					+ "left join s.saleItems si " 
 					+ "left join si.item i "
@@ -42,11 +42,8 @@ public interface CustomSaleRepo {
 			if (customerId !=null) {
 				q += "and c.id = :customerId ";
 			}
-			if (hideProd) {
-				q += "and s.unitsSold > s.unitsProduced ";
-			}
-			if (hideShip) {
-				q += "and s.unitsSold > s.unitsShipped ";
+			if (status != null && !status.isBlank()) {
+				q += "and s.status = :status ";
 			}
 			q += "order by s.updated desc";
 			Query query = entityManager.createQuery(q);
@@ -58,6 +55,9 @@ public interface CustomSaleRepo {
 			}
 			if (customerId !=null) {
 				query.setParameter("customerId", customerId);
+			}
+			if (status !=null && !status.isBlank()) {
+				query.setParameter("status", status);
 			}
 			long total = query.getResultStream().count();
 			@SuppressWarnings("unchecked")

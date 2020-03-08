@@ -86,12 +86,6 @@ public class Sale extends BaseEntity {
 		if(this.approved) {
 			this.status = "APPROVED";
 		}
-		if(this.getUnitsOnStock() > 0) {
-			this.status = "PARTIAL_ORDER";
-		}
-		if(this.getUnitsOnStock() >= this.unitsSold) {
-			this.status = "ORDERED";
-		}
 		if(this.unitsScheduled > 0) {
 			this.status = "PARTIAL_SCHEDULE";
 		}

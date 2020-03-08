@@ -1,12 +1,11 @@
 <template>
     <b-container fluid>
-        <b-row style="padding-bottom: 4px;">
-            <b-col cols="2">
-                <span style="text-align: left; font-size: 18px; font-weight: bold">Sales by Item</span>
-                <b-form-checkbox size="sm" v-model="itemView">Item View</b-form-checkbox>
+        <b-row style="padding-bottom: 4px; font-size: 12px">
+            <b-col cols=2>
+              <b-form-checkbox size="sm" v-model="itemView">Item View</b-form-checkbox>
             </b-col>
-            <b-col cols="2">
-                <input class="form-control" type="tel" v-model="numberName" @keyup.enter="getSaleItems()" placeholder="Search Sale #, Name"/>
+            <b-col cols="2" style="margin-left: -85px">
+              <input style="font-size: 12px" class="form-control" type="tel" v-model="numberName" @keyup.enter="getSaleItems()" placeholder="Search Sale #, Name"/>
             </b-col>
             <b-col cols="2">
               <b-select option-value="id" option-text="name" :list="availableCustomers" v-model="customer" placeholder="Search Customer"></b-select>
@@ -19,7 +18,7 @@
             </b-col>
             <b-col>
                 <div style="text-align: right;">
-                <b-button type="submit" variant="primary" @click="newShipment()">New Shipment ({{selectedSaleItemIds.length}})</b-button>
+                <b-button type="submit" size="sm" variant="primary" @click="newShipment()">New Shipment ({{selectedSaleItemIds.length}})</b-button>
                 </div>
             </b-col>
         </b-row>
@@ -77,7 +76,7 @@ export default {
         { key: "unitsProduced", label: "Produced", sortable: false },
         { key: "unitsTrasfered", label: "Transfers", sortable: false },
         { key: "unitsShipped", label: "Shipped", sortable: false },
-        { key: "unitsOnStock", label: "On Stock", sortable: false },
+        { key: "unitsOnStock", label: "Stock", sortable: false },
         { key: "action", label: "", sortable: false}
       ],
       sales: []

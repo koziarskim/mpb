@@ -1,7 +1,6 @@
 package com.noovitec.mpb.dto;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -25,14 +24,7 @@ public class SaleListDto {
 	private Long unitsShipped;
 	private Long unitsTransferedTo;
 	private Long unitsTransferedFrom;
-	private List saleItems;
+	private List<?> saleItems;
+	private String status;
 	
-	//TODO: Is this still used?
-	public String getStatus() {
-		if(this.unitsSold==0) {
-			return "No Sale";
-		}
-		//TODO: Fix me!!!!
-		return Math.round(this.unitsProduced.doubleValue()/this.unitsSold.doubleValue()*100)+"%";
-	}
 }

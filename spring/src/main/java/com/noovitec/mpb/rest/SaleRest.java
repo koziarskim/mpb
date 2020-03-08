@@ -63,9 +63,8 @@ class SaleRest {
 			@RequestParam(required = false) String saleNumber,
 			@RequestParam(required = false) Long itemId,
 			@RequestParam(required = false) Long customerId,
-			@RequestParam(required = false) boolean hideProd,
-			@RequestParam(required = false) boolean hideShip) {
-		Page<Sale> sales = saleRepo.findPagable(pageable, saleNumber, itemId, customerId, hideProd, hideShip);
+			@RequestParam(required = false) String status) {
+		Page<Sale> sales = saleRepo.findPagable(pageable, saleNumber, itemId, customerId, status);
 		Page<SaleListDto> all = sales.map(sale -> {
 			SaleListDto dto = new SaleListDto();
 			dto.setId(sale.getId());
@@ -80,6 +79,7 @@ class SaleRest {
 			dto.setUnitsTransferedTo(sale.getUnitsTransferedTo());
 			dto.setUnitsTransferedFrom(sale.getUnitsTransferedFrom());
 			dto.setUnitsShipped(sale.getUnitsShipped());
+			dto.setStatus(sale.getStatus());
 			return dto;
 		});
 		return all;
