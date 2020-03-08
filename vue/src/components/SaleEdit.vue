@@ -3,15 +3,15 @@
     <b-row>
       <b-col cols="2">
         <label class="top-label">Sale Number:</label>
-        <input class="form-control" type="tel" v-model="sale.number" placeholder="Number">
+        <input :disabled="!allowEdit()" class="form-control" type="tel" v-model="sale.number" placeholder="Number">
       </b-col>
       <b-col cols="2">
         <label class="top-label">Sale Date:</label>
-        <input class="form-control" type="date" v-model="sale.date" placeholder="Date">
+        <input :disabled="!allowEdit()" class="form-control" type="date" v-model="sale.date" placeholder="Date">
       </b-col>
       <b-col cols="2">
         <label class="top-label">Expected Date:</label>
-        <input class="form-control" type="date" v-model="sale.expectedDate" placeholder="Date">
+        <input :disabled="!allowEdit()" class="form-control" type="date" v-model="sale.expectedDate" placeholder="Date">
       </b-col>
       <b-col cols=2>
         <label class="top-label">Status:</label><br/>
@@ -26,23 +26,23 @@
       <b-col cols=2>
         <div style="text-align: right;">
           <b-button size="sm" type="reset" variant="success" :disabled="sale.approved" @click="approveSale()">Approve</b-button>
-          <b-button v-if="sale.saleItems.length==0" size="sm" type="reset" variant="danger" @click="deleteSale()">x</b-button>
-          <b-button size="sm" type="reset" variant="success" @click="saveAndClose()">Save</b-button>
+          <b-button :disabled="!allowEdit()" size="sm" type="reset" variant="danger" @click="deleteSale()">x</b-button>
+          <b-button size="sm" type="reset" variant="success" @click="saveSale()">Save</b-button>
         </div>
       </b-col>
     </b-row>
     <b-row>
       <b-col cols="4">
         <label class="top-label">Customer:</label>
-        <b-select option-value="id" option-text="value" :list="availableCustomers" v-model="customerDto" placeholder="Customer"></b-select>
+        <b-select :isDisabled="!allowEdit()" option-value="id" option-text="value" :list="availableCustomers" v-model="customerDto" placeholder="Customer"></b-select>
       </b-col>
       <b-col cols=2>
         <label class="top-label">Pay Terms:</label>
-        <b-select option-value="id" option-text="name" :list="availablePayTerms" v-model="sale.paymentTerms" placeholder="Pick Freight"></b-select>
+        <b-select :isDisabled="!allowEdit()" option-value="id" option-text="name" :list="availablePayTerms" v-model="sale.paymentTerms" placeholder="Pick Freight"></b-select>
       </b-col>
       <b-col cols="4">
         <label class="top-label">shipping to Address:</label>
-        <b-select option-value="id" option-text="label" :list="customer.addresses" v-model="shippingAddress" placeholder="shipping to address"></b-select>
+        <b-select :isDisabled="!allowEdit()" option-value="id" option-text="label" :list="customer.addresses" v-model="shippingAddress" placeholder="shipping to address"></b-select>
       </b-col>
     </b-row>
     <b-row>
@@ -55,10 +55,10 @@
     <b-row>
       <b-col cols=4>
         <label class="top-label">Available Items:</label>
-        <b-select option-value="id" option-text="name" :list="availableItems" v-model="itemDto" placeholder="Customer"></b-select>
+        <b-select :isDisabled="!allowEdit()" option-value="id" option-text="name" :list="availableItems" v-model="itemDto" placeholder="Customer"></b-select>
       </b-col>
       <b-col cols=1 style="padding-top: 30px">
-        <b-button variant="link" @click="addItem()">(+)</b-button>
+        <b-button :disabled="!allowEdit()" variant="link" @click="addItem()">(+)</b-button>
       </b-col>
       <b-col cols=5 offset=1 style="padding-top: 44px; padding-left: 0px;">
           <span style="font-weight: bold">Items #: </span>{{totalItems}},
@@ -76,7 +76,7 @@
             <span style="font-size: 11px"> ({{row.item.item.name}})</span>
           </template>
           <template v-slot:cell(sku)="row">
-            <input class="form-control" style="width:100px" type="tel" v-model="row.item.sku">
+            <input :disabled="!allowEdit()" class="form-control" style="width:100px" type="tel" v-model="row.item.sku">
           </template>
           <template v-slot:cell(cost)="row">
             <span>${{row.item.item.totalCost}}</span>
@@ -85,7 +85,7 @@
             <b-button size="sm" variant="link" @click="goToScheduled(row.item)">{{row.item.unitsScheduled}}/{{row.item.unitsProduced}}</b-button>
           </template>
           <template v-slot:cell(units)="row">
-            <input class="form-control" style="width:100px" type="tel" v-model="row.item.units">
+            <input :disabled="!allowEdit()" class="form-control" style="width:100px" type="tel" v-model="row.item.units">
           </template>
           <template v-slot:cell(unitsAdjusted)="row">
             <input class="form-control" style="width:100px" type="tel" v-model="row.item.unitsAdjusted">
@@ -95,7 +95,7 @@
           </template>
           <template v-slot:cell(unitPrice)="row">
             <div style="display:flex">
-            $<input class="form-control" style="display: inline; width:100px" type="tel" v-model="row.item.unitPrice">
+            $<input :disabled="!allowEdit()" class="form-control" style="display: inline; width:100px" type="tel" v-model="row.item.unitPrice">
             </div>
           </template>
           <template v-slot:cell(totalUnitPrice)="row">
@@ -111,7 +111,7 @@
             <b-button size="sm" :id="'popover-'+row.item.id">...</b-button>
             <b-popover placement="left" :target="'popover-'+row.item.id" variant="light">
               <div style="width: 340px">
-                <b-button size="sm" @click="deleteItem(row.item.item.id)" variant="link">Delete Item</b-button><br/>
+                <b-button :disabled="!allowEdit()" size="sm" @click="deleteItem(row.item.item.id)" variant="link">Delete Item</b-button><br/>
                 <div style="display:flex;">
                   <b-button size="sm" @click="moveItem(row.item)" variant="link">Move Item</b-button>
                   <b-select style="width: 250px" option-value="id" option-text="name" :list="availableSales" v-model="saleKv"></b-select>
@@ -209,7 +209,6 @@ export default {
       saleKv: {},
     };
   },
-
   computed: {
       totalPrice(){
           var price = 0;
@@ -265,6 +264,9 @@ export default {
     }
   },
   methods: {
+    allowEdit(){
+      return !this.sale.approved;
+    },
     goToScheduled(si) {
       router.push("/scheduleEventList/" + si.item.id + "/sale/" + this.sale.id);
     },
@@ -276,6 +278,10 @@ export default {
       router.push({path: "/shipmentList", query: query})
     },
     openTransferModal(saleItem){
+      if(!this.sale.id){
+        alert("Please, save sale before adding transfer");
+        return;
+      }
       this.saleItem = saleItem;
       this.saleItem.saleNumber = this.sale.number
       this.transferModalVisible = true;
@@ -285,11 +291,7 @@ export default {
       this.transferModalVisible = false;
     },
     saveModal(){
-      this.saveSaleItem().then(si => {
-        this.getSaleData(this.sale.id).then(sale => {
-          this.closeModal();
-        })
-      })
+      this.closeModal();
     },
     closeModal(){
       this.unitsForSale = null,
@@ -312,22 +314,22 @@ export default {
     },
     getSaleData(id) {
       return http.get("/sale/" + id).then(response => {
-          this.sale = response.data;
-          this.setSaleFromIds();
-          if (response.data.customer) {
-            this.customerDto = {
-              id: response.data.customer.id,
-              value: response.data.customer.name
-            }
-            this.getAvailableSales();
+        this.sale = response.data;
+        this.setSaleFromIds();
+        if (response.data.customer) {
+          this.customerDto = {
+            id: response.data.customer.id,
+            value: response.data.customer.name
           }
-          if (response.data.shippingAddress) {
-            this.shippingAddress = response.data.shippingAddress;
-          }
-          return response.data;
-        }).catch(e => {
-          console.log("API error: " + e);
-        });
+          this.getAvailableSales();
+        }
+        if (response.data.shippingAddress) {
+          this.shippingAddress = response.data.shippingAddress;
+        }
+        return response.data;
+      }).catch(e => {
+        console.log("API error: " + e);
+      });
     },
     setSaleFromIds(){
       this.sale.saleItems.forEach(si => {
@@ -336,21 +338,8 @@ export default {
         })
       })
     },
-    saveSaleItem() {
-      var saleItem = {
-        sale: {id: this.sale.id},
-        item: {id: this.itemDto.id},
-        units: this.unitsForSale,
-        unitPrice: this.unitPrice,
-      };
-      return http.post("/saleItem", saleItem).then(r => {
-          return r;
-        }).catch(e => {
-          console.log("API error: " + e);
-        });
-    },
     approveSale(){
-      if(!securite.hasRole(["ADMIN"])){
+      if(!securite.hasRole(["ADMIN", "SALE_ADMIN"])){
         alert("Don't have permission to approve sale");
         return;
       }
@@ -373,12 +362,17 @@ export default {
         this.sale.shippingAddress = null;
       }
       return http.post("/sale", this.sale).then(r => {
-          return r;
-        }).catch(e => {
-          console.log("API error: " + e);
-        });
+        this.getSaleData(r.data.id);
+        return r;
+      }).catch(e => {
+        console.log("API error: " + e);
+      });
     },
     validate(){
+      if(!securite.hasRole(["ADMIN", "SALE_ADMIN"])){
+        alert("Don't have permission");
+        return;
+      }
       if(!this.sale.number){
         alert("Sale Number required");
         return false;
@@ -386,8 +380,8 @@ export default {
       return true;
     },
     deleteSale() {
-      if(!securite.hasRole(["ADMIN"])){
-        alert("Don't have permission to delete sale");
+      if(!securite.hasRole(["ADMIN", "SALE_ADMIN"])){
+        alert("Don't have permission");
         return;
       }
       if(this.sale.saleItems.length > 0 ){
@@ -403,22 +397,6 @@ export default {
           });
             }
         })
-    },
-    saveAndClose() {
-      if(!this.validate()){
-        return;
-      }
-      this.saveSale().then(r => {
-        this.setSaleFromIds();
-        var uniqueIds = [...new Set(this.saleFromIds)]
-        uniqueIds.forEach(id => {
-          this.updateSale(id);
-        })
-        window.history.back();
-      });
-    },
-    updateSale(saleId){
-      http.post("/sale/units/"+saleId);
     },
     getAvailableCustomers() {
       http
@@ -445,6 +423,10 @@ export default {
       });
     },
     moveItem(saleItem){
+      if(!securite.hasRole(["ADMIN", "SALE_ADMIN"])){
+        alert("Don't have permission");
+        return;
+      }
       http.post("/saleItem/"+saleItem.id+"/move/to/sale/"+this.saleKv.id).then(r => {
         this.saleKv = {};
         this.getSaleData(this.sale.id);
@@ -460,7 +442,6 @@ export default {
       if (item) {
         return;
       }
-      // this.modalVisible = true;
       this.sale.saleItems.push({ 
           units: 0,
           unitPrice: 0.00,
@@ -468,7 +449,8 @@ export default {
           unitsTransferedTo: 0,
           unitsTransferedFrom: 0,
           transfersTo: [],
-          transfersFrom: [] });
+          transfersFrom: [] 
+      });
     },
     goToItem(item_id) {
       router.push("/itemEdit/" + item_id);
@@ -491,7 +473,7 @@ export default {
     }
     this.getAvailableCustomers();
     this.getAvailableItems();
-  }
+  }   
 };
 </script>
 
