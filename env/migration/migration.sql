@@ -27,3 +27,10 @@ alter table sale add column status varchar(50) default 'PENDING_APPROVAL';
 alter table sale add column approved boolean default false;
 
 update sale set approved = true;
+
+alter table sale_item add column status varchar(50) default 'PENDING_APPROVAL';
+
+alter table sale_item add column units_adjusted bigint default 0;
+
+alter table sale add column units_adjusted bigint default 0;
+

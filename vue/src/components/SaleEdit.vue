@@ -87,6 +87,9 @@
           <template v-slot:cell(units)="row">
             <input class="form-control" style="width:100px" type="tel" v-model="row.item.units">
           </template>
+          <template v-slot:cell(unitsAdjusted)="row">
+            <input class="form-control" style="width:100px" type="tel" v-model="row.item.unitsAdjusted">
+          </template>
           <template v-slot:cell(cases)="row">
             <span>{{getCases(row.item)}}</span>
           </template>
@@ -179,6 +182,7 @@ export default {
         { key: "item", label: "Item", sortable: false },
         { key: "sku", label: "SKU#", sortable: false },
         { key: "units", label: "Sold", sortable: false },
+        { key: "unitsAdjusted", label: "Adjusted", sortable: false },
         { key: "unitsOnStock", label: "Stock", sortable: false },
         { key: "unitsSchedProd", label: "Sched/Prod", sortable: false },
         { key: "unitsTransfered", label: "Transfers", sortable: false },

@@ -76,6 +76,7 @@ class SaleItemRest {
 			dto.setUnitsOnStock(saleItem.getUnitsOnStock());
 			dto.setUnitsTransferedTo(saleItem.getUnitsTransferedTo());
 			dto.setUnitsTranferedFrom(saleItem.getUnitsTransferedFrom());
+			dto.setUnitsAdjusted(saleItem.getUnitsAdjusted());
 			dto.setStatus(saleItem.getStatus());
 			return dto;
 		});

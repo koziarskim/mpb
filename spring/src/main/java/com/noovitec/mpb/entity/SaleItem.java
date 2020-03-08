@@ -34,6 +34,7 @@ public class SaleItem extends BaseEntity {
 	private Long unitsTransferedTo = 0L;
 	private Long unitsTransferedFrom = 0L;
 	private Long unitsReturned = 0L;
+	private Long unitsAdjusted = 0L;
 	private String sku;
 	private String status;
 	
@@ -117,7 +118,7 @@ public class SaleItem extends BaseEntity {
 		if(this.getUnitsOnStock() > 0 && this.unitsShipped < this.getUnitsOnStock()) {
 			this.status = "PENDING_SHIPPMENT";
 		}
-		if(this.unitsShipped > 0 && this.unitsShipped >= this.units) {
+		if(this.unitsShipped > 0 && this.unitsShipped >= (this.units + this.unitsAdjusted)) {
 			status = "SHIPPED";
 		}
 	}

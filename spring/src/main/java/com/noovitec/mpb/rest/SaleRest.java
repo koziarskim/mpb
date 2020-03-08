@@ -80,6 +80,7 @@ class SaleRest {
 			dto.setUnitsTransferedFrom(sale.getUnitsTransferedFrom());
 			dto.setUnitsShipped(sale.getUnitsShipped());
 			dto.setUnitsOnStock(sale.getUnitsOnStock());
+			dto.setUnitsAdjusted(sale.getUnitsAdjusted());
 			dto.setStatus(sale.getStatus());
 			return dto;
 		});

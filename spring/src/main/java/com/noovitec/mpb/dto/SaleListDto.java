@@ -25,6 +25,7 @@ public class SaleListDto {
 	private Long unitsShipped;
 	private Long unitsTransferedTo;
 	private Long unitsTransferedFrom;
+	private Long unitsAdjusted;
 	private List<?> saleItems;
 	private String status;
 	
