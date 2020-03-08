@@ -80,11 +80,8 @@ export default {
       availableStatus: [
         {id: 'PENDING_APPROVAL', name: 'Pending Approval'},
         {id: 'APPROVED', name: 'Approved'},
-        {id: 'PARTIAL_SCHEDULE', name: 'Partial Scheduled'},
-        {id: 'SCHEDULED', name: 'Fully Scheduled'},
-        {id: 'PARTIAL_PROD', name: 'Partial Prod'},
-        {id: 'PRODUCED', name: 'Fully Produced'},
-        {id: 'PARTIAL_SHIPPED', name: 'Partial Shipped'},
+        {id: 'PENDING_PROD', name: 'Pending Prod'},
+        {id: 'PENDING_SHIPPMENT', name: 'Pending Shippment'},
         {id: 'SHIPPED', name: 'Fully Shipped'}
       ],
       statusKv: {},

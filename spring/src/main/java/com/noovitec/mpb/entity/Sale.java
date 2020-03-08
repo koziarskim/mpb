@@ -86,22 +86,13 @@ public class Sale extends BaseEntity {
 		if(this.approved) {
 			this.status = "APPROVED";
 		}
-		if(this.unitsScheduled > 0) {
-			this.status = "PARTIAL_SCHEDULE";
+		if(this.unitsScheduled > 0 && this.unitsProduced < this.unitsScheduled) {
+			this.status = "PENDING_PROD";
 		}
-		if(this.unitsScheduled >= this.unitsSold) {
-			this.status = "SCHEDULED";
+		if(this.getUnitsOnStock() > 0 && this.unitsShipped < this.getUnitsOnStock()) {
+			this.status = "PENDING_SHIPPMENT";
 		}
-		if(this.unitsProduced > 0) {
-			this.status = "PARTIAL_PROD";
-		}
-		if(this.unitsProduced >= this.unitsSold) {
-			this.status = "PRODUCED";
-		}
-		if(this.unitsShipped > 0) {
-			this.status = "PARTIAL_SHIPPED";
-		}
-		if(this.unitsShipped >= this.unitsSold) {
+		if(this.unitsShipped > 0 && this.unitsShipped >= this.unitsSold) {
 			status = "SHIPPED";
 		}
 	}
