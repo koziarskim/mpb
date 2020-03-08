@@ -31,9 +31,15 @@ Components:
 - Price history/average (based on PO).
 Sale:
 - Validate unique sale number.
-- Show sale status (Open, Shipped). Open = Less shipped than Sold, Shipped = Fully shipped.
-- Allow to filter by Status.
-- Change column Shipped to Shipped/Open. (Open = still to shipped).
++ Show sale status:
+	+ Pending Approval - This is when sale is created as Draft and not yet Approved.
+	+ Approved - This means that sale was approved and ready for either Schdule or Transfer
+	+ Pending Prod - This is when sale was scheduled for production (not yet produced).
+	+ Pending Shipment - This is when sale has items on stock and could be ready for shipment (could be partialy)
+	+ Fully Shipped - All items in sale has been shipped.
++ Allow to filter by Status.
+- Allow to approve sale.
++ Change column Shipped to Shipped/Open. (Open = still to shipped). This is replaced by Status column.
 - Allow to search by item and customer (default view).
 - Ability to create OC (Order Complement) - Need to think more about it.
 - Combine two sale screens.
@@ -48,4 +54,5 @@ Purchase:
 Receiving:
 - none
 Global:
++ Move attachment to separate database to get ready for moving to filesystem.
 - Change file storage from db to filesystem.

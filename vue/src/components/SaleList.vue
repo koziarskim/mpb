@@ -16,6 +16,11 @@
         <b-col cols="2">
           <b-select option-value="id" option-text="name" :list="availableStatus" v-model="statusKv" placeholder="Status"></b-select>
         </b-col>
+        <b-col>
+          <div style="text-align: right;">
+          <b-button type="submit" variant="primary" size="sm" @click="goToSale('')">New S.O.</b-button>
+          </div>
+        </b-col>
       </b-row>
       <b-table :items="sales" :fields="fields" no-local-sorting @sort-changed="sorted">
         <template v-slot:cell(number)="row">

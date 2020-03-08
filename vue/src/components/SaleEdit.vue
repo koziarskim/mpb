@@ -17,14 +17,15 @@
         <label class="top-label">Status:</label><br/>
         <span style="font-weight: bold">{{sale.status}}</span>
       </b-col>
-      <b-col cols=3 style="margin-top: 5px">
+      <b-col cols=2 style="margin-top: 5px">
         <label class="top-label">Stock: {{sale.unitsOnStock}},&nbsp;&nbsp;</label>
         <label class="top-label">Shed/Prod: {{sale.unitsScheduled}}/{{sale.unitsProduced}}</label><br/>
         <label class="top-label">Sold: {{sale.unitsSold}},&nbsp;&nbsp;</label>
         <label class="top-label">Shipped: <b-link role="button" @click="goToShipment()">{{sale.unitsShipped}}</b-link></label>
       </b-col>
-      <b-col cols=1 style="margin-top: 20px">
+      <b-col cols=2>
         <div style="text-align: right;">
+          <b-button size="sm" type="reset" variant="success" :disabled="sale.approved" @click="approveSale()">Approve</b-button>
           <b-button v-if="sale.saleItems.length==0" size="sm" type="reset" variant="danger" @click="deleteSale()">x</b-button>
           <b-button size="sm" type="reset" variant="success" @click="saveAndClose()">Save</b-button>
         </div>
@@ -148,6 +149,7 @@
 <script>
 import http from "../http-common";
 import router from "../router";
+import securite from "../securite"
 
 export default {
   components: {
@@ -155,6 +157,7 @@ export default {
   },
   data() {
     return {
+      securite: securite,
       modalVisible: false,
       transferModalVisible: false,
       locked: false,
@@ -342,7 +345,22 @@ export default {
           console.log("API error: " + e);
         });
     },
+    approveSale(){
+      if(!securite.hasRole(["ADMIN"])){
+        alert("Don't have permission to approve sale");
+        return;
+      }
+      this.sale.approved = true;
+      this.saveSale().then(r=> {
+        this.getSaleData(r.data.id);
+      }).catch(e => {
+        this.sale.approved = false;
+      })
+    },
     saveSale() {
+      if(!this.validate()){
+        return Promise.reject();
+      }
       this.sale.totalPrice = this.totalPrice;
       if(!this.sale.customer || !this.sale.customer.id){
         this.sale.customer = null;
@@ -364,6 +382,10 @@ export default {
       return true;
     },
     deleteSale() {
+      if(!securite.hasRole(["ADMIN"])){
+        alert("Don't have permission to delete sale");
+        return;
+      }
       if(this.sale.saleItems.length > 0 ){
         alert("There are existing items. Please, move or delete items first");
         return;
