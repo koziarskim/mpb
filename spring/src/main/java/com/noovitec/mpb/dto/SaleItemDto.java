@@ -20,10 +20,12 @@ public class SaleItemDto {
 	private String customerName;
 	private String dc;
 	private Long unitsSold;
+	private Long unitsScheduled;
 	private Long unitsProduced;
 	private Long unitsShipped;
 	private Long unitsOnStock;
 	private Long unitsTransferedTo;
 	private Long unitsTranferedFrom;
+	private String status;
 	
 }

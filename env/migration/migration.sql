@@ -26,4 +26,4 @@ alter table sale add column status varchar(50) default 'PENDING_APPROVAL';
 
 alter table sale add column approved boolean default false;
 
-update sale set approved = true where (units_produced + units_transfered_to - units_transfered_from - units_shipped) > 0;
+update sale set approved = true;

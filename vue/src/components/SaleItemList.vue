@@ -5,16 +5,16 @@
               <b-form-checkbox size="sm" v-model="itemView">Item View</b-form-checkbox>
             </b-col>
             <b-col cols="2" style="margin-left: -85px">
-              <input style="font-size: 12px" class="form-control" type="tel" v-model="numberName" @keyup.enter="getSaleItems()" placeholder="Search Sale #, Name"/>
+              <input style="font-size: 12px" class="form-control" type="tel" v-model="numberName" @keyup.enter="getSaleItems()" placeholder="Sale"/>
             </b-col>
             <b-col cols="2">
-              <b-select option-value="id" option-text="name" :list="availableCustomers" v-model="customer" placeholder="Search Customer"></b-select>
+              <b-select option-value="id" option-text="name" :list="availableItems" v-model="item" placeholder="Item"></b-select>
             </b-col>
             <b-col cols="2">
-              <b-select option-value="id" option-text="name" :list="availableItems" v-model="item" placeholder="Search Item"></b-select>
+              <b-select option-value="id" option-text="name" :list="availableCustomers" v-model="customer" placeholder="Customer"></b-select>
             </b-col>
-            <b-col cols="2">
-              <div style="display:flex"><input style="margin-right: 7px; margin-top: 3px;" type="checkbox" v-model="hideShip"/><label class="top-label">Hide Shpped</label></div>
+              <b-col cols="2">
+              <b-select option-value="id" option-text="name" :list="availableStatus" v-model="statusKv" placeholder="Status"></b-select>
             </b-col>
             <b-col>
                 <div style="text-align: right;">
@@ -32,8 +32,14 @@
           <template v-slot:cell(unitsTrasfered)="row">
               <span>{{row.item.unitsTransferedTo}}-{{row.item.unitsTranferedFrom}}</span>
           </template>
-          <template v-slot:cell(unitsShipped)="row">
-              <b-button size="sm" @click=goToShipment(row.item.itemId,row.item.saleId) variant="link">{{row.item.unitsShipped}}</b-button>
+          <template v-slot:cell(unitsStockShip)="row">
+              <b-button size="sm" @click=goToShipment(row.item.itemId,row.item.saleId) variant="link">{{row.item.unitsOnStock}}/{{row.item.unitsShipped}}</b-button>
+          </template>
+          <template v-slot:cell(unitsSchProd)="row">
+              <span>{{row.item.unitsScheduled}}/{{row.item.unitsProduced}}</span>
+          </template>
+          <template v-slot:cell(status)="row">
+              <span>{{getStatus(row.item.status)}}</span>
           </template>
           <template v-slot:cell(action)="row">
             <input type="checkbox" v-model="selectedSaleItemIds" :value="row.item.id" @change="checkboxSelected(row.item)" :disabled="checkboxDisabled(row.item)">
@@ -55,7 +61,6 @@ export default {
     return {
       navigation: navigation,
       pageable: {totalElements: 100, currentPage: 1, perPage: 7, sortBy: 'id', sortDesc: false},
-      hideShip: false,
       searchSale: "",
       searchItem: "",
       itemView: true,
@@ -73,19 +78,24 @@ export default {
         { key: "customerName", label: "Customer", sortable: false },
         { key: "dc", label: "DC (State)", sortable: false },
         { key: "unitsSold", label: "Sold", sortable: false },
-        { key: "unitsProduced", label: "Produced", sortable: false },
-        { key: "unitsTrasfered", label: "Transfers", sortable: false },
-        { key: "unitsShipped", label: "Shipped", sortable: false },
-        { key: "unitsOnStock", label: "Stock", sortable: false },
+        { key: "unitsSchProd", label: "Sch/Prod", sortable: false },
+        { key: "unitsTrasfered", label: "Transf", sortable: false },
+        { key: "unitsStockShip", label: "Stock/Ship", sortable: false },
+        { key: "status", label: "Status", sortable: false },
         { key: "action", label: "", sortable: false}
       ],
-      sales: []
+      sales: [],
+      availableStatus: [
+        {id: 'PENDING_APPROVAL', name: 'Pending Approval'},
+        {id: 'APPROVED', name: 'Approved'},
+        {id: 'PENDING_PROD', name: 'Pending Prod'},
+        {id: 'PENDING_SHIPPMENT', name: 'Pending Shippment'},
+        {id: 'SHIPPED', name: 'Fully Shipped'}
+      ],
+      statusKv: {},
     };
   },
   watch: {
-    hideShip(newValue, oldValue){
-      this.getSaleItems();
-    },
     itemView(newValue, oldValue){
       if(newValue==false){
         navigation.goTo("/saleList/")
@@ -96,9 +106,16 @@ export default {
     },
     customer(newValue, oldValue){
       this.getSaleItems();
-    }
+    },
+    statusKv(old_value, new_value){
+      this.getSaleItems();      
+    },
   },
   methods: {
+    getStatus(statusId){
+      var statusKv = this.availableStatus.find(stat => stat.id == statusId)
+      return statusKv.name
+    },
     checkboxSelected(saleItem){
       if(!this.selectedCustomerId){
         this.selectedCustomerId = saleItem.customerId;
@@ -121,7 +138,13 @@ export default {
         this.getSaleItems();
     },
   getSaleItems(){
-    http.get("/saleItem/pageable", {params: {pageable: this.pageable, numberName: this.numberName, customerId: this.customer.id, itemId: this.item.id, hideShip: this.hideShip}}).then(r => {
+    http.get("/saleItem/pageable", {params: {
+        pageable: this.pageable,  
+        numberName: this.numberName, 
+        customerId: this.customer.id, 
+        itemId: this.item.id, 
+        status: this.statusKv.id
+      }}).then(r => {
       this.saleItems = r.data.content;
       this.pageable.totalElements = r.data.totalElements;
     }).catch(e => {

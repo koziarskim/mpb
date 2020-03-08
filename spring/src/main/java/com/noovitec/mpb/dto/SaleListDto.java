@@ -19,6 +19,7 @@ public class SaleListDto {
 	private LocalDate date;
 	private String dc;
 	private Long unitsSold;
+	private Long unitsOnStock;
 	private Long unitsScheduled;
 	private Long unitsProduced;
 	private Long unitsShipped;

@@ -48,9 +48,13 @@ class SaleItemRest {
 	}
 
 	@GetMapping("/saleItem/pageable")
-	Page<SaleItemDto> getAllPageable(@RequestParam Pageable pageable, @RequestParam(required = false) String numberName,
-			@RequestParam(required = false) Long itemId, @RequestParam(required = false) Long customerId, @RequestParam(required = false) boolean hideShip) {
-		Page<SaleItem> saleItems = saleItemRepo.findPageable(pageable, numberName, customerId, itemId, hideShip);
+	Page<SaleItemDto> getAllPageable(
+			@RequestParam Pageable pageable, 
+			@RequestParam(required = false) String numberName,
+			@RequestParam(required = false) Long itemId, 
+			@RequestParam(required = false) Long customerId, 
+			@RequestParam(required = false) String status) {
+		Page<SaleItem> saleItems = saleItemRepo.findPageable(pageable, numberName, customerId, itemId, status);
 		Page<SaleItemDto> all = saleItems.map(saleItem -> {
 			SaleItemDto dto = new SaleItemDto();
 			dto.setId(saleItem.getId());
@@ -66,11 +70,13 @@ class SaleItemRest {
 					? saleItem.getSale().getShippingAddress().getDc() + " (" + saleItem.getSale().getShippingAddress().getState()
 					: "");
 			dto.setUnitsSold(Long.valueOf(saleItem.getUnits()));
+			dto.setUnitsScheduled(saleItem.getUnitsScheduled());
 			dto.setUnitsProduced(saleItem.getUnitsProduced());
 			dto.setUnitsShipped(saleItem.getUnitsShipped());
 			dto.setUnitsOnStock(saleItem.getUnitsOnStock());
 			dto.setUnitsTransferedTo(saleItem.getUnitsTransferedTo());
 			dto.setUnitsTranferedFrom(saleItem.getUnitsTransferedFrom());
+			dto.setStatus(saleItem.getStatus());
 			return dto;
 		});
 		return all;

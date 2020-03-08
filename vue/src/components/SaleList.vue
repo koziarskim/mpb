@@ -16,15 +16,6 @@
         <b-col cols="2">
           <b-select option-value="id" option-text="name" :list="availableStatus" v-model="statusKv" placeholder="Status"></b-select>
         </b-col>
-        <!-- <b-col cols=2>
-          <div style="display:flex"><input style="margin-right: 7px" type="checkbox" v-model="hideProd"/><label class="top-label">Hide Produced</label></div>
-          <div style="display:flex"><input style="margin-right: 7px" type="checkbox" v-model="hideShip"/><label class="top-label">Hide Shipped </label></div>
-        </b-col> -->
-        <b-col>
-          <div style="text-align: right;">
-          <b-button type="submit" variant="primary" size="sm" @click="goToSale('')">New S.O.</b-button>
-          </div>
-        </b-col>
       </b-row>
       <b-table :items="sales" :fields="fields" no-local-sorting @sort-changed="sorted">
         <template v-slot:cell(number)="row">
@@ -38,14 +29,14 @@
               </div>
             </b-popover>
         </template>
-        <template v-slot:cell(unitsSchPro)="row">
+        <template v-slot:cell(unitsSchProd)="row">
             <span>{{row.item.unitsScheduled}}/{{row.item.unitsProduced}}</span>
         </template>
         <template v-slot:cell(unitsTransfered)="row">
             <span>{{row.item.unitsTransferedTo}}-{{row.item.unitsTransferedFrom}}</span>
         </template>
-        <template v-slot:cell(unitsShipped)="row">
-            <b-button size="sm" @click=goToShipment(row.item.id) variant="link">{{row.item.unitsShipped}}</b-button>
+        <template v-slot:cell(unitsStockShip)="row">
+            <b-button size="sm" @click=goToShipment(row.item.id) variant="link">{{row.item.unitsOnStock}}/{{row.item.unitsShipped}}</b-button>
         </template>
         <template v-slot:cell(status)="row">
             <span>{{getStatus(row.item.status)}}</span>
@@ -92,9 +83,9 @@ export default {
         { key: "dc", label: "DC (State)", sortable: false },
         { key: "date", label: "Date", sortable: false },
         { key: "unitsSold", label: "Sold", sortable: false },
-        { key: "unitsSchPro", label: "Sched/Prod", sortable: false },
-        { key: "unitsTransfered", label: "Transfers", sortable: false },
-        { key: "unitsShipped", label: "Shipped", sortable: false },
+        { key: "unitsSchProd", label: "Sch/Prod", sortable: false },
+        { key: "unitsTransfered", label: "Transf", sortable: false },
+        { key: "unitsStockShip", label: "Stock/Ship", sortable: false },
         { key: "status", label: "Status", sortable: false },
         { key: "action", label: "", sortable: false}
       ],

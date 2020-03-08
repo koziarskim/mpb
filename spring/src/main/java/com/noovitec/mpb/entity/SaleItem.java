@@ -35,7 +35,8 @@ public class SaleItem extends BaseEntity {
 	private Long unitsTransferedFrom = 0L;
 	private Long unitsReturned = 0L;
 	private String sku;
-
+	private String status;
+	
 	@JsonIgnoreProperties(value = { "saleItems", "purchaseSales" }, allowSetters = true)
 	@ManyToOne()
 	@JoinColumn(name = "sale_id", referencedColumnName = "id")
@@ -102,6 +103,24 @@ public class SaleItem extends BaseEntity {
 		for (SaleItemTransfer sit: this.getTransfersTo()) {
 			this.unitsTransferedTo += sit.getUnitsTransfered();
 		}
+		this.updateStatus();
 	}
+	
+	private void updateStatus() {
+		this.status = "PENDING_APPROVAL";
+		if(this.getSale().isApproved()) {
+			this.status = "APPROVED";
+		}
+		if(this.unitsScheduled > 0 && this.unitsProduced < this.unitsScheduled) {
+			this.status = "PENDING_PROD";
+		}
+		if(this.getUnitsOnStock() > 0 && this.unitsShipped < this.getUnitsOnStock()) {
+			this.status = "PENDING_SHIPPMENT";
+		}
+		if(this.unitsShipped > 0 && this.unitsShipped >= this.units) {
+			status = "SHIPPED";
+		}
+	}
+
 
 }
