@@ -1,31 +1,31 @@
 In Progress/Done:
 Shipment (screen & PDF):
-- Ability to print BOL from list.
 - Ability to upload documents.
 - Shipment schedule/calendar.
 - Ability to add multiple items to BOL at once
-- Ability to search by Sale number (without picking sale).
 Customer:
 - Reorganize screen layout (Generic info, Billing info, Shipping info) - Need more info.
 - Ability to create Pallet Tag - Need to talk more.
 Item:
 - Ability to enter upc for item (manually entered)
 - Ability to enter upc for case (manually entered)
-- Ability to search/filter by Season and Year.
 Components:
+- Revisit how to calculate units short.
 - Price history/average (based on PO).
 Sale:
++ Limit number of sales show in transfer window.
++ Ability to search by item and customer (default view).
 - Validate unique sale number.
-- Ability to search by item and customer (default view).
-- Ability to create OC (Order Complement) - Need to think more about it.
-- Combine two sale screens.
 - Ability to enter notes when save.
-- Sample order
 Production Line:
-- Aloow to adjust units when finish production short.
+- Ability to adjust units when finish production shorter that scheduled.
 Purchase:
 - none
 Receiving:
 - none
 Global:
 - Change file storage from db to filesystem.
+
+Backlog:
+- Ability to search/filter by Season and Year.
+
