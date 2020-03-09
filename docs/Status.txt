@@ -5,7 +5,7 @@ Shipment (screen & PDF):
 + Overwrite Total weight 
 + Udate PDF to show overwritten Total pallets and weight
 + Don't show pallets if Total Pallets overwritten
-+ Allow to enter shipment cost (estimated and invoiced).
++ Ability to enter shipment cost (estimated and invoiced).
 + BOL and PS layout changes:
 	+ remove last note
 	+ move Loaded By down
@@ -14,43 +14,48 @@ Shipment (screen & PDF):
 	+ add Frieigh address to PS
 	+ connect both address boxes)
 + Speed up Shipment screen.
-- Allow to print BOL from list.
-- Allow to upload documents.
++ Ability to see units Returned for each shipped item (with link).
++ Include units Adjusted with units Sold.
+- Ability to print BOL from list.
+- Ability to upload documents.
 - Shipment schedule/calendar.
-- Allow to add multiple items to BOL at once
-- Allow to search by Sale number (without picking sale).
+- Ability to add multiple items to BOL at once
+- Ability to search by Sale number (without picking sale).
 Customer:
 - Reorganize screen layout (Generic info, Billing info, Shipping info) - Need more info.
-- Allow to create Pallet Tag - Need to talk more.
-Item screen:
-- Ability to create return by sale.
-- Include unitsReturned when calculating units.
-- Allow to enter upc for item (manually entered)
-- Allow to enter upc for case (manually entered)
+- Ability to create Pallet Tag - Need to talk more.
+Item:
++ Ability to create Return for Item
++ Ability to assign Sale for Return
++ Ability to search for return by Item or Sale
++ Include unitsReturned when calculating units.
+- Ability to enter upc for item (manually entered)
+- Ability to enter upc for case (manually entered)
+- Ability to search/filter by Season and Year.
 Components:
 - Price history/average (based on PO).
 Sale:
-- Validate unique sale number.
++ Ability to merge sales.
 + Show sale status:
 	+ Pending Approval - This is when sale is created as Draft and not yet Approved.
-	+ Approved - This means that sale was approved and ready for either Schdule or Transfer
+	+ Approved - This means that sale is ready for either Schdule or Transfer or Adjustment.
 	+ Pending Prod - This is when sale was scheduled for production (not yet produced).
-	+ Pending Shipment - This is when sale has items on stock and could be ready for shipment (could be partialy)
+	+ Pending Shipment - This is when all units sold are on stock and ready to be shipped.
 	+ Fully Shipped - All items in sale has been shipped.
-+ Allow to filter by Status.
-+ Allow to approve sale.
++ Ability to filter by Status.
++ Ability to approve sale.
 + Disable Sale edit if Approved.
 + Two new roles:
-	+ Sale Administrator - Allow to Edit and Approve sale.
-	+ Sale Editor - Allowed to Edit Sale.
+	+ Sale Administrator - Ability to Edit and Approve sale.
+	+ Sale Editor - Abilityed to Edit Sale.
 + Change column Shipped to Shipped/Open. (Open = still to shipped). This is replaced by Status column.
-- Allow to search by item and customer (default view).
++ Ability to adjust units sold after sale has been approved (complete sale).
+- Validate unique sale number.
+- Ability to search by item and customer (default view).
 - Ability to create OC (Order Complement) - Need to think more about it.
 - Combine two sale screens.
-- Allow to enter notes when save.
+- Ability to enter notes when save.
 - Sample order
-Item:
-- Allow to search/filter by Season and Year.
 Production Line:
 - Aloow to adjust units when finish production short.
 Purchase:
