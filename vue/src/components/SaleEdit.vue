@@ -378,6 +378,10 @@ export default {
       if(!this.validate()){
         return Promise.reject();
       }
+      this.sale.saleItems.forEach(si=>{
+        si.unitsAdjusted = si.unitsAdjusted || 0;
+        si.units == si.units || 0;
+      })
       this.sale.totalPrice = this.totalPrice;
       if(!this.sale.customer || !this.sale.customer.id){
         this.sale.customer = null;
