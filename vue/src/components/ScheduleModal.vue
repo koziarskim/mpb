@@ -169,7 +169,7 @@ export default {
     },
     getAvailableSales(customer_id) {
       http
-        .get("/kv/sale/customer/"+customer_id)
+        .get("/sale/kv/customer/"+customer_id)
         .then(response => {
           this.availableSales = response.data;
           if (this.scheduleEvent.id) {

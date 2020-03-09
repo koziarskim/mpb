@@ -438,7 +438,7 @@ export default {
       });
     },
     getAvailableSales() {
-      http.get("/kv/sale/customer/"+this.sale.customer.id).then(r => {
+      http.get("/sale/kv/customer/"+this.sale.customer.id).then(r => {
         this.availableSales = r.data.filter(s => s.id != this.sale.id);
       }).catch(e => {
         console.log("API error: " + e);
