@@ -279,10 +279,12 @@ export default {
       return "Not Yet Saved";
     },
     allowEdit(){
-      return !this.sale.approved && securite.hasRole(["ADMIN", "SALE_ADMIN", "SALE_EDIT"]);
+      // return !this.sale.approved && securite.hasRole(["ADMIN", "SALE_ADMIN", "SALE_EDIT"]);
+      return true;
     },
     allowSave(){
-      return securite.hasRole(["ADMIN", "SALE_ADMIN", "SALE_EDIT"]);
+      // return securite.hasRole(["ADMIN", "SALE_ADMIN", "SALE_EDIT"]);
+      return true;
     },
     allowApprove(){
       return !this.sale.approved && securite.hasRole(["ADMIN", "SALE_ADMIN"]);
