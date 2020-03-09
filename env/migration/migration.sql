@@ -34,3 +34,7 @@ alter table sale_item add column units_adjusted bigint default 0;
 
 alter table sale add column units_adjusted bigint default 0;
 
+INSERT INTO public.role(id, code, created, description, name, updated) VALUES (6, 'SALE_EDIT', '2020-03-08', 'Allow to edit sale', 'Sale Editor', '2020-03-08');
+
+INSERT INTO public.role(id, code, created, description, name, updated) VALUES (7, 'SALE_ADMIN', '2020-03-08', 'Sale administrator', 'Sale Administrator', '2020-03-08');
+

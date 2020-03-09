@@ -25,9 +25,9 @@
       </b-col>
       <b-col cols=2>
         <div style="text-align: right;">
-          <b-button size="sm" type="reset" variant="success" :disabled="sale.approved" @click="approveSale()">Approve</b-button>
+          <b-button :disabled="!allowApprove()" size="sm" type="reset" variant="success" @click="approveSale()">Approve</b-button>
           <b-button :disabled="!allowEdit()" size="sm" type="reset" variant="danger" @click="deleteSale()">x</b-button>
-          <b-button size="sm" type="reset" variant="success" @click="saveSale()">Save</b-button>
+          <b-button :disabled="!allowSave()" size="sm" type="reset" variant="success" @click="saveSale()">Save</b-button>
         </div>
       </b-col>
     </b-row>
@@ -113,7 +113,7 @@
               <div style="width: 340px">
                 <b-button :disabled="!allowEdit()" size="sm" @click="deleteItem(row.item.item.id)" variant="link">Delete Item</b-button><br/>
                 <div style="display:flex;">
-                  <b-button size="sm" @click="moveItem(row.item)" variant="link">Move Item</b-button>
+                  <b-button :disabled="!allowSave()" size="sm" @click="moveItem(row.item)" variant="link">Move Item</b-button>
                   <b-select style="width: 250px" option-value="id" option-text="name" :list="availableSales" v-model="saleKv"></b-select>
                 </div>
               </div>
@@ -265,7 +265,13 @@ export default {
   },
   methods: {
     allowEdit(){
-      return !this.sale.approved;
+      return !this.sale.approved && securite.hasRole(["ADMIN", "SALE_ADMIN", "SALE_EDIT"]);
+    },
+    allowSave(){
+      return securite.hasRole(["ADMIN", "SALE_ADMIN", "SALE_EDIT"]);
+    },
+    allowApprove(){
+      return !this.sale.approved && securite.hasRole(["ADMIN", "SALE_ADMIN"]);
     },
     goToScheduled(si) {
       router.push("/scheduleEventList/" + si.item.id + "/sale/" + this.sale.id);
@@ -339,8 +345,8 @@ export default {
       })
     },
     approveSale(){
-      if(!securite.hasRole(["ADMIN", "SALE_ADMIN"])){
-        alert("Don't have permission to approve sale");
+      if(!this.allowApprove()){
+        alert("Don't have permission");
         return;
       }
       this.sale.approved = true;
@@ -351,6 +357,10 @@ export default {
       })
     },
     saveSale() {
+      if(!this.allowSave()){
+        alert("Don't have permission");
+        return Promise.reject();
+      }
       if(!this.validate()){
         return Promise.reject();
       }
@@ -369,10 +379,6 @@ export default {
       });
     },
     validate(){
-      if(!securite.hasRole(["ADMIN", "SALE_ADMIN"])){
-        alert("Don't have permission");
-        return;
-      }
       if(!this.sale.number){
         alert("Sale Number required");
         return false;
@@ -380,10 +386,6 @@ export default {
       return true;
     },
     deleteSale() {
-      if(!securite.hasRole(["ADMIN", "SALE_ADMIN"])){
-        alert("Don't have permission");
-        return;
-      }
       if(this.sale.saleItems.length > 0 ){
         alert("There are existing items. Please, move or delete items first");
         return;
@@ -423,10 +425,6 @@ export default {
       });
     },
     moveItem(saleItem){
-      if(!securite.hasRole(["ADMIN", "SALE_ADMIN"])){
-        alert("Don't have permission");
-        return;
-      }
       http.post("/saleItem/"+saleItem.id+"/move/to/sale/"+this.saleKv.id).then(r => {
         this.saleKv = {};
         this.getSaleData(this.sale.id);
