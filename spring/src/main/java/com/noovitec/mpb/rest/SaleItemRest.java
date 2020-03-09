@@ -52,36 +52,12 @@ class SaleItemRest {
 	Page<SaleItemDto> getAllPageable(
 			@RequestParam Pageable pageable, 
 			@RequestParam(required = false) String numberName,
+			@RequestParam(required = false) Long saleId,
 			@RequestParam(required = false) Long itemId, 
 			@RequestParam(required = false) Long customerId, 
 			@RequestParam(required = false) String status) {
-		Page<SaleItem> saleItems = saleItemRepo.findPageable(pageable, numberName, customerId, itemId, status);
-		Page<SaleItemDto> all = saleItems.map(saleItem -> {
-			SaleItemDto dto = new SaleItemDto();
-			dto.setId(saleItem.getId());
-			dto.setSaleId(saleItem.getSale().getId());
-			dto.setSaleNumber(saleItem.getSale().getNumber());
-			dto.setSaleName(saleItem.getSale().getName());
-			dto.setItemId(saleItem.getItem().getId());
-			dto.setItemNumber(saleItem.getItem().getNumber());
-			dto.setItemName(saleItem.getItem().getName());
-			dto.setCustomerId(saleItem.getSale().getCustomer().getId());
-			dto.setCustomerName(saleItem.getSale().getCustomer().getName());
-			dto.setDc(saleItem.getSale().getShippingAddress() != null
-					? saleItem.getSale().getShippingAddress().getDc() + " (" + saleItem.getSale().getShippingAddress().getState()
-					: "");
-			dto.setUnitsSold(Long.valueOf(saleItem.getUnits()));
-			dto.setUnitsScheduled(saleItem.getUnitsScheduled());
-			dto.setUnitsProduced(saleItem.getUnitsProduced());
-			dto.setUnitsShipped(saleItem.getUnitsShipped());
-			dto.setUnitsOnStock(saleItem.getUnitsOnStock());
-			dto.setUnitsTransferedTo(saleItem.getUnitsTransferedTo());
-			dto.setUnitsTranferedFrom(saleItem.getUnitsTransferedFrom());
-			dto.setUnitsAdjusted(saleItem.getUnitsAdjusted());
-			dto.setStatus(saleItem.getStatus());
-			return dto;
-		});
-		return all;
+		Page<SaleItem> saleItems = saleItemRepo.findPageable(pageable, numberName, saleId, customerId, itemId, status);
+		return this.mapToDto(saleItems);
 	}
 
 	@GetMapping("/saleItem/{id}")
@@ -141,6 +117,35 @@ class SaleItemRest {
 		saleItemRepo.moveSaleItem(saleItemId, saleId);
 		saleService.updateUnits(Arrays.asList(oldSaleId, saleId));
 		return ResponseEntity.ok().build();
+	}
+	
+	private Page<SaleItemDto> mapToDto(Page<SaleItem> saleItems) {
+		Page<SaleItemDto> all = saleItems.map(saleItem -> {
+			SaleItemDto dto = new SaleItemDto();
+			dto.setId(saleItem.getId());
+			dto.setSaleId(saleItem.getSale().getId());
+			dto.setSaleNumber(saleItem.getSale().getNumber());
+			dto.setSaleName(saleItem.getSale().getName());
+			dto.setItemId(saleItem.getItem().getId());
+			dto.setItemNumber(saleItem.getItem().getNumber());
+			dto.setItemName(saleItem.getItem().getName());
+			dto.setCustomerId(saleItem.getSale().getCustomer().getId());
+			dto.setCustomerName(saleItem.getSale().getCustomer().getName());
+			dto.setDc(saleItem.getSale().getShippingAddress() != null
+					? saleItem.getSale().getShippingAddress().getDc() + " (" + saleItem.getSale().getShippingAddress().getState()
+					: "");
+			dto.setUnitsSold(Long.valueOf(saleItem.getUnits()));
+			dto.setUnitsScheduled(saleItem.getUnitsScheduled());
+			dto.setUnitsProduced(saleItem.getUnitsProduced());
+			dto.setUnitsShipped(saleItem.getUnitsShipped());
+			dto.setUnitsOnStock(saleItem.getUnitsOnStock());
+			dto.setUnitsTransferedTo(saleItem.getUnitsTransferedTo());
+			dto.setUnitsTranferedFrom(saleItem.getUnitsTransferedFrom());
+			dto.setUnitsAdjusted(saleItem.getUnitsAdjusted());
+			dto.setStatus(saleItem.getStatus());
+			return dto;
+		});
+		return all;
 	}
 
 }

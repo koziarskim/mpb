@@ -16,7 +16,7 @@ import org.springframework.stereotype.Repository;
 import com.noovitec.mpb.entity.SaleItem;
 
 public interface CustomSaleItemRepo {
-	Page<SaleItem> findPageable(Pageable pageable, String numberName, Long customerId, Long itemId, String status);
+	Page<SaleItem> findPageable(Pageable pageable, String numberName, Long saleId, Long customerId, Long itemId, String status);
 
 	@Repository
 	public class SaleItemRepoImpl implements CustomSaleItemRepo {
@@ -27,11 +27,14 @@ public interface CustomSaleItemRepo {
 		EntityManager entityManager;
 
 		@Override
-		public Page<SaleItem> findPageable(Pageable pageable, String numberName, Long customerId, Long itemId, String status) {
+		public Page<SaleItem> findPageable(Pageable pageable, String numberName, Long saleId, Long customerId, Long itemId, String status) {
 			String q = "select distinct si from SaleItem si " + "join si.item i " + "join si.sale s " + "join s.customer cu " + "where si.id is not null ";
 			if (numberName != null && !numberName.isEmpty()) {
 				q += "and (upper(s.number) like concat('%',upper(:numberName),'%') ";
 				q += "or upper(s.name) like concat('%',upper(:numberName),'%')) ";
+			}
+			if (saleId != null) {
+				q += "and s.id = :saleId ";
 			}
 			if (customerId != null) {
 				q += "and cu.id = :customerId ";
@@ -46,6 +49,9 @@ public interface CustomSaleItemRepo {
 			Query query = entityManager.createQuery(q);
 			if (numberName != null && !numberName.isEmpty()) {
 				query.setParameter("numberName", numberName);
+			}
+			if (saleId != null) {
+				query.setParameter("saleId", saleId);
 			}
 			if (customerId != null) {
 				query.setParameter("customerId", customerId);

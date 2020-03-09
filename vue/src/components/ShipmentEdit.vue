@@ -93,20 +93,14 @@
     </b-row>
     <div style="border: 1px solid #d6d3d3; margin-top: 10px;">
       <b-row>
-        <b-col cols=6>
+        <!-- <b-col cols=6>
           <label class="top-label">Sale ( Item ):</label>
-          <!-- <div @blur="selectionVisible=false">
-            <input @focus="selectionVisible=true"/>
-            <select v-if="selectionVisible" v-model="selected" multiple>
-              <option v-for="si in availableSaleItems" :value="si" :key="si.id">{{si.name}}</option>
-            </select>
-          </div> -->
           <div @keyup="keyDown">
             <b-select ref="bselect" option-value="id" option-text="name" :list="availableSaleItems" v-model="saleItem"></b-select>
           </div>
-        </b-col>
-        <b-col cols=1>
-          <b-button size="sm" style="margin-top: 30px;" variant="primary" @click="addSaleItemKv(saleItem.id)">Add &#x25BC;</b-button>
+        </b-col> -->
+        <b-col cols=2>
+          <b-button size="sm" style="margin-top: 30px;" variant="primary" @click="openSaleItemPicker()">Pick Sales to Add</b-button>
         </b-col>
         <b-col style="margin-top: 15px">
           <b>Total units:</b>
@@ -159,6 +153,9 @@
     <div v-if="modalVisible">
 			<address-modal :address-id="freightAddress.id" address-type="FRG" v-on:closeModal="closeModal"></address-modal>
 		</div>
+    <div v-if="saleItemPickerVisible">
+			<sale-item-picker :customer-id="customer.id" v-on:closeModal="closeSaleItemPicker"></sale-item-picker>
+		</div>
   </b-container>
 </template>
 
@@ -170,7 +167,8 @@ import moment from "moment";
 
 export default {
   components: {
-    AddressModal: () => import("./AddressModal")
+    AddressModal: () => import("./AddressModal"),
+    SaleItemPicker: () => import("./SaleItemPicker")
   },
   data() {
     return {
@@ -179,6 +177,7 @@ export default {
       totalPalletsCustom: 0,
       totalWeightCustom: 0,
       selectionVisible: false,
+      saleItemPickerVisible: false,
       selected: [],
       modalVisible: false,
       shipment: {
@@ -277,6 +276,12 @@ export default {
     },
   },
   methods: {
+    openSaleItemPicker(){
+      this.saleItemPickerVisible = true;
+    },
+    closeSaleItemPicker(saleItems){
+      this.saleItemPickerVisible = false;
+    },
     goToItemReturnList(saleItem){
       var query = { saleId: saleItem.sale.id, itemId: saleItem.item.id };
       router.push({path: "/itemReturnList", query: query});

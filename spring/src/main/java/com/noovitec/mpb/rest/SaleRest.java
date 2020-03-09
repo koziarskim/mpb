@@ -87,7 +87,7 @@ class SaleRest {
 		return all;
 	}
 
-	@GetMapping("/kv/sale/customer/{customer_id}")
+	@GetMapping("/sale/kv/customer/{customer_id}")
 	Collection<KeyValueDto> getAvailableFoSchedule(@PathVariable Long customer_id) {
 		return saleRepo.findSalesForCustomer(customer_id);
 	}
