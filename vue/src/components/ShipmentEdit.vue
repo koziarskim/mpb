@@ -134,8 +134,14 @@
             <template v-slot:cell(sale)="row">
               <b-link @click.stop="goToSale(row.item.saleItem.sale.id)">{{row.item.saleItem.sale.number}}</b-link>
             </template>
+            <template v-slot:cell(unitsReturned)="row">
+              <b-link @click.stop="goToItemReturnList(row.item.saleItem)">{{row.item.saleItem.unitsReturned}}</b-link>
+            </template>
             <template v-slot:cell(units)="row">
               <input class="form-control" style="width:100px" type="tel" v-model="row.item.units" @blur="unitsBlur(row.item)">
+            </template>
+            <template v-slot:cell(unitsSold)="row">
+              <span>{{+row.item.saleItem.units + +row.item.saleItem.unitsAdjusted}}</span>
             </template>
             <template v-slot:cell(cases)="row">
               <span>{{row.item.cases = Math.ceil(+row.item.units / +row.item.saleItem.item.casePack)}}</span>
@@ -198,9 +204,10 @@ export default {
       columns: [
         { key: "item", label: "Item", sortable: false },
         { key: "sale", label: "Sale", sortable: false },
-        { key: "saleItem.units", label: "Sold", sortable: false },
+        { key: "unitsSold", label: "Sold", sortable: false },
         { key: "saleItem.unitsOnStock", label: "Stock", sortable: false },
         { key: "saleItem.unitsShipped", label: "Shipped", sortable: false },
+        { key: "unitsReturned", label: "Returned", sortable: false },
         { key: "units", label: "Units", sortable: false },
         { key: "saleItem.item.casePack", label: "Case Pack", sortable: false },
         { key: "cases", label: "Cases", sortable: false },
@@ -270,6 +277,10 @@ export default {
     },
   },
   methods: {
+    goToItemReturnList(saleItem){
+      var query = { saleId: saleItem.sale.id, itemId: saleItem.item.id };
+      router.push({path: "/itemReturnList", query: query});
+    },
     getNumberOfPallets(shipmentItem){
       var number = null;
       if(!this.totalPalletsOverwrite){

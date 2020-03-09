@@ -38,7 +38,11 @@ Sale:
 	+ Pending Shipment - This is when sale has items on stock and could be ready for shipment (could be partialy)
 	+ Fully Shipped - All items in sale has been shipped.
 + Allow to filter by Status.
-- Allow to approve sale.
++ Allow to approve sale.
++ Disable Sale edit if Approved.
++ Two new roles:
+	+ Sale Administrator - Allow to Edit and Approve sale.
+	+ Sale Editor - Allowed to Edit Sale.
 + Change column Shipped to Shipped/Open. (Open = still to shipped). This is replaced by Status column.
 - Allow to search by item and customer (default view).
 - Ability to create OC (Order Complement) - Need to think more about it.

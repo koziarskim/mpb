@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.noovitec.mpb.entity.ItemReturn;
@@ -36,9 +37,19 @@ class ItemReturnRest {
 	}
 
 	@GetMapping("/itemReturn")
-	ResponseEntity<List<ItemReturn>> getAll() {
-		List<ItemReturn> itemReturns = itemReturnRepo.findAll();
-		return ResponseEntity.ok(itemReturns);
+	List<ItemReturn> getAll(
+			@RequestParam(required = false) Long itemId, 
+			@RequestParam(required = false) Long saleId ) {
+		if(itemId !=null) {
+			return itemReturnRepo.findByItem(itemId);
+		};
+		if(saleId !=null) {
+			return itemReturnRepo.findBySale(saleId);
+		};
+		if(itemId !=null && saleId !=null) {
+			return itemReturnRepo.findByItemAndSale(itemId, saleId);
+		};
+		return itemReturnRepo.findAll();
 	}
 
 	@GetMapping("/itemReturn/{id}")
