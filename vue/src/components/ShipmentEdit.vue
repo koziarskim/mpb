@@ -154,7 +154,7 @@
 			<address-modal :address-id="freightAddress.id" address-type="FRG" v-on:closeModal="closeModal"></address-modal>
 		</div>
     <div v-if="saleItemPickerVisible">
-			<sale-item-picker :customer-id="customer.id" v-on:closeModal="closeSaleItemPicker"></sale-item-picker>
+			<sale-item-picker :customer-id="customer.id" :added-sale-item-ids="getAddedSaleItemsIds()" v-on:closeModal="closeSaleItemPicker"></sale-item-picker>
 		</div>
   </b-container>
 </template>
@@ -276,11 +276,29 @@ export default {
     },
   },
   methods: {
+    getAddedSaleItemsIds(){
+      var ids = [];
+      this.shipment.shipmentItems.forEach(shipItem=> {
+        ids.push(shipItem.saleItem.id);
+      })
+      return ids;
+    },
     openSaleItemPicker(){
       this.saleItemPickerVisible = true;
     },
-    closeSaleItemPicker(saleItems){
-      this.saleItemPickerVisible = false;
+    closeSaleItemPicker(saleItemIds){
+      if(!saleItemIds){
+        this.saleItemPickerVisible = false;
+        return;
+      }
+      http.get("/saleItem", {params: {ids: saleItemIds.join()}}).then(r => {
+        r.data.forEach(saleItem => {
+          this.addSaleItem(saleItem);
+        })
+        this.saleItemPickerVisible = false;
+      }).catch(e => {
+        console.log("API error: " + e); 
+      })
     },
     goToItemReturnList(saleItem){
       var query = { saleId: saleItem.sale.id, itemId: saleItem.item.id };
@@ -296,12 +314,11 @@ export default {
     keyDown(event){
       this.itemText = event.target.value;
     },
-    addSaleItemKv(saleItemId){
-      if(!saleItemId){
-        alert("Please select Sale and Item to add");
+    addSaleItemKv(saleItemIds){
+      if(!saleItemIds){
         return;
       }
-      http.get("/saleItem/"+saleItemId).then(r => {
+      http.get("/saleItem/"+saleItemIds).then(r => {
         this.addSaleItem(r.data);
         this.sale = {};
         this.saleItem = {};

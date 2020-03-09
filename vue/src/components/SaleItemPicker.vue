@@ -65,21 +65,25 @@ export default {
 					customerId: this.customerId, 
 					saleId: this.saleKv.id, 
 				}}).then(r => {
-				//Filter out addedSaleItems
-				this.availableSaleItems = r.data.content;
+				this.availableSaleItems = [];
+				r.data.content.forEach(si=> {
+					var found = this.addedSaleItemIds.find(siId=> siId == si.id);
+					if(!found){
+						this.availableSaleItems.push(si);
+					}
+				})
 			}).catch(e => {
 				console.log("API error: "+e);
 			});
 		},
 		getAvailableSales(){
-			http.get("/sale/kv/customer/"+this.customerId).then(r => {
+			http.get("/sale/kv/shipment/customer/"+this.customerId).then(r => {
 				this.availableSales = r.data;
 			}).catch(e => {
 				console.log("API error: "+e);
 			});
 		},
     closeModal(selectedSaleItems) {
-			//TODO: Filer addedSaleItems
 			this.$emit("closeModal", selectedSaleItems);
     },
   },
