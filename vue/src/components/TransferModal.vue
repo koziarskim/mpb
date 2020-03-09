@@ -138,7 +138,7 @@ export default {
 			})
 		},
 		getAvailableSaleItems(){
-			http.get("/saleItem/kv/item/"+this.saleItem.item.id).then(r => {
+			http.get("/saleItem/kv/transfer/item/"+this.saleItem.item.id).then(r => {
 				r.data.forEach(function(si,i){
 					if(si.name.includes("Marketplace Brands")){
 						r.data.splice(i, 1);

@@ -43,6 +43,7 @@ import com.noovitec.mpb.repo.SeasonRepo;
 import com.noovitec.mpb.repo.UpcRepo;
 import com.noovitec.mpb.service.ComponentService;
 import com.noovitec.mpb.service.ItemService;
+import com.noovitec.mpb.service.SaleService;
 
 @RestController
 @RequestMapping("/api")
@@ -60,6 +61,8 @@ class ItemRest {
 	private ItemRepo itemRepo;
 	@Autowired
 	private ComponentService componentService;
+	@Autowired
+	private SaleService saleService;
 	
 	private ItemService itemService;
 	private final Logger log = LoggerFactory.getLogger(ItemRest.class);
@@ -190,6 +193,7 @@ class ItemRest {
 		try {
 			itemService.updateUnits(null);
 			componentService.updateUnits(null);
+			saleService.updateUnits(null);
 			itemService.updateUnitsReadyProd(null);
 		} catch (Exception e) {
 			e.printStackTrace();

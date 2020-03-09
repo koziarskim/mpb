@@ -55,8 +55,9 @@ public class Item extends BaseEntity {
 	private Long unitsSold = 0L;
 	private Long unitsScheduled = 0L;
 	private Long unitsShipped = 0L;
-	private Long unitsReadyProd;
-	private Long unitsReturned;
+	private Long unitsReadyProd = 0L;
+	private Long unitsReturned = 0L;
+	private Long unitsOnStock = 0L;
 
 	@JsonIgnoreProperties(value = { "item" }, allowSetters = true)
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
@@ -129,14 +130,6 @@ public class Item extends BaseEntity {
 	}
 	
 	@Transient
-	private Long unitsOnStock = 0L;
-
-	public Long getUnitsOnStock() {
-		this.unitsOnStock = this.getUnitsProduced() - this.getUnitsShipped() + (this.getUnitsReturned()==null?0L:this.getUnitsReturned());
-		return this.unitsOnStock;
-	}
-	
-	@Transient
 	private Long performance;
 	
 	public Long getPerformance() {
@@ -184,6 +177,7 @@ public class Item extends BaseEntity {
 			this.unitsProduced += sa.getUnitsProduced();
 			this.unitsShipped += sa.getUnitsShipped();
 		}
+		this.unitsOnStock = this.unitsProduced - this.unitsShipped + (this.unitsReturned==null?0L:this.unitsReturned);
 //		this.updateUnitsReadyProd();
 	}
 

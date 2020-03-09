@@ -25,10 +25,22 @@ public interface SaleService {
 			this.saleRepo = saleRepo;
 		}
 
+		public void updateUnitsByItem(List<Long> itemIds) {
+			Long counter = 0L;
+			Iterable<Sale> sales = itemIds==null?saleRepo.findAll():saleRepo.findByIds(itemIds);
+			for (Sale sale : sales) {
+				sale.updateUnits();
+				saleRepo.save(sale);
+				counter++;
+				log.info("Updated Sale: " + sale.getId());
+			}
+			;
+			log.info("Total sales: " + counter);
+		}
+
 		public void updateUnits(List<Long> salIds) {
 			Long counter = 0L;
-			Iterable<Sale> items = salIds==null?saleRepo.findAll():saleRepo.findByIds(salIds);
-			Iterable<Sale> sales = items;
+			Iterable<Sale> sales = salIds==null?saleRepo.findAll():saleRepo.findByIds(salIds);
 			for (Sale sale : sales) {
 				sale.updateUnits();
 				saleRepo.save(sale);

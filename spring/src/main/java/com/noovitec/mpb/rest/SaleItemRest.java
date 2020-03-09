@@ -1,5 +1,6 @@
 package com.noovitec.mpb.rest;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -101,6 +102,20 @@ class SaleItemRest {
 		return saleDtos;
 	}
 
+	@GetMapping("/saleItem/kv/transfer/item/{item_id}")
+	List<KeyValueDto> getAllTrasferByItem(@PathVariable Long item_id) {
+		List<SaleItem> saleItems = saleItemRepo.findKvTrasferByItem(item_id);
+		List<KeyValueDto> dtos = new ArrayList<KeyValueDto>();
+		for(SaleItem saleItem: saleItems) {
+			KeyValueDto dto = new KeyValueDto();
+			dto.setId(saleItem.getId());
+			dto.setName(saleItem.getSale().getNumber() + "("+saleItem.getSale().getCustomer().getName()+"), S: "+saleItem.getUnitsOnStock()+", R: "+saleItem.getUnitsReturned());
+			dtos.add(dto);
+		}		
+
+		return dtos;
+	}
+	
 	@GetMapping("/saleItem/kv/item/{item_id}")
 	Collection<KeyValueDto> getAllByItem(@PathVariable Long item_id) {
 		Collection<KeyValueDto> dtos = saleItemRepo.findKvByItem(item_id);

@@ -28,6 +28,7 @@ public class SaleItem extends BaseEntity {
 	private BigDecimal unitPrice = BigDecimal.ZERO;
 	private BigDecimal totalUnitPrice = BigDecimal.ZERO;
 	private int units; // unitsSold.
+	private Long unitsOnStock = 0L;
 	private Long unitsProduced = 0L;
 	private Long unitsScheduled = 0L;
 	private Long unitsShipped = 0L;
@@ -73,13 +74,6 @@ public class SaleItem extends BaseEntity {
 	@JoinColumn(name = "sale_item_to_id")
 	private Collection<SaleItemTransfer> transfersTo = new HashSet<SaleItemTransfer>();
 
-	@Transient
-	private Long unitsOnStock = 0L;
-
-	public Long getUnitsOnStock() {
-		return this.getUnitsProduced() + this.unitsTransferedTo - this.unitsTransferedFrom - this.getUnitsShipped() + this.getUnitsReturned();
-	}
-
 	public void updateUnits() {
 		this.unitsScheduled = 0L;
 		this.unitsProduced = 0L;
@@ -87,6 +81,7 @@ public class SaleItem extends BaseEntity {
 		this.unitsTransferedTo = 0L;
 		this.unitsTransferedFrom = 0L;
 		this.unitsReturned = 0L;
+		
 		for(SaleItemReturn sir: this.getSaleItemReturns()) {
 			this.unitsReturned += sir.getUnitsReturned();
 		}
@@ -104,6 +99,7 @@ public class SaleItem extends BaseEntity {
 		for (SaleItemTransfer sit: this.getTransfersTo()) {
 			this.unitsTransferedTo += sit.getUnitsTransfered();
 		}
+		this.unitsOnStock = this.unitsProduced + this.unitsTransferedTo - this.unitsTransferedFrom - this.unitsShipped + this.unitsReturned;
 		this.updateStatus();
 	}
 	
@@ -115,7 +111,7 @@ public class SaleItem extends BaseEntity {
 		if(this.unitsScheduled > 0 && this.unitsProduced < this.unitsScheduled) {
 			this.status = "PENDING_PROD";
 		}
-		if(this.getUnitsOnStock() > 0 && this.getUnitsOnStock() >= (this.units + this.unitsAdjusted)) {
+		if(this.getUnitsOnStock() > 0 && this.unitsOnStock >= (this.units + this.unitsAdjusted)) {
 			this.status = "PENDING_SHIPPMENT";
 		}
 		if(this.unitsShipped > 0 && this.unitsShipped >= (this.units + this.unitsAdjusted)) {

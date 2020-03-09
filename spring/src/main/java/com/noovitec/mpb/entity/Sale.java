@@ -39,6 +39,7 @@ public class Sale extends BaseEntity {
 	private Long unitsTransferedFrom = 0L;
 	private Long unitsShipped = 0L;
 	private Long unitsAdjusted = 0L;
+	private Long unitsOnStock = 0L;
 	private String status;
 	private boolean approved;
 	
@@ -56,12 +57,6 @@ public class Sale extends BaseEntity {
 	@JoinColumn(name = "sale_id")
 	private Collection<SaleItem> saleItems = new HashSet<SaleItem>();
 
-	@Transient
-	private Long unitsOnStock = 0L;
-
-	public Long getUnitsOnStock() {
-		return this.getUnitsProduced() + this.unitsTransferedTo - this.unitsTransferedFrom - this.getUnitsShipped();
-	}
 
 	public void updateUnits() {
 		this.unitsSold = 0L;
@@ -81,6 +76,7 @@ public class Sale extends BaseEntity {
 			this.unitsTransferedFrom += sa.getUnitsTransferedFrom();
 			this.unitsAdjusted += sa.getUnitsAdjusted();
 		}
+		this.unitsOnStock = this.unitsProduced + this.unitsTransferedTo - this.unitsTransferedFrom - this.unitsShipped;
 		this.updateStatus();
 	}
 	
