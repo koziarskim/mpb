@@ -78,7 +78,7 @@ export default {
       customerKv: {},
       availableStatus: [
         {id: 'PENDING_APPROVAL', name: 'Pending Approval'},
-        {id: 'APPROVED', name: 'Approved'},
+        {id: 'APPROVED', name: 'Pending Schedule'},
         {id: 'PENDING_PROD', name: 'Pending Prod'},
         {id: 'PENDING_SHIPPMENT', name: 'Pending Shippment'},
         {id: 'SHIPPED', name: 'Fully Shipped'}

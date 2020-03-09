@@ -15,7 +15,7 @@
       </b-col>
       <b-col cols=2>
         <label class="top-label">Status:</label><br/>
-        <span style="font-weight: bold">{{sale.status}}</span>
+        <span style="font-weight: bold">{{getStatus(sale.status)}}</span>
       </b-col>
       <b-col cols=2 style="margin-top: 5px">
         <label class="top-label">Stock: {{sale.unitsOnStock}},&nbsp;&nbsp;</label>
@@ -207,6 +207,13 @@ export default {
       ],
       availableSales: [],
       saleKv: {},
+      availableStatus: [
+        {id: 'PENDING_APPROVAL', name: 'Pending Approval'},
+        {id: 'APPROVED', name: 'Pending Schedule'},
+        {id: 'PENDING_PROD', name: 'Pending Prod'},
+        {id: 'PENDING_SHIPPMENT', name: 'Pending Shippment'},
+        {id: 'SHIPPED', name: 'Fully Shipped'}
+      ],
     };
   },
   computed: {
@@ -264,6 +271,13 @@ export default {
     }
   },
   methods: {
+    getStatus(statusId){
+      var status = this.availableStatus.find(s=> s.id == statusId);
+      if(status){
+        return status.name
+      }
+      return "Not Yet Saved";
+    },
     allowEdit(){
       return !this.sale.approved && securite.hasRole(["ADMIN", "SALE_ADMIN", "SALE_EDIT"]);
     },
