@@ -9,14 +9,18 @@ import javax.transaction.Transactional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.noovitec.mpb.entity.Sale;
+import com.noovitec.mpb.entity.SaleItem;
+import com.noovitec.mpb.repo.SaleItemRepo;
 import com.noovitec.mpb.repo.SaleRepo;
 
 public interface SaleService {
 	public void updateUnits(List<Long> salIds);
 	public void updateNumber();
+	public void mergeSales();
 
 	@Transactional
 	@Service
@@ -24,6 +28,8 @@ public interface SaleService {
 
 		private final Logger log = LoggerFactory.getLogger(SaleServiceImp.class);
 		private SaleRepo saleRepo;
+		@Autowired
+		SaleItemRepo saleItemRepo;
 
 		public SaleServiceImp(SaleRepo saleRepo) {
 			this.saleRepo = saleRepo;
@@ -55,6 +61,23 @@ public interface SaleService {
 			log.info("Total sales: " + counter);
 		}
 
+		public void mergeSales() {
+			List<SaleItem> saleItems = saleItemRepo.findByHyphen();
+			for(SaleItem saleItem: saleItems) {
+				int index = saleItem.getSale().getNumber().indexOf("---");
+				String number = saleItem.getSale().getNumber().substring(0,index);
+				Sale sale = saleItemRepo.getByNumber(number);
+				saleItem.setSale(sale);
+				if(sale.getSaleItems()==null) {
+					sale.setSaleItems(new ArrayList<SaleItem>());
+				}
+				sale.getSaleItems().add(saleItem);
+				saleRepo.save(sale);
+				log.info("Sale: "+sale.getId()+" Number: "+sale.getNumber());
+			}
+			log.info("Done..");
+		}
+		
 		public void updateNumber() {
 			Map<String, List<Sale>> names = new HashMap<String, List<Sale>>();
 			Iterable<Sale> sales = saleRepo.findAll();

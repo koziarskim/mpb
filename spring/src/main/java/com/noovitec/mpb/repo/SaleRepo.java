@@ -37,4 +37,7 @@ public interface SaleRepo extends JpaRepository<Sale, Long>, CustomSaleRepo {
 			+ "where si.id = :saleItemId")
 	public Sale getBySaleItem(Long saleItemId);
 
+	@Query(value="select s.id from Sale s where s.number = :number")
+	public Long getIdByNumber(String number);
+
 }

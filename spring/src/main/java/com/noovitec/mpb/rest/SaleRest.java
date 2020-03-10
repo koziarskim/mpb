@@ -116,6 +116,15 @@ class SaleRest {
 		return sale;
 	}
 
+	@GetMapping("/sale/validate/number/{number}")
+	ResponseEntity<?> validateNumber(@PathVariable String number) {
+		Long id = saleRepo.getIdByNumber(number);
+		if(id==null) {
+			return ResponseEntity.ok().build();
+		}else {
+			return ResponseEntity.ok().body("Duplicate");
+		}
+	}
 
 	@PostMapping("/sale/units/{saleId}")
 	ResponseEntity<?> updateUnits(@PathVariable Long saleId) {
@@ -208,4 +217,17 @@ class SaleRest {
 		}
 		return ResponseEntity.ok().body("OK");
 	}
+
+	// This is acting as POST.
+	@GetMapping("/sale/update/merge")
+	ResponseEntity<?> mergeSales() {
+		try {
+			saleService.mergeSales();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.ok().body("OK");
+	}
+
 }

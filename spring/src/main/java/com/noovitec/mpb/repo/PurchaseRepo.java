@@ -44,6 +44,9 @@ public interface PurchaseRepo extends JpaRepository<Purchase, Long> {
 			+ "or upper(c.name) LIKE CONCAT('%',UPPER(:searchKey),'%')")
 	Page<Purchase> findPageByComponent(Pageable pageable, String searchKey);
 	
+	@Query(value="select p.id from Purchase p where p.number = :number")
+	public Long getIdByNumber(String number);
+
 	@Modifying
 	@Transactional
 	@Query("update Purchase p set p.receivingDate = :receivingDate where p.id = :purchase_id")

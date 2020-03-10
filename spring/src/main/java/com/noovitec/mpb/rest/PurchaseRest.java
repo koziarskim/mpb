@@ -3,9 +3,7 @@ package com.noovitec.mpb.rest;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.Timestamp;
 import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -39,7 +37,6 @@ import com.itextpdf.text.pdf.PdfStamper;
 import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.entity.Attachment;
 import com.noovitec.mpb.entity.Component;
-import com.noovitec.mpb.entity.DocContent;
 import com.noovitec.mpb.entity.ItemComponent;
 import com.noovitec.mpb.entity.Purchase;
 import com.noovitec.mpb.entity.PurchaseComponent;
@@ -157,6 +154,16 @@ class PurchaseRest {
 		header.set("Content-Disposition", "inline; filename=" + attachment.getFileName());
 		header.setContentLength(data.length);
 		return new HttpEntity<byte[]>(data, header);
+	}
+
+	@GetMapping("/purchase/validate/number/{number}")
+	ResponseEntity<?> validateNumber(@PathVariable String number) {
+		Long id = purchaseRepo.getIdByNumber(number);
+		if(id==null) {
+			return ResponseEntity.ok().build();
+		}else {
+			return ResponseEntity.ok().body("Duplicate");
+		}
 	}
 
 	// Save and update.

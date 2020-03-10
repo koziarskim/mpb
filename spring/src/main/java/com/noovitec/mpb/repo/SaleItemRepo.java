@@ -13,10 +13,21 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
 import com.noovitec.mpb.dto.KeyValueDto;
+import com.noovitec.mpb.entity.Sale;
 import com.noovitec.mpb.entity.SaleItem;
 import com.noovitec.mpb.repo.custom.CustomSaleItemRepo;
 
 public interface SaleItemRepo extends PagingAndSortingRepository<SaleItem, Long>, CustomSaleItemRepo {
+
+	
+	@Query("select si from SaleItem si "
+			+ "join si.sale s "
+			+ "where s.number like '%---%'")
+	List<SaleItem> findByHyphen();
+
+	@Query("select s from Sale s "
+			+ "where s.number = :saleNumber")
+	Sale getByNumber(String saleNumber);
 
 	@Query("select si from SaleItem si where si.id in (:ids)")
 	Page<SaleItem> findPage(Pageable pageable, List<Long> ids);

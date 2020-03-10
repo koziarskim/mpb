@@ -1,7 +1,3 @@
-alter table sale_item add column units_on_stock bigint default 0;
+delete from sale where number like '%---%';
 
-alter table sale add column units_on_stock bigint default 0;
-
-ALTER TABLE sale ADD CONSTRAINT sale_number_unq UNIQUE (number);
-
-ALTER TABLE purchase ADD CONSTRAINT purchase_number_unq UNIQUE (number);
+delete from sale_item where item_id is null and sale_id is null;
