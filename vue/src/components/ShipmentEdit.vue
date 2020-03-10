@@ -91,33 +91,33 @@
         <b-form-textarea type="text" :rows="4" v-model="shipment.notes"></b-form-textarea>
       </b-col>
     </b-row>
+    <br/>
+    <b-row>
+      <b-col cols=2>
+        <b-button size="sm" variant="primary" @click="openSaleItemPicker()">Pick Sales to Add</b-button>
+      </b-col>
+      <b-col style="margin-top: 7px">
+          <b>Total units:</b>{{totalUnits}}
+      </b-col>
+      <b-col style="margin-top: 7px">
+          <b>Total cases:</b>{{totalCases}}
+      </b-col>
+      <b-col>
+        <div style="display: flex">
+          <b style="margin-top: 7px">Total pallets:</b><input class="form-control" style="width: 60px" type="tel" v-model="totalPalletsCustom" @input="totalPalletsOverwrite=true">
+        </div>
+      </b-col>
+      <b-col>    
+        <div style="display: flex">
+          <b style="margin-top: 7px">Total weight:</b><input class="form-control" style="width: 80px" type="tel" v-model="totalWeightCustom" @input="totalWeightOverwrite=true">
+        </div>
+      </b-col>
+      <b-col cols=2>
+        <span style="visibility: hidden">{{totalPallets}}</span>
+        <span style="visibility: hidden">{{totalWeight}}</span><br/>
+      </b-col>
+    </b-row>
     <div style="border: 1px solid #d6d3d3; margin-top: 10px;">
-      <b-row>
-        <!-- <b-col cols=6>
-          <label class="top-label">Sale ( Item ):</label>
-          <div @keyup="keyDown">
-            <b-select ref="bselect" option-value="id" option-text="name" :list="availableSaleItems" v-model="saleItem"></b-select>
-          </div>
-        </b-col> -->
-        <b-col cols=2>
-          <b-button size="sm" style="margin-top: 30px;" variant="primary" @click="openSaleItemPicker()">Pick Sales to Add</b-button>
-        </b-col>
-        <b-col style="margin-top: 15px">
-          <b>Total units:</b>
-          {{totalUnits}},
-          <b>Total cases:</b>
-          {{totalCases}}
-          <span style="visibility: hidden">{{totalPallets}}</span>
-          <span style="visibility: hidden">{{totalWeight}}</span><br/>
-          <div style="display: flex">
-            <b style="margin-top: 7px">Total pallets:</b>
-            <input class="form-control" style="width: 60px" type="tel" v-model="totalPalletsCustom" @input="totalPalletsOverwrite=true">&nbsp;
-            <b style="margin-top: 7px">Total weight:</b>
-            <input class="form-control" style="width: 80px" type="tel" v-model="totalWeightCustom" @input="totalWeightOverwrite=true">
-          </div>
-        </b-col>
-      </b-row>
-      <br>
       <b-row>
         <b-col>
           <b-table v-if="shipment.shipmentItems.length>0" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="shipment.shipmentItems" :fields="columns">
