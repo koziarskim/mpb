@@ -3,10 +3,10 @@
     <b-modal centered size="lg" v-model="visible" :hide-header="true" :hide-footer="true">
 			<b-row>
 				<b-col cols=4 style="margin-top: 10px">
-					<span>{{saleItem.item.number}}</span><span style="font-size: 11px"> {{saleItem.item.name}}</span>
+					<span>{{saleItemTo.item.number}}</span><span style="font-size: 11px"> {{saleItemTo.item.name}}</span>
 				</b-col>
         <b-col cols=6>
-          <b-select option-value="id" option-text="name" :list="availableSaleItems" v-model="saleItemFromDto"></b-select>
+          <b-select option-value="id" option-text="name" :list="availableSaleItems" v-model="transferedSaleItemDto"></b-select>
         </b-col>
         <b-col cols=1 style="margin-top: 10px">
           <b-button size="md" style="margin-left: 40px" @click="saveModal()" variant="success">Close</b-button>
@@ -26,14 +26,19 @@
 					<label class="top-label">Stock: {{saleItemFrom.unitsOnStock}}</label><br/>
         </b-col>
         <b-col cols=3  style="margin-top: -7px; margin-bottom: 3px">
-					<label class="top-label">Units To Transfer</label>
+					<label class="top-label">Transfer Units</label>
 					<input class="form-control" type="tel" v-model="unitsTrasfered">
         </b-col>
         <b-col cols=2 style="margin-top: -10px">
           <b-button size="sm" style="margin-top: 30px;" variant="primary" @click="addSaleItem()">Add &#x25BC;</b-button>
+				</b-col>
+				<b-col cols=1 style="margin-top: 10px">
+					<label style="margin-left: -50px" class="top-label">Reverse:</label><br/>
+					<input style="margin-left: -35px" type="checkbox" v-model="reverseTransfer">
         </b-col>
       </b-row>
-			<label class="top-label" style="font-weight: bold">Transfers for Sale: {{saleItem.saleNumber}}</label>
+			<label class="top-label" style="font-weight: bold">Transfers for Sale: {{saleItemTo.saleNumber}}</label>
+			<span style="margin-left: 100px; color: red">Transfer from {{transferFromName}} to {{transferToName}}</span>
 			<b-row>
 				<b-col>
 					<b-table style="font-size: 12px" :items="getSaleItems()" :fields="columns">
@@ -60,15 +65,18 @@ import moment from "moment";
 
 export default {
   props: {
-		saleItem: Object,
+		saleItemTo: Object,
   },
   data() {
     return {
 			availableSaleItems: [], //kv
-			saleItemFromDto: {id: null, name: null},
+			transferedSaleItemDto: {id: null, name: null},
 			saleItemFrom: {},
 			unitsTrasfered: null,
 			visible: true,
+			reverseTransfer: true,
+			transferFromName: "",
+			transferToName: "",
 			columns: [
 				{ key: "saleFromToName", label: "Sale", sortable: false },
 				{ key: "unitsTransfered", label: "Transfered", sortable: false },
@@ -80,10 +88,14 @@ export default {
   computed: {
   },
   watch:{
-		saleItemFromDto(new_value, old_value){
+		reverseTransfer(oldValue, newValue){
+			this.setTransferName();
+		},
+		transferedSaleItemDto(new_value, old_value){
 			if(new_value.id){
 				this.getSaleItem(new_value.id).then(si => {
 					this.saleItemFrom = si;
+					this.setTransferName();
 				})
 			}else{
 				this.saleItemFrom = {};
@@ -91,21 +103,55 @@ export default {
 		}
 	},
   methods: {
+		setTransferName(){
+			if(this.reverseTransfer){
+				this.transferFromName = this.saleItemTo.saleNumber;
+				this.transferToName = this.saleItemFrom.sale.number;
+			}else{
+				this.transferFromName = this.saleItemFrom.sale.number;
+				this.transferToName = this.saleItemTo.saleNumber;
+			}
+		},
 		getDateTime(transfer){
 			return moment.utc(transfer.date).local().format("YYYY-MM-DD @ HH:mm")
 		},
 		getSaleItems(){
-			this.saleItem.transfersTo.forEach(sit => {
+			this.saleItemTo.transfersTo.forEach(sit => {
 				sit.saleFromToName = sit.saleFromName;
 			})
-			this.saleItem.transfersFrom.forEach(sit => {
+			this.saleItemTo.transfersFrom.forEach(sit => {
 				sit.saleFromToName = sit.saleToName;
 			})
-			return this.saleItem.transfersTo.concat(this.saleItem.transfersFrom)
+			return this.saleItemTo.transfersTo.concat(this.saleItemTo.transfersFrom)
+		},
+		addReverseTransfer(){
+			if(+this.saleItemTo.unitsOnStock - +this.unitsTrasfered < 0){
+				alert("Cannot transfer more that on Stock");
+				return;
+			}
+			var saleItemTransfer = {
+				saleToName: this.saleItemFrom.sale.number+" ("+this.saleItemFrom.sale.customer.name+")",  
+				saleItemFrom: {id: this.saleItemTo.id},
+				saleFromId: this.saleItemTo.saleId, 
+				saleItemTo: {id: this.saleItemFrom.id},
+				saleToId: {id: this.saleItemFrom.sale.id}, 
+				unitsTransfered: this.unitsTrasfered,
+				date: moment.utc(),
+				negative: '-'
+			}
+			this.saleItemTo.transfersFrom.push(saleItemTransfer);
+			this.saleItemTo.unitsTransferedFrom += +saleItemTransfer.unitsTransfered;
+			this.transferedSaleItemDto = {};
+			this.unitsTrasfered = null;
+
 		},
 		addSaleItem(){
 			if(!this.unitsTrasfered || this.unitsTrasfered < 0){
 				alert("Enter positive number of units to transfer");
+				return;
+			}
+			if(this.reverseTransfer){
+				this.addReverseTransfer();
 				return;
 			}
 			if(+this.saleItemFrom.unitsOnStock - +this.unitsTrasfered < 0){
@@ -116,19 +162,19 @@ export default {
 				saleFromName: this.saleItemFrom.sale.number+" ("+this.saleItemFrom.sale.customer.name+")",  
 				saleItemFrom: this.saleItemFrom,
 				saleFromId: this.saleItemFrom.sale.id, 
-				saleItemTo: {id: this.saleItem.id}, 
+				saleItemTo: {id: this.saleItemTo.id}, 
 				unitsTransfered: this.unitsTrasfered,
 				date: moment.utc()
 			}
-			this.saleItem.transfersTo.push(saleItemTransfer);
-			this.saleItem.unitsTransferedTo += +saleItemTransfer.unitsTransfered;
-			this.saleItemFromDto = {};
+			this.saleItemTo.transfersTo.push(saleItemTransfer);
+			this.saleItemTo.unitsTransferedTo += +saleItemTransfer.unitsTransfered;
+			this.transferedSaleItemDto = {};
 			this.unitsTrasfered = null;
 		},
 		deleteSaleItemTransfer(saleItemTransfer){
-      var idx = this.saleItem.transfersTo.findIndex(sit => sit.id == saleItemTransfer.id);
-			this.saleItem.transfersTo.splice(idx, 1);
-			this.saleItem.unitsTransferedTo -= saleItemTransfer.unitsTransfered;
+      var idx = this.saleItemTo.transfersTo.findIndex(sit => sit.id == saleItemTransfer.id);
+			this.saleItemTo.transfersTo.splice(idx, 1);
+			this.saleItemTo.unitsTransferedTo -= saleItemTransfer.unitsTransfered;
 		},
 		getSaleItem(id){
 			return http.get("/saleItem/"+id).then(r => {
@@ -138,14 +184,14 @@ export default {
 			})
 		},
 		getAvailableSaleItems(){
-			http.get("/saleItem/kv/transfer/item/"+this.saleItem.item.id).then(r => {
+			http.get("/saleItem/kv/transfer/item/"+this.saleItemTo.item.id).then(r => {
 				r.data.forEach(function(si,i){
 					if(si.name.includes("Marketplace Brands")){
 						r.data.splice(i, 1);
 						r.data.unshift(si);
 					}
 				});
-				this.availableSaleItems = r.data.filter(si => si.id != this.saleItem.id);
+				this.availableSaleItems = r.data.filter(si => si.id != this.saleItemTo.id);
 			}).catch(e => {
 				console.log("API error: " + e)
 			})
@@ -161,7 +207,7 @@ export default {
     },
   },
   mounted() {
-		this.saleItem.transfersFrom.forEach(sit => {
+		this.saleItemTo.transfersFrom.forEach(sit => {
 			sit.negative = '-';
 		})
 		this.getAvailableSaleItems();

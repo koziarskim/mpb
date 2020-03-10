@@ -144,7 +144,7 @@
       </b-row>
     </b-modal>
     <div v-if="transferModalVisible">
-			<transfer-modal :sale-item="saleItem" v-on:saveModal="saveTransferModal"></transfer-modal>
+			<transfer-modal :sale-item-to="saleItem" v-on:saveModal="saveTransferModal"></transfer-modal>
 		</div>
   </b-container>
 </template>

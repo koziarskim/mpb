@@ -110,6 +110,12 @@ class SaleRest {
 		return sales;
 	}
 
+	@GetMapping("/sale/saleItem/{saleItemId}")
+	Sale getBySaleItem(@PathVariable Long saleItemId) {
+		Sale sale = saleRepo.getBySaleItem(saleItemId);
+		return sale;
+	}
+
 	// This is acting as POST.
 	@GetMapping("/sale/update/units")
 	ResponseEntity<?> postUpdateUnits() {
