@@ -404,6 +404,10 @@ export default {
         alert("Sale Number required");
         return false;
       }
+      if(!/^[a-z0-9\(\)\-]{1,15}$/.test(this.sale.number)){
+        alert("Only alphanumeric, parentheses or hyphen allowed. Maximum 15 characters.");
+        return false;
+      }
       return true;
     },
     deleteSale() {

@@ -116,17 +116,6 @@ class SaleRest {
 		return sale;
 	}
 
-	// This is acting as POST.
-	@GetMapping("/sale/update/units")
-	ResponseEntity<?> postUpdateUnits() {
-		try {
-			saleService.updateUnits(null);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-		}
-		return ResponseEntity.ok().body("OK");
-	}
 
 	@PostMapping("/sale/units/{saleId}")
 	ResponseEntity<?> updateUnits(@PathVariable Long saleId) {
@@ -137,10 +126,13 @@ class SaleRest {
 	}
 
 	@PostMapping("/sale")
-	ResponseEntity<Sale> post(@RequestBody(required = false) Sale sale) {
+	ResponseEntity<?> post(@RequestBody(required = false) Sale sale) {
 		if (sale == null) {
 			sale = new Sale();
 		}
+//		if(!sale.getNumber().matches("[a-zA-Z0-9\\(\\)\\-]*")) {
+//			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Only number, letters, () or - allowed");
+//		}
 		for (SaleItem sa : sale.getSaleItems()) {
 			sa.setSale(sale);
 			for (SaleItemTransfer t : sa.getTransfersTo()) {
@@ -191,5 +183,29 @@ class SaleRest {
 			crudService.save(item);
 		}
 		return ResponseEntity.ok().build();
+	}
+	
+	// This is acting as POST.
+	@GetMapping("/sale/update/units")
+	ResponseEntity<?> postUpdateUnits() {
+		try {
+			saleService.updateUnits(null);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.ok().body("OK");
+	}
+	
+	// This is acting as POST.
+	@GetMapping("/sale/update/number")
+	ResponseEntity<?> postUpdateNumber() {
+		try {
+			saleService.updateNumber();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.ok().body("OK");
 	}
 }

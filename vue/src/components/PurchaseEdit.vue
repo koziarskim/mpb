@@ -160,7 +160,16 @@ export default {
       this.receivingDate = null;
       this.receiveMode = true;
     },
+    validate(){
+      if(!/^[a-z0-9\(\)\-]{1,15}$/.test(this.sale.number)){
+        alert("Only alphanumeric, parentheses or hyphen allowed. Maximum 15 characters.");
+        return false;
+      }
+    },
     save(){
+      if(!validate()){
+        return;
+      }
       if(this.editMode){
         this.updatePurchase();
       }else if(this.receiveMode){

@@ -15,8 +15,8 @@ Components:
 Sale:
 + Limit number of sales show in transfer window.
 + Ability to search by item and customer (default view).
-+ Ability to reverse transfer.
-
++ Ability to reverse transfer (add/remove).
++ Ability to view sales fully shipped but still on stock (Pending Transfer).
 - Validate unique sale number.
 - Ability to enter notes when save.
 Production Line:
