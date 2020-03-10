@@ -1,6 +1,6 @@
 In Progress/Done:
 Shipment (screen & PDF):
-+ Ability to add multiple items to BOL at once
++ Ability to add multiple items at once.
 - Ability to upload documents.
 - Shipment schedule/calendar.
 Customer:
