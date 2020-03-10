@@ -93,7 +93,8 @@ export default {
         {id: 'APPROVED', name: 'Pending Schedule'},
         {id: 'PENDING_PROD', name: 'Pending Prod'},
         {id: 'PENDING_SHIPPMENT', name: 'Pending Shippment'},
-        {id: 'SHIPPED', name: 'Fully Shipped'}
+        {id: 'SHIPPED', name: 'Fully Shipped'},
+        {id: 'PENDING_TRANSFER', name: 'Pending Transfer'}
       ],
       statusKv: {},
     };

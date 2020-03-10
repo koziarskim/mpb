@@ -49,7 +49,7 @@
 							<span>{{getDateTime(row.item)}}</span>
 						</template>
 						<template v-slot:cell(action)="row">
-							<b-button v-if="!row.item.negative" size="sm" @click="deleteSaleItemTransfer(row.item)">x</b-button>
+							<b-button size="sm" @click="deleteSaleItemTransfer(row.item)">x</b-button>
 						</template>
 					</b-table>
 				</b-col>
@@ -125,7 +125,7 @@ export default {
 			return this.saleItemTo.transfersTo.concat(this.saleItemTo.transfersFrom)
 		},
 		addReverseTransfer(){
-			if(+this.saleItemTo.unitsOnStock - +this.unitsTrasfered < 0){
+			if(+this.saleItemFrom.unitsOnStock - +this.unitsTrasfered < 0){
 				alert("Cannot transfer more that on Stock");
 				return;
 			}
@@ -172,9 +172,15 @@ export default {
 			this.unitsTrasfered = null;
 		},
 		deleteSaleItemTransfer(saleItemTransfer){
-      var idx = this.saleItemTo.transfersTo.findIndex(sit => sit.id == saleItemTransfer.id);
-			this.saleItemTo.transfersTo.splice(idx, 1);
-			this.saleItemTo.unitsTransferedTo -= saleItemTransfer.unitsTransfered;
+			if(saleItemTransfer.negative){
+				var idx = this.saleItemTo.transfersFrom.findIndex(sit => sit.id == saleItemTransfer.id);
+				this.saleItemTo.transfersFrom.splice(idx, 1);
+				this.saleItemTo.unitsTransferedFrom -= saleItemTransfer.unitsTransfered;
+			}else{
+				var idx = this.saleItemTo.transfersTo.findIndex(sit => sit.id == saleItemTransfer.id);
+				this.saleItemTo.transfersTo.splice(idx, 1);
+				this.saleItemTo.unitsTransferedTo -= saleItemTransfer.unitsTransfered;
+			}
 		},
 		getSaleItem(id){
 			return http.get("/saleItem/"+id).then(r => {
