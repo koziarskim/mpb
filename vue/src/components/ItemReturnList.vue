@@ -21,11 +21,9 @@
             <b-link role="button" @click="goToItem(row.item.item.id)">{{row.item.item.number}}</b-link>
             <span style="font-size: 11px"> ({{row.item.item.name}})</span>
           </template>
-          <!-- <template v-slot:cell(sale)="row">
-            <b-link role="button" @click="goToSale(row.item.sale.id)">{{row.item.sale.number}}</b-link>
-          </template> -->
           <template v-slot:cell(unitsReturned)="row">
-            <b-link role="button" @click="openItemReturnModal(row.item.id)">{{row.item.unitsReturned}}</b-link>
+            <b-link v-if="row.item.unitsReceived>row.item.unitsReturned" role="button" @click="openItemReturnModal(row.item.id)"><div style="background-color:#dcb3b3; width: 50px">{{row.item.unitsReturned}}</div></b-link>
+            <b-link v-if="row.item.unitsReceived<=row.item.unitsReturned" role="button" @click="openItemReturnModal(row.item.id)">{{row.item.unitsReturned}}</b-link>
           </template>
           <template v-slot:cell(action)="row">
             <b-button size="sm" @click.stop="deleteItemReturn(row.item.id)">x</b-button>
@@ -53,9 +51,8 @@ export default {
       pageable: {totalElements: 100, currentPage: 1, perPage: 7, sortBy: 'updated', sortDesc: true},
       fields: [
         { key: 'item', sortable: true, label: 'Item # (Name)'},
-        // { key: 'sale', sortable: true, label: 'Sale # (Name)'},
         { key: 'unitsReceived', sortable: false, label: 'Received'},
-        { key: 'unitsReturned', sortable: false, label: 'Returned'},
+        { key: 'unitsReturned', sortable: false, label: 'Assigned'},
         { key: 'action', sortable: false, label: ''},
       ],
       itemId: null,
