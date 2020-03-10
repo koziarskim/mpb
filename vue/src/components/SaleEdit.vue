@@ -272,20 +272,6 @@ export default {
     }
   },
   methods: {
-    validateNumber(){
-      if(!/^[a-z0-9\-]{1,15}$/.test(this.sale.number)){
-        alert("Only alphanumeric, hyphen allowed. Maximum 15 characters.");
-        return Promise.reject()
-      }
-      return http.get("/sale/validate/number/"+this.sale.number).then(r=> {
-        if(r.data=="Duplicate"){
-          alert("This sale number already exist");
-          return Promise.reject();
-        }
-      }).catch(e=> {
-        console.log("API error: " + e);
-      })
-    },
     getStatus(statusId){
       var status = this.availableStatus.find(s=> s.id == statusId);
       if(status){
@@ -388,7 +374,7 @@ export default {
       })
     },
     saveSale() {
-      if(!/^[a-z0-9\-]{1,15}$/.test(this.sale.number)){
+      if(!this.sale.number.match((/^([0-9a-zA-Z\-]*)$/))){
         alert("Only alphanumeric, hyphen allowed. Maximum 15 characters.");
         return Promise.reject()
       }
@@ -429,10 +415,6 @@ export default {
     validate(){
       if(!this.sale.number){
         alert("Sale Number required");
-        return false;
-      }
-      if(!/^[a-z0-9\-]{1,15}$/.test(this.sale.number)){
-        alert("Only alphanumeric, hyphen allowed. Maximum 15 characters.");
         return false;
       }
       return true;

@@ -147,7 +147,7 @@ export default {
       return true;
     },
     savePurchase() {
-      if(!/^[a-z0-9\-]{1,15}$/.test(this.purchase.number)){
+      if(!this.purchase.number.match((/^([0-9a-zA-Z\-]*)$/))){
         alert("Only alphanumeric, hyphen allowed. Maximum 15 characters.");
         return Promise.reject()
       }

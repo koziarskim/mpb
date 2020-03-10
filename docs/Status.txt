@@ -1,8 +1,8 @@
 In Progress/Done:
 Shipment (screen & PDF):
++ Ability to add multiple items to BOL at once
 - Ability to upload documents.
 - Shipment schedule/calendar.
-- Ability to add multiple items to BOL at once
 Customer:
 - Reorganize screen layout (Generic info, Billing info, Shipping info) - Need more info.
 - Ability to create Pallet Tag - Need to talk more.
@@ -17,12 +17,13 @@ Sale:
 + Ability to search by item and customer (default view).
 + Ability to reverse transfer (add/remove).
 + Ability to view sales fully shipped but still on stock (Pending Transfer).
-- Validate unique sale number.
++ Validate unique sale number.
++ Merge duplicated sales.
 - Ability to enter notes when save.
 Production Line:
 - Ability to adjust units when finish production shorter that scheduled.
 Purchase:
-- none
++ Validate unique number.
 Receiving:
 - none
 Global:
