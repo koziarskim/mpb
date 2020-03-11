@@ -382,6 +382,16 @@ export default {
         alert("Shipping Number required.")
         return false;
       }
+      var overStock = false;
+      this.shipment.shipmentItems.forEach(si=> {
+        if(si.units > si.saleItem.unitsOnStock){
+          overStock = true;
+        }
+      })
+      if(overStock){
+        alert("Cannot ship more that on stock")
+        return false;
+      }
       return true;
     },
     back(){
