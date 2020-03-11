@@ -40,6 +40,7 @@ public class Sale extends BaseEntity {
 	private Long unitsShipped = 0L;
 	private Long unitsAdjusted = 0L;
 	private Long unitsOnStock = 0L;
+	private Long unitsReturned = 0L;
 	private String status;
 	private boolean approved;
 	
@@ -66,6 +67,7 @@ public class Sale extends BaseEntity {
 		this.unitsTransferedTo = 0L;
 		this.unitsTransferedFrom = 0L;
 		this.unitsAdjusted = 0L;
+		this.unitsReturned = 0L;
 		for (SaleItem sa : this.getSaleItems()) {
 			sa.updateUnits();
 			this.unitsSold += sa.getUnits();
@@ -75,8 +77,9 @@ public class Sale extends BaseEntity {
 			this.unitsTransferedTo += sa.getUnitsTransferedTo();
 			this.unitsTransferedFrom += sa.getUnitsTransferedFrom();
 			this.unitsAdjusted += sa.getUnitsAdjusted();
+			this.unitsReturned += sa.getUnitsReturned();
 		}
-		this.unitsOnStock = this.unitsProduced + this.unitsTransferedTo - this.unitsTransferedFrom - this.unitsShipped;
+		this.unitsOnStock = this.unitsProduced + this.unitsTransferedTo - this.unitsTransferedFrom - this.unitsShipped + this.unitsReturned;
 		this.updateStatus();
 	}
 	
