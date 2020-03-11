@@ -147,31 +147,19 @@ export default {
       return true;
     },
     savePurchase() {
-      if(!this.purchase.number.match((/^([0-9a-zA-Z\-]*)$/))){
-        alert("Only alphanumeric, hyphen allowed. Maximum 15 characters.");
-        return Promise.reject()
+      if(!this.validate()){
+        return Promise.reject();
       }
-      return http.get("/purchase/validate/number/"+this.purchase.number).then(r=> {
-        if(r.data=="Duplicate"){
-          alert("This sale number already exist");
-          return Promise.reject();
-        }
-        if(!this.validate()){
-          return Promise.reject();
-        }
-        this.purchase.purchaseComponents = [];
-        this.componentDtos.forEach(c => {
-        this.purchase.purchaseComponents.push({component: {id: c.id}, units: c.units, unitPrice: c.unitPrice});
-        })
-        return http.post("/purchase", this.purchase).then(r => {
-          this.purchase = r.data;
-          return r.data;
-        }).catch(e => {
-          console.log("API error: " + e);
-        });
-      }).catch(e=> {
-        console.log("API error: " + e);
+      this.purchase.purchaseComponents = [];
+      this.componentDtos.forEach(c => {
+      this.purchase.purchaseComponents.push({component: {id: c.id}, units: c.units, unitPrice: c.unitPrice});
       })
+      return http.post("/purchase", this.purchase).then(r => {
+        this.purchase = r.data;
+        return r.data;
+      }).catch(e => {
+        console.log("API error: " + e);
+      });
     },
     saveAndClose() {
       this.savePurchase().then(purchase => {

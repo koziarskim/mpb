@@ -374,43 +374,31 @@ export default {
       })
     },
     saveSale() {
-      if(!this.sale.number.match((/^([0-9a-zA-Z\-]*)$/))){
-        alert("Only alphanumeric, hyphen allowed. Maximum 15 characters.");
-        return Promise.reject()
+      if(!this.allowSave()){
+        alert("Don't have permission");
+        return Promise.reject();
       }
-      return http.get("/sale/validate/number/"+this.sale.number).then(r=> {
-        if(r.data=="Duplicate"){
-          alert("This sale number already exist");
-          return Promise.reject();
-        }
-        if(!this.allowSave()){
-          alert("Don't have permission");
-          return Promise.reject();
-        }
-        if(!this.validate()){
-          return Promise.reject();
-        }
-        this.sale.saleItems.forEach(si=>{
-          si.unitsAdjusted = si.unitsAdjusted || 0;
-          si.units == si.units || 0;
-        })
-        this.sale.totalPrice = this.totalPrice;
-        if(!this.sale.customer || !this.sale.customer.id){
-          this.sale.customer = null;
-        }
-        if(!this.sale.shippingAddress || !this.sale.shippingAddress.id){
-          this.sale.shippingAddress = null;
-        }
-        return http.post("/sale", this.sale).then(r => {
-          this.getSaleData(r.data.id);
-          return r;
-        }).catch(e => {
-          console.log("API error: " + e);
-        });
-        return r;
-      }).catch(e=> {
-        console.log("API error: " + e);
+      if(!this.validate()){
+        return Promise.reject();
+      }
+      this.sale.saleItems.forEach(si=>{
+        si.unitsAdjusted = si.unitsAdjusted || 0;
+        si.units == si.units || 0;
       })
+      this.sale.totalPrice = this.totalPrice;
+      if(!this.sale.customer || !this.sale.customer.id){
+        this.sale.customer = null;
+      }
+      if(!this.sale.shippingAddress || !this.sale.shippingAddress.id){
+        this.sale.shippingAddress = null;
+      }
+      return http.post("/sale", this.sale).then(r => {
+        this.getSaleData(r.data.id);
+        return r;
+      }).catch(e => {
+        console.log("API error: " + e);
+      });
+      return r;
     },
     validate(){
       if(!this.sale.number){

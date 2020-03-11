@@ -135,13 +135,14 @@ class SaleRest {
 	}
 
 	@PostMapping("/sale")
-	ResponseEntity<?> post(@RequestBody(required = false) Sale sale) {
-		if (sale == null) {
-			sale = new Sale();
+	ResponseEntity<?> post(@RequestBody Sale sale) {
+		if(!sale.getNumber().matches("^[a-zA-Z0-9\\-]{1,15}$")) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Sale Number is invalid. Alphanumeric and hyphen only allowed. Maximum 15 characters.");
 		}
-//		if(!sale.getNumber().matches("[a-zA-Z0-9\\(\\)\\-]*")) {
-//			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Only number, letters, () or - allowed");
-//		}
+		Long id = saleRepo.getIdByNumber(sale.getNumber());
+		if((sale.getId()==null && id !=null) || (sale.getId()!=null && id !=null && !sale.getId().equals(id))) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Sale Number already exists. Please, choose differrent.");
+		}
 		for (SaleItem sa : sale.getSaleItems()) {
 			sa.setSale(sale);
 			for (SaleItemTransfer t : sa.getTransfersTo()) {

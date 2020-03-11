@@ -31,7 +31,8 @@ http.interceptors.response.use(
       router.push("/login");
       NProgress.done();
     } else {
-      alert("There was an error!\n" + error.response.data.message);
+      alert("There was an error!\n" + error.response.data);
+      NProgress.done();
     }
     return Promise.reject(error);
   }

@@ -168,7 +168,15 @@ class PurchaseRest {
 
 	// Save and update.
 	@PostMapping("/purchase")
-	ResponseEntity<Purchase> post(@RequestBody(required = false) Purchase purchase) throws IOException, DocumentException{
+	ResponseEntity<?> post(@RequestBody Purchase purchase) throws IOException, DocumentException{
+		if(!purchase.getNumber().matches("^[a-zA-Z0-9\\-]{1,15}$")) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Sale Number is invalid. Alphanumeric and hyphen only allowed. Maximum 15 characters.");
+		}
+		Long id = purchaseRepo.getIdByNumber(purchase.getNumber());
+		if((purchase.getId()==null && id !=null) || (purchase.getId()!=null && id !=null && !purchase.getId().equals(id))) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Purchase Number already exists. Please, choose differrent.");
+		}
+
 		purchase = purchaseRepo.save(purchase);
 		List<Long> itemIds = new ArrayList<Long>();
 		List<Long> componentIds = new ArrayList<Long>();
