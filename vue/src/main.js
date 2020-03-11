@@ -12,6 +12,8 @@ import { CustomMask } from "./directives/CustomMask";
 import UploadImage from "./directives/UploadImage";
 import ScheduleModal from "./components/ScheduleModal";
 import Chart from "./directives/Chart";
+import VueCal from "vue-cal";
+import "vue-cal/dist/vuecal.css";
 
 Vue.use(BootstrapVue);
 Vue.directive("mask", CustomMask);
@@ -19,6 +21,7 @@ Vue.component("chart", Chart);
 Vue.component("upload", UploadImage);
 Vue.component("b-select", ModelListSelect);
 Vue.component("schedule-modal", ScheduleModal);
+Vue.component("vue-cal", VueCal);
 Vue.config.productionTip = false;
 Vue.filter("formatDate", function(value) {
   if (value) {

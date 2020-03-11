@@ -29,6 +29,7 @@
           <b-nav-item-dropdown right :text="user.fullName">
             <b-dropdown-item @click="goTo('/Profile')">Profile</b-dropdown-item>
             <b-dropdown-item v-if="securite.hasRole(['ADMIN'])" @click="goTo('/users')">Manage Users</b-dropdown-item>
+            <b-dropdown-item @click="goTo('/scheduleShipment')">Shipment</b-dropdown-item>
             <b-dropdown-item @click="logout()">Signout</b-dropdown-item>
           </b-nav-item-dropdown>
         </b-navbar-nav>
