@@ -37,12 +37,12 @@ import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfStamper;
 import com.noovitec.mpb.dto.ShipmentDto;
+import com.noovitec.mpb.dto.ShipmentEventDto;
 import com.noovitec.mpb.entity.Attachment;
 import com.noovitec.mpb.entity.Item;
 import com.noovitec.mpb.entity.Sale;
 import com.noovitec.mpb.entity.Shipment;
 import com.noovitec.mpb.entity.ShipmentItem;
-import com.noovitec.mpb.repo.ItemRepo;
 import com.noovitec.mpb.repo.ShipmentRepo;
 import com.noovitec.mpb.service.AttachmentService;
 import com.noovitec.mpb.service.CrudService;
@@ -53,18 +53,17 @@ import com.noovitec.mpb.service.ShipmentService;
 class ShipmentRest {
 
 	private final Logger log = LoggerFactory.getLogger(ShipmentRest.class);
+	private ShipmentService shipmentService;
+	@Autowired
 	private ShipmentRepo shipmentRepo;
 	@Autowired
 	private AttachmentService attachmentService;
 	@Autowired
-	private ItemRepo itemRepo;
-	@Autowired
 	private CrudService crudService;
-	@Autowired
-	private ShipmentService shipmentService;
 	
-	public ShipmentRest(ShipmentRepo shipmentRepo) {
-		this.shipmentRepo = shipmentRepo;
+	
+	public ShipmentRest(ShipmentService shipmentService) {
+		this.shipmentService = shipmentService;
 	}
 
 	@GetMapping("/shipment/{id}")
@@ -138,6 +137,12 @@ class ShipmentRest {
 		return new HttpEntity<byte[]>(data, header);
 	}
 
+	@GetMapping("/shipment/events/ready")
+	HttpEntity<List<ShipmentEventDto>> getEvents() {
+		List<ShipmentEventDto> shipments = shipmentService.findEvents();
+		return ResponseEntity.ok().body(shipments);
+	}	
+	
 	@PostMapping("/shipment")
 	ResponseEntity<Shipment> post(@RequestBody(required = false) Shipment shipment) throws Exception {
 		if (shipment == null) {

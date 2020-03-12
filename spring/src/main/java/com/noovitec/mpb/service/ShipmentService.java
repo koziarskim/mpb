@@ -1,6 +1,8 @@
 package com.noovitec.mpb.service;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.transaction.Transactional;
 
@@ -9,28 +11,21 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.noovitec.mpb.dto.ShipmentEventDto;
 import com.noovitec.mpb.entity.Shipment;
-import com.noovitec.mpb.repo.ComponentRepo;
-import com.noovitec.mpb.repo.DocContentRepo;
 import com.noovitec.mpb.repo.ShipmentRepo;
-import com.noovitec.mpb.repo.SupplierRepo;
 
 public interface ShipmentService {
 
 	public Shipment save(Shipment shipment) throws IOException;
-
+	public List<ShipmentEventDto> findEvents();
+	
 	@Transactional
 	@Service("shipmentServiceImpl")
 	public class ShipmentServiceImp implements ShipmentService {
 
 		private final Logger log = LoggerFactory.getLogger(ShipmentServiceImp.class);
 		private ShipmentRepo shipmentRepo;
-		@Autowired
-		private DocContentRepo docContentRepo;
-		@Autowired
-		private SupplierRepo supplierRepo;
-		@Autowired
-		private ComponentRepo componentRepo;
 		@Autowired
 		CrudService crudService;
 		@Autowired
@@ -49,5 +44,24 @@ public interface ShipmentService {
 			return shipment;
 		}
 		
+		public List<ShipmentEventDto> findEvents() {
+			List<Shipment> shipments = shipmentRepo.getReadyToShip();
+			List<ShipmentEventDto> events = new ArrayList<ShipmentEventDto>();
+			shipments.forEach(shipment-> {
+				ShipmentEventDto dto = new ShipmentEventDto();
+				dto.setId(shipment.getId());
+				dto.setNumber(shipment.getNumber());
+				dto.setCustomer(shipment.getCustomer().getName());
+				dto.setDc(shipment.getShippingAddress().getDc());
+				dto.setCity(shipment.getShippingAddress().getCity());
+				dto.setState(shipment.getShippingAddress().getState());
+				dto.setLoad(shipment.getLoadNumber());
+				dto.setPallets(shipment.getTotalPallets());
+				dto.setStart("2020-03-12 12:00");
+				dto.setEnd("2020-03-12 14:00");
+				events.add(dto);
+			});
+			return events;
+		}
 	}
 }
