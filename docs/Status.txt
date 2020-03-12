@@ -2,19 +2,21 @@ In Progress/Done:
 Shipment (screen & PDF):
 + Ability to add multiple items at once.
 - Shipment schedule/calendar.
-- Validate shipment units not be more than on stock.
++ Validate shipment units not be more than on stock.
 Customer:
 - Reorganize screen layout (Generic info, Billing info, Shipping info) - Need more info.
 - Ability to create Pallet Tag - Need to talk more.
 Item:
 - Ability to enter upc for item (manually entered)
 - Ability to enter upc for case (manually entered)
+- Item version based on the year (need to discuss it).
+- Item search by year and season (need to discuss it)
 Components:
 - Revisit how to calculate units short.
 - Price history/average (based on PO).
 Sale:
-- Ability to enter Season and Year.
-- Ability to search by season and year.
+- Ability to enter Season and Year (need to discuss it)
+- Ability to search by season and year (need to discuss it)
 - Validate transfer not to be more that on stock (both ways)
 + Limit number of sales show in transfer window.
 + Ability to search by item and customer (default view).
