@@ -36,7 +36,7 @@ import DailyStatus from "./components/public/DailyStatus";
 import PurchaseNew from "./components/PurchaseNew";
 import ItemGraph from "./components/ItemGraph";
 import ItemReturnList from "./components/ItemReturnList";
-import ScheduleShipment from "./components/ScheduleShipment";
+import ShipmentSchedule from "./components/ShipmentSchedule";
 
 Vue.use(Router);
 
@@ -329,12 +329,12 @@ const router = new Router({
       }
     },
     {
-      path: "/ScheduleShipment",
-      name: "ScheduleShipment",
-      component: ScheduleShipment,
+      path: "/ShipmentSchedule",
+      name: "ShipmentSchedule",
+      component: ShipmentSchedule,
       meta: {
         roles: ["SUPER_USER"],
-        group: "shipment",
+        group: "shipmentSchedule",
         viewClass: "view-shipment"
       }
     },

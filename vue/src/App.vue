@@ -3,17 +3,19 @@
     <b-navbar toggleable="md" type="dark" variant="dark" style="height:35px">
       <b-collapse is-nav id="nav_collapse">
         <b-navbar-nav v-if="!hideNavBar()">
-          <b-nav-item v-on:click="goTo('/home')" :class="navClass('home')">Home</b-nav-item>
-          <b-nav-item v-on:click="goTo('/supplierList')" :class="navClass('supplier')">Supplier</b-nav-item>
-          <b-nav-item v-on:click="goTo('/componentList')" :class="navClass('component')">Component</b-nav-item>
-          <b-nav-item v-on:click="goTo('/itemList')" :class="navClass('item')">Item</b-nav-item>
-          <b-nav-item v-on:click="goTo('/customerList')" :class="navClass('customer')">Customer</b-nav-item>
-          <b-nav-item v-on:click="goTo('/saleList')" :class="navClass('sale')">Sale</b-nav-item>
-          <b-nav-item v-on:click="goTo('/purchaseList')" :class="navClass('purchase')">Purchase</b-nav-item>
-          <b-nav-item v-on:click="goTo('/receivingList')" :class="navClass('receiving')">Receiving</b-nav-item>
-          <b-nav-item v-on:click="goTo('/shipmentList')" :class="navClass('shipment')">Shipment</b-nav-item>
-          <b-nav-item v-on:click="goTo('/schedule')" :class="navClass('schedule')">Schedule</b-nav-item>
-		      <b-nav-item v-on:click="goTo('/productionLineList')" :class="navClass('production')">Production</b-nav-item>
+          <b-nav-item @click="goTo('/home')" :class="navClass('home')">Home</b-nav-item>
+          <b-nav-item @click="goTo('/supplierList')" :class="navClass('supplier')">Supplier</b-nav-item>
+          <b-nav-item @click="goTo('/componentList')" :class="navClass('component')">Component</b-nav-item>
+          <b-nav-item @click="goTo('/itemList')" :class="navClass('item')">Item</b-nav-item>
+          <b-nav-item @click="goTo('/customerList')" :class="navClass('customer')">Customer</b-nav-item>
+          <b-nav-item @click="goTo('/saleList')" :class="navClass('sale')">Sale</b-nav-item>
+          <b-nav-item @click="goTo('/purchaseList')" :class="navClass('purchase')">Purchase</b-nav-item>
+          <b-nav-item @click="goTo('/receivingList')" :class="navClass('receiving')">Receiving</b-nav-item>
+          <b-nav-item @click="goTo('/shipmentList')" :class="navClass('shipment')">Shipment/</b-nav-item>
+          <b-nav-item @click="goTo('/shipmentSchedule')" :class="navClass('shipmentSchedule')" style="margin-left: -17px">Schedule</b-nav-item>
+          <b-nav-item @click="goTo('/productionLineList')" :class="navClass('production')">Production/</b-nav-item>
+          <b-nav-item @click="goTo('/schedule')" :class="navClass('schedule')" style="margin-left: -17px">Schedule</b-nav-item>
+		      
         </b-navbar-nav>
         <b-navbar-nav v-if="!hideNavBar()" style="margin:0px 0px 0px auto;">
           <!-- <b-nav-item-dropdown right :text="user.season.name">
@@ -29,7 +31,6 @@
           <b-nav-item-dropdown right :text="user.fullName">
             <b-dropdown-item @click="goTo('/Profile')">Profile</b-dropdown-item>
             <b-dropdown-item v-if="securite.hasRole(['ADMIN'])" @click="goTo('/users')">Manage Users</b-dropdown-item>
-            <b-dropdown-item @click="goTo('/scheduleShipment')">Shipment</b-dropdown-item>
             <b-dropdown-item @click="logout()">Signout</b-dropdown-item>
           </b-nav-item-dropdown>
         </b-navbar-nav>
