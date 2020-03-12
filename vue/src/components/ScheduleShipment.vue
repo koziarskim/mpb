@@ -12,7 +12,7 @@
           </div>
           </div>
             <b-popover placement="top" :target="'popover-'+event.id" triggers="click">
-              <template v-slot:title><b-link role="button" @click="goToShipment('')">PO1234</b-link></template>
+              <template v-slot:title><b-link role="button" @click="goToShipment(event.id)">{{event.number}}</b-link></template>
               I am popover <b>component</b> content!
             </b-popover>
         </template>

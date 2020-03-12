@@ -1,6 +1,7 @@
 package com.noovitec.mpb.service;
 
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,8 +58,10 @@ public interface ShipmentService {
 				dto.setState(shipment.getShippingAddress().getState());
 				dto.setLoad(shipment.getLoadNumber());
 				dto.setPallets(shipment.getTotalPallets());
-				dto.setStart("2020-03-12 12:00");
-				dto.setEnd("2020-03-12 14:00");
+				DateTimeFormatter df = DateTimeFormatter.ofPattern("YYYY-MM-dd");
+				DateTimeFormatter tf = DateTimeFormatter.ofPattern("HH:mm");
+				dto.setStart(shipment.getShippingDate().format(df)+" "+shipment.getShippingTime().format(tf));
+				dto.setEnd(shipment.getShippingDate().format(df)+" "+shipment.getShippingTime().plusHours(2).format(tf));
 				events.add(dto);
 			});
 			return events;
