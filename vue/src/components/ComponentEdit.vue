@@ -7,7 +7,7 @@
             </div>
             <div style="text-align: right;">
                 <b-button :disabled="!allowEdit()" size="sm" variant="success" @click="saveComponent()">Save</b-button>
-                <b-button style="margin-left: 3px" :disabled="!allowEdit()" size="sm" @click="deleteComponent()">x</b-button>
+                <b-button :disabled="!allowEdit()" style="margin-left: 3px" size="sm" @click="deleteComponent()">x</b-button>
             </div>
         </div>
         <b-row>

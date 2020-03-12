@@ -41,8 +41,8 @@
             <upload :on-upload="onUpload" :file-url="getImageUrl()"></upload>
           </b-col>
           <b-col cols=4 style="margin-top: 10px">
-            <b-button style="margin-left: 100px" size="sm" variant="success" @click="saveAndClose">Save</b-button>
-            <b-button style="margin-left: 3px" size="sm" @click="deleteItem()">x</b-button>
+            <b-button :disabled="!allowEdit()" style="margin-left: 100px" size="sm" variant="success" @click="saveItem()">Save</b-button>
+            <b-button :disabled="!allowEdit()" style="margin-left: 3px" size="sm" @click="deleteItem()">x</b-button>
             <label class="top-label">Stock: {{item.unitsOnStock}}</label><br/>
             <label class="top-label">Sch/Pro: <b-link role="button" @click="goToItemScheduleList()">{{item.unitsScheduled}}/{{item.unitsProduced}}</b-link></label><br/>
             <label class="top-label">Sold: <b-link role="button" @click="goToItemSaleList()">{{item.unitsSold}}</b-link>&nbsp;</label><label class="top-label" :class="getReturnClass()"><b-link role="button" @click="goToItemReturnList()">Ret: {{item.unitsReturned}}</b-link></label><br/>
@@ -194,6 +194,7 @@ import router from "../router";
 import axios from "axios";
 import httpUtils from "../httpUtils";
 import navigation from "../utils/navigation";
+import securite from "../securite";
 
 export default {
   data() {
@@ -297,6 +298,9 @@ export default {
   },
   watch: {},
   methods: {
+    allowEdit(){
+      return securite.hasRole(["STANDARD_ADMIN"]);
+    },
     goToItemReturnList(){
       var query = { itemId: this.item.id };
       router.push({path: "/itemReturnList", query: query});
@@ -409,7 +413,7 @@ export default {
 
         return true;
     },
-    save() {
+    saveItem() {
         if(!this.validate()){
             return Promise.reject();
         }
@@ -419,16 +423,10 @@ export default {
       formData.append("jsonItem", JSON.stringify(this.item));
       var headers = {"Content-Type": "multipart/form-data"};
       return axios.post(httpUtils.baseUrl + "/item", formData, headers).then(r => {
+        this.getItemData(r.data.id)
         return r.data;
       }).catch(e => {
          console.log("API error: " + e);
-      });
-    },
-    saveAndClose() {
-      this.save().then(i => {
-        this.getItemData(i.id).then(item => {
-          router.push("/itemList");
-        })
       });
     },
     goToComponent(componentId) {
