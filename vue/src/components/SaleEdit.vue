@@ -88,7 +88,7 @@
             <input :disabled="!allowEdit()" class="form-control" style="width:100px" type="tel" v-model="row.item.units">
           </template>
           <template v-slot:cell(unitsAdjusted)="row">
-            <input class="form-control" style="width:100px" type="tel" v-model="row.item.unitsAdjusted">
+            <input :disabled="!allowEdit()" class="form-control" style="width:100px" type="tel" v-model="row.item.unitsAdjusted">
           </template>
           <template v-slot:cell(cases)="row">
             <span>{{getCases(row.item)}}</span>
@@ -111,7 +111,7 @@
             <b-button size="sm" :id="'popover-'+row.item.id">...</b-button>
             <b-popover placement="left" :target="'popover-'+row.item.id" variant="light">
               <div style="width: 340px">
-                <b-button :disabled="!allowEdit()" size="sm" @click="deleteItem(row.item.item.id)" variant="link">Delete Item</b-button><br/>
+                <b-button :disabled="!allowEdit()" size="sm" @click="deleteItem(row.item.item)" variant="link">Delete Item</b-button><br/>
                 <div style="display:flex;">
                   <b-button :disabled="!allowSave()" size="sm" @click="moveItem(row.item)" variant="link">Move Item</b-button>
                   <b-select style="width: 250px" option-value="id" option-text="name" :list="availableSales" v-model="saleKv"></b-select>
@@ -280,15 +280,15 @@ export default {
       return "Not Yet Saved";
     },
     allowEdit(){
-      // return !this.sale.approved && securite.hasRole(["ADMIN", "SALE_ADMIN", "SALE_EDIT"]);
-      return true;
+      // return !this.sale.approved && securite.hasRole(["SALE_ADMIN"]);
+      return securite.hasRole(["SALE_ADMIN"]);
     },
     allowSave(){
-      // return securite.hasRole(["ADMIN", "SALE_ADMIN", "SALE_EDIT"]);
-      return true;
+      return securite.hasRole(["SALE_ADMIN"]);
     },
     allowApprove(){
-      return !this.sale.approved && securite.hasRole(["ADMIN", "SALE_ADMIN"]);
+      // return !this.sale.approved && securite.hasRole(["SALE_ADMIN"]);
+      return securite.hasRole(["SALE_ADMIN"]);
     },
     goToScheduled(si) {
       router.push("/scheduleEventList/" + si.item.id + "/sale/" + this.sale.id);
@@ -478,8 +478,12 @@ export default {
     gotToItemComponentList(item_id){
         router.push('/itemComponentList/'+item_id);
     },
-    deleteItem(item_id) {
-      var idx = this.sale.saleItems.findIndex(it => it.item.id == item_id);
+    deleteItem(si) {
+      if(si.unitsScheduled>0 || si.unitsProduced>0 || si.unitsTransferedTo>0 || si.unitsTransferedFrom>0 || si.unitsShipped>0){
+        alert("Make sure there is no Schedule, Production, Transfers or Shipment for this item!");
+        return false;
+      }
+      var idx = this.sale.saleItems.findIndex(it => it.item.id == si.id);
       this.sale.saleItems.splice(idx, 1);
     },
     getCases(si){

@@ -68,9 +68,6 @@
         <template v-slot:cell(status)="row">
             <span>{{getStatus(row.item)}}</span>
         </template>
-        <template v-slot:cell(action)="row">
-            <b-button size="sm" @click.stop="deleteShipment(row.item.id)">x</b-button>
-        </template>
       </b-table>
       <div style="display: flex">
         <b-pagination v-model="pageable.currentPage" :per-page="pageable.perPage" :total-rows="pageable.totalElements" @change="paginationChange"></b-pagination>

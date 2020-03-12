@@ -17,8 +17,15 @@ export default {
           return;
         }
       });
-    })
+    });
     return found;
+  },
+  validate(roles) {
+    if (!this.hasRole(roles)) {
+      alert("You have no permission for this action!");
+      return false;
+    }
+    return true;
   },
   getUser() {
     return session.getUser();

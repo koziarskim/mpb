@@ -116,7 +116,7 @@ export default {
     },
     saveAndClose() {
       this.save().then(r => {
-        this.editMode = false;
+        // this.editMode = false;
       });
     },
     deleteUser(id) {

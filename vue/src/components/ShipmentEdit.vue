@@ -23,8 +23,8 @@
       </b-col>
       <b-col cols=2>
         <div style="margin-left: 50px">
-          <b-button size="sm" variant="success" @click="back()">Back</b-button>
-          <b-button :title="'Modified: '+formatModifiedDate(shipment.modifiedDate)" size="sm" style="margin-left: 5px" variant="success" @click="saveShipment()">Save</b-button>
+          <b-button :disabled="!allowEdit()" size="sm" type="reset" variant="danger" @click="deleteShipment()">x</b-button>
+          <b-button :disabled="!allowEdit()" :title="'Modified: '+formatModifiedDate(shipment.modifiedDate)" size="sm" style="margin-left: 5px" variant="success" @click="saveShipment()">Save</b-button>
           <img @click="openPdf()" style="margin: 2px; cursor: pointer" src="../assets/pdf-download.png" width="25px"><br/>
           <div style="display: flex">
             <label class="top-label">Ready To Ship</label>
@@ -168,6 +168,7 @@ import http from "../http-common";
 import httpUtils from "../httpUtils";
 import router from "../router";
 import moment from "moment";
+import securite from "../securite";
 
 export default {
   components: {
@@ -176,6 +177,7 @@ export default {
   },
   data() {
     return {
+      securite: securite,
       totalPalletsOverwrite: false,
       totalWeightOverwrite: false,
       totalPalletsCustom: 0,
@@ -281,6 +283,20 @@ export default {
     },
   },
   methods: {
+    deleteShipment() {
+      this.$bvModal.msgBoxConfirm('Are you sure you want to delete?').then(ok => {
+        if(ok){
+          http.delete("/shipment/" + this.shipment.id).then(() => {
+            router.push("/shipmentList")
+          }).catch(e => {
+            console.log("API Error: " + e);
+          });
+        }
+      })
+    },
+    allowEdit(){
+      return securite.hasRole(["SHIPMENT_ADMIN"]) && !this.shipment.shippedDate
+    },
     getAddedSaleItemsIds(){
       var ids = [];
       this.shipment.shipmentItems.forEach(shipItem=> {
@@ -403,6 +419,7 @@ export default {
       window.history.back();
     },
     saveShipment() {
+      if(!securite.validate(["SHIPMENT_ADMIN"]))return;
       if(!this.validate()){
         return;
       }

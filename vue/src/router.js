@@ -73,7 +73,7 @@ const router = new Router({
       name: "itemList",
       component: ItemList,
       meta: {
-        roles: ["SUPER_USER"],
+        roles: ["READ_ONLY"],
         group: "item",
         viewClass: "view-item"
       }
@@ -83,7 +83,7 @@ const router = new Router({
       name: "ItemComponentList",
       component: ItemComponentList,
       meta: {
-        roles: ["SUPER_USER"],
+        roles: ["READ_ONLY"],
         group: "item",
         viewClass: "view-item"
       }
@@ -93,7 +93,7 @@ const router = new Router({
       name: "ItemEdit",
       component: ItemEdit,
       meta: {
-        roles: ["SUPER_USER"],
+        roles: ["READ_ONLY"],
         group: "item",
         viewClass: "view-item"
       }
@@ -103,7 +103,7 @@ const router = new Router({
       name: "ItemGraph",
       component: ItemGraph,
       meta: {
-        roles: ["SUPER_USER"],
+        roles: ["READ_ONLY"],
         group: "item",
         viewClass: "view-item"
       }
@@ -113,7 +113,7 @@ const router = new Router({
       name: "ItemSaleList",
       component: ItemSaleList,
       meta: {
-        roles: ["SUPER_USER"],
+        roles: ["READ_ONLY"],
         group: "item",
         viewClass: "view-item"
       }
@@ -123,7 +123,7 @@ const router = new Router({
       name: "ComponentList",
       component: ComponentList,
       meta: {
-        roles: ["SUPER_USER"],
+        roles: ["READ_ONLY"],
         group: "component",
         viewClass: "view-component"
       }
@@ -133,7 +133,7 @@ const router = new Router({
       name: "ComponentEdit",
       component: ComponentEdit,
       meta: {
-        roles: ["SUPER_USER"],
+        roles: ["READ_ONLY"],
         group: "component",
         viewClass: "view-component"
       }
@@ -143,7 +143,7 @@ const router = new Router({
       name: "SupplierList",
       component: SupplierList,
       meta: {
-        roles: ["SUPER_USER"],
+        roles: ["READ_ONLY"],
         group: "supplier",
         viewClass: "view-supplier"
       }
@@ -153,7 +153,7 @@ const router = new Router({
       name: "SupplierEdit",
       component: SupplierEdit,
       meta: {
-        roles: ["SUPER_USER"],
+        roles: ["READ_ONLY"],
         group: "supplier",
         viewClass: "view-supplier"
       }
@@ -163,7 +163,7 @@ const router = new Router({
       name: "CustomerList",
       component: CustomerList,
       meta: {
-        roles: ["SUPER_USER"],
+        roles: ["READ_ONLY"],
         group: "customer",
         viewClass: "view-customer"
       }
@@ -173,7 +173,7 @@ const router = new Router({
       name: "CustomerEdit",
       component: CustomerEdit,
       meta: {
-        roles: ["SUPER_USER"],
+        roles: ["READ_ONLY"],
         group: "customer",
         viewClass: "view-customer"
       }
@@ -183,7 +183,7 @@ const router = new Router({
       name: "SaleList",
       component: SaleList,
       meta: {
-        roles: ["SUPER_USER"],
+        roles: ["READ_ONLY"],
         group: "sale",
         viewClass: "view-sale"
       }
@@ -193,7 +193,7 @@ const router = new Router({
       name: "SaleItemList",
       component: SaleItemList,
       meta: {
-        roles: ["SUPER_USER"],
+        roles: ["READ_ONLY"],
         group: "sale",
         viewClass: "view-sale"
       }
@@ -203,7 +203,7 @@ const router = new Router({
       name: "SaleEdit",
       component: SaleEdit,
       meta: {
-        roles: ["SUPER_USER"],
+        roles: ["READ_ONLY"],
         group: "sale",
         viewClass: "view-sale"
       }
@@ -213,7 +213,7 @@ const router = new Router({
       name: "PurchaseList",
       component: PurchaseList,
       meta: {
-        roles: ["SUPER_USER", "POADMIN"],
+        roles: ["READ_ONLY"],
         group: "purchase",
         viewClass: "view-purchase"
       }
@@ -223,7 +223,7 @@ const router = new Router({
       name: "PurchaseEdit",
       component: PurchaseEdit,
       meta: {
-        roles: ["SUPER_USER"],
+        roles: ["READ_ONLY"],
         group: "purchase",
         viewClass: "view-purchase"
       }
@@ -233,7 +233,7 @@ const router = new Router({
       name: "PurchaseNew",
       component: PurchaseNew,
       meta: {
-        roles: ["SUPER_USER"],
+        roles: ["READ_ONLY"],
         group: "purchase",
         viewClass: "view-purchase"
       }
@@ -243,7 +243,7 @@ const router = new Router({
       name: "PurchaseComponent",
       component: PurchaseComponent,
       meta: {
-        roles: ["SUPER_USER"],
+        roles: ["READ_ONLY"],
         group: "purchase",
         viewClass: "view-purchase"
       }
@@ -253,7 +253,7 @@ const router = new Router({
       name: "PurchaseItem",
       component: PurchaseItem,
       meta: {
-        roles: ["SUPER_USER"],
+        roles: ["READ_ONLY"],
         group: "purchase",
         viewClass: "view-purchase"
       }
@@ -263,7 +263,7 @@ const router = new Router({
       name: "ReceivingList",
       component: ReceivingList,
       meta: {
-        roles: ["SUPER_USER"],
+        roles: ["READ_ONLY"],
         group: "receiving",
         viewClass: "view-receiving"
       }
@@ -273,7 +273,7 @@ const router = new Router({
       name: "ReceivingEdit",
       component: ReceivingEdit,
       meta: {
-        roles: ["SUPER_USER"],
+        roles: ["READ_ONLY"],
         group: "receiving",
         viewClass: "view-receiving"
       }
@@ -283,7 +283,7 @@ const router = new Router({
       name: "ReceivingEditPc",
       component: ReceivingEdit,
       meta: {
-        roles: ["SUPER_USER"],
+        roles: ["READ_ONLY"],
         group: "receiving",
         viewClass: "view-receiving"
       }
@@ -293,7 +293,7 @@ const router = new Router({
       name: "Schedule",
       component: Schedule,
       meta: {
-        roles: ["SUPER_USER"],
+        roles: ["READ_ONLY"],
         group: "schedule",
         viewClass: "view-schedule"
       }
@@ -303,7 +303,7 @@ const router = new Router({
       name: "ScheduleEventList",
       component: ScheduleEventList,
       meta: {
-        roles: ["SUPER_USER"],
+        roles: ["READ_ONLY"],
         group: "schedule",
         viewClass: "view-schedule"
       }
@@ -313,7 +313,7 @@ const router = new Router({
       name: "ShipmentEdit",
       component: ShipmentEdit,
       meta: {
-        roles: ["SUPER_USER"],
+        roles: ["READ_ONLY"],
         group: "shipment",
         viewClass: "view-shipment"
       }
@@ -323,7 +323,7 @@ const router = new Router({
       name: "ShipmentList",
       component: ShipmentList,
       meta: {
-        roles: ["SUPER_USER"],
+        roles: ["READ_ONLY"],
         group: "shipment",
         viewClass: "view-shipment"
       }
@@ -333,7 +333,7 @@ const router = new Router({
       name: "ShipmentSchedule",
       component: ShipmentSchedule,
       meta: {
-        roles: ["SUPER_USER"],
+        roles: ["READ_ONLY"],
         group: "shipmentSchedule",
         viewClass: "view-shipment"
       }
@@ -343,7 +343,7 @@ const router = new Router({
       name: "ProductionLine",
       component: ProductionLine,
       meta: {
-        roles: ["SUPER_USER", "PRODUCTION_ADMIN", "PRODUCTION_LEADER"],
+        roles: ["READ_ONLY", "PRODUCTION_ADMIN", "PRODUCTION_EDIT"],
         group: "production",
         viewClass: "view-production"
       }
@@ -353,7 +353,7 @@ const router = new Router({
       name: "ProductionLineList",
       component: ProductionLineList,
       meta: {
-        roles: ["SUPER_USER", "PRODUCTION_ADMIN", "PRODUCTION_LEADER"],
+        roles: ["READ_ONLY", "PRODUCTION_ADMIN", "PRODUCTION_EDIT"],
         group: "production",
         viewClass: "view-production"
       }
@@ -363,7 +363,7 @@ const router = new Router({
       name: "ProductionItemList",
       component: ProductionItemList,
       meta: {
-        roles: ["SUPER_USER", "PRODUCTION_ADMIN", "PRODUCTION_LEADER"],
+        roles: ["READ_ONLY", "PRODUCTION_ADMIN", "PRODUCTION_EDIT"],
         group: "production",
         viewClass: "view-production"
       }
@@ -373,7 +373,7 @@ const router = new Router({
       name: "ItemReturnList",
       component: ItemReturnList,
       meta: {
-        roles: ["SUPER_USER"],
+        roles: ["READ_ONLY"],
         group: "itemReturn",
         viewClass: "view-item-return"
       }
