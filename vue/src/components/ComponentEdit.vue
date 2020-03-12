@@ -6,7 +6,8 @@
                 Component is locked. Changes here will update Item(s) as well.
             </div>
             <div style="text-align: right;">
-                <b-button type="reset" variant="success" @click="saveAndClose">Save & Close</b-button>
+                <b-button :disabled="!allowEdit()" size="sm" variant="success" @click="saveComponent()">Save</b-button>
+                <b-button style="margin-left: 3px" :disabled="!allowEdit()" size="sm" @click="deleteComponent()">x</b-button>
             </div>
         </div>
         <b-row>
@@ -149,6 +150,7 @@ import http from "../http-common";
 import router from "../router";
 import axios from "axios";
 import httpUtils from "../httpUtils";
+import securite from "../securite";
 
 export default {
   name: "add-component",
@@ -217,6 +219,9 @@ export default {
     },
   },
   methods: {
+    allowEdit(){
+      return securite.hasRole(["STANDARD_ADMIN"]);
+    },
     goToReceiving(componentId){
       var query = { component_id: componentId };
       router.push({ path: "/receivingList", query: query });
@@ -243,6 +248,17 @@ export default {
     },
     onUpload(file){
       this.uploadedFile = file;
+    },
+    deleteComponent() {
+      this.$bvModal.msgBoxConfirm('Are you sure you want to delete Component?').then(ok => {
+        if(ok){
+          http.delete("/component/" + this.component.id).then(response => {
+            router.push("/componentList")
+          }).catch(e => {
+            console.log("API Error: " + e);
+          });
+        }
+      })
     },
     getComponentData(component_id) {
       return http.get("/component/" + component_id).then(r => {
@@ -295,7 +311,7 @@ export default {
         console.log("API error: " + e);
       });
     },
-    save() {
+    saveComponent() {
       if(!this.component.name || !this.component.number){
         alert("Please enter Component Name and Number");
         return Promise.reject();
@@ -305,6 +321,7 @@ export default {
       formData.append("jsonComponent", JSON.stringify(this.component));
       var headers = {headers: {"Content-Type": "multipart/form-data"}}
       return axios.post(httpUtils.baseUrl + "/component", formData, headers).then(r =>{
+        this.getComponentData(r.data.id)
         return r.data;
       }).catch(e => {
         console.log("API error: "+e);
@@ -318,13 +335,6 @@ export default {
         .catch(e => {
           console.log("API error: " + e);
         });
-    },
-    saveAndClose() {
-      this.save().then(c =>{
-        this.getComponentData(c.id).then(component => {
-          router.push("/componentList");
-        })
-      })
     },
     goToItem(item_id) {
       router.push("/itemEdit/" + item_id);

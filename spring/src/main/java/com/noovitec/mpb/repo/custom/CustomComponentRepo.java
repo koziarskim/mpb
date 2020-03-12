@@ -28,9 +28,9 @@ public interface CustomComponentRepo {
 
 		@Override
 		public Page<Component> findPage(Pageable pageable, String nameSearch, Long supplierId, Long itemId) {
-			String q = "select c from Component c "
-					+ "join c.supplier supplier "
-					+ "join c.itemComponents ic "
+			String q = "select distinct c from Component c "
+					+ "left join c.supplier supplier "
+					+ "left join c.itemComponents ic "
 					+ "where c.id is not null ";
 			if (nameSearch != null && !nameSearch.isEmpty()) {
 				q += "and (upper(c.number) like concat('%',upper(:nameSearch),'%') ";

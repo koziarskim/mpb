@@ -16,7 +16,7 @@
             </b-col>
             <b-col>
                 <div style="text-align: right;">
-                <b-button type="submit" variant="primary" @click="createNewItem('')">New Item</b-button>
+                <b-button size="sm" variant="primary" @click="createNewItem('')">New</b-button>
                 </div>
             </b-col>
         </b-row>

@@ -12,8 +12,8 @@
       </b-col>
       <b-col>
         <div style="text-align: right;">
-          <b-button size="sm" type="submit" variant="primary" @click="createNewPurchase()">New P.O.({{selectedComponents.length}})</b-button>&nbsp;
-          <b-button size="sm" type="submit" variant="primary" @click="goToComponent('')">New Component</b-button>
+          <b-button size="sm" variant="primary" @click="goToComponent('')">New</b-button>
+          <b-button size="sm" style="margin-left:3px" variant="primary" @click="createNewPurchase()">New P.O.({{selectedComponents.length}})</b-button>&nbsp;
         </div>
       </b-col>
     </b-row>
@@ -26,8 +26,7 @@
         <b-button size="sm" @click.stop="goToReceiving(row.item.id)" variant="link">{{row.item.unitsOnStock}}</b-button>
       </template>
       <template v-slot:cell(action)="row">
-        <input type="checkbox" v-model="selectedComponents" :value="row.item">&nbsp;
-        <b-button size="sm" @click.stop="deleteComponent(row.item.id)" :disabled="row.item.locked">x</b-button>
+        <input type="checkbox" v-model="selectedComponents" :value="row.item">
       </template>
     </b-table>
     <div style="display: flex">
@@ -134,23 +133,6 @@ export default {
         }
       });
       return component;
-    },
-    deleteComponent(component_id) {
-      this.$bvModal.msgBoxConfirm('Are you sure you want to delete Component?').then(ok => {
-        if(ok){
-          var item = this.getItem(component_id);
-          if (item && item.locked) {
-              this.showAlert("Component is locked. It may be currently used by Item(s)");
-              return;
-          }
-          http
-              .delete("/component/" + component_id)
-              .then(response => {this.getComponents();})
-              .catch(e => {
-              console.log("API Error: " + e);
-              });
-            }
-        })
     },
     goToComponent(component_id) {
       if (!component_id) {
