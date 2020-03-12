@@ -3,17 +3,19 @@
       <vue-cal ref="vuecal" hide-view-selector :min-event-width=0 :events="events" :time-from="6 * 60" :time-to="18 * 60" 
       :hide-weekdays="[7]">
         <template v-slot:event="{ event, view }">
-          <div :id="'popover-'+event.id">{{event.customer}}
-          <div>
+          <div :id="'popover-'+event.id">
+            {{event.customer}}<br/>
             {{event.number}}<br/>
             {{event.dc}}, {{event.city}}, {{event.state}}<br/>
             {{event.load}}<br/>
             {{event.pallets}}<br/>
           </div>
-          </div>
-            <b-popover placement="top" :target="'popover-'+event.id" triggers="click">
-              <template v-slot:title><b-link role="button" @click="goToShipment(event.id)">{{event.number}}</b-link></template>
-              I am popover <b>component</b> content!
+            <b-popover placement="top" :target="'popover-'+event.id">
+              <template v-slot:title><b-link role="button" @click="goToShipment(event.id)"><b>Shipment #: </b>{{event.number}}</b-link></template>
+                <b>Customer:</b> {{event.customer}}<br/>
+                <b>Shipping Address:</b> {{event.dc}}, {{event.city}}, {{event.state}}<br/>
+                <b>Load Number:</b> {{event.load}}<br/>
+                <b>Total Pallets:</b> {{event.pallets}}
             </b-popover>
         </template>
       </vue-cal>
@@ -26,6 +28,7 @@ import router from "../router";
 export default {
   data() {
     return {
+      visiblePopover: "",
       events: [],
     };
   },

@@ -52,10 +52,12 @@ public interface ShipmentService {
 				ShipmentEventDto dto = new ShipmentEventDto();
 				dto.setId(shipment.getId());
 				dto.setNumber(shipment.getNumber());
-				dto.setCustomer(shipment.getCustomer().getName());
-				dto.setDc(shipment.getShippingAddress().getDc());
-				dto.setCity(shipment.getShippingAddress().getCity());
-				dto.setState(shipment.getShippingAddress().getState());
+				dto.setCustomer(shipment.getCustomer()==null?"":shipment.getCustomer().getName());
+				if(shipment.getShippingAddress()!=null){
+					dto.setDc(shipment.getShippingAddress().getDc());
+					dto.setCity(shipment.getShippingAddress().getCity());
+					dto.setState(shipment.getShippingAddress().getState());
+				}
 				dto.setLoad(shipment.getLoadNumber());
 				dto.setPallets(shipment.getTotalPallets());
 				DateTimeFormatter df = DateTimeFormatter.ofPattern("YYYY-MM-dd");
