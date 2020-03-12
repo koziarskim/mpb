@@ -154,6 +154,13 @@ class ComponentRest {
 
 	@DeleteMapping("/component/{id}")
 	public ResponseEntity<?> delete(@PathVariable Long id) {
+		Component component = componentRepo.findById(id).get();
+		if(component.getItemComponents().size()>0) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("There are existing Items!");
+		}
+		if(component.getPurchaseComponents().size()>0) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("There are existing Purchases!");
+		}
 		componentService.delete(id);
 		return ResponseEntity.ok().build();
 	}

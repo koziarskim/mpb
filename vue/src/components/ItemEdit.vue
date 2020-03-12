@@ -41,7 +41,8 @@
             <upload :on-upload="onUpload" :file-url="getImageUrl()"></upload>
           </b-col>
           <b-col cols=4 style="margin-top: 10px">
-            <b-button style="margin-left: 70%" size="sm" type="reset" variant="success" @click="saveAndClose">Save</b-button>
+            <b-button style="margin-left: 100px" size="sm" variant="success" @click="saveAndClose">Save</b-button>
+            <b-button style="margin-left: 3px" size="sm" @click="deleteItem()">x</b-button>
             <label class="top-label">Stock: {{item.unitsOnStock}}</label><br/>
             <label class="top-label">Sch/Pro: <b-link role="button" @click="goToItemScheduleList()">{{item.unitsScheduled}}/{{item.unitsProduced}}</b-link></label><br/>
             <label class="top-label">Sold: <b-link role="button" @click="goToItemSaleList()">{{item.unitsSold}}</b-link>&nbsp;</label><label class="top-label" :class="getReturnClass()"><b-link role="button" @click="goToItemReturnList()">Ret: {{item.unitsReturned}}</b-link></label><br/>
@@ -172,7 +173,7 @@
               <span style="font-size:11px"> {{row.item.component.name}}</span>
             </template>
             <template v-slot:cell(units)="row">
-              <input class="form-control" style="width:100px" type="tel" v-model="row.item.units">
+              <input class="form-control" style="width:50px" type="tel" v-model="row.item.units">
             </template>
             <template v-slot:cell(unitsOnStock)="row">
               <b-link role="button" @click="goToReceiving(row.item.component.id)">{{row.item.component.unitsOnStock}}</b-link>
@@ -224,8 +225,8 @@ export default {
     uploadedFile: null,
     columns: [
         { key: "component", label: "Component", sortable: false },
-        { key: "component.category.name", label: "Component", sortable: false },
-        { key: "units", label: "Assembly", sortable: false },
+        { key: "component.category.name", label: "Category", sortable: false },
+        { key: "units", label: "Units", sortable: false },
         { key: "component.totalLandedCost", label: "Cost", sortable: false },
         { key: "unitsOnStock", label: "Stock", sortable: false },
         { key: "component.unitsLocked", label: "Reserved", sortable: false },
@@ -448,7 +449,18 @@ export default {
       return "return-red";
     }
     return "";
-  }
+  },
+  deleteItem() {
+    this.$bvModal.msgBoxConfirm('Are you sure you want to delete?').then(ok => {
+      if(ok){
+        http.delete("/item/"+this.item.id).then(response => {
+            router.push("/itemList")
+          }).catch(e => {
+            console.log("Error post");
+          });
+        }
+    })
+  },
   },
   mounted() {
     this.getAvailableComponents();

@@ -181,9 +181,11 @@ class SaleRest {
 
 	@DeleteMapping("/sale/{id}")
 	public ResponseEntity<?> delete(@PathVariable Long id) {
-		// TODO: Is there a better way of doing it?
-		List<Item> items = new ArrayList<Item>();
 		Sale sale = saleRepo.getOne(id);
+		if(sale.getSaleItems().size()>0) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("There are existing Sale Items!");
+		}
+		List<Item> items = new ArrayList<Item>();
 		for (SaleItem sa : sale.getSaleItems()) {
 			items.add(sa.getItem());
 		}

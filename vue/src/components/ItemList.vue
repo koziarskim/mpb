@@ -34,10 +34,6 @@
           <template v-slot:cell(unitsShipped)="row">
               <b-button size="sm" variant="link" @click.stop="goToItemShippedList(row.item.id)">{{row.item.unitsShipped}}</b-button>
           </template>
-          <template v-slot:cell(action)="row">
-              <!-- <b-button size="sm" @click.stop="gotToInventory(row.item.id)">view</b-button> -->
-              <b-button size="sm" style="margin-left: 3px" @click.stop="deleteItem(row.item.id)">x</b-button>
-          </template>
         </b-table>
         <div style="display: flex">
           <b-pagination size="sm" v-model="pageable.currentPage" :per-page="pageable.perPage" :total-rows="pageable.totalElements" @change="paginationChange"></b-pagination>
@@ -66,7 +62,6 @@ export default {
         { key: 'unitsScheduled', sortable: false, label: 'Sched/Produced'},
         { key: 'unitsShipped', sortable: false, label: 'Shipped'},
         { key: 'unitsReadyProd', sortable: false, label: 'RFP'},
-        { key: 'action', sortable: false, label: ''},
       ],
       items: [] //ItemListDto
     };
@@ -103,17 +98,6 @@ export default {
         .catch(e => {
           console.log("API error: "+e);
         });
-    },
-    deleteItem(item_id) {
-      this.$bvModal.msgBoxConfirm('Are you sure you want to delete Item?').then(ok => {
-        if(ok){
-          http.delete("/item/"+item_id).then(response => {
-              this.getItems("");
-            }).catch(e => {
-              console.log("Error post");
-            });
-          }
-      })
     },
     createNewItem(){
         router.push('/itemEdit');

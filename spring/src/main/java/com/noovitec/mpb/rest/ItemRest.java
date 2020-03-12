@@ -174,6 +174,13 @@ class ItemRest {
 
 	@DeleteMapping("/item/{id}")
 	public ResponseEntity<?> delete(@PathVariable Long id) {
+		Item item = itemRepo.findById(id).get();
+		if(item.getSaleItems().size()>0) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("There are existing Sales!");
+		}
+		if(item.getItemReturns().size()>0) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("There are existing Returns!");
+		}
 		itemService.delete(id);
 		return ResponseEntity.ok().build();
 	}

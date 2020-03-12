@@ -25,9 +25,9 @@
       </b-col>
       <b-col cols=2>
         <div style="text-align: right;">
-          <b-button :disabled="!allowApprove()" size="sm" type="reset" variant="success" @click="approveSale()">Approve</b-button>
-          <b-button :disabled="!allowEdit()" size="sm" type="reset" variant="danger" @click="deleteSale()">x</b-button>
-          <b-button :disabled="!allowSave()" size="sm" type="reset" variant="success" @click="saveSale()">Save</b-button>
+          <b-button :disabled="!allowApprove()" size="sm" variant="success" @click="approveSale()">Approve</b-button>
+          <b-button style="margin-left: 3px" :disabled="!allowSave()" size="sm" variant="success" @click="saveSale()">Save</b-button>
+          <b-button style="margin-left: 3px" :disabled="!allowEdit()" size="sm" @click="deleteSale()">x</b-button>
         </div>
       </b-col>
     </b-row>
