@@ -74,7 +74,7 @@ export default {
 			saleItemFrom: {},
 			unitsTrasfered: null,
 			visible: true,
-			reverseTransfer: true,
+			reverseTransfer: false,
 			transferFromName: "",
 			transferToName: "",
 			columns: [
