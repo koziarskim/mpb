@@ -46,17 +46,17 @@
         <label class="top-label">Freight Class:</label>
         <input class="form-control" type="tel" v-model="shipment.freightClass">
       </b-col>
+       <b-col cols=2>
+        <label class="top-label">Via:</label>
+        <input class="form-control" type="tel" v-model="shipment.via">
+      </b-col>
       <b-col cols=2>
         <label class="top-label">Expected Date:</label>
         <input class="form-control" type="date" v-model="shipment.shippingDate">
       </b-col>
       <b-col cols=2>
-        <label class="top-label">Shipping Window From:</label>
-        <input class="form-control" type="date" v-model="shipment.shippingFrom">
-      </b-col>
-      <b-col cols=2>
-        <label class="top-label">Shipping Window To:</label>
-        <input class="form-control" type="date" v-model="shipment.shippingTo">
+        <label class="top-label">Shipping Time:</label>
+        <input class="form-control" type="time" v-model="shipment.shippingTime">
       </b-col>
       <b-col cols=2>
         <label class="top-label">Shipped (Actual Load Sent):</label>
@@ -72,9 +72,13 @@
         <label class="top-label">Freight Address:<span style="cursor: pointer; color: blue" @click="openModal()"> (Edit/New) </span></label>
         <b-select option-value="id" option-text="name" :list="availableFreightAddresses" v-model="freightAddress" placeholder="Pick freight address"></b-select>
       </b-col>
+     <b-col cols=2>
+        <label class="top-label">Shipping Window From:</label>
+        <input class="form-control" type="date" v-model="shipment.shippingFrom">
+      </b-col>
       <b-col cols=2>
-        <label class="top-label">Via:</label>
-        <input class="form-control" type="tel" v-model="shipment.via">
+        <label class="top-label">Shipping Window To:</label>
+        <input class="form-control" type="date" v-model="shipment.shippingTo">
       </b-col>
       <b-col cols=2>
         <label class="top-label">FOB:</label>
@@ -184,7 +188,8 @@ export default {
         number: 0, 
         shipmentItems: [],
         shippingDate: null,
-        fob: "Elk Grove Village"
+        fob: "Elk Grove Village",
+        shippingTime: moment.utc().hours("08").minutes("00").format("HH:mm"),
       },
       availableCustomers: [],
       availableShippingAddresses: [],
