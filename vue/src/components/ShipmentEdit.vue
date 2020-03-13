@@ -23,12 +23,12 @@
       </b-col>
       <b-col cols=2>
         <div style="display:flex; margin-left: 75px">
-          <upload-file :upload-url="getUploadUrl()" :attachment-ids="attachmentIds">uplad</upload-file>
+          <upload-file v-on:close="closeUpload" type="SHIPMENT" :attachments="shipment.attachments"></upload-file>
           <!-- <img @click="openPdf()" style="margin: 2px; cursor: pointer" src="../assets/pdf-download.png" width="25px"> -->
           <b-button :disabled="!allowEdit()" :title="'Modified: '+formatModifiedDate(shipment.modifiedDate)" size="sm" style="margin-left: 5px" variant="success" @click="saveShipment()">Save</b-button>
           <b-button style="margin-left: 3px" :disabled="!allowEdit()" size="sm" @click="deleteShipment()">x</b-button>
         </div>
-        <div style="display: flex; margin-left: 88px">
+        <div style="display: flex; margin-left: 85px; margin-top: 7px">
             <label class="top-label">Ready To Ship</label>
             <input type="checkbox" style="margin-left: 3px; margin-top: 3px" v-model="shipment.ready">
           </div>
@@ -174,12 +174,12 @@ import securite from "../securite";
 export default {
   components: {
     AddressModal: () => import("./AddressModal"),
-    SaleItemPicker: () => import("./SaleItemPicker")
+    SaleItemPicker: () => import("./SaleItemPicker"),
+    UploadFile: () => import("../directives/UploadFile")
   },
   data() {
     return {
       securite: securite,
-      attachmentIds: [],
       totalPalletsOverwrite: false,
       totalWeightOverwrite: false,
       totalPalletsCustom: 0,
@@ -194,6 +194,7 @@ export default {
         shippingDate: null,
         fob: "Elk Grove Village",
         shippingTime: moment.utc().hours("08").minutes("00").format("HH:mm"),
+        attachments: [],
       },
       availableCustomers: [],
       availableShippingAddresses: [],
@@ -285,8 +286,9 @@ export default {
     },
   },
   methods: {
-    getUploadUrl(){
-      return "/shipment/"+this.shipment.id+"/upload"
+    closeUpload(attachments){
+      this.shipment.attachments = attachments;
+      this.saveShipment();
     },
     deleteShipment() {
       this.$bvModal.msgBoxConfirm('Are you sure you want to delete?').then(ok => {
@@ -380,7 +382,6 @@ export default {
         response.data.shipmentItems.forEach(si => {
           si.existingUnits = si.units;
         });
-        this.shipment = response.data;
         if (response.data.customer) {
           this.customer = response.data.customer;
         }
@@ -398,13 +399,8 @@ export default {
           this.totalWeightOverwrite = true;
           this.totalWeightCustom = response.data.totalWeightCustom;
         }
-        response.data.attachments.forEach(a=> {
-          this.attachmentIds.push(a.id);
-        })
-      })
-      .catch(e => {
-        console.log("API error: " + e);
-      });
+        this.shipment = response.data;
+      }).catch(e => { console.log("API error: " + e); });
     },
     validate(){
       if(!this.shipment.number){
@@ -443,12 +439,6 @@ export default {
       return http.post("/shipment", this.shipment).then(r => {
         this.shipment = r.data;
         return r.data;
-        //This is to replace "new" with ID from url.
-        // if(!this.shipment.id){
-        //   router.push("/shipmentEdit/"+r.data.id);
-        // }else{
-        //   this.shipment = r.data;
-        // }
         this.getAvailableSaleItems();
       }).catch(e => {
          console.log("API error: " + e);

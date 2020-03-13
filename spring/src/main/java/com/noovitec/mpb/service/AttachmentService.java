@@ -21,7 +21,7 @@ public interface AttachmentService {
 	public Attachment save(Attachment attachment, byte[] data) throws IOException;
 	public Attachment getWithDocContent(Long attachmentId);
 	public Attachment getById(Long attachmentId);
-	public Attachment store(MultipartFile file) throws IllegalStateException, IOException;
+	public Attachment store(MultipartFile file, String type) throws IllegalStateException, IOException;
 
 	@Transactional
 	@Service("attachmentServiceImpl")
@@ -71,12 +71,8 @@ public interface AttachmentService {
 			return attachmentRepo.save(attachment);
 		}
 		
-		public Attachment store(MultipartFile file) throws IllegalStateException, IOException {
+		public Attachment store(MultipartFile file, String type) throws IllegalStateException, IOException {
 			String fileName = file.getOriginalFilename();
-			log.info(String.valueOf(file.getSize()));
-			log.info(file.getContentType());
-			log.info(file.getName());
-			log.info(file.getOriginalFilename());
 			String filePath = "/"+fileName;
 			String fullPath = System.getenv("MPB_FILE_STORE_DIR")+filePath;
 			file.transferTo(new File(fullPath));
@@ -84,7 +80,7 @@ public interface AttachmentService {
 			attachment.setFilePath(filePath);
 			attachment.setMimeType(file.getContentType());
 			attachment.setName(fileName);
-			attachment.setType("SHIPMENT");
+			attachment.setType(type);
 			attachmentRepo.save(attachment);
 			return attachment;
 		}
