@@ -43,7 +43,8 @@ export default {
   props: {
     attachments: {type: Array, required: true},
     type: {type: String, required: true},
-    headerText: {type: String, required: false}
+    entityId: {type: Number, required: true},
+    headerText: {type: String, required: false},
   },
   data() {
     return {
@@ -107,6 +108,7 @@ export default {
       var formData = new FormData();
       formData.append("file", file);
       formData.append("type", this.type);
+      formData.append("entityId", this.entityId);
       var headers = {headers: {"Content-Type": "multipart/form-data"}}
       axios.post(httpUtils.baseUrl + "/file", formData, headers).then(r =>{
         this.newAttachments.push(r.data);

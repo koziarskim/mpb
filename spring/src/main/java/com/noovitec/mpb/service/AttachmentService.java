@@ -24,7 +24,7 @@ public interface AttachmentService {
 	public Attachment save(Attachment attachment, byte[] data) throws IOException;
 	public Attachment getWithDocContent(Long attachmentId);
 	public Attachment getById(Long attachmentId);
-	public Attachment store(MultipartFile file, String type) throws IllegalStateException, IOException;
+	public Attachment store(MultipartFile file, String type, Long entityId) throws IllegalStateException, IOException;
 	public Path load(Long attachmentId) throws MalformedURLException;
 
 	@Transactional
@@ -81,11 +81,15 @@ public interface AttachmentService {
 			return path;
 		}
 		
-		public Attachment store(MultipartFile file, String type) throws IllegalStateException, IOException {
+		public Attachment store(MultipartFile file, String type, Long entityId) throws IllegalStateException, IOException {
 			String fileName = file.getOriginalFilename();
-			String filePath = "/"+fileName;
+			String filePath = "/2020/"+type+"/"+entityId+"/";
 			String fullPath = System.getenv("MPB_FILE_STORE_DIR")+filePath;
-			file.transferTo(new File(fullPath));
+			File directory = new File(fullPath);
+		    if (! directory.exists()){
+		        directory.mkdirs();
+		    }
+			file.transferTo(new File(fullPath+fileName));
 			Attachment attachment = new Attachment();
 			attachment.setFilePath(filePath);
 			attachment.setMimeType(file.getContentType());
