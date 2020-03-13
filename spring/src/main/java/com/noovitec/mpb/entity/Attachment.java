@@ -24,6 +24,7 @@ public class Attachment extends BaseEntity {
 	private String type;
 	private String mimeType;
 	private Long docContentId;
+	private String filePath;
 	
 	@Transient
 	@JsonIgnore

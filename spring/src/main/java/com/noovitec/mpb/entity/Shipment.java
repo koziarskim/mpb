@@ -10,8 +10,10 @@ import java.util.HashSet;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -61,6 +63,11 @@ public class Shipment extends BaseEntity {
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "attachment_id", referencedColumnName = "id")
 	private Attachment attachment;
+
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinTable(name = "shipment_attachment", joinColumns = @JoinColumn(name = "shipment_id"), inverseJoinColumns = @JoinColumn(name = "attachment_id"))
+	@OrderBy("created DESC")
+	private Collection<Attachment> attachments = new HashSet<Attachment>();
 
 	@ManyToOne()
 	@JoinColumn(name = "shipping_address_id", referencedColumnName = "id")

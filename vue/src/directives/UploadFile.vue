@@ -9,6 +9,7 @@
           <b-button :disabled="uploadProgress" size="sm" @click="closeModal()">Close</b-button>
         </b-col>
       </b-row>
+      {{attachmentIds}}
       <br/>
       <br/>
       <b-row>
@@ -26,7 +27,7 @@ import httpUtils from "../httpUtils";
 
 export default {
   props: {
-    attachmentsIds: {type: Array},
+    attachmentIds: {type: Array},
     uploadUrl: {type: String, required: true},
   },
   data() {
@@ -59,6 +60,7 @@ export default {
       // formData.append("jsonComponent", JSON.stringify(this.component));
       var headers = {headers: {"Content-Type": "multipart/form-data"}}
       axios.post(httpUtils.baseUrl + this.uploadUrl, formData, headers).then(r =>{
+        this.attachmentIds.push(r.data.id);
         this.uploadProgress = false;
       }).catch(e => {
         console.log("API error: "+e);

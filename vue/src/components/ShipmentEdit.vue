@@ -23,7 +23,7 @@
       </b-col>
       <b-col cols=2>
         <div style="display:flex; margin-left: 75px">
-          <upload-file upload-url="/shipment/upload" :attachment-ids="attachmentIds">uplad</upload-file>
+          <upload-file :upload-url="getUploadUrl()" :attachment-ids="attachmentIds">uplad</upload-file>
           <!-- <img @click="openPdf()" style="margin: 2px; cursor: pointer" src="../assets/pdf-download.png" width="25px"> -->
           <b-button :disabled="!allowEdit()" :title="'Modified: '+formatModifiedDate(shipment.modifiedDate)" size="sm" style="margin-left: 5px" variant="success" @click="saveShipment()">Save</b-button>
           <b-button style="margin-left: 3px" :disabled="!allowEdit()" size="sm" @click="deleteShipment()">x</b-button>
@@ -285,6 +285,9 @@ export default {
     },
   },
   methods: {
+    getUploadUrl(){
+      return "/shipment/"+this.shipment.id+"/upload"
+    },
     deleteShipment() {
       this.$bvModal.msgBoxConfirm('Are you sure you want to delete?').then(ok => {
         if(ok){
@@ -395,6 +398,9 @@ export default {
           this.totalWeightOverwrite = true;
           this.totalWeightCustom = response.data.totalWeightCustom;
         }
+        response.data.attachments.forEach(a=> {
+          this.attachmentIds.push(a.id);
+        })
       })
       .catch(e => {
         console.log("API error: " + e);

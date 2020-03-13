@@ -144,10 +144,13 @@ class ShipmentRest {
 		return ResponseEntity.ok().body(shipments);
 	}	
 	
-	 @PostMapping("/shipment/upload")
-	 ResponseEntity<?> uploadFile(@RequestParam MultipartFile file) throws IllegalStateException, IOException {
-		attachmentService.store(file);
-		return ResponseEntity.ok().build();
+	 @PostMapping("/shipment/{shipmentId}/upload")
+	 ResponseEntity<?> uploadFile(@RequestParam MultipartFile file, @PathVariable Long shipmentId) throws IllegalStateException, IOException {
+		Attachment attachment = attachmentService.store(file);
+		Shipment shipment = shipmentRepo.findById(shipmentId).get();
+		shipment.getAttachments().add(attachment);
+		shipmentRepo.save(shipment);
+		return ResponseEntity.ok().body(attachment);
 	 }
 	
 	@PostMapping("/shipment")
