@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Calendar;
 
 import javax.transaction.Transactional;
 
@@ -83,7 +84,8 @@ public interface AttachmentService {
 		
 		public Attachment store(MultipartFile file, String type, Long entityId) throws IllegalStateException, IOException {
 			String fileName = file.getOriginalFilename();
-			String filePath = "/2020/"+type+"/"+entityId+"/";
+			int year = Calendar.getInstance().get(Calendar.YEAR);
+			String filePath = "/"+year+"/"+type+"/"+entityId+"/";
 			String fullPath = System.getenv("MPB_FILE_STORE_DIR")+filePath;
 			File directory = new File(fullPath);
 		    if (! directory.exists()){
