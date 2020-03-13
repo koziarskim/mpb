@@ -22,6 +22,9 @@
           <template v-slot:cell(name)="row">
             <b-link role="button" @click="downloadFile(row.item)">{{row.item.name}}</b-link>
           </template>
+          <template v-slot:cell(updated)="row">
+            <span>{{formatDate(row.item.updated)}}</span>
+          </template>
           <template v-slot:cell(action)="row">
             <b-button size="sm" @click="deleteAttachment(row.item)">x</b-button>
           </template>
@@ -34,6 +37,7 @@
 import axios from "axios";
 import http from "../http-common";
 import httpUtils from "../httpUtils";
+import moment from "moment";
 
 export default {
   props: {
@@ -56,6 +60,9 @@ export default {
   computed: {
   },
   methods: {
+    formatDate(date){
+      return moment(date).format("YYYY-MM-DD");
+    },
     deleteAttachment(attachment){
       var idx = this.newAttachments.findIndex(a => a.id == attachment.id);
       this.newAttachments.splice(idx, 1);
