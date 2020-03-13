@@ -68,6 +68,10 @@ export default {
       this.newAttachments.splice(idx, 1);
     },
     addFile() {
+      if(this.newAttachments.length>4){
+        alert("Maximum 5 files allowed.");
+        return;
+      }
       this.inputElement = document.createElement("input");
       this.inputElement.type = "file";
       this.inputElement.onchange = this.uploadFile;
@@ -95,6 +99,11 @@ export default {
     uploadFile(file){
       this.uploadProgress = true;
       var file = this.inputElement.files[0];
+      console.log("Size: "+file.size);
+      if(file.size > 10485760){
+        alert("Maximum 10MB file allowed");
+        return;
+      }
       var formData = new FormData();
       formData.append("file", file);
       formData.append("type", this.type);
