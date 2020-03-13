@@ -63,7 +63,7 @@ public interface ShipmentService {
 				DateTimeFormatter df = DateTimeFormatter.ofPattern("YYYY-MM-dd");
 				DateTimeFormatter tf = DateTimeFormatter.ofPattern("HH:mm");
 				dto.setStart(shipment.getShippingDate().format(df)+" "+shipment.getShippingTime().format(tf));
-				dto.setEnd(shipment.getShippingDate().format(df)+" "+shipment.getShippingTime().plusHours(2).format(tf));
+				dto.setEnd(shipment.getShippingDate().format(df)+" "+shipment.getShippingTime().plusHours(1).format(tf));
 				events.add(dto);
 			});
 			return events;

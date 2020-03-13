@@ -6,9 +6,9 @@
           <div :id="'popover-'+event.id">
             {{event.customer}}<br/>
             {{event.number}}<br/>
-            {{event.dc}}, {{event.city}}, {{event.state}}<br/>
-            {{event.load}}<br/>
-            {{event.pallets}}<br/>
+            <!-- {{event.dc}}, {{event.city}}, {{event.state}}<br/> -->
+            <!-- {{event.load}}<br/> -->
+            <!-- {{event.pallets}}<br/> -->
           </div>
             <b-popover placement="top" :target="'popover-'+event.id">
               <template v-slot:title><b-link role="button" @click="goToShipment(event.id)"><b>Shipment #: </b>{{event.number}}</b-link></template>
