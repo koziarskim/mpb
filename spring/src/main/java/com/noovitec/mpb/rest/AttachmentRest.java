@@ -1,15 +1,19 @@
 package com.noovitec.mpb.rest;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,7 +41,7 @@ class AttachmentRest {
 		this.attachmentService = attachmentService;
 	}
 
-	@GetMapping("/attachment/{id}")
+	@GetMapping("/attachment/db/{id}")
 	@ResponseBody
 	HttpEntity<byte[]> downloadImage(@PathVariable Long id) throws IOException {
 		Attachment attachment = attachmentService.getWithDocContent(id);
@@ -51,6 +55,19 @@ class AttachmentRest {
 		header.setContentLength(data.length);
 		return new HttpEntity<byte[]>(data, header);
 	}
+
+	@GetMapping("/file/attachment/{attachmentId}")
+	@ResponseBody
+	ResponseEntity<?> downloadFile(@PathVariable Long attachmentId) throws IOException {
+		Path path = attachmentService.load(attachmentId);
+		String mimeType = Files.probeContentType(path);
+		Resource resource = new UrlResource(path.toUri());
+		return ResponseEntity.ok()
+				.contentType(MediaType.parseMediaType(mimeType))
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+				.body(resource);
+	}
+
 	
 	 @PostMapping("/file")
 	 ResponseEntity<?> uploadFile(@RequestParam MultipartFile file, @RequestParam String type) throws IllegalStateException, IOException {

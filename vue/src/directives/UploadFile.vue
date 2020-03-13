@@ -4,28 +4,28 @@
         <img src="../assets/pdf-download.png" width="23px">
     </div>
     <b-modal centered v-model="modalVisible" size="lg" :hide-header="true" :hide-footer="true">
-      <div style="font-size: 12px">
+      <div style="font-size: 12px;">
         <b-row>
-          <b-col cols=1 offset=9>
+          <b-col cols=7 style="margin-top: 10px; margin-left: 10px">
+            <b-link @click="headerClick()" role="botton">{{headerText}}</b-link>
+          </b-col>
+          <b-col cols=2 style="margin-left: 100px">
             <div style="display:flex">
-              <b-button style="margin-left: 40px" variant="success" :disabled="uploadProgress" size="sm" @click="saveModal()">Save</b-button>
+              <b-button style="margin-left: 40px" :disabled="uploadProgress" size="sm" variant="info" @click="addFile()">+ <b-spinner v-if="uploadProgress" small></b-spinner></b-button>
+              <b-button style="margin-left: 3px" variant="success" :disabled="uploadProgress" size="sm" @click="saveModal()">Save</b-button>
               <b-button style="margin-left: 3px" :disabled="uploadProgress" size="sm" @click="closeModal()">Close</b-button>
             </div>
           </b-col>
         </b-row>
-        <b-table :items="newAttachments" :fields="columns">
+        <br/>
+        <b-table :items="newAttachments" :fields="columns" thead-class="hidden_header">
           <template v-slot:cell(name)="row">
-            <b-link role="button">{{row.item.name}}</b-link>
+            <b-link role="button" @click="downloadFile(row.item)">{{row.item.name}}</b-link>
           </template>
           <template v-slot:cell(action)="row">
             <b-button size="sm" @click="deleteAttachment(row.item)">x</b-button>
           </template>
         </b-table>
-        <b-row>
-          <b-col cols=1 offset=10>
-            <b-button :disabled="uploadProgress" size="sm" variant="success" @click="addFile()">+ <b-spinner v-if="uploadProgress" small></b-spinner></b-button>
-          </b-col>
-        </b-row>
       </div>
     </b-modal>
     </div>
@@ -39,6 +39,7 @@ export default {
   props: {
     attachments: {type: Array, required: true},
     type: {type: String, required: true},
+    headerText: {type: String, required: false}
   },
   data() {
     return {
@@ -71,11 +72,18 @@ export default {
       this.modalVisible = true;
     },
     saveModal(){
-      this.$emit("close", newAttachments);
+      this.$emit("close", this.newAttachments);
       this.modalVisible = false;
     },
     closeModal(){
       this.modalVisible = false;
+    },
+    headerClick(){
+      this.$emit("header-click");
+    },
+    downloadFile(attachment){
+      var url = httpUtils.baseUrl + "/file/attachment/"+attachment.id;
+       window.open(url, "_blank","")
     },
     uploadFile(file){
       this.uploadProgress = true;
@@ -96,3 +104,8 @@ export default {
   }
 };
 </script>
+<style>
+.hidden_header {
+  display: none;
+}
+</style>

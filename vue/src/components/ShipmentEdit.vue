@@ -23,8 +23,7 @@
       </b-col>
       <b-col cols=2>
         <div style="display:flex; margin-left: 75px">
-          <upload-file v-on:close="closeUpload" type="SHIPMENT" :attachments="shipment.attachments"></upload-file>
-          <!-- <img @click="openPdf()" style="margin: 2px; cursor: pointer" src="../assets/pdf-download.png" width="25px"> -->
+          <upload-file v-on:header-click="openPdf" v-on:close="closeUpload" header-text="Bill of Landing/Packing Slip (PDF)" type="SHIPMENT" :attachments="shipment.attachments"></upload-file>
           <b-button :disabled="!allowEdit()" :title="'Modified: '+formatModifiedDate(shipment.modifiedDate)" size="sm" style="margin-left: 5px" variant="success" @click="saveShipment()">Save</b-button>
           <b-button style="margin-left: 3px" :disabled="!allowEdit()" size="sm" @click="deleteShipment()">x</b-button>
         </div>

@@ -2,6 +2,9 @@ package com.noovitec.mpb.service;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import javax.transaction.Transactional;
 
@@ -22,6 +25,7 @@ public interface AttachmentService {
 	public Attachment getWithDocContent(Long attachmentId);
 	public Attachment getById(Long attachmentId);
 	public Attachment store(MultipartFile file, String type) throws IllegalStateException, IOException;
+	public Path load(Long attachmentId) throws MalformedURLException;
 
 	@Transactional
 	@Service("attachmentServiceImpl")
@@ -69,6 +73,12 @@ public interface AttachmentService {
 			docContent = docContentRepo.save(docContent);
 			attachment.setDocContentId(docContent.getId());
 			return attachmentRepo.save(attachment);
+		}
+		
+		public Path load(Long attachmentId) throws MalformedURLException {
+			Attachment attachment = this.getById(attachmentId);
+			Path path = Paths.get(System.getenv("MPB_FILE_STORE_DIR")+attachment.getFilePath());
+			return path;
 		}
 		
 		public Attachment store(MultipartFile file, String type) throws IllegalStateException, IOException {
