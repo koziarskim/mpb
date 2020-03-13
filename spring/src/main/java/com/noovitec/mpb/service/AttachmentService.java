@@ -86,7 +86,12 @@ public interface AttachmentService {
 			String fileName = file.getOriginalFilename();
 			int year = Calendar.getInstance().get(Calendar.YEAR);
 			String filePath = "/"+year+"/"+type+"/"+entityId+"/";
-			String fullPath = System.getenv("MPB_FILE_STORE_DIR")+filePath;
+			String systemPath = System.getenv("MPB_FILE_STORE_DIR");
+			log.info("System Path: "+systemPath);
+			if(systemPath == null) {
+				systemPath = "/home/koziarskim/mpb/mpb_file_store";
+			}
+			String fullPath = systemPath+filePath;
 			File directory = new File(fullPath);
 		    if (! directory.exists()){
 		        directory.mkdirs();
