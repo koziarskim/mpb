@@ -1,8 +1,9 @@
 In Progress/Done:
 Shipment (screen & PDF):
 + Ability to add multiple items at once.
-- Shipment schedule/calendar.
++ Shipment schedule/calendar.
 + Validate shipment units not be more than on stock.
++ Ability to upload files.
 Customer:
 - Reorganize screen layout (Generic info, Billing info, Shipping info) - Need more info.
 - Ability to create Pallet Tag - Need to talk more.
@@ -34,7 +35,7 @@ Receiving:
 Global:
 - Change file storage from db to filesystem.
 - Ability to search/filter by Season and Year.
-- Generic upload file component (that could be used by shipment, sale, etc.).
++ Generic upload file component (that could be used by shipment, sale, etc.).
 
 New requirements to discuss:
 Kasia:
