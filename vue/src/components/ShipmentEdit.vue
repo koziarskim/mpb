@@ -21,11 +21,14 @@
         <label class="top-label">Invoiced Cost:</label>
         <input class="form-control" type="tel" v-model="shipment.invoicedCost">
       </b-col>
-      <b-col cols=2 style="text-align: right">
-          <img @click="openPdf()" style="margin: 2px; cursor: pointer" src="../assets/pdf-download.png" width="25px">
+      <b-col cols=2>
+        <div style="display:flex; margin-left: 75px">
+          <upload-file upload-url="/shipment/upload" :attachment-ids="attachmentIds">uplad</upload-file>
+          <!-- <img @click="openPdf()" style="margin: 2px; cursor: pointer" src="../assets/pdf-download.png" width="25px"> -->
           <b-button :disabled="!allowEdit()" :title="'Modified: '+formatModifiedDate(shipment.modifiedDate)" size="sm" style="margin-left: 5px" variant="success" @click="saveShipment()">Save</b-button>
           <b-button style="margin-left: 3px" :disabled="!allowEdit()" size="sm" @click="deleteShipment()">x</b-button>
-          <div style="display: flex; margin-left: 88px">
+        </div>
+        <div style="display: flex; margin-left: 88px">
             <label class="top-label">Ready To Ship</label>
             <input type="checkbox" style="margin-left: 3px; margin-top: 3px" v-model="shipment.ready">
           </div>
@@ -176,6 +179,7 @@ export default {
   data() {
     return {
       securite: securite,
+      attachmentIds: [],
       totalPalletsOverwrite: false,
       totalWeightOverwrite: false,
       totalPalletsCustom: 0,

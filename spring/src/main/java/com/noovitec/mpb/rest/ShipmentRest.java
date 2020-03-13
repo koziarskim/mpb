@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.PdfReader;
@@ -142,6 +143,12 @@ class ShipmentRest {
 		List<ShipmentEventDto> shipments = shipmentService.findEvents();
 		return ResponseEntity.ok().body(shipments);
 	}	
+	
+	 @PostMapping("/shipment/upload")
+	 ResponseEntity<?> uploadFile(@RequestParam MultipartFile file) throws IllegalStateException, IOException {
+		attachmentService.store(file);
+		return ResponseEntity.ok().build();
+	 }
 	
 	@PostMapping("/shipment")
 	ResponseEntity<Shipment> post(@RequestBody(required = false) Shipment shipment) throws Exception {
