@@ -91,7 +91,9 @@ public class SaleItem extends BaseEntity {
 			this.unitsProduced += se.getUnitsProduced();
 		}
 		for (ShipmentItem si : this.getShipmentItems()) {
-			this.unitsShipped += si.getUnits();
+			if(si.getShipment().getShippedDate() !=null ) {
+				this.unitsShipped += si.getUnits();
+			}
 		}
 		for (SaleItemTransfer sit: this.getTransfersFrom()) {
 			this.unitsTransferedFrom += sit.getUnitsTransfered();
