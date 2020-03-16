@@ -4,6 +4,7 @@ Shipment (screen & PDF):
 + Shipment schedule/calendar.
 + Validate shipment units not be more than on stock.
 + Ability to upload files.
+- Add CPU - Customer pick up to Freight Type.
 Customer:
 - Reorganize screen layout (Generic info, Billing info, Shipping info) - Need more info.
 - Ability to create Pallet Tag - Need to talk more.
@@ -59,6 +60,9 @@ Sale
 - how to close PO if some item was short shipped   
 - close PO if short shipped  
 - shipped in full notification email 
+
+- Export Sales by Customer to Excel/CSV (See Kasia's email: Order /Sale Summary Report - MIMS).
+
 Hania:
 You may add contact person name, phone, email (about order)  BUT ONLY SALES PERSON IS ALLOWED TO MAKE THE CONTACT WITH THE BUYER.  NO ONE ELSE. 
 I would like to see system defaulting and displaying sales by the ship date on both screens sale and shipment - from the closest ship date to the furthest. 
