@@ -4,7 +4,7 @@ Shipment (screen & PDF):
 + Shipment schedule/calendar.
 + Validate shipment units not be more than on stock.
 + Ability to upload files.
-- Add CPU - Customer pick up to Freight Type.
++ Add CPU - Customer pick up to Freight Type.
 Customer:
 - Reorganize screen layout (Generic info, Billing info, Shipping info) - Need more info.
 - Ability to create Pallet Tag - Need to talk more.

@@ -125,7 +125,7 @@ export default {
 			return this.saleItemTo.transfersTo.concat(this.saleItemTo.transfersFrom)
 		},
 		addReverseTransfer(){
-			if(+this.saleItemFrom.unitsOnStock - +this.unitsTrasfered < 0){
+			if(+this.saleItemTo.unitsOnStock - +this.unitsTrasfered < 0){
 				alert("Cannot transfer more that on Stock");
 				return;
 			}
