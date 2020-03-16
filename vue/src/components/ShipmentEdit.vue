@@ -302,7 +302,7 @@ export default {
       })
     },
     allowEdit(){
-      return securite.hasRole(["SHIPMENT_ADMIN"]) && !this.shipment.shippedDate
+      return securite.hasRole(["SHIPMENT_ADMIN"])
     },
     getAddedSaleItemsIds(){
       var ids = [];
@@ -409,7 +409,7 @@ export default {
       }
       var overStock = false;
       this.shipment.shipmentItems.forEach(si=> {
-        if(si.units > si.saleItem.unitsOnStock){
+        if((+si.prevUnits - +si.units) + +si.saleItem.unitsOnStock < 0){
           overStock = true;
         }
       })

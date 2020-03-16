@@ -3,6 +3,7 @@ package com.noovitec.mpb.entity;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -32,5 +33,12 @@ public class ShipmentItem extends BaseEntity {
 	@ManyToOne()
 	@JoinColumn(name = "sale_item_id", referencedColumnName = "id")
 	private SaleItem saleItem;
+	
+	@Transient
+	private Long prevUnits = 0L;
+	
+	public Long getPrevUnits() {
+		return this.units;
+	}
 
 }
