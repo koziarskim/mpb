@@ -203,7 +203,8 @@ export default {
         {id: "TPB", name: "TP Bill"},
         {id: "PRP", name: "Pre Paid"},
         {id: "TPO", name: "TP Bill Other"},
-        {id: "COL", name: "Collect"}
+        {id: "COL", name: "Collect"},
+        {id: "CPU", name: "Customer Pickup"}
       ],
       availableSales: [],
       saleKv: {},

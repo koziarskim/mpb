@@ -213,6 +213,7 @@ class ShipmentRest {
 		ft.put("PRP", "Pre Paid");
 		ft.put("TPO", "TP Bill Other");
 		ft.put("COL","Collect");
+		ft.put("CPU", "Customer Pickup");
 		String itemQuantity = "";
 		String saleNumber = "";
 		String itemDescription = "";
