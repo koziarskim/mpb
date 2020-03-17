@@ -17,14 +17,14 @@
         <label class="top-label">Status:</label><br/>
         <span style="font-weight: bold">{{getStatus(sale.status)}}</span>
       </b-col>
-      <b-col cols=2 style="margin-top: 5px">
+      <b-col cols=2 style="margin-top: 3px">
         <label class="top-label">Stock: {{sale.unitsOnStock}},&nbsp;&nbsp;</label>
         <label class="top-label">Shed/Prod: {{sale.unitsScheduled}}/{{sale.unitsProduced}}</label><br/>
         <label class="top-label">Sold: {{sale.unitsSold}},&nbsp;&nbsp;</label>
         <label class="top-label">Shipped: <b-link role="button" @click="goToShipment()">{{sale.unitsShipped}}</b-link></label>
       </b-col>
       <b-col cols=2>
-        <div style="text-align: right;">
+        <div style="text-align: right">
           <b-button :disabled="!allowApprove()" size="sm" variant="success" @click="approveSale()">Approve</b-button>
           <b-button :title="getSaveTitle(sale)" style="margin-left: 3px" :disabled="!allowSave()" size="sm" variant="success" @click="saveSale()">Save</b-button>
           <b-button style="margin-left: 3px" :disabled="!allowEdit()" size="sm" @click="deleteSale()">x</b-button>
@@ -32,7 +32,7 @@
       </b-col>
     </b-row>
     <b-row>
-      <b-col cols="4">
+      <b-col cols="3">
         <label class="top-label">Customer:</label>
         <b-select :isDisabled="!allowEdit()" option-value="id" option-text="value" :list="availableCustomers" v-model="customerDto" placeholder="Customer"></b-select>
       </b-col>
@@ -40,13 +40,21 @@
         <label class="top-label">Pay Terms:</label>
         <b-select :isDisabled="!allowEdit()" option-value="id" option-text="name" :list="availablePayTerms" v-model="sale.paymentTerms" placeholder="Pick Freight"></b-select>
       </b-col>
-      <b-col cols="4">
+      <b-col cols="3">
         <label class="top-label">shipping to Address:</label>
         <b-select :isDisabled="!allowEdit()" option-value="id" option-text="label" :list="customer.addresses" v-model="shippingAddress" placeholder="shipping to address"></b-select>
       </b-col>
+      <b-col cols="2">
+        <label class="top-label">Shipping Window From:</label>
+        <input :disabled="!allowEdit()" class="form-control" type="date" v-model="sale.shippingFrom" placeholder="Date">
+      </b-col>
+      <b-col cols="2">
+        <label class="top-label">Shipping Window To:</label>
+        <input :disabled="!allowEdit()" class="form-control" type="date" v-model="sale.shippingTo" placeholder="Date">
+      </b-col>
     </b-row>
     <b-row>
-      <b-col cols=4 offset=4>
+      <b-col cols=4 offset=5>
         <label class="top-label">{{shippingAddress.street}}</label>
         <label class="top-label">, {{shippingAddress.city}}</label> <label class="top-label">, {{shippingAddress.state}}</label> <label class="top-label">&nbsp;{{shippingAddress.zip}}</label>
       </b-col>
@@ -60,7 +68,7 @@
       <b-col cols=1 style="padding-top: 30px">
         <b-button :disabled="!allowEdit()" variant="link" @click="addItem()">(+)</b-button>
       </b-col>
-      <b-col cols=5 offset=1 style="padding-top: 44px; padding-left: 0px;">
+      <b-col cols=5 offset=1 style="margin-top: 44px; margin-left: 0px;">
           <span style="font-weight: bold">Items #: </span>{{totalItems}},
           <span style="font-weight: bold">Units: </span>{{totalUnits}},
           <span style="font-weight: bold">Cases: </span>{{totalCases}},

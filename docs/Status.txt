@@ -13,7 +13,7 @@ Sale:
 + Fix delete each item in sale.
 + Fix delete sale
 + Show created and modified date.
-- Ability to enter shipping window (from - to).
++ Ability to enter shipping window (from - to).
 - Ability to view status by color.
 - Ability to enter notes.
 - Ability to upload/download documents.
