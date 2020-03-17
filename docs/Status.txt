@@ -18,10 +18,10 @@ Sale:
 + Ability to enter notes.
 - Ability to view status by color.
 - Ability to upload/download documents.
-- Display per page (15, 25, 50)
 - Export Sales by Customer to Excel/CSV (See Kasia's email: Order /Sale Summary Report - MIMS).
 - Export single sale.
 Global:
++ Display per page 20
 - Change file storage from db to filesystem.
 ------------------------------------------------------------------
 
