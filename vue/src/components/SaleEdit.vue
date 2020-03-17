@@ -1,27 +1,35 @@
 <template>
   <b-container fluid>
     <b-row>
-      <b-col cols="2">
-        <label class="top-label">Sale Number:</label>
-        <input :disabled="!allowEdit()" class="form-control" type="tel" v-model="sale.number" placeholder="Number">
+      <b-col cols=6>
+        <b-row>
+          <b-col cols=4>
+            <label class="top-label">Sale Number:</label>
+            <input :disabled="!allowEdit()" class="form-control" type="tel" v-model="sale.number" placeholder="Number">
+          </b-col>
+          <b-col cols=4>
+            <label class="top-label">Sale Date:</label>
+            <input :disabled="!allowEdit()" class="form-control" type="date" v-model="sale.date" placeholder="Date">
+          </b-col>
+          <b-col cols=4>
+            <label class="top-label">Expected Date:</label>
+            <input :disabled="!allowEdit()" class="form-control" type="date" v-model="sale.expectedDate" placeholder="Date">
+          </b-col>
+        </b-row>
+        <b-row>
+          <b-col cols=6>
+            <label class="top-label">Customer:</label>
+            <b-select :isDisabled="!allowEdit()" option-value="id" option-text="value" :list="availableCustomers" v-model="customerDto" placeholder="Customer"></b-select>
+          </b-col>
+          <b-col cols=4>
+            <label class="top-label">Pay Terms:</label>
+            <b-select :isDisabled="!allowEdit()" option-value="id" option-text="name" :list="availablePayTerms" v-model="sale.paymentTerms" placeholder="Pick Freight"></b-select>
+          </b-col>
+        </b-row>
       </b-col>
-      <b-col cols="2">
-        <label class="top-label">Sale Date:</label>
-        <input :disabled="!allowEdit()" class="form-control" type="date" v-model="sale.date" placeholder="Date">
-      </b-col>
-      <b-col cols="2">
-        <label class="top-label">Expected Date:</label>
-        <input :disabled="!allowEdit()" class="form-control" type="date" v-model="sale.expectedDate" placeholder="Date">
-      </b-col>
-      <b-col cols=2>
-        <label class="top-label">Status:</label><br/>
-        <span style="font-weight: bold">{{getStatus(sale.status)}}</span>
-      </b-col>
-      <b-col cols=2 style="margin-top: 3px">
-        <label class="top-label">Stock: {{sale.unitsOnStock}},&nbsp;&nbsp;</label>
-        <label class="top-label">Shed/Prod: {{sale.unitsScheduled}}/{{sale.unitsProduced}}</label><br/>
-        <label class="top-label">Sold: {{sale.unitsSold}},&nbsp;&nbsp;</label>
-        <label class="top-label">Shipped: <b-link role="button" @click="goToShipment()">{{sale.unitsShipped}}</b-link></label>
+      <b-col cols=4>
+        <label class="top-label">Comments (Excluded from BOL):</label>
+        <b-form-textarea type="text" :rows="4" v-model="sale.notes"></b-form-textarea>
       </b-col>
       <b-col cols=2>
         <div style="text-align: right">
@@ -29,34 +37,27 @@
           <b-button :title="getSaveTitle(sale)" style="margin-left: 3px" :disabled="!allowSave()" size="sm" variant="success" @click="saveSale()">Save</b-button>
           <b-button style="margin-left: 3px" :disabled="!allowEdit()" size="sm" @click="deleteSale()">x</b-button>
         </div>
+        <br/>
+        <span style="font-weight: bold">{{getStatus(sale.status)}}</span><br/>
+        <label class="top-label">Stock: {{sale.unitsOnStock}},&nbsp;&nbsp;</label>
+        <label class="top-label">Shed/Prod: {{sale.unitsScheduled}}/{{sale.unitsProduced}}</label><br/>
+        <label class="top-label">Sold: {{sale.unitsSold}},&nbsp;&nbsp;</label>
+        <label class="top-label">Shipped: <b-link role="button" @click="goToShipment()">{{sale.unitsShipped}}</b-link></label>
       </b-col>
     </b-row>
+    <hr class="hr-text" data-content="Shipment Information">
     <b-row>
-      <b-col cols="3">
-        <label class="top-label">Customer:</label>
-        <b-select :isDisabled="!allowEdit()" option-value="id" option-text="value" :list="availableCustomers" v-model="customerDto" placeholder="Customer"></b-select>
-      </b-col>
-      <b-col cols=2>
-        <label class="top-label">Pay Terms:</label>
-        <b-select :isDisabled="!allowEdit()" option-value="id" option-text="name" :list="availablePayTerms" v-model="sale.paymentTerms" placeholder="Pick Freight"></b-select>
-      </b-col>
-      <b-col cols="3">
-        <label class="top-label">shipping to Address:</label>
+      <b-col cols=4>
+        <label class="top-label">Shipping to Address:</label>
         <b-select :isDisabled="!allowEdit()" option-value="id" option-text="label" :list="customer.addresses" v-model="shippingAddress" placeholder="shipping to address"></b-select>
       </b-col>
-      <b-col cols="2">
+      <b-col cols=2>
         <label class="top-label">Shipping Window From:</label>
         <input :disabled="!allowEdit()" class="form-control" type="date" v-model="sale.shippingFrom" placeholder="Date">
       </b-col>
-      <b-col cols="2">
+      <b-col cols=2>
         <label class="top-label">Shipping Window To:</label>
         <input :disabled="!allowEdit()" class="form-control" type="date" v-model="sale.shippingTo" placeholder="Date">
-      </b-col>
-    </b-row>
-    <b-row>
-      <b-col cols=4 offset=5>
-        <label class="top-label">{{shippingAddress.street}}</label>
-        <label class="top-label">, {{shippingAddress.city}}</label> <label class="top-label">, {{shippingAddress.state}}</label> <label class="top-label">&nbsp;{{shippingAddress.zip}}</label>
       </b-col>
     </b-row>
     <hr class="hr-text" data-content="Sale Items">
@@ -221,7 +222,7 @@ export default {
         {id: 'PENDING_APPROVAL', name: 'Pending Approval'},
         {id: 'APPROVED', name: 'Pending Schedule'},
         {id: 'PENDING_PROD', name: 'Pending Prod'},
-        {id: 'PENDING_SHIPPMENT', name: 'Pending Shippment'},
+        {id: 'PENDING_SHIPMENT', name: 'Pending Shipment'},
         {id: 'SHIPPED', name: 'Fully Shipped'},
         {id: 'PENDING_TRANSFER', name: 'Pending Transfer'}
       ],

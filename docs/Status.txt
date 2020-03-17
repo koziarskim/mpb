@@ -1,7 +1,7 @@
 In Progress/Done:
 Shipment:
 - Ability to view status by color.
-- Show popupup if ship more that stock
++ Show popupup if ship more that stock
 - Entire Sale shipped in full notification (who get's it?).
 - Allow to download from list screen
 Item:
@@ -15,8 +15,8 @@ Sale:
 + Show created and modified date.
 + Ability to enter shipping window (from - to).
 + Default sort by Shipping windows from (first first).
++ Ability to enter notes.
 - Ability to view status by color.
-- Ability to enter notes.
 - Ability to upload/download documents.
 - Display per page (15, 25, 50)
 - Export Sales by Customer to Excel/CSV (See Kasia's email: Order /Sale Summary Report - MIMS).

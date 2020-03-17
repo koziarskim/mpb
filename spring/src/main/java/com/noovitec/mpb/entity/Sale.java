@@ -47,6 +47,7 @@ public class Sale extends BaseEntity {
 	private LocalDateTime modifiedDate;
 	private LocalDate shippingFrom;
 	private LocalDate shippingTo;
+	private String notes;
 	
 	@JsonIgnoreProperties(value = { "sales" }, allowSetters = true)
 	@ManyToOne()

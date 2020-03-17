@@ -92,7 +92,7 @@ export default {
         {id: 'PENDING_APPROVAL', name: 'Pending Approval'},
         {id: 'APPROVED', name: 'Pending Schedule'},
         {id: 'PENDING_PROD', name: 'Pending Prod'},
-        {id: 'PENDING_SHIPPMENT', name: 'Pending Shippment'},
+        {id: 'PENDING_SHIPMENT', name: 'Pending Shipment'},
         {id: 'SHIPPED', name: 'Fully Shipped'},
         {id: 'PENDING_TRANSFER', name: 'Pending Transfer'}
       ],
