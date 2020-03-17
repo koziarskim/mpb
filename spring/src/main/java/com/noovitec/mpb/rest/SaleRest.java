@@ -1,5 +1,6 @@
 package com.noovitec.mpb.rest;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -171,6 +172,7 @@ class SaleRest {
 			}
 		}
 		sale = (Sale) crudService.merge(sale);
+		sale.setModifiedDate(LocalDateTime.now());
 		sale.updateUnits();
 		for (SaleItem sa : sale.getSaleItems()) {
 			sa.getItem().updateUnits();

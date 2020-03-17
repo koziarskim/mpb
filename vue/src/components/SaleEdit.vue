@@ -26,7 +26,7 @@
       <b-col cols=2>
         <div style="text-align: right;">
           <b-button :disabled="!allowApprove()" size="sm" variant="success" @click="approveSale()">Approve</b-button>
-          <b-button style="margin-left: 3px" :disabled="!allowSave()" size="sm" variant="success" @click="saveSale()">Save</b-button>
+          <b-button :title="getSaveTitle(sale)" style="margin-left: 3px" :disabled="!allowSave()" size="sm" variant="success" @click="saveSale()">Save</b-button>
           <b-button style="margin-left: 3px" :disabled="!allowEdit()" size="sm" @click="deleteSale()">x</b-button>
         </div>
       </b-col>
@@ -152,7 +152,8 @@
 <script>
 import http from "../http-common";
 import router from "../router";
-import securite from "../securite"
+import securite from "../securite";
+import moment from "moment";
 
 export default {
   components: {
@@ -273,6 +274,10 @@ export default {
     }
   },
   methods: {
+    getSaveTitle(sale){
+      return "Created: "+moment(sale.created).format("YYYY/MM/DD HH:mm")+"\n"+
+      "Modified: "+moment(sale.modifiedDate).format("YYYY/MM/DD HH:mm");
+    },
     getStatus(statusId){
       var status = this.availableStatus.find(s=> s.id == statusId);
       if(status){

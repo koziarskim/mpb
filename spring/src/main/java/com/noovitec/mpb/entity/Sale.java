@@ -2,6 +2,7 @@ package com.noovitec.mpb.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -43,6 +44,7 @@ public class Sale extends BaseEntity {
 	private Long unitsReturned = 0L;
 	private String status;
 	private boolean approved;
+	private LocalDateTime modifiedDate;
 	
 	@JsonIgnoreProperties(value = { "sales" }, allowSetters = true)
 	@ManyToOne()
