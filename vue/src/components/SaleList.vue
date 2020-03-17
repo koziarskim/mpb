@@ -67,7 +67,7 @@ export default {
     return {
       securite: securite,
       navigation: navigation,
-      pageable: {totalElements: 100, currentPage: 1, perPage: 7, sortBy: 'updated', sortDesc: true},
+      pageable: {totalElements: 100, currentPage: 1, perPage: 7, sortBy: 'shippingFrom', sortDesc: false},
       saleNumber: null,
       availableItems: [],
       itemKv: {},
@@ -87,7 +87,7 @@ export default {
         { key: "number", label: "Sale #", sortable: false },
         { key: "customerName", label: "Customer", sortable: false },
         { key: "dc", label: "DC (State)", sortable: false },
-        { key: "date", label: "Date", sortable: false },
+        { key: "shippingFrom", label: "Date", sortable: false },
         { key: "unitsSoldAdj", label: "Sold", sortable: false },
         { key: "unitsSchProd", label: "Sch/Prod", sortable: false },
         { key: "unitsTransfered", label: "Transf", sortable: false },

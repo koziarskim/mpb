@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Repository;
 
 import com.noovitec.mpb.entity.Sale;
@@ -45,7 +46,8 @@ public interface CustomSaleRepo {
 			if (status != null && !status.isBlank()) {
 				q += "and s.status = :status ";
 			}
-			q += "order by s.updated desc";
+			Order order = pageable.getSort().iterator().next();
+			q += "order by s."+order.getProperty() + " "+order.getDirection();
 			Query query = entityManager.createQuery(q);
 			if (saleNumber !=null && !saleNumber.isBlank()) {
 				query.setParameter("saleNumber", saleNumber);

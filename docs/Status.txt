@@ -14,10 +14,10 @@ Sale:
 + Fix delete sale
 + Show created and modified date.
 + Ability to enter shipping window (from - to).
++ Default sort by Shipping windows from (first first).
 - Ability to view status by color.
 - Ability to enter notes.
 - Ability to upload/download documents.
-- Default sort by Shipping windows from (first first).
 - Display per page (15, 25, 50)
 - Export Sales by Customer to Excel/CSV (See Kasia's email: Order /Sale Summary Report - MIMS).
 - Export single sale.
