@@ -111,7 +111,7 @@
             <b-button size="sm" :id="'popover-'+row.item.id">...</b-button>
             <b-popover placement="left" :target="'popover-'+row.item.id" variant="light">
               <div style="width: 340px">
-                <b-button :disabled="!allowEdit()" size="sm" @click="deleteItem(row.item.item)" variant="link">Delete Item</b-button><br/>
+                <b-button :disabled="!allowEdit()" size="sm" @click="deleteItem(row.item)" variant="link">Delete Item</b-button><br/>
                 <div style="display:flex;">
                   <b-button :disabled="!allowSave()" size="sm" @click="moveItem(row.item)" variant="link">Move Item</b-button>
                   <b-select style="width: 250px" option-value="id" option-text="name" :list="availableSales" v-model="saleKv"></b-select>
