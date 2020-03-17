@@ -61,7 +61,7 @@ import moment from "moment";
 export default {
   data() {
     return {
-      pageable: {totalElements: 100, currentPage: 1, perPage: 7, sortBy: 'updated', sortDesc: true},
+      pageable: {totalElements: 100, currentPage: 1, perPage: 20, sortBy: 'updated', sortDesc: true},
       fields: [
         { key: "name", label: "Receiving # (Name)", sortable: false },
         { key: "purchase", label: "Purchase", sortable: false },
