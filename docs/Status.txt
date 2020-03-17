@@ -1,5 +1,4 @@
 In Progress/Done:
-Shipment (screen & PDF):
 Customer:
 - Reorganize screen layout (Generic info, Billing info, Shipping info) - Need more info.
 - Ability to create Pallet Tag - Need to talk more.
