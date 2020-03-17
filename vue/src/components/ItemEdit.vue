@@ -1,48 +1,56 @@
 <template>
   <b-container fluid>
     <b-row>
-      <b-col cols=6>
+      <b-col cols=5>
         <b-row>
-          <b-col cols=3>
+          <b-col cols=4>
             <label class="top-label">Item Number:</label>
             <input class="form-control" type="text" v-model="item.number">
           </b-col>
-          <b-col cols=5>
+          <b-col cols=8>
             <label class="top-label">Item Name:</label>
             <input class="form-control" type="text" v-model="item.name">
           </b-col>
-          <b-col cols=4>
-            <label class="top-label">Season:</label>
-            <b-select option-value="id" option-text="name" :list="availableSeasons" v-model="item.season" placeholder="Season"></b-select>
-          </b-col>
         </b-row>
         <b-row>
-          <b-col cols="4">
-            <label class="top-label">Category:</label>
-            <b-select option-value="id" option-text="value" :list="availableItemCategories" v-model="item.category" placeholder="Select category"></b-select>
-          </b-col>
-          <b-col cols="4">
-            <label class="top-label">Brand:</label>
-            <b-select option-value="id" option-text="name" :list="availableBrands" v-model="item.brand" placeholder="Select Brand"></b-select>
-          </b-col>
-          <b-col cols=2>
+          <b-col cols=3>
             <label class="top-label">Year:</label>
             <b-select option-value="id" option-text="name" :list="availableYears" v-model="item.year" placeholder="Year"></b-select>
           </b-col>
+          <b-col cols=5>
+            <label class="top-label">Season:</label>
+            <b-select option-value="id" option-text="name" :list="availableSeasons" v-model="item.season" placeholder="Season"></b-select>
+          </b-col>
+          <b-col cols=4>
+            <label class="top-label">UPC Number:</label>
+            <input class="form-control" type="text" v-model="item.upc">
+          </b-col>
+        </b-row>
+        <b-row>
+          <b-col cols=4>
+            <label class="top-label">Category:</label>
+            <b-select option-value="id" option-text="value" :list="availableItemCategories" v-model="item.category" placeholder="Select category"></b-select>
+          </b-col>
+          <b-col cols=6>
+            <label class="top-label">Brand:</label>
+            <b-select option-value="id" option-text="name" :list="availableBrands" v-model="item.brand" placeholder="Select Brand"></b-select>
+          </b-col>
         </b-row>
       </b-col>
-      <b-col cols=6>
+      <b-col cols=7>
         <b-row>
-          <b-col cols=5 style="margin-left: -20px">
+          <b-col cols=6>
             <label class="top-label">Notes:</label>
             <b-form-textarea type="text" :rows="4" v-model="item.description"></b-form-textarea>
           </b-col>
           <b-col cols=3 style="margin-top:3px">
             <upload :on-upload="onUpload" :file-url="getImageUrl()"></upload>
           </b-col>
-          <b-col cols=4 style="margin-top: 10px">
-            <b-button :disabled="!allowEdit()" style="margin-left: 100px" size="sm" variant="success" @click="saveItem()">Save</b-button>
-            <b-button :disabled="!allowEdit()" style="margin-left: 3px" size="sm" @click="deleteItem()">x</b-button>
+          <b-col cols=3 style="margin-top: 10px">
+            <div style="text-align: right">
+              <b-button :disabled="!allowEdit()" size="sm" variant="success" @click="saveItem()">Save</b-button>
+              <b-button :disabled="!allowEdit()" style="margin-left: 3px" size="sm" @click="deleteItem()">x</b-button>
+            </div>
             <label class="top-label">Stock: {{item.unitsOnStock}}</label><br/>
             <label class="top-label">Sch/Pro: <b-link role="button" @click="goToItemScheduleList()">{{item.unitsScheduled}}/{{item.unitsProduced}}</b-link></label><br/>
             <label class="top-label">Sold: <b-link role="button" @click="goToItemSaleList()">{{item.unitsSold}}</b-link>&nbsp;</label><label class="top-label" :class="getReturnClass()"><b-link role="button" @click="goToItemReturnList()">Ret: {{item.unitsReturned}}</b-link></label><br/>

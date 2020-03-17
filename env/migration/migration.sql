@@ -10,3 +10,6 @@ update sale set status = 'PENDING_SHIPMENT' where status = 'PENDING_SHIPPMENT';
 
 update sale_item set status = 'PENDING_SHIPMENT' where status = 'PENDING_SHIPPMENT';
 
+alter table item add column upc varchar(50);
+
+

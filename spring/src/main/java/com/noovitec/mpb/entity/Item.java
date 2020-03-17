@@ -58,6 +58,7 @@ public class Item extends BaseEntity {
 	private Long unitsReadyProd = 0L;
 	private Long unitsReturned = 0L;
 	private Long unitsOnStock = 0L;
+	private String upc;
 
 	@JsonIgnoreProperties(value = { "item" }, allowSetters = true)
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
@@ -84,15 +85,15 @@ public class Item extends BaseEntity {
 	@JoinColumn(name = "year_id", referencedColumnName = "id")
 	private Year year;
 
-	@JsonIgnoreProperties(value = { "items" }, allowSetters = true)
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "upc_id", referencedColumnName = "id")
-	private Upc upc;
+//	@JsonIgnoreProperties(value = { "items" }, allowSetters = true)
+//	@ManyToOne(fetch = FetchType.EAGER)
+//	@JoinColumn(name = "upc_id", referencedColumnName = "id")
+//	private Upc upc;
 
-	@JsonIgnoreProperties(value = { "items" }, allowSetters = true)
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "case_upc_id", referencedColumnName = "id")
-	private Upc caseUpc;
+//	@JsonIgnoreProperties(value = { "items" }, allowSetters = true)
+//	@ManyToOne(fetch = FetchType.EAGER)
+//	@JoinColumn(name = "case_upc_id", referencedColumnName = "id")
+//	private Upc caseUpc;
 
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "attachment_id", referencedColumnName = "id")
