@@ -1,55 +1,43 @@
 In Progress/Done:
-Customer:
-- Reorganize screen layout (Generic info, Billing info, Shipping info) - Need more info.
-- Ability to create Pallet Tag - Need to talk more.
+Shipment:
+- Ability to view status by color.
+- Show popupup if ship more that stock
+- Entire Sale shipped in full notification (who get's it?).
+- Allow to download from list screen
 Item:
 - Ability to enter upc for item (manually entered)
-- Ability to enter upc for case (manually entered)
-- Item version based on the year (need to discuss it).
-- Item search by year and season (need to discuss it)
 Components:
 - Revisit how to calculate units short.
 - Price history/average (based on PO).
 Sale:
-- Ability to search by season and year (need to discuss it)Production Line:
-- Ability to adjust units when finish production shorter that scheduled.
+- Delete each item in sale.
+- Delete sale
+- Show created date.
+- Ability to enter shipping window (from - to).
+- Ability to view status by color.
+- Ability to enter notes.
+- Ability to upload/download documents.
+- Default sort by Shipping windows from (first first).
+- Display per page (15, 25, 50)
+- Export Sales by Customer to Excel/CSV (See Kasia's email: Order /Sale Summary Report - MIMS).
+- Export single sale.
 Global:
 - Change file storage from db to filesystem.
+------------------------------------------------------------------
+
+Backlog:
+Customer:
+- Reorganize screen layout (Generic info, Billing info, Shipping info) - Need more info.
+- Ability to create Pallet Tag - Need to talk more.
+Item:
+- Item version based on the year
 - Ability to search/filter by Season and Year.
-
-New requirements to discuss:
-Kasia:
-Sale
-- sale created date (added automatically from the system, not for modification)
-- vendor #
-- full customer name 
-- sales log
-- shipping window
-- payment terms
-- bill to address
-- freight terms
-- ship to address
-- contact person name, phone, email (about order)
-- shipping contact name, phone, email 
-- SKU - already exist, keep it for modification
-- item UPC - should be transferred automatically with item number 
-- overall total unit qty, cases and $$ per whole order should be under listed items like a summary
-- notes
-- add upload with pdf file for orders and any revision 
-- how to close PO if some item was short shipped   
-- close PO if short shipped  
-- shipped in full notification email 
-
-- Export Sales by Customer to Excel/CSV (See Kasia's email: Order /Sale Summary Report - MIMS).
-
-Hania:
-You may add contact person name, phone, email (about order)  BUT ONLY SALES PERSON IS ALLOWED TO MAKE THE CONTACT WITH THE BUYER.  NO ONE ELSE. 
-I would like to see system defaulting and displaying sales by the ship date on both screens sale and shipment - from the closest ship date to the furthest. 
-Also, I would like to see a visual of the status. I mentioned this before- add a colored line/bar  reflecting that status. 
-Also, the system should be producing daily reports automatically by the end of each day with a list of orders approaching to be fulfilled within 10 days. 
+Dashboard:
+- Display task list (need to define what to see).
+------------------------------------------------------------------------
 
 CUSTOMER-----------------------------------------
-*Accounting
+*Accounting (Kinga's list)
 - customer number
 - vendor #
 - full customer address
