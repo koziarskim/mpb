@@ -10,8 +10,8 @@ Components:
 - Revisit how to calculate units short.
 - Price history/average (based on PO).
 Sale:
-- Delete each item in sale.
-- Delete sale
++ Fix delete each item in sale.
++ Fix delete sale
 - Show created date.
 - Ability to enter shipping window (from - to).
 - Ability to view status by color.

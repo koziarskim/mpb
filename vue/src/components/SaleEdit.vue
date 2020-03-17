@@ -486,6 +486,7 @@ export default {
       }
       var idx = this.sale.saleItems.findIndex(it => it.item.id == si.id);
       this.sale.saleItems.splice(idx, 1);
+      this.saveSale();
     },
     getCases(si){
       return (+si.units / +si.item.casePack).toFixed(0);
