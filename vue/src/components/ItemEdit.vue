@@ -13,27 +13,13 @@
           </b-col>
         </b-row>
         <b-row>
-          <b-col cols=3>
-            <label class="top-label">Year:</label>
-            <b-select option-value="id" option-text="name" :list="availableYears" v-model="item.year" placeholder="Year"></b-select>
-          </b-col>
-          <b-col cols=5>
-            <label class="top-label">Season:</label>
-            <b-select option-value="id" option-text="name" :list="availableSeasons" v-model="item.season" placeholder="Season"></b-select>
-          </b-col>
           <b-col cols=4>
             <label class="top-label">UPC Number:</label>
-            <input class="form-control" type="text" v-model="item.upc">
-          </b-col>
-        </b-row>
-        <b-row>
-          <b-col cols=4>
-            <label class="top-label">Category:</label>
-            <b-select option-value="id" option-text="value" :list="availableItemCategories" v-model="item.category" placeholder="Select category"></b-select>
+            <b-select option-value="id" option-text="name" :list="availableUpc" v-model="upc" placeholder="UPC"></b-select>
           </b-col>
           <b-col cols=6>
             <label class="top-label">Brand:</label>
-            <b-select option-value="id" option-text="name" :list="availableBrands" v-model="item.brand" placeholder="Select Brand"></b-select>
+            <b-select option-value="id" option-text="name" :list="availableBrands" v-model="item.brand" placeholder="Brand"></b-select>
           </b-col>
         </b-row>
       </b-col>
@@ -60,6 +46,23 @@
       </b-col>
     </b-row>
     <b-row>
+      <b-col cols=2>
+        <img style="margin-top: 25px; width: 150px; height: 40px" :src="upcUrl" fluid>
+      </b-col>
+      <b-col cols=1 style="margin-left: -33px">
+        <label class="top-label">Year:</label>
+        <b-select option-value="id" option-text="name" :list="availableYears" v-model="item.year" placeholder="Year"></b-select>
+      </b-col>
+      <b-col cols=2>
+        <label class="top-label">Season:</label>
+        <b-select option-value="id" option-text="name" :list="availableSeasons" v-model="item.season" placeholder="Season"></b-select>
+      </b-col>
+      <b-col cols=2>
+        <label class="top-label">Category:</label>
+        <b-select option-value="id" option-text="value" :list="availableItemCategories" v-model="item.category" placeholder="Category"></b-select>
+      </b-col>
+    </b-row>
+    <b-row style="margin-top: 10px">
       <b-col cols=3 style="border-right: 1px solid #c5c5c5">
         <!-- Units Section -->
         <hr class="hr-text" data-content="Unit dimenstion">
@@ -217,6 +220,7 @@ export default {
         category: {},
         season: {},
         year: {},
+        upc:{},
         palletWeight: 60,
         // upc: {},
         // caseUpc: {},
@@ -230,6 +234,9 @@ export default {
       availableItemCategories: [],
       availableCompCategories: [],
     availableSeasons: [],
+    availableUpc: [],
+    upc: {},
+    upcUrl: "",
     availableYears: [],
     uploadedFile: null,
     columns: [
@@ -293,19 +300,18 @@ export default {
       var cost = 12 / +this.unitsPerPallet;
       return cost.toFixed(2);
     },
-    barcodeUrl() {
-      if (this.item.upc.code) {
-        return httpUtils.baseUrl + "/upc/image/" + this.item.upc.code;
-      }
-    },
-    caseBarcodeUrl() {
-      if (this.item.caseUpc.code) {
-        return httpUtils.baseUrl + "/upc/image/" + this.item.caseUpc.code;
-      }
-    },
   },
-  watch: {},
+  watch: {
+    upc(newValue, oldValue){
+      this.setUpcUrl(newValue.id);
+    }
+  },
   methods: {
+    setUpcUrl(upcId){
+      if(upcId){
+        this.upcUrl = httpUtils.baseUrl + "/upc/image/" + upcId;
+      }
+    },
     allowEdit(){
       return securite.hasRole(["STANDARD_ADMIN"]);
     },
@@ -319,7 +325,7 @@ export default {
     },
     addComponent(){
       if(!this.componentKv){
-        alert("Select Component to Add");
+        alert("Pick Component to Add");
         return;
       }
       this.getComponent(this.componentKv.id).then(c=> {
@@ -368,9 +374,14 @@ export default {
         console.log("API error: " + e);
       });
     },
-    getItemData(item_id) {
+    getItem(item_id) {
       return http.get("/item/" + item_id).then(response => {
         this.item = response.data;
+        if(response.data.upc){
+          this.availableUpc.push({id: response.data.upc.id, name: response.data.upc.code})
+          this.upc = {id: response.data.upc.id};
+          this.setUpcUrl(response.data.upc.id);
+        }
         return response.data;
       }).catch(e => {
         console.log("API error: " + e);
@@ -426,12 +437,15 @@ export default {
             return Promise.reject();
         }
       this.item.totalCost = this.totalCost;
+      if(this.upc.id){
+        this.item.upc = {id: this.upc.id}
+      }
       var formData = new FormData();
       formData.append("image", this.uploadedFile);
       formData.append("jsonItem", JSON.stringify(this.item));
       var headers = {"Content-Type": "multipart/form-data"};
       return axios.post(httpUtils.baseUrl + "/item", formData, headers).then(r => {
-        this.getItemData(r.data.id)
+        this.getItem(r.data.id)
         return r.data;
       }).catch(e => {
          console.log("API error: " + e);
@@ -467,12 +481,18 @@ export default {
         }
     })
   },
+  getAvailableUpc(){
+    http.get("/upc/kv").then(r=> {
+      this.availableUpc = r.data;
+    }).catch(e=> {console.log("API error: " + e);})
+  }
   },
   mounted() {
+    this.getAvailableUpc();
     this.getAvailableComponents();
     var item_id = this.$route.params.item_id;
     if (item_id) {
-      this.getItemData(item_id);
+      this.getItem(item_id);
     }else{
       // this.item.season = navigation.getSeason();
       // this.item.year = navigation.getYear();

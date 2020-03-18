@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 
 import org.krysalis.barcode4j.impl.AbstractBarcodeBean;
 import org.krysalis.barcode4j.impl.int2of5.ITF14Bean;
@@ -25,6 +26,7 @@ import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
+import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.entity.Upc;
 import com.noovitec.mpb.repo.UpcRepo;
 
@@ -45,20 +47,21 @@ class UpcRest {
 		return upcRepo.findAll();
 	}
 
-	@GetMapping("/upc/available")
-	Upc getAvailableCode() {
-		Upc upc = upcRepo.getFirstAvailable();
-		return upc;
+	@GetMapping("/upc/kv")
+	List<KeyValueDto> getKv() {
+		List<KeyValueDto> dtos = upcRepo.getKv();
+		return dtos;
 	}
 
-	@GetMapping("/upc/image/{code}")
+	@GetMapping("/upc/image/{upcId}")
 	@ResponseBody
-	HttpEntity<byte[]> generateImage(@PathVariable String code) throws WriterException, IOException {
+	HttpEntity<byte[]> generateImage(@PathVariable Long upcId) throws WriterException, IOException {
 //		byte[] image = getQRCodeImage(code, 300, 50);
-		byte[] image = generateItemBarcode(code);
+		Upc upc = upcRepo.getOne(upcId);
+		byte[] image = generateItemBarcode(upc.getCode());
 		HttpHeaders header = new HttpHeaders();
 		header.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-		header.set("Content-Disposition", "inline; filename=" + code+".jpg");
+		header.set("Content-Disposition", "inline; filename=" + upc.getCode()+".jpg");
 		header.setContentLength(image.length);
 		return new HttpEntity<byte[]>(image, header);
 	}

@@ -2,7 +2,7 @@ In Progress/Done:
 Shipment:
 - Ability to view status by color.
 + Show popupup if ship more that stock
-- Entire Sale shipped in full notification (who get's it?).
+- Notification when shipment is ready.
 - Allow to download from list screen
 Item:
 - Ability to enter upc for item (manually entered)
