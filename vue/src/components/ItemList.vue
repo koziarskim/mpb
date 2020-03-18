@@ -48,7 +48,7 @@ import router from "../router";
 export default {
   data() {
     return {
-      pageable: {totalElements: 100, currentPage: 1, perPage: 20, sortBy: 'updated', sortDesc: true},
+      pageable: {totalElements: 100, currentPage: 1, perPage: 25, sortBy: 'updated', sortDesc: true},
       searchItem: "",
       searchComponent: "",
       hideProd: false,

@@ -31,6 +31,10 @@
       <template v-slot:cell(action)="row">
         <input type="checkbox" v-model="selectedComponents" :value="row.item">
       </template>
+      <template v-slot:head(action)="row">
+          <b-button size="sm" @click="triggerAll(true)" variant="link">+/</b-button>
+          <b-button size="sm" style="margin-left: -15px" @click="triggerAll(false)" variant="link">-</b-button>
+      </template>
     </b-table>
     <div style="display: flex">
       <b-pagination size="sm" v-model="pageable.currentPage" :per-page="pageable.perPage" :total-rows="pageable.totalElements" @change="paginationChange"></b-pagination>
@@ -47,7 +51,7 @@ export default {
   name: "edit-component",
   data() {
     return {
-      pageable: {totalElements: 100, currentPage: 1, perPage: 20, sortBy: 'updated', sortDesc: true},
+      pageable: {totalElements: 100, currentPage: 1, perPage: 25, sortBy: 'number', sortDesc: true},
       nameSearch: "",
       alertSecs: 0,
       alertMessage: "",
@@ -74,7 +78,7 @@ export default {
         {id: "ONLY_SHORT", name: "Units Short"},
         {id: "OUT_STOCK", name: "Out of Stock"},
       ],
-      unitFilter: {}
+      unitFilter: {},
     };
   },
   watch: {
@@ -89,8 +93,21 @@ export default {
     }
   },
   methods: {
+    triggerAll(add){
+      this.components.forEach(c=> {
+        if(add){
+          var idx = this.selectedComponents.findIndex(sc => sc.id == c.id);
+          if(idx == -1){
+            this.selectedComponents.push(c);
+          }
+        }else{
+          var idx = this.selectedComponents.findIndex(sc => sc.id == c.id);
+          this.selectedComponents.splice(idx, 1);
+        }
+      })
+    },
     createNewPurchase(){
-      if(supplierIds.length>50){
+      if(this.selectedComponents.length>50){
         alert("Maximum 50 components per P.O.");
         return;
       }

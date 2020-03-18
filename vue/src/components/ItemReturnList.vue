@@ -48,7 +48,7 @@ export default {
   },
   data() {
     return {
-      pageable: {totalElements: 100, currentPage: 1, perPage: 20, sortBy: 'updated', sortDesc: true},
+      pageable: {totalElements: 100, currentPage: 1, perPage: 25, sortBy: 'updated', sortDesc: true},
       fields: [
         { key: 'item', sortable: true, label: 'Item # (Name)'},
         { key: 'unitsReceived', sortable: false, label: 'Received'},

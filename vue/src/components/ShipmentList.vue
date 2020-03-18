@@ -83,7 +83,7 @@ export default {
   data() {
     return {
       sortBy: "number",
-      pageable: {totalElements: 100, currentPage: 1, perPage: 20, sortBy: 'modifiedDate', sortDesc: true},
+      pageable: {totalElements: 100, currentPage: 1, perPage: 25, sortBy: 'modifiedDate', sortDesc: true},
       fields: [
         { key: "number", label: "Shipment #", sortable: false },
         { key: "customerName", label: "Customer", sortable: false },
