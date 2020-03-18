@@ -61,7 +61,7 @@ export default {
         { key: "name", label: "Component # (Name)", sortable: false },
         { key: "categoryName", label: "Category", sortable: false },
         { key: "supplierName", label: "Supplier", sortable: false },
-        { key: "unitsSoldNotProd", label: "Sold-Not-Prod", sortable: false },
+        { key: "unitsSoldNotProd", label: "Open Sales", sortable: false },
         { key: "unitsOnStock", label: "On Stock", sortable: false },
         { key: "unitsPendingPo", label: "Pending PO", sortable: false },
         { key: "unitsLocked", label: "Reserved", sortable: false },
