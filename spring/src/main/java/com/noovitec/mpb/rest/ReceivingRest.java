@@ -97,10 +97,7 @@ class ReceivingRest {
 	@PostMapping("/receiving")
 	ResponseEntity<?> post(@RequestBody Receiving receiving) {
 		Receiving result = receivingService.save(receiving);
-		List<Long> itemIds = new ArrayList<Long>();
-		result.getPurchaseComponent().getComponent().getItemComponents().forEach(ic -> {
-			itemIds.add(ic.getItem().getId());
-		});
+		List<Long> itemIds = itemService.findIdsByComponents(Arrays.asList(result.getPurchaseComponent().getComponent().getId()));
 		itemService.updateUnits(itemIds);
 		componentService.updateUnits(Arrays.asList(receiving.getPurchaseComponent().getComponent().getId()));
 		itemService.updateUnitsReadyProd(itemIds);
