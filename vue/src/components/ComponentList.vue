@@ -32,8 +32,7 @@
         <input type="checkbox" v-model="selectedComponents" :value="row.item">
       </template>
       <template v-slot:head(action)="row">
-          <b-button size="sm" @click="triggerAll(true)" variant="link">+/</b-button>
-          <b-button size="sm" style="margin-left: -15px" @click="triggerAll(false)" variant="link">-</b-button>
+          <b-button size="sm" @click="triggerAll(true)" variant="link">(+)</b-button>
       </template>
     </b-table>
     <div style="display: flex">
