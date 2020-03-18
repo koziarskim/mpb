@@ -1,11 +1,12 @@
 In Progress/Done:
 Shipment:
-- Ability to view status by color.
 + Show popupup if ship more that stock
+- Ability to view status by color.
 - Notification when shipment is ready.
+- Notification when shipped.
 - Allow to download from list screen
 Item:
-- Ability to enter upc for item (manually entered)
++ Ability to enter upc for item (manually entered)
 Components:
 - Revisit how to calculate units short.
 - Price history/average (based on PO).
