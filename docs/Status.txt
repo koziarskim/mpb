@@ -2,9 +2,9 @@ In Progress/Done:
 Shipment:
 + Show popupup if ship more that stock
 - Ability to view status by color.
-- Notification when shipment is ready
-- Notification when shipped
-- Notification when all sales for customer are shipped
+- Notification when shipment is ready (emails: shipping@marketplacebrands.com)
+- Notification when shipped (emails: Kasia, Kinga)
+- Notification when all sales for customer are shipped (emails: Hania, Kinga)
 - Allow to download from list screen
 Item:
 + Ability to enter upc for item (manually entered)

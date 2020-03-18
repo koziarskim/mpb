@@ -1,5 +1,7 @@
 package com.noovitec.mpb.service;
 
+import java.time.LocalDate;
+
 import javax.transaction.Transactional;
 
 import org.slf4j.Logger;
@@ -10,7 +12,8 @@ import com.noovitec.mpb.repo.NotificationRepo;
 
 public interface NotificationService {
 	
-	public void shipmentReady(Long shipmentId);
+	public void shipmentReady(Long shipmentId, boolean prevReady, boolean ready);
+	public void shipmentShipped(Long shipmentId, LocalDate prevShippedDate, LocalDate shippedDate);
 
 
 	@Transactional
@@ -24,8 +27,16 @@ public interface NotificationService {
 			this.notificationRepo = notificationRepo;
 		}
 		
-		public void shipmentReady(Long shipmentId) {
-			
+		public void shipmentReady(Long shipmentId, boolean prevReady, boolean ready) {
+			if(!prevReady && ready) {
+				log.info("Sending shipmentReady notification");
+			}
+		}
+		
+		public void shipmentShipped(Long shipmentId, LocalDate prevShippedDate, LocalDate shippedDate) {
+			if(prevShippedDate == null && shippedDate !=null) {
+				log.info("Sending shipmentShipped notification");
+			}
 		}
 
 		
