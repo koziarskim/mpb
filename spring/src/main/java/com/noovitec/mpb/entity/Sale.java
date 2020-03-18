@@ -97,7 +97,7 @@ public class Sale extends BaseEntity {
 			this.status = "PENDING_PROD";
 		}
 		if(this.getUnitsOnStock() > 0 && this.getUnitsOnStock() >= (this.unitsSold + this.unitsAdjusted)) {
-			this.status = "PENDING_SHIPPMENT";
+			this.status = "PENDING_SHIPMENT";
 		}
 		if(this.unitsShipped > 0 && this.unitsShipped >= (this.unitsSold + this.unitsAdjusted)) {
 			status = "SHIPPED";
