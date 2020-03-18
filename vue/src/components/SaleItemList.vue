@@ -63,7 +63,7 @@ export default {
   data() {
     return {
       navigation: navigation,
-      pageable: {totalElements: 100, currentPage: 1, perPage: 20, sortBy: 'id', sortDesc: false},
+      pageable: {totalElements: 100, currentPage: 1, perPage: 25, sortBy: 'id', sortDesc: false},
       searchSale: "",
       searchItem: "",
       itemView: true,

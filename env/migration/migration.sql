@@ -1,3 +1,5 @@
+delete from component where number is null;
+
 CREATE SEQUENCE notification_id_seq;
 
 ALTER SEQUENCE notification_id_seq OWNER TO postgres;
@@ -16,4 +18,6 @@ CREATE TABLE notification (
 );
 
 ALTER TABLE notification OWNER to postgres;
+
+
 

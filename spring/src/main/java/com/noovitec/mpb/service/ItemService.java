@@ -25,6 +25,7 @@ public interface ItemService {
 	public void updateUnitsReadyProd(List<Long> itemIds);
 	public void updateUnitsByComponent(Long componentId);
 	public void updateUnitsReadyProdByComponent(Long componentId);
+	public List<Long> findIdsByComponents(List<Long> componentIds);
 	public void asyncUpdateUnits();
 	
 	@Transactional
@@ -63,6 +64,9 @@ public interface ItemService {
 		}
 
 		public void updateUnitsReadyProd(List<Long> itemIds) {
+			if(itemIds == null || itemIds.size()==0) {
+				return;
+			}
 			Long counter = 0L;
 			Iterable<Item> items = itemIds==null?itemRepo.findAll():itemRepo.findByIds(itemIds);
 			for (Item item : items) {
@@ -76,6 +80,9 @@ public interface ItemService {
 		}
 
 		public void updateUnits(List<Long> itemIds) {
+			if(itemIds == null || itemIds.size()==0) {
+				return;
+			}
 			Long counter = 0L;
 			Iterable<Item> items = itemIds==null?itemRepo.findAll():itemRepo.findByIds(itemIds);
 			for (Item item : items) {
@@ -100,6 +107,11 @@ public interface ItemService {
 				item.updateUnitsReadyProd();
 				crudService.save(item);
 			}
+		}
+		
+		public List<Long> findIdsByComponents(List<Long> componentIds){
+			List<Long> ids = itemRepo.findIdsByComponents(componentIds);
+			return ids;
 		}
 		
 		@Async

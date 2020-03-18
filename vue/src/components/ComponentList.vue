@@ -10,6 +10,9 @@
       <b-col cols=3>
         <b-select option-value="id" option-text="name" :list="availableItems" v-model="itemKv" placeholder="Item"></b-select>
       </b-col>
+      <b-col cols=2>
+        <b-select option-value="id" option-text="name" :list="availableUnitFilters" v-model="unitFilter" placeholder="Units"></b-select>
+      </b-col>
       <b-col>
         <div style="text-align: right;">
           <b-button size="sm" variant="primary" @click="goToComponent('')">New</b-button>
@@ -28,6 +31,10 @@
       <template v-slot:cell(action)="row">
         <input type="checkbox" v-model="selectedComponents" :value="row.item">
       </template>
+      <template v-slot:head(action)="row">
+          <b-button size="sm" @click="triggerAll(true)" variant="link">+/</b-button>
+          <b-button size="sm" style="margin-left: -15px" @click="triggerAll(false)" variant="link">-</b-button>
+      </template>
     </b-table>
     <div style="display: flex">
       <b-pagination size="sm" v-model="pageable.currentPage" :per-page="pageable.perPage" :total-rows="pageable.totalElements" @change="paginationChange"></b-pagination>
@@ -44,7 +51,7 @@ export default {
   name: "edit-component",
   data() {
     return {
-      pageable: {totalElements: 100, currentPage: 1, perPage: 20, sortBy: 'updated', sortDesc: true},
+      pageable: {totalElements: 100, currentPage: 1, perPage: 25, sortBy: 'number', sortDesc: true},
       nameSearch: "",
       alertSecs: 0,
       alertMessage: "",
@@ -54,7 +61,7 @@ export default {
         { key: "name", label: "Component # (Name)", sortable: false },
         { key: "categoryName", label: "Category", sortable: false },
         { key: "supplierName", label: "Supplier", sortable: false },
-        { key: "unitsSoldNotProd", label: "Sold-Not-Prod", sortable: false },
+        { key: "unitsSoldNotProd", label: "Open Sales", sortable: false },
         { key: "unitsOnStock", label: "On Stock", sortable: false },
         { key: "unitsPendingPo", label: "Pending PO", sortable: false },
         { key: "unitsLocked", label: "Reserved", sortable: false },
@@ -66,7 +73,13 @@ export default {
       supplierKv: {},
       availableItems: [],
       itemKv: {},
-      selectedComponents: []
+      selectedComponents: [],
+      availableUnitFilters: [
+        {id: "ONLY_SHORT", name: "Units Short"},
+        {id: "OUT_STOCK", name: "Out of Stock"},
+        {id: "OPEN_SALE", name: "Open Sales"},
+      ],
+      unitFilter: {},
     };
   },
   watch: {
@@ -75,10 +88,30 @@ export default {
     },
     itemKv(old_value, new_value){
       this.getComponents();
+    },
+    unitFilter(old_value, new_value){
+      this.getComponents();
     }
   },
   methods: {
+    triggerAll(add){
+      this.components.forEach(c=> {
+        if(add){
+          var idx = this.selectedComponents.findIndex(sc => sc.id == c.id);
+          if(idx == -1){
+            this.selectedComponents.push(c);
+          }
+        }else{
+          var idx = this.selectedComponents.findIndex(sc => sc.id == c.id);
+          this.selectedComponents.splice(idx, 1);
+        }
+      })
+    },
     createNewPurchase(){
+      if(this.selectedComponents.length>50){
+        alert("Maximum 50 components per P.O.");
+        return;
+      }
       var supplierId = this.selectedComponents[0].supplierId;
       var supplierIds = this.selectedComponents.filter(c=> c.supplierId != this.selectedComponents[0].supplierId);
       if(supplierIds.length>0){
@@ -103,7 +136,7 @@ export default {
     },
     getComponents() {
       var query = {params: {pageable: this.pageable, nameSearch: this.nameSearch, supplierId: this.supplierKv.id,
-          itemId: this.itemKv.id}};
+          itemId: this.itemKv.id, unitFilter: this.unitFilter.id}};
       http.get("/component/pageable", query).then(response => {
         this.components = response.data.content;
         this.pageable.totalElements = response.data.totalElements;

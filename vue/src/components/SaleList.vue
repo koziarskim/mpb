@@ -67,7 +67,7 @@ export default {
     return {
       securite: securite,
       navigation: navigation,
-      pageable: {totalElements: 100, currentPage: 1, perPage: 20, sortBy: 'shippingFrom', sortDesc: false},
+      pageable: {totalElements: 100, currentPage: 1, perPage: 25, sortBy: 'shippingFrom', sortDesc: false},
       saleNumber: null,
       availableItems: [],
       itemKv: {},

@@ -403,8 +403,8 @@ export default {
       return false;
     },
     updateParent(){
-      if(this.searchDto.components.length>20){
-        alert("Maximum 20 components per P.O.");
+      if(this.searchDto.components.length>50){
+        alert("Maximum 50 components per P.O.");
         return;
       }
       this.closeMenu(this.seasons, this.searchDto.seasons, this.visibleSeasonMenu)

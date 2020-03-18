@@ -184,7 +184,7 @@ export default {
       var receivings = [];
       var isNegative = false;
       this.purchase.purchaseComponents.forEach(pc => {
-        if(pc.unitsToReceive <= 0){
+        if(pc.unitsToReceive < 0){
           isNegative = true;
           return;
         }

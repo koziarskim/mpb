@@ -178,14 +178,10 @@ class PurchaseRest {
 		}
 
 		purchase = purchaseRepo.save(purchase);
-		List<Long> itemIds = new ArrayList<Long>();
 		List<Long> componentIds = new ArrayList<Long>();
 		for (PurchaseComponent pc : purchase.getPurchaseComponents()) {
 			pc.setPurchase(purchase);
 			componentIds.add(pc.getComponent().getId());
-			for(ItemComponent ic: pc.getComponent().getItemComponents()) {
-				itemIds.add(ic.getItem().getId());
-			}
 		}
 		byte[] data = this.generatePdf(purchase);
 		Attachment attachment = purchase.getAttachment();
@@ -198,6 +194,7 @@ class PurchaseRest {
 			purchase.setAttachment(attachment);
 		}
 		purchase = purchaseRepo.save(purchase);
+		List<Long> itemIds = itemService.findIdsByComponents(componentIds);
 		itemService.updateUnits(itemIds);
 		componentService.updateUnits(componentIds);
 		itemService.updateUnitsReadyProd(itemIds);
