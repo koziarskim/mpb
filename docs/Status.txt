@@ -2,8 +2,9 @@ In Progress/Done:
 Shipment:
 + Show popupup if ship more that stock
 - Ability to view status by color.
-- Notification when shipment is ready.
-- Notification when shipped.
+- Notification when shipment is ready
+- Notification when shipped
+- Notification when all sales for customer are shipped
 - Allow to download from list screen
 Item:
 + Ability to enter upc for item (manually entered)
@@ -27,6 +28,8 @@ Global:
 ------------------------------------------------------------------
 
 Backlog:
+Receiving:
+- Combine shipping schedule with Receiving.
 Customer:
 - Reorganize screen layout (Generic info, Billing info, Shipping info) - Need more info.
 - Ability to create Pallet Tag - Need to talk more.
