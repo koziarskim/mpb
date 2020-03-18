@@ -102,7 +102,10 @@ export default {
             this.selectedComponents.push(c);
           }
         }else{
-          this.selectedComponents = [];
+          var idx = this.selectedComponents.findIndex(sc => sc.id == c.id);
+          if(idx > -1){
+            this.selectedComponents.splice(idx, 1);
+          }
         }
       })
     },
