@@ -90,6 +90,10 @@ export default {
   },
   methods: {
     createNewPurchase(){
+      if(supplierIds.length>50){
+        alert("Maximum 50 components per P.O.");
+        return;
+      }
       var supplierId = this.selectedComponents[0].supplierId;
       var supplierIds = this.selectedComponents.filter(c=> c.supplierId != this.selectedComponents[0].supplierId);
       if(supplierIds.length>0){
