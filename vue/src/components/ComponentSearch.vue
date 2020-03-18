@@ -403,7 +403,7 @@ export default {
       return false;
     },
     updateParent(){
-      if(this.searchDto.components.length>20){
+      if(this.searchDto.components.length>50){
         alert("Maximum 20 components per P.O.");
         return;
       }

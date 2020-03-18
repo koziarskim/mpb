@@ -47,7 +47,7 @@ export default {
   name: "edit-component",
   data() {
     return {
-      pageable: {totalElements: 100, currentPage: 1, perPage: 20, sortBy: 'number', sortDesc: true},
+      pageable: {totalElements: 100, currentPage: 1, perPage: 20, sortBy: 'updated', sortDesc: true},
       nameSearch: "",
       alertSecs: 0,
       alertMessage: "",
