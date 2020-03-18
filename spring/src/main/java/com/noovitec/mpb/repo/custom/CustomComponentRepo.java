@@ -49,6 +49,9 @@ public interface CustomComponentRepo {
 			if (unitFilter !=null && unitFilter.equalsIgnoreCase("OUT_STOCK")) {
 				q += "and c.unitsOnStock < 0";
 			}
+			if (unitFilter !=null && unitFilter.equalsIgnoreCase("OPEN_SALE")) {
+				q += "and c.unitsSoldNotProd > 0";
+			}
 			Order order = pageable.getSort().iterator().next();
 			q += "order by c."+order.getProperty() + " "+order.getDirection();
 			Query query = entityManager.createQuery(q);

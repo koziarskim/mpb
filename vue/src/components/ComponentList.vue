@@ -77,6 +77,7 @@ export default {
       availableUnitFilters: [
         {id: "ONLY_SHORT", name: "Units Short"},
         {id: "OUT_STOCK", name: "Out of Stock"},
+        {id: "OPEN_SALE", name: "Open Sales"},
       ],
       unitFilter: {},
     };
