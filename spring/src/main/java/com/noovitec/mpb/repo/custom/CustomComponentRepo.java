@@ -11,12 +11,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Repository;
 
 import com.noovitec.mpb.entity.Component;
 
 public interface CustomComponentRepo {
-	Page<Component> findPage(Pageable pageable, String nameSearch, Long supplierId, Long itemId);
+	Page<Component> findPage(Pageable pageable, String nameSearch, Long supplierId, Long itemId, String unitFilter);
 
 	@Repository
 	public class CustomComponentRepoImpl implements CustomComponentRepo {
@@ -27,7 +28,7 @@ public interface CustomComponentRepo {
 		EntityManager entityManager;
 
 		@Override
-		public Page<Component> findPage(Pageable pageable, String nameSearch, Long supplierId, Long itemId) {
+		public Page<Component> findPage(Pageable pageable, String nameSearch, Long supplierId, Long itemId, String unitFilter) {
 			String q = "select distinct c from Component c "
 					+ "left join c.supplier supplier "
 					+ "left join c.itemComponents ic "
@@ -42,6 +43,14 @@ public interface CustomComponentRepo {
 			if (supplierId != null) {
 				q += "and supplier.id = :supplierId ";
 			}
+			if (unitFilter !=null && unitFilter.equalsIgnoreCase("ONLY_SHORT")) {
+				q += "and c.unitsShort > 0";
+			}
+			if (unitFilter !=null && unitFilter.equalsIgnoreCase("OUT_STOCK")) {
+				q += "and c.unitsOnStock < 0";
+			}
+			Order order = pageable.getSort().iterator().next();
+			q += "order by c."+order.getProperty() + " "+order.getDirection();
 			Query query = entityManager.createQuery(q);
 			if (nameSearch != null && !nameSearch.isEmpty()) {
 				query.setParameter("nameSearch", nameSearch);

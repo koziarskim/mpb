@@ -10,6 +10,9 @@
       <b-col cols=3>
         <b-select option-value="id" option-text="name" :list="availableItems" v-model="itemKv" placeholder="Item"></b-select>
       </b-col>
+      <b-col cols=2>
+        <b-select option-value="id" option-text="name" :list="availableUnitFilters" v-model="unitFilter" placeholder="Units"></b-select>
+      </b-col>
       <b-col>
         <div style="text-align: right;">
           <b-button size="sm" variant="primary" @click="goToComponent('')">New</b-button>
@@ -44,7 +47,7 @@ export default {
   name: "edit-component",
   data() {
     return {
-      pageable: {totalElements: 100, currentPage: 1, perPage: 20, sortBy: 'updated', sortDesc: true},
+      pageable: {totalElements: 100, currentPage: 1, perPage: 20, sortBy: 'number', sortDesc: true},
       nameSearch: "",
       alertSecs: 0,
       alertMessage: "",
@@ -66,7 +69,12 @@ export default {
       supplierKv: {},
       availableItems: [],
       itemKv: {},
-      selectedComponents: []
+      selectedComponents: [],
+      availableUnitFilters: [
+        {id: "ONLY_SHORT", name: "Units Short"},
+        {id: "OUT_STOCK", name: "Out of Stock"},
+      ],
+      unitFilter: {}
     };
   },
   watch: {
@@ -74,6 +82,9 @@ export default {
       this.getComponents();
     },
     itemKv(old_value, new_value){
+      this.getComponents();
+    },
+    unitFilter(old_value, new_value){
       this.getComponents();
     }
   },
@@ -103,7 +114,7 @@ export default {
     },
     getComponents() {
       var query = {params: {pageable: this.pageable, nameSearch: this.nameSearch, supplierId: this.supplierKv.id,
-          itemId: this.itemKv.id}};
+          itemId: this.itemKv.id, unitFilter: this.unitFilter.id}};
       http.get("/component/pageable", query).then(response => {
         this.components = response.data.content;
         this.pageable.totalElements = response.data.totalElements;
