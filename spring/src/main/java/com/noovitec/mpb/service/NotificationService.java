@@ -14,8 +14,8 @@ import com.noovitec.mpb.repo.NotificationRepo;
 
 public interface NotificationService {
 	
-	public void shipmentReady(Long shipmentId, boolean prevReady, boolean ready);
-	public void shipmentShipped(Long shipmentId, LocalDate prevShippedDate, LocalDate shippedDate);
+	public void shipmentReady(Object[] currentState, Object[] previousState, String[] propertyNames);
+	public void shipmentShipped(Object[] currentState, Object[] previousState, String[] propertyNames);
 	public void customerShipped(Object[] currentState, Object[] previousState, String[] propertyNames);
 
 
@@ -30,7 +30,9 @@ public interface NotificationService {
 			this.notificationRepo = notificationRepo;
 		}
 		
-		public void shipmentReady(Long shipmentId, boolean prevReady, boolean ready) {
+		public void shipmentReady(Object[] currentState, Object[] previousState, String[] propertyNames) {
+			boolean prevReady = (boolean) previousState[ArrayUtils.indexOf(propertyNames, "ready")];
+			boolean ready = (boolean) currentState[ArrayUtils.indexOf(propertyNames, "ready")];
 			if(!prevReady && ready) {
 				log.info("Sending shipmentReady notification");
 			}
@@ -38,7 +40,9 @@ public interface NotificationService {
 			notificationRepo.save(notification);
 		}
 		
-		public void shipmentShipped(Long shipmentId, LocalDate prevShippedDate, LocalDate shippedDate) {
+		public void shipmentShipped(Object[] currentState, Object[] previousState, String[] propertyNames) {
+			LocalDate prevShippedDate = (LocalDate) previousState[ArrayUtils.indexOf(propertyNames, "shippedDate")];
+			LocalDate shippedDate = (LocalDate) currentState[ArrayUtils.indexOf(propertyNames, "shippedDate")];
 			if(prevShippedDate == null && shippedDate !=null) {
 				log.info("Sending shipmentShipped notification");
 			}
