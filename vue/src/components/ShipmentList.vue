@@ -112,11 +112,6 @@ export default {
       ],
       status: {},
       showFilterMenu: false,
-      statusClasses: [
-        {id: 'INP', name: 'status-red'},
-        {id: 'REA', name: 'status-blue'},
-        {id: 'SHP', name: 'status-green'},
-      ]
     };
   },
   watch: {
@@ -135,12 +130,8 @@ export default {
   },
   methods: {
     getStatusClass(shipItem){
-      if(shipItem.status == "REA"){
-        return "status-blue";
-      }
-      if(shipItem.status == "SHP"){
-        return "status-green"
-      }
+      if(shipItem.status == "REA") { return "status-blue" }
+      if(shipItem.status == "SHP") { return "status-green" }
       return "status-red";
     },
     getShipmentItems(shipmentDto){
