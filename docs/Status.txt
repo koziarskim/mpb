@@ -1,15 +1,19 @@
 In Progress/Done:
 Shipment:
 + Show popupup if ship more that stock
++ Notification when individual shipment is ready (emails: shipping@marketplacebrands.com)
++ Notification when individual shipment is shipped (emails: Kasia, Kinga)
++ Notification when all sales for customer are shipped (emails: Hania, Kinga)
 - Ability to view status by color.
-- Notification when individual shipment is ready (emails: shipping@marketplacebrands.com)
-- Notification when individual shipment is shipped (emails: Kasia, Kinga)
-- Notification when all sales for customer are shipped (emails: Hania, Kinga)
 - Allow to download from list screen
 - Sale pickup, show only open sales.
 Item:
 + Ability to enter upc for item (manually entered)
+Customer:
++ Ability to see total units sold and shipped.
 Components:
++ Ability to select all for shipment.
++ Filter by "Units Short", "Out of Stock", "Open Sales".
 - Revisit how to calculate units short.
 - Price history/average (based on PO).
 Sale:
