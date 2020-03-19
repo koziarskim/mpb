@@ -66,7 +66,7 @@
             </b-popover>
         </template>
         <template v-slot:cell(status)="row">
-            <span>{{getStatus(row.item)}}</span>
+            <b :class="getStatusClass(row.item)">{{getStatus(row.item)}}</b>
         </template>
       </b-table>
       <div style="display: flex">
@@ -112,6 +112,11 @@ export default {
       ],
       status: {},
       showFilterMenu: false,
+      statusClasses: [
+        {id: 'INP', name: 'status-red'},
+        {id: 'REA', name: 'status-blue'},
+        {id: 'SHP', name: 'status-green'},
+      ]
     };
   },
   watch: {
@@ -129,6 +134,15 @@ export default {
     }
   },
   methods: {
+    getStatusClass(shipItem){
+      if(shipItem.status == "REA"){
+        return "status-blue";
+      }
+      if(shipItem.status == "SHP"){
+        return "status-green"
+      }
+      return "status-red";
+    },
     getShipmentItems(shipmentDto){
       http.get("/shipment/"+shipmentDto.id).then(r => {
         shipmentDto.shipmentItems = r.data.shipmentItems

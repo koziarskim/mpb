@@ -47,7 +47,7 @@
             <b-button size="sm" @click=goToShipment(row.item.id) variant="link">{{row.item.unitsOnStock}}/{{row.item.unitsShipped}}</b-button>
         </template>
         <template v-slot:cell(status)="row">
-            <span>{{getStatus(row.item.status)}}</span>
+            <b :class="getStatusClass(row.item.status)">{{getStatus(row.item.status)}}</b>
         </template>
       </b-table>
       <div style="display: flex">
@@ -115,6 +115,14 @@ export default {
     },
   },
   methods: {
+    getStatusClass(statusId){
+        if(statusId == 'APPROVED'){ return "status-black"}
+        if(statusId == 'PENDING_PROD'){ return "status-blue"}
+        if(statusId == 'PENDING_SHIPMENT'){ return "status-purple"}
+        if(statusId == 'SHIPPED'){ return "status-green"}
+        if(statusId == 'PENDING_TRANSFER'){ return "status-yellow"}
+        return "status-red"
+    },
     getStatus(statusId){
       var statusKv = this.availableStatus.find(stat => stat.id == statusId)
       return statusKv.name

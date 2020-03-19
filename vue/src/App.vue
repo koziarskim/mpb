@@ -284,4 +284,22 @@ export default {
 #nprogress .bar {
     height: 5px !important;
 }
+.status-red {
+  color: #b91b02f7 !important
+}
+.status-blue {
+  color: #0219b9f7 !important
+}
+.status-green {
+  color: #0eb902f7 !important
+}
+.status-yellow {
+  color: #9db902f7 !important
+}
+.status-black {
+  color: #383a32f7 !important
+}
+.status-purple {
+  color: #e42f9cf7 !important
+}
 </style>

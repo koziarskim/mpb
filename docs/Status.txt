@@ -4,7 +4,7 @@ Shipment:
 + Notification when individual shipment is ready (emails: shipping@marketplacebrands.com)
 + Notification when individual shipment is shipped (emails: Kasia, Kinga)
 + Notification when all sales for customer are shipped (emails: Hania, Kinga)
-- Ability to view status by color.
++ Ability to view status by color.
 - Allow to download from list screen
 - Sale pickup, show only open sales.
 Item:
@@ -22,12 +22,12 @@ Sale:
 + Ability to enter shipping window (from - to).
 + Default sort by Shipping windows from (first first).
 + Ability to enter notes.
-- Ability to view status by color.
++ Ability to view status by color.
 - Ability to upload/download documents.
 - Export Sales by Customer to Excel/CSV (See Kasia's email: Order /Sale Summary Report - MIMS).
 - Export single sale.
 Global:
-+ Display per page 20
++ Display per page 25S
 - Change file storage from db to filesystem.
 ------------------------------------------------------------------
 
