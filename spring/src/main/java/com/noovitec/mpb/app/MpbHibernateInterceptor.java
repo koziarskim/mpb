@@ -20,11 +20,11 @@ public class MpbHibernateInterceptor extends EmptyInterceptor {
 	public boolean onFlushDirty(Object entity, Serializable id, Object[] currentState, Object[] previousState, String[] propertyNames, Type[] types) {
 		NotificationService notificationService = MpbApplicationContext.getBean(NotificationService.class);
 		if (entity.getClass() == Shipment.class) {
-			notificationService.shipmentReady(currentState, previousState, propertyNames);
-			notificationService.shipmentShipped(currentState, previousState, propertyNames);
+			notificationService.shipmentReady(entity, currentState, previousState, propertyNames);
+			notificationService.shipmentShipped(entity, currentState, previousState, propertyNames);
 		}
 		if (entity.getClass() == Customer.class) {
-			notificationService.customerShipped(currentState, previousState, propertyNames);
+			notificationService.customerShipped(entity, currentState, previousState, propertyNames);
 		}
 		return false;
 	}
