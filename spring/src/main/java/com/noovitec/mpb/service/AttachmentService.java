@@ -78,7 +78,12 @@ public interface AttachmentService {
 		
 		public Path load(Long attachmentId) throws MalformedURLException {
 			Attachment attachment = this.getById(attachmentId);
-			Path path = Paths.get(System.getenv("MPB_FILE_STORE_DIR")+attachment.getFilePath());
+			String systemPath = System.getenv("MPB_FILE_STORE_DIR");
+			log.info("System Path: "+systemPath);
+			if(systemPath == null) {
+				systemPath = "/home/koziarskim/mpb/mpb_file_store";
+			}
+			Path path = Paths.get(systemPath+attachment.getFilePath());
 			return path;
 		}
 		
