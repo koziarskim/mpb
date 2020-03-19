@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 import javax.transaction.Transactional;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ public interface NotificationService {
 	
 	public void shipmentReady(Long shipmentId, boolean prevReady, boolean ready);
 	public void shipmentShipped(Long shipmentId, LocalDate prevShippedDate, LocalDate shippedDate);
+	public void customerShipped(Object[] currentState, Object[] previousState, String[] propertyNames);
 
 
 	@Transactional
@@ -41,7 +43,17 @@ public interface NotificationService {
 				log.info("Sending shipmentShipped notification");
 			}
 		}
-
+		
+		public void customerShipped(Object[] currentState, Object[] previousState, String[] propertyNames) {
+			Long prevUnitsShipped = (Long) previousState[ArrayUtils.indexOf(propertyNames, "unitsShipped")];
+			Long unitsShipped = (Long) currentState[ArrayUtils.indexOf(propertyNames, "unitsShipped")];
+			if(prevUnitsShipped != unitsShipped) {
+				Long unitsSold = (Long) currentState[ArrayUtils.indexOf(propertyNames, "unitsSold")];
+				if(unitsShipped >= unitsSold) {
+					log.info("Sending customerShipped notification");
+				}
+			}
+		}
 		
 	}
 }
