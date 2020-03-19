@@ -167,8 +167,16 @@ class ItemRest {
 	}
 
 	@PostMapping("/item")
-	ResponseEntity<Item> postItemAndAttachment(@RequestParam(required = false) MultipartFile image, @RequestParam String jsonItem) throws JsonParseException, JsonMappingException, IOException, URISyntaxException {
+	ResponseEntity<?> postItemAndAttachment(@RequestParam(required = false) MultipartFile image, @RequestParam String jsonItem) throws JsonParseException, JsonMappingException, IOException, URISyntaxException {
 		Item item = objectMapper.readValue(jsonItem, Item.class);
+		if(!item.getNumber().matches("^[a-zA-Z0-9\\-]{1,15}$")) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Component Number is invalid. Alphanumeric and hyphen only allowed. Maximum 15 characters.");
+		}
+		Long id = itemRepo.getIdByNumber(item.getNumber());
+		if((item.getId()==null && id !=null) || (item.getId()!=null && id !=null && !item.getId().equals(id))) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Component Number already exists. Please, choose differrent.");
+		}
+
 		Item result = itemService.save(item, image);
 		itemService.updateUnits(Arrays.asList(result.getId()));
 		itemService.updateUnitsReadyProd(Arrays.asList(result.getId()));

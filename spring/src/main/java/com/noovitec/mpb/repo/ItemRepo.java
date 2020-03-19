@@ -31,5 +31,9 @@ public interface ItemRepo extends PagingAndSortingRepository<Item, Long>, Custom
 	
 	@Query(value = "select new com.noovitec.mpb.dto.KeyValueDto(i.id, concat(i.number, ' (', i.name, ')')) from Item i")
 	public List<KeyValueDto> getAllKeyValueDtos();
+	
+	@Query(value="select i.id from Item i where i.number = :number")
+	public Long getIdByNumber(String number);
+
 
 }
