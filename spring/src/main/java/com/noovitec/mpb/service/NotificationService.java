@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.noovitec.mpb.entity.Notification;
 import com.noovitec.mpb.repo.NotificationRepo;
 
 public interface NotificationService {
@@ -31,6 +32,8 @@ public interface NotificationService {
 			if(!prevReady && ready) {
 				log.info("Sending shipmentReady notification");
 			}
+			Notification notification = new Notification();
+			notificationRepo.save(notification);
 		}
 		
 		public void shipmentShipped(Long shipmentId, LocalDate prevShippedDate, LocalDate shippedDate) {

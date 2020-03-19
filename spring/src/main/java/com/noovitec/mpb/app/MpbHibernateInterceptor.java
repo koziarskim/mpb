@@ -21,19 +21,15 @@ public class MpbHibernateInterceptor extends EmptyInterceptor {
 	private final Logger log = LoggerFactory.getLogger(MpbHibernateInterceptor.class);
 
 	@Override
-	public boolean onSave(Object entity, Serializable id, Object[] state, String[] propertyNames, Type[] types) {
-		return false;
-	}
-
-	@Override
 	public boolean onFlushDirty(Object entity, Serializable id, Object[] currentState, Object[] previousState, String[] propertyNames, Type[] types) {
-		if(entity.getClass() == Shipment.class) {
+		log.info("Interceptor onFlushDirty: " + entity.getClass());
+		if (entity.getClass() == Shipment.class) {
 			Shipment shipment = (Shipment) entity;
 			this.shipmentUpdated(shipment, previousState, propertyNames);
 		}
 		return false;
 	}
-	
+
 	private void shipmentUpdated(Shipment shipment, Object[] previousState, String[] propertyNames) {
 		boolean prevReady = (boolean) previousState[ArrayUtils.indexOf(propertyNames, "ready")];
 		NotificationService notificationService = MpbApplicationContext.getBean(NotificationService.class);
