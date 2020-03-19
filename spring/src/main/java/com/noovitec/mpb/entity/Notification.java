@@ -21,8 +21,6 @@ public class Notification extends BaseEntity {
 	private String type;
 	private String entity;
 	private Long entityId;
-	private String number;
-	private boolean sent;
 	private String emails;
 
 }

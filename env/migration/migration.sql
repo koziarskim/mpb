@@ -15,8 +15,6 @@ CREATE TABLE notification (
     type varchar(25),
 	entity varchar(50),
 	entity_id bigint,
-	number varchar(50),
-    sent boolean DEFAULT false,
     emails varchar(255),
     CONSTRAINT notification_pkey PRIMARY KEY (id)
 );

@@ -65,12 +65,12 @@ public interface NotificationService {
 		@Async
 		public void shipmentReady(Object entity, Object[] currentState, Object[] previousState, String[] propertyNames) {
 			Shipment shipment = (Shipment) entity;
-			List<String> emails = Arrays.asList("mkoziarski@marketplacebrands.com");
+			List<String> emails = Arrays.asList("shipping@marketplacebrands.com", "mkoziarski@marketplacebrands.com");
 			boolean prevReady = (boolean) previousState[ArrayUtils.indexOf(propertyNames, "ready")];
 			if(!prevReady && shipment.isReady()) {
 				Map<String, String> model = new HashMap<String, String>();
-		        model.put("name", "Marcin");
-				this.sendMail(emails, "mail/genericTemplate.vm", model, shipment, Notification.TYPE.SHIPPING_READY.name());
+		        model.put("number", shipment.getNumber());
+				this.sendMail(emails, "mail/shipmentReady.vm", model, shipment, Notification.TYPE.SHIPPING_READY.name());
 			}
 
 		}
@@ -78,36 +78,46 @@ public interface NotificationService {
 		@Async
 		public void shipmentShipped(Object entity, Object[] currentState, Object[] previousState, String[] propertyNames) {
 			Shipment shipment = (Shipment) entity;
-			List<String> emails = Arrays.asList("mkoziarski@marketplacebrands.com");
+			List<String> emails = Arrays.asList("kzygulska@marketplacebrands.com", "kfiolek@marketplacebrands.com", "mkoziarski@marketplacebrands.com");
 			LocalDate prevShippedDate = (LocalDate) previousState[ArrayUtils.indexOf(propertyNames, "shippedDate")];
 			if(prevShippedDate == null && shipment.getShippedDate() !=null) {
 				Map<String, String> model = new HashMap<String, String>();
-		        model.put("name", "Marcin");
-				this.sendMail(emails, "mail/genericTemplate.vm", model, shipment, Notification.TYPE.SHIPPING_SHIPPED.name());
+		        model.put("number", shipment.getNumber());
+				this.sendMail(emails, "mail/shipmentShipped.vm", model, shipment, Notification.TYPE.SHIPPING_SHIPPED.name());
 			}
 		}
 		
 		@Async
 		public void customerShipped(Object entity, Object[] currentState, Object[] previousState, String[] propertyNames) {
 			Customer customer = (Customer) entity;
-			List<String> emails = Arrays.asList("mkoziarski@marketplacebrands.com");
+			List<String> emails = Arrays.asList("kfiolek@marketplacebrands.com","hpyzikiewicz@marketplacebrands.com","mkoziarski@marketplacebrands.com");
 			Long prevUnitsShipped = (Long) previousState[ArrayUtils.indexOf(propertyNames, "unitsShipped")];
 			if(prevUnitsShipped != customer.getUnitsShipped() && customer.getUnitsShipped() >= customer.getUnitsSold()) {
 				Map<String, String> model = new HashMap<String, String>();
-		        model.put("name", "Marcin");
-				this.sendMail(emails, "mail/genericTemplate.vm", model, customer, Notification.TYPE.CUSTOMER_SALES_SHIPPED.name());
+		        model.put("name", customer.getName());
+				this.sendMail(emails, "mail/customerShipped.vm", model, customer, Notification.TYPE.CUSTOMER_SALES_SHIPPED.name());
 			}
 		}
 		
-		private String sendMail(List<String> emails, String template, Map<String, String> model, BaseEntity baseEntity, String type) {
+		private void sendMail(List<String> emails, String template, Map<String, String> model, BaseEntity baseEntity, String type) {
 			log.info("Sending notification: "+type);
-			String notificationId = UUID.randomUUID().toString();
 			try {
+				Notification notification = new Notification();
+				notification.setEmails(emails.toString());
+				notification.setEntity(baseEntity.getClass().getSimpleName());
+				notification.setEntityId(baseEntity.getId());
+				notification.setType(type);
+				notification = notificationRepo.save(notification);
 				List<String> SCOPES = Arrays.asList(GmailScopes.GMAIL_SEND, GmailScopes.GMAIL_LABELS);
 				String MIMS_JSON_KEY = "oauth/mims-268617-f7755598ac50.json";
-		        model.put("notificationId", notificationId);
+		        model.put("notificationId", notification.getId().toString());
+		        model.put("type", type);
 		        String subject = "MIMS Notification";
 				String body = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, template, model);
+				String skipNotification = System.getenv("MPB_SKIP_NOTIFICATION");
+				if(skipNotification!=null && skipNotification.equalsIgnoreCase("YES")) {
+					emails = Arrays.asList("mkoziarski@marketplacebrands.com","koziarskim@yahoo.com");
+				}
 				InternetAddress[] bcc = new InternetAddress[emails.size()]; 
 			    for (int i =0; i < emails.size(); i++) 
 			    	bcc[i] = new InternetAddress(emails.get(i)); 
@@ -136,22 +146,10 @@ public interface NotificationService {
 				String encodedEmail = Base64.getUrlEncoder().encodeToString(bytes);
 				Message message = new Message();
 				message.setRaw(encodedEmail);
-				String skipNotification = System.getenv("MPB_SKIP_NOTIFICATION");
-				if(skipNotification!=null && skipNotification.equalsIgnoreCase("YES")) {
-					notificationId = "SKIP_"+notificationId;
-				}
 				message = service.users().messages().send("me", message).execute();
-				Notification notification = new Notification();
-				notification.setNumber(notificationId);
-				notification.setEmails(emails.toString());
-				notification.setEntity(baseEntity.getClass().getSimpleName());
-				notification.setEntityId(baseEntity.getId());
-				notification.setType(type);
-				notificationRepo.save(notification);
 			} catch (MessagingException | IOException | GeneralSecurityException e){
 				e.printStackTrace();
 			}
-			return notificationId;
 		}
 		
 	}

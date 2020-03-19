@@ -1,0 +1,8 @@
+
+  Customer: $name has been fully shipped.
+  ----------------------------------------------
+  This is automaticaly generated notification!
+  Please, login to MIMS to see details.
+  MIMS (Marketplace Inventory Management System).
+  ----------------------------------------------
+  Notification ID: $notificationId
