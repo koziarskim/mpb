@@ -148,7 +148,6 @@
 <script>
 import http from "../http-common";
 import router from "../router";
-import axios from "axios";
 import httpUtils from "../httpUtils";
 import securite from "../securite";
 

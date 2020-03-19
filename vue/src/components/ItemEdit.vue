@@ -202,7 +202,6 @@
 <script>
 import http from "../http-common";
 import router from "../router";
-import axios from "axios";
 import httpUtils from "../httpUtils";
 import navigation from "../utils/navigation";
 import securite from "../securite";
