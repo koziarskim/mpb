@@ -1,5 +1,9 @@
 delete from component where number is null;
 
+alter table customer add column units_sold bigint;
+
+alter table customer add column units_shipped bigint;
+
 CREATE SEQUENCE notification_id_seq;
 
 ALTER SEQUENCE notification_id_seq OWNER TO postgres;

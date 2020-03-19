@@ -44,11 +44,6 @@ class CustomerRest {
 		return customerRepo.findAll();
 	}
 
-	@GetMapping("/customer/dto")
-	Collection<CustomerDto> getAllDtos() {
-		return customerRepo.findAllDtos();
-	}
-
 	@GetMapping("/customer/kv")
 	Collection<KeyValueDto> getAllCustomers() {
 		return customerRepo.findAllCustomers();
@@ -86,6 +81,8 @@ class CustomerRest {
 			dto.setName(customer.getName());
 			dto.setPhone(customer.getPhone());
 			dto.setAddressName(customer.getBillingAddress()==null?"":(customer.getBillingAddress().getCity()+", "+customer.getBillingAddress().getState()));
+			dto.setUnitsSold(customer.getUnitsSold());
+			dto.setUnitsShipped(customer.getUnitsShipped());
 			return dto;
 		});
 		return dtos;

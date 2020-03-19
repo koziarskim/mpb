@@ -42,6 +42,7 @@ import com.noovitec.mpb.repo.ScheduleEventRepo;
 import com.noovitec.mpb.repo.SeasonRepo;
 import com.noovitec.mpb.repo.UpcRepo;
 import com.noovitec.mpb.service.ComponentService;
+import com.noovitec.mpb.service.CustomerService;
 import com.noovitec.mpb.service.ItemService;
 import com.noovitec.mpb.service.SaleService;
 
@@ -63,6 +64,8 @@ class ItemRest {
 	private ComponentService componentService;
 	@Autowired
 	private SaleService saleService;
+	@Autowired
+	private CustomerService customerService;
 	
 	private ItemService itemService;
 	private final Logger log = LoggerFactory.getLogger(ItemRest.class);
@@ -201,6 +204,7 @@ class ItemRest {
 			itemService.updateUnits(null);
 			componentService.updateUnits(null);
 			saleService.updateUnits(null);
+			customerService.updateUnits(null);
 			itemService.updateUnitsReadyProd(null);
 		} catch (Exception e) {
 			e.printStackTrace();

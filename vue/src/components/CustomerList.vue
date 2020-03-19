@@ -17,6 +17,9 @@
       <template v-slot:cell(name)="row">
           <b-link role="button" @click.stop="goTo(row.item.id)">{{row.item.name}}</b-link>
       </template>
+      <template v-slot:cell(unitsSoldShipped)="row">
+          <span>{{row.item.unitsSold}}/{{row.item.unitsShipped}}</span>
+      </template>
       <template v-slot:cell(action)="row">
           <b-button size="sm" @click.stop="remove(row.item.id)">x</b-button>
       </template>
@@ -37,6 +40,7 @@ export default {
         { key: "name", label: "Name", sortable: false },
         { key: "addressName", label: "Address", sortable: false },
         { key: "phone", label: "Phone", sortable: false },
+        { key: "unitsSoldShipped", label: "Sold/Shipped", sortable: false },
         { key: "action", label: "", sortable: false }
       ],
       customers: []

@@ -136,7 +136,7 @@
               <b-link @click.stop="goToItemReturnList(row.item.saleItem)">{{row.item.saleItem.unitsReturned}}</b-link>
             </template>
             <template v-slot:cell(units)="row">
-              <input class="form-control" style="width:100px" type="tel" v-model="row.item.units" @blur="unitsBlur(row.item)">
+              <input class="form-control" style="width:100px" type="tel" v-model="row.item.units">
             </template>
             <template v-slot:cell(unitsSold)="row">
               <span>{{+row.item.saleItem.units + +row.item.saleItem.unitsAdjusted}}</span>
@@ -410,7 +410,7 @@ export default {
       }
       var overStock = false;
       this.shipment.shipmentItems.forEach(si=> {
-        if((+si.prevUnits - +si.units) + +si.saleItem.unitsOnStock < 0){
+        if(((+si.units - +si.prevUnits) > +si.saleItem.unitsOnStock)){
           overStock = true;
         }
       })
@@ -547,12 +547,6 @@ export default {
         window.open(url, "_blank","")
       }
     },
-    unitsBlur(si){
-        if(si.units > si.saleItem.item.unitsOnStock){
-            alert("Cannot ship more that on stock");
-            si.units = 0;
-        }
-    }
   },
   mounted() {
     var id = this.$route.params.shipment_id;

@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -32,7 +33,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.PdfReader;
@@ -47,6 +47,7 @@ import com.noovitec.mpb.entity.ShipmentItem;
 import com.noovitec.mpb.repo.ShipmentRepo;
 import com.noovitec.mpb.service.AttachmentService;
 import com.noovitec.mpb.service.CrudService;
+import com.noovitec.mpb.service.CustomerService;
 import com.noovitec.mpb.service.ShipmentService;
 
 @RestController
@@ -61,7 +62,8 @@ class ShipmentRest {
 	private AttachmentService attachmentService;
 	@Autowired
 	private CrudService crudService;
-	
+	@Autowired
+	private CustomerService customerService;
 	
 	public ShipmentRest(ShipmentService shipmentService) {
 		this.shipmentService = shipmentService;
@@ -153,10 +155,6 @@ class ShipmentRest {
 			si.setShipment(shipment);
 		}
 		shipment = (Shipment) crudService.merge(shipment);
-		for(ShipmentItem si: shipment.getShipmentItems()) {
-			si.getSaleItem().getItem().updateUnits();
-			si.getSaleItem().getSale().updateUnits();
-		}
 		//Set modifiedDate
 		shipment.setModifiedDate(LocalDateTime.now());
 		//Set Status
@@ -180,15 +178,20 @@ class ShipmentRest {
 			shipment.setAttachment(attachment);
 		}
 		shipment = shipmentRepo.save(shipment);
+		for(ShipmentItem si: shipment.getShipmentItems()) {
+			si.getSaleItem().getItem().updateUnits();
+			si.getSaleItem().getSale().updateUnits();
+		}
+		customerService.updateUnits(Arrays.asList(shipment.getCustomer().getId()));
 		return ResponseEntity.ok().body(shipment);
 	}
 
 	@DeleteMapping("/shipment/{id}")
 	public ResponseEntity<?> delete(@PathVariable Long id) {
-		//TODO: Is there a better way of doing it?
+		Shipment shipment = shipmentRepo.findById(id).get();
 		List<Item> items = new ArrayList<Item>();
 		List<Sale> sales = new ArrayList<Sale>();
-		Shipment shipment = shipmentRepo.findById(id).get();
+		Long customerId = shipment.getCustomer().getId();
 		for(ShipmentItem si: shipment.getShipmentItems()) {
 			if(si.getSaleItem()!=null) {
 				items.add(si.getSaleItem().getItem());
@@ -204,6 +207,7 @@ class ShipmentRest {
 			sale.updateUnits();
 			crudService.save(sale);
 		}
+		customerService.updateUnits(Arrays.asList(customerId));
 		return ResponseEntity.ok().build();
 	}
 	

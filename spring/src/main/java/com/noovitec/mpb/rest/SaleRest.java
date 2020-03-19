@@ -2,6 +2,7 @@ package com.noovitec.mpb.rest;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -32,6 +33,7 @@ import com.noovitec.mpb.repo.ItemRepo;
 import com.noovitec.mpb.repo.SaleRepo;
 import com.noovitec.mpb.repo.ScheduleEventRepo;
 import com.noovitec.mpb.service.CrudService;
+import com.noovitec.mpb.service.CustomerService;
 import com.noovitec.mpb.service.SaleService;
 
 @RestController
@@ -46,6 +48,9 @@ class SaleRest {
 	ScheduleEventRepo scheduleEventRpo;
 	@Autowired
 	CrudService crudService;
+	@Autowired
+	CustomerService customerService;
+	
 	private final Logger log = LoggerFactory.getLogger(SaleRest.class);
 	private SaleService saleService;
 
@@ -177,6 +182,7 @@ class SaleRest {
 		for (SaleItem sa : sale.getSaleItems()) {
 			sa.getItem().updateUnits();
 		}
+		customerService.updateUnits(Arrays.asList(sale.getCustomer().getId()));
 		Sale result = (Sale) crudService.save(sale);
 		return ResponseEntity.ok().body(result);
 	}
@@ -188,6 +194,7 @@ class SaleRest {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("There are existing Sale Items!");
 		}
 		List<Item> items = new ArrayList<Item>();
+		Long customerId = sale.getCustomer().getId();
 		for (SaleItem sa : sale.getSaleItems()) {
 			items.add(sa.getItem());
 		}
@@ -196,6 +203,7 @@ class SaleRest {
 			item.updateUnits();
 			crudService.save(item);
 		}
+		customerService.updateUnits(Arrays.asList(customerId));
 		return ResponseEntity.ok().build();
 	}
 	
