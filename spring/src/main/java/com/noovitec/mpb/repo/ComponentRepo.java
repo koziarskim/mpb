@@ -41,4 +41,8 @@ public interface ComponentRepo extends PagingAndSortingRepository<Component, Lon
 			+ "where c.number is not null "
 			+ "and pc.purchase.id = (:purchase_id)")
 	List<KeyValueDto> findKvByPurchase(@Param("purchase_id") Long purchase_id);
+	
+	@Query(value="select c.id from Component c where c.number = :number")
+	public Long getIdByNumber(String number);
+
 }

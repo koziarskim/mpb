@@ -144,8 +144,15 @@ class ComponentRest {
 	}
 
 	@PostMapping("/component")
-	ResponseEntity<Component> postComponentAndAttachment(@RequestParam(required = false) MultipartFile image, @RequestParam String jsonComponent) throws JsonParseException, JsonMappingException, IOException{
+	ResponseEntity<?> postComponentAndAttachment(@RequestParam(required = false) MultipartFile image, @RequestParam String jsonComponent) throws JsonParseException, JsonMappingException, IOException{
 		Component component = objectMapper.readValue(jsonComponent, Component.class);
+		if(!component.getNumber().matches("^[a-zA-Z0-9\\-]{1,15}$")) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Component Number is invalid. Alphanumeric and hyphen only allowed. Maximum 15 characters.");
+		}
+		Long id = componentRepo.getIdByNumber(component.getNumber());
+		if((component.getId()==null && id !=null) || (component.getId()!=null && id !=null && !component.getId().equals(id))) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Component Number already exists. Please, choose differrent.");
+		}
 		component = componentService.save(component, image);
 		itemService.updateUnitsByComponent(component.getId());
 		componentService.updateUnits(Arrays.asList(component.getId()));

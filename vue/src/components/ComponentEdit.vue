@@ -320,7 +320,7 @@ export default {
       formData.append("image", this.uploadedFile);
       formData.append("jsonComponent", JSON.stringify(this.component));
       var headers = {headers: {"Content-Type": "multipart/form-data"}}
-      return axios.post(httpUtils.baseUrl + "/component", formData, headers).then(r =>{
+      return http.post("/component", formData, headers).then(r =>{
         this.getComponentData(r.data.id)
         return r.data;
       }).catch(e => {

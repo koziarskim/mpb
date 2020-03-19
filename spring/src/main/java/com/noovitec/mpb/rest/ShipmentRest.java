@@ -146,9 +146,16 @@ class ShipmentRest {
 	}	
 	
 	@PostMapping("/shipment")
-	ResponseEntity<Shipment> post(@RequestBody(required = false) Shipment shipment) throws Exception {
+	ResponseEntity<?> post(@RequestBody(required = false) Shipment shipment) throws Exception {
 		if (shipment == null) {
 			shipment = new Shipment();
+		}
+		if(!shipment.getNumber().matches("^[a-zA-Z0-9\\-]{1,15}$")) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Shipment Number is invalid. Alphanumeric and hyphen only allowed. Maximum 15 characters.");
+		}
+		Long id = shipmentRepo.getIdByNumber(shipment.getNumber());
+		if((shipment.getId()==null && id !=null) || (shipment.getId()!=null && id !=null && !shipment.getId().equals(id))) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Shipment Number already exists. Please, choose differrent.");
 		}
 		for(ShipmentItem si: shipment.getShipmentItems()) {
 			si.setShipment(shipment);
@@ -170,7 +177,9 @@ class ShipmentRest {
 			si.getSaleItem().getItem().updateUnits();
 			si.getSaleItem().getSale().updateUnits();
 		}
-		customerService.updateUnits(Arrays.asList(shipment.getCustomer().getId()));
+		if(shipment.getCustomer()!=null) {
+			customerService.updateUnits(Arrays.asList(shipment.getCustomer().getId()));
+		}
 		return ResponseEntity.ok().body(shipment);
 	}
 
