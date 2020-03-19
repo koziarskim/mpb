@@ -83,7 +83,7 @@ public interface AttachmentService {
 			if(systemPath == null) {
 				systemPath = "/home/koziarskim/mpb/mpb_file_store";
 			}
-			Path path = Paths.get(systemPath+attachment.getFilePath());
+			Path path = Paths.get(systemPath+attachment.getFilePath()+"/"+attachment.getName());
 			return path;
 		}
 		

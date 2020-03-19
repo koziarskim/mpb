@@ -132,7 +132,6 @@ class ShipmentRest {
 			attachment.setName("BOL_"+shipment.getNumber()+"_"+shipment.getId());
 		}
 		byte[] data = this.generatePdf(shipment, true);
-		attachmentService.save(attachment, data);
 		HttpHeaders header = new HttpHeaders();
 		header.setContentType(MediaType.APPLICATION_OCTET_STREAM);
 		header.set("Content-Disposition", "inline; filename=" + attachment.getFileName());
@@ -166,17 +165,6 @@ class ShipmentRest {
 			status = "SHP";
 		}
 		shipment.setStatus(status);
-		shipment = shipmentRepo.save(shipment);
-		byte[] data = this.generatePdf(shipment, true);
-		Attachment attachment = shipment.getAttachment();
-		if(attachment == null) {
-			attachment = new Attachment();
-			attachment.setType("SHP");
-			attachment.setMimeType("PDF");
-			attachment.setName("BOL_" + shipment.getNumber() + "_" + shipment.getId());
-			attachment = attachmentService.save(attachment, data);
-			shipment.setAttachment(attachment);
-		}
 		shipment = shipmentRepo.save(shipment);
 		for(ShipmentItem si: shipment.getShipmentItems()) {
 			si.getSaleItem().getItem().updateUnits();

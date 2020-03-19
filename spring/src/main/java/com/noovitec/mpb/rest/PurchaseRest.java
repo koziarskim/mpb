@@ -148,7 +148,6 @@ class PurchaseRest {
 			attachment.setName("PO_"+purchase.getNumber()+"_"+purchase.getId());
 		}
 		byte[] data = this.generatePdf(purchase);
-		attachmentService.save(attachment, data);
 		HttpHeaders header = new HttpHeaders();
 		header.setContentType(MediaType.APPLICATION_OCTET_STREAM);
 		header.set("Content-Disposition", "inline; filename=" + attachment.getFileName());
@@ -182,16 +181,6 @@ class PurchaseRest {
 		for (PurchaseComponent pc : purchase.getPurchaseComponents()) {
 			pc.setPurchase(purchase);
 			componentIds.add(pc.getComponent().getId());
-		}
-		byte[] data = this.generatePdf(purchase);
-		Attachment attachment = purchase.getAttachment();
-		if(attachment == null) {
-			attachment = new Attachment();
-			attachment.setType("POR");
-			attachment.setMimeType("PDF");
-			attachment.setName("PO_" + purchase.getNumber() + "_" + purchase.getId());
-			attachment = attachmentService.save(attachment, data);
-			purchase.setAttachment(attachment);
 		}
 		purchase = purchaseRepo.save(purchase);
 		List<Long> itemIds = itemService.findIdsByComponents(componentIds);

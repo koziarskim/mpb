@@ -14,7 +14,6 @@ Customer:
 Components:
 + Ability to select all for shipment.
 + Filter by "Units Short", "Out of Stock", "Open Sales".
-- Revisit how to calculate units short.
 - Price history/average (based on PO).
 Sale:
 + Fix delete each item in sale.
