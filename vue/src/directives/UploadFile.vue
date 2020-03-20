@@ -6,6 +6,9 @@
     <b-modal centered v-model="modalVisible" size="lg" :hide-header="true" :hide-footer="true">
       <div style="font-size: 12px;">
         <b-row>
+          <b style="margin-left: 25px">Upload/Download documents</b>
+        </b-row>
+        <b-row>
           <b-col cols=7 style="margin-top: 10px; margin-left: 10px">
             <b-link @click="headerClick()" role="botton">{{headerText}}</b-link>
           </b-col>

@@ -24,7 +24,7 @@ Sale:
 + Default sort by Shipping windows from (first first).
 + Ability to enter notes.
 + Ability to view status by color.
-- Ability to upload/download documents.
++ Ability to upload/download documents.
 - Export Sales by Customer to Excel/CSV (See Kasia's email: Order /Sale Summary Report - MIMS).
 - Export single sale.
 Global:
