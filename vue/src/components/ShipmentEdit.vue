@@ -60,7 +60,7 @@
       </b-col>
       <b-col cols=2>
         <label class="top-label">Shipped (Actual Load Sent):</label>
-        <input class="form-control" type="date" v-model="shipment.shippedDate">
+        <input @change="changeShippedDate" class="form-control" type="date" v-model="shipment.shippedDate">
       </b-col>
     </b-row>
     <b-row>
@@ -286,6 +286,13 @@ export default {
     },
   },
   methods: {
+    changeShippedDate(e){
+      if(!this.shipment.ready){
+        alert("Shipment is not ready!");
+        this.shipment.shippedDate = null;
+        return;
+      }
+    },
     closeUpload(attachments){
       this.shipment.attachments = attachments;
       this.saveShipment();
