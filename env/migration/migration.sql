@@ -6,6 +6,8 @@ CREATE TABLE sale_attachment (
     CONSTRAINT fk_sale_attachment_sale_id FOREIGN KEY (sale_id) REFERENCES sale (id)
 );
 
+update shipment set ready = true where shipped_date is not null;
+
 ALTER TABLE sale_attachment OWNER to postgres;
 
 ALTER SEQUENCE doc_content_id_seq OWNER TO postgres;
