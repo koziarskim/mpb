@@ -29,7 +29,7 @@
         </div>
         <div style="display: flex; margin-left: 85px; margin-top: 7px">
             <label class="top-label">Ready To Ship</label>
-            <input type="checkbox" style="margin-left: 3px; margin-top: 3px" v-model="shipment.ready">
+            <input type="checkbox" style="margin-left: 3px; margin-top: 3px" :disabled="shipment.shippedDate?true:false" v-model="shipment.ready">
           </div>
       </b-col>
     </b-row>
@@ -229,7 +229,7 @@ export default {
         {id: "COL", name: "Collect"},
         {id: "CPU", name: "Customer Pickup"}
       ],
-      itemText: ""
+      itemText: "",
     };
   },
   computed: {
@@ -291,6 +291,11 @@ export default {
         alert("Shipment is not ready!");
         this.shipment.shippedDate = null;
         return;
+      }
+      if(e.target.value){
+        this.readyDisabled = true;
+      }else{
+        this.readyDisabled = false;
       }
     },
     closeUpload(attachments){
