@@ -117,7 +117,7 @@ public interface NotificationService {
 				String skipNotification = System.getenv("MPB_SKIP_NOTIFICATION");
 				skipNotification = "YES"; //Bypass for testing...
 				if(skipNotification!=null && skipNotification.equalsIgnoreCase("YES")) {
-					emails = Arrays.asList("mkoziarski@marketplacebrands.com","koziarskim@yahoo.com");
+					emails = Arrays.asList("mkoziarski@marketplacebrands.com");
 				}
 				InternetAddress[] bcc = new InternetAddress[emails.size()]; 
 			    for (int i =0; i < emails.size(); i++) 

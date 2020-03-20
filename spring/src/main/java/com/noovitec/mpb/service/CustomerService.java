@@ -28,6 +28,7 @@ public interface CustomerService {
 		
 
 		public void updateUnits(List<Long> customerIds) {
+			int count = 0;
 			List<Customer> customers = customerIds==null?customerRepo.findAll():customerRepo.findByIds(customerIds);
 			for(Customer customer: customers) {
 				Long unitsSold = customerRepo.getUnitsSold(customer.getId());
@@ -35,7 +36,10 @@ public interface CustomerService {
 				customer.setUnitsSold(unitsSold);
 				customer.setUnitsShipped(unitsShipped);
 				customerRepo.save(customer);
+				log.info("Updated Customer: "+customer.getId());
+				count++;
 			}
+			log.info("Total Updated Customers: "+count);
 		}
 
 	}
