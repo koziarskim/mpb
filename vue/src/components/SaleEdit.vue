@@ -32,8 +32,9 @@
         <b-form-textarea type="text" :rows="4" v-model="sale.notes"></b-form-textarea>
       </b-col>
       <b-col cols=2>
-        <div style="text-align: right">
-          <b-button :disabled="!allowApprove()" size="sm" variant="success" @click="approveSale()">Approve</b-button>
+        <div style="display: flex; text-align: right">
+          <upload-file v-if="sale.id" v-on:close="closeUpload" :entity-id="sale.id" type="SALE" :attachments="sale.attachments"></upload-file>
+          <b-button style="margin-left: 3px" :disabled="!allowApprove()" size="sm" variant="success" @click="approveSale()">Approve</b-button>
           <b-button :title="getSaveTitle(sale)" style="margin-left: 3px" :disabled="!allowSave()" size="sm" variant="success" @click="saveSale()">Save</b-button>
           <b-button style="margin-left: 3px" :disabled="!allowEdit()" size="sm" @click="deleteSale()">x</b-button>
         </div>
@@ -166,7 +167,8 @@ import moment from "moment";
 
 export default {
   components: {
-    TransferModal: () => import("./TransferModal")
+    TransferModal: () => import("./TransferModal"),
+    UploadFile: () => import("../directives/UploadFile"),
   },
   data() {
     return {
@@ -283,6 +285,10 @@ export default {
     }
   },
   methods: {
+    closeUpload(attachments){
+      this.sale.attachments = attachments;
+      this.saveSale();
+    },
     getSaveTitle(sale){
       return "Created: "+moment(sale.created).format("YYYY/MM/DD HH:mm")+"\n"+
       "Modified: "+moment(sale.modifiedDate).format("YYYY/MM/DD HH:mm");

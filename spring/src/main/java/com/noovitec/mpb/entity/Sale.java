@@ -9,8 +9,10 @@ import java.util.HashSet;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -62,6 +64,11 @@ public class Sale extends BaseEntity {
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "sale_id")
 	private Collection<SaleItem> saleItems = new HashSet<SaleItem>();
+
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinTable(name = "sale_attachment", joinColumns = @JoinColumn(name = "sale_id"), inverseJoinColumns = @JoinColumn(name = "attachment_id"))
+	@OrderBy("created DESC")
+	private Collection<Attachment> attachments = new HashSet<Attachment>();
 
 
 	public void updateUnits() {
