@@ -5,7 +5,7 @@ Shipment:
 + Notification when individual shipment is shipped (emails: Kasia, Kinga)
 + Notification when all sales for customer are shipped (emails: Hania, Kinga)
 + Ability to view status by color.
-- Validate that Ready is set when setting Shipped Date
++ Validate that Ready is set when setting Shipped Date
 - Allow to download from list screen
 - Sale pickup, show only open sales.
 Item:
