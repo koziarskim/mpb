@@ -6,8 +6,8 @@ Shipment:
 + Notification when all sales for customer are shipped (emails: Hania, Kinga)
 + Ability to view status by color.
 + Validate that Ready is set when setting Shipped Date
++ Sale pickup, show only sales with available stock.
 - Allow to download from list screen
-- Sale pickup, show only open sales.
 Item:
 + Ability to enter upc for item (manually entered)
 Customer:

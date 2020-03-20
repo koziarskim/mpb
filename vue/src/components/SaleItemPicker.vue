@@ -77,7 +77,8 @@ export default {
 			});
 		},
 		getAvailableSales(){
-			http.get("/sale/kv/customer/"+this.customerId).then(r => {
+			var query = {params: {onlyStock: true}}
+			http.get("/sale/kv/customer/"+this.customerId, query).then(r => {
 				this.availableSales = r.data;
 			}).catch(e => {
 				console.log("API error: "+e);

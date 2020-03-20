@@ -94,9 +94,11 @@ class SaleRest {
 	}
 
 	@GetMapping("/sale/kv/customer/{customer_id}")
-	Collection<KeyValueDto> getAvailableFoSchedule(
-			@PathVariable Long customer_id) {
-		return saleRepo.findSalesForCustomer(customer_id);
+	Collection<KeyValueDto> findKvByCustomer(
+			@PathVariable Long customer_id,
+			@RequestParam(required=false) boolean onlyStock) {
+		List<KeyValueDto> dtos = onlyStock?saleRepo.findKvByCustomerAndStock(customer_id):saleRepo.findKvByCustomer(customer_id);
+		return dtos;
 	}
 
 	@GetMapping("/sale/kv")
