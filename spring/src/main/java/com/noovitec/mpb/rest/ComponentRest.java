@@ -29,11 +29,13 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.noovitec.mpb.dto.ComponentDto;
 import com.noovitec.mpb.dto.KeyValueDto;
+import com.noovitec.mpb.entity.Attachment;
 import com.noovitec.mpb.entity.Category;
 import com.noovitec.mpb.entity.Component;
 import com.noovitec.mpb.repo.AttachmentRepo;
 import com.noovitec.mpb.repo.CategoryRepo;
 import com.noovitec.mpb.repo.ComponentRepo;
+import com.noovitec.mpb.service.AttachmentService;
 import com.noovitec.mpb.service.ComponentService;
 import com.noovitec.mpb.service.CrudService;
 import com.noovitec.mpb.service.ItemService;
@@ -43,17 +45,19 @@ import com.noovitec.mpb.service.ItemService;
 class ComponentRest {
 
 	@Autowired
-	ObjectMapper objectMapper;
+	private ObjectMapper objectMapper;
 	@Autowired
-	AttachmentRepo attachmentRepo;
+	private AttachmentRepo attachmentRepo;
 	@Autowired
-	CategoryRepo categoryRepo;
+	private CategoryRepo categoryRepo;
 	@Autowired
-	CrudService crudService;
+	private CrudService crudService;
 	@Autowired
-	ComponentService componentService;
+	private ComponentService componentService;
 	@Autowired
-	ItemService itemService;
+	private ItemService itemService;
+	@Autowired
+	private AttachmentService attachmentService;
 
 	private final Logger log = LoggerFactory.getLogger(ComponentRest.class);
 	private ComponentRepo componentRepo;
@@ -153,7 +157,12 @@ class ComponentRest {
 		if((component.getId()==null && id !=null) || (component.getId()!=null && id !=null && !component.getId().equals(id))) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Component Number already exists. Please, choose differrent.");
 		}
-		component = componentService.save(component, image);
+		component = componentService.save(component);
+		if(image!=null) {
+			Attachment attachment = attachmentService.store(image, Component.class.getSimpleName(), component.getId());
+			component.setAttachment(attachment);
+			component = componentService.save(component);
+		}
 		itemService.updateUnitsByComponent(component.getId());
 		componentService.updateUnits(Arrays.asList(component.getId()));
 		itemService.updateUnitsReadyProdByComponent(component.getId());

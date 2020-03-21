@@ -34,6 +34,7 @@ import com.noovitec.mpb.dto.ItemListDto;
 import com.noovitec.mpb.dto.ItemTreeDto;
 import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.dto.ScheduleEventTreeDto;
+import com.noovitec.mpb.entity.Attachment;
 import com.noovitec.mpb.entity.Item;
 import com.noovitec.mpb.entity.ScheduleEvent;
 import com.noovitec.mpb.entity.Season;
@@ -41,6 +42,7 @@ import com.noovitec.mpb.repo.ItemRepo;
 import com.noovitec.mpb.repo.ScheduleEventRepo;
 import com.noovitec.mpb.repo.SeasonRepo;
 import com.noovitec.mpb.repo.UpcRepo;
+import com.noovitec.mpb.service.AttachmentService;
 import com.noovitec.mpb.service.ComponentService;
 import com.noovitec.mpb.service.CustomerService;
 import com.noovitec.mpb.service.ItemService;
@@ -66,6 +68,8 @@ class ItemRest {
 	private SaleService saleService;
 	@Autowired
 	private CustomerService customerService;
+	@Autowired
+	private AttachmentService attachmentService;
 	
 	private ItemService itemService;
 	private final Logger log = LoggerFactory.getLogger(ItemRest.class);
@@ -176,11 +180,15 @@ class ItemRest {
 		if((item.getId()==null && id !=null) || (item.getId()!=null && id !=null && !item.getId().equals(id))) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Component Number already exists. Please, choose differrent.");
 		}
-
-		Item result = itemService.save(item, image);
-		itemService.updateUnits(Arrays.asList(result.getId()));
-		itemService.updateUnitsReadyProd(Arrays.asList(result.getId()));
-		return ResponseEntity.ok(result);
+		item = itemService.save(item);
+		if(image!=null) {
+			Attachment attachment = attachmentService.store(image, Item.class.getSimpleName(), item.getId());
+			item.setAttachment(attachment);
+			item = itemService.save(item);
+		}
+		itemService.updateUnits(Arrays.asList(item.getId()));
+		itemService.updateUnitsReadyProd(Arrays.asList(item.getId()));
+		return ResponseEntity.ok(item);
 	}
 
 	@DeleteMapping("/item/{id}")
