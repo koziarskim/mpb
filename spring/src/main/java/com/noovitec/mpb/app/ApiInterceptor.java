@@ -19,13 +19,16 @@ public class ApiInterceptor implements HandlerInterceptor {
 	}
 
 	@Override
-	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object object, ModelAndView model) throws Exception {
-//		log.info("postHandle...");
+	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object object) throws Exception {
+//		log.info("preHandle...");
+		TenantContext.setCurrentTenant("public");
+		return true;
 	}
 
 	@Override
-	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object object) throws Exception {
-//		log.info("preHandle...");
-		return true;
+	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object object, ModelAndView model) throws Exception {
+//		log.info("postHandle...");
+		TenantContext.clear();
 	}
+
 }
