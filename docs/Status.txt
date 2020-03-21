@@ -29,7 +29,7 @@ Sale:
 - Export Sales by Customer to Excel/CSV (See Kasia's email: Order /Sale Summary Report - MIMS).
 - Export single sale.
 Global:
-+ Display per page 25S
++ Display per page 25
 - Change file storage from db to filesystem.
 ------------------------------------------------------------------
 
