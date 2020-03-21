@@ -31,3 +31,7 @@ ALTER TABLE shipment_attachment OWNER TO postgres;
 ALTER TABLE year_id_seq OWNER TO postgres;
 
 ALTER TABLE year OWNER TO postgres;
+
+update attachment set type = 'Shipment' where type = 'SHIPMENT';
+
+--TODO Rename file directory to small case.

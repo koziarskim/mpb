@@ -112,7 +112,7 @@ export default {
       formData.append("type", this.type);
       formData.append("entityId", this.entityId);
       var headers = {headers: {"Content-Type": "multipart/form-data"}}
-      http.post("/file", formData, headers).then(r =>{
+      http.post("/file/upload", formData, headers).then(r =>{
         this.newAttachments.push(r.data);
         this.uploadProgress = false;
       }).catch(e => {
