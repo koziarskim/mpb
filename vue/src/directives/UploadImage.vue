@@ -62,14 +62,14 @@ export default {
             oc.height = img.height * percentage;
             octx.drawImage(img, 0, 0, oc.width, oc.height);
             this.compressedImage = oc.toDataURL();
-            this.onUpload(this.dataURItoBlob(this.compressedImage));
+            this.onUpload(this.dataURItoBlob(this.compressedImage, file.name));
           };
           img.src = imgUploadEvent.target.result;
         };
-        reader.readAsDataURL(this.inputElement.files[0]);
+        reader.readAsDataURL(file);
       }
     },
-    dataURItoBlob(dataURI) {
+    dataURItoBlob(dataURI, fileName) {
       if (!dataURI) {
         return null;
       }
@@ -85,7 +85,8 @@ export default {
       for (var i = 0; i < byteString.length; i++) {
         ia[i] = byteString.charCodeAt(i);
       }
-      return new Blob([ia], { type: mimeString });
+      var blob = new Blob([ia], { type: mimeString });
+      return new File([blob], fileName)
     }
   }
 };

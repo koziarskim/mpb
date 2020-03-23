@@ -3,6 +3,8 @@ package com.noovitec.mpb.rest;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -39,7 +41,6 @@ import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfStamper;
 import com.noovitec.mpb.dto.ShipmentDto;
 import com.noovitec.mpb.dto.ShipmentEventDto;
-import com.noovitec.mpb.entity.Attachment;
 import com.noovitec.mpb.entity.Item;
 import com.noovitec.mpb.entity.Sale;
 import com.noovitec.mpb.entity.Shipment;
@@ -124,17 +125,13 @@ class ShipmentRest {
 	@GetMapping("/shipment/{shipmentId}/pdf")
 	HttpEntity<byte[]> getPdf(@PathVariable Long shipmentId) throws DocumentException, IOException {
 		Shipment shipment = shipmentRepo.findById(shipmentId).get();
-		Attachment attachment = attachmentService.getById(shipment.getAttachment().getId());
-		if(attachment == null) {
-			attachment = new Attachment();
-			attachment.setType("SHIPMENT");
-			attachment.setMimeType("PDF");
-			attachment.setName("BOL_"+shipment.getNumber()+"_"+shipment.getId());
-		}
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+		String fileName = "PO_"+shipment.getNumber()+"_"+shipment.getId() + "-" + sdf.format(timestamp) +".pdf";
 		byte[] data = this.generatePdf(shipment, true);
 		HttpHeaders header = new HttpHeaders();
 		header.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-		header.set("Content-Disposition", "inline; filename=" + attachment.getFileName());
+		header.set("Content-Disposition", "inline; filename=" + fileName);
 		header.setContentLength(data.length);
 		return new HttpEntity<byte[]>(data, header);
 	}

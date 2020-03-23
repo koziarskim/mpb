@@ -3,6 +3,7 @@ package com.noovitec.mpb.service;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Calendar;
@@ -84,6 +85,9 @@ public interface AttachmentService {
 				systemPath = "/home/koziarskim/mpb/mpb_file_store";
 			}
 			Path path = Paths.get(systemPath+attachment.getFilePath()+"/"+attachment.getName());
+			if(!Files.exists(path)) {
+				return null;
+			}
 			return path;
 		}
 		

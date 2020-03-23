@@ -9,9 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import com.noovitec.mpb.entity.Attachment;
 import com.noovitec.mpb.entity.Component;
 import com.noovitec.mpb.entity.ItemComponent;
 import com.noovitec.mpb.entity.PurchaseComponent;
@@ -21,7 +19,7 @@ import com.noovitec.mpb.repo.ItemComponentRepo;
 
 public interface ComponentService {
 
-	public Component save(Component component, MultipartFile image) throws IOException;
+	public Component save(Component component) throws IOException;
 	public void delete(Long id);
 	public void updateUnitsOnStockByProduction(Long productionId, Long units);
 	public void updateUnitsOnStock(Long componentId, Long units);
@@ -46,19 +44,10 @@ public interface ComponentService {
 			this.componentRepo = componentRepo;
 		}
 		
-		public Component save(Component component, MultipartFile image) throws IOException {
+		public Component save(Component component) throws IOException {
 			component = (Component) crudService.merge(component);
 			for(ItemComponent ic: component.getItemComponents()) {
 				ic.setComponent(component);
-			}
-			component = (Component) crudService.merge(component);
-			if (image != null) {
-				Attachment attachment = new Attachment();
-				attachment.setType("COMPONENT");
-				attachment.setName("COM_"+component.getNumber()+"_"+component.getId());
-				attachment.setMimeType("JPG");
-				attachmentService.save(attachment, image.getBytes());
-				component.setAttachment(attachment);
 			}
 			return componentRepo.save(component);
 		}

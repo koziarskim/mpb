@@ -29,21 +29,20 @@ Sale:
 - Export Sales by Customer to Excel/CSV (See Kasia's email: Order /Sale Summary Report - MIMS).
 - Export single sale.
 Global:
-+ Display per page 25S
-- Change file storage from db to filesystem.
++ Display per page 25
++ Change file storage from db to filesystem.
 ------------------------------------------------------------------
 
 Backlog:
 Receiving:
 - Combine shipping schedule with Receiving.
 Customer:
-- Reorganize screen layout (Generic info, Billing info, Shipping info) - Need more info.
 - Ability to create Pallet Tag - Need to talk more.
 Item:
 - Item version based on the year
-- Ability to search/filter by Season and Year.
 Dashboard:
 - Display task list (need to define what to see).
+- Ability to search/filter by Season and Year.
 ------------------------------------------------------------------------
 
 CUSTOMER-----------------------------------------

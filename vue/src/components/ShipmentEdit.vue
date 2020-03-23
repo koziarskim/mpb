@@ -23,7 +23,7 @@
       </b-col>
       <b-col cols=2>
         <div style="display:flex; margin-left: 75px">
-          <upload-file v-if="shipment.id" v-on:header-click="openPdf" v-on:close="closeUpload" :entity-id="shipment.id" header-text="Bill of Lading/Packing Slip (PDF)" type="SHIPMENT" :attachments="shipment.attachments"></upload-file>
+          <upload-file v-if="shipment.id" v-on:header-click="openPdf" v-on:close="closeUpload" :entity-id="shipment.id" header-text="Bill of Lading/Packing Slip (PDF)" type="Shipment" :attachments="shipment.attachments"></upload-file>
           <b-button :disabled="!allowEdit()" :title="getSaveTitle(shipment)" size="sm" style="margin-left: 5px" variant="success" @click="saveShipment()">Save</b-button>
           <b-button style="margin-left: 3px" :disabled="!allowEdit()" size="sm" @click="deleteShipment()">x</b-button>
         </div>

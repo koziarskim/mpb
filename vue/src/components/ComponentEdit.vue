@@ -340,7 +340,7 @@ export default {
 	},
 	getImageUrl(){
         if(this.component.attachment){
-            return httpUtils.baseUrl + "/attachment/db/" + this.component.attachment.id;
+            return httpUtils.baseUrl + "/file/attachment/" + this.component.attachment.id;
 		}
 		return null;
       }

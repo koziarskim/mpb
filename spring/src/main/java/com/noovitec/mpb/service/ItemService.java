@@ -10,16 +10,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import com.noovitec.mpb.entity.Attachment;
 import com.noovitec.mpb.entity.Item;
 import com.noovitec.mpb.entity.ItemComponent;
 import com.noovitec.mpb.repo.ItemRepo;
 
 public interface ItemService {
 
-	public Item save(Item item, MultipartFile image) throws IOException;
+	public Item save(Item item) throws IOException;
 	public void delete(Long id);
 	public void updateUnits(List<Long> itemIds);
 	public void updateUnitsReadyProd(List<Long> itemIds);
@@ -43,18 +41,9 @@ public interface ItemService {
 			this.itemRepo = itemRepo;
 		}
 		
-		public Item save(Item item, MultipartFile image) throws IOException {
+		public Item save(Item item) throws IOException {
 			for (ItemComponent ic : item.getItemComponents()) {
 				ic.setItem(item);
-			}
-			item = (Item) crudService.merge(item);
-			if (image != null) {
-				Attachment attachment = new Attachment();
-				attachment.setType("ITEM");
-				attachment.setName("ITM_"+item.getNumber()+"_"+item.getId());
-				attachment.setMimeType("JPG");
-				attachmentService.save(attachment, image.getBytes());
-				item.setAttachment(attachment);
 			}
 			return itemRepo.save(item);
 		}

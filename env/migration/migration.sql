@@ -1,33 +1,6 @@
-CREATE TABLE sale_attachment (
-    sale_id bigint NOT NULL,
-    attachment_id bigint NOT NULL,
-    CONSTRAINT uq_sale_attachment UNIQUE (sale_id, attachment_id),
-    CONSTRAINT fk_sale_attachment_attachment_id FOREIGN KEY (attachment_id) REFERENCES attachment (id),
-    CONSTRAINT fk_sale_attachment_sale_id FOREIGN KEY (sale_id) REFERENCES sale (id)
-);
+update purchase set attachment_id = null where attachment_id in (select id from attachment where file_path is null);
 
-update shipment set ready = true where shipped_date is not null;
+update shipment set attachment_id = null where attachment_id in (select id from attachment where file_path is null);
 
-ALTER TABLE sale_attachment OWNER to postgres;
+delete from attachment where file_path is null;
 
-ALTER SEQUENCE doc_content_id_seq OWNER TO postgres;
-
-ALTER TABLE doc_content OWNER TO postgres;
-
-ALTER TABLE item_return_id_seq OWNER TO postgres;
-
-ALTER TABLE item_return OWNER TO postgres;
-
-ALTER TABLE sale_item_return_id_seq OWNER TO postgres;
-
-ALTER TABLE sale_item_return OWNER TO postgres;
-
-ALTER TABLE sale_item_transfer_id_seq OWNER TO postgres;
-
-ALTER TABLE sale_item_transfer OWNER TO postgres;
-
-ALTER TABLE shipment_attachment OWNER TO postgres;
-
-ALTER TABLE year_id_seq OWNER TO postgres;
-
-ALTER TABLE year OWNER TO postgres;

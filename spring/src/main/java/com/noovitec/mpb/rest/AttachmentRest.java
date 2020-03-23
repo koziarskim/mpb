@@ -1,6 +1,7 @@
 package com.noovitec.mpb.rest;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -59,6 +60,15 @@ class AttachmentRest {
 	@ResponseBody
 	ResponseEntity<?> downloadFile(@PathVariable Long attachmentId) throws IOException {
 		Path path = attachmentService.load(attachmentId);
+		if(path == null) {
+			InputStream is = this.getClass().getClassLoader().getResourceAsStream("image/FileNotFound.jpg");
+			byte[] targetArray = new byte[is.available()];
+			is.read(targetArray);
+			return ResponseEntity.ok()
+					.contentType(MediaType.IMAGE_JPEG)
+					.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=FileNotFound.jpg")
+					.body(targetArray);
+		}
 		String mimeType = Files.probeContentType(path);
 		Resource resource = new UrlResource(path.toUri());
 		return ResponseEntity.ok()
@@ -68,7 +78,7 @@ class AttachmentRest {
 	}
 
 	
-	 @PostMapping("/file")
+	 @PostMapping("/file/upload")
 	 ResponseEntity<?> uploadFile(@RequestParam MultipartFile file, @RequestParam String type, @RequestParam Long entityId) throws IllegalStateException, IOException {
 		Attachment attachment = attachmentService.store(file, type, entityId);
 		return ResponseEntity.ok().body(attachment);
