@@ -1,4 +1,4 @@
-package com.noovitec.mpb.app;
+package com.noovitec.mpb.serializer;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -11,7 +11,7 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 
 @JsonComponent
-public class BigDecimalSerializer extends JsonSerializer<BigDecimal> {
+public class MpbBigDecimalSerializer extends JsonSerializer<BigDecimal> {
 
 	@Override
 	public void serialize(BigDecimal value, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException, JsonProcessingException {

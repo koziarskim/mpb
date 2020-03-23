@@ -27,16 +27,19 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-@ComponentScan({ "com.noovitec.mpb.rest", "com.noovitec.mpb.service" })
+@ComponentScan({ "com.noovitec.mpb.rest", "com.noovitec.mpb.service", "com.noovitec.mpb.serializer", "com.noovitec.mpb.app" })
 @EntityScan("com.noovitec.mpb.entity")
 @EnableJpaRepositories("com.noovitec.mpb.repo")
 @EnableAsync
 @Configuration
 public class MpbConfiguration implements WebMvcConfigurer {
+	
+    @Autowired
+    private JpaProperties jpaProperties;
 
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
-		ApiInterceptor apiInterceptor = new ApiInterceptor();
+		MpbApiInterceptor apiInterceptor = new MpbApiInterceptor();
 		registry.addInterceptor(apiInterceptor);
 		WebMvcConfigurer.super.addInterceptors(registry);
 	}
@@ -51,13 +54,8 @@ public class MpbConfiguration implements WebMvcConfigurer {
 		return velocityEngine;
 	}
 	
-
-    @Autowired
-    private JpaProperties jpaProperties;
     @Bean
-    public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource,
-                                                                       MultiTenantConnectionProvider multiTenantConnectionProviderImpl,
-                                                                       CurrentTenantIdentifierResolver currentTenantIdentifierResolverImpl) {
+    public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource, MultiTenantConnectionProvider multiTenantConnectionProviderImpl, CurrentTenantIdentifierResolver currentTenantIdentifierResolverImpl) {
         Map<String, Object> properties = new HashMap<>();
         properties.putAll(jpaProperties.getProperties());
         properties.put(Environment.MULTI_TENANT, MultiTenancyStrategy.SCHEMA);

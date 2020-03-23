@@ -10,7 +10,7 @@ import org.hibernate.engine.jdbc.connections.spi.MultiTenantConnectionProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.noovitec.mpb.app.TenantContext;
+import com.noovitec.mpb.app.MpbTenantContext;
 
 @Component
 public class MultiTenantConnectionProviderImpl implements MultiTenantConnectionProvider {
@@ -30,7 +30,7 @@ public class MultiTenantConnectionProviderImpl implements MultiTenantConnectionP
     }
     @Override
     public Connection getConnection(String tenantIdentifie) throws SQLException {
-        String tenantIdentifier = TenantContext.getCurrentTenant();
+        String tenantIdentifier = MpbTenantContext.getCurrentTenant();
         final Connection connection = getAnyConnection();
         try {
             if (tenantIdentifier != null) {

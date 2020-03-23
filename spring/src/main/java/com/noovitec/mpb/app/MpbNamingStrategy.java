@@ -37,9 +37,7 @@ public class MpbNamingStrategy implements PhysicalNamingStrategy {
     	}
         final String regex = "([a-z])([A-Z])";
         final String replacement = "$1_$2";
-        final String newName = identifier.getText()
-          .replaceAll(regex, replacement)
-          .toLowerCase();
+        final String newName = identifier.getText().replaceAll(regex, replacement).toLowerCase();
         return Identifier.toIdentifier(newName);
     }
  

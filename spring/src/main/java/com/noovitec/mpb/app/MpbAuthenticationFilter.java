@@ -22,9 +22,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Component
 @Order(2)
-class AuthenticationFilter extends UrlBasedCorsConfigurationSource implements Filter {
+class MpbAuthenticationFilter extends UrlBasedCorsConfigurationSource implements Filter {
 
-	private final Logger log = LoggerFactory.getLogger(AuthenticationFilter.class);
+	private final Logger log = LoggerFactory.getLogger(MpbAuthenticationFilter.class);
 	@Autowired
 	private MpbAuthenticationContext mpbAuthenticationContext;
 

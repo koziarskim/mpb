@@ -1,4 +1,4 @@
-package com.noovitec.mpb.app;
+package com.noovitec.mpb.serializer;
 
 import java.io.IOException;
 
@@ -12,11 +12,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.noovitec.mpb.dto.FilterDto;
 
 @Component
-public class FilterConverter implements Converter<String, Pageable> {
+public class MpbPageableSerializer implements Converter<String, Pageable> {
 
 	private final ObjectMapper objectMapper;
 
-	public FilterConverter(ObjectMapper objectMapper) {
+	public MpbPageableSerializer(ObjectMapper objectMapper) {
 		this.objectMapper = objectMapper;
 	}
 

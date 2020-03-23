@@ -9,9 +9,9 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 //TODO: Do we need this?
-public class ApiInterceptor implements HandlerInterceptor {
+public class MpbApiInterceptor implements HandlerInterceptor {
 
-	private final Logger log = LoggerFactory.getLogger(ApiInterceptor.class);
+	private final Logger log = LoggerFactory.getLogger(MpbApiInterceptor.class);
 
 	@Override
 	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object object, Exception arg3) throws Exception {
@@ -21,14 +21,14 @@ public class ApiInterceptor implements HandlerInterceptor {
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object object) throws Exception {
 //		log.info("preHandle...");
-		TenantContext.setCurrentTenant("public");
+		MpbTenantContext.setCurrentTenant("public");
 		return true;
 	}
 
 	@Override
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object object, ModelAndView model) throws Exception {
 //		log.info("postHandle...");
-		TenantContext.clear();
+		MpbTenantContext.clear();
 	}
 
 }
