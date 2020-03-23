@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -39,21 +38,6 @@ class AttachmentRest {
 
 	public AttachmentRest(AttachmentService attachmentService) {
 		this.attachmentService = attachmentService;
-	}
-
-	@GetMapping("/attachment/db/{id}")
-	@ResponseBody
-	HttpEntity<byte[]> downloadImage(@PathVariable Long id) throws IOException {
-		Attachment attachment = attachmentService.getWithDocContent(id);
-		if(attachment.getDocContent()==null) {
-			return null;
-		}
-		byte[] data = attachment.getDocContent().getData();
-		HttpHeaders header = new HttpHeaders();
-		header.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-		header.set("Content-Disposition", "inline; filename=" + attachment.getFileName());
-		header.setContentLength(data.length);
-		return new HttpEntity<byte[]>(data, header);
 	}
 
 	@GetMapping("/file/attachment/{attachmentId}")

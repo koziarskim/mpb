@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import com.noovitec.mpb.entity.Purchase;
 import com.noovitec.mpb.repo.ComponentRepo;
-import com.noovitec.mpb.repo.DocContentRepo;
 import com.noovitec.mpb.repo.PurchaseRepo;
 import com.noovitec.mpb.repo.SupplierRepo;
 
@@ -25,8 +24,6 @@ public interface PurchaseService {
 
 		private final Logger log = LoggerFactory.getLogger(PurchaseServiceImp.class);
 		private PurchaseRepo purchaseRepo;
-		@Autowired
-		private DocContentRepo docContentRepo;
 		@Autowired
 		private SupplierRepo supplierRepo;
 		@Autowired

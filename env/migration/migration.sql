@@ -4,6 +4,10 @@ update shipment set attachment_id = null where attachment_id in (select id from 
 
 delete from attachment where file_path is null;
 
+alter table attachment drop column doc_content_id;
+
+drop table doc_content;
+
 update shipment set number = '20190290-1' where id in (select id from shipment where number = '20190290' limit 1);
 update shipment set number = '20190299-1' where id in (select id from shipment where number = '20190299' limit 1);
 update shipment set number = '20190285-1' where id in (select id from shipment where number = '20190285' limit 1);
@@ -70,4 +74,17 @@ update component set number = '4-1' where id in (select id from component where 
 update component set number = '21-1' where id in (select id from component where number = '21' limit 1);
 update component set number = '1234-1' where id in (select id from component where number = '1234' limit 1);
 
+ALTER TABLE item ADD CONSTRAINT uq_item_number UNIQUE (number);
+
+ALTER TABLE component ADD CONSTRAINT uq_component_number UNIQUE (number);
+
+ALTER TABLE shipment ADD CONSTRAINT uq_shipment_number UNIQUE (number);
+
+ALTER TABLE sale drop CONSTRAINT sale_number_unq;
+
+ALTER TABLE sale ADD CONSTRAINT uq_sale_number UNIQUE (number);
+
+ALTER TABLE purchase drop CONSTRAINT purchase_number_unq;
+
+ALTER TABLE purchase ADD CONSTRAINT uq_purchase_number UNIQUE (number);
 
