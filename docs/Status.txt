@@ -8,7 +8,6 @@ Shipment:
 + Validate that Ready is set when setting Shipped Date
 + Disable Ready when Fully Shipped.
 + Sale pickup, show only sales with available stock.
-- Allow to download from list screen
 Item:
 + Ability to enter upc for item (manually entered)
 Customer:
@@ -28,6 +27,8 @@ Sale:
 + Ability to upload/download documents.
 - Export Sales by Customer to Excel/CSV (See Kasia's email: Order /Sale Summary Report - MIMS).
 - Export single sale.
+- Ability to enter invoice number for multiple sale-items ??? or should it be by whole sale?
+- Ability to search sale/sale-items by invoice number.
 Global:
 + Display per page 25
 + Change file storage from db to filesystem.
