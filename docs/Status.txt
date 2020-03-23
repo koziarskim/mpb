@@ -30,7 +30,7 @@ Sale:
 - Export single sale.
 Global:
 + Display per page 25
-- Change file storage from db to filesystem.
++ Change file storage from db to filesystem.
 ------------------------------------------------------------------
 
 Backlog:
