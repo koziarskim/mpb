@@ -1,6 +1,7 @@
 package com.noovitec.mpb.rest;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -71,6 +72,8 @@ class SaleRest {
 			@RequestParam(required = false) Long customerId,
 			@RequestParam(required = false) String status) {
 		Page<Sale> sales = saleRepo.findPagable(pageable, saleNumber, itemId, customerId, status);
+		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		DateTimeFormatter windowFormat = DateTimeFormatter.ofPattern("MM/dd");
 		Page<SaleListDto> all = sales.map(sale -> {
 			SaleListDto dto = new SaleListDto();
 			dto.setId(sale.getId());
@@ -88,6 +91,9 @@ class SaleRest {
 			dto.setUnitsOnStock(sale.getUnitsOnStock());
 			dto.setUnitsAdjusted(sale.getUnitsAdjusted());
 			dto.setStatus(sale.getStatus());
+			String shippingFrom = sale.getShippingFrom()==null?"":sale.getShippingFrom().format(windowFormat);
+			String shippingTo = sale.getShippingTo()==null?"":sale.getShippingTo().format(windowFormat);
+			dto.setShippingWindow(shippingFrom +" - "+shippingTo);
 			return dto;
 		});
 		return all;

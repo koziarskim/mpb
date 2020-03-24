@@ -1,46 +1,25 @@
 In Progress/Done:
-Shipment:
-+ Show popupup if ship more that stock
-+ Notification when individual shipment is ready (emails: shipping@marketplacebrands.com)
-+ Notification when individual shipment is shipped (emails: Kasia, Kinga)
-+ Notification when all sales for customer are shipped (emails: Hania, Kinga)
-+ Ability to view status by color.
-+ Validate that Ready is set when setting Shipped Date
-+ Disable Ready when Fully Shipped.
-+ Sale pickup, show only sales with available stock.
-Item:
-+ Ability to enter upc for item (manually entered)
-Customer:
-+ Ability to see total units sold and shipped.
 Components:
-+ Ability to select all for shipment.
-+ Filter by "Units Short", "Out of Stock", "Open Sales".
 - Price history/average (based on PO).
 Sale:
-+ Fix delete each item in sale.
-+ Fix delete sale
-+ Show created and modified date.
-+ Ability to enter shipping window (from - to).
-+ Default sort by Shipping windows from (first first).
-+ Ability to enter notes.
-+ Ability to view status by color.
-+ Ability to upload/download documents.
++ Show sale windows on list (from, to).
 - Export Sales by Customer to Excel/CSV (See Kasia's email: Order /Sale Summary Report - MIMS).
 - Export single sale.
+Accounting (talk to Kinga).
 - Ability to enter invoice number for multiple sale-items ??? or should it be by whole sale?
-- Ability to search sale/sale-items by invoice number.
-Global:
-+ Display per page 25
-+ Change file storage from db to filesystem.
+- Ability to search sale/sale-items by invoice number
+- Ability to enter invoice number before it is generated.
+Schedule:
+- Ability to add random reciving event on schedule.
+- Combine Shipment and receiving schedule.
+Item:
+- Item version based on the year (design).
 ------------------------------------------------------------------
 
 Backlog:
-Receiving:
-- Combine shipping schedule with Receiving.
+
 Customer:
 - Ability to create Pallet Tag - Need to talk more.
-Item:
-- Item version based on the year
 Dashboard:
 - Display task list (need to define what to see).
 - Ability to search/filter by Season and Year.

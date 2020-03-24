@@ -28,5 +28,6 @@ public class SaleListDto {
 	private Long unitsAdjusted;
 	private List<?> saleItems;
 	private String status;
+	private String shippingWindow;
 	
 }

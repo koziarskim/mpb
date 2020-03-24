@@ -1,6 +1,7 @@
 package com.noovitec.mpb.repo.custom;
 
 import java.time.LocalDate;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -12,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Repository;
 
 import com.noovitec.mpb.entity.Shipment;
@@ -57,7 +59,7 @@ public interface CustomShipmentRepo {
 			if(shipTo !=null) {
 				q += "and ship.shippedDate <= :shipTo ";
 			}
-			q += "order by ship.status, ship.modifiedDate desc";
+			q += "order by ship.status, ship.shippingFrom desc";
 			Query query = entityManager.createQuery(q);
 			if (number != null && !number.isEmpty()) {
 				query.setParameter("number", number);
