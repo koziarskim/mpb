@@ -1,3 +1,40 @@
+invoice
+	- sale (set in case of Invoice per full sale)
+	- shipment (set in case of Invoice per shipment and Invoice per shipment sale)
+	- invoiceItems
+		- saleItem 
+
+Invoice per sale
+	List<saleItems> sis = sale.saleItems;
+	generateInvoice(sis):
+
+Invoice per shipment
+	List<saleItems> sis
+	for(ShipmentItem si: shipment.shipmentItems)
+		sis.add(si.saleItem);
+	generateInvoice(sis):
+		
+Invoice per shipment sale
+	List<saleItems> sis
+	Map<Long, List<SaleItem>> map;
+	for(ShipmentItem shipItem: shipmetn.shipmentItems)
+		List<SaleItem> list = map.get(shipItem.saleItem.sale.id))
+		if(list==null)
+			list = new ArrayList<SaleItem>();
+			map.put(shipItem.saleItem.sale.id, list);
+		list.add(shipItem.saleItem);
+	for(List<SaleItem> saleItems: map)
+		generateInvoice(saleItems);
+
+
+generateInvoice(saleItems)
+	for(SaleItems saleItem: shipmentItems)
+		InvoiceItem ii = new InvoiceItem()
+		ii.saleItem = saleItem;
+
+
+
+-------------------------------------------------
 Backlog functionality:
 Production:
 - Show box with large percentage (On target/slow (based on hours scheduled and units), %Performance/Efficiency, %Production done).
