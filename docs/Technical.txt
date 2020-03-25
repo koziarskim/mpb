@@ -2,7 +2,7 @@ invoice
 	- sale (set in case of Invoice per full sale)
 	- shipment (set in case of Invoice per shipment and Invoice per shipment sale)
 	- invoiceItems
-		- saleItem 
+		- saleItem
 
 Invoice per sale
 	List<saleItems> sis = sale.saleItems;
@@ -28,9 +28,11 @@ Invoice per shipment sale
 
 
 generateInvoice(saleItems)
-	for(SaleItems saleItem: shipmentItems)
-		InvoiceItem ii = new InvoiceItem()
+	Invoice i = new Invoice();
+	for(SaleItems saleItem: saleItems)
+		InvoiceItem ii = new InvoiceItem():
 		ii.saleItem = saleItem;
+		i.add(ii);
 
 
 
