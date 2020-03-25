@@ -37,6 +37,8 @@ import PurchaseNew from "./components/PurchaseNew";
 import ItemGraph from "./components/ItemGraph";
 import ItemReturnList from "./components/ItemReturnList";
 import ShipmentSchedule from "./components/ShipmentSchedule";
+import InvoiceList from "./components/InvoiceList";
+import InvoiceEdit from "./components/InvoiceEdit";
 
 Vue.use(Router);
 
@@ -376,6 +378,16 @@ const router = new Router({
         roles: ["READ_ONLY"],
         group: "itemReturn",
         viewClass: "view-item-return"
+      }
+    },
+    {
+      path: "/InvoiceList",
+      name: "InvoiceList",
+      component: InvoiceList,
+      meta: {
+        roles: ["READ_ONLY"],
+        group: "invoice",
+        viewClass: "view-invoice"
       }
     },
     {

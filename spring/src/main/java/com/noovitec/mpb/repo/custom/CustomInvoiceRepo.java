@@ -29,10 +29,10 @@ public interface CustomInvoiceRepo {
 
 		@Override
 		public Page<Invoice> findPagable(Pageable pageable) {
-			String q = "select distinct in from Invoice in "
-					+ "where i.id is not null ";
+			String q = "select distinct inv from Invoice inv "
+					+ "where inv.id is not null ";
 			Order order = pageable.getSort().iterator().next();
-			q += "order by in."+order.getProperty() + " "+order.getDirection();
+			q += "order by inv."+order.getProperty() + " "+order.getDirection();
 			Query query = entityManager.createQuery(q);
 			long total = query.getResultStream().count();
 			@SuppressWarnings("unchecked")

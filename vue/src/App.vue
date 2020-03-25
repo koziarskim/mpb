@@ -11,10 +11,11 @@
           <b-nav-item @click="goTo('/saleList')" :class="navClass('sale')">Sale</b-nav-item>
           <b-nav-item @click="goTo('/purchaseList')" :class="navClass('purchase')">Purchase</b-nav-item>
           <b-nav-item @click="goTo('/receivingList')" :class="navClass('receiving')">Receiving</b-nav-item>
-          <b-nav-item @click="goTo('/shipmentList')" :class="navClass('shipment')">Shipment/</b-nav-item>
-          <b-nav-item @click="goTo('/shipmentSchedule')" :class="navClass('shipmentSchedule')" style="margin-left: -17px">Schedule</b-nav-item>
+          <b-nav-item @click="goTo('/shipmentList')" :class="navClass('shipment')">Shipment</b-nav-item>
+          <b-nav-item @click="goTo('/shipmentSchedule')" :class="navClass('shipmentSchedule')">Schedule</b-nav-item>
           <b-nav-item @click="goTo('/productionLineList')" :class="navClass('production')">Production/</b-nav-item>
           <b-nav-item @click="goTo('/schedule')" :class="navClass('schedule')" style="margin-left: -17px">Schedule</b-nav-item>
+          <b-nav-item @click="goTo('/invoiceList')" :class="navClass('invoice')">Accounting</b-nav-item>
 		      
         </b-navbar-nav>
         <b-navbar-nav v-if="!hideNavBar()" style="margin:0px 0px 0px auto;">
@@ -200,6 +201,9 @@ export default {
   background-color: #0000001f;
 }
 .view-item-return {
+  background-color: #0000001f;
+}
+.view-invoice {
   background-color: #0000001f;
 }
 .page-link {
