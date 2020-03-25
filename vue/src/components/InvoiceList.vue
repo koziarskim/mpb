@@ -11,6 +11,9 @@
         <template v-slot:cell(number)="row">
           <b-button size="sm" @click="goToInvoice(row.item.id)" variant="link">{{row.item.number}}</b-button>
         </template>
+        <template v-slot:cell(sent)="row">
+          <span>{{row.item.sent?'Yes':'No'}}</span>
+        </template>
       </b-table>
       <div style="display: flex">
 		    <b-pagination size="sm" v-model="pageable.currentPage" :per-page="pageable.perPage" :total-rows="pageable.totalElements" @change="paginationChange"></b-pagination>
@@ -33,6 +36,8 @@ export default {
       fields: [
         { key: "number", label: "Invoice #", sortable: false },
         { key: "date", label: "Date", sortable: false },
+        { key: "shippingDate", label: "Shipping Date", sortable: false },
+        { key: "sent", label: "Sent", sortable: false },
         { key: "action", label: "", sortable: false}
       ],
       invoices: [] //InvoiceListDto
