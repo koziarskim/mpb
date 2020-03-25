@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashSet;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -54,7 +55,7 @@ public class Invoice extends BaseEntity {
 	private Address shippingAddress;
 	
 	@JsonIgnoreProperties(value = { "invoice" }, allowSetters = true)
-	@OneToMany()
+	@OneToMany(cascade=CascadeType.ALL, orphanRemoval=true)
 	@JoinColumn(name = "invoice_id")
 	private Collection<InvoiceItem> invoiceItems = new HashSet<InvoiceItem>();
 
