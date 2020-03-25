@@ -57,7 +57,7 @@ export default {
       });
     },
     goToInvoice(id){
-      router.push('/invoiceEdit/'+id?id:'');
+      router.push('/invoiceEdit/'+(id?id:''));
     },
   },
   mounted() {

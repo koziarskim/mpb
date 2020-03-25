@@ -391,6 +391,16 @@ const router = new Router({
       }
     },
     {
+      path: "/InvoiceEdit/:invoiceId?",
+      name: "InvoiceEdit",
+      component: InvoiceEdit,
+      meta: {
+        roles: ["READ_ONLY"],
+        group: "invoice",
+        viewClass: "view-invoice"
+      }
+    },
+    {
       path: "/Profile",
       name: "Profile",
       component: Profile,
