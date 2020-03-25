@@ -115,7 +115,6 @@ public interface NotificationService {
 		        String subject = "MIMS Notification";
 				String body = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, template, model);
 				String skipNotification = System.getenv("MPB_SKIP_NOTIFICATION");
-				skipNotification = "YES"; //Bypass for testing...
 				if(skipNotification!=null && skipNotification.equalsIgnoreCase("YES")) {
 					emails = Arrays.asList("mkoziarski@marketplacebrands.com");
 				}
