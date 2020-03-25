@@ -13,7 +13,7 @@ CREATE TABLE public.invoice (
 	number character varying(255),
 	date date,
 	sale_number varchar(50),
-	pay_terms varchar(50),
+	payment_terms varchar(50),
 	shipping_date date,
 	via varchar(50),
 	fob varchar(50),

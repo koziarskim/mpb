@@ -26,7 +26,7 @@ public class Invoice extends BaseEntity {
 
 	private String number;
 	private LocalDate date;
-	private String payTerms;
+	private String paymentTerms;
 	private LocalDate shippingDate;
 	private String via;
 	private String fob;
