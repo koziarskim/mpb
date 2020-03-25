@@ -28,5 +28,18 @@ public class MpbHibernateInterceptor extends EmptyInterceptor {
 		}
 		return false;
 	}
+	
+	@Override
+	public boolean onSave(Object entity, Serializable id, Object[] currentState, String[] propertyNames, Type[] types) {
+		NotificationService notificationService = MpbApplicationContext.getBean(NotificationService.class);
+		if (entity.getClass() == Shipment.class) {
+			notificationService.shipmentReady(entity, currentState, null, propertyNames);
+			notificationService.shipmentShipped(entity, currentState, null, propertyNames);
+		}
+		if (entity.getClass() == Customer.class) {
+			notificationService.customerShipped(entity, currentState, null, propertyNames);
+		}
+		return false;
+	}
 
 }

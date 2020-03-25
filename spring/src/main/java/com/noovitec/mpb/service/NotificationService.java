@@ -66,7 +66,7 @@ public interface NotificationService {
 		public void shipmentReady(Object entity, Object[] currentState, Object[] previousState, String[] propertyNames) {
 			Shipment shipment = (Shipment) entity;
 			List<String> emails = Arrays.asList("shipping@marketplacebrands.com", "mkoziarski@marketplacebrands.com");
-			boolean prevReady = (boolean) previousState[ArrayUtils.indexOf(propertyNames, "ready")];
+			boolean prevReady = previousState==null?false:((boolean) previousState[ArrayUtils.indexOf(propertyNames, "ready")]);
 			if(!prevReady && shipment.isReady()) {
 				Map<String, String> model = new HashMap<String, String>();
 		        model.put("number", shipment.getNumber());
@@ -79,7 +79,7 @@ public interface NotificationService {
 		public void shipmentShipped(Object entity, Object[] currentState, Object[] previousState, String[] propertyNames) {
 			Shipment shipment = (Shipment) entity;
 			List<String> emails = Arrays.asList("kzygulska@marketplacebrands.com", "kfiolek@marketplacebrands.com", "mkoziarski@marketplacebrands.com");
-			LocalDate prevShippedDate = (LocalDate) previousState[ArrayUtils.indexOf(propertyNames, "shippedDate")];
+			LocalDate prevShippedDate = previousState==null?null:((LocalDate) previousState[ArrayUtils.indexOf(propertyNames, "shippedDate")]);
 			if(prevShippedDate == null && shipment.getShippedDate() !=null) {
 				Map<String, String> model = new HashMap<String, String>();
 		        model.put("number", shipment.getNumber());
@@ -91,7 +91,7 @@ public interface NotificationService {
 		public void customerShipped(Object entity, Object[] currentState, Object[] previousState, String[] propertyNames) {
 			Customer customer = (Customer) entity;
 			List<String> emails = Arrays.asList("kfiolek@marketplacebrands.com","hpyzikiewicz@marketplacebrands.com","mkoziarski@marketplacebrands.com");
-			Long prevUnitsShipped = (Long) previousState[ArrayUtils.indexOf(propertyNames, "unitsShipped")];
+			Long prevUnitsShipped = previousState==null?0:((Long) previousState[ArrayUtils.indexOf(propertyNames, "unitsShipped")]);
 			if(prevUnitsShipped != customer.getUnitsShipped() && customer.getUnitsShipped() >= customer.getUnitsSold()) {
 				Map<String, String> model = new HashMap<String, String>();
 		        model.put("name", customer.getName());
