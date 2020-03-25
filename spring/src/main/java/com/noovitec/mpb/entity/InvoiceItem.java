@@ -32,6 +32,6 @@ public class InvoiceItem extends BaseEntity {
 	@JsonIgnoreProperties(value = { "invoiceItems" }, allowSetters = true)
 	@ManyToOne()
 	@JoinColumn(name = "sale_item_id", referencedColumnName = "id")
-	private SaleItem saleitem;
+	private SaleItem saleItem;
 
 }

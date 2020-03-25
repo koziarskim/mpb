@@ -4,6 +4,7 @@ import javax.transaction.Transactional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.noovitec.mpb.entity.Invoice;
@@ -21,6 +22,8 @@ public interface InvoiceService {
 
 		private final Logger log = LoggerFactory.getLogger(InvoiceServiceImp.class);
 		private InvoiceRepo invoiceRepo;
+		@Autowired
+		CrudService crudService;
 
 		public InvoiceServiceImp(InvoiceRepo invoiceRepo) {
 			this.invoiceRepo = invoiceRepo;
@@ -30,6 +33,7 @@ public interface InvoiceService {
 			for (InvoiceItem ii : invoice.getInvoiceItems()) {
 				ii.setInvoice(invoice);
 			}
+			invoice = (Invoice) crudService.merge(invoice);
 			return invoiceRepo.save(invoice);
 		}
 		
