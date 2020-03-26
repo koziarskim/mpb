@@ -29,7 +29,7 @@
         </div>
         <div style="display: flex; margin-left: 85px; margin-top: 7px">
             <label class="top-label">Ready To Ship</label>
-            <input type="checkbox" style="margin-left: 3px; margin-top: 3px" :disabled="shipment.shippedDate?true:false" v-model="shipment.ready">
+            <input type="checkbox" style="margin-left: 3px; margin-top: 3px" :disabled="shippedDate?true:false" v-model="shipment.ready">
           </div>
       </b-col>
     </b-row>
@@ -60,7 +60,7 @@
       </b-col>
       <b-col cols=2>
         <label class="top-label">Shipped (Actual Load Sent):</label>
-        <input @change="changeShippedDate" class="form-control" type="date" v-model="shipment.shippedDate">
+        <input @change="changeShippedDate" class="form-control" type="date" v-model="shippedDate">
       </b-col>
     </b-row>
     <b-row>
@@ -230,6 +230,7 @@ export default {
         {id: "CPU", name: "Customer Pickup"}
       ],
       itemText: "",
+      shippedDate: null
     };
   },
   computed: {
@@ -289,13 +290,14 @@ export default {
     changeShippedDate(e){
       if(!this.shipment.ready){
         alert("Shipment is not ready!");
-        this.shipment.shippedDate = null;
+        this.shippedDate = null;
         return;
       }
       if(e.target.value){
         this.readyDisabled = true;
       }else{
         this.readyDisabled = false;
+        this.shipment.shippedDate = null;
       }
     },
     closeUpload(attachments){
@@ -413,11 +415,16 @@ export default {
           this.totalWeightCustom = response.data.totalWeightCustom;
         }
         this.shipment = response.data;
+        this.shippedDate = response.data.shippedDate;
       }).catch(e => { console.log("API error: " + e); });
     },
     validate(){
       if(!this.shipment.number){
         alert("Shipping Number required.")
+        return false;
+      }
+      if(this.shipment.shippedDate){
+        alert("Shipping was already shipped. No modification allowed");
         return false;
       }
       var overStock = false;
@@ -449,6 +456,7 @@ export default {
       this.shipment.totalWeight = this.totalWeight;
       this.shipment.totalPalletsCustom = this.totalPalletsCustom;
       this.shipment.totalWeightCustom = this.totalWeightCustom;
+      this.shipment.shippedDate = this.shippedDate;
       return http.post("/shipment", this.shipment).then(r => {
         this.shipment = r.data;
         return r.data;
