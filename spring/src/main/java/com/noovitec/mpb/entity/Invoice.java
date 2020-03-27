@@ -1,6 +1,7 @@
 package com.noovitec.mpb.entity;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -59,4 +60,10 @@ public class Invoice extends BaseEntity {
 	@JoinColumn(name = "invoice_id")
 	private Collection<InvoiceItem> invoiceItems = new HashSet<InvoiceItem>();
 
+	public Collection<InvoiceItem> getInvoiceItems(){
+		if(this.invoiceItems==null) {
+			this.invoiceItems = new ArrayList<InvoiceItem>();
+		}
+		return this.invoiceItems;
+	}
 }

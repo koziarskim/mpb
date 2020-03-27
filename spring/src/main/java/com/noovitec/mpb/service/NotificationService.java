@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.UUID;
 
 import javax.mail.MessagingException;
 import javax.mail.Session;
@@ -38,6 +37,7 @@ import com.google.api.services.gmail.GmailScopes;
 import com.google.api.services.gmail.model.Message;
 import com.noovitec.mpb.entity.BaseEntity;
 import com.noovitec.mpb.entity.Customer;
+import com.noovitec.mpb.entity.Invoice;
 import com.noovitec.mpb.entity.Notification;
 import com.noovitec.mpb.entity.Shipment;
 import com.noovitec.mpb.repo.NotificationRepo;
@@ -56,7 +56,9 @@ public interface NotificationService {
 		private final Logger log = LoggerFactory.getLogger(NotificationServiceImpl.class);
 		private NotificationRepo notificationRepo;
 		@Autowired
-		VelocityEngine velocityEngine;
+		private VelocityEngine velocityEngine;
+		@Autowired
+		private InvoiceService invoiceService;
 
 		public NotificationServiceImpl(NotificationRepo notificationRepo) {
 			this.notificationRepo = notificationRepo;
@@ -81,9 +83,15 @@ public interface NotificationService {
 			List<String> emails = Arrays.asList("kzygulska@marketplacebrands.com", "kfiolek@marketplacebrands.com", "mkoziarski@marketplacebrands.com");
 			LocalDate prevShippedDate = previousState==null?null:((LocalDate) previousState[ArrayUtils.indexOf(propertyNames, "shippedDate")]);
 			if(prevShippedDate == null && shipment.getShippedDate() !=null) {
-				Map<String, String> model = new HashMap<String, String>();
-		        model.put("number", shipment.getNumber());
-				this.sendMail(emails, "mail/shipmentShipped.vm", model, shipment, Notification.TYPE.SHIPPING_SHIPPED.name());
+				Map<String, String> shipModel = new HashMap<String, String>();
+				shipModel.put("number", shipment.getNumber());
+				this.sendMail(emails, "mail/shipmentShipped.vm", shipModel, shipment, Notification.TYPE.SHIPPING_SHIPPED.name());
+				List<Invoice> invoices = invoiceService.createInvoiceForShipment(shipment);
+				for(Invoice invoice: invoices) {
+					Map<String, String> invoiceModel = new HashMap<String, String>();
+					invoiceModel.put("number", invoice.getNumber());
+					this.sendMail(emails, "mail/invoiceCreated.vm", invoiceModel, invoice, Notification.TYPE.INVOICE_CREATED.name());
+				}
 			}
 		}
 		

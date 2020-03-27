@@ -27,9 +27,13 @@
                       <label class="top-label">Pay Terms:</label>
                       <b-select option-value="id" option-text="name" :list="availablePayTerms" v-model="customer.paymentTerms"></b-select>
                     </b-col>
-                    <b-col cols=4>
+                    <b-col cols=3>
                         <label class="top-label">Freight Terms:</label>
                         <b-select option-value="code" option-text="name" :list="availableFreights" v-model="freightTerms"></b-select>
+                    </b-col>
+                    <b-col cols=5>
+                        <label class="top-label">Invoice Type:</label>
+                        <b-select option-value="id" option-text="name" :list="availableInvoiceTypes" v-model="invoiceTypeKv"></b-select>
                     </b-col>
                 </b-row>
                 <b-row>
@@ -142,12 +146,18 @@ export default {
         {id: "TPO", name: "TP Bill Other"},
         {id: "COL", name: "Collect"},
         {id: "CPU", name: "Customer Pickup"}
-      ]
+      ],
+      availableInvoiceTypes: [
+        {id: "PER_FIRST_SHIPMENT", name: "Per Entire Sale"},
+        {id: "PER_SHIPMENT_ITEM", name: "Per Shipment BOL"},
+        {id: "PER_SHIPMENT_SALE", name: "Per Shipment Sale"},
+      ],
+      invoiceTypeKv: {}
     };
   },
   computed: {},
   watch: {
-    freightTerms: function(newValue, oldValue) {
+    freightTerms(newValue, oldValue) {
       this.customer.freightTerms = newValue.code;
     },
     billingAddress: {
@@ -159,18 +169,14 @@ export default {
   },
   methods: {
     getCustomer(id) {
-      http
-        .get("/customer/" + id)
-        .then(response => {
-          this.customer = response.data;
-          this.freightTerms = this.getFreightById(response.data.freightTerms);
-          if (response.data.billingAddress) {
-            this.billingAddress = response.data.billingAddress;
-          }
-        })
-        .catch(e => {
-          console.log("API error: " + e);
-        });
+      http.get("/customer/" + id).then(response => {
+        this.customer = response.data;
+        this.invoiceTypeKv = {id: response.data.invoiceType};
+        this.freightTerms = this.getFreightById(response.data.freightTerms);
+        if (response.data.billingAddress) {
+          this.billingAddress = response.data.billingAddress;
+        }
+      }).catch(e => {console.log("API error: " + e);});
     },
     validate(){
       if(this.customer.addresses.length < 1){
@@ -183,14 +189,10 @@ export default {
       if(!this.validate()){
         return Promise.reject();
       }
-      return http
-        .post("/customer", this.customer)
-        .then(response => {
-          this.getCustomer(this.customer.id);
-        })
-        .catch(e => {
-          console.log("API error: " + e);
-        });
+      this.customer.invoiceType = this.invoiceTypeKv.id;
+      return http.post("/customer", this.customer).then(response => {
+        this.getCustomer(this.customer.id);
+      }).catch(e => {console.log("API error: " + e);});
     },
     saveAndClose() {
     	this.save().then(r=>{

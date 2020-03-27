@@ -1,0 +1,8 @@
+
+  Invoice was created: $name
+  ----------------------------------------------
+  This is automaticaly generated notification!
+  Please, login to MIMS to see details.
+  MIMS (Marketplace Inventory Management System).
+  ----------------------------------------------
+  Notification ID: $notificationId

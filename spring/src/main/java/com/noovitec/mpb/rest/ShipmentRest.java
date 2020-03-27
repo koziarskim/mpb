@@ -164,6 +164,9 @@ class ShipmentRest {
 		for(ShipmentItem si: shipment.getShipmentItems()) {
 			si.setShipment(shipment);
 		}
+		if(shipment.getCustomer().getInvoiceType()==null) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Customer doesn't have Invoice Type set. Please, update customer");
+		}
 		shipment = (Shipment) crudService.merge(shipment);
 		//Set modifiedDate
 		shipment.setModifiedDate(LocalDateTime.now());

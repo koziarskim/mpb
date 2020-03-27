@@ -447,7 +447,7 @@ export default {
       if(!this.validate()){
         return;
       }
-      this.shipment.customer = this.customer.id?{id: this.customer.id}:null;
+      this.shipment.customer = this.customer.id?this.customer:null;
       this.shipment.shippingAddress = this.shippingAddress.id?{ id: this.shippingAddress.id }:null;
       this.shipment.freightAddress = this.freightAddress.id?{ id: this.freightAddress.id }:null;
       this.shipment.totalUnits = this.totalUnits;

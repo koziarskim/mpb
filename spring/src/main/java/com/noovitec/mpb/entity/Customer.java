@@ -23,6 +23,10 @@ import lombok.NoArgsConstructor;
 @Entity
 public class Customer extends BaseEntity {
 
+	public enum INVOICE_TYPE {
+		PER_FIRST_SHIPMENT, PER_SHIPMENT_SALE, PER_SHIPMENT_ITEM
+	}
+	
 	private String name;
 	private String account;
 	private String vendor;
@@ -36,6 +40,7 @@ public class Customer extends BaseEntity {
 	private String shipmentNotes;
 	private Long unitsSold;
 	private Long unitsShipped;
+	private String invoiceType;
 
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "customer_address", joinColumns = @JoinColumn(name = "customer_id"), inverseJoinColumns = @JoinColumn(name = "address_id"))

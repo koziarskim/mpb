@@ -1,9 +1,7 @@
 package com.noovitec.mpb.rest;
 
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -22,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.noovitec.mpb.dto.CustomerDto;
-import com.noovitec.mpb.dto.ItemListDto;
 import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.entity.Customer;
 import com.noovitec.mpb.repo.CustomerRepo;
@@ -89,9 +86,12 @@ class CustomerRest {
 	}
 
 	@PostMapping("/customer")
-	ResponseEntity<Customer> post(@RequestBody(required = false) Customer customer) throws URISyntaxException {
+	ResponseEntity<?> post(@RequestBody(required = false) Customer customer) throws URISyntaxException {
 		if (customer == null) {
 			customer = new Customer();
+		}
+		if(customer.getInvoiceType()==null) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Invoice Type is required");
 		}
 		Customer result = customerRepo.save(customer);
 		result.setAccount(result.getId().toString());

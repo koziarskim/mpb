@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 public class Notification extends BaseEntity {
 	
 	public enum TYPE {
-		SHIPPING_READY, SHIPPING_SHIPPED, CUSTOMER_SALES_SHIPPED
+		SHIPPING_READY, SHIPPING_SHIPPED, CUSTOMER_SALES_SHIPPED, INVOICE_CREATED
 	}
 
 	private String type;

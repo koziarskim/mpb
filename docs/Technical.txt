@@ -31,7 +31,7 @@ ShipmentShipped Trigger:
 				i.add(ii);
 			saveInvoice(invoice);
 		
-		if(customer.invoiceType ==  'Item per Shipment')
+		if(customer.invoiceType ==  'Sale per Shipment')
 			Map<Long, List<ShipmentItem>> map;
 			for(ShipmentItem shipItem: shipmetn.shipmentItems)
 				List<ShipmentItem> list = map.get(shipItem.saleItem.sale.id))
