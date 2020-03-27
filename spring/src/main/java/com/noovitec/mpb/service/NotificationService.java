@@ -23,7 +23,6 @@ import org.apache.velocity.app.VelocityEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.velocity.VelocityEngineUtils;
 
@@ -64,8 +63,6 @@ public interface NotificationService {
 			this.notificationRepo = notificationRepo;
 		}
 		
-		@Async
-		@Transactional
 		public void shipmentReady(Object entity, Object[] currentState, Object[] previousState, String[] propertyNames) {
 			Shipment shipment = (Shipment) entity;
 			List<String> emails = Arrays.asList("shipping@marketplacebrands.com", "mkoziarski@marketplacebrands.com");
@@ -78,8 +75,6 @@ public interface NotificationService {
 
 		}
 		
-		@Async
-		@Transactional
 		public void shipmentShipped(Object entity, Object[] currentState, Object[] previousState, String[] propertyNames) {
 			Shipment shipment = (Shipment) entity;
 			List<String> emails = Arrays.asList("kzygulska@marketplacebrands.com", "kfiolek@marketplacebrands.com", "mkoziarski@marketplacebrands.com");
@@ -97,8 +92,6 @@ public interface NotificationService {
 			}
 		}
 		
-		@Async
-		@Transactional
 		public void customerShipped(Object entity, Object[] currentState, Object[] previousState, String[] propertyNames) {
 			Customer customer = (Customer) entity;
 			List<String> emails = Arrays.asList("kfiolek@marketplacebrands.com","hpyzikiewicz@marketplacebrands.com","mkoziarski@marketplacebrands.com");
