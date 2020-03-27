@@ -9,6 +9,22 @@
         <label class="top-label">Invoice Date:</label>
         <input class="form-control" type="date" v-model="invoice.date">
       </b-col>
+      <b-col cols=3>
+        <label class="top-label">Customers:</label>
+        <b-select option-value="id" option-text="name" :list="availableCustomers" v-model="customerKv"></b-select>
+      </b-col>
+      <b-col cols=3>
+        <label class="top-label">Shipments:</label>
+        <b-select option-value="id" option-text="name" :list="availableShipments" v-model="shipmentKv"></b-select>
+      </b-col>
+      <b-col cols=2 style="text-align: right; margin-top: 20px">
+        <label class="top-label">Sent</label>
+        <input type="checkbox" style="margin-left: 3px;" v-model="invoice.sent">
+        <b-button style="margin-left: 10px" size="sm" variant="success" @click="saveInvoice()">Save</b-button>
+        <b-button style="margin-left: 3px" size="sm" @click="deleteInvoice()">x</b-button>
+      </b-col>
+    </b-row>
+    <b-row>
       <b-col cols=2>
         <label class="top-label">Shipping Date:</label>
         <input class="form-control" type="date" v-model="invoice.shippingDate">
@@ -21,28 +37,29 @@
         <label class="top-label">Load Number:</label>
         <input class="form-control" type="tel" v-model="invoice.loadNumber">
       </b-col>
-      <b-col cols=2 style="text-align: right; margin-top: 20px">
-        <label class="top-label">Sent</label>
-        <input type="checkbox" style="margin-left: 3px;" v-model="invoice.sent">
-        <b-button style="margin-left: 10px" size="sm" variant="success" @click="saveInvoice()">Save</b-button>
-        <b-button style="margin-left: 3px" size="sm" @click="deleteInvoice()">x</b-button>
-      </b-col>
-    </b-row>
-    <b-row>
-      <b-col cols=4>
-        <label class="top-label">Available Sales:</label>
-        <b-select option-value="id" option-text="name" :list="availableSaleItems" v-model="saleItemKv"></b-select>
-      </b-col>
-      <b-col cols=1 style="padding-top: 30px">
-        <b-button variant="link" @click="addInvoiceItem()">(+)</b-button>
-      </b-col>
-      <b-col cols=2 offset=1>
+      <b-col cols=2>
         <label class="top-label">Via:</label>
         <input class="form-control" type="tel" v-model="invoice.via">
       </b-col>
       <b-col cols=2>
         <label class="top-label">FOB:</label>
         <input class="form-control" type="tel" v-model="invoice.fob">
+      </b-col>
+    </b-row>
+    <b-row>
+      <b-col cols=3>
+        <label class="top-label">Sale Items:</label>
+        <b-select option-value="id" option-text="name" :list="availableSaleItems" v-model="saleItemKv"></b-select>
+      </b-col>
+      <b-col cols=1 style="padding-top: 30px">
+        <b-button variant="link" @click="addSaleItem()">(+)</b-button>
+      </b-col>
+      <b-col cols=3>
+        <label class="top-label">Shipment Items:</label>
+        <b-select option-value="id" option-text="name" :list="availableShipmentItems" v-model="shipmentItemKv"></b-select>
+      </b-col>
+      <b-col cols=1 style="padding-top: 30px">
+        <b-button variant="link" @click="addShipmentItem()">(+)</b-button>
       </b-col>
     </b-row>
     <b-row>
@@ -106,14 +123,30 @@ export default {
       ],
       availableSaleItems: [],
       saleItemKv: {},
-      saleItem: {}
+      saleItem: {},
+      availableCustomers: [],
+      customerKv: {},
+      availableShipments: [],
+      shipmentKv: {},
+      availableShipmentItems: [],
+      shipmentItemKv: {}
     }
   },
   computed: {
   },
   watch: {
+    customerKv(newValue, oldValue){
+      this.getAvailableShipments(newValue.id);
+      this.getAvailableSaleItems(newValue.id);
+    },
+    shipmentKv(newValue, oldValue){
+      this.getAvailableShipmentItems(newValue.id);
+    },
     saleItemKv(newValue, oldValue){
       this.getSaleItem(newValue.id);
+    },
+    shipmentItemKv(newValue, oldValue){
+      this.getShipmentItem(newValue.id);
     }
   },
   methods: {
@@ -125,9 +158,33 @@ export default {
       var idx = this.invoice.invoiceItems.findIndex(ii => ii.id == invoiceItem.id);
       this.invoice.invoiceItems.splice(idx, 1);
 	  },
-    getAvailableSaleItems() {
-      return http.get("/saleItem/kv").then(r => {
+    getAvailableCustomers() {
+      return http.get("/customer/kv").then(r => {
+        this.availableCustomers = r.data;
+        return r.data;
+      }).catch(e => {
+        console.log("API error: " + e);
+      });
+    },
+    getAvailableShipments(customerId) {
+      return http.get("/shipment/kv/customer/"+customerId).then(r => {
+        this.availableShipments = r.data;
+        return r.data;
+      }).catch(e => {
+        console.log("API error: " + e);
+      });
+    },
+    getAvailableSaleItems(customerId) {
+      return http.get("/saleItem/kv/customer/"+customerId).then(r => {
         this.availableSaleItems = r.data;
+        return r.data;
+      }).catch(e => {
+        console.log("API error: " + e);
+      });
+    },
+    getAvailableShipmentItems(shipmentId) {
+      return http.get("/shipmentItem/kv/shipment/"+shipmentId).then(r => {
+        this.availableShipmentItems = r.data;
         return r.data;
       }).catch(e => {
         console.log("API error: " + e);
@@ -141,7 +198,15 @@ export default {
         console.log("API error: " + e);
       });
     },
-    addInvoiceItem() {
+    getShipmentItem(shipmentItemId) {
+      return http.get("/shipmentItem/" + shipmentItemId).then(r => {
+        this.shipmentItem = r.data;
+        return r.data;
+      }).catch(e => {
+        console.log("API error: " + e);
+      });
+    },
+    addSaleItem() {
       if (!this.saleItem.id) {
         return;
       }
@@ -191,7 +256,7 @@ export default {
     if (invoiceId) {
       this.getInvoice(invoiceId);
     }
-    this.getAvailableSaleItems();
+    this.getAvailableCustomers();
   }   
 };
 </script>

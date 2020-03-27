@@ -2,6 +2,7 @@ package com.noovitec.mpb.rest;
 
 import java.net.URISyntaxException;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.entity.ShipmentItem;
 import com.noovitec.mpb.repo.ShipmentItemRepo;
 
@@ -39,6 +41,12 @@ class ShipmentItemRest {
 	ResponseEntity<ShipmentItem> get(@PathVariable Long id) {
 		Optional<ShipmentItem> result = shipmentItemRepo.findById(id);
 		return result.map(response -> ResponseEntity.ok().body(response)).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+	}
+
+	@GetMapping("/shipmentItem/kv/shipment/{shipmentId}")
+	ResponseEntity<List<KeyValueDto>> findKvByShipment(@PathVariable Long shipmentId) {
+		List<KeyValueDto> kvs = shipmentItemRepo.findKvByShipment(shipmentId);
+		return ResponseEntity.ok().body(kvs);
 	}
 
 	@PostMapping("/shipmentItem")

@@ -1,5 +1,4 @@
 invoice
-	- sale (set in case of Invoice per full sale)
 	- shipment (shipment that triggered invoice or first shipment of the sale).
 	- invoiceItems
 		- saleItem

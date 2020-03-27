@@ -110,6 +110,12 @@ class SaleItemRest {
 		return saleDtos;
 	}
 
+	@GetMapping("/saleItem/kv/shipment/{shipmentId}")
+	Collection<KeyValueDto> getAllKvsByPurchase(@PathVariable Long shipmentId) {
+		Collection<KeyValueDto> saleDtos = saleItemRepo.findAllKvsByShipment(shipmentId);
+		return saleDtos;
+	}
+
 	@PostMapping("/saleItem/{saleItemId}/move/to/sale/{saleId}")
 	ResponseEntity<?> moveSaleItem(@PathVariable Long saleItemId, @PathVariable Long saleId) {
 		SaleItem si = saleItemRepo.getSaleItemById(saleItemId).get();

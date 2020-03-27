@@ -39,6 +39,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfStamper;
+import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.dto.ShipmentDto;
 import com.noovitec.mpb.dto.ShipmentEventDto;
 import com.noovitec.mpb.entity.Item;
@@ -141,7 +142,13 @@ class ShipmentRest {
 		List<ShipmentEventDto> shipments = shipmentService.findEvents();
 		return ResponseEntity.ok().body(shipments);
 	}	
-	
+
+	@GetMapping("/shipment/kv/customer/{customerId}")
+	HttpEntity<List<KeyValueDto>> findKvByCustomer(@PathVariable Long customerId) {
+		List<KeyValueDto> kvs = shipmentRepo.findKvByCustomer(customerId);
+		return ResponseEntity.ok().body(kvs);
+	}	
+
 	@PostMapping("/shipment")
 	ResponseEntity<?> post(@RequestBody(required = false) Shipment shipment) throws Exception {
 		if (shipment == null) {

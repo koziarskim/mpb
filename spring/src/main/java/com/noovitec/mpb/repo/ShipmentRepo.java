@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
+import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.entity.Shipment;
 import com.noovitec.mpb.repo.custom.CustomShipmentRepo;
 
@@ -24,5 +25,10 @@ public interface ShipmentRepo extends PagingAndSortingRepository<Shipment, Long>
 
 	@Query(value="select ship.id from Shipment ship where ship.number = :number")
 	public Long getIdByNumber(String number);
+
+	@Query(value="select new com.noovitec.mpb.dto.KeyValueDto(ship.id, ship.number) from Shipment ship "
+			+ "join ship.customer cu "
+			+ "where cu.id = :customerId")
+	public List<KeyValueDto> findKvByCustomer(Long customerId);
 
 }
