@@ -46,4 +46,13 @@ public interface SaleRepo extends JpaRepository<Sale, Long>, CustomSaleRepo {
 	@Query(value="select s.id from Sale s where s.number = :number")
 	public Long getIdByNumber(String number);
 
+	@Query(value="select s from Sale s "
+			+ "join s.saleItems si "
+			+ "join si.shipmentItems shipItem "
+			+ "join shipItem.shipment ship "
+//			+ "left join Invoice inv on inv.shipment.id = ship.id "
+			+ "where ship.id = :shipmentId")
+//			+ "and inv.shipment.id not in :shipmentId ")
+	public List<Sale> findSalesForShipmentNoInvoice(Long shipmentId);
+
 }

@@ -20,6 +20,7 @@ import com.noovitec.mpb.entity.SaleItem;
 import com.noovitec.mpb.entity.Shipment;
 import com.noovitec.mpb.entity.ShipmentItem;
 import com.noovitec.mpb.repo.InvoiceRepo;
+import com.noovitec.mpb.repo.SaleRepo;
 
 public interface InvoiceService {
 
@@ -35,6 +36,8 @@ public interface InvoiceService {
 		private InvoiceRepo invoiceRepo;
 		@Autowired
 		CrudService crudService;
+		@Autowired
+		SaleRepo saleRepo;
 
 		public InvoiceServiceImp(InvoiceRepo invoiceRepo) {
 			this.invoiceRepo = invoiceRepo;
@@ -44,7 +47,7 @@ public interface InvoiceService {
 			List<Invoice> invoices = new ArrayList<Invoice>();
 			Customer customer = shipment.getCustomer();
 			if(customer.getInvoiceType().equalsIgnoreCase(Customer.INVOICE_TYPE.PER_FIRST_SHIPMENT.name())) {
-				List<Sale> sales = new ArrayList<Sale>(); //repo.getSalesForShipmentNoInvoice(shipment.id);
+				List<Sale> sales = saleRepo.findSalesForShipmentNoInvoice(shipment.getId());
 				for(Sale sale: sales) {
 					Invoice invoice = new Invoice();
 					invoice.setShipment(shipment);
