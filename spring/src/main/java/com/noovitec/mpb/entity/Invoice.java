@@ -37,11 +37,6 @@ public class Invoice extends BaseEntity {
 
 	@JsonIgnoreProperties(value = { "items" }, allowSetters = true)
 	@ManyToOne()
-	@JoinColumn(name = "sale_id", referencedColumnName = "id")
-	private Sale sale;
-
-	@JsonIgnoreProperties(value = { "items" }, allowSetters = true)
-	@ManyToOne()
 	@JoinColumn(name = "shipment_id", referencedColumnName = "id")
 	private Shipment shipment;
 

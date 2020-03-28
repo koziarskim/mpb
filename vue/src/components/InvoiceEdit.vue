@@ -42,7 +42,20 @@
       <b-col cols=2>
         <label class="top-label">Load Number:</label>
         <input class="form-control" type="tel" v-model="invoice.loadNumber">
+      </b-col>      
+      <b-col cols=3>
+        <label class="top-label">Billing Address:</label><br/>
+        <span>{{invoice.billingAddress.street}}</span><br/>
+        <span>{{invoice.billingAddress.city+', '+invoice.billingAddress.state+' '+invoice.billingAddress.zip}}</span>
       </b-col>
+      <b-col cols=3>
+        <label class="top-label">Shipping Address:</label><br/>
+        <span>{{invoice.shippingAddress.dc}}</span><br/>
+        <span>{{invoice.shippingAddress.street}}</span><br/>
+        <span>{{invoice.shippingAddress.city+', '+invoice.shippingAddress.state+' '+invoice.shippingAddress.zip}}</span>
+      </b-col>
+    </b-row>
+    <b-row style="margin-top: -35px">
       <b-col cols=2>
         <label class="top-label">Via:</label>
         <input class="form-control" type="tel" v-model="invoice.via">
@@ -109,6 +122,11 @@ export default {
       modalVisible: false,
       invoice: {
         invoiceItems: [],
+        shipment: {
+          customer: {}
+        },
+        billingAddress: {},
+        shippingAddress: {},
       },
       columns: [
         { key: "sale", label: "Sale", sortable: false },
