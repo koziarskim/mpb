@@ -70,7 +70,7 @@ public interface NotificationService {
 			if(!prevReady && shipment.isReady()) {
 				Map<String, String> model = new HashMap<String, String>();
 		        model.put("number", shipment.getNumber());
-				this.sendMail(emails, "mail/shipmentReady.vm", model, shipment, Notification.TYPE.SHIPPING_READY.name());
+				this.sendMail(emails, model, shipment, Notification.TYPE.SHIPPING_READY);
 			}
 
 		}
@@ -82,12 +82,12 @@ public interface NotificationService {
 			if(prevShippedDate == null && shipment.getShippedDate() !=null) {
 				Map<String, String> shipModel = new HashMap<String, String>();
 				shipModel.put("number", shipment.getNumber());
-				this.sendMail(emails, "mail/shipmentShipped.vm", shipModel, shipment, Notification.TYPE.SHIPPING_SHIPPED.name());
+				this.sendMail(emails, shipModel, shipment, Notification.TYPE.SHIPPING_SHIPPED);
 				List<Invoice> invoices = invoiceService.createInvoiceForShipment(shipment);
 				for(Invoice invoice: invoices) {
 					Map<String, String> invoiceModel = new HashMap<String, String>();
 					invoiceModel.put("number", invoice.getNumber());
-					this.sendMail(emails, "mail/invoiceCreated.vm", invoiceModel, invoice, Notification.TYPE.INVOICE_CREATED.name());
+					this.sendMail(emails, invoiceModel, invoice, Notification.TYPE.INVOICE_CREATED);
 				}
 			}
 		}
@@ -99,25 +99,25 @@ public interface NotificationService {
 			if(prevUnitsShipped != customer.getUnitsShipped() && customer.getUnitsShipped() >= customer.getUnitsSold()) {
 				Map<String, String> model = new HashMap<String, String>();
 		        model.put("name", customer.getName());
-				this.sendMail(emails, "mail/customerShipped.vm", model, customer, Notification.TYPE.CUSTOMER_SALES_SHIPPED.name());
+				this.sendMail(emails, model, customer, Notification.TYPE.CUSTOMER_SALES_SHIPPED);
 			}
 		}
 		
-		private void sendMail(List<String> emails, String template, Map<String, String> model, BaseEntity baseEntity, String type) {
+		private void sendMail(List<String> emails, Map<String, String> model, BaseEntity baseEntity, Notification.TYPE type) {
 			log.info("Sending notification: "+type);
 			try {
 				Notification notification = new Notification();
 				notification.setEmails(emails.toString());
 				notification.setEntity(baseEntity.getClass().getSimpleName());
 				notification.setEntityId(baseEntity.getId());
-				notification.setType(type);
+				notification.setType(type.name());
 				notification = notificationRepo.save(notification);
 				List<String> SCOPES = Arrays.asList(GmailScopes.GMAIL_SEND, GmailScopes.GMAIL_LABELS);
 				String MIMS_JSON_KEY = "oauth/mims-268617-f7755598ac50.json";
 		        model.put("notificationId", notification.getId().toString());
-		        model.put("type", type);
+		        model.put("type", type.name());
 		        String subject = "MIMS Notification";
-				String body = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, template, model);
+				String body = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, type.template(), model);
 				String skipNotification = System.getenv("MPB_SKIP_NOTIFICATION");
 				if(skipNotification!=null && skipNotification.equalsIgnoreCase("YES")) {
 					emails = Arrays.asList("mkoziarski@marketplacebrands.com");
