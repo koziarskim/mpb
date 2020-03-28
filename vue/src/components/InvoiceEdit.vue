@@ -9,13 +9,19 @@
         <label class="top-label">Invoice Date:</label>
         <input class="form-control" type="date" v-model="invoice.date">
       </b-col>
-      <b-col cols=3>
-        <label class="top-label">Customers:</label>
-        <b-select option-value="id" option-text="name" :list="availableCustomers" v-model="customerKv"></b-select>
+      <b-col cols=2>
+        <label class="top-label">Customers:</label><br/>
+        <!-- <b-select option-value="id" option-text="name" :list="availableCustomers" v-model="customerKv"></b-select> -->
+        <b-link role="button" @click="goToCustomer(invoice.shipment.customer.id)">{{invoice.shipment.customer.name}}</b-link>
       </b-col>
-      <b-col cols=3>
-        <label class="top-label">Shipments:</label>
-        <b-select option-value="id" option-text="name" :list="availableShipments" v-model="shipmentKv"></b-select>
+      <b-col cols=2>
+        <label class="top-label">Shipments:</label><br/>
+        <!-- <b-select option-value="id" option-text="name" :list="availableShipments" v-model="shipmentKv"></b-select> -->
+        <b-link role="button" @click="goToShipment(invoice.shipment.id)">{{invoice.shipment.number}}</b-link>
+      </b-col>
+      <b-col cols=2>
+        <label class="top-label">Invoice Type:</label><br/>
+        <span>{{invoice.type}}</span>
       </b-col>
       <b-col cols=2 style="text-align: right; margin-top: 20px">
         <label class="top-label">Sent</label>
@@ -46,7 +52,7 @@
         <input class="form-control" type="tel" v-model="invoice.fob">
       </b-col>
     </b-row>
-    <b-row>
+    <!-- <b-row>
       <b-col cols=3>
         <label class="top-label">Sale Items:</label>
         <b-select option-value="id" option-text="name" :list="availableSaleItems" v-model="saleItemKv"></b-select>
@@ -61,7 +67,7 @@
       <b-col cols=1 style="padding-top: 30px">
         <b-button variant="link" @click="addShipmentItem()">(+)</b-button>
       </b-col>
-    </b-row>
+    </b-row> -->
     <b-row>
       <b-col>
         <label class="top-label"></label>
@@ -241,6 +247,12 @@ export default {
     },
     goToItem(item){
       router.push({path: "/itemEdit/"+item.id})
+    },
+    goToCustomer(customerId){
+      router.push({path: "/customerEdit/"+customerId})
+    },
+    goToShipment(shipmentId){
+      router.push({path: "/shipmentEdit/"+shipmentId})
     },
     getInvoice(invoiceId) {
       return http.get("/invoice/" + invoiceId).then(r => {
