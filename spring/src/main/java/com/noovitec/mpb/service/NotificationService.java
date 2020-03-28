@@ -38,6 +38,7 @@ import com.noovitec.mpb.entity.BaseEntity;
 import com.noovitec.mpb.entity.Customer;
 import com.noovitec.mpb.entity.Invoice;
 import com.noovitec.mpb.entity.Notification;
+import com.noovitec.mpb.entity.Sale;
 import com.noovitec.mpb.entity.Shipment;
 import com.noovitec.mpb.repo.NotificationRepo;
 
@@ -45,6 +46,7 @@ public interface NotificationService {
 	
 	public void shipmentReady(Object entity, Object[] currentState, Object[] previousState, String[] propertyNames);
 	public void shipmentShipped(Object entity, Object[] currentState, Object[] previousState, String[] propertyNames);
+	public void saleShipped(Object entity, Object[] currentState, Object[] previousState, String[] propertyNames);
 	public void customerShipped(Object entity, Object[] currentState, Object[] previousState, String[] propertyNames);
 
 
@@ -65,11 +67,11 @@ public interface NotificationService {
 		
 		public void shipmentReady(Object entity, Object[] currentState, Object[] previousState, String[] propertyNames) {
 			Shipment shipment = (Shipment) entity;
-			List<String> emails = Arrays.asList("shipping@marketplacebrands.com", "mkoziarski@marketplacebrands.com");
 			boolean prevReady = previousState==null?false:((boolean) previousState[ArrayUtils.indexOf(propertyNames, "ready")]);
 			if(!prevReady && shipment.isReady()) {
+				List<String> emails = Arrays.asList("shipping@marketplacebrands.com", "mkoziarski@marketplacebrands.com");
 				Map<String, String> model = new HashMap<String, String>();
-		        model.put("number", shipment.getNumber());
+		        model.put("shipmentNumber", shipment.getNumber());
 				this.sendMail(emails, model, shipment, Notification.TYPE.SHIPPING_READY);
 			}
 
@@ -77,29 +79,43 @@ public interface NotificationService {
 		
 		public void shipmentShipped(Object entity, Object[] currentState, Object[] previousState, String[] propertyNames) {
 			Shipment shipment = (Shipment) entity;
-			List<String> emails = Arrays.asList("kzygulska@marketplacebrands.com", "kfiolek@marketplacebrands.com", "mkoziarski@marketplacebrands.com");
 			LocalDate prevShippedDate = previousState==null?null:((LocalDate) previousState[ArrayUtils.indexOf(propertyNames, "shippedDate")]);
 			if(prevShippedDate == null && shipment.getShippedDate() !=null) {
+				List<String> emails = Arrays.asList("kzygulska@marketplacebrands.com", "kfiolek@marketplacebrands.com", "mkoziarski@marketplacebrands.com");
 				Map<String, String> shipModel = new HashMap<String, String>();
-				shipModel.put("number", shipment.getNumber());
+				shipModel.put("shipmentNumber", shipment.getNumber());
 				this.sendMail(emails, shipModel, shipment, Notification.TYPE.SHIPPING_SHIPPED);
-				List<Invoice> invoices = invoiceService.createInvoiceForShipment(shipment);
-				for(Invoice invoice: invoices) {
-					Map<String, String> invoiceModel = new HashMap<String, String>();
-					invoiceModel.put("number", invoice.getNumber());
-					this.sendMail(emails, invoiceModel, invoice, Notification.TYPE.INVOICE_CREATED);
-				}
+			}
+		}
+
+		public void saleShipped(Object entity, Object[] currentState, Object[] previousState, String[] propertyNames) {
+			Sale sale = (Sale) entity;
+			if(sale.isDirty()) {
+				log.info("Is Dirty: "+sale.getId());
+				return;
+			}
+			sale.setDirty(true);
+			Long prevUnitsShipped = previousState==null?0:((Long) previousState[ArrayUtils.indexOf(propertyNames, "unitsShipped")]);
+			if(prevUnitsShipped != sale.getUnitsShipped() && sale.getUnitsShipped() >= sale.getUnitsSold()) {
+				Invoice invoice = invoiceService.createInvoiceForSale(sale);
+				List<String> emails = Arrays.asList("kfiolek@marketplacebrands.com","mkoziarski@marketplacebrands.com");
+				Map<String, String> model = new HashMap<String, String>();
+		        model.put("saleNumber", sale.getNumber());
+		        if(invoice!=null) {
+		        	model.put("invoiceNumber", invoice.getNumber());
+		        }
+				this.sendMail(emails, model, sale, Notification.TYPE.SALE_SHIPPED);
 			}
 		}
 		
 		public void customerShipped(Object entity, Object[] currentState, Object[] previousState, String[] propertyNames) {
 			Customer customer = (Customer) entity;
-			List<String> emails = Arrays.asList("kfiolek@marketplacebrands.com","hpyzikiewicz@marketplacebrands.com","mkoziarski@marketplacebrands.com");
 			Long prevUnitsShipped = previousState==null?0:((Long) previousState[ArrayUtils.indexOf(propertyNames, "unitsShipped")]);
 			if(prevUnitsShipped != customer.getUnitsShipped() && customer.getUnitsShipped() >= customer.getUnitsSold()) {
+				List<String> emails = Arrays.asList("kfiolek@marketplacebrands.com","hpyzikiewicz@marketplacebrands.com","mkoziarski@marketplacebrands.com");
 				Map<String, String> model = new HashMap<String, String>();
-		        model.put("name", customer.getName());
-				this.sendMail(emails, model, customer, Notification.TYPE.CUSTOMER_SALES_SHIPPED);
+		        model.put("customerName", customer.getName());
+				this.sendMail(emails, model, customer, Notification.TYPE.CUSTOMER_SHIPPED);
 			}
 		}
 		
@@ -150,7 +166,7 @@ public interface NotificationService {
 				String encodedEmail = Base64.getUrlEncoder().encodeToString(bytes);
 				Message message = new Message();
 				message.setRaw(encodedEmail);
-				message = service.users().messages().send("me", message).execute();
+//				message = service.users().messages().send("me", message).execute();
 			} catch (MessagingException | IOException | GeneralSecurityException e){
 				e.printStackTrace();
 			}

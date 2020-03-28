@@ -70,6 +70,8 @@ public class Sale extends BaseEntity {
 	@OrderBy("created DESC")
 	private Collection<Attachment> attachments = new HashSet<Attachment>();
 
+	@Transient
+	private boolean dirty;
 
 	public void updateUnits() {
 		this.unitsSold = 0L;

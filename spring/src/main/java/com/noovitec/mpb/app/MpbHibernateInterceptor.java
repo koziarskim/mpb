@@ -1,8 +1,11 @@
 package com.noovitec.mpb.app;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.hibernate.EmptyInterceptor;
+import org.hibernate.Transaction;
 import org.hibernate.type.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,4 +30,5 @@ public class MpbHibernateInterceptor extends EmptyInterceptor {
 		interceptorService.onFlush(entity, id, currentState, previousState, propertyNames, types);
 		return false;
 	}
+	
 }

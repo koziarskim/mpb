@@ -1,5 +1,8 @@
 
-  Invoice was created: $name
+  Sale: $saleNumber has been fully shipped.
+  #if( $invoiceNumber )
+  Invoice: $invoiceNumber has been generated.
+  #end
   ----------------------------------------------
   This is automaticaly generated notification!
   Please, login to MIMS to see details.

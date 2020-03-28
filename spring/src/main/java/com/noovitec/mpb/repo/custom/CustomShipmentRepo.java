@@ -20,7 +20,8 @@ import com.noovitec.mpb.entity.Shipment;
 
 public interface CustomShipmentRepo {
 	Page<Shipment> findIds(Pageable pageable, String number, Long customerId, Long saleId, Long itemId, String status, LocalDate shipFrom, LocalDate shipTo);
-
+	public Shipment getFirstBySale(Long saleId);
+	
 	@Repository
 	public class CustomShipmentRepoImpl implements CustomShipmentRepo {
 
@@ -87,7 +88,21 @@ public interface CustomShipmentRepo {
 			List<Shipment> result = query.setFirstResult(pageable.getPageNumber() * pageable.getPageSize()).setMaxResults(pageable.getPageSize()).getResultList();
 			Page<Shipment> page = new PageImpl<Shipment>(result, pageable, total);
 			return page;
-
+		}
+		
+		public Shipment getFirstBySale(Long saleId) {
+			String q = "select ship from Shipment ship "
+					+ "join ship.shipmentItems shipItem "
+					+ "join shipItem.saleItem si "
+					+ "join si.sale s "
+					+ "where s.id = :saleId "
+					+ "and ship.shippedDate is not null "
+					+ "order by ship.created asc";
+			Query query = entityManager.createQuery(q);
+			query.setParameter("saleId", saleId);
+			query.setMaxResults(1);
+			Shipment shipment = (Shipment) query.getSingleResult();
+			return shipment;
 		}
 	}
 }

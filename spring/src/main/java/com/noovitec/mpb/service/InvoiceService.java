@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import javax.transaction.Transactional;
 
@@ -21,10 +22,12 @@ import com.noovitec.mpb.entity.Shipment;
 import com.noovitec.mpb.entity.ShipmentItem;
 import com.noovitec.mpb.repo.InvoiceRepo;
 import com.noovitec.mpb.repo.SaleRepo;
+import com.noovitec.mpb.repo.ShipmentRepo;
 
 public interface InvoiceService {
 
 	public List<Invoice> createInvoiceForShipment(Shipment shipment);
+	public Invoice createInvoiceForSale(Sale sale);
 	public Invoice save(Invoice invoice);
 	public void delete(Long id);
 	
@@ -38,31 +41,36 @@ public interface InvoiceService {
 		CrudService crudService;
 		@Autowired
 		SaleRepo saleRepo;
+		@Autowired
+		ShipmentRepo shipmentRepo;
 
 		public InvoiceServiceImp(InvoiceRepo invoiceRepo) {
 			this.invoiceRepo = invoiceRepo;
+		}
+
+		public Invoice createInvoiceForSale(Sale sale) {
+			Invoice invoice = null;
+			Customer customer = sale.getCustomer();
+			if(customer.getInvoiceType().equalsIgnoreCase(Customer.INVOICE_TYPE.PER_FIRST_SHIPMENT.name())) {
+				Shipment shipment = shipmentRepo.getFirstBySale(sale.getId());
+				invoice = new Invoice();
+				invoice.setShipment(shipment);
+				invoice.setNumber(shipment.getNumber()+"-"+new Random().nextInt(1000));
+				for(SaleItem saleItem: sale.getSaleItems()) {
+					InvoiceItem ii = new InvoiceItem();
+					ii.setSaleItem(saleItem);
+					ii.setUnitPrice(saleItem.getUnitPrice());
+					ii.setUnitsInvoiced(Long.valueOf(saleItem.getUnits()));
+					invoice.getInvoiceItems().add(ii);
+				}
+				invoice = this.save(invoice);
+			}
+			return invoice;
 		}
 		
 		public List<Invoice> createInvoiceForShipment(Shipment shipment) {
 			List<Invoice> invoices = new ArrayList<Invoice>();
 			Customer customer = shipment.getCustomer();
-			if(customer.getInvoiceType().equalsIgnoreCase(Customer.INVOICE_TYPE.PER_FIRST_SHIPMENT.name())) {
-				List<Sale> sales = saleRepo.findSalesForShipmentNoInvoice(shipment.getId());
-				for(Sale sale: sales) {
-					Invoice invoice = new Invoice();
-					invoice.setShipment(shipment);
-					invoice.setNumber(shipment.getNumber()+"-"+sale.getNumber());
-					for(SaleItem saleItem: sale.getSaleItems()) {
-						InvoiceItem ii = new InvoiceItem();
-						ii.setSaleItem(saleItem);
-						ii.setUnitPrice(saleItem.getUnitPrice());
-						ii.setUnitsInvoiced(Long.valueOf(saleItem.getUnits()));
-						invoice.getInvoiceItems().add(ii);
-					}
-					invoice = this.save(invoice);
-					invoices.add(invoice);
-				}
-			}
 
 			if(customer.getInvoiceType().equalsIgnoreCase(Customer.INVOICE_TYPE.PER_SHIPMENT_ITEM.name())) {
 				Invoice invoice = new Invoice();

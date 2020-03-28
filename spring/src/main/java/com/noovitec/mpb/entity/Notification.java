@@ -1,8 +1,5 @@
 package com.noovitec.mpb.entity;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.persistence.Entity;
 
 import lombok.AllArgsConstructor;
@@ -18,7 +15,7 @@ import lombok.NoArgsConstructor;
 public class Notification extends BaseEntity {
 	
 	public static enum TYPE {
-		SHIPPING_READY("mail/shipmentReady.vm"), SHIPPING_SHIPPED("mail/shipmentShipped.vm"), CUSTOMER_SALES_SHIPPED("mail/customerShipped.vm"), INVOICE_CREATED("mail/invoiceCreated.vm");
+		SHIPPING_READY("mail/shipmentReady.vm"), SHIPPING_SHIPPED("mail/shipmentShipped.vm"), SALE_SHIPPED("mail/saleShipped.vm"), CUSTOMER_SHIPPED("mail/customerShipped.vm");
 		private String template;
 		public String template() { 
 	        return this.template; 
@@ -27,7 +24,6 @@ public class Notification extends BaseEntity {
 	        this.template = template; 
 	    } 
 	}
-	public static Map<Enum, String> TEMPLATE = new HashMap<Enum, String>();
 
 	private String type;
 	private String entity;
