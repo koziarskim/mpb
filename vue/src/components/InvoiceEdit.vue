@@ -45,14 +45,14 @@
       </b-col>      
       <b-col cols=3>
         <label class="top-label">Billing Address:</label><br/>
-        <span>{{invoice.billingAddress.street}}</span><br/>
-        <span>{{invoice.billingAddress.city+', '+invoice.billingAddress.state+' '+invoice.billingAddress.zip}}</span>
+        <span>{{invoice.shipment.customer.billingAddress?invoice.shipment.customer.billingAddress.street:''}}</span><br/>
+        <span>{{invoice.shipment.customer.billingAddress?(invoice.shipment.customer.billingAddress.city+', '+invoice.shipment.customer.billingAddress.state+' '+invoice.shipment.customer.billingAddress.zip):''}}</span>
       </b-col>
       <b-col cols=3>
         <label class="top-label">Shipping Address:</label><br/>
-        <span>{{invoice.shippingAddress.dc}}</span><br/>
-        <span>{{invoice.shippingAddress.street}}</span><br/>
-        <span>{{invoice.shippingAddress.city+', '+invoice.shippingAddress.state+' '+invoice.shippingAddress.zip}}</span>
+        <span>{{invoice.shipment.shippingAddress?invoice.shipment.shippingAddress.dc:''}}</span><br/>
+        <span>{{invoice.shipment.shippingAddress?invoice.shipment.shippingAddress.street:''}}</span><br/>
+        <span>{{invoice.shipment.shippingAddress?(invoice.shipment.shippingAddress.city+', '+invoice.shipment.shippingAddress.state+' '+invoice.shipment.shippingAddress.zip):''}}</span>
       </b-col>
     </b-row>
     <b-row style="margin-top: -35px">
