@@ -51,7 +51,7 @@ public interface InvoiceService {
 		public Invoice createInvoiceForSale(Sale sale) {
 			Invoice invoice = null;
 			Customer customer = sale.getCustomer();
-			if(customer.getInvoiceType().equalsIgnoreCase(Customer.INVOICE_TYPE.PER_FIRST_SHIPMENT.name())) {
+			if(customer !=null && customer.getInvoiceType().equalsIgnoreCase(Customer.INVOICE_TYPE.PER_FIRST_SHIPMENT.name())) {
 				Shipment shipment = shipmentRepo.getFirstBySale(sale.getId());
 				invoice = new Invoice();
 				invoice.setShipment(shipment);

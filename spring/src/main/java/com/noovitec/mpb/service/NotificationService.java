@@ -111,7 +111,9 @@ public interface NotificationService {
 		public void customerShipped(Object entity, Object[] currentState, Object[] previousState, String[] propertyNames) {
 			Customer customer = (Customer) entity;
 			Long prevUnitsShipped = previousState==null?0:((Long) previousState[ArrayUtils.indexOf(propertyNames, "unitsShipped")]);
-			if(prevUnitsShipped != customer.getUnitsShipped() && customer.getUnitsShipped() >= customer.getUnitsSold()) {
+			Long unitsShipped = customer.getUnitsShipped()==null?0L:customer.getUnitsShipped();
+			Long unitsSold = customer.getUnitsSold()==null?0L:customer.getUnitsSold();
+			if(prevUnitsShipped != unitsShipped && unitsShipped >= unitsSold) {
 				List<String> emails = Arrays.asList("kfiolek@marketplacebrands.com","hpyzikiewicz@marketplacebrands.com","mkoziarski@marketplacebrands.com");
 				Map<String, String> model = new HashMap<String, String>();
 		        model.put("customerName", customer.getName());
