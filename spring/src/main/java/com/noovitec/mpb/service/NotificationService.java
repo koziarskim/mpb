@@ -96,7 +96,9 @@ public interface NotificationService {
 			}
 			sale.setDirty(true);
 			Long prevUnitsShipped = previousState==null?0:((Long) previousState[ArrayUtils.indexOf(propertyNames, "unitsShipped")]);
-			if(prevUnitsShipped != sale.getUnitsShipped() && sale.getUnitsShipped() >= sale.getUnitsSold()) {
+			Long unitsShipped = sale.getUnitsShipped()==null?0L:sale.getUnitsShipped();
+			Long unitsSold = sale.getUnitsSold()==null?0L:sale.getUnitsSold();
+			if(prevUnitsShipped != unitsShipped && unitsSold > 0 && unitsShipped >= unitsSold) {
 				Invoice invoice = invoiceService.createInvoiceForSale(sale);
 				List<String> emails = Arrays.asList("kfiolek@marketplacebrands.com","mkoziarski@marketplacebrands.com");
 				Map<String, String> model = new HashMap<String, String>();
@@ -113,7 +115,7 @@ public interface NotificationService {
 			Long prevUnitsShipped = previousState==null?0:((Long) previousState[ArrayUtils.indexOf(propertyNames, "unitsShipped")]);
 			Long unitsShipped = customer.getUnitsShipped()==null?0L:customer.getUnitsShipped();
 			Long unitsSold = customer.getUnitsSold()==null?0L:customer.getUnitsSold();
-			if(prevUnitsShipped != unitsShipped && unitsShipped >= unitsSold) {
+			if(prevUnitsShipped != unitsShipped && unitsSold > 0 &&  unitsShipped >= unitsSold) {
 				List<String> emails = Arrays.asList("kfiolek@marketplacebrands.com","hpyzikiewicz@marketplacebrands.com","mkoziarski@marketplacebrands.com");
 				Map<String, String> model = new HashMap<String, String>();
 		        model.put("customerName", customer.getName());

@@ -46,6 +46,8 @@ class InvoiceRest {
 			dto.setDate(invoice.getDate());
 			dto.setShippingDate(invoice.getShippingDate());
 			dto.setSent(invoice.isSent());
+			dto.setType(invoice.getType());
+			dto.setShipmentNumber(invoice.getShipment().getNumber());
 			return dto;
 		});
 		return dtos;

@@ -15,5 +15,7 @@ public class InvoiceListDto {
 	private String number;
 	private LocalDate date;
 	private LocalDate shippingDate;
+	private String type;
+	private String shipmentNumber;
 	private boolean sent;
 }

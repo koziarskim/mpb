@@ -37,6 +37,8 @@ export default {
         { key: "number", label: "Invoice #", sortable: false },
         { key: "date", label: "Date", sortable: false },
         { key: "shippingDate", label: "Shipping Date", sortable: false },
+        { key: "shipmentNumber", label: "Shipment", sortable: false },
+        { key: "type", label: "Type", sortable: false },
         { key: "sent", label: "Sent", sortable: false },
         { key: "action", label: "", sortable: false}
       ],

@@ -49,11 +49,14 @@ public interface InvoiceService {
 		}
 
 		public Invoice createInvoiceForSale(Sale sale) {
+			log.info("1 Creating ivoice Sale: "+sale.getId());
 			Invoice invoice = null;
 			Customer customer = sale.getCustomer();
 			if(customer !=null && customer.getInvoiceType().equalsIgnoreCase(Customer.INVOICE_TYPE.PER_FIRST_SHIPMENT.name())) {
+				log.info("2 Creating ivoice Sale: "+sale.getId());
 				Shipment shipment = shipmentRepo.getFirstBySale(sale.getId());
 				invoice = new Invoice();
+				invoice.setType(Customer.INVOICE_TYPE.PER_FIRST_SHIPMENT.name());
 				invoice.setShipment(shipment);
 				invoice.setNumber(shipment.getNumber()+"-"+new Random().nextInt(1000));
 				for(SaleItem saleItem: sale.getSaleItems()) {
@@ -74,6 +77,7 @@ public interface InvoiceService {
 
 			if(customer.getInvoiceType().equalsIgnoreCase(Customer.INVOICE_TYPE.PER_SHIPMENT_ITEM.name())) {
 				Invoice invoice = new Invoice();
+				invoice.setType(Customer.INVOICE_TYPE.PER_SHIPMENT_ITEM.name());
 				invoice.setShipment(shipment);
 				invoice.setNumber(shipment.getNumber()+"-1");
 				for(ShipmentItem shipItem: shipment.getShipmentItems()) {
@@ -101,6 +105,7 @@ public interface InvoiceService {
 				for (Map.Entry<Long, List<ShipmentItem>> entry : saleMap.entrySet()) {
 					List<ShipmentItem> shipItems = entry.getValue();
 					Invoice invoice = new Invoice();
+					invoice.setType(Customer.INVOICE_TYPE.PER_SHIPMENT_SALE.name());
 					invoice.setShipment(shipment);
 					invoice.setNumber(shipment.getNumber()+"-"+entry.getKey());
 					for(ShipmentItem shipItem: shipItems) {
