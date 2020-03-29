@@ -26,7 +26,10 @@
       <b-col cols=2 style="text-align: right; margin-top: 20px">
         <label class="top-label">Sent</label>
         <input type="checkbox" style="margin-left: 3px;" v-model="invoice.sent">
-        <b-button style="margin-left: 10px" size="sm" variant="success" @click="saveInvoice()">Save</b-button>
+        <a :href="getPdfUrl(invoice.id)" target="_blank" style="margin-left: 10px;">
+          <img src="../assets/pdf-download.png" width="23px">
+        </a>
+        <b-button style="margin-left: 5px" size="sm" variant="success" @click="saveInvoice()">Save</b-button>
         <b-button style="margin-left: 3px" size="sm" @click="deleteInvoice()">x</b-button>
       </b-col>
     </b-row>
@@ -43,7 +46,7 @@
         <label class="top-label">Load Number:</label>
         <input class="form-control" type="tel" v-model="invoice.loadNumber">
       </b-col>      
-      <b-col cols=3>
+      <b-col cols=2>
         <label class="top-label">Billing Address:</label><br/>
         <span>{{invoice.shipment.customer.billingAddress?invoice.shipment.customer.billingAddress.street:''}}</span><br/>
         <span>{{invoice.shipment.customer.billingAddress?(invoice.shipment.customer.billingAddress.city+', '+invoice.shipment.customer.billingAddress.state+' '+invoice.shipment.customer.billingAddress.zip):''}}</span>
@@ -111,6 +114,7 @@
 
 <script>
 import http from "../http-common";
+import httpUtils from "../httpUtils";
 import router from "../router";
 import securite from "../securite";
 import moment from "moment";
@@ -174,6 +178,9 @@ export default {
     }
   },
   methods: {
+    getPdfUrl(invoiceId) {
+      return httpUtils.baseUrl + "/invoice/" + invoiceId + "/pdf";
+    },
     getTotalUnitPrice(invoiceItem){
       invoiceItem.totalUnitPrice = +invoiceItem.unitPrice * +invoiceItem.unitsInvoiced;
       return invoiceItem.totalUnitPrice.toFixed(2);
