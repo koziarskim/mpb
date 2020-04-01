@@ -29,8 +29,8 @@ Accountig:
 - PDF to Kinga
 + Search by Sale, Shipment, Number, Item
 + Notification if shipment is ready
-- Invoice Type:
-	- No Invoce
++ Invoice Type:
+	+ No Invoce
 - Pay Terms from Kinga
 - Multiple PO on invoice
 - Ability to entery shipping cost.

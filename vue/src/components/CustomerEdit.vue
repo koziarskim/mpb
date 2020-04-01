@@ -151,6 +151,7 @@ export default {
         {id: "PER_FIRST_SHIPMENT", name: "Per Entire Sale"},
         {id: "PER_SHIPMENT_ITEM", name: "Per Shipment BOL"},
         {id: "PER_SHIPMENT_SALE", name: "Per Shipment Sale"},
+        {id: "NO_INVOICE", name: "No Invoice"},
       ],
       invoiceTypeKv: {}
     };
