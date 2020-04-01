@@ -17,7 +17,7 @@ import org.springframework.stereotype.Repository;
 import com.noovitec.mpb.entity.Invoice;
 
 public interface CustomInvoiceRepo {
-	Page<Invoice> findPagable(Pageable pageable);
+	Page<Invoice> findPagable(Pageable pageable, String invoiceNumer, Long saleId, Long customerId, Long shipmentId);
 
 	@Repository
 	public class CustomInvoiceRepoImpl implements CustomInvoiceRepo {
@@ -28,12 +28,40 @@ public interface CustomInvoiceRepo {
 		EntityManager entityManager;
 
 		@Override
-		public Page<Invoice> findPagable(Pageable pageable) {
+		public Page<Invoice> findPagable(Pageable pageable, String invoiceNumer, Long saleId, Long customerId, Long shipmentId) {
 			String q = "select distinct inv from Invoice inv "
+					+ "join inv.shipment ship "
+					+ "join ship.shipmentItems shipItem "
+					+ "join shipItem.saleItem si "
+					+ "join si.sale s "
+					+ "join ship.customer cu "
 					+ "where inv.id is not null ";
+			if (invoiceNumer != null && !invoiceNumer.isEmpty()) {
+				q += "and (upper(inv.number) like concat('%',upper(:invoiceNumber),'%')) ";
+			}
+			if (saleId != null) {
+				q += "and s.id = :saleId ";
+			}			if (customerId != null) {
+				q += "and cu.id = :customerId ";
+			}
+			if (shipmentId != null) {
+				q += "and ship.id = :shipmentId ";
+			}
 			Order order = pageable.getSort().iterator().next();
 			q += "order by inv."+order.getProperty() + " "+order.getDirection();
 			Query query = entityManager.createQuery(q);
+			if (invoiceNumer != null && !invoiceNumer.isEmpty()) {
+				query.setParameter("invoiceNumer", invoiceNumer);
+			}
+			if (customerId != null) {
+				query.setParameter("customerId", customerId);
+			}
+			if (saleId != null) {
+				query.setParameter("saleId", saleId);
+			}
+			if (shipmentId != null) {
+				query.setParameter("shipmentId", shipmentId);
+			}
 			long total = query.getResultStream().count();
 			@SuppressWarnings("unchecked")
 			List<Invoice> result = query.setFirstResult(pageable.getPageNumber()*pageable.getPageSize())

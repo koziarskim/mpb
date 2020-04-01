@@ -65,6 +65,15 @@ export default {
     };
   },
   watch: {
+    saleKv(newValue, oldValue){
+      this.getInvoices();
+    },
+    customerKv(newValue, oldValue){
+      this.getInvoices();
+    },
+    shipmentKv(newValue, oldValue){
+      this.getInvoices();
+    },
   },
   methods: {
     paginationChange(page){
@@ -73,7 +82,11 @@ export default {
     },
 	  getInvoices() {
       var query = {params: {
-        pageable: this.pageable
+        pageable: this.pageable,
+        invoiceNumber: this.invoiceNumber,
+        saleId: this.saleKv.id,
+        customerId: this.customerKv.id,
+        shipmentId: this.shipmentKv.id
       }}
       http.get("/invoice/pageable", query).then(r => {
         this.invoices = r.data.content;
