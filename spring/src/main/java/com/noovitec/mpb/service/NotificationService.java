@@ -85,29 +85,30 @@ public interface NotificationService {
 				Map<String, String> shipModel = new HashMap<String, String>();
 				shipModel.put("shipmentNumber", shipment.getNumber());
 				this.sendMail(emails, shipModel, shipment, Notification.TYPE.SHIPPING_SHIPPED);
+				List<Invoice> invoices = invoiceService.createInvoiceForShipment(shipment);
+				for(Invoice invoice: invoices) {
+					List<String> invoiceEmails = Arrays.asList("kfiolek@marketplacebrands.com","mkoziarski@marketplacebrands.com");
+					Map<String, String> invoiceModel = new HashMap<String, String>();
+		        	invoiceModel.put("invoiceNumber", invoice.getNumber());
+					this.sendMail(invoiceEmails, invoiceModel, shipment, Notification.TYPE.INVOICE_GENERATED);
+				}
 			}
 		}
 
 		public void saleShipped(Object entity, Object[] currentState, Object[] previousState, String[] propertyNames) {
 			Sale sale = (Sale) entity;
-//			if(sale.isDirty()) {
-//				log.info("Is Dirty: "+sale.getId());
-//				return;
-//			}
-//			sale.setDirty(true);
 			Long prevUnitsShipped = previousState==null?0:((Long) previousState[ArrayUtils.indexOf(propertyNames, "unitsShipped")]);
 			Long unitsShipped = sale.getUnitsShipped()==null?0L:sale.getUnitsShipped();
 			Long unitsSold = sale.getUnitsSold()==null?0L:sale.getUnitsSold();
-			if(prevUnitsShipped != unitsShipped && unitsSold > 0 && unitsShipped >= unitsSold) {
-				log.info("onFlush: "+sale.getId());
-//				Invoice invoice = invoiceService.createInvoiceForSale(sale);
-//				List<String> emails = Arrays.asList("kfiolek@marketplacebrands.com","mkoziarski@marketplacebrands.com");
-//				Map<String, String> model = new HashMap<String, String>();
-//		        model.put("saleNumber", sale.getNumber());
-//		        if(invoice!=null) {
-//		        	model.put("invoiceNumber", invoice.getNumber());
-//		        }
-//				this.sendMail(emails, model, sale, Notification.TYPE.SALE_SHIPPED);
+			if((prevUnitsShipped ==null || prevUnitsShipped ==0) && unitsShipped>0 && unitsSold > 0) {
+				Invoice invoice = invoiceService.createInvoiceForSale(sale);
+		        if(invoice!=null) {
+					List<String> emails = Arrays.asList("kfiolek@marketplacebrands.com","mkoziarski@marketplacebrands.com");
+					Map<String, String> model = new HashMap<String, String>();
+		        	model.put("invoiceNumber", invoice.getNumber());
+		        	this.sendMail(emails, model, sale, Notification.TYPE.INVOICE_GENERATED);
+		        }
+				
 			}
 		}
 		
