@@ -6,6 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -27,5 +28,8 @@ public class BaseEntity {
 	private LocalDateTime created;
 	@UpdateTimestamp
 	private LocalDateTime updated;
+	
+	@Transient
+	private boolean dirty;
 
 }

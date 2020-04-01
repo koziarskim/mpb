@@ -13,7 +13,6 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
-import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -69,9 +68,6 @@ public class Sale extends BaseEntity {
 	@JoinTable(name = "sale_attachment", joinColumns = @JoinColumn(name = "sale_id"), inverseJoinColumns = @JoinColumn(name = "attachment_id"))
 	@OrderBy("created DESC")
 	private Collection<Attachment> attachments = new HashSet<Attachment>();
-
-	@Transient
-	private boolean dirty;
 
 	public void updateUnits() {
 		this.unitsSold = 0L;

@@ -90,23 +90,24 @@ public interface NotificationService {
 
 		public void saleShipped(Object entity, Object[] currentState, Object[] previousState, String[] propertyNames) {
 			Sale sale = (Sale) entity;
-			if(sale.isDirty()) {
-				log.info("Is Dirty: "+sale.getId());
-				return;
-			}
-			sale.setDirty(true);
+//			if(sale.isDirty()) {
+//				log.info("Is Dirty: "+sale.getId());
+//				return;
+//			}
+//			sale.setDirty(true);
 			Long prevUnitsShipped = previousState==null?0:((Long) previousState[ArrayUtils.indexOf(propertyNames, "unitsShipped")]);
 			Long unitsShipped = sale.getUnitsShipped()==null?0L:sale.getUnitsShipped();
 			Long unitsSold = sale.getUnitsSold()==null?0L:sale.getUnitsSold();
 			if(prevUnitsShipped != unitsShipped && unitsSold > 0 && unitsShipped >= unitsSold) {
-				Invoice invoice = invoiceService.createInvoiceForSale(sale);
-				List<String> emails = Arrays.asList("kfiolek@marketplacebrands.com","mkoziarski@marketplacebrands.com");
-				Map<String, String> model = new HashMap<String, String>();
-		        model.put("saleNumber", sale.getNumber());
-		        if(invoice!=null) {
-		        	model.put("invoiceNumber", invoice.getNumber());
-		        }
-				this.sendMail(emails, model, sale, Notification.TYPE.SALE_SHIPPED);
+				log.info("onFlush: "+sale.getId());
+//				Invoice invoice = invoiceService.createInvoiceForSale(sale);
+//				List<String> emails = Arrays.asList("kfiolek@marketplacebrands.com","mkoziarski@marketplacebrands.com");
+//				Map<String, String> model = new HashMap<String, String>();
+//		        model.put("saleNumber", sale.getNumber());
+//		        if(invoice!=null) {
+//		        	model.put("invoiceNumber", invoice.getNumber());
+//		        }
+//				this.sendMail(emails, model, sale, Notification.TYPE.SALE_SHIPPED);
 			}
 		}
 		
