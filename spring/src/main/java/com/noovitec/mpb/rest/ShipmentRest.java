@@ -149,6 +149,12 @@ class ShipmentRest {
 		return ResponseEntity.ok().body(kvs);
 	}	
 
+	@GetMapping("/shipment/kv")
+	HttpEntity<List<KeyValueDto>> findKvs() {
+		List<KeyValueDto> kvs = shipmentRepo.findKvs();
+		return ResponseEntity.ok().body(kvs);
+	}	
+
 	@PostMapping("/shipment")
 	ResponseEntity<?> post(@RequestBody(required = false) Shipment shipment) throws Exception {
 		if (shipment == null) {

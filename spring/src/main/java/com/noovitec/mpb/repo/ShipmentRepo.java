@@ -31,4 +31,7 @@ public interface ShipmentRepo extends PagingAndSortingRepository<Shipment, Long>
 			+ "where cu.id = :customerId")
 	public List<KeyValueDto> findKvByCustomer(Long customerId);
 
+	@Query(value="select new com.noovitec.mpb.dto.KeyValueDto(ship.id, ship.number) from Shipment ship")
+	public List<KeyValueDto> findKvs();
+
 }

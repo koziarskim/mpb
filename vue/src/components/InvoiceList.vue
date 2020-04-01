@@ -1,11 +1,23 @@
 <template>
     <b-container fluid>
       <b-row style="font-size: 12px">
-        <b-col cols=1 offset=11>
+        <b-col cols=2>
+          <input class="form-control" style="font-size: 12px" type="tel" v-model="invoiceNumber" @keyup.enter="getInvoices()" placeholder="Invoice"/>
+        </b-col>
+        <b-col cols=2>
+          <b-select option-value="id" option-text="name" :list="availableSales" v-model="saleKv" placeholder="Sale"></b-select>
+        </b-col>
+        <b-col cols=2>
+          <b-select option-value="id" option-text="name" :list="availableCustomers" v-model="customerKv" placeholder="Customer"></b-select>
+        </b-col>
+        <b-col cols=2>
+          <b-select option-value="id" option-text="name" :list="availableShipments" v-model="shipmentKv" placeholder="Shipment"></b-select>
+        </b-col>
+        <!-- <b-col cols=1>
           <div style="text-align: right;">
           <b-button type="submit" variant="primary" size="sm" @click="goToInvoice()">New</b-button>
           </div>
-        </b-col>
+        </b-col> -->
       </b-row>
       <b-table :items="invoices" :fields="fields" no-local-sorting>
         <template v-slot:cell(number)="row">
@@ -42,7 +54,14 @@ export default {
         { key: "sent", label: "Sent", sortable: false },
         { key: "action", label: "", sortable: false}
       ],
-      invoices: [] //InvoiceListDto
+      invoices: [], //InvoiceListDto
+      availableSales: [],
+      saleKv: {},
+      availableCustomers: [],
+      customerKv: {},
+      availableShipments: [],
+      shipmentKv: {},
+      invoiceNumber: "",
     };
   },
   watch: {
@@ -66,9 +85,27 @@ export default {
     goToInvoice(id){
       router.push('/invoiceEdit/'+(id?id:''));
     },
+    getAvailableSales() {
+      http.get("/sale/kv").then(r => {
+        this.availableSales = r.data;
+      }).catch(e => {console.log("API error: "+e);});
+    },
+    getAvailableCustomers() {
+      http.get("/customer/kv").then(r => {
+        this.availableCustomers = r.data;
+      }).catch(e => {console.log("API error: "+e);});
+    },
+    getAvailableShipments() {
+      http.get("/shipment/kv").then(r => {
+        this.availableShipments = r.data;
+      }).catch(e => {console.log("API error: "+e);});
+    },
   },
   mounted() {
     this.getInvoices();
+    this.getAvailableSales();
+    this.getAvailableCustomers();
+    this.getAvailableShipments();
   }
 };
 </script>
