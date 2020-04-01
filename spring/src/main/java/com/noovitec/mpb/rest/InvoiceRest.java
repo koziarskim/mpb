@@ -131,9 +131,9 @@ class InvoiceRest {
 		int totalUnits = 0;
 		BigDecimal totalAmount = BigDecimal.ZERO;
 		Collection<InvoiceItem> invoiceItems = invoice.getInvoiceItems();
-		int count = 0;
+		Map<Long, String> saleIds = new HashMap<Long, String>();
 		for (InvoiceItem ii : invoiceItems) {
-			count++;
+			saleIds.put(ii.getSaleItem().getSale().getId(), ii.getSaleItem().getSale().getNumber());
 			itemSaleNumber += ii.getSaleItem().getSale().getNumber() +"\n\n";
 			itemQuantity += ii.getUnitsInvoiced() + "\n\n";
 			itemDescription += ii.getSaleItem().getItem().getNumber() + " - " +ii.getSaleItem().getItem().getName()+"\n" 
@@ -154,6 +154,11 @@ class InvoiceRest {
 		bolStamper.getAcroFields().setField("number", invoice.getNumber());
 		Shipment shipment = invoice.getShipment();
 		Customer customer = shipment.getCustomer();
+		String saleNumber = "Multiple";
+		if(saleIds.size()==1) {
+			saleNumber = shipment.getShipmentItems().iterator().next().getSaleItem().getSale().getNumber();
+		}
+		bolStamper.getAcroFields().setField("saleNumber", saleNumber);
 		if(customer.getBillingAddress()!=null) {
 			String billingAddress = shipment.getFreightAddress().getDc() + "\n"
 				+ customer.getBillingAddress().getStreet() + "\n" 
@@ -170,11 +175,6 @@ class InvoiceRest {
 				+ (shipment.getShippingAddress().getNotes()==null?"":shipment.getShippingAddress().getNotes());
 			bolStamper.getAcroFields().setField("shippingAddress", shippingAddress);
 		}
-		String saleNumber = "";
-		if(customer.getInvoiceType().equalsIgnoreCase(Customer.INVOICE_TYPE.PER_FIRST_SHIPMENT.name())) {
-			saleNumber = shipment.getShipmentItems().iterator().next().getSaleItem().getSale().getNumber();
-		}
-		bolStamper.getAcroFields().setField("saleNumber", saleNumber);
 		bolStamper.getAcroFields().setField("paymentTerms",  pt.get(invoice.getPaymentTerms()));
 		bolStamper.getAcroFields().setField("shippingDate", invoice.getShippingDate()==null?"":invoice.getShippingDate().format(DateTimeFormatter.ofPattern("MM/dd/yyy")));
 		

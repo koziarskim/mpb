@@ -32,7 +32,7 @@ Accountig:
 + Invoice Type:
 	+ No Invoce
 - Pay Terms from Kinga
-- Multiple PO on invoice
++ Multiple PO on invoice
 - Ability to entery shipping cost.
 
 

@@ -78,7 +78,7 @@ public interface NotificationService {
 					List<String> invoiceEmails = Arrays.asList("kfiolek@marketplacebrands.com","mkoziarski@marketplacebrands.com");
 					Map<String, String> invoiceModel = new HashMap<String, String>();
 		        	invoiceModel.put("invoiceNumber", invoice.getNumber());
-					this.sendMail(invoiceEmails, invoiceModel, shipment, Notification.TYPE.INVOICE_GENERATED);
+					this.sendMail(invoiceEmails, invoiceModel, shipment, Notification.TYPE.INVOICE_CREATED);
 				}
 			}
 
@@ -106,7 +106,7 @@ public interface NotificationService {
 					List<String> emails = Arrays.asList("kfiolek@marketplacebrands.com","mkoziarski@marketplacebrands.com");
 					Map<String, String> model = new HashMap<String, String>();
 		        	model.put("invoiceNumber", invoice.getNumber());
-		        	this.sendMail(emails, model, sale, Notification.TYPE.INVOICE_GENERATED);
+		        	this.sendMail(emails, model, sale, Notification.TYPE.INVOICE_CREATED);
 		        }
 				
 			}
