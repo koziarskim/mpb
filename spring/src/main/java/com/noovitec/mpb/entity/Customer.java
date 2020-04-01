@@ -35,7 +35,7 @@ public class Customer extends BaseEntity {
 	private String paymentTerms;
 	private String freightTerms;
 	private String email;
-	private String email2;
+	private String apEmail;
 	private String contactName;
 	private String shipmentNotes;
 	private Long unitsSold;
