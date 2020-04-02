@@ -17,14 +17,14 @@ public class MpbHibernateListenerConfiguration {
     private EntityManagerFactory emf;
      
     @Autowired
-    private MpbUpdateEventListener updateListener;
+    private MpbEventListener eventListener;
      
     @PostConstruct
     protected void init() {
         SessionFactoryImpl sessionFactory = emf.unwrap(SessionFactoryImpl.class);
         EventListenerRegistry registry = sessionFactory.getServiceRegistry().getService(EventListenerRegistry.class);
-//        registry.getEventListenerGroup(EventType.POST_INSERT).appendListener(listener);
-        registry.getEventListenerGroup(EventType.POST_UPDATE).appendListener(updateListener);
-//        registry.getEventListenerGroup(EventType.POST_DELETE).appendListener(listener);
+        registry.getEventListenerGroup(EventType.POST_INSERT).appendListener(eventListener);
+        registry.getEventListenerGroup(EventType.POST_UPDATE).appendListener(eventListener);
+        registry.getEventListenerGroup(EventType.POST_DELETE).appendListener(eventListener);
     }
 }

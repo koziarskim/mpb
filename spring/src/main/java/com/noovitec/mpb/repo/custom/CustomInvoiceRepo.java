@@ -17,8 +17,9 @@ import org.springframework.stereotype.Repository;
 import com.noovitec.mpb.entity.Invoice;
 
 public interface CustomInvoiceRepo {
-	Page<Invoice> findPagable(Pageable pageable, String invoiceNumer, Long saleId, Long customerId, Long shipmentId);
-
+	public Page<Invoice> findPagable(Pageable pageable, String invoiceNumer, Long saleId, Long customerId, Long shipmentId);
+	public boolean findBySale(Long saleId);
+	
 	@Repository
 	public class CustomInvoiceRepoImpl implements CustomInvoiceRepo {
 
@@ -68,6 +69,22 @@ public interface CustomInvoiceRepo {
 				.setMaxResults(pageable.getPageSize()).getResultList();
 			Page<Invoice> page = new PageImpl<Invoice>(result, pageable, total);
 			return page;
+		}
+		
+		public boolean findBySale(Long saleId) {
+			String q = "select inv.id from Invoice inv "
+					+ "join inv.invoiceItems ii "
+					+ "join ii.saleItem si "
+					+ "join si.sale s "
+					+ "where s.id = :saleId "
+					+ "order by inv.created desc ";
+			Query query = entityManager.createQuery(q);
+			query.setParameter("saleId", saleId);
+			int result = query.getFirstResult();
+			if(result>0) {
+				return true;
+			}
+			return false;
 		}
 	}
 }

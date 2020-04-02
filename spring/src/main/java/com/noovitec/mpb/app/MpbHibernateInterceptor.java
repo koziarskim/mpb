@@ -19,15 +19,15 @@ public class MpbHibernateInterceptor extends EmptyInterceptor {
 
 	@Override
 	public boolean onSave(Object entity, Serializable id, Object[] currentState, String[] propertyNames, Type[] types) {
-		InterceptorService interceptorService = MpbApplicationContext.getBean(InterceptorService.class);
-		interceptorService.onSave(entity, id, currentState, propertyNames, types);
+//		InterceptorService interceptorService = MpbApplicationContext.getBean(InterceptorService.class);
+//		interceptorService.onSave(entity, id, currentState, propertyNames, types);
 		return false;
 	}
 
 	@Override
 	public boolean onFlushDirty(Object entity, Serializable id, Object[] currentState, Object[] previousState, String[] propertyNames, Type[] types) {
-		InterceptorService interceptorService = MpbApplicationContext.getBean(InterceptorService.class);
-		interceptorService.onFlush(entity, id, currentState, previousState, propertyNames, types);
+//		InterceptorService interceptorService = MpbApplicationContext.getBean(InterceptorService.class);
+//		interceptorService.onFlush(entity, id, currentState, previousState, propertyNames, types);
 		return false;
 	}
 	

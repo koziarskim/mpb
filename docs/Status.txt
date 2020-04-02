@@ -25,8 +25,7 @@ Schedule:
 Item:
 - Item version based on the year (design).
 Accountig:
-- A-P Email to client
-- PDF to Kinga
++ A-P Email to client
 + Search by Sale, Shipment, Number, Item
 + Notification if shipment is ready
 + Invoice Type:

@@ -49,15 +49,16 @@ public interface InvoiceService {
 		}
 
 		public Invoice createInvoiceForSale(Sale sale) {
-			log.info("1 Creating ivoice Sale: "+sale.getId());
 			Invoice invoice = null;
 			Customer customer = sale.getCustomer();
 			if(customer == null) {
 				return null;
 			}
 			if(customer.getInvoiceType().equalsIgnoreCase(Customer.INVOICE_TYPE.PER_FIRST_SHIPMENT.name())) {
-				log.info("2 Creating ivoice Sale: "+sale.getId());
 				Shipment shipment = shipmentRepo.getFirstBySale(sale.getId());
+				if(shipment == null) {
+					return null;
+				}
 				invoice = new Invoice();
 				invoice.setType(Customer.INVOICE_TYPE.PER_FIRST_SHIPMENT.name());
 				invoice.setShipment(shipment);
@@ -121,7 +122,6 @@ public interface InvoiceService {
 						saleMap.put(shipItem.getSaleItem().getSale().getId(), list);
 					}
 					list.add(shipItem);
-
 				}
 				for (Map.Entry<Long, List<ShipmentItem>> entry : saleMap.entrySet()) {
 					List<ShipmentItem> shipItems = entry.getValue();
@@ -140,6 +140,37 @@ public interface InvoiceService {
 						ii.setSaleItem(shipItem.getSaleItem());
 						ii.setUnitPrice(shipItem.getSaleItem().getUnitPrice());
 						ii.setUnitsInvoiced(shipItem.getUnits());
+						invoice.getInvoiceItems().add(ii);
+					}
+					invoice = this.save(invoice);
+					invoice.setNumber(invoice.getId().toString());
+					invoice = this.save(invoice);
+					invoices.add(invoice);
+				}
+			}
+			if(customer.getInvoiceType().equalsIgnoreCase(Customer.INVOICE_TYPE.PER_FIRST_SHIPMENT.name())) {
+				for(ShipmentItem shipItem: shipment.getShipmentItems()) {
+					SaleItem si = shipItem.getSaleItem();
+					Sale sale = si.getSale();
+					boolean existingInvoice = invoiceRepo.findBySale(sale.getId());
+					if(existingInvoice) {
+						continue;
+					}
+					Invoice invoice = new Invoice();
+					invoice.setType(Customer.INVOICE_TYPE.PER_FIRST_SHIPMENT.name());
+					invoice.setShipment(shipment);
+					invoice.setBillingAddress(customer.getBillingAddress());
+					invoice.setShippingAddress(shipment.getShippingAddress());
+					invoice.setDate(LocalDate.now());
+					invoice.setFob(shipment.getFob());
+					invoice.setVia(shipment.getVia());
+					invoice.setLoadNumber(shipment.getLoadNumber());
+					invoice.setPaymentTerms(customer.getPaymentTerms());
+					for(SaleItem saleItem: sale.getSaleItems()) {
+						InvoiceItem ii = new InvoiceItem();
+						ii.setSaleItem(saleItem);
+						ii.setUnitPrice(saleItem.getUnitPrice());
+						ii.setUnitsInvoiced(Long.valueOf(saleItem.getUnits()));
 						invoice.getInvoiceItems().add(ii);
 					}
 					invoice = this.save(invoice);

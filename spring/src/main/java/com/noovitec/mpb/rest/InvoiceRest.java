@@ -71,6 +71,7 @@ class InvoiceRest {
 			dto.setSent(invoice.isSent());
 			dto.setType(invoice.getType());
 			dto.setShipmentNumber(invoice.getShipment().getNumber());
+			dto.setCustomerName(invoice.getShipment().getCustomer().getName());
 			return dto;
 		});
 		return dtos;

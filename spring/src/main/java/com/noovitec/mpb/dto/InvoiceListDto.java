@@ -18,4 +18,5 @@ public class InvoiceListDto {
 	private String type;
 	private String shipmentNumber;
 	private boolean sent;
+	private String customerName;
 }
