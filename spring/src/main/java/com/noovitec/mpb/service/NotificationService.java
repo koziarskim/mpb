@@ -172,7 +172,7 @@ public interface NotificationService {
 				String encodedEmail = Base64.getUrlEncoder().encodeToString(bytes);
 				Message message = new Message();
 				message.setRaw(encodedEmail);
-				message = service.users().messages().send("me", message).execute();
+//				message = service.users().messages().send("me", message).execute();
 			} catch (MessagingException | IOException | GeneralSecurityException e){
 				e.printStackTrace();
 			}

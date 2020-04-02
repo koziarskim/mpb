@@ -21,7 +21,7 @@ public class MpbApiInterceptor implements HandlerInterceptor {
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object object) throws Exception {
 //		log.info("preHandle...");
-		MpbTenantContext.setCurrentTenant("public");
+		MpbTenantContext.setCurrentTenant("y2019");
 		return true;
 	}
 

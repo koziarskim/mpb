@@ -198,8 +198,8 @@ class InvoiceRest {
 		bolStamper.getAcroFields().setField("totalUnits", String.valueOf(totalUnits));
 		bolStamper.getAcroFields().setField("totalCases", totalCases.toString());
 		bolStamper.getAcroFields().setField("totalPallets", totalPallets.toString());
-		bolStamper.getAcroFields().setField("balanceDue", invoice.getBalanceDue().toString());
-		bolStamper.getAcroFields().setField("shippingCost", invoice.getShippingCost().toString());
+		bolStamper.getAcroFields().setField("balanceDue", invoice.getBalanceDue()==null?"0.00":invoice.getBalanceDue().toString());
+		bolStamper.getAcroFields().setField("shippingCost", invoice.getShippingCost()==null?"0.00":invoice.getShippingCost().toString());
 		bolStamper.getAcroFields().setField("totalAmount", totalAmount.toString());
 		
 		bolStamper.close();

@@ -2,7 +2,6 @@ In Progress/Done:
 Component:
 - Price history/average (based on PO).
 Sale:
-+ Show sale windows on list (from, to).
 - Export Sales by Customer to Excel/CSV (See Kasia's email: Order /Sale Summary Report - MIMS).
 - Export single sale.
 Accounting (talk to Kinga).
@@ -15,14 +14,6 @@ Schedule:
 Item:
 - Item version based on the year (design).
 Accountig:
-+ A-P Email to client field.
-+ Search by Sale, Shipment, Number, Item
-+ Notification if shipment is ready
-+ Invoice Type:
-	+ No Invoce
-+ Multiple PO on invoice
-+ Ability to entery shipping cost (should it be subtracted from amount?)
-+ Pay Terms manual entry
 - Send email to client (andy as cc: by default).
 
 

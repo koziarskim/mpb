@@ -2,8 +2,6 @@ package com.noovitec.mpb.app;
 
 import java.lang.reflect.Field;
 
-import javax.transaction.Transactional;
-
 import org.hibernate.event.spi.PostDeleteEvent;
 import org.hibernate.event.spi.PostDeleteEventListener;
 import org.hibernate.event.spi.PostInsertEvent;
@@ -14,7 +12,9 @@ import org.hibernate.persister.entity.EntityPersister;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Component;
 
 import com.noovitec.mpb.entity.Customer;
@@ -23,6 +23,7 @@ import com.noovitec.mpb.entity.Shipment;
 import com.noovitec.mpb.service.NotificationService;
 
 @Component
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class MpbEventListener implements PostInsertEventListener, PostUpdateEventListener, PostDeleteEventListener {
 
 	private static final long serialVersionUID = 1L;
@@ -30,61 +31,79 @@ public class MpbEventListener implements PostInsertEventListener, PostUpdateEven
 	private final Logger log = LoggerFactory.getLogger(MpbEventListener.class);
 	@Autowired
 	NotificationService notificationService;
-	
+    @Autowired
+    private TaskExecutor taskExecutor;
+    
 	@Override
 	public boolean requiresPostCommitHanding(EntityPersister persister) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 	
-	@Async
-	@Transactional
 	@Override
 	public void onPostInsert(PostInsertEvent event) {
-		Object entity = event.getEntity();
-        Field[] fields = event.getEntity().getClass().getDeclaredFields();
-        String[] propertyNames = event.getPersister().getEntityMetamodel().getPropertyNames();
-        Object[] newStates = event.getState();
-		if (entity.getClass() == Shipment.class) {
-			notificationService.shipmentReady(entity, newStates, null, propertyNames);
-			notificationService.shipmentShipped(entity, newStates, null, propertyNames);
-		}
-		if (entity.getClass() == Sale.class) {
-			notificationService.saleShipped(entity, newStates, null, propertyNames);
-		}
-		if (entity.getClass() == Customer.class) {
-			notificationService.customerShipped(entity, newStates, null, propertyNames);
-		}
+		String tenant = MpbTenantContext.getCurrentTenant();
+        taskExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+            	MpbTenantContext.setCurrentTenant(tenant);
+				Object entity = event.getEntity();
+		        String[] propertyNames = event.getPersister().getEntityMetamodel().getPropertyNames();
+		        Object[] newStates = event.getState();
+				if (entity.getClass() == Shipment.class) {
+					notificationService.shipmentReady(entity, newStates, null, propertyNames);
+					notificationService.shipmentShipped(entity, newStates, null, propertyNames);
+				}
+				if (entity.getClass() == Sale.class) {
+					notificationService.saleShipped(entity, newStates, null, propertyNames);
+				}
+				if (entity.getClass() == Customer.class) {
+					notificationService.customerShipped(entity, newStates, null, propertyNames);
+				}
+				MpbTenantContext.clear();
+            }
+        });
 	}
 	
-	@Async
-	@Transactional
 	@Override
 	public void onPostUpdate(PostUpdateEvent event) {
-		Object entity = event.getEntity();
-		Field[] fields = event.getEntity().getClass().getDeclaredFields();
-        String[] propertyNames = event.getPersister().getEntityMetamodel().getPropertyNames();
-        Object[] newStates = event.getState();
-        Object[] oldStates = event.getOldState();
-		if (entity.getClass() == Shipment.class) {
-			notificationService.shipmentReady(entity, newStates, oldStates, propertyNames);
-			notificationService.shipmentShipped(entity, newStates, oldStates, propertyNames);
-		}
-		if (entity.getClass() == Sale.class) {
-			notificationService.saleShipped(entity, newStates, oldStates, propertyNames);
-		}
-		if (entity.getClass() == Customer.class) {
-			notificationService.customerShipped(entity, newStates, oldStates, propertyNames);
-		}
+		String tenant = MpbTenantContext.getCurrentTenant();
+        taskExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+				MpbTenantContext.setCurrentTenant(tenant);
+				Object entity = event.getEntity();
+		        String[] propertyNames = event.getPersister().getEntityMetamodel().getPropertyNames();
+		        Object[] newStates = event.getState();
+		        Object[] oldStates = event.getOldState();
+				if (entity.getClass() == Shipment.class) {
+					notificationService.shipmentReady(entity, newStates, oldStates, propertyNames);
+					notificationService.shipmentShipped(entity, newStates, oldStates, propertyNames);
+				}
+				if (entity.getClass() == Sale.class) {
+					notificationService.saleShipped(entity, newStates, oldStates, propertyNames);
+				}
+				if (entity.getClass() == Customer.class) {
+					notificationService.customerShipped(entity, newStates, oldStates, propertyNames);
+				}
+				MpbTenantContext.clear();
+            }
+        });
 	}
 
-	@Async
-	@Transactional
 	@Override
 	public void onPostDelete(PostDeleteEvent event) {
-		Object entity = event.getEntity();
-		Field[] fields = event.getEntity().getClass().getDeclaredFields();
-        String[] propertyNames = event.getPersister().getEntityMetamodel().getPropertyNames();
+		String tenant = MpbTenantContext.getCurrentTenant();
+        taskExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+            	MpbTenantContext.setCurrentTenant(tenant);
+				Object entity = event.getEntity();
+				Field[] fields = event.getEntity().getClass().getDeclaredFields();
+		        String[] propertyNames = event.getPersister().getEntityMetamodel().getPropertyNames();
+		        MpbTenantContext.clear();
+            }
+        });
 	}
 
 }

@@ -1,6 +1,7 @@
 package com.noovitec.mpb.entity;
 
 import javax.persistence.Entity;
+import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,6 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Table(schema="shared")
 public class Season extends BaseEntity {
 
 	private String name;

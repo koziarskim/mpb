@@ -90,9 +90,9 @@ class CustomerRest {
 		if (customer == null) {
 			customer = new Customer();
 		}
-		if(customer.getInvoiceType()==null) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Invoice Type is required");
-		}
+//		if(customer.getInvoiceType()==null) {
+//			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Invoice Type is required");
+//		}
 		Customer result = customerRepo.save(customer);
 		result.setAccount(result.getId().toString());
 		result = customerRepo.save(customer);

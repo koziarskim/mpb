@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -20,6 +21,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Table(schema="shared")
 public class Role extends BaseEntity {
 
 	private String code;
@@ -28,7 +30,7 @@ public class Role extends BaseEntity {
 
 	@JsonIgnoreProperties(value = { "roles" }, allowSetters = true)
 	@ManyToMany()
-	@JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "role_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
+	@JoinTable(name = "shared.user_role", joinColumns = @JoinColumn(name = "role_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
 	private Collection<User> users = new HashSet<User>();
 
 }
