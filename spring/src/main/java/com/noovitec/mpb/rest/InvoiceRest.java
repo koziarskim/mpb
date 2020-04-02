@@ -131,6 +131,8 @@ class InvoiceRest {
 		String itemTotalPrice = "";
 		int totalUnits = 0;
 		BigDecimal totalAmount = BigDecimal.ZERO;
+		Long totalCases = 0L;
+		Long totalPallets = 0L;
 		Collection<InvoiceItem> invoiceItems = invoice.getInvoiceItems();
 		Map<Long, String> saleIds = new HashMap<Long, String>();
 		for (InvoiceItem ii : invoiceItems) {
@@ -144,6 +146,8 @@ class InvoiceRest {
 			itemTotalPrice += ii.getTotalUnitPrice() + "\n\n";
 			totalUnits += ii.getUnitsInvoiced();
 			totalAmount = totalAmount.add(ii.getTotalUnitPrice()==null?BigDecimal.ZERO:ii.getTotalUnitPrice());
+			totalCases += ii.getUnitsInvoiced()/ii.getSaleItem().getItem().getCasePack();
+			totalPallets += ii.getUnitsInvoiced()/(ii.getSaleItem().getItem().getTi() * ii.getSaleItem().getItem().getHi());
 		}
 		totalAmount = totalAmount.add(invoice.getShippingCost()==null?BigDecimal.ZERO:invoice.getShippingCost());
 		InputStream bolIn = null;
@@ -192,8 +196,8 @@ class InvoiceRest {
 		bolStamper.getAcroFields().setField("itemTotalPrice", itemTotalPrice);
 
 		bolStamper.getAcroFields().setField("totalUnits", String.valueOf(totalUnits));
-		bolStamper.getAcroFields().setField("totalCases", "TODO");
-		bolStamper.getAcroFields().setField("totalPallets", "TODO");
+		bolStamper.getAcroFields().setField("totalCases", totalCases.toString());
+		bolStamper.getAcroFields().setField("totalPallets", totalPallets.toString());
 		bolStamper.getAcroFields().setField("balanceDue", invoice.getBalanceDue().toString());
 		bolStamper.getAcroFields().setField("shippingCost", invoice.getShippingCost().toString());
 		bolStamper.getAcroFields().setField("totalAmount", totalAmount.toString());
