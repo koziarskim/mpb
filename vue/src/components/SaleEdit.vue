@@ -28,8 +28,8 @@
         </b-row>
       </b-col>
       <b-col cols=4>
-        <label class="top-label">Comments (Excluded from BOL):</label>
-        <b-form-textarea type="text" :rows="4" v-model="sale.notes"></b-form-textarea>
+        <label class="top-label">Notes:</label>
+        <b-form-textarea :disabled="!allowEdit()" type="text" :rows="4" v-model="sale.notes"></b-form-textarea>
       </b-col>
       <b-col cols=2>
         <div style="display: flex; text-align: right">
@@ -301,15 +301,15 @@ export default {
       return "Not Yet Saved";
     },
     allowEdit(){
-      // return !this.sale.approved && securite.hasRole(["SALE_ADMIN"]);
-      return securite.hasRole(["SALE_ADMIN"]);
+      return !this.sale.approved && securite.hasRole(["SALE_ADMIN"]);
+      // return securite.hasRole(["SALE_ADMIN"]);
     },
     allowSave(){
       return securite.hasRole(["SALE_ADMIN"]);
     },
     allowApprove(){
-      // return !this.sale.approved && securite.hasRole(["SALE_ADMIN"]);
-      return securite.hasRole(["SALE_ADMIN"]);
+      return !this.sale.approved && securite.hasRole(["SALE_ADMIN"]);
+      // return securite.hasRole(["SALE_ADMIN"]);
     },
     goToScheduled(si) {
       router.push("/scheduleEventList/" + si.item.id + "/sale/" + this.sale.id);
