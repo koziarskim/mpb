@@ -5,10 +5,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-//TODO: Do we need this?
+@Component
 public class MpbApiInterceptor implements HandlerInterceptor {
 
 	private final Logger log = LoggerFactory.getLogger(MpbApiInterceptor.class);
@@ -21,7 +22,11 @@ public class MpbApiInterceptor implements HandlerInterceptor {
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object object) throws Exception {
 //		log.info("preHandle...");
-		MpbTenantContext.setCurrentTenant("y2019");
+		String year = request.getParameter("year");
+		if(year==null || year.isBlank()) {
+			throw new Exception("MpbApiInterceptor: There was an error");
+		}
+		MpbTenantContext.setCurrentTenant("y"+year);
 		return true;
 	}
 

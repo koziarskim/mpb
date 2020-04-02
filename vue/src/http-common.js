@@ -2,6 +2,7 @@ import axios from "axios";
 import httpUtils from "./httpUtils";
 import router from "./router";
 import NProgress from 'nprogress';
+import securite from "./securite";
 
 const http = axios.create({
   baseURL: httpUtils.baseUrl
@@ -10,6 +11,11 @@ const http = axios.create({
 http.interceptors.request.use(
   config => {
     NProgress.start();
+    if (!config.params) {
+      config.params = {};
+    }
+    var user = securite.getUser();
+    config.params.year = user.year.name;
     return config;
   },
   error => {

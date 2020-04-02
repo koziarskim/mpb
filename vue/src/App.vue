@@ -84,6 +84,13 @@ export default {
     getUser() {
       if(this.securite.getUser().id){
         this.user = this.securite.getUser();
+        if(this.availableSeasons.length < 1 || this.availableYears.length < 1){
+          this.getAvailableSeasons();
+          this.getAvailableYears();
+        }
+      }
+      if(!this.user || !this.user.id){
+        this.goTo("/login");
       }
     },
     getAvailableSeasons() {
@@ -103,6 +110,7 @@ export default {
     updateUserSession() {
       http.post("/user", this.user).then(r => {
         this.securite.setUser(this.user);
+        router.go();
       }).catch(e => {
         console.log("API error: " + e);
       });
@@ -131,18 +139,11 @@ export default {
     },
     userChangedListener(user){
       this.getUser();
-      if(this.availableSeasons.length < 1 || this.availableYears.length < 1){
-        this.getAvailableSeasons();
-        this.getAvailableYears();
-      }
     }
   },
   mounted(){
     EventBus.$on('userChanged', this.userChangedListener);
     this.getUser();
-    if(!this.user || !this.user.id){
-        this.goTo("/login");
-    }
   }
 };
 </script>
