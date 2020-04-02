@@ -2,7 +2,7 @@
   <div id="app">
     <b-navbar toggleable="md" type="dark" variant="dark" style="height:35px">
       <b-collapse is-nav id="nav_collapse">
-        <b-navbar-nav v-if="!hideNavBar()">
+        <b-navbar-nav v-if="showNav">
           <b-nav-item @click="goTo('/home')" :class="navClass('home')">Home</b-nav-item>
           <b-nav-item @click="goTo('/supplierList')" :class="navClass('supplier')">Supplier</b-nav-item>
           <b-nav-item @click="goTo('/componentList')" :class="navClass('component')">Component</b-nav-item>
@@ -18,24 +18,24 @@
           <b-nav-item @click="goTo('/invoiceList')" :class="navClass('invoice')">Accounting</b-nav-item>
 		      
         </b-navbar-nav>
-        <b-navbar-nav v-if="!hideNavBar()" style="margin:0px 0px 0px auto;">
+        <b-navbar-nav v-if="showNav" style="margin:0px 0px 0px auto;">
           <!-- <b-nav-item-dropdown right :text="user.season.name">
             <b-dropdown-item v-for="season in availableSeasons" :key="season.id" @click="changeSeason(season)">{{season.name}}</b-dropdown-item>
           </b-nav-item-dropdown> -->
         </b-navbar-nav>
-        <b-navbar-nav v-if="!hideNavBar()">
-          <!-- <b-nav-item-dropdown right :text="user.year.name">
+        <b-navbar-nav v-if="showNav">
+          <b-nav-item-dropdown right :text="user.year.name">
             <b-dropdown-item v-for="year in availableYears" :key="year.id" @click="changeYear(year)">{{year.name}}</b-dropdown-item>
-          </b-nav-item-dropdown> -->
+          </b-nav-item-dropdown>
         </b-navbar-nav>
-        <b-navbar-nav v-if="!hideNavBar()">
+        <b-navbar-nav v-if="showNav">
           <b-nav-item-dropdown right :text="user.fullName">
             <b-dropdown-item @click="goTo('/Profile')">Profile</b-dropdown-item>
             <b-dropdown-item v-if="securite.hasRole(['ADMIN'])" @click="goTo('/users')">Manage Users</b-dropdown-item>
             <b-dropdown-item @click="logout()">Signout</b-dropdown-item>
           </b-nav-item-dropdown>
         </b-navbar-nav>
-        <b-navbar-nav v-if="hideNavBar()">
+        <b-navbar-nav v-if="!showNav">
           <img style="height: 37px; margin-top: 5px" src="./assets/mpb-logo.png">
           <span style="color: #d2cdcd; padding: 7px 20px; font-size: 20px">MIMS | Marketplace Inventory Management System</span>
         </b-navbar-nav>
@@ -66,9 +66,17 @@ export default {
         season: {},
         year: {}
       },
+      
     };
   },
-  computed: {},
+  computed: {
+    showNav(){
+      if(this.user == null || this.user.id == null){
+        return false;
+      }
+      return true;
+    }
+  },
   methods: {
     getViewClass(){
       return navigate.viewClass;
@@ -112,17 +120,12 @@ export default {
     navClass(navName){
       return navigate.selected == navName?'highlight':'';
     },
-    hideNavBar() {
-      if(this.securite.getUser() == null){
-        return true;
-      }
-      return this.securite.getUser().id == null;
-    },
     goTo(view) {
       router.push(view);
     },
     logout() {
       document.cookie = "SID=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      this.user = {};
       this.securite.setUser({})
       this.goTo("/login");
     },
