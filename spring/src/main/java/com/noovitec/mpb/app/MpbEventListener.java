@@ -18,6 +18,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import com.noovitec.mpb.entity.Customer;
+import com.noovitec.mpb.entity.Sale;
 import com.noovitec.mpb.entity.Shipment;
 import com.noovitec.mpb.service.NotificationService;
 
@@ -48,6 +49,9 @@ public class MpbEventListener implements PostInsertEventListener, PostUpdateEven
 			notificationService.shipmentReady(entity, newStates, null, propertyNames);
 			notificationService.shipmentShipped(entity, newStates, null, propertyNames);
 		}
+		if (entity.getClass() == Sale.class) {
+			notificationService.saleShipped(entity, newStates, null, propertyNames);
+		}
 		if (entity.getClass() == Customer.class) {
 			notificationService.customerShipped(entity, newStates, null, propertyNames);
 		}
@@ -65,6 +69,9 @@ public class MpbEventListener implements PostInsertEventListener, PostUpdateEven
 		if (entity.getClass() == Shipment.class) {
 			notificationService.shipmentReady(entity, newStates, oldStates, propertyNames);
 			notificationService.shipmentShipped(entity, newStates, oldStates, propertyNames);
+		}
+		if (entity.getClass() == Sale.class) {
+			notificationService.saleShipped(entity, newStates, oldStates, propertyNames);
 		}
 		if (entity.getClass() == Customer.class) {
 			notificationService.customerShipped(entity, newStates, oldStates, propertyNames);

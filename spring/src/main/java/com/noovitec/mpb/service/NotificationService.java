@@ -73,13 +73,6 @@ public interface NotificationService {
 				Map<String, String> model = new HashMap<String, String>();
 		        model.put("shipmentNumber", shipment.getNumber());
 				this.sendMail(emails, model, shipment, Notification.TYPE.SHIPPING_READY);
-				List<Invoice> invoices = invoiceService.createInvoiceForShipment(shipment);
-				for(Invoice invoice: invoices) {
-					List<String> invoiceEmails = Arrays.asList("kfiolek@marketplacebrands.com","mkoziarski@marketplacebrands.com");
-					Map<String, String> invoiceModel = new HashMap<String, String>();
-		        	invoiceModel.put("invoiceNumber", invoice.getNumber());
-					this.sendMail(invoiceEmails, invoiceModel, shipment, Notification.TYPE.INVOICE_CREATED);
-				}
 			}
 
 		}
@@ -92,6 +85,14 @@ public interface NotificationService {
 				Map<String, String> shipModel = new HashMap<String, String>();
 				shipModel.put("shipmentNumber", shipment.getNumber());
 				this.sendMail(emails, shipModel, shipment, Notification.TYPE.SHIPPING_SHIPPED);
+				List<Invoice> invoices = invoiceService.createInvoiceForShipment(shipment);
+				for(Invoice invoice: invoices) {
+					List<String> invoiceEmails = Arrays.asList("kfiolek@marketplacebrands.com","mkoziarski@marketplacebrands.com");
+					Map<String, String> invoiceModel = new HashMap<String, String>();
+		        	invoiceModel.put("invoiceNumber", invoice.getNumber());
+					this.sendMail(invoiceEmails, invoiceModel, shipment, Notification.TYPE.INVOICE_CREATED);
+				}
+
 			}
 		}
 
@@ -108,7 +109,6 @@ public interface NotificationService {
 		        	model.put("invoiceNumber", invoice.getNumber());
 		        	this.sendMail(emails, model, sale, Notification.TYPE.INVOICE_CREATED);
 		        }
-				
 			}
 		}
 		

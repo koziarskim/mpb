@@ -1,14 +1,4 @@
 In Progress/Done:
-Customer:
-- general info contact
-- processed by the carton or by the pallet
-- broker info
-- carton label requirements
-- carton marking requirements (if applicable)
-- carton label example (if applicable)
-- pallet tag example
-- claim dispute form/ contact 
-- pre-ticketing compliance (if applicable)
 Component:
 - Price history/average (based on PO).
 Sale:
@@ -25,20 +15,30 @@ Schedule:
 Item:
 - Item version based on the year (design).
 Accountig:
-+ A-P Email to client
++ A-P Email to client field.
 + Search by Sale, Shipment, Number, Item
 + Notification if shipment is ready
 + Invoice Type:
 	+ No Invoce
-- Pay Terms from Kinga
 + Multiple PO on invoice
-- Ability to entery shipping cost.
++ Ability to entery shipping cost (should it be subtracted from amount?)
+- Pay Terms manual entry
+- Send email to client (andy as cc: by default).
 
 
 ------------------------------------------------------------------
 
 Backlog:
-
+Customer:
+- general info contact
+- processed by the carton or by the pallet
+- broker info
+- carton label requirements
+- carton marking requirements (if applicable)
+- carton label example (if applicable)
+- pallet tag example
+- claim dispute form/ contact 
+- pre-ticketing compliance (if applicable)
 Customer:
 - Ability to create Pallet Tag - Need to talk more.
 Dashboard:

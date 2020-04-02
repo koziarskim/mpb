@@ -29,7 +29,7 @@ public interface CustomInvoiceRepo {
 		EntityManager entityManager;
 
 		@Override
-		public Page<Invoice> findPagable(Pageable pageable, String invoiceNumer, Long saleId, Long customerId, Long shipmentId) {
+		public Page<Invoice> findPagable(Pageable pageable, String invoiceNumber, Long saleId, Long customerId, Long shipmentId) {
 			String q = "select distinct inv from Invoice inv "
 					+ "join inv.shipment ship "
 					+ "join ship.shipmentItems shipItem "
@@ -37,7 +37,7 @@ public interface CustomInvoiceRepo {
 					+ "join si.sale s "
 					+ "join ship.customer cu "
 					+ "where inv.id is not null ";
-			if (invoiceNumer != null && !invoiceNumer.isEmpty()) {
+			if (invoiceNumber != null && !invoiceNumber.isEmpty()) {
 				q += "and (upper(inv.number) like concat('%',upper(:invoiceNumber),'%')) ";
 			}
 			if (saleId != null) {
@@ -51,8 +51,8 @@ public interface CustomInvoiceRepo {
 			Order order = pageable.getSort().iterator().next();
 			q += "order by inv."+order.getProperty() + " "+order.getDirection();
 			Query query = entityManager.createQuery(q);
-			if (invoiceNumer != null && !invoiceNumer.isEmpty()) {
-				query.setParameter("invoiceNumer", invoiceNumer);
+			if (invoiceNumber != null && !invoiceNumber.isEmpty()) {
+				query.setParameter("invoiceNumber", invoiceNumber);
 			}
 			if (customerId != null) {
 				query.setParameter("customerId", customerId);
