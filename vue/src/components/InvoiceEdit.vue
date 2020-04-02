@@ -67,6 +67,15 @@
         <label class="top-label">FOB:</label>
         <input class="form-control" type="tel" v-model="invoice.fob">
       </b-col>
+      <b-col cols=2>
+        <label class="top-label">Shipping Cost:</label>
+        <input class="form-control" type="tel" v-model="invoice.shippingCost">
+      </b-col>
+      <b-col cols=2>
+        <label class="top-label">Balance Due:</label>
+        <input class="form-control" type="tel" v-model="invoice.balanceDue">
+      </b-col>
+
     </b-row>
     <!-- <b-row>
       <b-col cols=3>

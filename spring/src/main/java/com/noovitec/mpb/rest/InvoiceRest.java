@@ -143,8 +143,9 @@ class InvoiceRest {
 			itemPrice += ii.getUnitPrice() + "\n\n";
 			itemTotalPrice += ii.getTotalUnitPrice() + "\n\n";
 			totalUnits += ii.getUnitsInvoiced();
-			totalAmount.add(ii.getTotalUnitPrice()==null?BigDecimal.ZERO:ii.getTotalUnitPrice());
+			totalAmount = totalAmount.add(ii.getTotalUnitPrice()==null?BigDecimal.ZERO:ii.getTotalUnitPrice());
 		}
+		totalAmount = totalAmount.add(invoice.getShippingCost()==null?BigDecimal.ZERO:invoice.getShippingCost());
 		InputStream bolIn = null;
 		bolIn = this.getClass().getClassLoader().getResourceAsStream("pdf/Invoice-Template-1.pdf");
 		PdfReader bolTemplate = new PdfReader(bolIn);
@@ -193,7 +194,8 @@ class InvoiceRest {
 		bolStamper.getAcroFields().setField("totalUnits", String.valueOf(totalUnits));
 		bolStamper.getAcroFields().setField("totalCases", "TODO");
 		bolStamper.getAcroFields().setField("totalPallets", "TODO");
-		bolStamper.getAcroFields().setField("balanceDue", "TODO");
+		bolStamper.getAcroFields().setField("balanceDue", invoice.getBalanceDue().toString());
+		bolStamper.getAcroFields().setField("shippingCost", invoice.getShippingCost().toString());
 		bolStamper.getAcroFields().setField("totalAmount", totalAmount.toString());
 		
 		bolStamper.close();

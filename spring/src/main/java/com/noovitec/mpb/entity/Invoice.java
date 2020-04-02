@@ -1,5 +1,6 @@
 package com.noovitec.mpb.entity;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -34,6 +35,8 @@ public class Invoice extends BaseEntity {
 	private String loadNumber;
     private String type;
 	private boolean sent;
+	private BigDecimal shippingCost;
+	private BigDecimal balanceDue;
 
 	@JsonIgnoreProperties(value = { "items" }, allowSetters = true)
 	@ManyToOne()

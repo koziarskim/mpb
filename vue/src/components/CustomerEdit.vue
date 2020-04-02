@@ -25,7 +25,8 @@
                 <b-row>
                     <b-col cols=4>
                       <label class="top-label">Pay Terms:</label>
-                      <b-select option-value="id" option-text="name" :list="availablePayTerms" v-model="customer.paymentTerms"></b-select>
+                      <input class="form-control" type="text" v-model="customer.paymentTerms"/>
+                      <!-- <b-select option-value="id" option-text="name" :list="availablePayTerms" v-model="customer.paymentTerms"></b-select> -->
                     </b-col>
                     <b-col cols=3>
                         <label class="top-label">Freight Terms:</label>

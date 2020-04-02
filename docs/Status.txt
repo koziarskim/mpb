@@ -22,7 +22,7 @@ Accountig:
 	+ No Invoce
 + Multiple PO on invoice
 + Ability to entery shipping cost (should it be subtracted from amount?)
-- Pay Terms manual entry
++ Pay Terms manual entry
 - Send email to client (andy as cc: by default).
 
 
