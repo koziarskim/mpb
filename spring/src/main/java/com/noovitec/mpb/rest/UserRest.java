@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.noovitec.mpb.app.MpbAuthenticationContext;
+import com.noovitec.mpb.dto.LoginDto;
 import com.noovitec.mpb.entity.User;
 import com.noovitec.mpb.repo.UserRepo;
 
@@ -55,24 +56,26 @@ class UserRest {
 		if (user == null) {
 			user = new User();
 		}
+		User existingUSer = userRepo.getOne(user.getId());
+		user.setPassword(existingUSer.getPassword());
 		User result = userRepo.save(user);
 		return ResponseEntity.ok().body(result);
 	}
 
 	@PostMapping("/user/login")
-	ResponseEntity<?> login(@RequestBody(required = true) User user, HttpServletRequest request, HttpServletResponse response) throws URISyntaxException {
-		User result = userRepo.getByUsername(user.getUsername());
-		if (result == null) {
+	ResponseEntity<?> login(@RequestBody(required = true) LoginDto loginDto, HttpServletRequest request, HttpServletResponse response) throws URISyntaxException {
+		User user = userRepo.getByUsername(loginDto.getUsername());
+		if (user == null) {
 			log.info("Username not found");
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Wrong username/password combination!");
 		}
-		if (!result.getPassword().equals(user.getPassword())) {
+		if (!user.getPassword().equals(loginDto.getPassword())) {
 			log.info("Password is wrong");
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Wrong username/password combination!");
 		}
 		log.info("Setting SID");
 		//TODO: hash username or something....
-		String sid = user.getUsername();
+		String sid = loginDto.getUsername();
 		mpbAuthenticationContext.addSid(sid);
 		Cookie cookie = new Cookie("SID", sid);
 		cookie.setPath("/");
@@ -81,7 +84,7 @@ class UserRest {
 		cookie.setHttpOnly(true);
 		response.addCookie(cookie);
 //		response.setHeader("Set-Cookie", "SID="+sid+"; Path=/; Max-Age=3600; Secure; HttpOnly; SameSite=None");
-		return ResponseEntity.ok().body(result);
+		return ResponseEntity.ok().body(user);
 	}
 
 	@DeleteMapping("/user/{id}")

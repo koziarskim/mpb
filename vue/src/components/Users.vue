@@ -106,7 +106,6 @@ export default {
           this.getUsers();
           if (this.user.id == this.securite.getUser().id) {
             this.securite.setUser(response.data)
-            // this.$store.dispatch("changeUser", response.data);
           }
           return response;
         })

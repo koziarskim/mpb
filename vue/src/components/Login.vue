@@ -3,13 +3,13 @@
     <b-row>
       <b-col cols="3" offset="4">
         <label class="top-label">Username:</label>
-        <input class="form-control" type="text" v-model="user.username" placeholder="Username">
+        <input class="form-control" type="text" v-model="loginDto.username" placeholder="Username">
       </b-col>
     </b-row>
     <b-row>
       <b-col cols="3" offset="4">
         <label class="top-label">Password:</label>
-        <input class="form-control" type="password" v-model="user.password" placeholder="Password">
+        <input class="form-control" type="password" v-model="loginDto.password" placeholder="Password">
       </b-col>
     </b-row>
     <b-row>
@@ -33,14 +33,17 @@ export default {
   data() {
     return {
       securite: securite,
-      user: {}
+      loginDto: {
+        username: "",
+        password: "",
+      }
     };
   },
   computed: {},
   watch: {},
   methods: {
     login() {
-      return http.post("/user/login", this.user).then(response => {
+      return http.post("/user/login", this.loginDto).then(response => {
         this.securite.setUser(response.data)
         EventBus.$emit('userChanged', response.data);
         router.push("/home")

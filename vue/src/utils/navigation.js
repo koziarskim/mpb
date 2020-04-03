@@ -5,26 +5,6 @@ export default {
   selected: "home",
   viewClass: "view-default",
   baseUrl: process.env.VUE_APP_API_BASE_URL,
-  getSeason() {
-    var season = JSON.parse(window.localStorage.getItem("season"));
-    if (!season) {
-      season = { id: 1, name: "Christmas" };
-    }
-    return season;
-  },
-  getYear() {
-    var year = JSON.parse(window.localStorage.getItem("year"));
-    if (!year) {
-      year = { id: 1, name: "2020" };
-    }
-    return year;
-  },
-  setSeason(season) {
-    window.localStorage.setItem("season", JSON.stringify(season));
-  },
-  setYear(year) {
-    window.localStorage.setItem("year", JSON.stringify(year));
-  },
   goTo(view) {
     return router.push(view);
   },

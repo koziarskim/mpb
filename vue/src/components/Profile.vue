@@ -61,7 +61,6 @@ export default {
         .post("/user", this.user)
         .then(response => {
           this.securite.setUser(response.data)
-          // this.$store.dispatch("changeUser", response.data);
           this.getUser();
           return response;
         })

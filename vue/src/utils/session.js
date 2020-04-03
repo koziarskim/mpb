@@ -5,11 +5,14 @@ export default {
     year: {}
   },
   getUser() {
-    this.user = JSON.parse(window.localStorage.getItem("user"));
+    var sessionUser = JSON.parse(window.sessionStorage.getItem("user"));
+    if (sessionUser) {
+      this.user = sessionUser;
+    }
     return this.user;
   },
   setUser(user) {
-    window.localStorage.setItem("user", JSON.stringify(user));
+    window.sessionStorage.setItem("user", JSON.stringify(user));
     this.user = user;
   }
 };

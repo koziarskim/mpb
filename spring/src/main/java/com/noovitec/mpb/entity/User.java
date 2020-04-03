@@ -12,6 +12,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.AllArgsConstructor;
@@ -29,6 +30,7 @@ public class User extends BaseEntity {
 
 	private String number;
 	private String username;
+	@JsonIgnore
 	private String password;
 	private String firstName;
 	private String lastName;
