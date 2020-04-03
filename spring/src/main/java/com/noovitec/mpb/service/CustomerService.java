@@ -33,8 +33,8 @@ public interface CustomerService {
 			for(Customer customer: customers) {
 				Long unitsSold = customerRepo.getUnitsSold(customer.getId());
 				Long unitsShipped = customerRepo.getUnitsShipped(customer.getId());
-				customer.setUnitsSold(unitsSold);
-				customer.setUnitsShipped(unitsShipped);
+				customer.setUnitsSold(unitsSold==null?0L:unitsSold);
+				customer.setUnitsShipped(unitsShipped==null?0L:unitsShipped);
 				customerRepo.save(customer);
 				log.info("Updated Customer: "+customer.getId());
 				count++;

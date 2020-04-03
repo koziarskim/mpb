@@ -33,17 +33,13 @@ public class MultiTenantConnectionProviderImpl implements MultiTenantConnectionP
         String tenantIdentifier = MpbTenantContext.getCurrentTenant();
         final Connection connection = getAnyConnection();
         try {
-            if (tenantIdentifier != null) {
-                connection.createStatement().execute("SET SCHEMA '" + tenantIdentifier + "'");
-            } else {
-                connection.createStatement().execute("SET SCHEMA 'public'");
-            }
+            if (tenantIdentifier == null) {
+            	throw new HibernateException("Schema tenant not specified");
+            }             	
+            connection.createStatement().execute("SET SCHEMA '" + tenantIdentifier + "'"); 
         }
         catch ( SQLException e ) {
-            throw new HibernateException(
-                    "Problem setting schema to " + tenantIdentifier,
-                    e
-            );
+            throw new HibernateException("Problem setting schema to " + tenantIdentifier, e);
         }
         return connection;
     }
