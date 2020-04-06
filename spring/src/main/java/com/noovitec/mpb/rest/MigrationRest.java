@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.noovitec.mpb.exceptions.RepoException;
 import com.noovitec.mpb.repo.AttachmentRepo;
 import com.noovitec.mpb.repo.ComponentRepo;
 import com.noovitec.mpb.repo.ItemRepo;
@@ -48,7 +49,7 @@ class MigrationRest {
 	}
 	
 	@GetMapping("/migrate/tenant/from/{tenantFrom}/to/{tenantTo}")
-	ResponseEntity<?> migrate(@PathVariable String tenantFrom, @PathVariable String tenantTo) throws IOException {
+	ResponseEntity<?> migrate(@PathVariable String tenantFrom, @PathVariable String tenantTo) throws IOException, RepoException {
 		migrationService.createTenant(tenantFrom, tenantTo);
 		return ResponseEntity.ok().body("OK");
 	}

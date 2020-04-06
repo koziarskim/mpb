@@ -16,10 +16,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.noovitec.mpb.entity.Year;
+import com.noovitec.mpb.exceptions.RepoException;
+import com.noovitec.mpb.repo.CrudRepo;
+import com.noovitec.mpb.repo.YearRepo;
 import com.noovitec.mpb.service.ItemService;
 
 public interface CustomMigrationRepo {
-	public void createTenant(String tenantFrom, String tenantTo) throws IOException;
+	public void createTenant(String tenantFrom, String tenantTo) throws RepoException, IOException;
 
 	@Repository
 	public class CustomMigrationRepoImpl implements CustomMigrationRepo {
@@ -30,10 +34,34 @@ public interface CustomMigrationRepo {
 		EntityManager entityManager;
 		@Autowired
 		ItemService itemService;
+		@Autowired
+		CrudRepo crudRepo;
+		@Autowired
+		YearRepo yearRepo;
 
-		public void createTenant(String tenantFrom, String tenantTo) throws IOException {
+		public void createTenant(String tenantFrom, String tenantTo) throws RepoException, IOException {
+        	this.createYear(tenantTo);
 			this.createSchema(tenantFrom, tenantTo);
 			this.transferTenantData(tenantFrom, tenantTo);
+		}
+		
+		private void createYear(String tenantTo) throws RepoException {
+        	String yearTo = tenantTo.replace("y", "");
+			List<?> result = yearRepo.findByName(yearTo);
+        	if(result.size()>0) {
+        		log.info("Year: "+yearTo+" already exist!");
+        		throw new RepoException("Year: "+yearTo+" already exist!");
+        	}
+        	String q = "SELECT * FROM information_schema.schemata WHERE schema_name = '"+tenantTo+"'";
+        	result = entityManager.createNativeQuery(q).getResultList();
+        	if(result.size() > 0) {
+        		log.info("Schema: "+tenantTo+" already exist!");
+        		throw new RepoException("Schema: "+tenantTo+" already exist!");
+        	}
+        	Year year = new Year();
+        	year.setName(yearTo);
+        	yearRepo.save(year);
+        	
 		}
 
 		private void createSchema( String tenantFrom, String tenantTo) throws IOException {

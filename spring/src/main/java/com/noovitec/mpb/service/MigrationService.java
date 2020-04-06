@@ -6,12 +6,13 @@ import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
+import com.noovitec.mpb.exceptions.RepoException;
 import com.noovitec.mpb.repo.ItemRepo;
 import com.noovitec.mpb.repo.MigrationRepo;
 
 public interface MigrationService {
 	
-	public void createTenant(String tenantFrom, String tenantTo) throws IOException;
+	public void createTenant(String tenantFrom, String tenantTo) throws IOException, RepoException;
 
 	@Transactional
 	@Service("migrationServiceImpl")
@@ -23,7 +24,7 @@ public interface MigrationService {
 			this.migrationRepo = migrationRepo;
 		}
 		
-		public void createTenant(String tenantFrom, String tenantTo) throws IOException {
+		public void createTenant(String tenantFrom, String tenantTo) throws IOException, RepoException {
 			migrationRepo.createTenant(tenantFrom, tenantTo);
 		}
 	}
