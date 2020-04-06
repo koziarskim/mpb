@@ -13,12 +13,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.noovitec.mpb.app.MpbTenantContext;
 import com.noovitec.mpb.exceptions.RepoException;
-import com.noovitec.mpb.repo.AttachmentRepo;
-import com.noovitec.mpb.repo.ComponentRepo;
-import com.noovitec.mpb.repo.ItemRepo;
 import com.noovitec.mpb.repo.MigrationRepo;
-import com.noovitec.mpb.service.AttachmentService;
+import com.noovitec.mpb.service.ItemService;
 import com.noovitec.mpb.service.MigrationService;
 
 @Transactional
@@ -29,13 +27,7 @@ class MigrationRest {
 	private final Logger log = LoggerFactory.getLogger(MigrationRest.class);
 	private MigrationService migrationService;
 	@Autowired
-	ItemRepo itemRepo;
-	@Autowired
-	ComponentRepo componentRepo;
-	@Autowired
-	AttachmentRepo attachmentRepo;
-	@Autowired
-	AttachmentService attachmentService;
+	ItemService itemService;
 	@Autowired
 	MigrationRepo migrationRepo;
 
@@ -51,6 +43,9 @@ class MigrationRest {
 	@GetMapping("/migrate/tenant/from/{tenantFrom}/to/{tenantTo}")
 	ResponseEntity<?> migrate(@PathVariable String tenantFrom, @PathVariable String tenantTo) throws IOException, RepoException {
 		migrationService.createTenant(tenantFrom, tenantTo);
+		MpbTenantContext.setCurrentTenant(tenantTo);
+		itemService.updateUnits(null);
+		MpbTenantContext.clear();
 		return ResponseEntity.ok().body("OK");
 	}
 	

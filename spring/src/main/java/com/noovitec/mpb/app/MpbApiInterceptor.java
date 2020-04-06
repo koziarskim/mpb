@@ -1,5 +1,7 @@
 package com.noovitec.mpb.app;
 
+import java.util.Calendar;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -26,8 +28,11 @@ public class MpbApiInterceptor implements HandlerInterceptor {
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object object) throws Exception {
 //		log.info("preHandle...");
-		String year = request.getParameter("yearContext");
-		MpbTenantContext.setCurrentTenant("y"+year);
+		String yearContext = request.getParameter("yearContext");
+		if(yearContext == null) {
+			yearContext = "y"+String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
+		}
+		MpbTenantContext.setCurrentTenant(yearContext);
 		return true;
 	}
 

@@ -16,7 +16,7 @@ http.interceptors.request.use(
       if (!config.params) {
         config.params = {};
       }
-      config.params.yearContext = user.year.name;
+      config.params.yearContext = "y" + user.year.name;
     }
     return config;
   },
