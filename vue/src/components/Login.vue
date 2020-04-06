@@ -43,7 +43,8 @@ export default {
   watch: {},
   methods: {
     login() {
-      return http.post("/user/login", this.loginDto).then(response => {
+      var query = {params: {yearContext: ""}}
+      return http.post("/user/login", this.loginDto, query).then(response => {
         this.securite.setUser(response.data)
         EventBus.$emit('userChanged', response.data);
         router.push("/home")

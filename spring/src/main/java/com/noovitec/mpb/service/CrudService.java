@@ -17,6 +17,7 @@ public interface CrudService {
 	public void delete(Long id);
 	public void flush();
 	public void persist(BaseEntity baseEntity);
+	public void clear();
 	
 	@Transactional
 	@Service
@@ -49,6 +50,10 @@ public interface CrudService {
 		
 		public void persist(BaseEntity baseEntity) {
 			em.persist(baseEntity);
+		}
+		
+		public void clear() {
+			em.clear();
 		}
 	}
 }

@@ -30,7 +30,7 @@ public class MpbApiInterceptor implements HandlerInterceptor {
 //		log.info("preHandle...");
 		String yearContext = request.getParameter("yearContext");
 		if(yearContext == null) {
-			yearContext = "y"+String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
+			throw new Exception("Tenant schema not specified!");
 		}
 		MpbTenantContext.setCurrentTenant(yearContext);
 		return true;
