@@ -108,7 +108,7 @@ export default {
       router.push("/itemEdit/" + item_id);
     },
     pdfUrl: function() {
-      return httpUtils.get("/purchase/" + this.purchase.id + "/pdf");
+      return httpUtils.getUrl("/purchase/" + this.purchase.id + "/pdf");
     }
   },
   mounted() {

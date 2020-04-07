@@ -188,7 +188,7 @@ export default {
   },
   methods: {
     getPdfUrl(invoiceId) {
-      return httpUtils.get("/invoice/" + invoiceId + "/pdf");
+      return httpUtils.getUrl("/invoice/" + invoiceId + "/pdf");
     },
     getTotalUnitPrice(invoiceItem){
       invoiceItem.totalUnitPrice = +invoiceItem.unitPrice * +invoiceItem.unitsInvoiced;

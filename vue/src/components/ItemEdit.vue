@@ -446,7 +446,7 @@ export default {
 	},
 	getImageUrl(){
 		if(this.item.attachment){
-        	return httpUtils.get("/file/attachment/" + this.item.attachment.id);
+        	return httpUtils.getUrl("/file/attachment/" + this.item.attachment.id);
 		}
 		return null;
   },
