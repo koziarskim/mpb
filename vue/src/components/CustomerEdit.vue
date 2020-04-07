@@ -149,9 +149,10 @@ export default {
         {id: "CPU", name: "Customer Pickup"}
       ],
       availableInvoiceTypes: [
-        {id: "PER_FIRST_SHIPMENT", name: "Per Entire Sale"},
         {id: "PER_SHIPMENT_ITEM", name: "Per Shipment BOL"},
         {id: "PER_SHIPMENT_SALE", name: "Per Shipment Sale"},
+        {id: "PER_FIRST_SHIPMENT", name: "Per First Shipment"},
+        {id: "PER_LAST_SHIPMENT", name: "Per Last Shipment"},
         {id: "NO_INVOICE", name: "No Invoice"},
       ],
       invoiceTypeKv: {}

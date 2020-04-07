@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
 public class Customer extends BaseEntity {
 
 	public enum INVOICE_TYPE {
-		PER_FIRST_SHIPMENT, PER_SHIPMENT_SALE, PER_SHIPMENT_ITEM
+		PER_SHIPMENT_ITEM, PER_SHIPMENT_SALE, PER_FIRST_SHIPMENT, PER_LAST_SHIPMENT
 	}
 	
 	private String name;
