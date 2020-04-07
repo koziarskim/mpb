@@ -316,7 +316,7 @@ export default {
       })
     },
     allowEdit(){
-      return securite.hasRole(["SHIPMENT_ADMIN"])
+      return securite.hasRole(["SHIPMENT_ADMIN"]) && !this.shipment.shippedDate;
     },
     getAddedSaleItemsIds(){
       var ids = [];
