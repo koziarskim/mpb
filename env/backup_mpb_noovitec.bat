@@ -9,8 +9,8 @@ set BACKUP=false
 set IMPORT=false
 set DATE_FORMAT=%datestr%
 set BACKUP_DIR=C:\Users\kozia\postgres\backups\noovitec
-set SCHEMA_FILE=%BACKUP_DIR%\backup_schema_%DATE_FORMAT%.sql
-set DATA_FILE=%BACKUP_DIR%\backup_data_%DATE_FORMAT%.sql
+set SCHEMA_FILE=%BACKUP_DIR%\backup_year_schema_%DATE_FORMAT%.sql
+set DATA_FILE=%BACKUP_DIR%\backup_year_data_%DATE_FORMAT%.sql
 set DB_NAME=mpb_%DATE_FORMAT%
 echo Schema file name is %SCHEMA_FILE%
 echo Data file name is %DATA_FILE%
@@ -33,8 +33,8 @@ if "%ARG%"=="full" (
 if "%BACKUP%" == "true" (
 	echo Processing Backup...
 	if exist %SCHEMA_FILE% (echo Schema File already exist %SCHEMA_FILE% && GOTO import)
-		"C:\Program Files (x86)\pgAdmin 4\v4\runtime\pg_dump.exe" --file %SCHEMA_FILE% --host "mpb.noovitec.com" --port "5432" --username "postgres" --verbose --format=p --create --inserts --column-inserts --schema-only "mpb"
-		"C:\Program Files (x86)\pgAdmin 4\v4\runtime\pg_dump.exe" --exclude-table-data "doc_content" --file %DATA_FILE% --host "mpb.noovitec.com" --port "5432" --username "postgres" --verbose --format=p --create --inserts --column-inserts --data-only "mpb"
+		"C:\Program Files (x86)\pgAdmin 4\v4\runtime\pg_dump.exe" --file %SCHEMA_FILE% --host "mpb.noovitec.com" --port "5432" --username "postgres" --verbose --format=p --create --inserts --column-inserts --schema-only --schema "y2019" "mpb"
+		"C:\Program Files (x86)\pgAdmin 4\v4\runtime\pg_dump.exe" --exclude-table-data "doc_content" --file %DATA_FILE% --host "mpb.noovitec.com" --port "5432" --username "postgres" --verbose --format=p --create --inserts --column-inserts --data-only --schema "y2019" "mpb"
 )
 :import
 if "%IMPORT%" == "true" (

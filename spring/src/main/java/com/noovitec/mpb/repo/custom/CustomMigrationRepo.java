@@ -67,7 +67,7 @@ public interface CustomMigrationRepo {
 
 		private void createSchema( String tenantFrom, String tenantTo) throws IOException {
 	        try {
-	        	String fileContent = "create schema "+tenantTo+";\n";
+	        	String fileContent = "";
 				fileContent += this.getFileContent("sql/year_schema.sql", tenantFrom, tenantTo);
 				entityManager.createNativeQuery(fileContent).executeUpdate();
 			} catch (IOException e) {
