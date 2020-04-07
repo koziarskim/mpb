@@ -4,73 +4,21 @@ Component:
 Sale:
 - Export Sales by Customer to Excel/CSV (See Kasia's email: Order /Sale Summary Report - MIMS).
 - Export single sale.
-Accounting (talk to Kinga).
-- Ability to enter invoice number for multiple sale-items ??? or should it be by whole sale?
-- Ability to search sale/sale-items by invoice number
-- Ability to enter invoice number before it is generated.
+Accounting:
+- Send email to client (andy as cc: by default).
+- Add new invoice type to Customer (last shipped)
+- Last sale shipped event to generate invoice and send invoice notification.
+- Invoice number should be sale number for invoice type (first and last shipped)
 Schedule:
 - Ability to add random reciving event on schedule.
 - Combine Shipment and receiving schedule.
 Item:
 - Item version based on the year (design).
-Accountig:
-- Send email to client (andy as cc: by default).
-
+Shipment:
+- Trasfer window date from sale
+	single PO - transfer same shipping window
+	multiple PO's with the same date -  transfer same shipping window
+	multiple PO's with different date -  leave blank
 
 ------------------------------------------------------------------
-
-Backlog:
-Customer:
-- general info contact
-- processed by the carton or by the pallet
-- broker info
-- carton label requirements
-- carton marking requirements (if applicable)
-- carton label example (if applicable)
-- pallet tag example
-- claim dispute form/ contact 
-- pre-ticketing compliance (if applicable)
-Customer:
-- Ability to create Pallet Tag - Need to talk more.
-Dashboard:
-- Display task list (need to define what to see).
-- Ability to search/filter by Season and Year.
-------------------------------------------------------------------------
-
-CUSTOMER-----------------------------------------
-*Accounting (Kinga's list)
-- customer number
-- vendor #
-- full customer address
-- bill to address  
-- payment terms
-- contact name, phone#, email
-- info how to send invoices - notes
-- DUNS#
-- notes
-- assign salesperson /or broker
-
-* Order processing & Shipping
-- pre-tickets- notes and link
-- carton requirements
-- freight terms  
-- routing process & contacts - notes
-- routing portal & portal link - notes
-- add option to upload pdf. file with customer guide 
-- add option to upload pdf. file with routing guide
-- add option to upload label & pallet tag templates pdf. file
-- notes for login & passwords to the portals
-- shipping addresses list
-- shipping contact, phone number, email 
-- notes for routing process
-- notes for labels process
-- BOL requirements
-- shipping log
-
-*Compliance
-- compliance website 
-- contact person, email, phone
-- dispute/claim form pdf. upload option
--------------------------------------------------------
-
 
