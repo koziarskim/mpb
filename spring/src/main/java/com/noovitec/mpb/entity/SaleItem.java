@@ -116,7 +116,7 @@ public class SaleItem extends BaseEntity {
 		if(this.getUnitsOnStock() > 0 && this.unitsOnStock >= (this.units + this.unitsAdjusted)) {
 			this.status = "PENDING_SHIPMENT";
 		}
-		if(this.unitsShipped > 0 && this.unitsShipped >= (this.units + this.unitsAdjusted)) {
+		if(this.unitsShipped >= (this.units + this.unitsAdjusted)) {
 			status = "SHIPPED";
 		}
 		if(this.unitsShipped > 0 && this.unitsShipped >= (this.units + this.unitsAdjusted) && this.unitsOnStock > 0) {

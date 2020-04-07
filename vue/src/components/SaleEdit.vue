@@ -98,7 +98,7 @@
             <input :disabled="!allowEdit()" class="form-control" style="width:100px" type="tel" v-model="row.item.units">
           </template>
           <template v-slot:cell(unitsAdjusted)="row">
-            <input :disabled="!allowEdit()" class="form-control" style="width:100px" type="tel" v-model="row.item.unitsAdjusted">
+            <input class="form-control" style="width:100px" type="tel" v-model="row.item.unitsAdjusted">
           </template>
           <template v-slot:cell(cases)="row">
             <span>{{getCases(row.item)}}</span>
