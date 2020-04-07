@@ -33,8 +33,8 @@ public class ScheduleEvent extends BaseEntity {
 	LocalTime scheduleTime;
 	LocalTime startTime;
 	LocalTime finishTime;
-	Long unitsScheduled = 0L;
-	Long unitsProduced = 0L;
+	long unitsScheduled = 0;
+	long unitsProduced = 0;
 
 	@JsonIgnoreProperties(value = { "scheduleEvents" }, allowSetters = true)
 	@ManyToOne()

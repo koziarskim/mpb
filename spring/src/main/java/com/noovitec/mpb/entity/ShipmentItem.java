@@ -19,9 +19,9 @@ import lombok.NoArgsConstructor;
 @Entity
 public class ShipmentItem extends BaseEntity {
 
-	private Long units = 0L;
-	private Long cases = 0L;
-	private Long pallets = 0L;
+	private long units = 0;
+	private long cases = 0;
+	private long pallets = 0;
 	private String instructions;
 
 	@JsonIgnoreProperties(value = { "shipmentItems" }, allowSetters = true)

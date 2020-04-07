@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Entity
 public class ItemComponent extends BaseEntity {
 
-	private Integer units;
+	private long units = 0;
 
 	@JsonIgnoreProperties(value = { "itemComponents" }, allowSetters = true)
 	@ManyToOne()

@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
 @Entity
 public class PurchaseComponent extends BaseEntity {
 
-	private Long units = 0L;
+	private long units = 0;
 	private BigDecimal unitPrice = BigDecimal.ZERO;
 
 	@JsonIgnoreProperties(value = { "purchaseComponents" }, allowSetters = true)
@@ -72,7 +72,7 @@ public class PurchaseComponent extends BaseEntity {
 	private boolean received;
 
 	public boolean isReceived() {
-		if (this.getUnitsReceived() != 0 && this.getUnitsReceived() >= (this.getUnits() == null ? 0 : this.getUnits())) {
+		if (this.getUnitsReceived() != 0 && this.getUnitsReceived() >= this.getUnits()) {
 			return true;
 		}
 		return false;
@@ -87,7 +87,7 @@ public class PurchaseComponent extends BaseEntity {
 
 	public BigDecimal getTotalPrice() {
 		BigDecimal unitPrice = this.getUnitPrice() == null ? BigDecimal.ZERO : this.getUnitPrice();
-		BigDecimal units = this.getUnits() == null ? BigDecimal.ZERO : BigDecimal.valueOf(this.getUnits());
+		BigDecimal units = BigDecimal.valueOf(this.getUnits());
 		return unitPrice.multiply(units);
 	}
 }

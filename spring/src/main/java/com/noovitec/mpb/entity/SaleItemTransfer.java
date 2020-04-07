@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 @Entity
 public class SaleItemTransfer extends BaseEntity {
 
-	private Long unitsTransfered = 0L;
+	private long unitsTransfered = 0;
 	private LocalDateTime date;
 	@Column(name="sale_item_from_id", insertable=false, updatable=false)
 	private Long saleItemFromId;

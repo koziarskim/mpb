@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Entity
 public class SaleItemReturn extends BaseEntity{
 
-	private Long unitsReturned;
+	private long unitsReturned = 0;
 
 	@JsonIgnoreProperties(value = { "saleItemReturns" }, allowSetters = true)
 	@ManyToOne()

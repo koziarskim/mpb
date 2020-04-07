@@ -20,8 +20,8 @@ import lombok.NoArgsConstructor;
 public class Production extends BaseEntity {
 
 	private LocalTime finishTime;
-	private Long unitsProduced;
-	private Long people;
+	private long unitsProduced = 0;
+	private long people = 0;
 
 	@ManyToOne()
 	@JoinColumn(name = "schedule_event_id", referencedColumnName = "id")

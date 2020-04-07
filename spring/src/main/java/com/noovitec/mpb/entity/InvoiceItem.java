@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 public class InvoiceItem extends BaseEntity {
 
     private BigDecimal unitPrice;
-    private Long unitsInvoiced;
+    private long unitsInvoiced = 0;
 	private BigDecimal totalUnitPrice;
 	
 	@JsonIgnoreProperties(value = { "invoiceItems" }, allowSetters = true)

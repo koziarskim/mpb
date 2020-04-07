@@ -45,10 +45,10 @@ public class Shipment extends BaseEntity {
 	private String freightTerms;
 	private String freightClass;
 	private String loadNumber;
-	private Long totalUnits = 0L;
-	private Long totalCases = 0L;
-	private Long totalPallets = 0L;
-	private Long totalPalletsCustom = 0L;
+	private long totalUnits = 0;
+	private long totalCases = 0;
+	private long totalPallets = 0;
+	private long totalPalletsCustom = 0;
 	private BigDecimal totalWeight = BigDecimal.ZERO;
 	private BigDecimal totalWeightCustom = BigDecimal.ZERO;
 	private BigDecimal estimatedCost = BigDecimal.ZERO;

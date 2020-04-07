@@ -51,13 +51,13 @@ public class Item extends BaseEntity {
 	private BigDecimal laborCost;
 	private BigDecimal otherCost;
 	private BigDecimal totalCost;
-	private Long unitsProduced = 0L;
-	private Long unitsSold = 0L;
-	private Long unitsScheduled = 0L;
-	private Long unitsShipped = 0L;
-	private Long unitsReadyProd = 0L;
-	private Long unitsReturned = 0L;
-	private Long unitsOnStock = 0L;
+	private long unitsProduced = 0;
+	private long unitsSold = 0;
+	private long unitsScheduled = 0;
+	private long unitsShipped = 0;
+	private long unitsReadyProd = 0;
+	private long unitsReturned = 0;
+	private long unitsOnStock = 0;
 
 	@JsonIgnoreProperties(value = { "item" }, allowSetters = true)
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
@@ -153,7 +153,7 @@ public class Item extends BaseEntity {
 	public void updateUnitsReadyProd() {
 		List<Long> units = Stream.of(0L).collect(Collectors.toList());
 		for (ItemComponent ic: this.getItemComponents()) {
-			Long uts = (ic.getComponent().getUnitsOnStock() - ic.getComponent().getUnitsLocked()) * ic.getUnits().longValue();
+			Long uts = (ic.getComponent().getUnitsOnStock() - ic.getComponent().getUnitsLocked()) * ic.getUnits();
 			units.add(uts);
 		}
 		Collections.sort(units);
@@ -177,7 +177,7 @@ public class Item extends BaseEntity {
 			this.unitsProduced += sa.getUnitsProduced();
 			this.unitsShipped += sa.getUnitsShipped();
 		}
-		this.unitsOnStock = this.unitsProduced - this.unitsShipped + (this.unitsReturned==null?0L:this.unitsReturned);
+		this.unitsOnStock = this.unitsProduced - this.unitsShipped + this.unitsReturned;
 //		this.updateUnitsReadyProd();
 	}
 

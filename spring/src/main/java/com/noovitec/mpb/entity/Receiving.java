@@ -25,7 +25,7 @@ public class Receiving extends BaseEntity {
 	private String name;
 	private String containerNumber;
 	private String invoiceNumber;
-	private Long units;
+	private long units = 0;
 	private LocalDate shippingDate;
 	private LocalDate etaDate;
 	private LocalDate receivingDate;

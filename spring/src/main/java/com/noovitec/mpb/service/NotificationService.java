@@ -108,14 +108,14 @@ public interface NotificationService {
 
 		public void saleShipped(Object entity, Object[] currentState, Object[] previousState, String[] propertyNames) {
 			Sale sale = (Sale) entity;
-			Long prevUnitsShipped = null;
+			long prevUnitsShipped = 0;
 			if(previousState != null) {
 				Object obj = previousState[ArrayUtils.indexOf(propertyNames, "unitsShipped")];
 				prevUnitsShipped = obj==null?0L:((Long) obj);
 			}
-			Long unitsShipped = sale.getUnitsShipped()==null?0L:sale.getUnitsShipped();
-			Long unitsSold = sale.getUnitsSold()==null?0L:sale.getUnitsSold();
-			if(prevUnitsShipped.intValue() != unitsShipped.intValue() && unitsSold.intValue() > 0 &&  unitsShipped.intValue() >= unitsSold.intValue()) {
+			long unitsShipped = sale.getUnitsShipped();
+			long unitsSold = sale.getUnitsSold();
+			if(prevUnitsShipped != unitsShipped && unitsSold > 0 &&  unitsShipped >= unitsSold) {
 				Invoice invoice = invoiceService.createInvoiceForSale(sale);
 		        if(invoice!=null) {
 					List<String> emails = Arrays.asList("kfiolek@marketplacebrands.com","mkoziarski@marketplacebrands.com");
@@ -128,14 +128,14 @@ public interface NotificationService {
 		
 		public void customerShipped(Object entity, Object[] currentState, Object[] previousState, String[] propertyNames) {
 			Customer customer = (Customer) entity;
-			Long prevUnitsShipped = null;
+			long prevUnitsShipped = 0;
 			if(previousState != null) {
 				Object obj = previousState[ArrayUtils.indexOf(propertyNames, "unitsShipped")];
 				prevUnitsShipped = obj==null?0L:((Long) obj);
 			}
-			Long unitsShipped = customer.getUnitsShipped()==null?0L:customer.getUnitsShipped();
-			Long unitsSold = customer.getUnitsSold()==null?0L:customer.getUnitsSold();
-			if(prevUnitsShipped.intValue() != unitsShipped.intValue() && unitsSold.intValue() > 0 &&  unitsShipped.intValue() >= unitsSold.intValue()) {
+			long unitsShipped = customer.getUnitsShipped();
+			long unitsSold = customer.getUnitsSold();
+			if(prevUnitsShipped != unitsShipped && unitsSold > 0 &&  unitsShipped >= unitsSold) {
 				List<String> emails = Arrays.asList("kfiolek@marketplacebrands.com","hpyzikiewicz@marketplacebrands.com","mkoziarski@marketplacebrands.com");
 				Map<String, String> model = new HashMap<String, String>();
 		        model.put("customerName", customer.getName());

@@ -44,14 +44,14 @@ public class Component extends BaseEntity {
 	private BigDecimal containerCost;
 	private BigDecimal otherCost;
 	private BigDecimal totalLandedCost = BigDecimal.ZERO;
-	private Long unitsOnStock = 0L; //unitsReceived - unitsForProduction
-	private Long unitsOrdered = 0L;
-	private Long unitsReceived = 0L;
-	private Long unitsLocked = 0L; //unitsScheduled - unitsProduced
-	private Long unitsForProduction = 0L;
-	private Long unitsForSale = 0L;
-	private Long unitsSoldNotProd = 0L; //unitsForSale - unitsForProduction
-	private Long unitsShort = 0L; //unitsSoldNotProduced - unitsOnStock - unitsOrdered - unitsReceived
+	private long unitsOnStock = 0; //unitsReceived - unitsForProduction
+	private long unitsOrdered = 0;
+	private long unitsReceived = 0;
+	private long unitsLocked = 0; //unitsScheduled - unitsProduced
+	private long unitsForProduction = 0;
+	private long unitsForSale = 0;
+	private long unitsSoldNotProd = 0; //unitsForSale - unitsForProduction
+	private long unitsShort = 0; //unitsSoldNotProduced - unitsOnStock - unitsOrdered - unitsReceived
 
 	@JsonIgnoreProperties(value = { "component" }, allowSetters = true)
 	@OneToMany()

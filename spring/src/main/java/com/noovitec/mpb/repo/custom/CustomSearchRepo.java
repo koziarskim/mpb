@@ -296,7 +296,7 @@ public interface CustomSearchRepo {
 				Long totalSold = 0L;
 				Long totalProduced = 0L;
 				for (ItemComponent ic : c.getItemComponents()) {
-					Long unitsInItem = ic.getUnits().longValue();
+					Long unitsInItem = ic.getUnits();
 					for (SaleItem si : ic.getItem().getSaleItems()) {
 						if (searchDto.getItems().isEmpty() || searchDto.getItems().contains(ic.getItem().getId())) {
 							if (searchDto.getCustomers().isEmpty() || searchDto.getCustomers().contains(si.getSale().getCustomer().getId())) {

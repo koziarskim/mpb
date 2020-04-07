@@ -38,8 +38,8 @@ public class Customer extends BaseEntity {
 	private String apEmail;
 	private String contactName;
 	private String shipmentNotes;
-	private Long unitsSold = 0L;
-	private Long unitsShipped = 0L;
+	private long unitsSold = 0;
+	private long unitsShipped = 0;
 	private String invoiceType;
 
 	@OneToMany(cascade = CascadeType.ALL)
