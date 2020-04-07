@@ -5,6 +5,7 @@ Sale:
 - Export Sales by Customer to Excel/CSV (See Kasia's email: Order /Sale Summary Report - MIMS).
 - Export single sale.
 Accounting:
+- Change notification to not use events.
 - Send email to client (andy as cc: by default).
 - Add new invoice type to Customer (last shipped)
 - Last sale shipped event to generate invoice and send invoice notification.

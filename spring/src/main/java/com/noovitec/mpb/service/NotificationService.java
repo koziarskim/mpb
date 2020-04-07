@@ -67,7 +67,13 @@ public interface NotificationService {
 		
 		public void shipmentReady(Object entity, Object[] currentState, Object[] previousState, String[] propertyNames) {
 			Shipment shipment = (Shipment) entity;
-			boolean prevReady = (boolean)(previousState==null?false:previousState[ArrayUtils.indexOf(propertyNames, "ready")]);
+			boolean prevReady = false;
+			if(previousState != null) {
+				Object obj = previousState[ArrayUtils.indexOf(propertyNames, "ready")];
+				if(obj!=null) {
+					prevReady = (boolean) obj;
+				}
+			}
 			if(!prevReady && shipment.isReady()) {
 				List<String> emails = Arrays.asList("shipping@marketplacebrands.com", "mkoziarski@marketplacebrands.com");
 				Map<String, String> model = new HashMap<String, String>();
@@ -79,7 +85,13 @@ public interface NotificationService {
 		
 		public void shipmentShipped(Object entity, Object[] currentState, Object[] previousState, String[] propertyNames) {
 			Shipment shipment = (Shipment) entity;
-			LocalDate prevShippedDate = (LocalDate)(previousState==null?"":previousState[ArrayUtils.indexOf(propertyNames, "shippedDate")]);
+			LocalDate prevShippedDate = null;
+			if(previousState != null) {
+				Object obj = previousState[ArrayUtils.indexOf(propertyNames, "shippedDate")];
+				if(obj!=null) {
+					prevShippedDate = (LocalDate) obj;
+				}
+			}
 			if(prevShippedDate == null && shipment.getShippedDate() !=null) {
 				List<String> emails = Arrays.asList("kzygulska@marketplacebrands.com", "kfiolek@marketplacebrands.com", "mkoziarski@marketplacebrands.com");
 				Map<String, String> shipModel = new HashMap<String, String>();
@@ -98,7 +110,13 @@ public interface NotificationService {
 
 		public void saleShipped(Object entity, Object[] currentState, Object[] previousState, String[] propertyNames) {
 			Sale sale = (Sale) entity;
-			Long prevUnitsShipped = (Long)(previousState==null?0:previousState[ArrayUtils.indexOf(propertyNames, "unitsShipped")]);
+			Long prevUnitsShipped = null;
+			if(previousState != null) {
+				Object obj = previousState[ArrayUtils.indexOf(propertyNames, "unitsShipped")];
+				if(obj!=null) {
+					prevUnitsShipped = (Long) obj;
+				}
+			}
 			Long unitsShipped = sale.getUnitsShipped()==null?0L:sale.getUnitsShipped();
 			Long unitsSold = sale.getUnitsSold()==null?0L:sale.getUnitsSold();
 			if((prevUnitsShipped ==null || prevUnitsShipped ==0) && unitsShipped>0 && unitsSold > 0) {
@@ -114,7 +132,13 @@ public interface NotificationService {
 		
 		public void customerShipped(Object entity, Object[] currentState, Object[] previousState, String[] propertyNames) {
 			Customer customer = (Customer) entity;
-			Long prevUnitsShipped = (Long) (previousState==null?0:previousState[ArrayUtils.indexOf(propertyNames, "unitsShipped")]);
+			Long prevUnitsShipped = null;
+			if(previousState != null) {
+				Object obj = previousState[ArrayUtils.indexOf(propertyNames, "unitsShipped")];
+				if(obj!=null) {
+					prevUnitsShipped = (Long) obj;
+				}
+			}
 			Long unitsShipped = customer.getUnitsShipped()==null?0L:customer.getUnitsShipped();
 			Long unitsSold = customer.getUnitsSold()==null?0L:customer.getUnitsSold();
 			if(prevUnitsShipped != unitsShipped && unitsSold > 0 &&  unitsShipped >= unitsSold) {

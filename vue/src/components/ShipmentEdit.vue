@@ -108,12 +108,12 @@
       </b-col>
       <b-col>
         <div style="display: flex">
-          <b style="margin-top: 7px">Total pallets:</b><input class="form-control" style="width: 60px" type="tel" v-model="totalPalletsCustom" @input="totalPalletsOverwrite=true">
+          <b style="margin-top: 7px">Total pallets:</b><input class="form-control" style="width: 60px" type="tel" v-model="totalPalletsCustom" @input="overwrite=true">
         </div>
       </b-col>
       <b-col>    
         <div style="display: flex">
-          <b style="margin-top: 7px">Total weight:</b><input class="form-control" style="width: 80px" type="tel" v-model="totalWeightCustom" @input="totalWeightOverwrite=true">
+          <b style="margin-top: 7px">Total weight:</b><input class="form-control" style="width: 80px" type="tel" v-model="totalWeightCustom" @input="overwrite=true">
         </div>
       </b-col>
       <b-col cols=2>
@@ -179,8 +179,7 @@ export default {
   data() {
     return {
       securite: securite,
-      totalPalletsOverwrite: false,
-      totalWeightOverwrite: false,
+      overwrite: false,
       totalPalletsCustom: 0,
       totalWeightCustom: 0,
       selectionVisible: false,
@@ -253,7 +252,7 @@ export default {
       this.shipment.shipmentItems.forEach(si => {
         total += +si.pallets;
       });
-      if(!this.totalPalletsOverwrite){
+      if(!this.overwrite){
         this.totalPalletsCustom = total;
       }
       return total;
@@ -264,7 +263,7 @@ export default {
         var totalPaletWeight = +si.saleItem.item.palletWeight * +si.pallets
         total += (+si.saleItem.item.weight * +si.units) + +totalPaletWeight;
       });
-      if(!this.totalWeightOverwrite){
+      if(!this.overwrite){
         this.totalWeightCustom = total.toFixed();
       }
       return total.toFixed();
@@ -348,7 +347,7 @@ export default {
     },
     getNumberOfPallets(shipmentItem){
       var number = null;
-      if(!this.totalPalletsOverwrite){
+      if(!this.overwrite){
         number = Math.ceil(+shipmentItem.cases / (+shipmentItem.saleItem.item.ti * +shipmentItem.saleItem.item.hi))
       }
       return number;
@@ -407,13 +406,13 @@ export default {
           this.freightAddress = response.data.freightAddress;
         }
         if(response.data.totalPallets != response.data.totalPalletsCustom){
-          this.totalPalletsOverwrite = true;
-          this.totalPalletsCustom = response.data.totalPalletsCustom;
+          this.overwrite = true;
         }
         if(response.data.totalWeight != response.data.totalWeightCustom){
-          this.totalWeightOverwrite = true;
-          this.totalWeightCustom = response.data.totalWeightCustom;
+          this.overwrite = true;
         }
+        this.totalPalletsCustom = response.data.totalPalletsCustom;
+        this.totalWeightCustom = response.data.totalWeightCustom;
         this.shipment = response.data;
         this.shippedDate = response.data.shippedDate;
       }).catch(e => { console.log("API error: " + e); });
