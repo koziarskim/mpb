@@ -70,9 +70,7 @@ public interface NotificationService {
 			boolean prevReady = false;
 			if(previousState != null) {
 				Object obj = previousState[ArrayUtils.indexOf(propertyNames, "ready")];
-				if(obj!=null) {
-					prevReady = (boolean) obj;
-				}
+				prevReady = obj==null?false:((boolean) obj);
 			}
 			if(!prevReady && shipment.isReady()) {
 				List<String> emails = Arrays.asList("shipping@marketplacebrands.com", "mkoziarski@marketplacebrands.com");
@@ -89,7 +87,7 @@ public interface NotificationService {
 			if(previousState != null) {
 				Object obj = previousState[ArrayUtils.indexOf(propertyNames, "shippedDate")];
 				if(obj!=null) {
-					prevShippedDate = (LocalDate) obj;
+					prevShippedDate = obj==null?null:((LocalDate) obj);
 				}
 			}
 			if(prevShippedDate == null && shipment.getShippedDate() !=null) {
@@ -113,13 +111,11 @@ public interface NotificationService {
 			Long prevUnitsShipped = null;
 			if(previousState != null) {
 				Object obj = previousState[ArrayUtils.indexOf(propertyNames, "unitsShipped")];
-				if(obj!=null) {
-					prevUnitsShipped = (Long) obj;
-				}
+				prevUnitsShipped = obj==null?0L:((Long) obj);
 			}
 			Long unitsShipped = sale.getUnitsShipped()==null?0L:sale.getUnitsShipped();
 			Long unitsSold = sale.getUnitsSold()==null?0L:sale.getUnitsSold();
-			if((prevUnitsShipped ==null || prevUnitsShipped ==0) && unitsShipped>0 && unitsSold > 0) {
+			if(prevUnitsShipped.intValue() != unitsShipped.intValue() && unitsSold.intValue() > 0 &&  unitsShipped.intValue() >= unitsSold.intValue()) {
 				Invoice invoice = invoiceService.createInvoiceForSale(sale);
 		        if(invoice!=null) {
 					List<String> emails = Arrays.asList("kfiolek@marketplacebrands.com","mkoziarski@marketplacebrands.com");
@@ -135,13 +131,11 @@ public interface NotificationService {
 			Long prevUnitsShipped = null;
 			if(previousState != null) {
 				Object obj = previousState[ArrayUtils.indexOf(propertyNames, "unitsShipped")];
-				if(obj!=null) {
-					prevUnitsShipped = (Long) obj;
-				}
+				prevUnitsShipped = obj==null?0L:((Long) obj);
 			}
 			Long unitsShipped = customer.getUnitsShipped()==null?0L:customer.getUnitsShipped();
 			Long unitsSold = customer.getUnitsSold()==null?0L:customer.getUnitsSold();
-			if(prevUnitsShipped != unitsShipped && unitsSold > 0 &&  unitsShipped >= unitsSold) {
+			if(prevUnitsShipped.intValue() != unitsShipped.intValue() && unitsSold.intValue() > 0 &&  unitsShipped.intValue() >= unitsSold.intValue()) {
 				List<String> emails = Arrays.asList("kfiolek@marketplacebrands.com","hpyzikiewicz@marketplacebrands.com","mkoziarski@marketplacebrands.com");
 				Map<String, String> model = new HashMap<String, String>();
 		        model.put("customerName", customer.getName());

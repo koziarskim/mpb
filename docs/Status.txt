@@ -24,6 +24,7 @@ Shipment:
 ------------------------------------------------------------------
 
 Backlog
+- Setting file
 - Backup all schemas
 - Backup files (compress?)
 - Migration script run using DDL script for all tenants.
