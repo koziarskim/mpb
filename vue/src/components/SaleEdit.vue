@@ -83,7 +83,7 @@
         <b-table v-if="sale.saleItems.length>0" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="sale.saleItems" :fields="columns">
           <template v-slot:cell(item)="row">
             <b-link role="button" @click.stop="goToItem(row.item.item.id)">{{row.item.item.number}}</b-link>
-            <span style="font-size: 11px"> ({{row.item.item.name}})</span>
+            <div class="name-sm" :title="row.item.item.name"> ({{row.item.item.name}})</div>
           </template>
           <template v-slot:cell(sku)="row">
             <input :disabled="!allowEdit()" class="form-control" style="width:100px" type="tel" v-model="row.item.sku">
@@ -91,21 +91,24 @@
           <template v-slot:cell(cost)="row">
             <span>${{row.item.item.totalCost}}</span>
           </template>
+          <template v-slot:cell(unitsOnStockRet)="row">
+            <span>{{row.item.unitsOnStock}} </span><b-link @click.stop="goToItemReturnList(row.item)">({{row.item.unitsReturned}})</b-link>
+          </template>
           <template v-slot:cell(unitsSchedProd)="row">
             <b-button size="sm" variant="link" @click="goToScheduled(row.item)">{{row.item.unitsScheduled}}/{{row.item.unitsProduced}}</b-button>
           </template>
           <template v-slot:cell(units)="row">
-            <input :disabled="!allowEdit()" class="form-control" style="width:100px" type="tel" v-model="row.item.units">
+            <input :disabled="!allowEdit()" class="form-control" style="width:80px" type="tel" v-model="row.item.units">
           </template>
           <template v-slot:cell(unitsAdjusted)="row">
-            <input class="form-control" style="width:100px" type="tel" v-model="row.item.unitsAdjusted">
+            <input class="form-control" style="width:80px" type="tel" v-model="row.item.unitsAdjusted">
           </template>
           <template v-slot:cell(cases)="row">
             <span>{{getCases(row.item)}}</span>
           </template>
           <template v-slot:cell(unitPrice)="row">
             <div style="display:flex">
-            $<input :disabled="!allowEdit()" class="form-control" style="display: inline; width:100px" type="tel" v-model="row.item.unitPrice">
+            $<input :disabled="!allowEdit()" class="form-control" style="display: inline; width:80px" type="tel" v-model="row.item.unitPrice">
             </div>
           </template>
           <template v-slot:cell(totalUnitPrice)="row">
@@ -195,11 +198,11 @@ export default {
         { key: "sku", label: "SKU#", sortable: false },
         { key: "units", label: "Sold", sortable: false },
         { key: "unitsAdjusted", label: "Adjusted", sortable: false },
-        { key: "unitsOnStock", label: "Stock", sortable: false },
+        { key: "unitsOnStockRet", label: "Stock(R)", sortable: false },
         { key: "unitsSchedProd", label: "Sched/Prod", sortable: false },
-        { key: "unitsTransfered", label: "Transfers", sortable: false },
-        { key: "unitsShipped", label: "Shipped", sortable: false },
-        { key: "cases", label: "Cases", sortable: false },
+        { key: "unitsTransfered", label: "Trans", sortable: false },
+        { key: "unitsShipped", label: "Ship", sortable: false },
+        { key: "cases", label: "Case", sortable: false },
         { key: "cost", label: "Cost", sortable: false },
         { key: "unitPrice", label: "Unit Price", sortable: false },
         { key: "totalUnitPrice", label: "Total", sortable: false },
@@ -285,6 +288,10 @@ export default {
     }
   },
   methods: {
+    goToItemReturnList(saleItem){
+      var query = { saleId: this.sale.id, itemId: saleItem.item.id };
+      router.push({path: "/itemReturnList", query: query});
+    },
     closeUpload(attachments){
       this.sale.attachments = attachments;
       this.saveSale();

@@ -40,10 +40,10 @@ class ItemReturnRest {
 	List<ItemReturn> getAll(
 			@RequestParam(required = false) Long itemId, 
 			@RequestParam(required = false) Long saleId ) {
-		if(itemId !=null) {
+		if(itemId !=null && saleId == null) {
 			return itemReturnRepo.findByItem(itemId);
 		};
-		if(saleId !=null) {
+		if(saleId !=null && itemId == null) {
 			return itemReturnRepo.findBySale(saleId);
 		};
 		if(itemId !=null && saleId !=null) {

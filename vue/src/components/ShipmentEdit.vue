@@ -127,19 +127,25 @@
           <b-table v-if="shipment.shipmentItems.length>0" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="shipment.shipmentItems" :fields="columns">
             <template v-slot:cell(item)="row">
               <b-link role="button" @click.stop="goToItem(row.item.saleItem.item.id)">{{row.item.saleItem.item.number}}</b-link>
-              <span style="font-size:11px"> {{row.item.saleItem.item.name}}</span>
+              <div class="name-md" :title="row.item.name"> {{row.item.saleItem.item.name}}</div>
             </template>
             <template v-slot:cell(sale)="row">
               <b-link @click.stop="goToSale(row.item.saleItem.sale.id)">{{row.item.saleItem.sale.number}}</b-link>
             </template>
-            <template v-slot:cell(unitsReturned)="row">
-              <b-link @click.stop="goToItemReturnList(row.item.saleItem)">{{row.item.saleItem.unitsReturned}}</b-link>
+            <template v-slot:cell(unitsOnStockRet)="row">
+              <span>{{row.item.saleItem.unitsOnStock}} </span><b-link @click.stop="goToItemReturnList(row.item.saleItem)">({{row.item.saleItem.unitsReturned}})</b-link>
             </template>
             <template v-slot:cell(units)="row">
               <input class="form-control" style="width:100px" type="tel" v-model="row.item.units">
             </template>
-            <template v-slot:cell(unitsSold)="row">
-              <span>{{+row.item.saleItem.units + +row.item.saleItem.unitsAdjusted}}</span>
+            <template v-slot:cell(unitsSoldAdj)="row">
+              <span>{{row.item.saleItem.units}} {{row.item.saleItem.unitsAdjusted >= 0?'+':''}}{{row.item.saleItem.unitsAdjusted}}</span>
+            </template>
+            <template v-slot:cell(unitsTransfered)="row">
+              <b-button size="sm" variant="link" @click="openTransferModal(row.item.saleItem)">{{row.item.saleItem.unitsTransferedTo}}-{{row.item.saleItem.unitsTransferedFrom}}</b-button>
+            </template>
+            <template v-slot:cell(unitsSchedProd)="row">
+              <span>{{row.item.saleItem.unitsScheduled}}/{{row.item.saleItem.unitsProduced}}</span>
             </template>
             <template v-slot:cell(cases)="row">
               <span>{{row.item.cases = Math.ceil(+row.item.units / +row.item.saleItem.item.casePack)}}</span>
@@ -160,6 +166,9 @@
     <div v-if="saleItemPickerVisible">
 			<sale-item-picker :customer-id="customer.id" :added-sale-item-ids="getAddedSaleItemsIds()" v-on:closeModal="closeSaleItemPicker"></sale-item-picker>
 		</div>
+    <div v-if="transferModalVisible">
+			<transfer-modal :read-only="true" :sale-item-to="saleItemTransfer" v-on:saveModal="saveTransferModal"></transfer-modal>
+		</div>    
   </b-container>
 </template>
 
@@ -174,11 +183,14 @@ export default {
   components: {
     AddressModal: () => import("./AddressModal"),
     SaleItemPicker: () => import("./SaleItemPicker"),
-    UploadFile: () => import("../directives/UploadFile")
+    UploadFile: () => import("../directives/UploadFile"),
+    TransferModal: () => import("./TransferModal"),
   },
   data() {
     return {
       securite: securite,
+      transferModalVisible: false,
+      saleItemTransfer: {},
       overwrite: false,
       totalPalletsCustom: 0,
       totalWeightCustom: 0,
@@ -211,14 +223,15 @@ export default {
       columns: [
         { key: "item", label: "Item", sortable: false },
         { key: "sale", label: "Sale", sortable: false },
-        { key: "unitsSold", label: "Sold", sortable: false },
-        { key: "saleItem.unitsOnStock", label: "Stock", sortable: false },
+        { key: "unitsSoldAdj", label: "Sold (+/-Adj)", sortable: false },
+        { key: "unitsOnStockRet", label: "Stock (R)", sortable: false },
+        { key: "unitsSchedProd", label: "Sched/Prod", sortable: false },
+        { key: "unitsTransfered", label: "Trans", sortable: false },
         { key: "saleItem.unitsShipped", label: "Shipped", sortable: false },
-        { key: "unitsReturned", label: "Returned", sortable: false },
         { key: "units", label: "Units", sortable: false },
-        { key: "saleItem.item.casePack", label: "Case Pack", sortable: false },
-        { key: "cases", label: "Cases", sortable: false },
-        { key: "pallets", label: "Pallets", sortable: false },
+        { key: "saleItem.item.casePack", label: "C/P", sortable: false },
+        { key: "cases", label: "Case", sortable: false },
+        { key: "pallets", label: "Pallet", sortable: false },
         { key: "action", label: "", sortable: false }
       ],
       availableFreightTerms: [
@@ -286,6 +299,15 @@ export default {
     },
   },
   methods: {
+    openTransferModal(saleItem){
+      this.saleItemTransfer = saleItem;
+      this.saleItemTransfer.saleNumber = saleItem.sale.number
+      this.transferModalVisible = true;
+    },    
+    saveTransferModal(saleItem){
+      this.saleItemTransfer = {},
+      this.transferModalVisible = false;
+    },
     changeShippedDate(e){
       if(!this.shipment.ready){
         alert("Shipment is not ready!");

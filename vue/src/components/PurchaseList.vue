@@ -19,7 +19,7 @@
     <b-table :items="purchases" :fields="fields" no-local-sorting>
       <template v-slot:cell(number)="row">
         <b-link role="button" @click.stop="goToPurchaseEdit(row.item.id)">{{row.item.number}}</b-link>
-        <span style="font-size: 11px"> ({{row.item.name}})</span>
+        <div class="name-md" :title="row.item.name"> ({{row.item.name}})</div>
       </template>
       <template v-slot:cell(received)="row">
         <span>{{row.item.received?"Yes":"No"}}</span>

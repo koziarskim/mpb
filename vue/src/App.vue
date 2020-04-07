@@ -310,4 +310,28 @@ export default {
 .status-purple {
   color: #e42f9cf7 !important
 }
+.name-sm {
+  font-size: 11px; 
+  margin-top: -5px;
+  text-overflow: ellipsis; 
+  width: 100px; 
+  overflow: hidden; 
+  white-space: nowrap;
+}
+.name-md {
+  font-size: 11px; 
+  margin-top: -5px;
+  text-overflow: ellipsis; 
+  width: 150px; 
+  overflow: hidden; 
+  white-space: nowrap;
+}
+.name-lg {
+  font-size: 11px; 
+  margin-top: -5px;
+  text-overflow: ellipsis; 
+  width: 200px; 
+  overflow: hidden; 
+  white-space: nowrap;
+}
 </style>

@@ -6,7 +6,7 @@
 					<span>{{saleItemTo.item.number}}</span><span style="font-size: 11px"> {{saleItemTo.item.name}}</span>
 				</b-col>
         <b-col cols=6>
-          <b-select option-value="id" option-text="name" :list="availableSaleItems" v-model="transferedSaleItemDto"></b-select>
+        <b-select v-if="!readOnly" option-value="id" option-text="name" :list="availableSaleItems" v-model="transferedSaleItemDto"></b-select>
         </b-col>
         <b-col cols=1 style="margin-top: 10px">
           <b-button size="md" style="margin-left: 40px" @click="saveModal()" variant="success">Close</b-button>
@@ -49,7 +49,7 @@
 							<span>{{getDateTime(row.item)}}</span>
 						</template>
 						<template v-slot:cell(action)="row">
-							<b-button size="sm" @click="deleteSaleItemTransfer(row.item)">x</b-button>
+							<b-button v-if="!readOnly" size="sm" @click="deleteSaleItemTransfer(row.item)">x</b-button>
 						</template>
 					</b-table>
 				</b-col>
@@ -66,6 +66,7 @@ import moment from "moment";
 export default {
   props: {
 		saleItemTo: Object,
+		readOnly: Boolean,
   },
   data() {
     return {

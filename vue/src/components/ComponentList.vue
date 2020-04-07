@@ -23,7 +23,7 @@
     <b-table no-local-sorting @sort-changed="sorted" :items="components" :fields="fields">
       <template v-slot:cell(name)="row">
         <b-link role="button" @click.stop="goToComponent(row.item.id)">{{row.item.number}}</b-link>
-        <span style="font-size:11px"> ({{row.item.name}})</span>
+        <div class="name-md" :title="row.item.name"> ({{row.item.name}})</div>
       </template>
       <template v-slot:cell(unitsOnStock)="row">
         <b-button size="sm" @click.stop="goToReceiving(row.item.id)" variant="link">{{row.item.unitsOnStock}}</b-button>
