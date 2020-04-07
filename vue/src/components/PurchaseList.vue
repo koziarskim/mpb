@@ -130,7 +130,7 @@ export default {
       router.push({ path: "/receivingList", query: query });
     },
     rowPdfUrl: function(purchase_id) {
-      return httpUtils.baseUrl + "/purchase/" + purchase_id + "/pdf";
+      return httpUtils.get("/purchase/" + purchase_id + "/pdf");
     }
   },
   mounted() {

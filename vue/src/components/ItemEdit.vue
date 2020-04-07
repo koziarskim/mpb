@@ -49,10 +49,6 @@
       <b-col cols=2>
         <img style="margin-top: 25px; width: 150px; height: 40px" :src="upcUrl" fluid>
       </b-col>
-      <b-col cols=1 style="margin-left: -33px">
-        <label class="top-label">Year:</label>
-        <b-select option-value="id" option-text="name" :list="availableYears" v-model="item.year" placeholder="Year"></b-select>
-      </b-col>
       <b-col cols=2>
         <label class="top-label">Season:</label>
         <b-select option-value="id" option-text="name" :list="availableSeasons" v-model="item.season" placeholder="Season"></b-select>
@@ -218,7 +214,6 @@ export default {
         brand: {},
         category: {},
         season: {},
-        year: {},
         upc:{},
         palletWeight: 60,
         // upc: {},
@@ -236,7 +231,6 @@ export default {
     availableUpc: [],
     upc: {},
     upcUrl: "",
-    availableYears: [],
     uploadedFile: null,
     columns: [
         { key: "component", label: "Component", sortable: false },
@@ -308,7 +302,7 @@ export default {
   methods: {
     setUpcUrl(upcId){
       if(upcId){
-        this.upcUrl = httpUtils.baseUrl + "/upc/image/" + upcId;
+        this.upcUrl = httpUtils.getUrl("/upc/image/" + upcId);
       }
     },
     allowEdit(){
@@ -416,16 +410,9 @@ export default {
         console.log("API error: " + e);
       });
     },
-    getAvailableYears() {
-      http.get("/year").then(response => {
-        this.availableYears = response.data;
-      }).catch(e => {
-        console.log("API error: " + e);
-      });
-    },
     validate(){
-        if(!this.item.name || !this.item.number || !this.item.season.id || !this.item.year.id || !this.item.brand.id || !this.item.category.id){
-          alert("Item Name, Number, Season, Year, Brand and Category are required");
+        if(!this.item.name || !this.item.number || !this.item.season.id || !this.item.brand.id || !this.item.category.id){
+          alert("Item Name, Number, Season, Brand and Category are required");
           return false;
         }
 
@@ -459,7 +446,7 @@ export default {
 	},
 	getImageUrl(){
 		if(this.item.attachment){
-        	return httpUtils.baseUrl + "/file/attachment/" + this.item.attachment.id;
+        	return httpUtils.get("/file/attachment/" + this.item.attachment.id);
 		}
 		return null;
   },
@@ -499,7 +486,6 @@ export default {
     this.getAvailableBrands();
     this.getAvailableCategories();
     this.getAvailableSeasons();
-    this.getAvailableYears();
   }
 };
 </script>
