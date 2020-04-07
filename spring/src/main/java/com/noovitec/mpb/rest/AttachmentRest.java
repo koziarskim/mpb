@@ -64,7 +64,7 @@ class AttachmentRest {
 	
 	 @PostMapping("/file/upload")
 	 ResponseEntity<?> uploadFile(@RequestParam MultipartFile file, @RequestParam String type, @RequestParam Long entityId) throws IllegalStateException, IOException {
-		Attachment attachment = attachmentService.store(file, type, entityId);
+		Attachment attachment = attachmentService.store(file, type, entityId, null);
 		return ResponseEntity.ok().body(attachment);
 	 }
 

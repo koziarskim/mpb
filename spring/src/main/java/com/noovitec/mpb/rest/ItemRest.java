@@ -182,7 +182,7 @@ class ItemRest {
 		}
 		item = itemService.save(item);
 		if(image!=null) {
-			Attachment attachment = attachmentService.store(image, Item.class.getSimpleName(), item.getId());
+			Attachment attachment = attachmentService.store(image, Item.class.getSimpleName(), item.getId(), item.getAttachment());
 			item.setAttachment(attachment);
 			item = itemService.save(item);
 		}

@@ -13,7 +13,7 @@ Schedule:
 - Ability to add random reciving event on schedule.
 - Combine Shipment and receiving schedule.
 Item:
-- Item version based on the year (design).
++ Item version based on the year (design).
 Shipment:
 - Trasfer window date from sale
 	single PO - transfer same shipping window
@@ -21,4 +21,9 @@ Shipment:
 	multiple PO's with different date -  leave blank
 
 ------------------------------------------------------------------
+
+Backlog
+- Backup all schemas
+- Backup files (compress?)
+- Migration script run using DDL script for all tenants.
 

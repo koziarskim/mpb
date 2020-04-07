@@ -159,7 +159,7 @@ class ComponentRest {
 		}
 		component = componentService.save(component);
 		if(image!=null) {
-			Attachment attachment = attachmentService.store(image, Component.class.getSimpleName(), component.getId());
+			Attachment attachment = attachmentService.store(image, Component.class.getSimpleName(), component.getId(), component.getAttachment());
 			component.setAttachment(attachment);
 			component = componentService.save(component);
 		}
