@@ -13,6 +13,7 @@ Accounting:
 Schedule:
 - Ability to add random reciving event on schedule.
 - Combine Shipment and receiving schedule.
+- Notification to viki when sale is pending.
 Item:
 + Item version based on the year (design).
 Shipment:
@@ -28,4 +29,7 @@ Backlog
 - Backup all schemas
 - Backup files (compress?)
 - Migration script run using DDL script for all tenants.
+- Disable notifications when running unitsUpdate full.
+- Disable notifications when creating new year context.
+
 

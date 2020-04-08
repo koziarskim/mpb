@@ -40,7 +40,7 @@
       </b-col>
       <b-col cols=2>
         <label class="top-label">Pay Terms:</label>
-        <b-select option-value="id" option-text="name" :list="availablePayTerms" v-model="invoice.paymentTerms"></b-select>
+        <input class="form-control" type="tel" v-model="invoice.paymentTerms">
       </b-col>
       <b-col cols=2>
         <label class="top-label">Load Number:</label>
@@ -150,13 +150,6 @@ export default {
         { key: "unitPrice", label: "Price", sortable: false },
         { key: "totalUnitPrice", label: "Total", sortable: false },
         { key: "action", label: "", sortable: false }
-      ],
-      availablePayTerms: [
-        {id: "TPB", name: "TP Bill"},
-        {id: "PRP", name: "Pre Paid"},
-        {id: "TPO", name: "TP Bill Other"},
-        {id: "COL", name: "Collect"},
-        {id: "CPU", name: "Customer Pickup"}
       ],
       availableSaleItems: [],
       saleItemKv: {},

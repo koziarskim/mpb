@@ -117,12 +117,6 @@ class InvoiceRest {
 	}
 
 	private byte[] generatePdf(Invoice invoice, boolean submitted) throws IOException, DocumentException {
-		Map<String, String> pt = new HashMap<String, String>();
-		pt.put("TPB", "TP Bill");
-		pt.put("PRP", "Pre Paid");
-		pt.put("TPO", "TP Bill Other");
-		pt.put("COL","Collect");
-		pt.put("CPU", "Customer Pickup");
 		String itemSaleNumber = "";
 		String itemQuantity = "";
 		String itemDescription = "";
@@ -151,7 +145,7 @@ class InvoiceRest {
 		}
 		totalAmount = totalAmount.add(invoice.getShippingCost()==null?BigDecimal.ZERO:invoice.getShippingCost());
 		InputStream bolIn = null;
-		bolIn = this.getClass().getClassLoader().getResourceAsStream("pdf/Invoice-Template-1.pdf");
+		bolIn = this.getClass().getClassLoader().getResourceAsStream("pdf/Invoice-Template.pdf");
 		PdfReader bolTemplate = new PdfReader(bolIn);
 		ByteArrayOutputStream bolBaos = new ByteArrayOutputStream();
 		PdfStamper bolStamper = new PdfStamper(bolTemplate, bolBaos);
@@ -166,8 +160,7 @@ class InvoiceRest {
 		}
 		bolStamper.getAcroFields().setField("saleNumber", saleNumber);
 		if(customer.getBillingAddress()!=null) {
-			String billingAddress = shipment.getFreightAddress().getDc() + "\n"
-				+ customer.getBillingAddress().getStreet() + "\n" 
+			String billingAddress = customer.getBillingAddress().getStreet() + "\n" 
 				+ customer.getBillingAddress().getCity() + ", "+ customer.getBillingAddress().getState() + " "+customer.getBillingAddress().getZip();		
 			bolStamper.getAcroFields().setField("billingAddress", billingAddress);
 		}
@@ -181,7 +174,7 @@ class InvoiceRest {
 				+ (shipment.getShippingAddress().getNotes()==null?"":shipment.getShippingAddress().getNotes());
 			bolStamper.getAcroFields().setField("shippingAddress", shippingAddress);
 		}
-		bolStamper.getAcroFields().setField("paymentTerms",  pt.get(invoice.getPaymentTerms()));
+		bolStamper.getAcroFields().setField("paymentTerms",  invoice.getPaymentTerms());
 		bolStamper.getAcroFields().setField("shippingDate", invoice.getShippingDate()==null?"":invoice.getShippingDate().format(DateTimeFormatter.ofPattern("MM/dd/yyy")));
 		
 		bolStamper.getAcroFields().setField("via", invoice.getVia());
