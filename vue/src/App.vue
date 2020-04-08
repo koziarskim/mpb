@@ -1,5 +1,9 @@
 <template>
   <div id="app">
+    <div v-if="yearName" class="fade-out">
+      <div style="font-size: 20px">You are in the year context</div>
+      <div>{{this.yearName}}</div>
+    </div>
     <b-navbar toggleable="md" type="dark" variant="dark" style="height:35px">
       <b-collapse is-nav id="nav_collapse">
         <b-navbar-nav v-if="showNav">
@@ -60,6 +64,7 @@ export default {
     return {
       securite: securite,
       navigate: navigate,
+      yearName: null,
       availableSeasons: [],
       availableYears: [],
       user: {
@@ -88,6 +93,7 @@ export default {
           this.getAvailableSeasons();
           this.getAvailableYears();
         }
+        this.showYearContextPop();
       }
       if(!this.user || !this.user.id){
         this.goTo("/login");
@@ -135,10 +141,14 @@ export default {
       document.cookie = "SID=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
       this.user = {};
       this.securite.setUser({})
+      this.yearName = null;
       this.goTo("/login");
     },
     userChangedListener(user){
       this.getUser();
+    },
+    showYearContextPop(){
+      this.yearName = this.user.year.name;
     }
   },
   mounted(){
@@ -333,5 +343,25 @@ export default {
   width: 200px; 
   overflow: hidden; 
   white-space: nowrap;
+}
+.fade-out {
+  position: absolute;
+  color: #c15a1d;
+  font-weight: bold;
+  font-size: 40px;
+  top: 150px;
+  left: 41%;
+  text-align: center;
+    -webkit-animation: fadeinout 8s linear forwards;
+    animation: fadeinout 8s linear forwards;
+}
+@-webkit-keyframes fadeinout {
+  0%,100% { opacity: 0; }
+  50% { opacity: 1; }
+}
+
+@keyframes fadeinout {
+  0%,100% { opacity: 0; }
+  50% { opacity: 1; }
 }
 </style>

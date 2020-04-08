@@ -1,9 +1,5 @@
 <template>
     <b-container fluid>
-        <div class="fade-out">
-          <div style="font-size: 20px">You are in the year context</div>
-          <div>{{yearName}}</div>
-        </div>
         <b-row>
             <b-col cols=2>
                 <div style="margin-top: 5px; width: 200px; height: 470px; background-color: #3062ae; text-align: right; color: white;"><span style="padding-right: 15px">Announcements</span></div>
@@ -51,12 +47,8 @@ export default {
       http.post("/mail").then(r => {
       })
     },
-    showYearContextPop(){
-      this.yearName = this.securite.getUser().year.name;
-    }
   },
   mounted() {
-    this.showYearContextPop();
   }
 };
 </script>
@@ -68,25 +60,5 @@ export default {
   width: 230px;
   height: 230px;
   margin: 5px;
-}
-.fade-out {
-  position: absolute;
-  color: #c15a1d;
-  font-weight: bold;
-  font-size: 40px;
-  top: 150px;
-  left: 41%;
-  text-align: center;
-    -webkit-animation: fadeinout 4s linear forwards;
-    animation: fadeinout 4s linear forwards;
-}
-@-webkit-keyframes fadeinout {
-  0%,100% { opacity: 0; }
-  50% { opacity: 1; }
-}
-
-@keyframes fadeinout {
-  0%,100% { opacity: 0; }
-  50% { opacity: 1; }
 }
 </style>
