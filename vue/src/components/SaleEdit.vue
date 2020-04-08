@@ -34,7 +34,8 @@
       <b-col cols=2>
         <div style="display: flex; text-align: right">
           <upload-file v-if="sale.id" v-on:close="closeUpload" :entity-id="sale.id" type="Sale" :attachments="sale.attachments"></upload-file>
-          <b-button style="margin-left: 3px" :disabled="!allowApprove()" size="sm" variant="success" @click="approveSale()">Approve</b-button>
+          <b-button v-if="!sale.approved && sale.pendingApproval" style="margin-left: 3px" size="sm" variant="success" @click="approveSale()">Approve</b-button>
+          <b-button v-if="!sale.pendingApproval" style="margin-left: 3px" size="sm" variant="success" @click="readySale()">Ready</b-button>
           <b-button :title="getSaveTitle(sale)" style="margin-left: 3px" :disabled="!allowSave()" size="sm" variant="success" @click="saveSale()">Save</b-button>
           <b-button style="margin-left: 3px" :disabled="!allowEdit()" size="sm" @click="deleteSale()">x</b-button>
         </div>
@@ -387,6 +388,14 @@ export default {
         si.transfersTo.forEach(sit => {
           this.saleFromIds.push(sit.saleFromId);
         })
+      })
+    },
+    readySale(){
+      this.sale.pendingApproval = true;
+      this.saveSale().then(r=> {
+        this.getSaleData(r.data.id);
+      }).catch(e => {
+        this.sale.pendingApproval = false;
       })
     },
     approveSale(){

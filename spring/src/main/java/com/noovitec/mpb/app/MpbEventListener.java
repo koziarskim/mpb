@@ -17,6 +17,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Component;
 
+import com.noovitec.mpb.entity.BaseEntity;
 import com.noovitec.mpb.entity.Customer;
 import com.noovitec.mpb.entity.Sale;
 import com.noovitec.mpb.entity.Shipment;
@@ -42,12 +43,21 @@ public class MpbEventListener implements PostInsertEventListener, PostUpdateEven
 	
 	@Override
 	public void onPostInsert(PostInsertEvent event) {
-		String tenant = MpbTenantContext.getCurrentTenant();
-        taskExecutor.execute(new Runnable() {
-            @Override
-            public void run() {
-            	MpbTenantContext.setCurrentTenant(tenant);
+//		String tenant = MpbTenantContext.getCurrentTenant();
+//        taskExecutor.execute(new Runnable() {
+//            @Override
+//            public void run() {
+//            	MpbTenantContext.setCurrentTenant(tenant);
 				Object entity = event.getEntity();
+				BaseEntity baseEntity = null;
+				if(entity.getClass().isAssignableFrom(BaseEntity.class)) {
+					return;
+				}
+				baseEntity = (BaseEntity) entity;
+				if(baseEntity.isDirty()) {
+					return;	
+				}
+				baseEntity.setDirty(true);
 		        String[] propertyNames = event.getPersister().getEntityMetamodel().getPropertyNames();
 		        Object[] newStates = event.getState();
 				if (entity.getClass() == Shipment.class) {
@@ -57,22 +67,34 @@ public class MpbEventListener implements PostInsertEventListener, PostUpdateEven
 				if (entity.getClass() == Sale.class) {
 					notificationService.saleShipped(entity, newStates, null, propertyNames);
 				}
+				if (entity.getClass() == Sale.class) {
+					notificationService.salePendingApproval(entity, newStates, null, propertyNames);
+				}
 				if (entity.getClass() == Customer.class) {
 					notificationService.customerShipped(entity, newStates, null, propertyNames);
 				}
-				MpbTenantContext.clear();
-            }
-        });
+//				MpbTenantContext.clear();
+//            }
+//        });
 	}
 	
 	@Override
 	public void onPostUpdate(PostUpdateEvent event) {
-		String tenant = MpbTenantContext.getCurrentTenant();
-        taskExecutor.execute(new Runnable() {
-            @Override
-            public void run() {
-				MpbTenantContext.setCurrentTenant(tenant);
+//		String tenant = MpbTenantContext.getCurrentTenant();
+//        taskExecutor.execute(new Runnable() {
+//            @Override
+//            public void run() {
+//				MpbTenantContext.setCurrentTenant(tenant);
 				Object entity = event.getEntity();
+				BaseEntity baseEntity = null;
+				if(entity.getClass().isAssignableFrom(BaseEntity.class)) {
+					return;
+				}
+				baseEntity = (BaseEntity) entity;
+				if(baseEntity.isDirty()) {
+					return;	
+				}
+				baseEntity.setDirty(true);
 		        String[] propertyNames = event.getPersister().getEntityMetamodel().getPropertyNames();
 		        Object[] newStates = event.getState();
 		        Object[] oldStates = event.getOldState();
@@ -83,12 +105,15 @@ public class MpbEventListener implements PostInsertEventListener, PostUpdateEven
 				if (entity.getClass() == Sale.class) {
 					notificationService.saleShipped(entity, newStates, oldStates, propertyNames);
 				}
+				if (entity.getClass() == Sale.class) {
+					notificationService.salePendingApproval(entity, newStates, null, propertyNames);
+				}
 				if (entity.getClass() == Customer.class) {
 					notificationService.customerShipped(entity, newStates, oldStates, propertyNames);
 				}
-				MpbTenantContext.clear();
-            }
-        });
+//				MpbTenantContext.clear();
+//            }
+//        });
 	}
 
 	@Override

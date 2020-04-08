@@ -34,6 +34,7 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.GmailScopes;
 import com.google.api.services.gmail.model.Message;
+import com.noovitec.mpb.app.MpbTenantContext;
 import com.noovitec.mpb.entity.BaseEntity;
 import com.noovitec.mpb.entity.Customer;
 import com.noovitec.mpb.entity.Invoice;
@@ -47,6 +48,7 @@ public interface NotificationService {
 	public void shipmentReady(Object entity, Object[] currentState, Object[] previousState, String[] propertyNames);
 	public void shipmentShipped(Object entity, Object[] currentState, Object[] previousState, String[] propertyNames);
 	public void saleShipped(Object entity, Object[] currentState, Object[] previousState, String[] propertyNames);
+	public void salePendingApproval(Object entity, Object[] currentState, Object[] previousState, String[] propertyNames);
 	public void customerShipped(Object entity, Object[] currentState, Object[] previousState, String[] propertyNames);
 
 
@@ -126,6 +128,22 @@ public interface NotificationService {
 			}
 		}
 		
+		public void salePendingApproval(Object entity, Object[] currentState, Object[] previousState, String[] propertyNames) {
+			Sale sale = (Sale) entity;
+			boolean prevPendingApproval = false;
+			if(previousState != null) {
+				Object obj = previousState[ArrayUtils.indexOf(propertyNames, "pendingApproval")];
+				prevPendingApproval = obj==null?false:((boolean) obj);
+			}
+			boolean pendingApproval = sale.isPendingApproval();
+			if(!prevPendingApproval && pendingApproval) {
+				List<String> emails = Arrays.asList("vtomasik@marketplacebrands.com");
+				Map<String, String> model = new HashMap<String, String>();
+	        	model.put("saleNumber", sale.getNumber());
+	        	this.sendMail(emails, model, sale, Notification.TYPE.SALE_PENDING);
+			}
+		}
+		
 		public void customerShipped(Object entity, Object[] currentState, Object[] previousState, String[] propertyNames) {
 			Customer customer = (Customer) entity;
 			long prevUnitsShipped = 0;
@@ -156,6 +174,7 @@ public interface NotificationService {
 				String MIMS_JSON_KEY = "oauth/mims-268617-f7755598ac50.json";
 		        model.put("notificationId", notification.getId().toString());
 		        model.put("type", type.name());
+		        model.put("yearContext", MpbTenantContext.getCurrentTenant().replace("y", ""));
 		        String subject = "MIMS Notification";
 				String body = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, type.template(), model);
 				String skipNotification = System.getenv("MPB_SKIP_NOTIFICATION");

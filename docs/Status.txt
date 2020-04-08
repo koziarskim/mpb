@@ -21,7 +21,8 @@ Shipment:
 	single PO - transfer same shipping window
 	multiple PO's with the same date -  transfer same shipping window
 	multiple PO's with different date -  leave blank
-
+Global:
++ Set year context to be current by default.
 ------------------------------------------------------------------
 
 Backlog
@@ -31,5 +32,6 @@ Backlog
 - Migration script run using DDL script for all tenants.
 - Disable notifications when running unitsUpdate full.
 - Disable notifications when creating new year context.
-- Update user to use latest year context when creating new year.
+- add year to notifications.
+
 

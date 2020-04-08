@@ -45,6 +45,7 @@ public class Sale extends BaseEntity {
 	private long unitsReturned = 0;
 	private String status;
 	private boolean approved;
+	private boolean pendingApproval;
 	private LocalDateTime modifiedDate;
 	private LocalDate shippingFrom;
 	private LocalDate shippingTo;
@@ -104,7 +105,7 @@ public class Sale extends BaseEntity {
 		if(this.getUnitsOnStock() > 0 && this.getUnitsOnStock() >= (this.unitsSold + this.unitsAdjusted)) {
 			this.status = "PENDING_SHIPMENT";
 		}
-		if(this.unitsShipped >= (this.unitsSold + this.unitsAdjusted)) {
+		if(this.unitsShipped > 0 && this.unitsShipped >= (this.unitsSold + this.unitsAdjusted)) {
 			status = "SHIPPED";
 		}
 		if(this.unitsShipped > 0 && this.unitsShipped >= (this.unitsSold + this.unitsAdjusted) && this.unitsOnStock > 0) {

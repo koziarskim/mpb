@@ -15,7 +15,11 @@ import lombok.NoArgsConstructor;
 public class Notification extends BaseEntity {
 	
 	public static enum TYPE {
-		SHIPPING_READY("mail/shipmentReady.vm"), SHIPPING_SHIPPED("mail/shipmentShipped.vm"), INVOICE_CREATED("mail/invoiceCreated.vm"), CUSTOMER_SHIPPED("mail/customerShipped.vm");
+		SHIPPING_READY("mail/shipmentReady.vm"), 
+		SHIPPING_SHIPPED("mail/shipmentShipped.vm"), 
+		INVOICE_CREATED("mail/invoiceCreated.vm"), 
+		CUSTOMER_SHIPPED("mail/customerShipped.vm"),
+		SALE_PENDING("mail/salePending.vm");;
 		private String template;
 		public String template() { 
 	        return this.template; 
