@@ -31,5 +31,5 @@ Backlog
 - Migration script run using DDL script for all tenants.
 - Disable notifications when running unitsUpdate full.
 - Disable notifications when creating new year context.
-
+- Update user to use latest year context when creating new year.
 
