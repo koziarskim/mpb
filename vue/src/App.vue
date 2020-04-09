@@ -346,14 +346,15 @@ export default {
 }
 .fade-out {
   position: absolute;
+  z-index: -1;
   color: #c15a1d;
   font-weight: bold;
   font-size: 40px;
   top: 150px;
   left: 41%;
   text-align: center;
-    -webkit-animation: fadeinout 8s linear forwards;
-    animation: fadeinout 8s linear forwards;
+    -webkit-animation: fadeinout 5s linear forwards;
+    animation: fadeinout 5s linear forwards;
 }
 @-webkit-keyframes fadeinout {
   0%,100% { opacity: 0; }

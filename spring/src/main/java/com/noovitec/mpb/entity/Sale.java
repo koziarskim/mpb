@@ -28,6 +28,10 @@ import lombok.NoArgsConstructor;
 @Entity
 public class Sale extends BaseEntity {
 
+	public enum STATUS {
+		PENDING_APPROVAL, APPROVED, PENDING_PROD, PENDING_SHIPMENT, SHIPPED, PENDING_TRANSFER
+	}
+
 	private LocalDate date;
 	private String number;
 	private String name;

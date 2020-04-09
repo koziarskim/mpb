@@ -115,17 +115,24 @@ public interface NotificationService {
 				Object obj = previousState[ArrayUtils.indexOf(propertyNames, "unitsShipped")];
 				prevUnitsShipped = obj==null?0L:((Long) obj);
 			}
+			Customer customer = sale.getCustomer();
 			long unitsShipped = sale.getUnitsShipped();
 			long unitsSold = sale.getUnitsSold();
-			if(prevUnitsShipped != unitsShipped && unitsSold > 0 &&  unitsShipped >= unitsSold) {
-				Invoice invoice = invoiceService.createInvoiceForSale(sale);
-		        if(invoice!=null) {
-					List<String> emails = Arrays.asList("kfiolek@marketplacebrands.com","mkoziarski@marketplacebrands.com");
-					Map<String, String> model = new HashMap<String, String>();
-		        	model.put("invoiceNumber", invoice.getNumber());
-		        	this.sendMail(emails, model, sale, Notification.TYPE.INVOICE_CREATED);
-		        }
+			Invoice invoice = null;
+			if(unitsShipped > 0 && prevUnitsShipped != unitsShipped && unitsSold > 0
+					&& customer.getInvoiceType().equalsIgnoreCase(Customer.INVOICE_TYPE.PER_FIRST_SHIPMENT.name())) {
+				invoice = invoiceService.createInvoiceForSale(sale, customer.getInvoiceType());
 			}
+			if(unitsShipped > 0 && prevUnitsShipped != unitsShipped && unitsSold > 0 &&  unitsShipped >= unitsSold 
+					&& customer.getInvoiceType().equalsIgnoreCase(Customer.INVOICE_TYPE.PER_LAST_SHIPMENT.name())) {
+				invoice = invoiceService.createInvoiceForSale(sale, customer.getInvoiceType());
+			}
+	        if(invoice!=null) {
+				List<String> emails = Arrays.asList("kfiolek@marketplacebrands.com","mkoziarski@marketplacebrands.com");
+				Map<String, String> model = new HashMap<String, String>();
+	        	model.put("invoiceNumber", invoice.getNumber());
+	        	this.sendMail(emails, model, sale, Notification.TYPE.INVOICE_CREATED);
+	        }
 		}
 		
 		public void salePendingApproval(Object entity, Object[] currentState, Object[] previousState, String[] propertyNames) {
@@ -154,7 +161,7 @@ public interface NotificationService {
 			long unitsShipped = customer.getUnitsShipped();
 			long unitsSold = customer.getUnitsSold();
 			if(prevUnitsShipped != unitsShipped && unitsSold > 0 &&  unitsShipped >= unitsSold) {
-				List<String> emails = Arrays.asList("kfiolek@marketplacebrands.com","hpyzikiewicz@marketplacebrands.com","mkoziarski@marketplacebrands.com");
+				List<String> emails = Arrays.asList("hpyzikiewicz@marketplacebrands.com","mkoziarski@marketplacebrands.com");
 				Map<String, String> model = new HashMap<String, String>();
 		        model.put("customerName", customer.getName());
 				this.sendMail(emails, model, customer, Notification.TYPE.CUSTOMER_SHIPPED);
@@ -209,7 +216,7 @@ public interface NotificationService {
 				String encodedEmail = Base64.getUrlEncoder().encodeToString(bytes);
 				Message message = new Message();
 				message.setRaw(encodedEmail);
-				message = service.users().messages().send("me", message).execute();
+//				message = service.users().messages().send("me", message).execute();
 			} catch (MessagingException | IOException | GeneralSecurityException e){
 				e.printStackTrace();
 			}

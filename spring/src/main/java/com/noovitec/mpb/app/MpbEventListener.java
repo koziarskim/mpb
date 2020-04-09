@@ -43,21 +43,21 @@ public class MpbEventListener implements PostInsertEventListener, PostUpdateEven
 	
 	@Override
 	public void onPostInsert(PostInsertEvent event) {
-//		String tenant = MpbTenantContext.getCurrentTenant();
-//        taskExecutor.execute(new Runnable() {
-//            @Override
-//            public void run() {
-//            	MpbTenantContext.setCurrentTenant(tenant);
-				Object entity = event.getEntity();
-				BaseEntity baseEntity = null;
-				if(entity.getClass().isAssignableFrom(BaseEntity.class)) {
-					return;
-				}
-				baseEntity = (BaseEntity) entity;
-				if(baseEntity.isDirty()) {
-					return;	
-				}
-				baseEntity.setDirty(true);
+		String tenant = MpbTenantContext.getCurrentTenant();
+		Object entity = event.getEntity();
+		BaseEntity baseEntity = null;
+		if(entity.getClass().isAssignableFrom(BaseEntity.class)) {
+			return;
+		}
+		baseEntity = (BaseEntity) entity;
+//		if(baseEntity.isDirty()) {
+//			return;	
+//		}
+		baseEntity.setDirty(true);
+        taskExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+            	MpbTenantContext.setCurrentTenant(tenant);
 		        String[] propertyNames = event.getPersister().getEntityMetamodel().getPropertyNames();
 		        Object[] newStates = event.getState();
 				if (entity.getClass() == Shipment.class) {
@@ -73,28 +73,28 @@ public class MpbEventListener implements PostInsertEventListener, PostUpdateEven
 				if (entity.getClass() == Customer.class) {
 					notificationService.customerShipped(entity, newStates, null, propertyNames);
 				}
-//				MpbTenantContext.clear();
-//            }
-//        });
+				MpbTenantContext.clear();
+            }
+        });
 	}
 	
 	@Override
 	public void onPostUpdate(PostUpdateEvent event) {
-//		String tenant = MpbTenantContext.getCurrentTenant();
-//        taskExecutor.execute(new Runnable() {
-//            @Override
-//            public void run() {
-//				MpbTenantContext.setCurrentTenant(tenant);
-				Object entity = event.getEntity();
-				BaseEntity baseEntity = null;
-				if(entity.getClass().isAssignableFrom(BaseEntity.class)) {
-					return;
-				}
-				baseEntity = (BaseEntity) entity;
-				if(baseEntity.isDirty()) {
-					return;	
-				}
-				baseEntity.setDirty(true);
+		String tenant = MpbTenantContext.getCurrentTenant();
+		Object entity = event.getEntity();
+		BaseEntity baseEntity = null;
+		if(entity.getClass().isAssignableFrom(BaseEntity.class)) {
+			return;
+		}
+		baseEntity = (BaseEntity) entity;
+//		if(baseEntity.isDirty()) {
+//			return;	
+//		}
+		baseEntity.setDirty(true);
+        taskExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+				MpbTenantContext.setCurrentTenant(tenant);
 		        String[] propertyNames = event.getPersister().getEntityMetamodel().getPropertyNames();
 		        Object[] newStates = event.getState();
 		        Object[] oldStates = event.getOldState();
@@ -106,14 +106,14 @@ public class MpbEventListener implements PostInsertEventListener, PostUpdateEven
 					notificationService.saleShipped(entity, newStates, oldStates, propertyNames);
 				}
 				if (entity.getClass() == Sale.class) {
-					notificationService.salePendingApproval(entity, newStates, null, propertyNames);
+					notificationService.salePendingApproval(entity, newStates, oldStates, propertyNames);
 				}
 				if (entity.getClass() == Customer.class) {
 					notificationService.customerShipped(entity, newStates, oldStates, propertyNames);
 				}
-//				MpbTenantContext.clear();
-//            }
-//        });
+				MpbTenantContext.clear();
+            }
+        });
 	}
 
 	@Override

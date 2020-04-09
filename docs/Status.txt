@@ -4,10 +4,12 @@ Component:
 Sale:
 - Export Sales by Customer to Excel/CSV (See Kasia's email: Order /Sale Summary Report - MIMS).
 - Export single sale.
++ Sale ready.
++ Sale pending approval notification (Victoria).
 Accounting:
 - Change notification to not use events.
 - Send email to client (andy as cc: by default).
-- Add new invoice type to Customer (last shipped)
++ Add new invoice type to Customer (last shipped)
 - Last sale shipped event to generate invoice and send invoice notification.
 - Invoice number should be sale number for invoice type (first and last shipped)
 Schedule:

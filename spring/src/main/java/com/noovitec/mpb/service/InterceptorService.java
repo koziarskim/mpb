@@ -41,9 +41,9 @@ public interface InterceptorService {
 			if (entity.getClass() == Customer.class) {
 				notificationService.customerShipped(entity, currentState, null, propertyNames);
 			}
-			if (entity.getClass() == Sale.class) {
-				notificationService.saleShipped(entity, currentState, null, propertyNames);
-			}
+//			if (entity.getClass() == Sale.class) {
+//				notificationService.saleShipped(entity, currentState, null, propertyNames);
+//			}
 		}
 		
 		@Async
@@ -56,9 +56,9 @@ public interface InterceptorService {
 			if (entity.getClass() == Customer.class) {
 				notificationService.customerShipped(entity, currentState, previousState, propertyNames);
 			}
-			if (entity.getClass() == Sale.class) {
-				notificationService.saleShipped(entity, currentState, previousState, propertyNames);
-			}
+//			if (entity.getClass() == Sale.class) {
+//				notificationService.saleShipped(entity, currentState, previousState, propertyNames);
+//			}
 		}
 		
 	}
