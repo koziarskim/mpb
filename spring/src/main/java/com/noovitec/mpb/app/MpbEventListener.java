@@ -50,9 +50,9 @@ public class MpbEventListener implements PostInsertEventListener, PostUpdateEven
 			return;
 		}
 		baseEntity = (BaseEntity) entity;
-//		if(baseEntity.isDirty()) {
-//			return;	
-//		}
+		if(baseEntity.isDirty()) {
+			return;	
+		}
 		baseEntity.setDirty(true);
         taskExecutor.execute(new Runnable() {
             @Override
@@ -87,9 +87,9 @@ public class MpbEventListener implements PostInsertEventListener, PostUpdateEven
 			return;
 		}
 		baseEntity = (BaseEntity) entity;
-//		if(baseEntity.isDirty()) {
-//			return;	
-//		}
+		if(baseEntity.isDirty()) {
+			return;	
+		}
 		baseEntity.setDirty(true);
         taskExecutor.execute(new Runnable() {
             @Override
