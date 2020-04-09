@@ -58,7 +58,7 @@ public interface InvoiceService {
 			if(type.equalsIgnoreCase(Customer.INVOICE_TYPE.PER_FIRST_SHIPMENT.name())) {
 				shipment = shipmentRepo.getFirstBySale(sale.getId());
 			}
-			if(type.equalsIgnoreCase(Customer.INVOICE_TYPE.PER_FIRST_SHIPMENT.name())) {
+			if(type.equalsIgnoreCase(Customer.INVOICE_TYPE.PER_LAST_SHIPMENT.name())) {
 				shipment = shipmentRepo.getLastBySale(sale.getId());
 			}
 			if(shipment == null) {
@@ -82,7 +82,7 @@ public interface InvoiceService {
 				invoice.getInvoiceItems().add(ii);
 			}
 			invoice = this.save(invoice);
-			invoice.setNumber(invoice.getId().toString());
+			invoice.setNumber(sale.getNumber());
 			invoice = this.save(invoice);
 			return invoice;
 		}
