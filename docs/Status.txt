@@ -2,7 +2,7 @@ In Progress/Done:
 Component:
 - Cost (4 decimal)
 - On List (Name primary, number secondary)
-- Component Type (list) from Hania
+- Component Type (list) - Hania and Michal to sent list.
 - Search by Category, Type.
 Customer:
 - Screen layout changes based on different sections (complience, etc.)
@@ -16,7 +16,7 @@ Schedule:
 Item:
 - Sort by (number (a-z), date (created)
 - Filter by (category, brand)
-- List of Brands and Categories update.
+- List of Brands and Categories update (Hania to sent).
 - Show component picture when mouse over.
 Shipment:
 - Trasfer window date from sale
