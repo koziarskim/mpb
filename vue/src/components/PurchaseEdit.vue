@@ -126,9 +126,6 @@ export default {
   watch: {
   },
   methods: {
-    getTotalPrice(item){
-      return (item.units * item.unitPrice).toFixed(2);
-    },
     cancel(){
       this.getPurchase(this.purchase.id).then(purchase =>{
         this.editMode = false;
@@ -215,7 +212,7 @@ export default {
       }
     },
     getTotalPrice(pc){
-      return (pc.units * pc.unitPrice).toFixed(2);
+      return (pc.units * pc.unitPrice).toFixed(4);
     },
     getPurchase(purchase_id) {
       return http.get("/purchase/" + purchase_id).then(r => {

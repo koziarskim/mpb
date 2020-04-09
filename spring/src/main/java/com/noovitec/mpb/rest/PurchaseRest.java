@@ -212,6 +212,7 @@ class PurchaseRest {
 	private byte[] generatePdf(Purchase purchase) throws IOException, DocumentException {
 		Supplier s = supplierRepo.findById(purchase.getSupplier().getId()).get();
 		NumberFormat currencyFormat = NumberFormat.getCurrencyInstance();
+		currencyFormat.setMaximumFractionDigits(4);
 		String componentName = "";
 		String componentDescription = "";
 		String componentUnits = "";

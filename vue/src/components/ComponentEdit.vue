@@ -109,7 +109,7 @@
             </b-col>
             <b-col cols=2>
               <br/>
-              <label class="top-label">Case Cost $: {{caseCost}}</label>
+              <label class="top-label">Case Cost $: {{caseCost.toFixed(2)}}</label>
               <label class="top-label">Total Landed Cost $: {{totalLandedCost}}</label><br/>
             </b-col>
         </b-row>
@@ -189,7 +189,7 @@ export default {
   },
   computed: {
       totalLandedCost(){
-          return (+this.component.unitCost + +this.component.deliveryCost + +this.component.otherCost).toFixed(2);
+          return (+this.component.unitCost + +this.component.deliveryCost + +this.component.otherCost).toFixed(4);
       },
       deliveryCost(){
           return (+this.component.containerCost / +this.component.unitsPerContainer).toFixed(2);

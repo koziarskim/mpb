@@ -95,7 +95,7 @@ export default {
   },
   methods: {
     getTotalPrice(item){
-      return (item.units * item.unitPrice).toFixed(2);
+      return (item.units * item.unitPrice).toFixed(4);
     },
     updateComponents(searchDto){
       this.getComponentDtos(searchDto.components.join(","));
