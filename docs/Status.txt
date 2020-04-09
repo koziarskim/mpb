@@ -1,30 +1,28 @@
 In Progress/Done:
 Component:
-- Price history/average (based on PO).
+- Cost (4 decimal)
+- On List (Name primary, number secondary)
+- Component Type (list) from Hania
+- Search by Category, Type.
+Customer:
+- Screen layout changes based on different sections (complience, etc.)
 Sale:
 - Export Sales by Customer to Excel/CSV (See Kasia's email: Order /Sale Summary Report - MIMS).
 - Export single sale.
-+ Sale ready.
-+ Sale pending approval notification (Victoria).
 Accounting:
-- Change notification to not use events.
 - Send email to client (andy as cc: by default).
-+ Add new invoice type to Customer (last shipped)
-+ Last sale shipped event to generate invoice and send invoice notification.
-+ Invoice number should be sale number for invoice type (first and last shipped)
 Schedule:
 - Ability to add random reciving event on schedule.
-- Combine Shipment and receiving schedule.
-- Notification to viki when sale is pending.
 Item:
-+ Item version based on the year (design).
+- Sort by (number (a-z), date (created)
+- Filter by (category, brand)
+- List of Brands and Categories update.
+- Show component picture when mouse over.
 Shipment:
 - Trasfer window date from sale
 	single PO - transfer same shipping window
 	multiple PO's with the same date -  transfer same shipping window
 	multiple PO's with different date -  leave blank
-Global:
-+ Set year context to be current by default.
 ------------------------------------------------------------------
 
 Backlog
@@ -35,5 +33,7 @@ Backlog
 - Disable notifications when running unitsUpdate full.
 - Disable notifications when creating new year context.
 - add year to notifications.
+- Price history/average (based on PO).
+- Change notification to not use events.
 
 
