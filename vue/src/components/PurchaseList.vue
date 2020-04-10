@@ -5,10 +5,10 @@
         <span style="text-align: left; font-size: 18px; font-weight: bold">Purchase Orders</span>
       </b-col>
       <b-col cols="3">
-        <input class="form-control" type="tel" v-model="searchPurchase" @click="searchComponent = ''" @keyup.enter="getPurchases('purchase')" placeholder="Search Number or Name"/>
+        <input class="form-control" type="tel" v-model="searchPurchase" @keyup.enter="getPurchases()" placeholder="PO Name/Number"/>
       </b-col>
-      <b-col cols="3">
-        <input class="form-control" type="tel" v-model="searchComponent" @click="searchPurchase = ''" @keyup.enter="getPurchases('component')" placeholder="Search Component"/>
+      <b-col cols=3>
+        <b-select option-value="id" option-text="name" :list="availableComponents" v-model="componentKv" placeholder="Component"></b-select>
       </b-col>
       <b-col>
         <div style="text-align: right;">
@@ -25,8 +25,7 @@
         <span>{{row.item.received?"Yes":"No"}}</span>
       </template>
       <template v-slot:cell(action)="row">
-        <b-button size="sm" @click.stop="deletePurchase(row.item)">x</b-button>&nbsp;
-        <b-button size="sm" @click.stop="goToReceiving(row.item.id)">Receivings</b-button>
+        <b-button size="sm" @click.stop="deletePurchase(row.item)">x</b-button>
       </template>
       <template v-slot:cell(pdf)="row">
         <a :href="rowPdfUrl(row.item.id)" target="_blank">
@@ -35,6 +34,9 @@
       </template>
       <template v-slot:cell(expectedDate)="row">
         <span>{{row.item.expectedDate | formatDate}}</span>
+      </template>
+      <template v-slot:cell(unitsReceived)="row">
+        <b-link role="button" @click.stop="goToReceiving(row.item.id)">{{row.item.unitsReceived}}</b-link>
       </template>
       <template v-slot:cell(date)="row">
         <span>{{row.item.date | formatDate}}</span>
@@ -57,18 +59,19 @@ export default {
       fields: [
         { key: "number", label: "Purchase # (Name)", sortable: false },
         { key: "invoiceNumber", label: "Invoice", sortable: false },
-        { key: "supplier.name", label: "Supplier", sortable: false },
-        { key: "date", label: "P.O. Date", sortable: false },
-        { key: "expectedDate", label: "Expected", sortable: false },
+        { key: "supplierName", label: "Supplier", sortable: false },
+        { key: "poDate", label: "P.O. Date", sortable: false },
+        { key: "etaDate", label: "Expected", sortable: false },
         { key: "shippingDate", label: "Shipping", sortable: false },
-        { key: "unitsPurchased", label: "Purchased", sortable: false },
+        { key: "unitsOrdered", label: "Purchased", sortable: false },
         { key: "unitsReceived", label: "Received", sortable: false },
         { key: "pdf", label: "PDF", sortable: false },
         { key: "action", label: "", sortable: false }
       ],
       availableComponents: [],
+      componentKv: {},
       component: {},
-      purchases: [],
+      purchases: [], //PurchaseListDto
       keyword: "",
       showAll: false
     };
@@ -76,8 +79,17 @@ export default {
   computed: {
   },
   watch: {
+    componentKv(newValue, oldValue){
+      this.getPurchases();
+    }
   },
   methods: {
+    getAvailableComponents(){
+      http.get("/component/kv").then(response => {
+        this.availableComponents = response.data;
+      }).catch(e => {console.log("API error: " + e);});
+    },
+
     paginationChange(page){
       this.pageable.currentPage = page;
       this.getPurchases();
@@ -93,17 +105,11 @@ export default {
     showAlert(message) {
       (this.alertSecs = 3), (this.alertMessage = message);
     },
-    getPurchases(type) {
-      var searchKey = type=="purchase"?this.searchPurchase:this.searchComponent;
-      http
-        .get("/purchase/pageable", {params: {pageable: this.pageable, searchKey: searchKey, searchType: type}})
-        .then(response => {
-          this.purchases = response.data.content;
-          this.pageable.totalElements = response.data.totalElements;
-        })
-        .catch(e => {
-          console.log("API error: " + e);
-        });
+    getPurchases() {
+      http.get("/purchase/pageable", {params: {pageable: this.pageable, purchaseName: this.searchPurchase, componentId: this.componentKv.id}}).then(response => {
+        this.purchases = response.data.content;
+        this.pageable.totalElements = response.data.totalElements;
+      }).catch(e => {console.log("API error: " + e);});
     },
     deletePurchase(purchase) {
       if(purchase.unitsReceived > 0){
@@ -134,6 +140,11 @@ export default {
     }
   },
   mounted() {
+    var componentId = this.$route.query.component_id;
+    if(componentId){
+      this.componentKv = {id: componentId}
+    }
+    this.getAvailableComponents();
     this.getPurchases();
   }
 };

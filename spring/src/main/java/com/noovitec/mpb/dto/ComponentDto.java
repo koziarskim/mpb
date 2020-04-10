@@ -19,7 +19,7 @@ public class ComponentDto {
 	private Long supplierId;
 	private Long unitsSoldNotProd;
 	private Long unitsOnStock;
-	private Long unitsPendingPo;
+	private Long unitsOrdered;
 	private Long unitsLocked;
 	private Long unitsShort;
 	private BigDecimal unitCost;

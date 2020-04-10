@@ -36,7 +36,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfStamper;
+import com.noovitec.mpb.dto.ItemListDto;
 import com.noovitec.mpb.dto.KeyValueDto;
+import com.noovitec.mpb.dto.PurchaseListDto;
 import com.noovitec.mpb.entity.Component;
 import com.noovitec.mpb.entity.ItemComponent;
 import com.noovitec.mpb.entity.Purchase;
@@ -98,20 +100,25 @@ class PurchaseRest {
 	}
 
 	@GetMapping("/purchase/pageable")
-	Page<Purchase> getAllPageable(@RequestParam(name = "pageable", required = false) Pageable pageable, 
-			@RequestParam(name = "searchKey", required = false) String searchKey, @RequestParam(name = "searchType", required = false) String searchType) {
-		Page<Purchase> purchases = null;
-		if(searchType==null || searchType.isBlank() || searchKey==null || searchKey.isBlank()) {
-			purchases = purchaseRepo.findPage(pageable);
-		}else if(searchType.equals("purchase") && !searchKey.isBlank()) {
-			purchases = purchaseRepo.findPageByPurchase(pageable, searchKey);
-		}else if(searchType.equals("component") && !searchKey.isBlank()){
-			purchases = purchaseRepo.findPageByComponent(pageable, searchKey);
-		}
-		if(purchases == null) {
-			 purchases = Page.empty();
-		}
-		return purchases;
+	Page<PurchaseListDto> getAllPageable(@RequestParam(name = "pageable", required = false) Pageable pageable, 
+			@RequestParam(required = false) String purchaseName, 
+			@RequestParam(required = false) Long componentId) {
+		Page<Purchase> purchases = purchaseRepo.findPagable(pageable, purchaseName, componentId);
+		Page<PurchaseListDto> dtos = purchases.map(purchase -> {
+			PurchaseListDto dto = new PurchaseListDto();
+			dto.setId(purchase.getId());
+			dto.setEtaDate(purchase.getExpectedDate());
+			dto.setInvoiceNumber(purchase.getInvoiceNumber());
+			dto.setName(purchase.getName());
+			dto.setNumber(purchase.getNumber());
+			dto.setPoDate(purchase.getDate());
+			dto.setShippingDate(purchase.getShippingDate());
+			dto.setSupplierName(purchase.getSupplier().getName());
+			dto.setUnitsOrdered(purchase.getUnitsPurchased());
+			dto.setUnitsReceived(purchase.getUnitsReceived());
+			return dto;
+		});
+		return dtos;
 	}
 
 	@GetMapping("/purchase/active")

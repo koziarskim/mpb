@@ -88,7 +88,7 @@ class ComponentRest {
 			dto.setSupplierId(component.getSupplier()==null?null:component.getSupplier().getId());
 			dto.setUnitsSoldNotProd(component.getUnitsSoldNotProd());
 			dto.setUnitsOnStock(component.getUnitsOnStock());
-			dto.setUnitsPendingPo(component.getUnitsOrdered() - component.getUnitsReceived());
+			dto.setUnitsOrdered(component.getUnitsOrdered());
 			dto.setUnitsLocked(component.getUnitsLocked());
 			dto.setUnitsShort(component.getUnitsShort());
 			dto.setUnitCost(component.getUnitCost());
@@ -125,7 +125,7 @@ class ComponentRest {
 			dto.setSupplierId(component.getSupplier().getId());
 			dto.setUnitsSoldNotProd(component.getUnitsSoldNotProd());
 			dto.setUnitsOnStock(component.getUnitsOnStock());
-			dto.setUnitsPendingPo(component.getUnitsOrdered() - component.getUnitsReceived());
+			dto.setUnitsOrdered(component.getUnitsOrdered());
 			dto.setUnitsLocked(component.getUnitsLocked());
 			dto.setUnitsShort(component.getUnitsShort());
 			dto.setUnitCost(component.getUnitCost());

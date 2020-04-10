@@ -28,8 +28,8 @@
       <template v-slot:cell(unitsOnStock)="row">
         <span>{{getUnitsOnStock(row.item)}}</span>
       </template>
-      <template v-slot:cell(unitsReceived)="row">
-        <b-button size="sm" @click.stop="goToReceiving(row.item.id)" variant="link">{{row.item.unitsReceived}}</b-button>
+      <template v-slot:cell(unitsOrderedRec)="row">
+        <b-button size="sm" @click.stop="goToPurchaseList(row.item.id)" variant="link">{{row.item.unitsOrdered}}</b-button>/<b-button size="sm" @click.stop="goToReceiving(row.item.id)" variant="link">{{row.item.unitsReceived}}</b-button>
       </template>
       <template v-slot:cell(unitsSchedProd)="row">
         <span>{{row.item.unitsLocked + row.item.unitsForProduction}} / {{row.item.unitsForProduction}}</span>
@@ -38,7 +38,7 @@
         <input type="checkbox" v-model="selectedComponents" :value="row.item">
       </template>
       <template v-slot:head(action)="row">
-          <b-button size="sm" @click="triggerAll(true)" variant="link">(+)</b-button>
+          <b-button style="margin-left:-10px; margin-bottom:-10px" size="sm" @click="triggerAll(false)" variant="link">(-)</b-button><br/><b-button style="margin-left: -10px; margin-bottom: -10px" size="sm" @click="triggerAll(true)" variant="link">(+)</b-button>
       </template>
     </b-table>
     <div style="display: flex">
@@ -67,10 +67,9 @@ export default {
         { key: "categoryName", label: "Category", sortable: false },
         { key: "supplierName", label: "Supplier", sortable: false },
         { key: "unitsOnStock", label: "Stock", sortable: false },
-        { key: "unitsReceived", label: "Received", sortable: false },
         { key: "unitsForSale", label: "Sales", sortable: false },
         { key: "unitsSchedProd", label: "Sched/Prod", sortable: false },
-        { key: "unitsPendingPo", label: "Pnd PO", sortable: false },
+        { key: "unitsOrderedRec", label: "PO/Received", sortable: false },
         { key: "unitsShort", label: "Short", sortable: false },
         { key: "action", label: "", sortable: false }
       ],
@@ -111,10 +110,11 @@ export default {
             this.selectedComponents.push(c);
           }
         }else{
-          var idx = this.selectedComponents.findIndex(sc => sc.id == c.id);
-          if(idx > -1){
-            this.selectedComponents.splice(idx, 1);
-          }
+          this.selectedComponents = [];
+          // var idx = this.selectedComponents.findIndex(sc => sc.id == c.id);
+          // if(idx > -1){
+          //   this.selectedComponents.splice(idx, 1);
+          // }
         }
       })
     },
@@ -188,6 +188,10 @@ export default {
     goToReceiving(component_id){
       var query = { component_id: component_id };
       router.push({ path: "/receivingList", query: query });
+    },
+    goToPurchaseList(component_id){
+      var query = { component_id: component_id };
+      router.push({ path: "/purchaseList", query: query });
     }
   },
   mounted() {
