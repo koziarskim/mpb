@@ -99,7 +99,7 @@ export default {
         alert("Please enter ETA or Received Date!");
         return false;
       }
-      if(!this.receivingDate || moment(this.receivingDate).isAfter(moment.utc())){
+      if(!this.receiving.receivingDate || moment(this.receiving.receivingDate).isAfter(moment.utc())){
         alert("Received Date cannot be in future");
         return false;
       }

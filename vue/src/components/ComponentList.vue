@@ -26,7 +26,13 @@
         <div class="name-md" :title="row.item.name"> ({{row.item.name}})</div>
       </template>
       <template v-slot:cell(unitsOnStock)="row">
-        <b-button size="sm" @click.stop="goToReceiving(row.item.id)" variant="link">{{row.item.unitsOnStock}}</b-button>
+        <span>{{getUnitsOnStock(row.item)}}</span>
+      </template>
+      <template v-slot:cell(unitsReceived)="row">
+        <b-button size="sm" @click.stop="goToReceiving(row.item.id)" variant="link">{{row.item.unitsReceived}}</b-button>
+      </template>
+      <template v-slot:cell(unitsSchedProd)="row">
+        <span>{{row.item.unitsLocked + row.item.unitsForProduction}} / {{row.item.unitsForProduction}}</span>
       </template>
       <template v-slot:cell(action)="row">
         <input type="checkbox" v-model="selectedComponents" :value="row.item">
@@ -60,10 +66,11 @@ export default {
         { key: "name", label: "Component # (Name)", sortable: false },
         { key: "categoryName", label: "Category", sortable: false },
         { key: "supplierName", label: "Supplier", sortable: false },
-        { key: "unitsSoldNotProd", label: "Open Sales", sortable: false },
-        { key: "unitsOnStock", label: "On Stock", sortable: false },
-        { key: "unitsPendingPo", label: "Pending PO", sortable: false },
-        { key: "unitsLocked", label: "Reserved", sortable: false },
+        { key: "unitsOnStock", label: "Stock", sortable: false },
+        { key: "unitsReceived", label: "Received", sortable: false },
+        { key: "unitsForSale", label: "Sales", sortable: false },
+        { key: "unitsSchedProd", label: "Sched/Prod", sortable: false },
+        { key: "unitsPendingPo", label: "Pnd PO", sortable: false },
         { key: "unitsShort", label: "Short", sortable: false },
         { key: "action", label: "", sortable: false }
       ],
@@ -93,6 +100,9 @@ export default {
     }
   },
   methods: {
+    getUnitsOnStock(component){
+      return component.unitsOnStock<0?0:component.unitsOnStock;
+    },
     triggerAll(add){
       this.components.forEach(c=> {
         if(add){

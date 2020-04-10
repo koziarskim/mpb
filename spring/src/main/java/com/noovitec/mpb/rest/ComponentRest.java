@@ -92,6 +92,9 @@ class ComponentRest {
 			dto.setUnitsLocked(component.getUnitsLocked());
 			dto.setUnitsShort(component.getUnitsShort());
 			dto.setUnitCost(component.getUnitCost());
+			dto.setUnitsForProduction(component.getUnitsForProduction());
+			dto.setUnitsForSale(component.getUnitsForSale());
+			dto.setUnitsReceived(component.getUnitsReceived());
 		    return dto;
 		});
 		return dtos;
@@ -126,6 +129,9 @@ class ComponentRest {
 			dto.setUnitsLocked(component.getUnitsLocked());
 			dto.setUnitsShort(component.getUnitsShort());
 			dto.setUnitCost(component.getUnitCost());
+			dto.setUnitsForProduction(component.getUnitsForProduction());
+			dto.setUnitsForSale(component.getUnitsForSale());
+			dto.setUnitsReceived(component.getUnitsReceived());
 			dtos.add(dto);
 		});
 		return dtos;

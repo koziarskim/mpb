@@ -23,4 +23,7 @@ public class ComponentDto {
 	private Long unitsLocked;
 	private Long unitsShort;
 	private BigDecimal unitCost;
+	private Long unitsForSale;
+	private Long unitsForProduction;
+	private Long unitsReceived;
 }

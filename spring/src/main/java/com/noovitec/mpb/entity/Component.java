@@ -48,8 +48,8 @@ public class Component extends BaseEntity {
 	private long unitsOrdered = 0;
 	private long unitsReceived = 0;
 	private long unitsLocked = 0; //unitsScheduled - unitsProduced
-	private long unitsForProduction = 0;
-	private long unitsForSale = 0;
+	private long unitsForProduction = 0; //Produced
+	private long unitsForSale = 0; //Sold
 	private long unitsSoldNotProd = 0; //unitsForSale - unitsForProduction
 	private long unitsShort = 0; //unitsSoldNotProduced - unitsOnStock - unitsOrdered - unitsReceived
 
