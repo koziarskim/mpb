@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.jms.ConnectionFactory;
 import javax.sql.DataSource;
 
 import org.apache.velocity.app.VelocityEngine;
@@ -15,12 +16,16 @@ import org.hibernate.context.spi.CurrentTenantIdentifierResolver;
 import org.hibernate.engine.jdbc.connections.spi.MultiTenantConnectionProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.boot.autoconfigure.jms.DefaultJmsListenerContainerFactoryConfigurer;
 import org.springframework.boot.autoconfigure.orm.jpa.JpaProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.jms.annotation.EnableJms;
+import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
+import org.springframework.jms.config.JmsListenerContainerFactory;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -32,6 +37,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @EntityScan("com.noovitec.mpb.entity")
 @EnableJpaRepositories("com.noovitec.mpb.repo")
 @EnableAsync
+@EnableJms
 @Configuration
 public class MpbConfiguration implements WebMvcConfigurer {
 	
@@ -40,11 +46,14 @@ public class MpbConfiguration implements WebMvcConfigurer {
 
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
-		MpbApiInterceptor apiInterceptor = new MpbApiInterceptor();
-		registry.addInterceptor(apiInterceptor);
+		registry.addInterceptor(apiInterceptor());
 		WebMvcConfigurer.super.addInterceptors(registry);
 	}
 
+	@Bean
+	public MpbApiInterceptor apiInterceptor() {
+	    return new MpbApiInterceptor();
+	}
 	@Bean
 	public VelocityEngine getVelocityEngine() throws VelocityException, IOException {
 		VelocityEngine velocityEngine = new VelocityEngine();
@@ -79,5 +88,13 @@ public class MpbConfiguration implements WebMvcConfigurer {
         taskExecutor.afterPropertiesSet();
         taskExecutor.setThreadNamePrefix("thread-async-");
         return taskExecutor;
+    }
+    
+    @Bean
+    public JmsListenerContainerFactory<?> myFactory(ConnectionFactory connectionFactory, DefaultJmsListenerContainerFactoryConfigurer configurer) {
+      DefaultJmsListenerContainerFactory factory = new DefaultJmsListenerContainerFactory();
+      factory.setConcurrency("1-1");
+      configurer.configure(factory, connectionFactory);
+      return factory;
     }
 }
