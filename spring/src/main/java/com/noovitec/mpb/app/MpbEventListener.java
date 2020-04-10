@@ -12,8 +12,6 @@ import org.hibernate.persister.entity.EntityPersister;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.Scope;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Component;
 
@@ -24,7 +22,6 @@ import com.noovitec.mpb.entity.Shipment;
 import com.noovitec.mpb.service.NotificationService;
 
 @Component
-@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class MpbEventListener implements PostInsertEventListener, PostUpdateEventListener, PostDeleteEventListener {
 
 	private static final long serialVersionUID = 1L;

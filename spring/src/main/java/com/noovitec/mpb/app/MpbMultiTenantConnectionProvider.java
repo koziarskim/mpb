@@ -1,4 +1,4 @@
-package com.noovitec.mpb.service;
+package com.noovitec.mpb.app;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -10,13 +10,9 @@ import org.hibernate.engine.jdbc.connections.spi.MultiTenantConnectionProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.noovitec.mpb.app.MpbTenantContext;
-
 @Component
-public class MultiTenantConnectionProviderImpl implements MultiTenantConnectionProvider {
-    /**
-	 * 
-	 */
+public class MpbMultiTenantConnectionProvider implements MultiTenantConnectionProvider {
+     
 	private static final long serialVersionUID = 1L;
 	@Autowired
     private DataSource dataSource;
@@ -46,13 +42,10 @@ public class MultiTenantConnectionProviderImpl implements MultiTenantConnectionP
     @Override
     public void releaseConnection(String tenantIdentifier, Connection connection) throws SQLException {
         try {
-            connection.createStatement().execute( "SET SCHEMA 'public'" );
+            connection.createStatement().execute( "SET SCHEMA '"+tenantIdentifier+"'" );
         }
         catch ( SQLException e ) {
-            throw new HibernateException(
-                    "Problem setting schema to " + tenantIdentifier,
-                    e
-            );
+            throw new HibernateException("Problem setting schema to " + tenantIdentifier, e);
         }
         connection.close();
     }
