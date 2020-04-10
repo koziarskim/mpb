@@ -7,6 +7,7 @@ Component:
 Customer:
 - Screen layout changes based on different sections (complience, etc.)
 Sale:
+- Status Draft.
 - Export Sales by Customer to Excel/CSV (See Kasia's email: Order /Sale Summary Report - MIMS).
 - Export single sale.
 Accounting:

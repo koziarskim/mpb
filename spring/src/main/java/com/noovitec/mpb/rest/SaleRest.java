@@ -24,16 +24,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.noovitec.mpb.app.MpbTenantContext;
 import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.dto.SaleListDto;
 import com.noovitec.mpb.entity.Item;
+import com.noovitec.mpb.entity.ItemComponent;
 import com.noovitec.mpb.entity.Sale;
 import com.noovitec.mpb.entity.SaleItem;
 import com.noovitec.mpb.entity.SaleItemTransfer;
 import com.noovitec.mpb.repo.ItemRepo;
 import com.noovitec.mpb.repo.SaleRepo;
 import com.noovitec.mpb.repo.ScheduleEventRepo;
+import com.noovitec.mpb.service.ComponentService;
 import com.noovitec.mpb.service.CrudService;
 import com.noovitec.mpb.service.CustomerService;
 import com.noovitec.mpb.service.SaleService;
@@ -52,6 +53,8 @@ class SaleRest {
 	CrudService crudService;
 	@Autowired
 	CustomerService customerService;
+	@Autowired
+	ComponentService componentService;
 	
 	private final Logger log = LoggerFactory.getLogger(SaleRest.class);
 	private SaleService saleService;
@@ -189,6 +192,11 @@ class SaleRest {
 		sale.setModifiedDate(LocalDateTime.now());
 		sale.updateUnits();
 		for (SaleItem sa : sale.getSaleItems()) {
+			List<Long> componentIds = new ArrayList<Long>();
+			for (ItemComponent ic : sa.getItem().getItemComponents()) {
+				componentIds.add(ic.getComponent().getId());
+			}
+			componentService.updateUnits(componentIds);
 			sa.getItem().updateUnits();
 		}
 		customerService.updateUnits(Arrays.asList(sale.getCustomer().getId()));

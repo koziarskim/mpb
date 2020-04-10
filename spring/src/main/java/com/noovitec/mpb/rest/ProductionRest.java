@@ -1,7 +1,9 @@
 package com.noovitec.mpb.rest;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.noovitec.mpb.entity.ItemComponent;
 import com.noovitec.mpb.entity.Production;
 import com.noovitec.mpb.repo.ProductionRepo;
 import com.noovitec.mpb.service.ComponentService;
@@ -61,7 +64,11 @@ class ProductionRest {
 		componentService.updateUnitsOnStockByProduction(production.getId(), unitsDiff);
 		itemService.updateUnits(Arrays.asList(production.getScheduleEvent().getSaleItem().getItem().getId()));
 		saleService.updateUnits(Arrays.asList(production.getScheduleEvent().getSaleItem().getSale().getId()));
-		componentService.updateUnitsLockedByItem(production.getScheduleEvent().getSaleItem().getItem().getId());
+		List<Long> componentIds = new ArrayList<Long>();
+		for (ItemComponent ic : production.getScheduleEvent().getSaleItem().getItem().getItemComponents()) {
+			componentIds.add(ic.getComponent().getId());
+		}
+		componentService.updateUnits(componentIds);
 		itemService.updateUnitsReadyProd(Arrays.asList(production.getScheduleEvent().getSaleItem().getItem().getId()));
 		return ResponseEntity.ok().body(production);
 	}

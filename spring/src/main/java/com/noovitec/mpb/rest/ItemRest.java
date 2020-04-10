@@ -36,6 +36,7 @@ import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.dto.ScheduleEventTreeDto;
 import com.noovitec.mpb.entity.Attachment;
 import com.noovitec.mpb.entity.Item;
+import com.noovitec.mpb.entity.ItemComponent;
 import com.noovitec.mpb.entity.ScheduleEvent;
 import com.noovitec.mpb.entity.Season;
 import com.noovitec.mpb.repo.ItemRepo;
@@ -187,6 +188,11 @@ class ItemRest {
 			item = itemService.save(item);
 		}
 		itemService.updateUnits(Arrays.asList(item.getId()));
+		List<Long> componentIds = new ArrayList<Long>();
+		for (ItemComponent ic : item.getItemComponents()) {
+			componentIds.add(ic.getComponent().getId());
+		}
+		componentService.updateUnits(componentIds);
 		itemService.updateUnitsReadyProd(Arrays.asList(item.getId()));
 		return ResponseEntity.ok(item);
 	}
