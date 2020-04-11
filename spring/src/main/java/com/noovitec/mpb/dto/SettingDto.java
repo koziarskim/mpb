@@ -11,5 +11,6 @@ public class SettingDto {
 
 	private String fileStoreDir = "/home/koziarskim/mpb/mpb_file_store";
 	private boolean skipNotification = false;
+	private boolean devEnv = false;
 	
 }

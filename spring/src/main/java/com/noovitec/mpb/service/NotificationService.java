@@ -16,7 +16,6 @@ import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 
 import org.apache.commons.lang.ArrayUtils;
@@ -26,8 +25,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.velocity.VelocityEngineUtils;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
@@ -39,7 +36,6 @@ import com.google.api.services.gmail.GmailScopes;
 import com.google.api.services.gmail.model.Message;
 import com.noovitec.mpb.app.MpbSessionContext;
 import com.noovitec.mpb.app.MpbTenantContext;
-import com.noovitec.mpb.app.SessionDto;
 import com.noovitec.mpb.entity.BaseEntity;
 import com.noovitec.mpb.entity.Customer;
 import com.noovitec.mpb.entity.Invoice;
@@ -67,6 +63,8 @@ public interface NotificationService {
 		private VelocityEngine velocityEngine;
 		@Autowired
 		private InvoiceService invoiceService;
+		@Autowired
+		private MpbSessionContext mpbSessionContext;
 
 		public NotificationServiceImpl(NotificationRepo notificationRepo) {
 			this.notificationRepo = notificationRepo;
@@ -189,8 +187,7 @@ public interface NotificationService {
 		        model.put("yearContext", MpbTenantContext.getCurrentTenant().replace("y", ""));
 		        String subject = "MIMS Notification";
 				String body = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, type.template(), model);
-				String skipNotification = System.getenv("MPB_SKIP_NOTIFICATION");
-				if(skipNotification!=null && skipNotification.equalsIgnoreCase("YES")) {
+				if(mpbSessionContext.getSetting().isDevEnv()) {
 					emails = Arrays.asList("mkoziarski@marketplacebrands.com");
 				}
 				InternetAddress[] bcc = new InternetAddress[emails.size()]; 
@@ -221,7 +218,9 @@ public interface NotificationService {
 				String encodedEmail = Base64.getUrlEncoder().encodeToString(bytes);
 				Message message = new Message();
 				message.setRaw(encodedEmail);
-//				message = service.users().messages().send("me", message).execute();
+				if(!mpbSessionContext.getSetting().isSkipNotification()) {
+					message = service.users().messages().send("me", message).execute();
+				}
 			} catch (MessagingException | IOException | GeneralSecurityException e){
 				e.printStackTrace();
 			}

@@ -1,4 +1,5 @@
 {
 	"fileStoreDir": "C:/Users/kozia/eclipse/workspace/mpb_file_store",
-	"skipNotification": false
+	"skipNotification": false,
+	"devEnv": true
 }
