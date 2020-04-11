@@ -225,6 +225,7 @@ export default {
       availableSales: [],
       saleKv: {},
       availableStatus: [
+        {id: 'DRAFT', name: 'Draft'},
         {id: 'PENDING_APPROVAL', name: 'Pending Approval'},
         {id: 'APPROVED', name: 'Pending Schedule'},
         {id: 'PENDING_PROD', name: 'Pending Prod'},

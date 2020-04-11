@@ -2,7 +2,6 @@ package com.noovitec.mpb.service;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -12,9 +11,13 @@ import javax.transaction.Transactional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.noovitec.mpb.app.MpbSessionContext;
 import com.noovitec.mpb.entity.Attachment;
 import com.noovitec.mpb.repo.AttachmentRepo;
 
@@ -22,7 +25,7 @@ public interface AttachmentService {
 
 	public Attachment getById(Long attachmentId);
 	public Attachment store(MultipartFile file, String type, Long entityId, Attachment attachment) throws IllegalStateException, IOException;
-	public Path load(Long attachmentId) throws MalformedURLException;
+	public Path load(Long attachmentId) throws JsonParseException, JsonMappingException, IOException;
 
 	@Transactional
 	@Service("attachmentServiceImpl")
@@ -32,6 +35,8 @@ public interface AttachmentService {
 		private final static String systemPathVariable = System.getenv("MPB_FILE_STORE_DIR");
 		private final Logger log = LoggerFactory.getLogger(AttachmentServiceImp.class);
 		private AttachmentRepo attachmentRepo;
+	    @Autowired
+		MpbSessionContext mpbSessionContext;
 
 		public AttachmentServiceImp(AttachmentRepo attachmentRepo) {
 			this.attachmentRepo = attachmentRepo;
@@ -45,9 +50,9 @@ public interface AttachmentService {
 			return attachment;
 		}
 
-		public Path load(Long attachmentId) throws MalformedURLException {
+		public Path load(Long attachmentId) throws JsonParseException, JsonMappingException, IOException {
 			Attachment attachment = this.getById(attachmentId);
-			String systemPath = systemPathVariable;
+			String systemPath = mpbSessionContext.getSetting().getFileStoreDir();
 			log.info("System Path: "+systemPath);
 			if(systemPath == null) {
 				systemPath = defaultSystemPath;
@@ -61,7 +66,7 @@ public interface AttachmentService {
 		
 		public Attachment store(MultipartFile file, String type, Long entityId, Attachment attachment) throws IllegalStateException, IOException {
 			String fileName = file.getOriginalFilename();
-			String systemPath = systemPathVariable;
+			String systemPath = mpbSessionContext.getSetting().getFileStoreDir();
 			log.info("System Path: "+systemPath);
 			if(systemPath == null) {
 				systemPath = defaultSystemPath;

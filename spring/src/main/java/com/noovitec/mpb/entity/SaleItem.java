@@ -12,6 +12,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.noovitec.mpb.entity.Sale.STATUS;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -106,21 +107,24 @@ public class SaleItem extends BaseEntity {
 	}
 	
 	private void updateStatus() {
-		this.status = "PENDING_APPROVAL";
+		this.status = STATUS.DRAFT.name();
+		if(this.getSale().isPendingApproval()) {
+			status = STATUS.PENDING_APPROVAL.name();
+		}
 		if(this.getSale().isApproved()) {
-			this.status = "APPROVED";
+			this.status = Sale.STATUS.APPROVED.name();
 		}
 		if(this.unitsScheduled > 0 && this.unitsProduced < this.unitsScheduled) {
-			this.status = "PENDING_PROD";
+			this.status = Sale.STATUS.PENDING_PROD.name();
 		}
 		if(this.getUnitsOnStock() > 0 && this.unitsOnStock >= (this.units + this.unitsAdjusted)) {
-			this.status = "PENDING_SHIPMENT";
+			this.status = Sale.STATUS.PENDING_SHIPMENT.name();
 		}
 		if(this.unitsShipped > 0 && this.unitsShipped >= (this.units + this.unitsAdjusted)) {
-			status = "SHIPPED";
+			status = Sale.STATUS.SHIPPED.name();
 		}
 		if(this.unitsShipped > 0 && this.unitsShipped >= (this.units + this.unitsAdjusted) && this.unitsOnStock > 0) {
-			status = "PENDING_TRANSFER";
+			status = Sale.STATUS.PENDING_TRANSFER.name();
 		}
 	}
 

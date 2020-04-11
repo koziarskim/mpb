@@ -16,6 +16,7 @@ import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 
 import org.apache.commons.lang.ArrayUtils;
@@ -25,6 +26,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.velocity.VelocityEngineUtils;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
@@ -34,7 +37,9 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.GmailScopes;
 import com.google.api.services.gmail.model.Message;
+import com.noovitec.mpb.app.MpbSessionContext;
 import com.noovitec.mpb.app.MpbTenantContext;
+import com.noovitec.mpb.app.SessionDto;
 import com.noovitec.mpb.entity.BaseEntity;
 import com.noovitec.mpb.entity.Customer;
 import com.noovitec.mpb.entity.Invoice;

@@ -29,7 +29,7 @@ import lombok.NoArgsConstructor;
 public class Sale extends BaseEntity {
 
 	public enum STATUS {
-		PENDING_APPROVAL, APPROVED, PENDING_PROD, PENDING_SHIPMENT, SHIPPED, PENDING_TRANSFER
+		DRAFT, PENDING_APPROVAL, APPROVED, PENDING_PROD, PENDING_SHIPMENT, SHIPPED, PENDING_TRANSFER
 	}
 
 	private LocalDate date;
@@ -99,21 +99,24 @@ public class Sale extends BaseEntity {
 	}
 	
 	private void updateStatus() {
-		this.status = "PENDING_APPROVAL";
+		this.status = STATUS.DRAFT.name();
+		if(this.pendingApproval) {
+			status = STATUS.PENDING_APPROVAL.name();
+		}
 		if(this.approved) {
-			this.status = "APPROVED";
+			this.status = STATUS.APPROVED.name();
 		}
 		if(this.unitsScheduled > 0 && this.unitsProduced < this.unitsScheduled) {
-			this.status = "PENDING_PROD";
+			this.status = STATUS.PENDING_PROD.name();
 		}
 		if(this.getUnitsOnStock() > 0 && this.getUnitsOnStock() >= (this.unitsSold + this.unitsAdjusted)) {
-			this.status = "PENDING_SHIPMENT";
+			this.status = STATUS.PENDING_SHIPMENT.name();
 		}
 		if(this.unitsShipped > 0 && this.unitsShipped >= (this.unitsSold + this.unitsAdjusted)) {
-			status = "SHIPPED";
+			status = STATUS.SHIPPED.name();
 		}
 		if(this.unitsShipped > 0 && this.unitsShipped >= (this.unitsSold + this.unitsAdjusted) && this.unitsOnStock > 0) {
-			status = "PENDING_TRANSFER";
+			status = STATUS.PENDING_TRANSFER.name();
 		}
 	}
 
