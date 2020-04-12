@@ -1,5 +1,9 @@
 package com.noovitec.mpb.rest;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -8,12 +12,23 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.usermodel.XSSFFont;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -146,9 +161,44 @@ class SaleRest {
 	}
 	
 	@PutMapping("/sale/xls")
-	ResponseEntity<?> getXls(@RequestBody List<Long> saleIds) {
+	HttpEntity<byte[]> getXls(@RequestBody List<Long> saleIds) throws IOException {
 		log.info("Sale IDs: "+saleIds);
-		return ResponseEntity.ok().body("OK");
+		XSSFWorkbook workbook = new XSSFWorkbook();
+		Sheet sheet = workbook.createSheet("Persons");
+		sheet.setColumnWidth(0, 6000);
+		sheet.setColumnWidth(1, 4000);
+		 
+		Row rowHeader = sheet.createRow(0);
+		 
+		CellStyle headerStyle = workbook.createCellStyle();
+		headerStyle.setFillForegroundColor(IndexedColors.LIGHT_BLUE.getIndex());
+		headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+		 
+		XSSFFont font = ((XSSFWorkbook) workbook).createFont();
+		font.setFontName("Arial");
+		font.setFontHeightInPoints((short) 16);
+		font.setBold(true);
+		headerStyle.setFont(font);
+		Cell headerCell = rowHeader.createCell(0);
+		headerCell.setCellValue("Name");
+		headerCell.setCellStyle(headerStyle);
+		headerCell = rowHeader.createCell(1);
+		headerCell.setCellValue("Age");
+		headerCell.setCellStyle(headerStyle);
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+//		String fileName = "PO_"+shipment.getNumber()+"_"+shipment.getId() + "-" + sdf.format(timestamp) +".pdf";
+		String fileName = "test.xls";
+//		byte[] data = this.generatePdf(shipment, true);
+		ByteArrayOutputStream bolBaos = new ByteArrayOutputStream();
+		workbook.write(bolBaos);
+		workbook.close();
+		HttpHeaders header = new HttpHeaders();
+		header.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+		header.set("Content-Disposition", "inline; filename=" + fileName);
+		header.set("File-Name", fileName);
+		header.setContentLength(bolBaos.toByteArray().length);
+		return new HttpEntity<byte[]>(bolBaos.toByteArray(), header);
 	}
 
 	@PostMapping("/sale/units/{saleId}")

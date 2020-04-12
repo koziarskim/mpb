@@ -141,8 +141,13 @@ export default {
       this.selectedSales.forEach(sale=> {
         saleIds.push(sale.id);
       })
-      http.put("/sale/xls", saleIds).then(r => {
-        //Do nothing.
+      http.put("/sale/xls", saleIds, { responseType: 'blob'}).then(r => {
+        const url = URL.createObjectURL(new Blob([r.data], { type: r.headers['content-type']}))
+        const link = document.createElement('a')
+        link.href = url
+        link.setAttribute("download", r.headers['file-name'])
+        document.body.appendChild(link)
+        link.click()
       }).catch(e => {
         console.log("API error: "+e);
       });
