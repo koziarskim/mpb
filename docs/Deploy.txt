@@ -16,7 +16,8 @@ Deploy to mpb.noovitec.com
 	- If nginx configuration changed (mpb/env/nginx-(linux/windows).conf, copy file to location set in /etc/nginx/nginx.config property "http.include"
 	- Restart nginx: sudo systemctl restart nginx
 	
-	- If any Vue properties changed, make sure to copy (mpb/vue/.env.production) to (git/mpb/vue/).
+	- If any Vue properties changed, copy mpb/vue/.env.production to git/mpb/vue
+	- If any Java setting changes, copy mpb/env/mpb_setting_linux.json to git/mp/env
 
 TODO:
 - mpb/env/nginx-(linux/windows).config TODO: There are two separate files (linux/windows). Why trailing slashes doesn't work the same way.

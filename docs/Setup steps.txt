@@ -3,6 +3,13 @@ Install Ubuntu 16.04
 
 Marketplace WiFi Pass: market445
 
+Add system variable to setting file:
+	Ubuntu: sudo vi /etc/systemd/system/tomcat.service
+		Environment=MPB_SETTING=/home/koziarskim/git/mpb/env/mpb_setting_linux.json
+	Windows: Environment Variable screen
+		MPB_SETTING set to C:\Users\kozia\eclipse\workspace\mpb\env\mpb_setting_windows.json
+	
+
 Local
 Install VirtualBox
 Install Ubuntu 16.04 on VB
