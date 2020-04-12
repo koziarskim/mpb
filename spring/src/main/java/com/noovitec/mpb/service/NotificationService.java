@@ -34,7 +34,7 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.GmailScopes;
 import com.google.api.services.gmail.model.Message;
-import com.noovitec.mpb.app.MpbSessionContext;
+import com.noovitec.mpb.app.MpbRequestContext;
 import com.noovitec.mpb.app.MpbTenantContext;
 import com.noovitec.mpb.entity.BaseEntity;
 import com.noovitec.mpb.entity.Customer;
@@ -63,8 +63,6 @@ public interface NotificationService {
 		private VelocityEngine velocityEngine;
 		@Autowired
 		private InvoiceService invoiceService;
-		@Autowired
-		private MpbSessionContext mpbSessionContext;
 
 		public NotificationServiceImpl(NotificationRepo notificationRepo) {
 			this.notificationRepo = notificationRepo;
@@ -187,7 +185,7 @@ public interface NotificationService {
 		        model.put("yearContext", MpbTenantContext.getCurrentTenant().replace("y", ""));
 		        String subject = "MIMS Notification";
 				String body = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, type.template(), model);
-				if(mpbSessionContext.getSetting().isDevEnv()) {
+				if(MpbRequestContext.getStaticSetting().isDevEnv()) {
 					emails = Arrays.asList("mkoziarski@marketplacebrands.com");
 				}
 				InternetAddress[] bcc = new InternetAddress[emails.size()]; 
@@ -218,7 +216,7 @@ public interface NotificationService {
 				String encodedEmail = Base64.getUrlEncoder().encodeToString(bytes);
 				Message message = new Message();
 				message.setRaw(encodedEmail);
-				if(!mpbSessionContext.getSetting().isSkipNotification()) {
+				if(!MpbRequestContext.getStaticSetting().isSkipNotification()) {
 					message = service.users().messages().send("me", message).execute();
 				}
 			} catch (MessagingException | IOException | GeneralSecurityException e){

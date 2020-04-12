@@ -17,7 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.noovitec.mpb.app.MpbSessionContext;
+import com.noovitec.mpb.app.MpbRequestContext;
 import com.noovitec.mpb.entity.Attachment;
 import com.noovitec.mpb.repo.AttachmentRepo;
 
@@ -32,11 +32,10 @@ public interface AttachmentService {
 	public class AttachmentServiceImp implements AttachmentService {
 
 		private final static String defaultSystemPath = "/home/koziarskim/mpb/mpb_file_store";
-		private final static String systemPathVariable = System.getenv("MPB_FILE_STORE_DIR");
 		private final Logger log = LoggerFactory.getLogger(AttachmentServiceImp.class);
 		private AttachmentRepo attachmentRepo;
 	    @Autowired
-		MpbSessionContext mpbSessionContext;
+		MpbRequestContext mpbRequestContext;
 
 		public AttachmentServiceImp(AttachmentRepo attachmentRepo) {
 			this.attachmentRepo = attachmentRepo;
@@ -52,7 +51,7 @@ public interface AttachmentService {
 
 		public Path load(Long attachmentId) throws JsonParseException, JsonMappingException, IOException {
 			Attachment attachment = this.getById(attachmentId);
-			String systemPath = mpbSessionContext.getSetting().getFileStoreDir();
+			String systemPath = mpbRequestContext.getSetting().getFileStoreDir();
 			log.info("System Path: "+systemPath);
 			if(systemPath == null) {
 				systemPath = defaultSystemPath;
@@ -66,7 +65,7 @@ public interface AttachmentService {
 		
 		public Attachment store(MultipartFile file, String type, Long entityId, Attachment attachment) throws IllegalStateException, IOException {
 			String fileName = file.getOriginalFilename();
-			String systemPath = mpbSessionContext.getSetting().getFileStoreDir();
+			String systemPath = mpbRequestContext.getSetting().getFileStoreDir();
 			log.info("System Path: "+systemPath);
 			if(systemPath == null) {
 				systemPath = defaultSystemPath;

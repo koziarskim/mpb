@@ -1,12 +1,10 @@
-package com.noovitec.mpb.service;
+package com.noovitec.mpb.app;
 
 import org.hibernate.context.spi.CurrentTenantIdentifierResolver;
 import org.springframework.stereotype.Component;
 
-import com.noovitec.mpb.app.MpbTenantContext;
-
 @Component
-public class TenantIdentifierResolver implements CurrentTenantIdentifierResolver {
+public class MpbTenantIdentifierResolver implements CurrentTenantIdentifierResolver {
     @Override
     public String resolveCurrentTenantIdentifier() {
         String tenantId = MpbTenantContext.getCurrentTenant();
