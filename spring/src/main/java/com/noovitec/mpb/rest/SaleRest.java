@@ -187,24 +187,12 @@ class SaleRest {
 		headerFont.setFontName("Arial");
 		headerFont.setBold(true);
 		headerStyle.setFont(headerFont);
-		Cell headerCell = rowHeader.createCell(0);
-		headerCell.setCellValue("ED");
-		headerCell.setCellStyle(headerStyle);
-		headerCell = rowHeader.createCell(1);
-		headerCell.setCellValue("PO#");
-		headerCell.setCellStyle(headerStyle);
-		headerCell = rowHeader.createCell(2);
-		headerCell.setCellValue("Ship Address");
-		headerCell.setCellStyle(headerStyle);
-		headerCell = rowHeader.createCell(3);
-		headerCell.setCellValue("Expected");
-		headerCell.setCellStyle(headerStyle);
-		headerCell = rowHeader.createCell(4);
-		headerCell.setCellValue("SKU");
-		headerCell.setCellStyle(headerStyle);
-		headerCell = rowHeader.createCell(5);
-		headerCell.setCellValue("Item");
-		headerCell.setCellStyle(headerStyle);
+		addCell(0, "ED", rowHeader);
+		addCell(1, "PO#", rowHeader);
+		addCell(2, "Ship Address", rowHeader);
+		addCell(3, "Expected", rowHeader);
+		addCell(4, "SKU", rowHeader);
+		addCell(5, "Item", rowHeader);
 		
 		XSSFFont cellFont = ((XSSFWorkbook) workbook).createFont();
 		cellFont.setFontName("Arial");
@@ -217,41 +205,21 @@ class SaleRest {
 			if(sale.getSaleItems().size()==0) {
 				Row row = sheet.createRow(count);
 				cellStyle.setFont(cellFont);
-				Cell cell = row.createCell(0);
-				cell.setCellValue(saleCount);
-				cell.setCellStyle(headerStyle);
-				cell = row.createCell(1);
-				cell.setCellValue(sale.getNumber());
-				cell.setCellStyle(headerStyle);
-				cell = row.createCell(2);
-				cell.setCellValue(sale.getDate());
-				cell.setCellStyle(headerStyle);
-				cell = row.createCell(3);
-				cell.setCellValue(sale.getDate());
-				cell.setCellStyle(headerStyle);
+				addCell(0, String.valueOf(saleCount), row);
+				addCell(1, sale.getNumber(), row);
+				addCell(2, "TODO", row);
+				addCell(3, "TODO", row);
 				count++;
 			}
 			for(SaleItem si: sale.getSaleItems()) {
 				Row row = sheet.createRow(count);
 				cellStyle.setFont(cellFont);
-				Cell cell = row.createCell(0);
-				cell.setCellValue(saleCount);
-				cell.setCellStyle(headerStyle);
-				cell = row.createCell(1);
-				cell.setCellValue(sale.getNumber());
-				cell.setCellStyle(headerStyle);
-				cell = row.createCell(2);
-				cell.setCellValue(sale.getDate());
-				cell.setCellStyle(headerStyle);
-				cell = row.createCell(3);
-				cell.setCellValue(sale.getDate());
-				cell.setCellStyle(headerStyle);
-				cell = row.createCell(4);
-				cell.setCellValue(si.getSku());
-				cell.setCellStyle(headerStyle);
-				cell = row.createCell(5);
-				cell.setCellValue(si.getItem().getNumber());
-				cell.setCellStyle(headerStyle);
+				addCell(0, String.valueOf(saleCount), row);
+				addCell(1, sale.getNumber(), row);
+				addCell(2, "TODO", row);
+				addCell(3, "TODO", row);
+				addCell(4, si.getSku(), row);
+				addCell(5, si.getItem().getNumber(), row);
 				count++;
 			}
 			int firstRow = count-(sale.getSaleItems().size()==0?1:sale.getSaleItems().size());
@@ -269,6 +237,11 @@ class SaleRest {
 		return baos.toByteArray();
 	}
 
+	private void addCell(int column, String value, Row row) {
+		Cell cell = row.createCell(column);
+		cell.setCellValue(value);
+	}
+	
 	@PostMapping("/sale/units/{saleId}")
 	ResponseEntity<?> updateUnits(@PathVariable Long saleId) {
 		Sale sale = saleRepo.getOne(saleId);
