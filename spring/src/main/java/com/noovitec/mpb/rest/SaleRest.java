@@ -14,10 +14,9 @@ import java.util.Optional;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.FillPatternType;
-import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
@@ -163,42 +162,111 @@ class SaleRest {
 	@PutMapping("/sale/xls")
 	HttpEntity<byte[]> getXls(@RequestBody List<Long> saleIds) throws IOException {
 		log.info("Sale IDs: "+saleIds);
-		XSSFWorkbook workbook = new XSSFWorkbook();
-		Sheet sheet = workbook.createSheet("Persons");
-		sheet.setColumnWidth(0, 6000);
-		sheet.setColumnWidth(1, 4000);
-		 
-		Row rowHeader = sheet.createRow(0);
-		 
-		CellStyle headerStyle = workbook.createCellStyle();
-		headerStyle.setFillForegroundColor(IndexedColors.LIGHT_BLUE.getIndex());
-		headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-		 
-		XSSFFont font = ((XSSFWorkbook) workbook).createFont();
-		font.setFontName("Arial");
-		font.setFontHeightInPoints((short) 16);
-		font.setBold(true);
-		headerStyle.setFont(font);
-		Cell headerCell = rowHeader.createCell(0);
-		headerCell.setCellValue("Name");
-		headerCell.setCellStyle(headerStyle);
-		headerCell = rowHeader.createCell(1);
-		headerCell.setCellValue("Age");
-		headerCell.setCellStyle(headerStyle);
+		byte[] data = generateXls(saleIds);
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-//		String fileName = "PO_"+shipment.getNumber()+"_"+shipment.getId() + "-" + sdf.format(timestamp) +".pdf";
-		String fileName = "test.xls";
-//		byte[] data = this.generatePdf(shipment, true);
-		ByteArrayOutputStream bolBaos = new ByteArrayOutputStream();
-		workbook.write(bolBaos);
-		workbook.close();
+		String fileName = "Sales_" + "-" + sdf.format(timestamp) +".xls";
 		HttpHeaders header = new HttpHeaders();
 		header.setContentType(MediaType.APPLICATION_OCTET_STREAM);
 		header.set("Content-Disposition", "inline; filename=" + fileName);
 		header.set("File-Name", fileName);
-		header.setContentLength(bolBaos.toByteArray().length);
-		return new HttpEntity<byte[]>(bolBaos.toByteArray(), header);
+		header.setContentLength(data.length);
+		return new HttpEntity<byte[]>(data, header);
+	}
+	
+	private byte[] generateXls(List<Long> saleIds) throws IOException {
+		List<Sale> sales = saleRepo.findAllById(saleIds);
+		XSSFWorkbook workbook = new XSSFWorkbook();
+		Sheet sheet = workbook.createSheet("Persons");
+//		sheet.setColumnWidth(0, 6000);
+//		sheet.setColumnWidth(1, 6000);
+		 
+		Row rowHeader = sheet.createRow(0);	 
+		CellStyle headerStyle = workbook.createCellStyle();
+		XSSFFont headerFont = ((XSSFWorkbook) workbook).createFont();
+		headerFont.setFontName("Arial");
+		headerFont.setBold(true);
+		headerStyle.setFont(headerFont);
+		Cell headerCell = rowHeader.createCell(0);
+		headerCell.setCellValue("ED");
+		headerCell.setCellStyle(headerStyle);
+		headerCell = rowHeader.createCell(1);
+		headerCell.setCellValue("PO#");
+		headerCell.setCellStyle(headerStyle);
+		headerCell = rowHeader.createCell(2);
+		headerCell.setCellValue("Ship Address");
+		headerCell.setCellStyle(headerStyle);
+		headerCell = rowHeader.createCell(3);
+		headerCell.setCellValue("Expected");
+		headerCell.setCellStyle(headerStyle);
+		headerCell = rowHeader.createCell(4);
+		headerCell.setCellValue("SKU");
+		headerCell.setCellStyle(headerStyle);
+		headerCell = rowHeader.createCell(5);
+		headerCell.setCellValue("Item");
+		headerCell.setCellStyle(headerStyle);
+		
+		XSSFFont cellFont = ((XSSFWorkbook) workbook).createFont();
+		cellFont.setFontName("Arial");
+		cellFont.setBold(false);
+		CellStyle cellStyle = workbook.createCellStyle();
+		int count = 1;
+		int saleCount = 0;
+		for(Sale sale: sales) {
+			saleCount++;
+			if(sale.getSaleItems().size()==0) {
+				Row row = sheet.createRow(count);
+				cellStyle.setFont(cellFont);
+				Cell cell = row.createCell(0);
+				cell.setCellValue(saleCount);
+				cell.setCellStyle(headerStyle);
+				cell = row.createCell(1);
+				cell.setCellValue(sale.getNumber());
+				cell.setCellStyle(headerStyle);
+				cell = row.createCell(2);
+				cell.setCellValue(sale.getDate());
+				cell.setCellStyle(headerStyle);
+				cell = row.createCell(3);
+				cell.setCellValue(sale.getDate());
+				cell.setCellStyle(headerStyle);
+				count++;
+			}
+			for(SaleItem si: sale.getSaleItems()) {
+				Row row = sheet.createRow(count);
+				cellStyle.setFont(cellFont);
+				Cell cell = row.createCell(0);
+				cell.setCellValue(saleCount);
+				cell.setCellStyle(headerStyle);
+				cell = row.createCell(1);
+				cell.setCellValue(sale.getNumber());
+				cell.setCellStyle(headerStyle);
+				cell = row.createCell(2);
+				cell.setCellValue(sale.getDate());
+				cell.setCellStyle(headerStyle);
+				cell = row.createCell(3);
+				cell.setCellValue(sale.getDate());
+				cell.setCellStyle(headerStyle);
+				cell = row.createCell(4);
+				cell.setCellValue(si.getSku());
+				cell.setCellStyle(headerStyle);
+				cell = row.createCell(5);
+				cell.setCellValue(si.getItem().getNumber());
+				cell.setCellStyle(headerStyle);
+				count++;
+			}
+			int firstRow = count-(sale.getSaleItems().size()==0?1:sale.getSaleItems().size());
+			int lastRow = count-1;
+			if(firstRow!=lastRow) {
+				sheet.addMergedRegion(new CellRangeAddress(firstRow, lastRow, 0,0));
+				sheet.addMergedRegion(new CellRangeAddress(firstRow, lastRow, 1,1));
+				sheet.addMergedRegion(new CellRangeAddress(firstRow, lastRow, 2,2));
+				sheet.addMergedRegion(new CellRangeAddress(firstRow, lastRow, 3,3));
+			}
+		}
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		workbook.write(baos);
+		workbook.close();
+		return baos.toByteArray();
 	}
 
 	@PostMapping("/sale/units/{saleId}")
