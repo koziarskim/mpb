@@ -19,6 +19,7 @@
         <b-col>
           <div style="text-align: right;">
           <b-button type="submit" variant="primary" size="sm" @click="goToSale('')">New S.O.</b-button>
+          <b-button size="sm" style="margin-left:3px" variant="primary" @click="exportSales()">Export ({{selectedSales.length}})</b-button>          
           </div>
         </b-col>
       </b-row>
@@ -48,6 +49,12 @@
         </template>
         <template v-slot:cell(status)="row">
             <b :class="getStatusClass(row.item.status)">{{getStatus(row.item.status)}}</b>
+        </template>
+        <template v-slot:cell(action)="row">
+          <input type="checkbox" v-model="selectedSales" :value="row.item">
+        </template>
+        <template v-slot:head(action)="row">
+            <b-button style="margin-left:-10px; margin-bottom:-10px" size="sm" @click="triggerAll(false)" variant="link">(-)</b-button><br/><b-button style="margin-left: -10px; margin-bottom: -10px" size="sm" @click="triggerAll(true)" variant="link">(+)</b-button>
         </template>
       </b-table>
       <div style="display: flex">
@@ -96,7 +103,8 @@ export default {
         { key: "status", label: "Status", sortable: false },
         { key: "action", label: "", sortable: false}
       ],
-      sales: [] //SaleListDto
+      sales: [], //SaleListDto
+      selectedSales: []
     };
   },
   watch: {
@@ -116,6 +124,29 @@ export default {
     },
   },
   methods: {
+    triggerAll(add){
+      this.sales.forEach(sale => {
+        if(add){
+          var idx = this.selectedSales.findIndex(ss => ss.id == sale.id);
+          if(idx == -1){
+            this.selectedSales.push(sale);
+          }
+        }else{
+          this.selectedSales = [];
+        }
+      })
+    },
+    exportSales(){
+      var saleIds = [];
+      this.selectedSales.forEach(sale=> {
+        saleIds.push(sale.id);
+      })
+      http.put("/sale/xls", saleIds).then(r => {
+        //Do nothing.
+      }).catch(e => {
+        console.log("API error: "+e);
+      });
+    },
     getStatusClass(statusId){
         if(statusId == 'APPROVED'){ return "status-black"}
         if(statusId == 'PENDING_PROD'){ return "status-blue"}

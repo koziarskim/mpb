@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -142,6 +143,12 @@ class SaleRest {
 		}else {
 			return ResponseEntity.ok().body("Duplicate");
 		}
+	}
+	
+	@PutMapping("/sale/xls")
+	ResponseEntity<?> getXls(@RequestBody List<Long> saleIds) {
+		log.info("Sale IDs: "+saleIds);
+		return ResponseEntity.ok().body("OK");
 	}
 
 	@PostMapping("/sale/units/{saleId}")
