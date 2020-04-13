@@ -2,6 +2,8 @@ package com.noovitec.mpb.rest;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -192,7 +194,15 @@ class SaleRest {
 		addCell(2, "Ship Address", rowHeader);
 		addCell(3, "Expected", rowHeader);
 		addCell(4, "SKU", rowHeader);
-		addCell(5, "Item", rowHeader);
+		addCell(5, "Items", rowHeader);
+		addCell(6, "Description", rowHeader);
+		addCell(7, "C/P", rowHeader);
+		addCell(8, "Units", rowHeader);
+		addCell(9, "Total", rowHeader);
+		addCell(10, "Cases", rowHeader);
+		addCell(11, "Pallets", rowHeader);
+		addCell(12, "Total Weight", rowHeader);
+		addCell(13, "Total Pallets", rowHeader);
 		
 		XSSFFont cellFont = ((XSSFWorkbook) workbook).createFont();
 		cellFont.setFontName("Arial");
@@ -211,6 +221,12 @@ class SaleRest {
 				addCell(3, "TODO", row);
 				count++;
 			}
+			int totalPallets = 0;
+			for(SaleItem si: sale.getSaleItems()) {
+				int cases = (int) Math.round(si.getUnits()/si.getItem().getCasePack());
+				int pallets = (int) Math.round(cases/(si.getItem().getHi()*si.getItem().getTi()));
+				totalPallets += pallets;
+			}
 			for(SaleItem si: sale.getSaleItems()) {
 				Row row = sheet.createRow(count);
 				cellStyle.setFont(cellFont);
@@ -220,6 +236,19 @@ class SaleRest {
 				addCell(3, "TODO", row);
 				addCell(4, si.getSku(), row);
 				addCell(5, si.getItem().getNumber(), row);
+				addCell(6, si.getItem().getName(), row);
+				addCell(7, String.valueOf(si.getItem().getCasePack()), row);
+				addCell(8, String.valueOf(si.getUnits()), row);
+				addCell(9, String.valueOf(si.getTotalUnitPrice()), row);
+				int cases = BigDecimal.valueOf(si.getUnits()).divide(BigDecimal.valueOf(si.getItem().getCasePack()),RoundingMode.CEILING).intValue();
+				int pallets = (si.getItem().getTi()*si.getItem().getHi())/cases;
+				BigDecimal unitsWeight = si.getItem().getWeight().multiply(BigDecimal.valueOf(si.getUnits()));
+				BigDecimal palletsWeight = si.getItem().getPalletWeight().multiply(BigDecimal.valueOf(pallets));
+				int totalWeight = unitsWeight.add(palletsWeight).intValue();
+				addCell(10, String.valueOf(cases), row);
+				addCell(11, String.valueOf(pallets), row);
+				addCell(12, String.valueOf(totalWeight), row);
+				addCell(13, String.valueOf(totalPallets), row);
 				count++;
 			}
 			int firstRow = count-(sale.getSaleItems().size()==0?1:sale.getSaleItems().size());
