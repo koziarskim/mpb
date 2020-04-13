@@ -241,7 +241,9 @@ class SaleRest {
 				addCell(8, String.valueOf(si.getUnits()), row);
 				addCell(9, String.valueOf(si.getTotalUnitPrice()), row);
 				int cases = BigDecimal.valueOf(si.getUnits()).divide(BigDecimal.valueOf(si.getItem().getCasePack()),RoundingMode.CEILING).intValue();
+				cases = cases==0?1:cases;
 				int pallets = (si.getItem().getTi()*si.getItem().getHi())/cases;
+				pallets = pallets==0?1:pallets;
 				BigDecimal unitsWeight = si.getItem().getWeight().multiply(BigDecimal.valueOf(si.getUnits()));
 				BigDecimal palletsWeight = si.getItem().getPalletWeight().multiply(BigDecimal.valueOf(pallets));
 				int totalWeight = unitsWeight.add(palletsWeight).intValue();
