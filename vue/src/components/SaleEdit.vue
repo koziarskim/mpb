@@ -310,7 +310,7 @@ export default {
       return "Not Yet Saved";
     },
     allowEdit(){
-      return !this.sale.approved && securite.hasRole(["SALE_ADMIN"]);
+      return securite.hasRole(["SALE_ADMIN"]);
       // return securite.hasRole(["SALE_ADMIN"]);
     },
     allowSave(){
