@@ -135,7 +135,7 @@ class InvoiceRest {
 			itemSaleNumber += ii.getSaleItem().getSale().getNumber() +"\n\n";
 			itemQuantity += ii.getUnitsInvoiced() + "\n\n";
 			itemDescription += ii.getSaleItem().getItem().getNumber() + " - " +ii.getSaleItem().getItem().getName()+"\n" 
-					+"UPC: "+ii.getSaleItem().getItem().getUpc()+(ii.getSaleItem().getSku()==null?"":", SKU# "+ ii.getSaleItem().getSku()) + "\n";
+					+(ii.getSaleItem().getItem().getUpc()==null?"":"UPC: "+ii.getSaleItem().getItem().getUpc())+(ii.getSaleItem().getSku()==null?"":", SKU# "+ ii.getSaleItem().getSku()) + "\n";
 			itemCasePack += ii.getSaleItem().getItem().getCasePack() + "\n\n";
 			itemPrice += ii.getUnitPrice() + "\n\n";
 			totalUnits += ii.getUnitsInvoiced();
