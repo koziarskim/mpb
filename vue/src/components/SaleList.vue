@@ -35,8 +35,8 @@
               </div>
             </b-popover>
         </template>
-        <template v-slot:cell(unitsSoldAdj)="row">
-            <span>{{+row.item.unitsSold + +row.item.unitsAdjusted}}</span>
+        <template v-slot:cell(unitsSold)="row">
+            <span>{{row.item.unitsSold}}</span>
         </template>
         <template v-slot:cell(unitsSchProd)="row">
             <span>{{row.item.unitsScheduled}}/{{row.item.unitsProduced}}</span>
@@ -96,7 +96,7 @@ export default {
         { key: "customerName", label: "Customer", sortable: false },
         { key: "dc", label: "DC (State)", sortable: false },
         { key: "shippingWindow", label: "Ship Window", sortable: false },
-        { key: "unitsSoldAdj", label: "Sold", sortable: false },
+        { key: "unitsSold", label: "Sold", sortable: false },
         { key: "unitsSchProd", label: "Sch/Prod", sortable: false },
         { key: "unitsTransfered", label: "Transf", sortable: false },
         { key: "unitsStockShip", label: "Stock/Ship", sortable: false },

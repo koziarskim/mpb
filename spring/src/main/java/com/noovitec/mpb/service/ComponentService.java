@@ -75,6 +75,9 @@ public interface ComponentService {
 		}
 
 		public void updateUnitsLocked(List<Long> componentIds) {
+			if(componentIds.size()==0) {
+				return;
+			}
 			Long counter = 0L;
 			Iterable<Component> components = componentIds==null?componentRepo.findAll():componentRepo.findByIds(componentIds);
 			for (Component component : components) {
@@ -99,6 +102,9 @@ public interface ComponentService {
 		}
 
 		public void updateUnits(List<Long> componentIds) {
+			if(componentIds.size()==0) {
+				return;
+			}
 			Long counter = 0L;
 			Iterable<Component> components = componentIds==null?componentRepo.findAll():componentRepo.findByIds(componentIds);
 			for (Component component : components) {

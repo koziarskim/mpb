@@ -29,7 +29,7 @@ public interface CustomPurchaseRepo {
 
 		@Override
 		public Page<Purchase> findPagable(Pageable pageable, String purchaseName, Long componentId) {
-			String q = "select p from Purchase p " 
+			String q = "select distinct p from Purchase p " 
 					+ "join p.purchaseComponents pc "
 					+ "join pc.component c "
 					+ "where p.id is not null ";
