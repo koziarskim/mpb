@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
@@ -137,9 +138,10 @@ class InvoiceRest {
 					+"UPC: "+ii.getSaleItem().getItem().getUpc()+(ii.getSaleItem().getSku()==null?"":", SKU# "+ ii.getSaleItem().getSku()) + "\n";
 			itemCasePack += ii.getSaleItem().getItem().getCasePack() + "\n\n";
 			itemPrice += ii.getUnitPrice() + "\n\n";
-			itemTotalPrice += ii.getTotalUnitPrice() + "\n\n";
 			totalUnits += ii.getUnitsInvoiced();
-			totalAmount = totalAmount.add(ii.getTotalUnitPrice()==null?BigDecimal.ZERO:ii.getTotalUnitPrice());
+			BigDecimal itemTotalPriceBd = ii.getUnitPrice().multiply(new BigDecimal(ii.getUnitsInvoiced())).setScale(2, RoundingMode.CEILING);
+			itemTotalPrice += itemTotalPriceBd.toString()  + "\n\n";
+			totalAmount = totalAmount.add(itemTotalPriceBd==null?BigDecimal.ZERO:itemTotalPriceBd);
 			totalCases += ii.getUnitsInvoiced()/ii.getSaleItem().getItem().getCasePack();
 			totalPallets += ii.getUnitsInvoiced()/(ii.getSaleItem().getItem().getTi() * ii.getSaleItem().getItem().getHi());
 		}
