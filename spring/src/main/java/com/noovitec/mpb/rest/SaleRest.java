@@ -43,6 +43,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.dto.SaleListDto;
+import com.noovitec.mpb.entity.Address;
 import com.noovitec.mpb.entity.Item;
 import com.noovitec.mpb.entity.ItemComponent;
 import com.noovitec.mpb.entity.Sale;
@@ -177,6 +178,7 @@ class SaleRest {
 	}
 	
 	private byte[] generateXls(List<Long> saleIds) throws IOException {
+		DateTimeFormatter windowFormat = DateTimeFormatter.ofPattern("MM/dd");
 		List<Sale> sales = saleRepo.findAllById(saleIds);
 		XSSFWorkbook workbook = new XSSFWorkbook();
 		Sheet sheet = workbook.createSheet("Persons");
@@ -217,8 +219,20 @@ class SaleRest {
 				cellStyle.setFont(cellFont);
 				addCell(0, String.valueOf(saleCount), row);
 				addCell(1, sale.getNumber(), row);
-				addCell(2, "TODO", row);
-				addCell(3, "TODO", row);
+				Address address = sale.getShippingAddress();
+				String addressLabel = "";
+				if(sale.getShippingAddress()!=null) {
+					addressLabel = address.getDc()+", "+address.getStreet()+", "+address.getCity()+", "+address.getState()+", "+address.getZip();
+				}
+				addCell(2, addressLabel, row);
+				String windowDate = "";
+				if(sale.getShippingFrom()!=null) {
+					windowDate += sale.getShippingFrom().format(windowFormat)+"-";
+				}
+				if(sale.getShippingTo()!=null) {
+					windowDate += sale.getShippingTo().format(windowFormat);
+				}
+				addCell(3, windowDate, row);
 				count++;
 			}
 			int totalPallets = 0;
@@ -232,8 +246,21 @@ class SaleRest {
 				cellStyle.setFont(cellFont);
 				addCell(0, String.valueOf(saleCount), row);
 				addCell(1, sale.getNumber(), row);
-				addCell(2, "TODO", row);
-				addCell(3, "TODO", row);
+				Address address = sale.getShippingAddress();
+				String addressLabel = "";
+				if(sale.getShippingAddress()!=null) {
+					addressLabel = address.getDc()+", "+address.getStreet()+", "+address.getCity()+", "+address.getState()+", "+address.getZip();
+				}
+				addCell(2, addressLabel, row);
+				String windowDate = "";
+				if(sale.getShippingFrom()!=null) {
+					windowDate += sale.getShippingFrom().format(windowFormat)+"-";
+				}
+				if(sale.getShippingTo()!=null) {
+					windowDate += sale.getShippingTo().format(windowFormat);
+				}
+				addCell(3, windowDate, row);
+				addCell(3, sale.getDate().format(windowFormat), row);
 				addCell(4, si.getSku(), row);
 				addCell(5, si.getItem().getNumber(), row);
 				addCell(6, si.getItem().getName(), row);
