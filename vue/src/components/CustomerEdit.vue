@@ -85,13 +85,13 @@
       </b-row>
     <hr class="hr-text" data-content="General Compliane" />
     <b-row>
-      <b-col cols=2>
-        <label class="top-label">Username:</label>
-        <input class="form-control" v-model="customer.username">
+      <b-col cols=6>
+        <label class="top-label">Vendor Portal:</label>
+        <b-form-textarea type="text" :rows="3" v-model="customer.vendorPortal"></b-form-textarea>
       </b-col>
-      <b-col cols=2>
-        <label class="top-label">Password:</label>
-        <input class="form-control" v-model="customer.password">
+      <b-col cols=6>
+        <label class="top-label">Vendor Guide:</label>
+        <b-form-textarea type="text" :rows="3" v-model="customer.vendorGuide"></b-form-textarea>
       </b-col>
     </b-row>
     <hr class="hr-text" data-content="Operations" />
@@ -129,7 +129,51 @@
     </b-row>
     <hr class="hr-text" data-content="Shipping" />
     <b-row>
-      <b-col cols=3>
+      <b-col cols=2>
+        <label class="top-label">Routing Process:</label>
+        <input class="form-control" v-model="customer.routingProcess">
+        <label class="top-label">Traffic Dep:</label>
+        <input class="form-control" v-model="customer.trafficDepartment">
+      </b-col>
+      <b-col cols=1>
+        <label class="top-label">Routing:</label>
+        <input type="checkbox" style="margin-left: 5px;" v-model="customer.routing"><br/>
+        <label class="top-label">Delivery:</label>
+        <input type="checkbox" style="margin-left: 5px;" v-model="customer.delivery"><br/>
+        <label class="top-label">ASN:</label>
+        <input type="checkbox" style="margin-left: 5px;" v-model="customer.asn"><br/>
+        <label class="top-label">Claim:</label>
+        <input type="checkbox" style="margin-left: 5px;" v-model="customer.claim">
+      </b-col>
+      <b-col cols=4>
+        <label class="top-label">Routing Portal:</label>
+        <b-form-textarea type="text" :rows="3" v-model="customer.routingPortal"></b-form-textarea>
+      </b-col>
+      <b-col cols=4>
+        <label class="top-label">Routing Guide:</label>
+        <b-form-textarea type="text" :rows="3" v-model="customer.routingGuide"></b-form-textarea>
+      </b-col>
+    </b-row>
+    <b-row>
+      <b-col cols=4>
+        <label class="top-label">BOL Pckaging:</label>
+        <b-form-textarea type="text" :rows="3" v-model="customer.bolPackaging"></b-form-textarea>
+      </b-col>
+      <b-col cols=4>
+        <label class="top-label">ASN Process:</label>
+        <b-form-textarea type="text" :rows="3" v-model="customer.asnProcess"></b-form-textarea>
+      </b-col>
+      <b-col cols=4>
+        <label class="top-label">Claim Process:</label>
+        <b-form-textarea type="text" :rows="3" v-model="customer.claimProcess"></b-form-textarea>
+      </b-col>
+    </b-row>
+    <b-row>
+      <b-col cols=4>
+        <label class="top-label">Compliance Portal:</label>
+        <b-form-textarea type="text" :rows="3" v-model="customer.compliancePortal"></b-form-textarea>
+      </b-col>
+      <b-col cols=4>
         <label class="top-label">Shipment Notes:</label>
         <b-form-textarea type="text" :rows="3" v-model="customer.shipmentNotes"></b-form-textarea>
       </b-col>

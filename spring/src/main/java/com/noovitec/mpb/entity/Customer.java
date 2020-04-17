@@ -40,13 +40,13 @@ public class Customer extends BaseEntity {
 	private long unitsSold = 0;
 	private long unitsShipped = 0;
 	private String invoiceType;
-	
 	private String brokerContact;
 	private String brokerName;
 	private String brokerPhone;
+	private String shipType;
 	
-	private String username;
-	private String password;
+	private String vendorPortal;
+	private String vendorGuide;
 	
 	private String priceWebsite;
 	private String labelType;
@@ -58,7 +58,18 @@ public class Customer extends BaseEntity {
 	private boolean seasonalCarton;
 	private boolean seasonPalletMark;
 	
-	private String shipType;
+	private String routingProcess;
+	private String trafficDepartment;
+	private boolean routing;
+	private boolean delivery;
+	private boolean asn;
+	private boolean claim;
+	private String routingPortal;
+	private String routingGuide;
+	private String bolPackaging;
+	private String asnProcess;
+	private String claimProcess;
+	private String compliancePortal;
 
 	private String portal;
 	
