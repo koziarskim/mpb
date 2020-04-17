@@ -64,9 +64,9 @@ public class MpbEventListener implements PostInsertEventListener, PostUpdateEven
 					notificationService.shipmentReady(entity, newStates, null, propertyNames);
 					notificationService.shipmentShipped(entity, newStates, null, propertyNames);
 				}
-//				if (entity.getClass() == Sale.class) {
-//					notificationService.saleShipped(entity, newStates, null, propertyNames);
-//				}
+				if (entity.getClass() == Sale.class) {
+					notificationService.saleShipped(entity, newStates, null, propertyNames);
+				}
 				if (entity.getClass() == Sale.class) {
 					notificationService.salePendingApproval(entity, newStates, null, propertyNames);
 				}
@@ -105,9 +105,9 @@ public class MpbEventListener implements PostInsertEventListener, PostUpdateEven
 					notificationService.shipmentReady(entity, newStates, oldStates, propertyNames);
 					notificationService.shipmentShipped(entity, newStates, oldStates, propertyNames);
 				}
-//				if (entity.getClass() == Sale.class) {
-//					notificationService.saleShipped(entity, newStates, oldStates, propertyNames);
-//				}
+				if (entity.getClass() == Sale.class) {
+					notificationService.saleShipped(entity, newStates, oldStates, propertyNames);
+				}
 				if (entity.getClass() == Sale.class) {
 					notificationService.salePendingApproval(entity, newStates, oldStates, propertyNames);
 				}
