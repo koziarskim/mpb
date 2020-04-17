@@ -31,7 +31,7 @@
       <template v-slot:cell(unitsOrderedRec)="row">
         <b-button size="sm" @click.stop="goToPurchaseList(row.item.id)" variant="link">{{row.item.unitsOrdered}}</b-button>/<b-button size="sm" @click.stop="goToReceiving(row.item.id)" variant="link">{{row.item.unitsReceived}}</b-button>
       </template>
-      <template v-slot:cell(unitsSchort)="row">
+      <template v-slot:cell(unitsShort)="row">
         <span>{{getUnitsShort(row.item)}}</span>
       </template>
       <template v-slot:cell(unitsSchedProd)="row">
