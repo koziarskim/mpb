@@ -31,6 +31,9 @@
       <template v-slot:cell(unitsOrderedRec)="row">
         <b-button size="sm" @click.stop="goToPurchaseList(row.item.id)" variant="link">{{row.item.unitsOrdered}}</b-button>/<b-button size="sm" @click.stop="goToReceiving(row.item.id)" variant="link">{{row.item.unitsReceived}}</b-button>
       </template>
+      <template v-slot:cell(unitsSchort)="row">
+        <span>{{getUnitsShort(row.item)}}</span>
+      </template>
       <template v-slot:cell(unitsSchedProd)="row">
         <span>{{row.item.unitsLocked + row.item.unitsForProduction}} / {{row.item.unitsForProduction}}</span>
       </template>
@@ -99,6 +102,9 @@ export default {
     }
   },
   methods: {
+    getUnitsShort(component){
+      return component.unitsShort<0?0:component.unitsShort;
+    },
     getUnitsOnStock(component){
       return component.unitsOnStock<0?0:component.unitsOnStock;
     },
