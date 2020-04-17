@@ -81,7 +81,6 @@ public interface NotificationService {
 		        model.put("shipmentNumber", shipment.getNumber());
 				this.sendMail(emails, model, shipment, Notification.TYPE.SHIPPING_READY);
 			}
-
 		}
 		
 		public void shipmentShipped(Object entity, Object[] currentState, Object[] previousState, String[] propertyNames) {

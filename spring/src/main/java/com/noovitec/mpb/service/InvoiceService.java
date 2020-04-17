@@ -180,7 +180,10 @@ public interface InvoiceService {
 			if(sale == null) {
 				return null;
 			}
-			invoice = new Invoice();
+			invoice = invoiceRepo.getIdByCustomer(customer.getId());
+			if(invoice==null) {
+				invoice = new Invoice();
+			}
 			invoice.setType(customer.getInvoiceType());
 			invoice.setShipment(shipment);
 			invoice.setBillingAddress(customer.getBillingAddress());
