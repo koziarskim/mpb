@@ -31,7 +31,6 @@ public class Customer extends BaseEntity {
 	private String account;
 	private String vendor;
 	private String phone;
-	private String phone2;
 	private String paymentTerms;
 	private String freightTerms;
 	private String email;
@@ -41,6 +40,29 @@ public class Customer extends BaseEntity {
 	private long unitsSold = 0;
 	private long unitsShipped = 0;
 	private String invoiceType;
+	
+	private String brokerContact;
+	private String brokerName;
+	private String brokerPhone;
+	
+	private String username;
+	private String password;
+	
+	private String priceWebsite;
+	private String labelType;
+	private String palletTagRequirements;
+	private String palletTagSize;
+	private boolean edi;
+	private boolean priceTicket;
+	private boolean cartonLabel;
+	private boolean seasonalCarton;
+	private boolean seasonPalletMark;
+	
+	private String shipType;
+
+	private String portal;
+	
+	
 
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "customer_address", joinColumns = @JoinColumn(name = "customer_id"), inverseJoinColumns = @JoinColumn(name = "address_id"))
