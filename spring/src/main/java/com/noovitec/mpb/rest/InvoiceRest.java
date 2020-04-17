@@ -125,29 +125,58 @@ class InvoiceRest {
 		String itemPrice = "";
 		String itemTotalPrice = "";
 		int totalUnits = 0;
+		String itemSaleNumber2 = "";
+		String itemQuantity2 = "";
+		String itemDescription2 = "";
+		String itemCasePack2 = "";
+		String itemPrice2 = "";
+		String itemTotalPrice2 = "";
+		int totalUnits2 = 0;
 		BigDecimal totalAmount = BigDecimal.ZERO;
 		Long totalCases = 0L;
 		Long totalPallets = 0L;
 		Collection<InvoiceItem> invoiceItems = invoice.getInvoiceItems();
 		Map<Long, String> saleIds = new HashMap<Long, String>();
+		int count = 0;
 		for (InvoiceItem ii : invoiceItems) {
-			saleIds.put(ii.getSaleItem().getSale().getId(), ii.getSaleItem().getSale().getNumber());
-			itemSaleNumber += ii.getSaleItem().getSale().getNumber() +"\n\n";
-			itemQuantity += ii.getUnitsInvoiced() + "\n\n";
-			itemDescription += ii.getSaleItem().getItem().getNumber() + " - " +ii.getSaleItem().getItem().getName()+"\n" 
-					+(ii.getSaleItem().getItem().getUpc()==null?"":"UPC: "+ii.getSaleItem().getItem().getUpc())+(ii.getSaleItem().getSku()==null?"":", SKU# "+ ii.getSaleItem().getSku()) + "\n";
-			itemCasePack += ii.getSaleItem().getItem().getCasePack() + "\n\n";
-			itemPrice += ii.getUnitPrice() + "\n\n";
-			totalUnits += ii.getUnitsInvoiced();
-			BigDecimal itemTotalPriceBd = ii.getUnitPrice().multiply(new BigDecimal(ii.getUnitsInvoiced())).setScale(2, RoundingMode.CEILING);
-			itemTotalPrice += itemTotalPriceBd.toString()  + "\n\n";
-			totalAmount = totalAmount.add(itemTotalPriceBd==null?BigDecimal.ZERO:itemTotalPriceBd);
-			totalCases += ii.getUnitsInvoiced()/ii.getSaleItem().getItem().getCasePack();
-			totalPallets += ii.getUnitsInvoiced()/(ii.getSaleItem().getItem().getTi() * ii.getSaleItem().getItem().getHi());
+			count++;
+			if(count <= 22) {
+				saleIds.put(ii.getSaleItem().getSale().getId(), ii.getSaleItem().getSale().getNumber());
+				itemSaleNumber += ii.getSaleItem().getSale().getNumber() +"\n\n";
+				itemQuantity += ii.getUnitsInvoiced() + "\n\n";
+				itemDescription += ii.getSaleItem().getItem().getNumber() + " - " +ii.getSaleItem().getItem().getName()+"\n" 
+						+(ii.getSaleItem().getItem().getUpc()==null?"":"UPC: "+ii.getSaleItem().getItem().getUpc())+(ii.getSaleItem().getSku()==null?"":", SKU# "+ ii.getSaleItem().getSku()) + "\n";
+				itemCasePack += ii.getSaleItem().getItem().getCasePack() + "\n\n";
+				itemPrice += ii.getUnitPrice() + "\n\n";
+				totalUnits += ii.getUnitsInvoiced();
+				BigDecimal itemTotalPriceBd = ii.getUnitPrice().multiply(new BigDecimal(ii.getUnitsInvoiced())).setScale(2, RoundingMode.CEILING);
+				itemTotalPrice += itemTotalPriceBd.toString()  + "\n\n";
+				totalAmount = totalAmount.add(itemTotalPriceBd==null?BigDecimal.ZERO:itemTotalPriceBd);
+				totalCases += ii.getUnitsInvoiced()/ii.getSaleItem().getItem().getCasePack();
+				totalPallets += ii.getUnitsInvoiced()/(ii.getSaleItem().getItem().getTi() * ii.getSaleItem().getItem().getHi());
+			}else {
+				saleIds.put(ii.getSaleItem().getSale().getId(), ii.getSaleItem().getSale().getNumber());
+				itemSaleNumber2 += ii.getSaleItem().getSale().getNumber() +"\n\n";
+				itemQuantity2 += ii.getUnitsInvoiced() + "\n\n";
+				itemDescription2 += ii.getSaleItem().getItem().getNumber() + " - " +ii.getSaleItem().getItem().getName()+"\n" 
+						+(ii.getSaleItem().getItem().getUpc()==null?"":"UPC: "+ii.getSaleItem().getItem().getUpc())+(ii.getSaleItem().getSku()==null?"":", SKU# "+ ii.getSaleItem().getSku()) + "\n";
+				itemCasePack2 += ii.getSaleItem().getItem().getCasePack() + "\n\n";
+				itemPrice2 += ii.getUnitPrice() + "\n\n";
+				totalUnits2 += ii.getUnitsInvoiced();
+				BigDecimal itemTotalPriceBd2 = ii.getUnitPrice().multiply(new BigDecimal(ii.getUnitsInvoiced())).setScale(2, RoundingMode.CEILING);
+				itemTotalPrice2 += itemTotalPriceBd2.toString()  + "\n\n";
+				totalAmount = totalAmount.add(itemTotalPriceBd2==null?BigDecimal.ZERO:itemTotalPriceBd2);
+				totalCases += ii.getUnitsInvoiced()/ii.getSaleItem().getItem().getCasePack();
+				totalPallets += ii.getUnitsInvoiced()/(ii.getSaleItem().getItem().getTi() * ii.getSaleItem().getItem().getHi());
+			}
 		}
 		totalAmount = totalAmount.add(invoice.getShippingCost()==null?BigDecimal.ZERO:invoice.getShippingCost());
 		InputStream bolIn = null;
-		bolIn = this.getClass().getClassLoader().getResourceAsStream("pdf/Invoice-Template.pdf");
+		if(count <= 22) {
+		bolIn = this.getClass().getClassLoader().getResourceAsStream("pdf/Invoice-Template-1.pdf");
+		} else {
+			bolIn = this.getClass().getClassLoader().getResourceAsStream("pdf/Invoice-Template-2.pdf");
+		}
 		PdfReader bolTemplate = new PdfReader(bolIn);
 		ByteArrayOutputStream bolBaos = new ByteArrayOutputStream();
 		PdfStamper bolStamper = new PdfStamper(bolTemplate, bolBaos);
@@ -189,6 +218,13 @@ class InvoiceRest {
 		bolStamper.getAcroFields().setField("itemCasePack", itemCasePack);
 		bolStamper.getAcroFields().setField("itemPrice", itemPrice);
 		bolStamper.getAcroFields().setField("itemTotalPrice", itemTotalPrice);
+
+		bolStamper.getAcroFields().setField("itemSaleNumber2", itemSaleNumber2);
+		bolStamper.getAcroFields().setField("itemQuantity2", itemQuantity2);
+		bolStamper.getAcroFields().setField("itemDescription2", itemDescription2);
+		bolStamper.getAcroFields().setField("itemCasePack2", itemCasePack2);
+		bolStamper.getAcroFields().setField("itemPrice2", itemPrice2);
+		bolStamper.getAcroFields().setField("itemTotalPrice2", itemTotalPrice2);
 
 		bolStamper.getAcroFields().setField("totalUnits", String.valueOf(totalUnits));
 		bolStamper.getAcroFields().setField("totalCases", totalCases.toString());

@@ -51,6 +51,9 @@ public class MpbEventListener implements PostInsertEventListener, PostUpdateEven
 			return;	
 		}
 		baseEntity.setDirty(true);
+		if (entity.getClass() != Shipment.class && entity.getClass() != Sale.class && entity.getClass() != Customer.class) {
+			return;
+		}
         taskExecutor.execute(new Runnable() {
             @Override
             public void run() {
@@ -88,6 +91,9 @@ public class MpbEventListener implements PostInsertEventListener, PostUpdateEven
 			return;	
 		}
 		baseEntity.setDirty(true);
+		if (entity.getClass() != Shipment.class && entity.getClass() != Sale.class && entity.getClass() != Customer.class) {
+			return;
+		}
         taskExecutor.execute(new Runnable() {
             @Override
             public void run() {
