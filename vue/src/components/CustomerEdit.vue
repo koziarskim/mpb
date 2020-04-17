@@ -9,7 +9,7 @@
         <label class="top-label">Account #:</label>
         <input class="form-control" disabled type="text" v-model="customer.account" />
       </b-col>
-      <b-col cols=2>
+      <b-col cols=1>
         <label class="top-label">Vendor #:</label>
         <input class="form-control" type="text" v-model="customer.vendor" />
       </b-col>
@@ -21,12 +21,15 @@
         <label class="top-label">Freight Terms:</label>
         <b-select option-value="code" option-text="name" :list="availableFreights" v-model="freightTerms"></b-select>
       </b-col>
-      <b-col cols=2>
+      <b-col cols=2 style="padding-right: 0px">
         <label class="top-label">Invoice Type:</label>
         <b-select option-value="id" option-text="name" :list="availableInvoiceTypes" v-model="invoiceTypeKv"></b-select>
       </b-col>
-      <b-col cols=1>
-        <b-button size="sm" type="reset" variant="success" @click="saveAndClose">Save</b-button>
+      <b-col cols=2>
+        <div style="display:flex; padding-top: 20px; padding-left: 75px">
+          <upload-file v-if="customer.id" v-on:close="closeUpload" :entity-id="customer.id" type="Customer" :attachments="customer.attachments"></upload-file>
+          <b-button size="sm" style="margin-left: 5px" type="reset" variant="success" @click="saveAndClose">Save</b-button>
+        </div>
       </b-col>
     </b-row>
     <b-row>
@@ -203,7 +206,8 @@ import state from "../data/state";
 
 export default {
   components: {
-    AddressModal: () => import("./AddressModal")
+    AddressModal: () => import("./AddressModal"),
+    UploadFile: () => import("../directives/UploadFile"),
   },
   data() {
     return {
@@ -255,6 +259,10 @@ export default {
     }
   },
   methods: {
+    closeUpload(attachments){
+      this.customer.attachments = attachments;
+      this.save();
+    },
     getCustomer(id) {
       http
         .get("/customer/" + id)

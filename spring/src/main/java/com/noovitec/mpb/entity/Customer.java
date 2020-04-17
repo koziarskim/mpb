@@ -84,4 +84,9 @@ public class Customer extends BaseEntity {
 	@JoinColumn(name = "billig_address_id", referencedColumnName = "id")
 	private Address billingAddress;
 
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinTable(name = "customer_attachment", joinColumns = @JoinColumn(name = "customer_id"), inverseJoinColumns = @JoinColumn(name = "attachment_id"))
+	@OrderBy("created DESC")
+	private Collection<Attachment> attachments = new HashSet<Attachment>();
+
 }
