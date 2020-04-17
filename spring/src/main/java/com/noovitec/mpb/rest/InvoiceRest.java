@@ -8,10 +8,14 @@ import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,8 +36,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.pdf.AcroFields;
+import com.itextpdf.text.pdf.PdfCopy;
 import com.itextpdf.text.pdf.PdfReader;
+import com.itextpdf.text.pdf.PdfSmartCopy;
 import com.itextpdf.text.pdf.PdfStamper;
 import com.noovitec.mpb.dto.InvoiceListDto;
 import com.noovitec.mpb.entity.Customer;
@@ -124,14 +132,14 @@ class InvoiceRest {
 		String itemCasePack = "";
 		String itemPrice = "";
 		String itemTotalPrice = "";
-		int totalUnits = 0;
+		
 		String itemSaleNumber2 = "";
 		String itemQuantity2 = "";
 		String itemDescription2 = "";
 		String itemCasePack2 = "";
 		String itemPrice2 = "";
 		String itemTotalPrice2 = "";
-		int totalUnits2 = 0;
+		int totalUnits = 0;
 		BigDecimal totalAmount = BigDecimal.ZERO;
 		Long totalCases = 0L;
 		Long totalPallets = 0L;
@@ -162,7 +170,7 @@ class InvoiceRest {
 						+(ii.getSaleItem().getItem().getUpc()==null?"":"UPC: "+ii.getSaleItem().getItem().getUpc())+(ii.getSaleItem().getSku()==null?"":", SKU# "+ ii.getSaleItem().getSku()) + "\n";
 				itemCasePack2 += ii.getSaleItem().getItem().getCasePack() + "\n\n";
 				itemPrice2 += ii.getUnitPrice() + "\n\n";
-				totalUnits2 += ii.getUnitsInvoiced();
+				totalUnits += ii.getUnitsInvoiced();
 				BigDecimal itemTotalPriceBd2 = ii.getUnitPrice().multiply(new BigDecimal(ii.getUnitsInvoiced())).setScale(2, RoundingMode.CEILING);
 				itemTotalPrice2 += itemTotalPriceBd2.toString()  + "\n\n";
 				totalAmount = totalAmount.add(itemTotalPriceBd2==null?BigDecimal.ZERO:itemTotalPriceBd2);
@@ -177,9 +185,9 @@ class InvoiceRest {
 		} else {
 			bolIn = this.getClass().getClassLoader().getResourceAsStream("pdf/Invoice-Template-2.pdf");
 		}
-		PdfReader bolTemplate = new PdfReader(bolIn);
+		PdfReader mainReader = new PdfReader(bolIn);
 		ByteArrayOutputStream bolBaos = new ByteArrayOutputStream();
-		PdfStamper bolStamper = new PdfStamper(bolTemplate, bolBaos);
+		PdfStamper bolStamper = new PdfStamper(mainReader, bolBaos);
 		bolStamper.setFormFlattening(true);
 		bolStamper.getAcroFields().setField("date", (invoice.getDate()==null?"":invoice.getDate().format(DateTimeFormatter.ofPattern("MM/dd/yyy"))));
 		bolStamper.getAcroFields().setField("number", invoice.getNumber());
@@ -232,11 +240,32 @@ class InvoiceRest {
 		bolStamper.getAcroFields().setField("balanceDue", invoice.getBalanceDue()==null?"0.00":invoice.getBalanceDue().toString());
 		bolStamper.getAcroFields().setField("shippingCost", invoice.getShippingCost()==null?"0.00":invoice.getShippingCost().toString());
 		bolStamper.getAcroFields().setField("totalAmount", totalAmount.toString());
-		
+//		List<String> iss = Arrays.asList("pdf/Invoice-Template-2.pdf","pdf/Invoice-Template-2.pdf","pdf/Invoice-Template-2.pdf");
+//		this.concatenatePdfs(iss, bolBaos);
 		bolStamper.close();
-		bolTemplate.close();
-		
+		mainReader.close();
 		return bolBaos.toByteArray();
 	}
+	
+	public void concatenatePdfs(List<String> listOfPdfFiles, ByteArrayOutputStream outputStream) throws DocumentException, IOException {
+		Document document = new Document();
+        PdfCopy copy = new PdfSmartCopy(document, outputStream);
+        document.open();
+        int count = 0;
+        for (String newPage : listOfPdfFiles) {
+        	count++;
+        	InputStream is = this.getClass().getClassLoader().getResourceAsStream(newPage);
+            PdfReader reader = new PdfReader(is);
+            ByteArrayOutputStream newIs = new ByteArrayOutputStream();
+            PdfStamper stamper = new PdfStamper(reader, newIs);
+            AcroFields form = stamper.getAcroFields();
+            form.setField("saleNumber", "122344-"+count);
+            stamper.setFormFlattening(true);
+            stamper.close();
+            reader.close();
+            copy.addDocument(reader);
+        }
+        document.close();
+}
 
 }
