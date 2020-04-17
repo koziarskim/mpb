@@ -21,6 +21,7 @@ import com.noovitec.mpb.entity.SaleItem;
 import com.noovitec.mpb.entity.Shipment;
 import com.noovitec.mpb.entity.ShipmentItem;
 import com.noovitec.mpb.repo.InvoiceRepo;
+import com.noovitec.mpb.repo.SaleItemRepo;
 import com.noovitec.mpb.repo.SaleRepo;
 import com.noovitec.mpb.repo.ShipmentRepo;
 
@@ -28,6 +29,7 @@ public interface InvoiceService {
 
 	public List<Invoice> createInvoiceForShipment(Shipment shipment);
 	public Invoice createInvoiceForSale(Sale sale, String type);
+	public Invoice createInvoiceForCustomer(Customer customer);
 	public Invoice save(Invoice invoice);
 	public void delete(Long id);
 	
@@ -43,6 +45,8 @@ public interface InvoiceService {
 		SaleRepo saleRepo;
 		@Autowired
 		ShipmentRepo shipmentRepo;
+		@Autowired
+		SaleItemRepo saleItemRepo;
 
 		public InvoiceServiceImp(InvoiceRepo invoiceRepo) {
 			this.invoiceRepo = invoiceRepo;
@@ -152,40 +156,54 @@ public interface InvoiceService {
 					invoices.add(invoice);
 				}
 			}
-//			if(customer.getInvoiceType().equalsIgnoreCase(Customer.INVOICE_TYPE.PER_FIRST_SHIPMENT.name())) {
-//				for(ShipmentItem shipItem: shipment.getShipmentItems()) {
-//					SaleItem si = shipItem.getSaleItem();
-//					Sale sale = si.getSale();
-//					boolean existingInvoice = invoiceRepo.findBySale(sale.getId());
-//					if(existingInvoice) {
-//						continue;
-//					}
-//					Invoice invoice = new Invoice();
-//					invoice.setType(Customer.INVOICE_TYPE.PER_FIRST_SHIPMENT.name());
-//					invoice.setShipment(shipment);
-//					invoice.setBillingAddress(customer.getBillingAddress());
-//					invoice.setShippingAddress(shipment.getShippingAddress());
-//					invoice.setDate(LocalDate.now());
-//					invoice.setFob(shipment.getFob());
-//					invoice.setVia(shipment.getVia());
-//					invoice.setLoadNumber(shipment.getLoadNumber());
-//					invoice.setPaymentTerms(customer.getPaymentTerms());
-//					for(SaleItem saleItem: sale.getSaleItems()) {
-//						InvoiceItem ii = new InvoiceItem();
-//						ii.setSaleItem(saleItem);
-//						ii.setUnitPrice(saleItem.getUnitPrice());
-//						ii.setUnitsInvoiced(Long.valueOf(saleItem.getUnits()));
-//						invoice.getInvoiceItems().add(ii);
-//					}
-//					invoice = this.save(invoice);
-//					invoice.setNumber(invoice.getId().toString());
-//					invoice = this.save(invoice);
-//					invoices.add(invoice);
-//				}
-//			}
 			return invoices;
 		}
 		
+		public Invoice createInvoiceForCustomer(Customer customer) {
+			Invoice invoice = null;
+			if(customer == null) {
+				return null;
+			}
+			Shipment shipment = null;
+			Sale sale = null;
+			if(customer.getInvoiceType().equalsIgnoreCase(Customer.INVOICE_TYPE.PER_FIRST_SHIPMENT.name())) {
+				shipment = shipmentRepo.getFirstByCustomer(customer.getId());
+				sale = saleRepo.getFirstByCustomer(customer.getId());
+			}
+			if(customer.getInvoiceType().equalsIgnoreCase(Customer.INVOICE_TYPE.PER_LAST_SHIPMENT.name())) {
+				shipment = shipmentRepo.getLastByCustomer(customer.getId());
+				sale = saleRepo.getLastByCustomer(customer.getId());
+			}
+			if(shipment == null) {
+				return null;
+			}
+			if(sale == null) {
+				return null;
+			}
+			invoice = new Invoice();
+			invoice.setType(customer.getInvoiceType());
+			invoice.setShipment(shipment);
+			invoice.setBillingAddress(customer.getBillingAddress());
+			invoice.setShippingAddress(shipment.getShippingAddress());
+			invoice.setDate(LocalDate.now());
+			invoice.setFob(shipment.getFob());
+			invoice.setVia(shipment.getVia());
+			invoice.setLoadNumber(shipment.getLoadNumber());
+			invoice.setPaymentTerms(customer.getPaymentTerms());
+			List<SaleItem> saleItems = saleItemRepo.findByCustomer(customer.getId());
+			for(SaleItem saleItem: saleItems) {
+				InvoiceItem ii = new InvoiceItem();
+				ii.setSaleItem(saleItem);
+				ii.setUnitPrice(saleItem.getUnitPrice());
+				ii.setUnitsInvoiced(Long.valueOf(saleItem.getUnits()));
+				invoice.getInvoiceItems().add(ii);
+			}
+			invoice = this.save(invoice);
+			invoice.setNumber(sale.getNumber());
+			invoice = this.save(invoice);
+			return invoice;
+		}
+
 		public Invoice save(Invoice invoice) {
 			for (InvoiceItem ii : invoice.getInvoiceItems()) {
 				ii.setInvoice(invoice);

@@ -18,6 +18,8 @@ import com.noovitec.mpb.entity.Sale;
 
 public interface CustomSaleRepo {
 	Page<Sale> findPagable(Pageable pageable, String saleNumber, Long itemId, Long customerId, String status);
+	public Sale getFirstByCustomer(Long customerId);
+	public Sale getLastByCustomer(Long customerId);
 
 	@Repository
 	public class CustomSaleRepoImpl implements CustomSaleRepo {
@@ -67,5 +69,30 @@ public interface CustomSaleRepo {
 			Page<Sale> page = new PageImpl<Sale>(result, pageable, total);
 			return page;
 		}
+		
+		public Sale getFirstByCustomer(Long customerId) {
+			String q = "select s from Sale s "
+					+ "join s.customer cu "
+					+ "where cu.id = :customerId "
+					+ "order by s.created asc";
+			Query query = entityManager.createQuery(q);
+			query.setParameter("customerId", customerId);
+			query.setMaxResults(1);
+			Sale sale = (Sale) query.getSingleResult();
+			return sale;
+		}
+
+		public Sale getLastByCustomer(Long customerId) {
+			String q = "select s from Sale s "
+					+ "join s.customer cu "
+					+ "where cu.id = :customerId "
+					+ "order by s.created desc";
+			Query query = entityManager.createQuery(q);
+			query.setParameter("customerId", customerId);
+			query.setMaxResults(1);
+			Sale sale = (Sale) query.getSingleResult();
+			return sale;
+		}
+
 	}
 }

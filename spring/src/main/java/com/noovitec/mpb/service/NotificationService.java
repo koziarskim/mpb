@@ -48,7 +48,7 @@ public interface NotificationService {
 	
 	public void shipmentReady(Object entity, Object[] currentState, Object[] previousState, String[] propertyNames);
 	public void shipmentShipped(Object entity, Object[] currentState, Object[] previousState, String[] propertyNames);
-	public void saleShipped(Object entity, Object[] currentState, Object[] previousState, String[] propertyNames);
+//	public void saleShipped(Object entity, Object[] currentState, Object[] previousState, String[] propertyNames);
 	public void salePendingApproval(Object entity, Object[] currentState, Object[] previousState, String[] propertyNames);
 	public void customerShipped(Object entity, Object[] currentState, Object[] previousState, String[] propertyNames);
 
@@ -167,6 +167,19 @@ public interface NotificationService {
 		        model.put("customerName", customer.getName());
 				this.sendMail(emails, model, customer, Notification.TYPE.CUSTOMER_SHIPPED);
 			}
+			Invoice invoice = null;
+			if(prevUnitsShipped == 0 && prevUnitsShipped > 0 && customer.getInvoiceType().equalsIgnoreCase(Customer.INVOICE_TYPE.PER_FIRST_SHIPMENT.name())) {
+				invoice = invoiceService.createInvoiceForCustomer(customer);
+			}
+			if(prevUnitsShipped != unitsShipped && unitsSold > 0 &&  unitsShipped >= unitsSold  && customer.getInvoiceType().equalsIgnoreCase(Customer.INVOICE_TYPE.PER_LAST_SHIPMENT.name())) {
+				invoice = invoiceService.createInvoiceForCustomer(customer);
+			}
+	        if(invoice!=null) {
+				List<String> emails = Arrays.asList("kfiolek@marketplacebrands.com","mkoziarski@marketplacebrands.com");
+				Map<String, String> model = new HashMap<String, String>();
+	        	model.put("invoiceNumber", invoice.getNumber());
+	        	this.sendMail(emails, model, customer, Notification.TYPE.INVOICE_CREATED);
+	        }
 		}
 		
 		private void sendMail(List<String> emails, Map<String, String> model, BaseEntity baseEntity, Notification.TYPE type) {

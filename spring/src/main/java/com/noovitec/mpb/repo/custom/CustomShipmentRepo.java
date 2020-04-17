@@ -22,6 +22,8 @@ public interface CustomShipmentRepo {
 	Page<Shipment> findIds(Pageable pageable, String number, Long customerId, Long saleId, Long itemId, String status, LocalDate shipFrom, LocalDate shipTo);
 	public Shipment getFirstBySale(Long saleId);
 	public Shipment getLastBySale(Long saleId);
+	public Shipment getFirstByCustomer(Long customerId);
+	public Shipment getLastByCustomer(Long customerId);
 	
 	@Repository
 	public class CustomShipmentRepoImpl implements CustomShipmentRepo {
@@ -90,7 +92,7 @@ public interface CustomShipmentRepo {
 			Page<Shipment> page = new PageImpl<Shipment>(result, pageable, total);
 			return page;
 		}
-		
+
 		public Shipment getFirstBySale(Long saleId) {
 			String q = "select ship from Shipment ship "
 					+ "join ship.shipmentItems shipItem "
@@ -116,6 +118,32 @@ public interface CustomShipmentRepo {
 					+ "order by ship.created desc";
 			Query query = entityManager.createQuery(q);
 			query.setParameter("saleId", saleId);
+			query.setMaxResults(1);
+			Shipment shipment = (Shipment) query.getSingleResult();
+			return shipment;
+		}
+
+		public Shipment getFirstByCustomer(Long customerId) {
+			String q = "select ship from Shipment ship "
+					+ "join ship.customer cu "
+					+ "where cu.id = :customerId "
+					+ "and ship.shippedDate is not null "
+					+ "order by ship.created asc";
+			Query query = entityManager.createQuery(q);
+			query.setParameter("customerId", customerId);
+			query.setMaxResults(1);
+			Shipment shipment = (Shipment) query.getSingleResult();
+			return shipment;
+		}
+
+		public Shipment getLastByCustomer(Long customerId) {
+			String q = "select ship from Shipment ship "
+					+ "join ship.customer cu "
+					+ "where cu.id = :customerId "
+					+ "and ship.shippedDate is not null "
+					+ "order by ship.created desc";
+			Query query = entityManager.createQuery(q);
+			query.setParameter("customerId", customerId);
 			query.setMaxResults(1);
 			Shipment shipment = (Shipment) query.getSingleResult();
 			return shipment;
