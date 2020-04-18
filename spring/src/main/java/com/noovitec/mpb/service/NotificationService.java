@@ -23,6 +23,7 @@ import org.apache.velocity.app.VelocityEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.velocity.VelocityEngineUtils;
 
@@ -44,6 +45,8 @@ import com.noovitec.mpb.entity.Sale;
 import com.noovitec.mpb.entity.Shipment;
 import com.noovitec.mpb.repo.NotificationRepo;
 
+import jms.JmsEmailMessage;
+
 public interface NotificationService {
 	
 	public void shipmentReady(Object entity, Object[] currentState, Object[] previousState, String[] propertyNames);
@@ -63,6 +66,8 @@ public interface NotificationService {
 		private VelocityEngine velocityEngine;
 		@Autowired
 		private InvoiceService invoiceService;
+		@Autowired
+		private JmsTemplate jmsTemplate;
 
 		public NotificationServiceImpl(NotificationRepo notificationRepo) {
 			this.notificationRepo = notificationRepo;
@@ -96,14 +101,25 @@ public interface NotificationService {
 				List<String> emails = Arrays.asList("kzygulska@marketplacebrands.com", "kfiolek@marketplacebrands.com", "mkoziarski@marketplacebrands.com");
 				Map<String, String> shipModel = new HashMap<String, String>();
 				shipModel.put("shipmentNumber", shipment.getNumber());
-				this.sendMail(emails, shipModel, shipment, Notification.TYPE.SHIPPING_SHIPPED);
-				List<Invoice> invoices = invoiceService.createInvoiceForShipment(shipment);
-				for(Invoice invoice: invoices) {
-					List<String> invoiceEmails = Arrays.asList("kfiolek@marketplacebrands.com","mkoziarski@marketplacebrands.com");
-					Map<String, String> invoiceModel = new HashMap<String, String>();
-		        	invoiceModel.put("invoiceNumber", invoice.getNumber());
-					this.sendMail(invoiceEmails, invoiceModel, shipment, Notification.TYPE.INVOICE_CREATED);
-				}
+	        	JmsEmailMessage message = new JmsEmailMessage();
+	        	message.setEmails(emails);
+	        	message.setModel(shipModel);
+	        	message.setType(Notification.TYPE.SHIPPING_SHIPPED);
+	        	message.setTenant(MpbTenantContext.getCurrentTenant());
+	        	jmsTemplate.convertAndSend("emailNotification", message);
+	        	jmsTemplate.convertAndSend("emailNotification", message);
+	        	jmsTemplate.convertAndSend("emailNotification", message);
+	        	jmsTemplate.convertAndSend("emailNotification", message);
+	        	jmsTemplate.convertAndSend("emailNotification", message);
+	        	jmsTemplate.convertAndSend("emailNotification", message);
+//				this.sendMail(emails, shipModel, shipment, Notification.TYPE.SHIPPING_SHIPPED);
+//				List<Invoice> invoices = invoiceService.createInvoiceForShipment(shipment);
+//				for(Invoice invoice: invoices) {
+//					List<String> invoiceEmails = Arrays.asList("kfiolek@marketplacebrands.com","mkoziarski@marketplacebrands.com");
+//					Map<String, String> invoiceModel = new HashMap<String, String>();
+//		        	invoiceModel.put("invoiceNumber", invoice.getNumber());
+//					this.sendMail(invoiceEmails, invoiceModel, shipment, Notification.TYPE.INVOICE_CREATED);
+//				}
 
 			}
 		}

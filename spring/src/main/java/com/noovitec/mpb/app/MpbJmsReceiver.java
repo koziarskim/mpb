@@ -31,11 +31,10 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.GmailScopes;
 import com.google.api.services.gmail.model.Message;
-import com.noovitec.mpb.dto.JmsMessageDto;
 import com.noovitec.mpb.entity.Notification;
-import com.noovitec.mpb.entity.Year;
-import com.noovitec.mpb.repo.YearRepo;
 import com.noovitec.mpb.service.NotificationService;
+
+import jms.JmsEmailMessage;
 
 @Component
 public class MpbJmsReceiver {
@@ -44,13 +43,12 @@ public class MpbJmsReceiver {
 	@Autowired
 	NotificationService notificationService;
 	@Autowired
-	YearRepo yearRepo;
-	@Autowired
 	private VelocityEngine velocityEngine;
 
 	@JmsListener(destination = "emailNotification", containerFactory = "myFactory")
-	public void receiveMessage(List<String> emails, Map<String, String> model, Notification.TYPE type) {
-		this.sendMail(emails, model, type);
+	public void receiveMessage(JmsEmailMessage message) {
+		MpbTenantContext.setCurrentTenant(message.getTenant());
+		this.sendMail(message.getEmails(), message.getModel(), message.getType());
 	}
 	
 	private void sendMail(List<String> emails, Map<String, String> model, Notification.TYPE type) {
