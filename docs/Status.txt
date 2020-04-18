@@ -1,22 +1,14 @@
 In Progress/Done:
 Purchase
-- Remove duplicates.
-- Search by supplier.
 - Freight terms
 - Pay Terms
-- Search by Freight terms
 Component:
-- Cost (4 decimal)
 - On List (Name primary, number secondary)
 - Component Type (list) - Hania and Michal to sent list.
 - Search by Category, Type.
 Customer:
-- Screen layout changes based on different sections (complience, etc.)
++ Screen layout changes based on different sections (complience, etc.)
 Sale:
-- Unlock
-+ Status Draft.
-- Export Sales by Customer to Excel/CSV (See Kasia's email: Order /Sale Summary Report - MIMS).
-- Export single sale.
 Accounting:
 - Send email to client (andy as cc: by default).
 Schedule:
