@@ -33,7 +33,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-@ComponentScan({ "com.noovitec.mpb.rest", "com.noovitec.mpb.service", "com.noovitec.mpb.serializer", "com.noovitec.mpb.app" })
+@ComponentScan({ "com.noovitec.mpb.rest", "com.noovitec.mpb.jms.receiver", "com.noovitec.mpb.service", "com.noovitec.mpb.serializer", "com.noovitec.mpb.app" })
 @EntityScan("com.noovitec.mpb.entity")
 @EnableJpaRepositories("com.noovitec.mpb.repo")
 @EnableAsync
@@ -90,11 +90,22 @@ public class MpbConfiguration implements WebMvcConfigurer {
         return taskExecutor;
     }
     
+//    @Bean
+//    public JmsTransactionManager jmsTransactionManager(final ConnectionFactory connectionFactory) {
+//        JmsTransactionManager jmsTransactionManager = new JmsTransactionManager();
+//        jmsTransactionManager.setConnectionFactory(connectionFactory);
+//        return jmsTransactionManager;
+//    }
+    
     @Bean
     public JmsListenerContainerFactory<?> myFactory(ConnectionFactory connectionFactory, DefaultJmsListenerContainerFactoryConfigurer configurer) {
       DefaultJmsListenerContainerFactory factory = new DefaultJmsListenerContainerFactory();
       factory.setConcurrency("1-1");
       configurer.configure(factory, connectionFactory);
+//      factory.setSessionTransacted(false);
+//      JmsTransactionManager jmsTransactionManager = new JmsTransactionManager();
+//      jmsTransactionManager.setConnectionFactory(connectionFactory);
+//      factory.setTransactionManager(jmsTransactionManager);
       return factory;
     }
 }

@@ -43,12 +43,12 @@ import com.noovitec.mpb.entity.Invoice;
 import com.noovitec.mpb.entity.Notification;
 import com.noovitec.mpb.entity.Sale;
 import com.noovitec.mpb.entity.Shipment;
+import com.noovitec.mpb.jms.message.JmsEmailMessage;
 import com.noovitec.mpb.repo.NotificationRepo;
-
-import jms.JmsEmailMessage;
 
 public interface NotificationService {
 	
+	public void sendMail(List<String> emails, Map<String, String> model, Notification.TYPE type);
 	public void shipmentReady(Object entity, Object[] currentState, Object[] previousState, String[] propertyNames);
 	public void shipmentShipped(Object entity, Object[] currentState, Object[] previousState, String[] propertyNames);
 	public void saleShipped(Object entity, Object[] currentState, Object[] previousState, String[] propertyNames);
@@ -101,25 +101,17 @@ public interface NotificationService {
 				List<String> emails = Arrays.asList("kzygulska@marketplacebrands.com", "kfiolek@marketplacebrands.com", "mkoziarski@marketplacebrands.com");
 				Map<String, String> shipModel = new HashMap<String, String>();
 				shipModel.put("shipmentNumber", shipment.getNumber());
-	        	JmsEmailMessage message = new JmsEmailMessage();
-	        	message.setEmails(emails);
-	        	message.setModel(shipModel);
-	        	message.setType(Notification.TYPE.SHIPPING_SHIPPED);
-	        	message.setTenant(MpbTenantContext.getCurrentTenant());
+	        	JmsEmailMessage message = JmsEmailMessage.builder()
+	        			.emails(emails).model(shipModel).type(Notification.TYPE.SHIPPING_SHIPPED).build();
 	        	jmsTemplate.convertAndSend("emailNotification", message);
-	        	jmsTemplate.convertAndSend("emailNotification", message);
-	        	jmsTemplate.convertAndSend("emailNotification", message);
-	        	jmsTemplate.convertAndSend("emailNotification", message);
-	        	jmsTemplate.convertAndSend("emailNotification", message);
-	        	jmsTemplate.convertAndSend("emailNotification", message);
-//				this.sendMail(emails, shipModel, shipment, Notification.TYPE.SHIPPING_SHIPPED);
-//				List<Invoice> invoices = invoiceService.createInvoiceForShipment(shipment);
-//				for(Invoice invoice: invoices) {
-//					List<String> invoiceEmails = Arrays.asList("kfiolek@marketplacebrands.com","mkoziarski@marketplacebrands.com");
-//					Map<String, String> invoiceModel = new HashMap<String, String>();
-//		        	invoiceModel.put("invoiceNumber", invoice.getNumber());
-//					this.sendMail(invoiceEmails, invoiceModel, shipment, Notification.TYPE.INVOICE_CREATED);
-//				}
+				this.sendMail(emails, shipModel, shipment, Notification.TYPE.SHIPPING_SHIPPED);
+				List<Invoice> invoices = invoiceService.createInvoiceForShipment(shipment);
+				for(Invoice invoice: invoices) {
+					List<String> invoiceEmails = Arrays.asList("kfiolek@marketplacebrands.com","mkoziarski@marketplacebrands.com");
+					Map<String, String> invoiceModel = new HashMap<String, String>();
+		        	invoiceModel.put("invoiceNumber", invoice.getNumber());
+					this.sendMail(invoiceEmails, invoiceModel, shipment, Notification.TYPE.INVOICE_CREATED);
+				}
 
 			}
 		}
@@ -197,6 +189,60 @@ public interface NotificationService {
 //	        }
 		}
 		
+		public void sendMail(List<String> emails, Map<String, String> model, Notification.TYPE type) {
+			log.info("EmailNotification: "+type);
+			try {
+				Notification notification = new Notification();
+				notification.setEmails(emails.toString());
+				notification.setType(type.name());
+				notification = notificationRepo.save(notification);
+				List<String> SCOPES = Arrays.asList(GmailScopes.GMAIL_SEND, GmailScopes.GMAIL_LABELS);
+				String MIMS_JSON_KEY = "oauth/mims-268617-f7755598ac50.json";
+		        model.put("type", type.name());
+		        model.put("yearContext", MpbTenantContext.getCurrentTenant().replace("y", ""));
+		        String subject = "MIMS Notification";
+				String body = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, type.template(), model);
+				if(MpbRequestContext.getStaticSetting().isDevEnv()) {
+					emails = Arrays.asList("mkoziarski@marketplacebrands.com");
+				}
+				InternetAddress[] bcc = new InternetAddress[emails.size()]; 
+			    for (int i =0; i < emails.size(); i++) 
+			    	bcc[i] = new InternetAddress(emails.get(i)); 
+				HttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
+				JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
+				InputStream credentialsJSON = this.getClass().getClassLoader().getResourceAsStream(MIMS_JSON_KEY);
+				GoogleCredential gcFromJson = GoogleCredential.fromStream(credentialsJSON, HTTP_TRANSPORT, JSON_FACTORY).createScoped(SCOPES);
+				GoogleCredential credential = new GoogleCredential.Builder()
+						.setTransport(gcFromJson.getTransport())
+						.setJsonFactory(gcFromJson.getJsonFactory())
+						.setServiceAccountId(gcFromJson.getServiceAccountId())
+						.setServiceAccountUser("mims@marketplacebrands.com")
+						.setServiceAccountPrivateKey(gcFromJson.getServiceAccountPrivateKey())
+						.setServiceAccountScopes(gcFromJson.getServiceAccountScopes())
+						.build();
+				Gmail service = new Gmail.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential).setApplicationName("MIMS").build();
+				ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+				Session session = Session.getDefaultInstance(new Properties());
+				MimeMessage email = new MimeMessage(session);
+				email.addRecipient(javax.mail.Message.RecipientType.TO, new InternetAddress("mims@marketplacebrands.com"));
+				email.addRecipients(javax.mail.Message.RecipientType.BCC, bcc);
+				email.setSubject(subject);
+				email.setText(body, "UTF-8");
+				email.writeTo(buffer);
+				byte[] bytes = buffer.toByteArray();
+				String encodedEmail = Base64.getUrlEncoder().encodeToString(bytes);
+				Message message = new Message();
+				message.setRaw(encodedEmail);
+				if(!MpbRequestContext.getStaticSetting().isSkipNotification()) {
+					message = service.users().messages().send("me", message).execute();
+				}else {
+					log.info("Email sent skip");
+				}
+			} catch (MessagingException | IOException | GeneralSecurityException e){
+				e.printStackTrace();
+			}
+		}
+
 		private void sendMail(List<String> emails, Map<String, String> model, BaseEntity baseEntity, Notification.TYPE type) {
 			log.info("Sending notification: "+type);
 			try {
@@ -251,6 +297,6 @@ public interface NotificationService {
 				e.printStackTrace();
 			}
 		}
-		
+
 	}
 }

@@ -31,6 +31,10 @@ public interface ShipmentService {
 		CrudService crudService;
 		@Autowired
 		AttachmentService attachmentService;
+		@Autowired
+		NotificationService notificationService;
+		@Autowired
+		InvoiceService invoiceService;
 		
 		public ShipmentServiceImp(ShipmentRepo shpmentRepo) {
 			this.shipmentRepo = shpmentRepo;
@@ -68,5 +72,6 @@ public interface ShipmentService {
 			});
 			return events;
 		}
+		
 	}
 }
