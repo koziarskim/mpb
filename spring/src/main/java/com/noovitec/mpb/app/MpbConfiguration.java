@@ -33,6 +33,8 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import com.noovitec.mpb.jms.message.JmsErrorHandler;
+
 @ComponentScan({ "com.noovitec.mpb" })
 @EntityScan("com.noovitec.mpb.entity")
 @EnableJpaRepositories("com.noovitec.mpb.repo")
@@ -90,12 +92,6 @@ public class MpbConfiguration implements WebMvcConfigurer {
         return taskExecutor;
     }
     
-//    @Bean
-//    public JmsTransactionManager jmsTransactionManager(final ConnectionFactory connectionFactory) {
-//        JmsTransactionManager jmsTransactionManager = new JmsTransactionManager();
-//        jmsTransactionManager.setConnectionFactory(connectionFactory);
-//        return jmsTransactionManager;
-//    }
     
     @Bean
     public JmsListenerContainerFactory<?> myFactory(ConnectionFactory connectionFactory, DefaultJmsListenerContainerFactoryConfigurer configurer) {
@@ -103,6 +99,7 @@ public class MpbConfiguration implements WebMvcConfigurer {
       factory.setConcurrency("1-1");
       configurer.configure(factory, connectionFactory);
       factory.setSessionTransacted(true);
+      factory.setErrorHandler(new JmsErrorHandler());
 //      JmsTransactionManager jmsTransactionManager = new JmsTransactionManager();
 //      jmsTransactionManager.setConnectionFactory(connectionFactory);
 //      factory.setTransactionManager(jmsTransactionManager);

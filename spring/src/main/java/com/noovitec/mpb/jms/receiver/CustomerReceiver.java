@@ -18,13 +18,12 @@ import org.springframework.stereotype.Service;
 import com.noovitec.mpb.app.MpbTenantContext;
 import com.noovitec.mpb.entity.Customer;
 import com.noovitec.mpb.entity.Notification;
-import com.noovitec.mpb.jms.message.JmsEntityMessage;
-import com.noovitec.mpb.jms.message.JmsUtil;
+import com.noovitec.mpb.jms.message.JmsCustomerMessage;
 import com.noovitec.mpb.repo.CustomerRepo;
 import com.noovitec.mpb.service.NotificationService;
 
 public interface CustomerReceiver {
-	public void updateHandler(JmsEntityMessage message);
+	public void updateHandler(JmsCustomerMessage message);
 	
 	@Transactional
 	@Service("customerReceiverImpl")
@@ -35,18 +34,16 @@ public interface CustomerReceiver {
 		private NotificationService notificationService;
 		@Autowired
 		private CustomerRepo customerRepo;
-		@Autowired
-		private JmsUtil jmsUtil;
 	
-		public void updateHandler(JmsEntityMessage message) {
+		public void updateHandler(JmsCustomerMessage message) {
 			List<String> emails = null;
 			Map<String, String> body = new HashMap<String, String>();
 			Customer customer = null;
 			//Customer shipped
-			long prevUnitsShipped = jmsUtil.getLong("unitsShipped", message.getPropertyNames(), message.getOldState());
-			long unitsShipped = jmsUtil.getLong("unitsShipped", message.getPropertyNames(), message.getState());
-			long unitsSold = jmsUtil.getLong("unitsSold", message.getPropertyNames(), message.getState());
-			if(prevUnitsShipped != unitsShipped && unitsSold > 0 &&  unitsShipped >= unitsSold) {
+			long oldUnitsShipped = message.getOldUnitsShipped();
+			long unitsShipped = message.getUnitsShipped();
+			long unitsSold = message.getUnitsSold();
+			if(oldUnitsShipped != unitsShipped && unitsSold > 0 &&  unitsShipped >= unitsSold) {
 				customer = customerRepo.getOne(message.getId());
 				emails = new ArrayList<>(Arrays.asList("hpyzikiewicz@marketplacebrands.com"));
 				body.put("customerName", customer.getName());
@@ -62,9 +59,13 @@ public interface CustomerReceiver {
 		private CustomerReceiver customerReceiver;
 		
 		@JmsListener(destination = "customerUpdated", containerFactory = "myFactory")
-		public void updateEvent(JmsEntityMessage message) {
-			MpbTenantContext.setCurrentTenant(message.getTenant());
-			customerReceiver.updateHandler(message);
+		public void updateEvent(JmsCustomerMessage message) {
+			try {
+				MpbTenantContext.setCurrentTenant(message.getTenant());
+				customerReceiver.updateHandler(message);
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	

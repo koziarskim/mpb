@@ -36,6 +36,9 @@ public interface SaleService {
 		}
 
 		public void updateUnitsByItem(List<Long> itemIds) {
+			if(itemIds != null && itemIds.size()==0) {
+				return;
+			}
 			Long counter = 0L;
 			Iterable<Sale> sales = itemIds==null?saleRepo.findAll():saleRepo.findByIds(itemIds);
 			for (Sale sale : sales) {
@@ -49,6 +52,9 @@ public interface SaleService {
 		}
 
 		public void updateUnits(List<Long> salIds) {
+			if(salIds != null && salIds.size()==0) {
+				return;
+			}
 			Long counter = 0L;
 			Iterable<Sale> sales = salIds==null?saleRepo.findAll():saleRepo.findByIds(salIds);
 			for (Sale sale : sales) {

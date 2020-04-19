@@ -19,14 +19,13 @@ import com.noovitec.mpb.app.MpbTenantContext;
 import com.noovitec.mpb.entity.Invoice;
 import com.noovitec.mpb.entity.Notification;
 import com.noovitec.mpb.entity.Sale;
-import com.noovitec.mpb.jms.message.JmsEntityMessage;
-import com.noovitec.mpb.jms.message.JmsUtil;
+import com.noovitec.mpb.jms.message.JmsSaleMessage;
 import com.noovitec.mpb.repo.SaleRepo;
 import com.noovitec.mpb.service.InvoiceService;
 import com.noovitec.mpb.service.NotificationService;
 
 public interface SaleReceiver {
-	public void updateHandler(JmsEntityMessage message);
+	public void updateHandler(JmsSaleMessage message);
 	
 	@Transactional
 	@Service("saleReceiverImpl")
@@ -39,17 +38,15 @@ public interface SaleReceiver {
 		private InvoiceService invoiceService;
 		@Autowired
 		private SaleRepo saleRepo;
-		@Autowired
-		private JmsUtil jmsUtil;
 	
-		public void updateHandler(JmsEntityMessage message) {
+		public void updateHandler(JmsSaleMessage message) {
 			List<String> emails = null;
 			Map<String, String> body = new HashMap<String, String>();
 			Sale sale = null;
 			//Sale ready/pending approval
-			boolean prevPendingApproval = jmsUtil.getBoolean("pendingApproval", message.getPropertyNames(), message.getOldState());
-			boolean pendingApproval = jmsUtil.getBoolean("pendingApproval", message.getPropertyNames(), message.getState());
-			if(!prevPendingApproval && pendingApproval) {
+			boolean oldPendingApproval = message.isOldPendingApproval();
+			boolean pendingApproval = message.isPendingApproval();
+			if(!oldPendingApproval && pendingApproval) {
 				if(sale == null) {
 					sale = saleRepo.getOne(message.getId());
 				}
@@ -58,17 +55,17 @@ public interface SaleReceiver {
 				notificationService.sendMail(emails, body, Notification.TYPE.SALE_READY);
 			}
 			//Sale shipped
-			long prevUnitsShipped = jmsUtil.getLong("unitsShipped", message.getPropertyNames(), message.getOldState());
-			long unitsShipped = jmsUtil.getLong("unitsShipped", message.getPropertyNames(), message.getState());
-			long unitsSold = jmsUtil.getLong("unitsSold", message.getPropertyNames(), message.getState());
+			long oldUnitsShipped = message.getOldUnitsShipped();
+			long unitsShipped = message.getUnitsShipped();
+			long unitsSold = message.getUnitsSold();
 			Invoice invoice = null;
-			if(unitsShipped > 0 && prevUnitsShipped != unitsShipped && unitsSold > 0) {
+			if(unitsShipped > 0 && oldUnitsShipped != unitsShipped && unitsSold > 0) {
 				if(sale == null) {
 					sale = saleRepo.getOne(message.getId());
 				}				
 				invoice = invoiceService.createInvoiceForSale(sale);
 			}
-			if(unitsShipped > 0 && prevUnitsShipped != unitsShipped && unitsSold > 0 &&  unitsShipped >= unitsSold) {
+			if(unitsShipped > 0 && oldUnitsShipped != unitsShipped && unitsSold > 0 &&  unitsShipped >= unitsSold) {
 				if(sale == null) {
 					sale = saleRepo.getOne(message.getId());
 				}
@@ -89,9 +86,13 @@ public interface SaleReceiver {
 		private SaleReceiver saleReceiver;
 		
 		@JmsListener(destination = "saleUpdated", containerFactory = "myFactory")
-		public void updateEvent(JmsEntityMessage message) {
-			MpbTenantContext.setCurrentTenant(message.getTenant());
-			saleReceiver.updateHandler(message);
+		public void updateEvent(JmsSaleMessage message) {
+			try {
+				MpbTenantContext.setCurrentTenant(message.getTenant());
+				saleReceiver.updateHandler(message);
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	

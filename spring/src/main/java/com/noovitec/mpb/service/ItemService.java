@@ -53,6 +53,9 @@ public interface ItemService {
 		}
 
 		public void updateUnitsReadyProd(List<Long> itemIds) {
+			if(itemIds != null && itemIds.size()==0) {
+				return;
+			}
 			Long counter = 0L;
 			Iterable<Item> items = itemIds==null?itemRepo.findAll():itemRepo.findByIds(itemIds);
 			for (Item item : items) {

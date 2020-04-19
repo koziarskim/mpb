@@ -57,7 +57,7 @@ public interface ComponentService {
 		}
 		
 		public void updateUnitsOnStockByProduction(Long productionId, Long units) {
-			if(units == 0) {
+			if(units !=null && units == 0) {
 				return;
 			}
 			List<ItemComponent> itemComponents = itemComponentRepo.findByProduction(productionId);
@@ -75,7 +75,7 @@ public interface ComponentService {
 		}
 
 		public void updateUnitsLocked(List<Long> componentIds) {
-			if(componentIds.size()==0) {
+			if(componentIds != null && componentIds.size()==0) {
 				return;
 			}
 			Long counter = 0L;
@@ -102,7 +102,7 @@ public interface ComponentService {
 		}
 
 		public void updateUnits(List<Long> componentIds) {
-			if(componentIds.size()==0) {
+			if(componentIds != null && componentIds.size()==0) {
 				return;
 			}
 			Long counter = 0L;

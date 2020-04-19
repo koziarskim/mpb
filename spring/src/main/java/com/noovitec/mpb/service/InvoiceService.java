@@ -60,10 +60,10 @@ public interface InvoiceService {
 			}
 			String type = customer.getInvoiceType();
 			Shipment shipment = null;
-			if(type.equalsIgnoreCase(Customer.INVOICE_TYPE.PER_FIRST_SHIPMENT.name())) {
+			if(Customer.INVOICE_TYPE.PER_FIRST_SHIPMENT.name().equalsIgnoreCase(type)) {
 				shipment = shipmentRepo.getFirstBySale(sale.getId());
 			}
-			if(type.equalsIgnoreCase(Customer.INVOICE_TYPE.PER_LAST_SHIPMENT.name())) {
+			if(Customer.INVOICE_TYPE.PER_LAST_SHIPMENT.name().equalsIgnoreCase(type)) {
 				shipment = shipmentRepo.getLastBySale(sale.getId());
 			}
 			if(shipment == null) {

@@ -20,14 +20,13 @@ import com.noovitec.mpb.app.MpbTenantContext;
 import com.noovitec.mpb.entity.Invoice;
 import com.noovitec.mpb.entity.Notification;
 import com.noovitec.mpb.entity.Shipment;
-import com.noovitec.mpb.jms.message.JmsEntityMessage;
-import com.noovitec.mpb.jms.message.JmsUtil;
+import com.noovitec.mpb.jms.message.JmsShipmentMessage;
 import com.noovitec.mpb.repo.ShipmentRepo;
 import com.noovitec.mpb.service.InvoiceService;
 import com.noovitec.mpb.service.NotificationService;
 
 public interface ShipmentReceiver {
-	public void updateHandler(JmsEntityMessage message);
+	public void updateHandler(JmsShipmentMessage message);
 	
 	@Transactional
 	@Service("shipmentReceiverImpl")
@@ -40,26 +39,24 @@ public interface ShipmentReceiver {
 		private InvoiceService invoiceService;
 		@Autowired
 		private ShipmentRepo shipmentRepo;
-		@Autowired
-		private JmsUtil jmsUtil;
 	
-		public void updateHandler(JmsEntityMessage message) {
+		public void updateHandler(JmsShipmentMessage message) {
 			List<String> emails = null;
 			Map<String, String> body = new HashMap<String, String>();
 			Shipment shipment = null;
 			//Shipment is ready
-			boolean ready = jmsUtil.getBoolean("ready", message.getPropertyNames(), message.getState());
-			boolean prevReady = jmsUtil.getBoolean("ready", message.getPropertyNames(), message.getOldState());
-			if(!prevReady && ready) {
+			boolean oldReady = message.isOldReady();
+			boolean ready = message.isReady();
+			if(!oldReady && ready) {
 				shipment = shipmentRepo.findById(message.getId()).get();
 				emails = new ArrayList<>(Arrays.asList("shipping@marketplacebrands.com"));
 				body.put("shipmentNumber", shipment.getNumber());
 				notificationService.sendMail(emails, body, Notification.TYPE.SHIPPING_READY);
 			}
 			//Shipment is shipped;
-			LocalDate shippedDate = jmsUtil.getLocalDate("shippedDate", message.getPropertyNames(), message.getState());
-			LocalDate prevShippedDate = jmsUtil.getLocalDate("shippedDate", message.getPropertyNames(), message.getOldState());
-			if(prevShippedDate == null && shippedDate !=null) {
+			LocalDate oldShippedDate = message.getShippedDate();
+			LocalDate shippedDate = message.getOldShippedDate();
+			if(oldShippedDate == null && shippedDate !=null) {
 				if(shipment==null) {
 					shipment = shipmentRepo.findById(message.getId()).get();
 				}
@@ -83,9 +80,13 @@ public interface ShipmentReceiver {
 		private ShipmentReceiver shipmentReceiver;
 		
 		@JmsListener(destination = "shipmentUpdated", containerFactory = "myFactory")
-		public void updateEvent(JmsEntityMessage message) {
-			MpbTenantContext.setCurrentTenant(message.getTenant());
-			shipmentReceiver.updateHandler(message);
+		public void updateEvent(JmsShipmentMessage message) {
+			try {
+				MpbTenantContext.setCurrentTenant(message.getTenant());
+				shipmentReceiver.updateHandler(message);
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
