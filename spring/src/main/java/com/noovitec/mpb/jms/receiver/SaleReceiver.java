@@ -20,12 +20,13 @@ import com.noovitec.mpb.entity.Invoice;
 import com.noovitec.mpb.entity.Notification;
 import com.noovitec.mpb.entity.Sale;
 import com.noovitec.mpb.jms.message.JmsEntityMessage;
+import com.noovitec.mpb.jms.message.JmsUtil;
 import com.noovitec.mpb.repo.SaleRepo;
 import com.noovitec.mpb.service.InvoiceService;
 import com.noovitec.mpb.service.NotificationService;
 
 public interface SaleReceiver {
-	public void updatedEvent(JmsEntityMessage message);
+	public void updateHandler(JmsEntityMessage message);
 	
 	@Transactional
 	@Service("saleReceiverImpl")
@@ -41,7 +42,7 @@ public interface SaleReceiver {
 		@Autowired
 		private JmsUtil jmsUtil;
 	
-		public void updatedEvent(JmsEntityMessage message) {
+		public void updateHandler(JmsEntityMessage message) {
 			List<String> emails = null;
 			Map<String, String> body = new HashMap<String, String>();
 			Sale sale = null;
@@ -88,9 +89,9 @@ public interface SaleReceiver {
 		private SaleReceiver saleReceiver;
 		
 		@JmsListener(destination = "saleUpdated", containerFactory = "myFactory")
-		public void updatedEvent(JmsEntityMessage message) {
+		public void updateEvent(JmsEntityMessage message) {
 			MpbTenantContext.setCurrentTenant(message.getTenant());
-			saleReceiver.updatedEvent(message);
+			saleReceiver.updateHandler(message);
 		}
 	}
 	

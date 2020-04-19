@@ -104,12 +104,9 @@ public class MpbEventListener implements PostInsertEventListener, PostUpdateEven
 		if (entity.getClass() == Sale.class) {
 			jmsTemplate.convertAndSend("saleUpdated", message);
 		}
-//				if (entity.getClass() == Sale.class) {
-//					notificationService.salePendingApproval(entity, newStates, oldStates, propertyNames);
-//				}
-//				if (entity.getClass() == Customer.class) {
-//					notificationService.customerShipped(entity, newStates, oldStates, propertyNames);
-//				}
+		if (entity.getClass() == Customer.class) {
+			jmsTemplate.convertAndSend("customerUpdated", message);
+		}
 	}
 
 	@Override

@@ -33,7 +33,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-@ComponentScan({ "com.noovitec.mpb.rest", "com.noovitec.mpb.jms.receiver", "com.noovitec.mpb.service", "com.noovitec.mpb.serializer", "com.noovitec.mpb.app" })
+@ComponentScan({ "com.noovitec.mpb" })
 @EntityScan("com.noovitec.mpb.entity")
 @EnableJpaRepositories("com.noovitec.mpb.repo")
 @EnableAsync

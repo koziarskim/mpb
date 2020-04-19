@@ -21,12 +21,13 @@ import com.noovitec.mpb.entity.Invoice;
 import com.noovitec.mpb.entity.Notification;
 import com.noovitec.mpb.entity.Shipment;
 import com.noovitec.mpb.jms.message.JmsEntityMessage;
+import com.noovitec.mpb.jms.message.JmsUtil;
 import com.noovitec.mpb.repo.ShipmentRepo;
 import com.noovitec.mpb.service.InvoiceService;
 import com.noovitec.mpb.service.NotificationService;
 
 public interface ShipmentReceiver {
-	public void shipmentUpdatedEvent(JmsEntityMessage message);
+	public void updateHandler(JmsEntityMessage message);
 	
 	@Transactional
 	@Service("shipmentReceiverImpl")
@@ -42,7 +43,7 @@ public interface ShipmentReceiver {
 		@Autowired
 		private JmsUtil jmsUtil;
 	
-		public void shipmentUpdatedEvent(JmsEntityMessage message) {
+		public void updateHandler(JmsEntityMessage message) {
 			List<String> emails = null;
 			Map<String, String> body = new HashMap<String, String>();
 			Shipment shipment = null;
@@ -82,9 +83,9 @@ public interface ShipmentReceiver {
 		private ShipmentReceiver shipmentReceiver;
 		
 		@JmsListener(destination = "shipmentUpdated", containerFactory = "myFactory")
-		public void shipmentUpdatedEvent(JmsEntityMessage message) {
+		public void updateEvent(JmsEntityMessage message) {
 			MpbTenantContext.setCurrentTenant(message.getTenant());
-			shipmentReceiver.shipmentUpdatedEvent(message);
+			shipmentReceiver.updateHandler(message);
 		}
 	}
 	

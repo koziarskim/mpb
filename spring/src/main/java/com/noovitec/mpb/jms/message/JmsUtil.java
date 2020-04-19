@@ -1,4 +1,4 @@
-package com.noovitec.mpb.jms.receiver;
+package com.noovitec.mpb.jms.message;
 
 import java.time.LocalDate;
 
