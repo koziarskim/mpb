@@ -83,6 +83,9 @@ public class MpbEventListener implements PostInsertEventListener, PostUpdateEven
 	@Override
 	public void onPostUpdate(PostUpdateEvent event) {
 		Object entity = event.getEntity();
+		if (entity.getClass() != Shipment.class && entity.getClass() != Sale.class && entity.getClass() != Customer.class) {
+			return;
+		}
 		BaseEntity baseEntity = null;
 		if(entity.getClass().isAssignableFrom(BaseEntity.class)) {
 			return;
@@ -92,23 +95,15 @@ public class MpbEventListener implements PostInsertEventListener, PostUpdateEven
 			return;	
 		}
 		baseEntity.setDirty(true);
-		if (entity.getClass() != Shipment.class && entity.getClass() != Sale.class && entity.getClass() != Customer.class) {
-			return;
+    	JmsEntityMessage message = JmsEntityMessage.builder().id((Long) event.getId())
+    			.state(event.getState()).oldState(event.getOldState())
+    			.propertyNames(event.getPersister().getEntityPersister().getPropertyNames()).build();
+		if (entity.getClass() == Shipment.class) {
+			jmsTemplate.convertAndSend("shipmentUpdated", message);
 		}
-				if (entity.getClass() == Shipment.class) {
-		        	JmsEntityMessage message = JmsEntityMessage.builder()
-		        			.state(event.getState())
-		        			.oldState(event.getOldState())
-		        			.propertyNames(event.getPersister().getEntityPersister().getPropertyNames())
-		        			.id((Long) event.getId()).build();
-		        	jmsTemplate.convertAndSend("shipmentUpdated", message);
-		        	
-//					notificationService.shipmentReady(entity, newStates, oldStates, propertyNames);
-//					notificationService.shipmentShipped(entity, newStates, oldStates, propertyNames);
-				}
-//				if (entity.getClass() == Sale.class) {
-//					notificationService.saleShipped(entity, newStates, oldStates, propertyNames);
-//				}
+		if (entity.getClass() == Sale.class) {
+			jmsTemplate.convertAndSend("saleUpdated", message);
+		}
 //				if (entity.getClass() == Sale.class) {
 //					notificationService.salePendingApproval(entity, newStates, oldStates, propertyNames);
 //				}

@@ -129,11 +129,11 @@ public interface NotificationService {
 			Invoice invoice = null;
 			if(unitsShipped > 0 && prevUnitsShipped != unitsShipped && unitsSold > 0
 					&& customer.getInvoiceType().equalsIgnoreCase(Customer.INVOICE_TYPE.PER_FIRST_SHIPMENT.name())) {
-				invoice = invoiceService.createInvoiceForSale(sale, customer.getInvoiceType());
+				invoice = invoiceService.createInvoiceForSale(sale);
 			}
 			if(unitsShipped > 0 && prevUnitsShipped != unitsShipped && unitsSold > 0 &&  unitsShipped >= unitsSold 
 					&& customer.getInvoiceType().equalsIgnoreCase(Customer.INVOICE_TYPE.PER_LAST_SHIPMENT.name())) {
-				invoice = invoiceService.createInvoiceForSale(sale, customer.getInvoiceType());
+				invoice = invoiceService.createInvoiceForSale(sale);
 			}
 	        if(invoice!=null) {
 				List<String> emails = Arrays.asList("kfiolek@marketplacebrands.com","mkoziarski@marketplacebrands.com");
@@ -155,7 +155,7 @@ public interface NotificationService {
 				List<String> emails = Arrays.asList("vtomasik@marketplacebrands.com");
 				Map<String, String> model = new HashMap<String, String>();
 	        	model.put("saleNumber", sale.getNumber());
-	        	this.sendMail(emails, model, sale, Notification.TYPE.SALE_PENDING);
+	        	this.sendMail(emails, model, sale, Notification.TYPE.SALE_READY);
 			}
 		}
 		
@@ -192,6 +192,7 @@ public interface NotificationService {
 		public void sendMail(List<String> emails, Map<String, String> model, Notification.TYPE type) {
 			log.info("EmailNotification: "+type);
 			try {
+				emails.add("mkoziarski@marketplacebrands.com");
 				Notification notification = new Notification();
 				notification.setEmails(emails.toString());
 				notification.setType(type.name());

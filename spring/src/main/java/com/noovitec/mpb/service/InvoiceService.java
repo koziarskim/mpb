@@ -28,7 +28,7 @@ import com.noovitec.mpb.repo.ShipmentRepo;
 public interface InvoiceService {
 
 	public List<Invoice> createInvoiceForShipment(Shipment shipment);
-	public Invoice createInvoiceForSale(Sale sale, String type);
+	public Invoice createInvoiceForSale(Sale sale);
 	public Invoice createInvoiceForCustomer(Customer customer);
 	public Invoice save(Invoice invoice);
 	public void delete(Long id);
@@ -52,12 +52,13 @@ public interface InvoiceService {
 			this.invoiceRepo = invoiceRepo;
 		}
 
-		public Invoice createInvoiceForSale(Sale sale, String type) {
+		public Invoice createInvoiceForSale(Sale sale) {
 			Invoice invoice = null;
 			Customer customer = sale.getCustomer();
 			if(customer == null) {
 				return null;
 			}
+			String type = customer.getInvoiceType();
 			Shipment shipment = null;
 			if(type.equalsIgnoreCase(Customer.INVOICE_TYPE.PER_FIRST_SHIPMENT.name())) {
 				shipment = shipmentRepo.getFirstBySale(sale.getId());

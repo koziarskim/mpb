@@ -102,7 +102,7 @@ public class MpbConfiguration implements WebMvcConfigurer {
       DefaultJmsListenerContainerFactory factory = new DefaultJmsListenerContainerFactory();
       factory.setConcurrency("1-1");
       configurer.configure(factory, connectionFactory);
-//      factory.setSessionTransacted(false);
+      factory.setSessionTransacted(true);
 //      JmsTransactionManager jmsTransactionManager = new JmsTransactionManager();
 //      jmsTransactionManager.setConnectionFactory(connectionFactory);
 //      factory.setTransactionManager(jmsTransactionManager);

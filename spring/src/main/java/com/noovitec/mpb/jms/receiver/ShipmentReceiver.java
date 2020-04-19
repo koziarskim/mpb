@@ -1,6 +1,7 @@
 package com.noovitec.mpb.jms.receiver;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -50,7 +51,7 @@ public interface ShipmentReceiver {
 			boolean prevReady = jmsUtil.getBoolean("ready", message.getPropertyNames(), message.getOldState());
 			if(!prevReady && ready) {
 				shipment = shipmentRepo.findById(message.getId()).get();
-				emails = Arrays.asList("shipping@marketplacebrands.com", "mkoziarski@marketplacebrands.com");
+				emails = new ArrayList<>(Arrays.asList("shipping@marketplacebrands.com"));
 				body.put("shipmentNumber", shipment.getNumber());
 				notificationService.sendMail(emails, body, Notification.TYPE.SHIPPING_READY);
 			}
@@ -58,13 +59,15 @@ public interface ShipmentReceiver {
 			LocalDate shippedDate = jmsUtil.getLocalDate("shippedDate", message.getPropertyNames(), message.getState());
 			LocalDate prevShippedDate = jmsUtil.getLocalDate("shippedDate", message.getPropertyNames(), message.getOldState());
 			if(prevShippedDate == null && shippedDate !=null) {
-				shipment = shipmentRepo.findById(message.getId()).get();
-				emails = Arrays.asList("kzygulska@marketplacebrands.com", "kfiolek@marketplacebrands.com", "mkoziarski@marketplacebrands.com");
+				if(shipment==null) {
+					shipment = shipmentRepo.findById(message.getId()).get();
+				}
+				emails = new ArrayList<>(Arrays.asList("kzygulska@marketplacebrands.com"));
 				body.put("shipmentNumber", shipment.getNumber());
 	        	notificationService.sendMail(emails, body, Notification.TYPE.SHIPPING_SHIPPED);
 				List<Invoice> invoices = invoiceService.createInvoiceForShipment(shipment);
 				for(Invoice invoice: invoices) {
-					emails = Arrays.asList("kfiolek@marketplacebrands.com","mkoziarski@marketplacebrands.com");
+					emails = new ArrayList<>(Arrays.asList("kfiolek@marketplacebrands.com"));
 					body.put("invoiceNumber", invoice.getNumber());
 					notificationService.sendMail(emails, body, Notification.TYPE.INVOICE_CREATED);
 				}

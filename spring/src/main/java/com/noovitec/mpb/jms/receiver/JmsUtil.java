@@ -27,4 +27,14 @@ public class JmsUtil {
 		value = obj==null?null:((LocalDate) obj);
 		return value;
 	}
+	
+	public long getLong(String name, String[] keys, Object[] values) {
+		long value = 0;
+		if(keys == null || values == null) {
+			return value;
+		}
+		Object obj = values[ArrayUtils.indexOf(keys, name)];
+		value = obj==null?0:((long) obj);
+		return value;
+	}
 }
