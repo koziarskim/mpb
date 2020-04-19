@@ -42,8 +42,10 @@ public class MpbEventListener implements PostInsertEventListener, PostUpdateEven
 	
 	@Override
 	public void onPostInsert(PostInsertEvent event) {
-		String tenant = MpbTenantContext.getCurrentTenant();
 		Object entity = event.getEntity();
+		if (entity.getClass() != Shipment.class && entity.getClass() != Sale.class && entity.getClass() != Customer.class) {
+			return;
+		}
 		BaseEntity baseEntity = null;
 		if(entity.getClass().isAssignableFrom(BaseEntity.class)) {
 			return;
@@ -53,31 +55,19 @@ public class MpbEventListener implements PostInsertEventListener, PostUpdateEven
 			return;	
 		}
 		baseEntity.setDirty(true);
-		if (entity.getClass() != Shipment.class && entity.getClass() != Sale.class && entity.getClass() != Customer.class) {
-			return;
+    	JmsEntityMessage message = JmsEntityMessage.builder().id((Long) event.getId())
+    			.state(event.getState()).oldState(null)
+    			.propertyNames(event.getPersister().getEntityPersister().getPropertyNames()).build();
+		if (entity.getClass() == Shipment.class) {
+			jmsTemplate.convertAndSend("shipmentUpdated", message);
 		}
-        taskExecutor.execute(new Runnable() {
-            @Override
-            public void run() {
-            	MpbTenantContext.setCurrentTenant(tenant);
-		        String[] propertyNames = event.getPersister().getEntityMetamodel().getPropertyNames();
-		        Object[] newStates = event.getState();
-				if (entity.getClass() == Shipment.class) {
-					notificationService.shipmentReady(entity, newStates, null, propertyNames);
-					notificationService.shipmentShipped(entity, newStates, null, propertyNames);
-				}
-				if (entity.getClass() == Sale.class) {
-					notificationService.saleShipped(entity, newStates, null, propertyNames);
-				}
-				if (entity.getClass() == Sale.class) {
-					notificationService.salePendingApproval(entity, newStates, null, propertyNames);
-				}
-				if (entity.getClass() == Customer.class) {
-					notificationService.customerShipped(entity, newStates, null, propertyNames);
-				}
-				MpbTenantContext.clear();
-            }
-        });
+		if (entity.getClass() == Sale.class) {
+			jmsTemplate.convertAndSend("saleUpdated", message);
+		}
+		if (entity.getClass() == Customer.class) {
+			jmsTemplate.convertAndSend("customerUpdated", message);
+		}
+
 	}
 	
 	@Override
