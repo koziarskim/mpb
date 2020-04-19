@@ -1,7 +1,5 @@
 package com.noovitec.mpb.app;
 
-import java.lang.reflect.Field;
-
 import org.hibernate.event.spi.PostDeleteEvent;
 import org.hibernate.event.spi.PostDeleteEventListener;
 import org.hibernate.event.spi.PostInsertEvent;
@@ -97,16 +95,12 @@ public class MpbEventListener implements PostInsertEventListener, PostUpdateEven
 		if (entity.getClass() != Shipment.class && entity.getClass() != Sale.class && entity.getClass() != Customer.class) {
 			return;
 		}
-//        taskExecutor.execute(new Runnable() {
-//            @Override
-//            public void run() {
-//				MpbTenantContext.setCurrentTenant(tenant);
 				if (entity.getClass() == Shipment.class) {
 		        	JmsEntityMessage message = JmsEntityMessage.builder()
 		        			.state(event.getState())
 		        			.oldState(event.getOldState())
 		        			.propertyNames(event.getPersister().getEntityPersister().getPropertyNames())
-		        			.id(baseEntity.getId()).build();
+		        			.id((Long) event.getId()).build();
 		        	jmsTemplate.convertAndSend("shipmentUpdated", message);
 		        	
 //					notificationService.shipmentReady(entity, newStates, oldStates, propertyNames);
@@ -121,9 +115,6 @@ public class MpbEventListener implements PostInsertEventListener, PostUpdateEven
 //				if (entity.getClass() == Customer.class) {
 //					notificationService.customerShipped(entity, newStates, oldStates, propertyNames);
 //				}
-//				MpbTenantContext.clear();
-//            }
-//        });
 	}
 
 	@Override
@@ -140,5 +131,5 @@ public class MpbEventListener implements PostInsertEventListener, PostUpdateEven
             }
         });
 	}
-
+	
 }
