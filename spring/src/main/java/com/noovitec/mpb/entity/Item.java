@@ -3,15 +3,10 @@ package com.noovitec.mpb.entity;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -19,6 +14,7 @@ import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import jdk.internal.jline.internal.Log;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -151,13 +147,21 @@ public class Item extends BaseEntity {
 	}
 
 	public void updateUnitsReadyProd() {
-		List<Long> units = Stream.of(0L).collect(Collectors.toList());
-		for (ItemComponent ic: this.getItemComponents()) {
-			Long uts = (ic.getComponent().getUnitsOnStock() - ic.getComponent().getUnitsLocked()) * ic.getUnits();
-			units.add(uts);
+		this.unitsReadyProd = 1000000000;
+		if(this.getItemComponents().size()==0) {
+			this.unitsReadyProd = 0;
+			return;
 		}
-		Collections.sort(units);
-		this.unitsReadyProd = units.get(0);
+		for (ItemComponent ic: this.getItemComponents()) {
+			long unitsLocked = this.getUnitsScheduled()-this.getUnitsProduced();
+			if(unitsLocked < 0) {
+				unitsLocked = 0;
+			}
+			long units = (ic.getComponent().getUnitsOnStock() - unitsLocked)/ic.getUnits();
+			if(units < this.unitsReadyProd) {
+				this.unitsReadyProd = units<0?0:units;
+			}
+		}
 	}
 	
 	public void updateUnits() {
@@ -178,7 +182,10 @@ public class Item extends BaseEntity {
 			this.unitsShipped += sa.getUnitsShipped();
 		}
 		this.unitsOnStock = this.unitsProduced - this.unitsShipped + this.unitsReturned;
-//		this.updateUnitsReadyProd();
+		if(this.unitsOnStock < 0) {
+			this.unitsOnStock = 0;
+		}
+		this.updateUnitsReadyProd();
 	}
 
 }

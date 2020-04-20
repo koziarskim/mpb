@@ -27,6 +27,7 @@ public class SaleItemDto {
 	private Long unitsTransferedTo;
 	private Long unitsTranferedFrom;
 	private Long unitsAdjusted;
+	private long unitsReadyProd;
 	private String status;
 	
 }

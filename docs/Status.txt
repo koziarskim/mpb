@@ -10,6 +10,7 @@ Customer:
 + Screen layout changes based on different sections (complience, etc.)
 Sale:
 Accounting:
+- Permissions
 - Send email to client (andy as cc: by default).
 Schedule:
 - Ability to add random reciving event on schedule.

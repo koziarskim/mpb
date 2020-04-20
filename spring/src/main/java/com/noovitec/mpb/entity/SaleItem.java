@@ -103,6 +103,9 @@ public class SaleItem extends BaseEntity {
 			this.unitsTransferedTo += sit.getUnitsTransfered();
 		}
 		this.unitsOnStock = this.unitsProduced + this.unitsTransferedTo - this.unitsTransferedFrom - this.unitsShipped + this.unitsReturned;
+		if(this.unitsOnStock < 0) {
+			this.unitsOnStock = 0;
+		}
 		this.updateStatus();
 	}
 	

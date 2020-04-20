@@ -84,6 +84,7 @@ export default {
         { key: "unitsSchProd", label: "Sch/Prod", sortable: false },
         { key: "unitsTrasfered", label: "Transf", sortable: false },
         { key: "unitsStockShip", label: "Stock/Ship", sortable: false },
+        { key: "unitsReadyProd", label: "RFP", sortable: false },
         { key: "status", label: "Status", sortable: false },
         { key: "action", label: "", sortable: false}
       ],

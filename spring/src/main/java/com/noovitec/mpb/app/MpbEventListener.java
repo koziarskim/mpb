@@ -19,7 +19,6 @@ import com.noovitec.mpb.entity.Customer;
 import com.noovitec.mpb.entity.Sale;
 import com.noovitec.mpb.entity.Shipment;
 import com.noovitec.mpb.jms.message.JmsCustomerMessage;
-import com.noovitec.mpb.jms.message.JmsEntityMessage;
 import com.noovitec.mpb.jms.message.JmsSaleMessage;
 import com.noovitec.mpb.jms.message.JmsShipmentMessage;
 import com.noovitec.mpb.jms.message.JmsUtil;
@@ -61,19 +60,35 @@ public class MpbEventListener implements PostInsertEventListener, PostUpdateEven
 			return;	
 		}
 		baseEntity.setDirty(true);
-    	JmsEntityMessage message = JmsEntityMessage.builder().id((Long) event.getId())
-    			.state(event.getState()).oldState(null)
-    			.propertyNames(event.getPersister().getEntityPersister().getPropertyNames()).build();
+		String[] keys = event.getPersister().getEntityPersister().getPropertyNames();
+		Object[] state = event.getState();
 		if (entity.getClass() == Shipment.class) {
+			JmsShipmentMessage message = JmsShipmentMessage.builder().id((Long) event.getId())
+	    			.oldReady(jmsUtil.getBoolean("ready", keys, null))
+	    			.ready(jmsUtil.getBoolean("ready", keys, state))
+	    			.oldShippedDate(jmsUtil.getLocalDate("shippedDate", keys, null))
+	    			.shippedDate(jmsUtil.getLocalDate("shippedDate", keys, state))
+	    			.build();
 			jmsTemplate.convertAndSend("shipmentUpdated", message);
 		}
 		if (entity.getClass() == Sale.class) {
+	    	JmsSaleMessage message = JmsSaleMessage.builder().id((Long) event.getId())
+	    			.oldPendingApproval(jmsUtil.getBoolean("pendingApproval", keys, null))
+	    			.pendingApproval(jmsUtil.getBoolean("pendingApproval", keys, state))
+	    			.oldUnitsShipped(jmsUtil.getLong("unitsShipped", keys, null))
+	    			.unitsShipped(jmsUtil.getLong("unitsShipped", keys, state))
+	    			.unitsSold(jmsUtil.getLong("unitsSold", keys, state))
+	    			.build();
 			jmsTemplate.convertAndSend("saleUpdated", message);
 		}
 		if (entity.getClass() == Customer.class) {
+	    	JmsCustomerMessage message = JmsCustomerMessage.builder().id((Long) event.getId())
+	    			.oldUnitsShipped(jmsUtil.getLong("unitsShipped", keys, null))
+	    			.unitsShipped(jmsUtil.getLong("unitsShipped", keys, state))
+	    			.unitsSold(jmsUtil.getLong("unitsSold", keys, state))
+	    			.build();
 			jmsTemplate.convertAndSend("customerUpdated", message);
 		}
-
 	}
 	
 	@Override
@@ -119,7 +134,6 @@ public class MpbEventListener implements PostInsertEventListener, PostUpdateEven
 	    			.unitsShipped(jmsUtil.getLong("unitsShipped", keys, state))
 	    			.unitsSold(jmsUtil.getLong("unitsSold", keys, state))
 	    			.build();
-			jmsTemplate.convertAndSend("saleUpdated", message);
 			jmsTemplate.convertAndSend("customerUpdated", message);
 		}
 	}
