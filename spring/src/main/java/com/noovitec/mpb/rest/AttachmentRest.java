@@ -67,5 +67,11 @@ class AttachmentRest {
 		Attachment attachment = attachmentService.store(file, type, entityId, null);
 		return ResponseEntity.ok().body(attachment);
 	 }
+	 
+	 @GetMapping("/attachment/migrate")
+	 ResponseEntity<?> migrate() throws IOException {
+		attachmentService.migrateFiles();
+		return ResponseEntity.ok().body("OK");
+	 }
 
 }

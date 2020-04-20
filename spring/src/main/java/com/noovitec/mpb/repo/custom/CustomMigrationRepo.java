@@ -1,12 +1,16 @@
 package com.noovitec.mpb.repo.custom;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -16,9 +20,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.noovitec.mpb.app.MpbTenantContext;
+import com.noovitec.mpb.app.MpbRequestContext;
+import com.noovitec.mpb.entity.Attachment;
 import com.noovitec.mpb.entity.Year;
 import com.noovitec.mpb.exceptions.RepoException;
+import com.noovitec.mpb.repo.AttachmentRepo;
 import com.noovitec.mpb.repo.CrudRepo;
 import com.noovitec.mpb.repo.YearRepo;
 import com.noovitec.mpb.service.ItemService;
@@ -39,6 +45,10 @@ public interface CustomMigrationRepo {
 		CrudRepo crudRepo;
 		@Autowired
 		YearRepo yearRepo;
+		@Autowired
+		AttachmentRepo attachmentRepo;
+	    @Autowired
+		MpbRequestContext mpbRequestContext;
 
 		public void createTenant(String tenantFrom, String tenantTo) throws RepoException, IOException {
         	this.createYear(tenantTo);
@@ -119,5 +129,6 @@ public interface CustomMigrationRepo {
         	}
 
 		}
+		
 	}
 }

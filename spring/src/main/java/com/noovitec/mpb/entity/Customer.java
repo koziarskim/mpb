@@ -21,7 +21,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+//@SecondaryTable(name = "base_customer", pkJoinColumns = @PrimaryKeyJoinColumn(name = "id"), schema="shared")
 public class Customer extends BaseEntity {
+
+	private static final long serialVersionUID = 1L;
 
 	public enum INVOICE_TYPE {
 		PER_SHIPMENT_ITEM, PER_SHIPMENT_SALE, PER_FIRST_SHIPMENT, PER_LAST_SHIPMENT

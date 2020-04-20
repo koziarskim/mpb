@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.Calendar;
+import java.util.List;
 
 import javax.transaction.Transactional;
 
@@ -26,7 +28,8 @@ public interface AttachmentService {
 	public Attachment getById(Long attachmentId);
 	public Attachment store(MultipartFile file, String type, Long entityId, Attachment attachment) throws IllegalStateException, IOException;
 	public Path load(Long attachmentId) throws JsonParseException, JsonMappingException, IOException;
-
+	public void migrateFiles() throws IOException;
+	
 	@Transactional
 	@Service("attachmentServiceImpl")
 	public class AttachmentServiceImp implements AttachmentService {
@@ -100,5 +103,54 @@ public interface AttachmentService {
 			return attachment;
 		}
 		
+		public void migrateFiles() throws IOException {
+        	List<Attachment> attachments = attachmentRepo.findAll();
+        	for(Attachment attachment: attachments) {
+    			String systemPath = mpbRequestContext.getSetting().getFileStoreDir();
+    			File oldDir = new File(systemPath+attachment.getFilePath());
+    			if(!oldDir.exists()) {
+//    				log.info("Dir not found: "+oldDir.getPath());
+    				continue;
+    			}
+    			log.info("Copy: "+oldDir.getPath());
+    			String[] paths = attachment.getFilePath().split("/");
+    			int id = Integer.valueOf(paths[3]).intValue();
+    			int extra = 0;
+    			if(attachment.getType().equalsIgnoreCase("Component")) {
+    				extra = 1600;
+    			}
+    			if(attachment.getType().equalsIgnoreCase("Item")) {
+    				extra = 300;
+    			}
+    			if(attachment.getType().equalsIgnoreCase("Sale")) {
+    				extra = 1700;
+    			}
+    			String newPath = attachment.getFilePath().replace(String.valueOf(id), String.valueOf(id+extra));
+    			File newDir = new File(systemPath+newPath);
+    			this.copyFolder(oldDir.toPath(), newDir.toPath());
+				attachment.setFilePath(newPath);
+				attachmentRepo.save(attachment);
+        	}
+		}
+		
+		public void copyFolder(Path src, Path dest) {
+		    try {
+		        Files.walk( src ).forEach( s -> {
+		            try {
+		                Path d = dest.resolve( src.relativize(s) );
+		                if( Files.isDirectory( s ) ) {
+		                    if( !Files.exists( d ) )
+		                        Files.createDirectory( d );
+		                    return;
+		                }
+		                Files.copy( s, d, StandardCopyOption.REPLACE_EXISTING);// use flag to override existing
+		            } catch( Exception e ) {
+		                e.printStackTrace();
+		            }
+		        });
+		    } catch( Exception ex ) {
+		        ex.printStackTrace();
+		    }
+		}
 	}
 }
