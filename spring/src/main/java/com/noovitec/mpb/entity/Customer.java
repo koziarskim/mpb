@@ -49,16 +49,24 @@ public class Customer extends BaseEntity {
 	
 	private String vendorPortal;
 	private String vendorGuide;
-	
-	private String priceWebsite;
-	private String labelType;
-	private String palletTagRequirements;
-	private String palletTagSize;
 	private boolean edi;
+	private String shipTo;
+	
 	private boolean priceTicket;
-	private boolean cartonLabel;
+	private String ticketSource;
+	private String ticketPosition;
+	
 	private boolean seasonalCarton;
+	private String cartonRequirements;
+	private boolean cartonLabel;
+	private String labelType;
+	private String labelRequirements;
+	
 	private boolean seasonPalletMark;
+	private String palletRequirements;
+	private String palletTagSize;
+	private String palletTagRequirements;
+	
 	
 	private String routingProcess;
 	private String trafficDepartment;

@@ -80,46 +80,75 @@
       </b-row>
     <hr class="hr-text" data-content="General Compliane" />
     <b-row>
-      <b-col cols=6>
+      <b-col cols=4>
         <label class="top-label">Vendor Portal:</label>
-        <b-form-textarea type="text" :rows="3" v-model="customer.vendorPortal"></b-form-textarea>
+        <input class="form-control" v-model="customer.vendorPortal">
       </b-col>
-      <b-col cols=6>
-        <label class="top-label">Vendor Guide:</label>
-        <b-form-textarea type="text" :rows="3" v-model="customer.vendorGuide"></b-form-textarea>
+      <b-col cols=5>
+        <label class="top-label">Vendor Portal Credentials:</label>
+        <label class="top-label" style="margin-left: 320px">EDI:</label>
+        <input type="checkbox" style="margin-left: 5px;" v-model="customer.edi">
+        <input class="form-control" v-model="customer.vendorGuide">
+      </b-col>
+      <b-col cols=3>
+        <label class="top-label">Ship To:</label>
+        <b-select option-value="id" option-text="name" :list="availableShipTo" v-model="customer.shipTo"></b-select>
       </b-col>
     </b-row>
     <hr class="hr-text" data-content="Operations" />
+    <div style="text-align: left;"><b>&#8226; Pre-ticketing</b></div>
     <b-row>
       <b-col cols=2>
-        <label class="top-label">Price Website:</label>
-        <input class="form-control" v-model="customer.priceWebsite">
+        <br/><label class="top-label">Price Ticket:</label>
+        <input type="checkbox" style="margin-left: 5px;" v-model="customer.priceTicket"><br/>
+      </b-col>
+      <b-col cols=4>
+        <label class="top-label">Pre Ticketing Ordering Source:</label>
+        <b-form-textarea type="text" :rows="3" v-model="customer.ticketSource"></b-form-textarea>
+      </b-col>
+      <b-col cols=6>
+        <label class="top-label">Pre Ticket Position:</label>
+        <b-form-textarea type="text" :rows="3" v-model="customer.ticketPosition"></b-form-textarea>
+      </b-col>
+    </b-row>
+    <div style="text-align: left;"><b>&#8226; Carton Labeling</b></div>
+    <b-row>
+      <b-col cols=2>
+        <br/><label class="top-label">Seasonal Carton:</label>
+        <input type="checkbox" style="margin-left: 5px;" v-model="customer.seasonalCarton"><br/>
+      </b-col>
+      <b-col cols=4>
+        <label class="top-label">Seasonal Carton Requirements:</label>
+        <b-form-textarea type="text" :rows="3" v-model="customer.cartonRequirements"></b-form-textarea>
       </b-col>
       <b-col cols=2>
-        <label class="top-label">Label Type:</label>
-        <input class="form-control" v-model="customer.labelType">
+        <label class="top-label">Carton Label:</label>
+        <input type="checkbox" style="margin-left: 5px;" v-model="customer.cartonLabel"><br/>
+        <label class="top-label" style="margin-top: 20px">Label Type:</label>
+        <b-select option-value="id" option-text="name" :list="availableLabelTypes" v-model="customer.labelType"></b-select>
+      </b-col>
+      <b-col cols=4>
+        <label class="top-label">Carton Label Requirements:</label>
+        <b-form-textarea type="text" :rows="3" v-model="customer.labelRequirements"></b-form-textarea>
+      </b-col>
+    </b-row>
+    <div style="text-align: left;"><b>&#8226; Pallet Labeling</b></div>
+    <b-row>
+      <b-col cols=2>
+        <br/><label class="top-label">Season Pallet Mark:</label>
+        <input type="checkbox" style="margin-left: 5px;" v-model="customer.seasonPalletMark">
+      </b-col>
+      <b-col cols=4>
+        <label class="top-label">Seasonal Pallet Requirements:</label>
+        <b-form-textarea type="text" :rows="3" v-model="customer.palletRequirements"></b-form-textarea>
       </b-col>
       <b-col cols=2>
         <label class="top-label">Pallet Tag Size:</label>
-        <input class="form-control" v-model="customer.palletTagSize">
+        <b-select option-value="id" option-text="name" :list="availablePalletTagSizes" v-model="customer.palletTagSize"></b-select>
       </b-col>
-      <b-col cols=2>
+      <b-col cols=4>
         <label class="top-label">Pallet Tag Requirements:</label>
-        <b-form-textarea type="text" :rows="2" v-model="customer.palletTagRequirements"></b-form-textarea>
-      </b-col>
-      <b-col cols=2>
-        <label class="top-label">EDI:</label>
-        <input type="checkbox" style="margin-left: 5px;" v-model="customer.edi"><br/>
-        <label class="top-label">Price Ticket:</label>
-        <input type="checkbox" style="margin-left: 5px;" v-model="customer.priceTicket"><br/>
-        <label class="top-label">Carton Label:</label>
-        <input type="checkbox" style="margin-left: 5px;" v-model="customer.cartonLabel">
-      </b-col>
-      <b-col cols=2>
-        <label class="top-label">Seasonal Carton:</label>
-        <input type="checkbox" style="margin-left: 5px;" v-model="customer.seasonalCarton"><br/>
-        <label class="top-label">Season Pallet Mark:</label>
-        <input type="checkbox" style="margin-left: 5px;" v-model="customer.seasonPalletMark">
+        <b-form-textarea type="text" :rows="3" v-model="customer.palletTagRequirements"></b-form-textarea>
       </b-col>
     </b-row>
     <hr class="hr-text" data-content="Shipping" />
@@ -234,6 +263,22 @@ export default {
         { id: "PER_FIRST_SHIPMENT", name: "Per First Shipment" },
         { id: "PER_LAST_SHIPMENT", name: "Per Last Shipment" },
         { id: "NO_INVOICE", name: "No Invoice" }
+      ],
+      availableShipTo: [
+        { id: "CROSS_DOCK", name: "Cross Dock" },
+        { id: "FLOW_THROUGH", name: "Flow Through" },
+        { id: "SHIP_DC", name: "Ship to DC" },
+        { id: "DIRECT_STORE", name: "Direct to store" },
+        { id: "DIRECT_CUSTOMER", name: "Direct to customer" },
+        { id: "CC_POOL", name: "CC/Pool" }
+      ],
+      availableLabelTypes: [
+        { id: "UCC_128", name: "UCC-128" },
+        { id: "SELF_GEN", name: "Self Generated" },
+      ],
+      availablePalletTagSizes: [
+        { id: "4_6", name: "4 X 6" },
+        { id: "STANDARD", name: "Standard" },
       ],
       invoiceTypeKv: {}
     };
