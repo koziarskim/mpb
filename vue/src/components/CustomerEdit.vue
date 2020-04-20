@@ -34,27 +34,27 @@
     </b-row>
     <b-row>
       <b-col cols=3>
-        <label class="top-label">Contact:</label>
-        <input class="form-control" type="text" v-model="customer.contactName" />
+        <label class="top-label">Broker Contact:</label>
+        <input class="form-control" type="text" v-model="customer.brokerContact" />
       </b-col>
       <b-col cols=3>
-        <label class="top-label">Broker Name:</label>
-        <input class="form-control" type="text" v-model="customer.brokerName" />
+        <label class="top-label">Broker Email:</label>
+        <input class="form-control" type="text" v-model="customer.brokerEmail" />
       </b-col>
       <b-col cols=6>
         <label class="top-label">Billing Address:</label>
-        <input class="form-control" type="search" v-model="billingAddress.street" placeholder="Street" />
+        <input class="form-control" type="search" v-model="billingAddress.street" />
       </b-col>
     </b-row>
     <b-row>
       <b-col cols=3>
-        <label class="top-label">Phone:</label>
-        <input class="form-control" type="text" v-model="customer.phone" />
+        <label class="top-label">Broker Name:</label>
+        <input class="form-control" type="text" v-model="customer.brokerName" />
       </b-col>
-        <b-col cols=3>
-          <label class="top-label">Broker Contact:</label>
-          <input class="form-control" type="text" v-model="customer.brokerContact" />
-        </b-col>
+      <b-col cols=3>
+        <label class="top-label">Broker Phone:</label>
+        <input class="form-control" type="text" v-model="customer.brokerPhone" />
+      </b-col>
         <b-col cols=2>
           <label class="top-label">City:</label>
           <input class="form-control" type="tel" v-model="billingAddress.city" placeholder="City" />
@@ -69,15 +69,7 @@
         </b-col>
       </b-row>
       <b-row>
-        <b-col cols=3>
-          <label class="top-label">Email:</label>
-          <input class="form-control" type="text" v-model="customer.email" />
-        </b-col>
-        <b-col cols=3>
-          <label class="top-label">Broker Phone:</label>
-          <input class="form-control" type="text" v-model="customer.brokerPhone" />
-        </b-col>
-        <b-col cols=6>
+        <b-col cols=6 offset=6>
           <label class="top-label">
             Shipping Addresses:
             <span style="cursor: pointer; color: blue" @click="openShipAddressModal()">(Edit/New)</span>

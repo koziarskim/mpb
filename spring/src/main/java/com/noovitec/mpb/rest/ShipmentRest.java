@@ -296,7 +296,7 @@ class ShipmentRest {
 		bolStamper.getAcroFields().setField("itemCases2", itemCases2);
 		bolStamper.getAcroFields().setField("itemPallets2", itemPallets2);
 		if(shipment.getShippingAddress()!=null) {
-			String phone = shipment.getShippingAddress().getPhone()==null?shipment.getCustomer().getPhone():shipment.getShippingAddress().getPhone();
+			String phone = null;//shipment.getShippingAddress().getPhone()==null?shipment.getCustomer().getPhone():shipment.getShippingAddress().getPhone();
 			String shippingAddress = shipment.getCustomer().getName() + " - "+shipment.getShippingAddress().getDc() + "\n"
 				+ (shipment.getShippingAddress().getLine()==null?"":(shipment.getShippingAddress().getLine() + "\n"))	
 				+ shipment.getShippingAddress().getStreet() + "\n" 

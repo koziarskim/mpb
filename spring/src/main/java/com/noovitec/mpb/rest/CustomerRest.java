@@ -76,7 +76,6 @@ class CustomerRest {
 			dto.setId(customer.getId());
 			dto.setAccount(customer.getAccount());
 			dto.setName(customer.getName());
-			dto.setPhone(customer.getPhone());
 			dto.setAddressName(customer.getBillingAddress()==null?"":(customer.getBillingAddress().getCity()+", "+customer.getBillingAddress().getState()));
 			dto.setUnitsSold(customer.getUnitsSold());
 			dto.setUnitsShipped(customer.getUnitsShipped());

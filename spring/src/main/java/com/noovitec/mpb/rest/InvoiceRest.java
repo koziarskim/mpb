@@ -180,7 +180,7 @@ class InvoiceRest {
 			bolStamper.getAcroFields().setField("billingAddress", billingAddress);
 		}
 		if(shipment.getShippingAddress()!=null) {
-			String phone = shipment.getShippingAddress().getPhone()==null?shipment.getCustomer().getPhone():shipment.getShippingAddress().getPhone();
+			String phone = null;//shipment.getShippingAddress().getPhone()==null?shipment.getCustomer().getPhone():shipment.getShippingAddress().getPhone();
 			String shippingAddress = shipment.getCustomer().getName() + " - "+shipment.getShippingAddress().getDc() + "\n"
 				+ (shipment.getShippingAddress().getLine()==null?"":(shipment.getShippingAddress().getLine() + "\n"))	
 				+ shipment.getShippingAddress().getStreet() + "\n" 

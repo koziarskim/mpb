@@ -33,12 +33,10 @@ public class Customer extends BaseEntity {
 	private String name;
 	private String account;
 	private String vendor;
-	private String phone;
+//	private String phone;
 	private String paymentTerms;
 	private String freightTerms;
-	private String email;
-	private String apEmail;
-	private String contactName;
+//	private String contactName;
 	private String shipmentNotes;
 	private long unitsSold = 0;
 	private long unitsShipped = 0;
@@ -46,6 +44,7 @@ public class Customer extends BaseEntity {
 	private String brokerContact;
 	private String brokerName;
 	private String brokerPhone;
+	private String brokerEmail;
 	private String shipType;
 	
 	private String vendorPortal;
@@ -75,6 +74,7 @@ public class Customer extends BaseEntity {
 	private String compliancePortal;
 
 	private String portal;
+	private String apEmail;
 	
 	
 
