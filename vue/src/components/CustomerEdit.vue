@@ -154,52 +154,60 @@
     <hr class="hr-text" data-content="Shipping" />
     <b-row>
       <b-col cols=2>
-        <label class="top-label">Routing Process:</label>
-        <input class="form-control" v-model="customer.routingProcess">
-        <label class="top-label">Traffic Dep:</label>
-        <input class="form-control" v-model="customer.trafficDepartment">
-      </b-col>
-      <b-col cols=1>
         <label class="top-label">Routing:</label>
-        <input type="checkbox" style="margin-left: 5px;" v-model="customer.routing"><br/>
-        <label class="top-label">Delivery:</label>
-        <input type="checkbox" style="margin-left: 5px;" v-model="customer.delivery"><br/>
+        <input type="checkbox" style="margin-left: 5px;" v-model="customer.routing">
+      </b-col>
+      <b-col cols=2>
+        <label class="top-label">Routing Guide:</label>
+        <input type="checkbox" style="margin-left: 5px;" v-model="customer.routingGuide">
+      </b-col>
+      <b-col cols=4>
         <label class="top-label">ASN:</label>
         <input type="checkbox" style="margin-left: 5px;" v-model="customer.asn"><br/>
+      </b-col>
+      <b-col cols=3>
         <label class="top-label">Claim:</label>
         <input type="checkbox" style="margin-left: 5px;" v-model="customer.claim">
       </b-col>
-      <b-col cols=4>
-        <label class="top-label">Routing Portal:</label>
-        <b-form-textarea type="text" :rows="3" v-model="customer.routingPortal"></b-form-textarea>
-      </b-col>
-      <b-col cols=4>
-        <label class="top-label">Routing Guide:</label>
-        <b-form-textarea type="text" :rows="3" v-model="customer.routingGuide"></b-form-textarea>
-      </b-col>
     </b-row>
     <b-row>
       <b-col cols=4>
-        <label class="top-label">BOL Pckaging:</label>
-        <b-form-textarea type="text" :rows="3" v-model="customer.bolPackaging"></b-form-textarea>
+        <label class="top-label">Routing Portal Link:</label>
+        <input class="form-control" v-model="customer.routingPortal">
+        <label class="top-label">Routing Credentials:</label>
+        <input class="form-control" v-model="customer.routingCredentials">
+        <label class="top-label">Routing Process/Notes:</label>
+        <b-form-textarea type="text" :rows="3" v-model="customer.routingNotes"></b-form-textarea>
+        <label class="top-label">Traffic Department Contacts:</label>
+        <b-form-textarea type="text" :rows="3" v-model="customer.trafficContact"></b-form-textarea>
       </b-col>
       <b-col cols=4>
-        <label class="top-label">ASN Process:</label>
-        <b-form-textarea type="text" :rows="3" v-model="customer.asnProcess"></b-form-textarea>
+        <label class="top-label">ASN Portal & Process:</label>
+        <input class="form-control" v-model="customer.asnPortal">
+        <label class="top-label">BOL & Packaging Requirements:</label>
+        <b-form-textarea type="text" :rows="3" v-model="customer.bolReqirements"></b-form-textarea>
+        <b-row style="margin-bottom: -7px">
+          <b-col cols=6>
+            <br/><label class="top-label">Preffered Carrier:</label>
+            <input type="checkbox" style="margin-left: 5px;" v-model="customer.carrier"><br/>
+          </b-col>
+          <b-col cols=6>
+            <label class="top-label">Pallet Type:</label>
+            <b-select option-value="id" option-text="name" :list="availablePalletTypes" v-model="customer.palletType"></b-select>
+          </b-col>
+        </b-row>
+        <label class="top-label">Carrier List:</label>
+        <b-form-textarea type="text" :rows="3" v-model="customer.carrierList"></b-form-textarea>
       </b-col>
       <b-col cols=4>
-        <label class="top-label">Claim Process:</label>
+        <label class="top-label">Claim/Dispute Link:</label>
+        <input class="form-control" v-model="customer.claimLink">
+        <label class="top-label">Contact:</label>
+        <b-form-textarea type="text" :rows="3" v-model="customer.claimContact"></b-form-textarea>
+        <label class="top-label">Claim/Dispute Credentials:</label>
+        <input class="form-control" v-model="customer.claimCredentials">
+        <label class="top-label">Claim/Dispute Process:</label>
         <b-form-textarea type="text" :rows="3" v-model="customer.claimProcess"></b-form-textarea>
-      </b-col>
-    </b-row>
-    <b-row>
-      <b-col cols=4>
-        <label class="top-label">Compliance Portal:</label>
-        <b-form-textarea type="text" :rows="3" v-model="customer.compliancePortal"></b-form-textarea>
-      </b-col>
-      <b-col cols=4>
-        <label class="top-label">Shipment Notes:</label>
-        <b-form-textarea type="text" :rows="3" v-model="customer.shipmentNotes"></b-form-textarea>
       </b-col>
     </b-row>
     <hr class="hr-text" data-content="Accounting" />
@@ -279,6 +287,11 @@ export default {
       availablePalletTagSizes: [
         { id: "4_6", name: "4 X 6" },
         { id: "STANDARD", name: "Standard" },
+      ],
+      availablePalletTypes: [
+        { id: "GRADE_1", name: "4 X 6" },
+        { id: "GRADE_B", name: "Standard" },
+        { id: "CHEP", name: "Standard" },
       ],
       invoiceTypeKv: {}
     };

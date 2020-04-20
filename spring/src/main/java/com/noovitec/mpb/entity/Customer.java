@@ -67,19 +67,26 @@ public class Customer extends BaseEntity {
 	private String palletTagSize;
 	private String palletTagRequirements;
 	
-	
-	private String routingProcess;
-	private String trafficDepartment;
 	private boolean routing;
-	private boolean delivery;
+	private boolean routingGuide;
 	private boolean asn;
 	private boolean claim;
+	
 	private String routingPortal;
-	private String routingGuide;
-	private String bolPackaging;
-	private String asnProcess;
+	private String routingCredentials;
+	private String routingNotes;
+	private String trafficContact;
+	
+	private String asnPortal;
+	private String bolReqirements;
+	private boolean carrier;
+	private String carrierList;
+	private String palletType;
+	
+	private String claimLink;
+	private String claimContact;
+	private String claimCredentials;
 	private String claimProcess;
-	private String compliancePortal;
 
 	private String portal;
 	private String apEmail;
