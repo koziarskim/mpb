@@ -345,7 +345,7 @@ class SaleRest {
 			}
 		}
 		sale = (Sale) crudService.merge(sale);
-		sale.setModifiedDate(LocalDateTime.now());
+//		sale.setModifiedDate(LocalDateTime.now());
 		sale.updateUnits();
 		for (SaleItem sa : sale.getSaleItems()) {
 			List<Long> componentIds = new ArrayList<Long>();

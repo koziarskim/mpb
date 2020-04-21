@@ -93,6 +93,7 @@ public class MpbEventListener implements PostInsertEventListener, PostUpdateEven
 	
 	@Override
 	public void onPostUpdate(PostUpdateEvent event) {
+		int[] updated = event.getDirtyProperties();
 		Object entity = event.getEntity();
 		if (entity.getClass() != Shipment.class && entity.getClass() != Sale.class && entity.getClass() != Customer.class) {
 			return;

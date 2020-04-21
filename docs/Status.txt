@@ -6,24 +6,31 @@ Component:
 - On List (Name primary, number secondary)
 - Component Type (list) - Hania and Michal to sent list.
 - Search by Category, Type.
+- Drop box search add "On Stock Only".
+- Expiration date on component and item
+- Component and item report popup baed on expiration
 Customer:
 + Screen layout changes based on different sections (complience, etc.)
 Sale:
+- Item view: Drop down search by (On Stock, RFP)
 Accounting:
 - Permissions
 - Send email to client (andy as cc: by default).
 Schedule:
 - Ability to add random reciving event on schedule.
 Item:
+- Drop down search by (On Stock, RFP)
 - Sort by (number (a-z), date (created)
 - Filter by (category, brand)
 - List of Brands and Categories update (Hania to sent).
 - Show component picture when mouse over.
+- Expiration date on item
 Shipment:
 - Trasfer window date from sale
 	single PO - transfer same shipping window
 	multiple PO's with the same date -  transfer same shipping window
 	multiple PO's with different date -  leave blank
+
 ------------------------------------------------------------------
 
 Backlog
