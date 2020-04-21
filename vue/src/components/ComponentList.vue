@@ -68,6 +68,7 @@ export default {
       fields: [
         { key: "name", label: "Component # (Name)", sortable: false },
         { key: "categoryName", label: "Category", sortable: false },
+        { key: "componentTypeName", label: "Type", sortable: false },
         { key: "supplierName", label: "Supplier", sortable: false },
         { key: "unitsOnStock", label: "Stock", sortable: false },
         { key: "unitsForSale", label: "Sales", sortable: false },

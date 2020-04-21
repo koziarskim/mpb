@@ -11,7 +11,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -28,9 +27,10 @@ import lombok.NoArgsConstructor;
 @Table(indexes = { @Index(name = "IDX_COMPONENT_ID", columnList = "id") })
 public class Component extends BaseEntity {
 
+	private static final long serialVersionUID = 5004094587899883068L;
+	
 	private String name;
 	private String number;
-	private String type;
 	private String supplierStockNumber;
 	private String description;
 	private Long unitsPerContainer = 1L;
@@ -68,6 +68,11 @@ public class Component extends BaseEntity {
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "category_id", referencedColumnName = "id")
 	private Category category;
+
+	@JsonIgnoreProperties(value = { "items", "components" }, allowSetters = true)
+	@ManyToOne()
+	@JoinColumn(name = "component_type_id", referencedColumnName = "id")
+	private ComponentType componentType;
 
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "attachment_id", referencedColumnName = "id")

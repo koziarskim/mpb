@@ -11,11 +11,11 @@
       </b-col>
       <b-col cols=2>
         <label class="top-label">Category:</label>
-        <b-select option-value="id" option-text="name" :list="availableCategories" v-model="category"></b-select>
+        <b-select option-value="id" option-text="name" :list="availableCategories" v-model="component.category.id"></b-select>
       </b-col>
       <b-col cols=2>
         <label class="top-label">Type:</label>
-        <b-select option-value="id" option-text="name" :list="availableTypes" v-model="type"></b-select>
+        <b-select option-value="id" option-text="name" :list="availableComponentTypes" v-model="component.componentType.id"></b-select>
       </b-col>
       <b-col cols=2 style="margin-top: 20px">
         <upload :on-upload="onUpload" :file-url="getImageUrl()"></upload>
@@ -150,13 +150,13 @@ export default {
         casePack: 1,
         unitsPerContainer: 1,
         totalLandedCost: 0,
-        itemComponents: []
+        itemComponents: [],
+        category: {},
+        componentType: {}
       },
       uploadedFile: null,
       dimension: "",
       supplier: {},
-      category: {},
-      type: {},
       availableSuppliers: [],
       availableCategories: [],
       availableItems: [],
@@ -172,9 +172,7 @@ export default {
         { key: "item.unitsReadyProd", label: "RFP", sortable: false },
         { key: "unitsSchProd", label: "Sch/Prod", sortable: false }
       ],
-      availableTypes: [
-        { id: "GENERIC", name: "Generic" },
-      ],
+      availableComponentTypes: [],
 
     };
   },
@@ -266,8 +264,6 @@ export default {
           if (r.data.supplier) {
             this.supplier = r.data.supplier;
           }
-          this.category = r.data.category;
-          this.type = {id: r.data.type};
           return r.data;
         })
         .catch(e => {
@@ -285,14 +281,14 @@ export default {
         });
     },
     getAvailableCategories() {
-      http
-        .get("/category/type/CMP")
-        .then(response => {
-          this.availableCategories = response.data;
-        })
-        .catch(e => {
-          console.log("API error: " + e);
-        });
+      http.get("/category/type/CMP").then(response => {
+        this.availableCategories = response.data;
+      }).catch(e => {console.log("API error: " + e);});
+    },
+    getAvailableComponentTypes() {
+      http.get("/registery/componentType/kv").then(response => {
+        this.availableComponentTypes = response.data;
+      }).catch(e => {console.log("API error: " + e);});
     },
     getAvailableItems() {
       http
@@ -319,8 +315,6 @@ export default {
         alert("Please enter Component Name and Number");
         return Promise.reject();
       }
-      this.component.category = this.category;
-      this.component.type = this.type.id;
       var formData = new FormData();
       formData.append("image", this.uploadedFile);
       formData.append("jsonComponent", JSON.stringify(this.component));
@@ -365,6 +359,7 @@ export default {
     }
     this.getAvailableSuppliers();
     this.getAvailableCategories();
+    this.getAvailableComponentTypes();
     this.getAvailableItems();
   }
 };

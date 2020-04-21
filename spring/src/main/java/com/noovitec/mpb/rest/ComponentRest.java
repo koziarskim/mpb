@@ -84,6 +84,7 @@ class ComponentRest {
 			dto.setNumber(component.getNumber());
 			dto.setName(component.getName());
 			dto.setCategoryName(component.getCategory()==null?"":component.getCategory().getName());
+			dto.setComponentTypeName(component.getComponentType()==null?null:component.getComponentType().getName());
 			dto.setSupplierName(component.getSupplier()==null?"":component.getSupplier().getName());
 			dto.setSupplierId(component.getSupplier()==null?null:component.getSupplier().getId());
 			dto.setUnitsSoldNotProd(component.getUnitsSoldNotProd());
@@ -121,6 +122,7 @@ class ComponentRest {
 			dto.setNumber(component.getNumber());
 			dto.setName(component.getName());
 			dto.setCategoryName(component.getCategory()==null?"":component.getCategory().getName());
+			dto.setComponentTypeName(component.getComponentType()==null?null:component.getComponentType().getName());
 			dto.setSupplierName(component.getSupplier()==null?"":component.getSupplier().getName());
 			dto.setSupplierId(component.getSupplier().getId());
 			dto.setUnitsSoldNotProd(component.getUnitsSoldNotProd());
