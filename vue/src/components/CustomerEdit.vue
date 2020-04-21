@@ -78,8 +78,10 @@
           <b-select option-value="id" option-text="label" :list="customer.addresses" v-model="shipAddress" placeholder="Address"></b-select>
         </b-col>
       </b-row>
-    <hr class="hr-text" data-content="General Compliane" />
-    <b-row>
+        <br/><b-link role="button" @click="showCompliance = !showCompliance" style="margin-top: 20px; margin-bottom: 5px;">
+          <hr class="left"><img class="customer-image" src="../assets/customer-compliance.png">
+        </b-link>
+    <b-row v-if="showCompliance">
       <b-col cols=4>
         <label class="top-label">Vendor Portal:</label>
         <input class="form-control" v-model="customer.vendorPortal">
@@ -95,7 +97,10 @@
         <b-select option-value="id" option-text="name" :list="availableShipTo" v-model="customer.shipTo"></b-select>
       </b-col>
     </b-row>
-    <hr class="hr-text" data-content="Operations" />
+    <br/><b-link role="button" @click="showOperation = !showOperation" style="margin-top: 20px; margin-bottom: 5px;">
+      <hr class="left"><img class="customer-image" src="../assets/customer-operation.png">
+    </b-link>
+    <div v-if="showOperation">
     <div style="text-align: left;"><b>&#8226; Pre-ticketing</b></div>
     <b-row>
       <b-col cols=2>
@@ -151,7 +156,11 @@
         <b-form-textarea type="text" :rows="3" v-model="customer.palletTagRequirements"></b-form-textarea>
       </b-col>
     </b-row>
-    <hr class="hr-text" data-content="Shipping" />
+    </div>
+    <br/><b-link role="button" @click="showShipping = !showShipping" style="margin-top: 20px; margin-bottom: 5px;">
+      <hr class="left"><img class="customer-image" style="width: 135px" src="../assets/customer-shipping.png">
+    </b-link>
+    <div v-if="showShipping">
     <b-row>
       <b-col cols=2>
         <label class="top-label">Routing:</label>
@@ -210,8 +219,11 @@
         <b-form-textarea type="text" :rows="3" v-model="customer.claimProcess"></b-form-textarea>
       </b-col>
     </b-row>
-    <hr class="hr-text" data-content="Accounting" />
-    <b-row>
+    </div>
+    <br/><b-link role="button" @click="showAccounting = !showAccounting" style="margin-top: 20px; margin-bottom: 5px;">
+      <hr class="left"><img class="customer-image" style="width: 153px" src="../assets/customer-accounting.png">
+    </b-link>
+    <b-row v-if="showAccounting">
       <b-col cols="3">
         <label class="top-label">Portal:</label>
         <input class="form-control" type="text" v-model="customer.portal" />
@@ -241,6 +253,10 @@ export default {
   data() {
     return {
       shipAddressModalVisible: false,
+      showCompliance: false,
+      showOperation: false,
+      showShipping: false,
+      showAccounting: false,
       customer: {
         name: "",
         account: "",
@@ -397,4 +413,15 @@ export default {
 </script>
 
 <style>
+.customer-image{
+    display: block;
+    margin:-6px auto 0 auto;
+    padding: 0 10px;
+    margin-top:-13px; 
+    background-color: #e0e0e0; 
+    width: 140px
+}
+.left {
+    margin:0 20px;
+}
 </style>
