@@ -157,7 +157,6 @@ export default {
       supplier: {},
       category: {},
       type: {},
-      availableTypes: [],
       availableSuppliers: [],
       availableCategories: [],
       availableItems: [],
@@ -172,7 +171,11 @@ export default {
         { key: "item.brand.name", label: "Brand", sortable: false },
         { key: "item.unitsReadyProd", label: "RFP", sortable: false },
         { key: "unitsSchProd", label: "Sch/Prod", sortable: false }
-      ]
+      ],
+      availableTypes: [
+        { id: "GENERIC", name: "Generic" },
+      ],
+
     };
   },
   computed: {
@@ -198,14 +201,6 @@ export default {
   watch: {
     supplier: function(newValue, oldValue) {
       this.component.supplier = newValue;
-    },
-    category: function(newValue, oldValue) {
-      if (
-        !this.component.category ||
-        this.component.category.id != newValue.id
-      ) {
-        this.component.category = newValue;
-      }
     },
     deliveryCost: function(newValue, oldValue) {
       this.component.deliveryCost = newValue;
@@ -271,9 +266,8 @@ export default {
           if (r.data.supplier) {
             this.supplier = r.data.supplier;
           }
-          if (r.data.category) {
-            this.category = r.data.category;
-          }
+          this.category = r.data.category;
+          this.type = {id: r.data.type};
           return r.data;
         })
         .catch(e => {
@@ -325,6 +319,8 @@ export default {
         alert("Please enter Component Name and Number");
         return Promise.reject();
       }
+      this.component.category = this.category;
+      this.component.type = this.type.id;
       var formData = new FormData();
       formData.append("image", this.uploadedFile);
       formData.append("jsonComponent", JSON.stringify(this.component));
