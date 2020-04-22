@@ -1,10 +1,10 @@
 <template>
     <b-container fluid>
       <b-row style="padding-bottom: 4px; font-size: 12px">
-        <b-col cols=2>
+        <b-col cols=1>
           <b-form-checkbox size="sm" v-model="itemView">Item View</b-form-checkbox>
         </b-col>
-        <b-col cols=2 style="margin-left: -85px">
+        <b-col cols=2>
           <input class="form-control" style="font-size: 12px" type="tel" v-model="saleNumber" @keyup.enter="getSales()" placeholder="Sale"/>
         </b-col>
         <b-col cols="2">

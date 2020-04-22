@@ -12,16 +12,16 @@ Component:
 Customer:
 + Screen layout changes based on different sections (complience, etc.)
 Sale:
-- Item view: Drop down search by (On Stock, RFP)
++ Item view: Drop down search by (On Stock, RFP)
 Accounting:
 - Permissions
 - Send email to client (andy as cc: by default).
 Schedule:
 - Ability to add random reciving event on schedule.
 Item:
-- Drop down search by (On Stock, RFP)
++ Drop down search by (On Stock, RFP)
 - Sort by (number (a-z), date (created)
-- Filter by (category, brand)
++ Filter by (category, brand)
 - List of Brands and Categories update (Hania to sent).
 - Show component picture when mouse over.
 - Expiration date on item

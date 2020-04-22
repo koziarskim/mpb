@@ -76,12 +76,12 @@ public class SaleItem extends BaseEntity {
 	private Collection<SaleItemTransfer> transfersTo = new HashSet<SaleItemTransfer>();
 
 	public void updateUnits() {
-		this.unitsScheduled = 0L;
-		this.unitsProduced = 0L;
-		this.unitsShipped = 0L;
-		this.unitsTransferedTo = 0L;
-		this.unitsTransferedFrom = 0L;
-		this.unitsReturned = 0L;
+		this.unitsScheduled = 0;
+		this.unitsProduced = 0;
+		this.unitsShipped = 0;
+		this.unitsTransferedTo = 0;
+		this.unitsTransferedFrom = 0;
+		this.unitsReturned = 0;
 		
 		for(SaleItemReturn sir: this.getSaleItemReturns()) {
 			this.unitsReturned += sir.getUnitsReturned();

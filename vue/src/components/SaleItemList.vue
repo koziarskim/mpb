@@ -1,24 +1,27 @@
 <template>
     <b-container fluid>
         <b-row style="padding-bottom: 4px; font-size: 12px">
-            <b-col cols=2>
+            <b-col cols=1>
               <b-form-checkbox size="sm" v-model="itemView">Item View</b-form-checkbox>
             </b-col>
-            <b-col cols="2" style="margin-left: -85px">
+            <b-col cols=2>
               <input style="font-size: 12px" class="form-control" type="tel" v-model="numberName" @keyup.enter="getSaleItems()" placeholder="Sale"/>
             </b-col>
-            <b-col cols="2">
+            <b-col cols=2>
               <b-select option-value="id" option-text="name" :list="availableItems" v-model="item" placeholder="Item"></b-select>
             </b-col>
-            <b-col cols="2">
+            <b-col cols=2>
               <b-select option-value="id" option-text="name" :list="availableCustomers" v-model="customer" placeholder="Customer"></b-select>
             </b-col>
-              <b-col cols="2">
+            <b-col cols=2>
               <b-select option-value="id" option-text="name" :list="availableStatus" v-model="statusKv" placeholder="Status"></b-select>
             </b-col>
-            <b-col>
+            <b-col cols=2>
+              <b-select option-value="id" option-text="name" :list="availableUnitsFilters" v-model="unitsFilter" placeholder="Units"></b-select>
+            </b-col>
+            <b-col cols=1>
                 <div style="text-align: right;">
-                <b-button type="submit" size="sm" variant="primary" @click="newShipment()">New Shipment ({{selectedSaleItemIds.length}})</b-button>
+                <b-button type="submit" size="sm" variant="primary" @click="newShipment()">Ship ({{selectedSaleItemIds.length}})</b-button>
                 </div>
             </b-col>
         </b-row>
@@ -99,6 +102,11 @@ export default {
         {id: 'PENDING_TRANSFER', name: 'Pending Transfer'}
       ],
       statusKv: {},
+      availableUnitsFilters: [
+        {id: "ON_STOCK", name: "On Stock"},
+        {id: "RFP_ONLY", name: "RFP Only"}
+      ],
+      unitsFilter: {}
     };
   },
   watch: {
@@ -114,6 +122,9 @@ export default {
       this.getSaleItems();
     },
     statusKv(old_value, new_value){
+      this.getSaleItems();      
+    },
+    unitsFilter(old_value, new_value){
       this.getSaleItems();      
     },
   },
@@ -149,7 +160,8 @@ export default {
         numberName: this.numberName, 
         customerId: this.customer.id, 
         itemId: this.item.id, 
-        status: this.statusKv.id
+        status: this.statusKv.id,
+        unitsFilter: this.unitsFilter.id
       }}).then(r => {
       this.saleItems = r.data.content;
       this.pageable.totalElements = r.data.totalElements;

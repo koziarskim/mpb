@@ -55,8 +55,9 @@ class SaleItemRest {
 			@RequestParam(required = false) Long saleId,
 			@RequestParam(required = false) Long itemId, 
 			@RequestParam(required = false) Long customerId, 
-			@RequestParam(required = false) String status) {
-		Page<SaleItem> saleItems = saleItemRepo.findPageable(pageable, numberName, saleId, customerId, itemId, status);
+			@RequestParam(required = false) String status,
+			@RequestParam(required = false) String unitsFilter) {
+		Page<SaleItem> saleItems = saleItemRepo.findPageable(pageable, numberName, saleId, customerId, itemId, status, unitsFilter);
 		return this.mapToDto(saleItems);
 	}
 
