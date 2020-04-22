@@ -16,7 +16,7 @@ import org.springframework.stereotype.Repository;
 import com.noovitec.mpb.entity.Item;
 
 public interface CustomItemRepo {
-	Page<Item> findPagable(Pageable pageable, String searchKey, String searchType, boolean hideProd, boolean hideShip);
+	public Page<Item> findPagable(Pageable pageable, String numberName, Long componentId, Long brandId, Long categoryId, String unitsFilter);
 
 	@Repository
 	public class CustomItemRepoImpl implements CustomItemRepo {
@@ -27,32 +27,45 @@ public interface CustomItemRepo {
 		EntityManager entityManager;
 
 		@Override
-		public Page<Item> findPagable(Pageable pageable, String searchKey, String searchType, boolean hideProd, boolean hideShip) {
+		public Page<Item> findPagable(Pageable pageable, String numberName, Long componentId, Long brandId, Long categoryId, String unitsFilter) {
 			String q = "select distinct i from Item i "
 					+ "left join i.itemComponents ic "
 					+ "left join ic.component c "
+					+ "left join i.brand b "
+					+ "left join i.category cat "
 					+ "where i.id is not null ";
-			if(searchType.equals("item") && !searchKey.isBlank()) {
-				q += "and (upper(i.name) like concat('%',upper(:searchKey),'%') "
-					+ "or upper(i.number) like concat('%',upper(:searchKey),'%')) ";
+			if(numberName!=null && !numberName.isBlank()) {
+				q += "and (upper(i.name) like concat('%',upper(:numberName),'%') "
+					+ "or upper(i.number) like concat('%',upper(:numberName),'%')) ";
 			}
-			if(searchType.equals("component") && !searchKey.isBlank()) {
-				q += "and (upper(c.name) like concat('%',upper(:searchKey),'%') "
-						+ "or upper(c.number) like concat('%',upper(:searchKey),'%')) ";
+			if(componentId != null) {
+				q += "and c.id = :componentId ";
 			}
-			if(hideProd) {
-				q += "and i.unitsSold > i.unitsProduced ";
+			if(brandId != null) {
+				q += "and b.id = :brandId ";
 			}
-			if(hideShip) {
-				q += "and i.unitsSold > i.unitsShipped ";
+			if(categoryId != null) {
+				q += "and cat.id = :categoryId ";
+			}
+			if(unitsFilter != null && unitsFilter.equalsIgnoreCase("ON_STOCK")) {
+				q += "and i.unitsOnStock > 0 ";
+			}
+			if(unitsFilter != null && unitsFilter.equalsIgnoreCase("RFP_ONLY")) {
+				q += "and i.unitsReadyProd > 0 ";
 			}
 			q += "order by i.updated desc";
 			Query query = entityManager.createQuery(q);
-			if(searchType.equals("item") && !searchKey.isBlank()) {
-				query.setParameter("searchKey", searchKey);
+			if(numberName!=null && !numberName.isBlank()) {
+				query.setParameter("numberName", numberName);
 			}
-			if(searchType.equals("component") && !searchKey.isBlank()) {
-				query.setParameter("searchKey", searchKey);
+			if(componentId != null) {
+				query.setParameter("componentId", componentId);
+			}
+			if(brandId != null) {
+				query.setParameter("brandId", brandId);
+			}
+			if(categoryId != null) {
+				query.setParameter("categoryId", categoryId);
 			}
 			long total = query.getResultStream().count();
 			@SuppressWarnings("unchecked")

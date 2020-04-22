@@ -91,11 +91,12 @@ class ItemRest {
 
 	@GetMapping("/item/pageable")
 	Page<ItemListDto> getAllPageable(@RequestParam(name = "pageable", required = false) Pageable pageable,
-			@RequestParam(name = "searchKey", required = false) String searchKey, 
-			@RequestParam(name = "searchType", required = false) String searchType,
-			@RequestParam(name = "hideProd", required = false) boolean hideProd,
-			@RequestParam(name = "hideShip", required = false) boolean hideShip) {
-		Page<Item> items = itemRepo.findPagable(pageable, searchKey, searchType, hideProd, hideShip);
+			@RequestParam(required = false) String numberName, 
+			@RequestParam(required = false) Long componentId,
+			@RequestParam(required = false) Long brandId,
+			@RequestParam(required = false) Long categoryId,
+			@RequestParam(required = false) String unitsFilter) {
+		Page<Item> items = itemRepo.findPagable(pageable, numberName, componentId, brandId, categoryId, unitsFilter);
 		Page<ItemListDto> dtos = items.map(item -> {
 			ItemListDto dto = new ItemListDto();
 			dto.setId(item.getId());

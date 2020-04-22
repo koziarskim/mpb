@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.entity.Brand;
 import com.noovitec.mpb.repo.BrandRepo;
 
@@ -26,5 +27,10 @@ class BrandRest {
 	@GetMapping("/brand")
 	Collection<Brand> getAll() {
 		return brandRepo.findAll();
+	}
+	
+	@GetMapping("/brand/kv")
+	Collection<KeyValueDto> findAllKvs() {
+		return brandRepo.findAllKvs();
 	}
 }
