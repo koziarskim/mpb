@@ -1,28 +1,20 @@
 In Progress/Done:
 Purchase
-- Freight terms
-- Pay Terms
+- Search by supplier.
+- Freight terms (use supplierss's by defaut)
+- Pay Terms (use sppliers by default)
 Component:
-+ On List (Name primary, number secondary)
-+ Component Type (list) - Hania and Michal to sent list.
-+ Search by Category, Type.
-+ Drop box search add "On Stock Only".
+- Update component Type (Hania or Michal to sent me list).
 - Expiration date on component and item
 - Component and item report popup baed on expiration
-Customer:
-+ Screen layout changes based on different sections (complience, etc.)
-Sale:
-+ Item view: Drop down search by (On Stock, RFP)
 Accounting:
 - Permissions
 - Send email to client (andy as cc: by default).
 Schedule:
 - Ability to add random reciving event on schedule.
 Item:
-+ Drop down search by (On Stock, RFP)
 - Sort by (number (a-z), date (created)
-+ Filter by (category, brand)
-- List of Brands and Categories update (Hania to sent).
+- Update list of Brands and Categories update (Hania or Michal to sent me list).
 - Show component picture when mouse over.
 - Expiration date on item
 Shipment:
