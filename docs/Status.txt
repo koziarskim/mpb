@@ -4,8 +4,8 @@ Purchase
 - Pay Terms
 Component:
 - On List (Name primary, number secondary)
-- Component Type (list) - Hania and Michal to sent list.
-- Search by Category, Type.
++ Component Type (list) - Hania and Michal to sent list.
++ Search by Category, Type.
 - Drop box search add "On Stock Only".
 - Expiration date on component and item
 - Component and item report popup baed on expiration

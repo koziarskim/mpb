@@ -7,11 +7,14 @@
       <b-col cols=2>
         <b-select option-value="id" option-text="name" :list="availableSuppliers" v-model="supplierKv" placeholder="Supplier"></b-select>
       </b-col>
-      <b-col cols=3>
+      <b-col cols=2>
         <b-select option-value="id" option-text="name" :list="availableItems" v-model="itemKv" placeholder="Item"></b-select>
       </b-col>
       <b-col cols=2>
         <b-select option-value="id" option-text="name" :list="availableUnitFilters" v-model="unitFilter" placeholder="Units"></b-select>
+      </b-col>
+      <b-col cols=2>
+        <b-select option-value="id" option-text="name" :list="availableComponentTypes" v-model="componentType" placeholder="Filter"></b-select>
       </b-col>
       <b-col>
         <div style="text-align: right;">
@@ -85,10 +88,12 @@ export default {
       selectedComponents: [],
       availableUnitFilters: [
         {id: "ONLY_SHORT", name: "Units Short"},
-        {id: "OUT_STOCK", name: "Out of Stock"},
+        {id: "ON_STOCK", name: "On Stock"},
         {id: "OPEN_SALE", name: "Open Sales"},
       ],
       unitFilter: {},
+      availableComponentTypes: [],
+      componentType: {}
     };
   },
   watch: {
@@ -99,6 +104,9 @@ export default {
       this.getComponents();
     },
     unitFilter(old_value, new_value){
+      this.getComponents();
+    },
+    componentType(old_value, new_value){
       this.getComponents();
     }
   },
@@ -154,7 +162,7 @@ export default {
     },
     getComponents() {
       var query = {params: {pageable: this.pageable, nameSearch: this.nameSearch, supplierId: this.supplierKv.id,
-          itemId: this.itemKv.id, unitFilter: this.unitFilter.id}};
+          itemId: this.itemKv.id, unitFilter: this.unitFilter.id, componentTypeId: this.componentType.id}};
       http.get("/component/pageable", query).then(response => {
         this.components = response.data.content;
         this.pageable.totalElements = response.data.totalElements;
@@ -162,12 +170,15 @@ export default {
         console.log("API error: " + e);
       });
     },
+    getAvailableComponentTypes() {
+      http.get("/registery/componentType/kv").then(r => {
+        this.availableComponentTypes = r.data;
+      }).catch(e => {console.log("API error: " + e);});
+    },
     getAvailableSuppliers() {
       http.get("/supplier/kv").then(r => {
         this.availableSuppliers = r.data;
-      }).catch(e => {
-        console.log("API error: " + e);
-      });
+      }).catch(e => {console.log("API error: " + e);});
     },
     getAvailableItems() {
       http.get("/item/kv").then(r => {
@@ -205,6 +216,7 @@ export default {
     this.getComponents();
     this.getAvailableSuppliers();
     this.getAvailableItems();
+    this.getAvailableComponentTypes();
   }
 };
 </script>

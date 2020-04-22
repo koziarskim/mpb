@@ -32,12 +32,10 @@ import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.entity.Attachment;
 import com.noovitec.mpb.entity.Category;
 import com.noovitec.mpb.entity.Component;
-import com.noovitec.mpb.repo.AttachmentRepo;
 import com.noovitec.mpb.repo.CategoryRepo;
 import com.noovitec.mpb.repo.ComponentRepo;
 import com.noovitec.mpb.service.AttachmentService;
 import com.noovitec.mpb.service.ComponentService;
-import com.noovitec.mpb.service.CrudService;
 import com.noovitec.mpb.service.ItemService;
 
 @RestController
@@ -47,11 +45,7 @@ class ComponentRest {
 	@Autowired
 	private ObjectMapper objectMapper;
 	@Autowired
-	private AttachmentRepo attachmentRepo;
-	@Autowired
 	private CategoryRepo categoryRepo;
-	@Autowired
-	private CrudService crudService;
 	@Autowired
 	private ComponentService componentService;
 	@Autowired
@@ -76,8 +70,9 @@ class ComponentRest {
 			@RequestParam(required = false) String nameSearch, 
 			@RequestParam(required = false) Long supplierId,
 			@RequestParam(required = false) Long itemId,
-			@RequestParam(required = false) String unitFilter) {
-		Page<Component> components = componentRepo.findPage(pageable, nameSearch, supplierId, itemId,unitFilter);
+			@RequestParam(required = false) String unitFilter,
+			@RequestParam(required = false) Long componentTypeId) {
+		Page<Component> components = componentRepo.findPage(pageable, nameSearch, supplierId, itemId,unitFilter, componentTypeId);
 		Page<ComponentDto> dtos = components.map(component -> {
 			ComponentDto dto = new ComponentDto();
 			dto.setId(component.getId());

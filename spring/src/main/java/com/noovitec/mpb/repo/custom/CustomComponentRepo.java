@@ -17,7 +17,8 @@ import org.springframework.stereotype.Repository;
 import com.noovitec.mpb.entity.Component;
 
 public interface CustomComponentRepo {
-	Page<Component> findPage(Pageable pageable, String nameSearch, Long supplierId, Long itemId, String unitFilter);
+	Page<Component> findPage(Pageable pageable, String nameSearch, Long supplierId, Long itemId, String unitFilter,
+			Long componentTypeId);
 
 	@Repository
 	public class CustomComponentRepoImpl implements CustomComponentRepo {
@@ -28,10 +29,12 @@ public interface CustomComponentRepo {
 		EntityManager entityManager;
 
 		@Override
-		public Page<Component> findPage(Pageable pageable, String nameSearch, Long supplierId, Long itemId, String unitFilter) {
+		public Page<Component> findPage(Pageable pageable, String nameSearch, Long supplierId, Long itemId, String unitFilter,
+				Long componentTypeId) {
 			String q = "select distinct c from Component c "
 					+ "left join c.supplier supplier "
 					+ "left join c.itemComponents ic "
+					+ "left join c.componentType ct "
 					+ "where c.id is not null ";
 			if (nameSearch != null && !nameSearch.isEmpty()) {
 				q += "and (upper(c.number) like concat('%',upper(:nameSearch),'%') ";
@@ -40,14 +43,17 @@ public interface CustomComponentRepo {
 			if (itemId != null) {
 				q += "and ic.item.id = :itemId ";
 			}
+			if (componentTypeId != null) {
+				q += "and ct.id = :componentTypeId ";
+			}
 			if (supplierId != null) {
 				q += "and supplier.id = :supplierId ";
 			}
 			if (unitFilter !=null && unitFilter.equalsIgnoreCase("ONLY_SHORT")) {
 				q += "and c.unitsShort > 0";
 			}
-			if (unitFilter !=null && unitFilter.equalsIgnoreCase("OUT_STOCK")) {
-				q += "and c.unitsOnStock < 0";
+			if (unitFilter !=null && unitFilter.equalsIgnoreCase("ON_STOCK")) {
+				q += "and c.unitsOnStock > 0";
 			}
 			if (unitFilter !=null && unitFilter.equalsIgnoreCase("OPEN_SALE")) {
 				q += "and c.unitsSoldNotProd > 0";
@@ -63,6 +69,9 @@ public interface CustomComponentRepo {
 			}
 			if (itemId != null) {
 				query.setParameter("itemId", itemId);
+			}
+			if (componentTypeId != null) {
+				query.setParameter("componentTypeId", componentTypeId);
 			}
 			long total = query.getResultStream().count();
 			@SuppressWarnings("unchecked")
