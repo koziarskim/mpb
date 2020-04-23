@@ -7,6 +7,11 @@ Component:
 - Update component Type (Hania or Michal to sent me list).
 - Expiration date on component and item
 - Component and item report popup baed on expiration
+- Average price (based on all receivings)
+- Last price (based on last receiving)
+Receiving:
+- Allow to enter the price of component and invoice #
+- Allow to updated receiving (price, invoice number).
 Accounting:
 - Permissions
 - Send email to client (andy as cc: by default).

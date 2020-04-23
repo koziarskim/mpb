@@ -1,14 +1,12 @@
 <template>
     <b-container fluid>
-      <vue-cal ref="vuecal" hide-view-selector :min-event-width=0 :events="events" :time-from="6 * 60" :time-to="18 * 60" 
+      <vue-cal ref="vuecal" @cell-click="createEvent" hide-view-selector :min-event-width=0 :events="events" @ready="fetchEvents" @view-change="fetchEvents" :time-from="6 * 60" :time-to="18 * 60" 
       :hide-weekdays="[7]">
         <template v-slot:event="{ event, view }">
+          <span>edit</span>
           <div :id="'popover-'+event.id">
             {{event.customer}}<br/>
             {{event.number}}<br/>
-            <!-- {{event.dc}}, {{event.city}}, {{event.state}}<br/> -->
-            <!-- {{event.load}}<br/> -->
-            <!-- {{event.pallets}}<br/> -->
           </div>
             <b-popover placement="top" :target="'popover-'+event.id">
               <template v-slot:title><b-link role="button" @click="goToShipment(event.id)"><b>Shipment #: </b>{{event.number}}</b-link></template>
@@ -19,6 +17,9 @@
             </b-popover>
         </template>
       </vue-cal>
+      <div v-if="calendarEventVisible">
+			  <calendar-event event-type="DELIVERY" :start-time="startTime" v-on:close="closeCalendarEvent"></calendar-event>
+		</div>  
     </b-container>
 </template>
 <script>
@@ -26,13 +27,32 @@ import http from "../http-common";
 import router from "../router";
 
 export default {
+  components: {
+    CalendarEvent: () => import("./modals/CalendarEvent"),
+  },
   data() {
     return {
+      calendarEventVisible: false,
+      startTime: null,
       visiblePopover: "",
       events: [],
     };
   },
   methods: {
+    createEvent(startTime){
+      this.startTime = startTime;
+      this.calendarEventVisible = true;
+    },
+    closeCalendarEvent(event){
+      if(event){
+        //TODO: http POST
+        this.events.push(event);
+      }
+      this.calendarEventVisible = false;
+    },
+    fetchEvents ({ view, startDate, endDate, week }) {
+      console.log('Fetching events', { view, startDate, endDate, week })
+    },
     goToShipment(shipmentId){
       router.push("/shipmentEdit/"+shipmentId);
     },
