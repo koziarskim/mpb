@@ -48,6 +48,8 @@ public interface ShipmentReceiver {
 			boolean oldReady = message.isOldReady();
 			boolean ready = message.isReady();
 			if(!oldReady && ready) {
+				//TODO: Shipment might not be created yet. Transaction was not completed
+				//Need to call this from API Interceptor or Transaction Complete Event.
 				shipment = shipmentRepo.findById(message.getId()).get();
 				emails = new ArrayList<>(Arrays.asList("shipping@marketplacebrands.com"));
 				body.put("shipmentNumber", shipment.getNumber());

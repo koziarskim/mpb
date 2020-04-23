@@ -39,8 +39,11 @@ export default {
     };
   },
   methods: {
-    createEvent(startTime){
-      this.startTime = startTime;
+    createEvent(dateObject){
+      if(!dateObject.date){
+        return;
+      }
+      this.startTime = dateObject.date;
       this.calendarEventVisible = true;
     },
     closeCalendarEvent(event){

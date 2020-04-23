@@ -31,6 +31,8 @@ Shipment:
 ------------------------------------------------------------------
 
 Backlog
+- Keep the list of jms messages in requeuest until transaction is over. Then call JMS Receivier.
+	Creating new shipment is not created until transaction completes. Jms runs before trans complete.
 - Setting file
 - Backup all schemas
 - Backup files (compress?)

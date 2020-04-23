@@ -1,11 +1,12 @@
 <template>
   <b-container fluid>
     <b-modal centered size="sm" v-model="visible" :hide-header="true" :hide-footer="true">
-      <div style="text-align: right">
-      <b-button size="sm" @click="close()" variant="success">Close</b-button>
-      </div>
       <b-row>
+        <b-col cols=9>
+          <div>{{getWeekDay()}}</div>
+        </b-col>
         <b-col cols=1>
+          <b-button size="sm" @click="close()" variant="success">Close</b-button>
         </b-col>
       </b-row>
     </b-modal>
@@ -36,6 +37,9 @@ export default {
   computed: {},
   watch: {},
   methods: {
+    getWeekDay(){
+      return moment(this.startTime).format("MMMM, dddd DD")
+    },
     validate() {
       return true;
     },
