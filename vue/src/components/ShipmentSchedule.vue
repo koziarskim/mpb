@@ -55,13 +55,16 @@ export default {
       this.calendarEventVisible = false;
     },
     fetchEvents ({ view, startDate, endDate, week }) {
-      console.log('Fetching events', { view, startDate, endDate, week })
+      this.getShipmentEvents(startDate, endDate);
     },
     goToShipment(shipmentId){
       router.push("/shipmentEdit/"+shipmentId);
     },
-    getShipmentEvents(){
-      http.get("/shipment/events/ready").then(r=> {
+    getShipmentEvents(startDate, endDate){
+      http.get("/shipment/events", {params: {
+        startDate: startDate.format("YYYY-MM-DD"),
+        endDate: endDate.format("YYYY-MM-DD"),
+      }}).then(r=> {
         r.data.forEach(e=> {
           e.class = e.klass;
         })
@@ -72,7 +75,6 @@ export default {
     }
   },
   mounted() {
-    this.getShipmentEvents();
   }
 };
 </script>

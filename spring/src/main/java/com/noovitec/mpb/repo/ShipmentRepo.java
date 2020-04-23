@@ -20,8 +20,13 @@ public interface ShipmentRepo extends PagingAndSortingRepository<Shipment, Long>
 	@Query("select count(*) from Shipment where date(created) = :date")
 	Long getLastNumber(LocalDate date);
 	
-	@Query("select ship from Shipment ship where ship.ready = true and ship.shippedDate is null and ship.shippingDate is not null and ship.shippingTime is not null")
-	List<Shipment> getReadyToShip();
+	@Query("select ship from Shipment ship where ship.ready = true "
+			+ "and ship.shippedDate is null "
+			+ "and ship.shippingDate is not null "
+			+ "and ship.shippingTime is not null "
+			+ "and ship.shippingDate >= :startDate "
+			+ "and ship.shippingDate <= :endDate ")
+	List<Shipment> getReadyToShip(LocalDate startDate, LocalDate endDate);
 
 	@Query(value="select ship.id from Shipment ship where ship.number = :number")
 	public Long getIdByNumber(String number);

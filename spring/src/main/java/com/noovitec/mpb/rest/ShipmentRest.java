@@ -39,9 +39,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfStamper;
+import com.noovitec.mpb.dto.CalendarEventDto;
 import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.dto.ShipmentDto;
-import com.noovitec.mpb.dto.CalendarEventDto;
 import com.noovitec.mpb.entity.Item;
 import com.noovitec.mpb.entity.Sale;
 import com.noovitec.mpb.entity.Shipment;
@@ -137,9 +137,11 @@ class ShipmentRest {
 		return new HttpEntity<byte[]>(data, header);
 	}
 
-	@GetMapping("/shipment/events/ready")
-	HttpEntity<List<CalendarEventDto>> getEvents() {
-		List<CalendarEventDto> shipments = shipmentService.findEvents();
+	@GetMapping("/shipment/events")
+	HttpEntity<List<CalendarEventDto>> getEvents(
+			@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate, 
+			@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate ) {
+		List<CalendarEventDto> shipments = shipmentService.findEvents(startDate, endDate);
 		return ResponseEntity.ok().body(shipments);
 	}	
 

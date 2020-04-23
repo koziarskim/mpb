@@ -1,6 +1,7 @@
 package com.noovitec.mpb.service;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +20,7 @@ import com.noovitec.mpb.repo.ShipmentRepo;
 public interface ShipmentService {
 
 	public Shipment save(Shipment shipment) throws IOException;
-	public List<CalendarEventDto> findEvents();
+	public List<CalendarEventDto> findEvents(LocalDate startDate, LocalDate endData);
 	
 	@Transactional
 	@Service("shipmentServiceImpl")
@@ -49,8 +50,8 @@ public interface ShipmentService {
 			return shipment;
 		}
 		
-		public List<CalendarEventDto> findEvents() {
-			List<Shipment> shipments = shipmentRepo.getReadyToShip();
+		public List<CalendarEventDto> findEvents(LocalDate startDate, LocalDate endDate) {
+			List<Shipment> shipments = shipmentRepo.getReadyToShip(startDate, endDate);
 			List<CalendarEventDto> events = new ArrayList<CalendarEventDto>();
 			shipments.forEach(shipment-> {
 				CalendarEventDto dto = new CalendarEventDto();
