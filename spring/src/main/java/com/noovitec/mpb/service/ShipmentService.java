@@ -12,14 +12,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.noovitec.mpb.dto.ShipmentEventDto;
+import com.noovitec.mpb.dto.CalendarEventDto;
 import com.noovitec.mpb.entity.Shipment;
 import com.noovitec.mpb.repo.ShipmentRepo;
 
 public interface ShipmentService {
 
 	public Shipment save(Shipment shipment) throws IOException;
-	public List<ShipmentEventDto> findEvents();
+	public List<CalendarEventDto> findEvents();
 	
 	@Transactional
 	@Service("shipmentServiceImpl")
@@ -49,21 +49,21 @@ public interface ShipmentService {
 			return shipment;
 		}
 		
-		public List<ShipmentEventDto> findEvents() {
+		public List<CalendarEventDto> findEvents() {
 			List<Shipment> shipments = shipmentRepo.getReadyToShip();
-			List<ShipmentEventDto> events = new ArrayList<ShipmentEventDto>();
+			List<CalendarEventDto> events = new ArrayList<CalendarEventDto>();
 			shipments.forEach(shipment-> {
-				ShipmentEventDto dto = new ShipmentEventDto();
+				CalendarEventDto dto = new CalendarEventDto();
 				dto.setId(shipment.getId());
-				dto.setNumber(shipment.getNumber());
-				dto.setCustomer(shipment.getCustomer()==null?"":shipment.getCustomer().getName());
+				dto.setHeading1(shipment.getNumber());
+				dto.setHeading2(shipment.getCustomer()==null?"":shipment.getCustomer().getName());
+				
+				dto.setLine1(shipment.getCustomer()==null?"":shipment.getCustomer().getName());
 				if(shipment.getShippingAddress()!=null){
-					dto.setDc(shipment.getShippingAddress().getDc());
-					dto.setCity(shipment.getShippingAddress().getCity());
-					dto.setState(shipment.getShippingAddress().getState());
+					dto.setLine2(shipment.getShippingAddress().getDc()+", "+shipment.getShippingAddress().getCity()+", "+shipment.getShippingAddress().getState());
 				}
-				dto.setLoad(shipment.getLoadNumber());
-				dto.setPallets(shipment.getTotalPallets());
+				dto.setLine3(shipment.getLoadNumber());
+				dto.setLine4(String.valueOf(shipment.getTotalPallets()));
 				DateTimeFormatter df = DateTimeFormatter.ofPattern("YYYY-MM-dd");
 				DateTimeFormatter tf = DateTimeFormatter.ofPattern("HH:mm");
 				dto.setStart(shipment.getShippingDate().format(df)+" "+shipment.getShippingTime().format(tf));

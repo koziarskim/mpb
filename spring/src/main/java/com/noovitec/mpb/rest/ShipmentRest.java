@@ -41,7 +41,7 @@ import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfStamper;
 import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.dto.ShipmentDto;
-import com.noovitec.mpb.dto.ShipmentEventDto;
+import com.noovitec.mpb.dto.CalendarEventDto;
 import com.noovitec.mpb.entity.Item;
 import com.noovitec.mpb.entity.Sale;
 import com.noovitec.mpb.entity.Shipment;
@@ -138,8 +138,8 @@ class ShipmentRest {
 	}
 
 	@GetMapping("/shipment/events/ready")
-	HttpEntity<List<ShipmentEventDto>> getEvents() {
-		List<ShipmentEventDto> shipments = shipmentService.findEvents();
+	HttpEntity<List<CalendarEventDto>> getEvents() {
+		List<CalendarEventDto> shipments = shipmentService.findEvents();
 		return ResponseEntity.ok().body(shipments);
 	}	
 

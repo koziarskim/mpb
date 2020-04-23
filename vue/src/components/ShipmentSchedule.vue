@@ -3,17 +3,18 @@
       <vue-cal ref="vuecal" @cell-click="createEvent" hide-view-selector :min-event-width=0 :events="events" @ready="fetchEvents" @view-change="fetchEvents" :time-from="6 * 60" :time-to="18 * 60" 
       :hide-weekdays="[7]">
         <template v-slot:event="{ event, view }">
-          <span>edit</span>
           <div :id="'popover-'+event.id">
-            {{event.customer}}<br/>
-            {{event.number}}<br/>
+            {{event.heading1}}<br/>
+            {{event.heading2}}<br/>
           </div>
             <b-popover placement="top" :target="'popover-'+event.id">
-              <template v-slot:title><b-link role="button" @click="goToShipment(event.id)"><b>Shipment #: </b>{{event.number}}</b-link></template>
-                <b>Customer:</b> {{event.customer}}<br/>
-                <b>Shipping Address:</b> {{event.dc}}, {{event.city}}, {{event.state}}<br/>
-                <b>Load Number:</b> {{event.load}}<br/>
-                <b>Total Pallets:</b> {{event.pallets}}
+              <template v-slot:title>
+                <b-link role="button" @click="goToShipment(event.id)"><b>Shipment #: </b>{{event.heading1}}</b-link>
+              </template>
+                <b>Customer:</b> {{event.line1}}<br/>
+                <b>Shipping Address:</b> {{event.line2}}<br/>
+                <b>Load Number:</b> {{event.line3}}<br/>
+                <b>Total Pallets:</b> {{event.line4}}
             </b-popover>
         </template>
       </vue-cal>
