@@ -7,3 +7,6 @@ see all processes: jps -m
 npm:
 npm cache clean --force
 npm install
+
+display linux dir size:
+du -sh folder/

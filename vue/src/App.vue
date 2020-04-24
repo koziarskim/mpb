@@ -344,6 +344,15 @@ export default {
   overflow: hidden; 
   white-space: nowrap;
 }
+.chkbx-lg-bottom {
+  width: 25px;
+  height: 25px;
+  display: block;
+}
+.chkbx-lg-right {
+  width: 25px;
+  height: 25px;
+}
 .fade-out {
   position: absolute;
   z-index: -1;

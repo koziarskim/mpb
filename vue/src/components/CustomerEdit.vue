@@ -86,11 +86,13 @@
         <label class="top-label">Vendor Portal:</label>
         <input class="form-control" v-model="customer.vendorPortal">
       </b-col>
-      <b-col cols=5>
+      <b-col cols=4>
         <label class="top-label">Vendor Portal Credentials:</label>
-        <label class="top-label" style="margin-left: 320px">EDI:</label>
-        <input type="checkbox" style="margin-left: 5px;" v-model="customer.edi">
         <input class="form-control" v-model="customer.vendorGuide">
+      </b-col>
+      <b-col cols=1>
+        <label class="top-label">EDI:</label>
+        <input type="checkbox" class="chkbx-lg-bottom" v-model="customer.edi">
       </b-col>
       <b-col cols=3>
         <label class="top-label">Ship To:</label>
@@ -105,7 +107,7 @@
     <b-row>
       <b-col cols=2>
         <br/><label class="top-label">Price Ticket:</label>
-        <input type="checkbox" style="margin-left: 5px;" v-model="customer.priceTicket"><br/>
+        <input type="checkbox" class="chkbx-lg-bottom" v-model="customer.priceTicket"><br/>
       </b-col>
       <b-col cols=4>
         <label class="top-label">Pre Ticketing Ordering Source:</label>
@@ -120,16 +122,18 @@
     <b-row>
       <b-col cols=2>
         <br/><label class="top-label">Seasonal Carton:</label>
-        <input type="checkbox" style="margin-left: 5px;" v-model="customer.seasonalCarton"><br/>
+        <input type="checkbox" class="chkbx-lg-bottom" v-model="customer.seasonalCarton"><br/>
       </b-col>
       <b-col cols=4>
         <label class="top-label">Seasonal Carton Requirements:</label>
         <b-form-textarea type="text" :rows="3" v-model="customer.cartonRequirements"></b-form-textarea>
       </b-col>
       <b-col cols=2>
-        <label class="top-label">Carton Label:</label>
-        <input type="checkbox" style="margin-left: 5px;" v-model="customer.cartonLabel"><br/>
-        <label class="top-label" style="margin-top: 20px">Label Type:</label>
+        <div style="display:flex">
+          <div style="margin-top:5px" class="top-label">Carton Label:</div>
+          <input type="checkbox" class="chkbx-lg-right" v-model="customer.cartonLabel">
+        </div>
+        <label style="margin-top:20px" class="top-label">Label Type:</label>
         <b-select option-value="id" option-text="name" :list="availableLabelTypes" v-model="customer.labelType"></b-select>
       </b-col>
       <b-col cols=4>
@@ -141,7 +145,7 @@
     <b-row>
       <b-col cols=2>
         <br/><label class="top-label">Season Pallet Mark:</label>
-        <input type="checkbox" style="margin-left: 5px;" v-model="customer.seasonPalletMark">
+        <input type="checkbox" class="chkbx-lg-bottom" v-model="customer.seasonPalletMark">
       </b-col>
       <b-col cols=4>
         <label class="top-label">Seasonal Pallet Requirements:</label>
@@ -162,21 +166,21 @@
     </b-link>
     <div v-if="showShipping">
     <b-row>
-      <b-col cols=2>
-        <label class="top-label">Routing:</label>
-        <input type="checkbox" style="margin-left: 5px;" v-model="customer.routing">
+      <b-col cols=2 style="display: flex">
+        <div style="margin-top:3px" class="top-label">Routing:</div>
+        <input class="chkbx-lg-right" type="checkbox" style="margin-left: 5px;" v-model="customer.routing">
       </b-col>
       <b-col cols=2>
-        <label class="top-label">Routing Guide:</label>
-        <input type="checkbox" style="margin-left: 5px;" v-model="customer.routingGuide">
+        <div style="margin-top:3px" class="top-label">Routing Guide:</div>
+        <input class="chkbx-lg-right" type="checkbox" style="margin-left: 5px;" v-model="customer.routingGuide">
       </b-col>
       <b-col cols=4>
-        <label class="top-label">ASN:</label>
-        <input type="checkbox" style="margin-left: 5px;" v-model="customer.asn"><br/>
+        <div style="margin-top:3px" class="top-label">ASN:</div>
+        <input class="chkbx-lg-right" type="checkbox" style="margin-left: 5px;" v-model="customer.asn"><br/>
       </b-col>
       <b-col cols=3>
-        <label class="top-label">Claim:</label>
-        <input type="checkbox" style="margin-left: 5px;" v-model="customer.claim">
+        <div style="margin-top:3px" class="top-label">Claim:</div>
+        <input class="chkbx-lg-right" type="checkbox" style="margin-left: 5px;" v-model="customer.claim">
       </b-col>
     </b-row>
     <b-row>
@@ -196,9 +200,9 @@
         <label class="top-label">BOL & Packaging Requirements:</label>
         <b-form-textarea type="text" :rows="3" v-model="customer.bolReqirements"></b-form-textarea>
         <b-row style="margin-bottom: -7px">
-          <b-col cols=6>
-            <br/><label class="top-label">Preffered Carrier:</label>
-            <input type="checkbox" style="margin-left: 5px;" v-model="customer.carrier"><br/>
+          <b-col cols=6 style="display:flex; margin-top: 22px">
+            <div style="margin-top:3px" class="top-label">Preffered Carrier:</div>
+            <input class="chkbx-lg-right" type="checkbox" style="margin-left: 5px;" v-model="customer.carrier">
           </b-col>
           <b-col cols=6>
             <label class="top-label">Pallet Type:</label>
@@ -305,9 +309,8 @@ export default {
         { id: "STANDARD", name: "Standard" },
       ],
       availablePalletTypes: [
-        { id: "GRADE_1", name: "4 X 6" },
-        { id: "GRADE_B", name: "Standard" },
-        { id: "CHEP", name: "Standard" },
+        { id: "GRADE_A", name: "Grade A" },
+        { id: "CHEP", name: "Chep" },
       ],
       invoiceTypeKv: {}
     };
