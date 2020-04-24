@@ -70,7 +70,14 @@ export default {
     };
   },
   computed: {},
-  watch: {},
+  watch: {
+    'event.startTime': {
+      deep: true,
+      handler(newValue, oldValue){
+        this.event.endTime = moment(newValue, "HH:mm").add(1, 'hour').format("HH:mm");
+      }
+    }
+  },
   methods: {
     allowEdit(){
       return this.event.type == 'SHIPMENT'?false:true;

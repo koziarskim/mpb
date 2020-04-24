@@ -52,6 +52,8 @@ export default {
         startDate: moment(dateObject.date).format("YYYY-MM-DD"),
         endDate: moment(dateObject.date).format("YYYY-MM-DD"),
         start: dateObject.date.format("YYYY-MM-DD"),
+        startTime: moment().hour(8).minute(0).format("HH:mm"),
+        endTime: moment().hour(9).minute(0).format("HH:mm"),
         type: "DELIVERY"
       }
       this.calendarEventVisible = true;
@@ -66,11 +68,11 @@ export default {
       }
     },
     editEvent(calendarEvent){
-      this.event = calendarEvent;
-      this.event.startDate = moment(calendarEvent.start).format("YYYY-MM-DD");
-      this.event.endDate = moment(calendarEvent.end).format("YYYY-MM-DD");
-      this.event.startTime = moment(calendarEvent.start).format("HH:mm");
-      this.event.endTime = moment(calendarEvent.end).format("HH:mm");
+      calendarEvent.startDate = moment(calendarEvent.start).format("YYYY-MM-DD");
+      calendarEvent.endDate = moment(calendarEvent.end).format("YYYY-MM-DD");
+      calendarEvent.startTime = moment(calendarEvent.start).format("HH:mm");
+      calendarEvent.endTime = moment(calendarEvent.end).format("HH:mm");
+      this.event = { ...calendarEvent };
       this.calendarEventVisible = true;
     },
     closeCalendarEvent(calendarEvent){
