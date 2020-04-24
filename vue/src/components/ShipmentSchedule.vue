@@ -59,10 +59,10 @@ export default {
     getStyleClass(calendarEvent){
       var styleClass = "mpb-default-event";
       if(calendarEvent.type == 'SHIPMENT'){
-        return "mpb-default-event";
+        return "mpb-shipment-event";
       }
       if(calendarEvent.type == 'DELIVERY'){
-        return "mpb-default-event";
+        return "mpb-delivery-event";
       }
     },
     editEvent(calendarEvent){
@@ -121,6 +121,20 @@ export default {
 }
 .mpb-default-event {
   background-color: #9ff17566 !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  border: 1px solid black !important;
+  color: black !important;
+}
+.mpb-shipment-event {
+  background-color: #9ff17566 !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  border: 1px solid black !important;
+  color: black !important;
+}
+.mpb-delivery-event {
+  background-color: #f1a97566 !important;
   font-size: 10px !important;
   font-weight: 700 !important;
   border: 1px solid black !important;
