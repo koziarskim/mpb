@@ -7,7 +7,7 @@
             {{event.heading1}}<br/>
             {{event.heading2}}<br/>
           </div>
-            <b-popover placement="top" :target="'popover-'+event.id">
+            <!-- <b-popover placement="top" :target="'popover-'+event.id">
               <template v-slot:title>
                 <b-link role="button" @click="goToShipment(event.id)"><b>Shipment #: </b>{{event.heading1}}</b-link>
               </template>
@@ -15,7 +15,7 @@
                 <b>Shipping Address:</b> {{event.line1}}<br/>
                 <b>Load Number:</b> {{event.line2}}<br/>
                 <b>Total Pallets:</b> {{event.line3}}
-            </b-popover>
+            </b-popover> -->
         </template>
       </vue-cal>
       <div v-if="calendarEventVisible">

@@ -85,6 +85,7 @@ export default {
       this.$emit("close", event);
     },
     save(){
+      if(!this.validate()){return}
       http.post("/calendarEvent", this.event).then(r => {
         this.close(this.event);
       }).catch(e=> {console.log("API error: " + e);})
