@@ -15,9 +15,10 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 public class JmsMessage implements Serializable{
-
+	
 	private static final long serialVersionUID = 2621949284279146593L;
-	protected Long id;
+	private Long id;
+	private String type;
 	@Builder.Default
 	private String tenant = MpbTenantContext.getCurrentTenant();
 

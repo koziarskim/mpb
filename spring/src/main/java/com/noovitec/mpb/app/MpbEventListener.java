@@ -11,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.task.TaskExecutor;
-import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
 
 import com.noovitec.mpb.entity.BaseEntity;
@@ -19,6 +18,7 @@ import com.noovitec.mpb.entity.Customer;
 import com.noovitec.mpb.entity.Sale;
 import com.noovitec.mpb.entity.Shipment;
 import com.noovitec.mpb.jms.message.JmsCustomerMessage;
+import com.noovitec.mpb.jms.message.JmsMessage;
 import com.noovitec.mpb.jms.message.JmsSaleMessage;
 import com.noovitec.mpb.jms.message.JmsShipmentMessage;
 import com.noovitec.mpb.jms.message.JmsUtil;
@@ -35,15 +35,10 @@ public class MpbEventListener implements PostInsertEventListener, PostUpdateEven
     @Autowired
     private TaskExecutor taskExecutor;
     @Autowired
-    private JmsTemplate jmsTemplate;
-    @Autowired
     private JmsUtil jmsUtil;
-    @Autowired
-    private MpbRequestContext requestContext;
     
 	@Override
 	public boolean requiresPostCommitHanding(EntityPersister persister) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 	
@@ -70,8 +65,9 @@ public class MpbEventListener implements PostInsertEventListener, PostUpdateEven
 	    			.ready(jmsUtil.getBoolean("ready", keys, state))
 	    			.oldShippedDate(jmsUtil.getLocalDate("shippedDate", keys, null))
 	    			.shippedDate(jmsUtil.getLocalDate("shippedDate", keys, state))
+	    			.type("shipmentUpdated")
 	    			.build();
-			jmsTemplate.convertAndSend("shipmentUpdated", message);
+			MpbTenantContext.addMessage(message);
 		}
 		if (entity.getClass() == Sale.class) {
 	    	JmsSaleMessage message = JmsSaleMessage.builder().id((Long) event.getId())
@@ -80,22 +76,24 @@ public class MpbEventListener implements PostInsertEventListener, PostUpdateEven
 	    			.oldUnitsShipped(jmsUtil.getLong("unitsShipped", keys, null))
 	    			.unitsShipped(jmsUtil.getLong("unitsShipped", keys, state))
 	    			.unitsSold(jmsUtil.getLong("unitsSold", keys, state))
+	    			.type("saleUpdated")
 	    			.build();
-			jmsTemplate.convertAndSend("saleUpdated", message);
+			MpbTenantContext.addMessage(message);
 		}
 		if (entity.getClass() == Customer.class) {
 	    	JmsCustomerMessage message = JmsCustomerMessage.builder().id((Long) event.getId())
 	    			.oldUnitsShipped(jmsUtil.getLong("unitsShipped", keys, null))
 	    			.unitsShipped(jmsUtil.getLong("unitsShipped", keys, state))
 	    			.unitsSold(jmsUtil.getLong("unitsSold", keys, state))
+	    			.type("customerUpdated")
 	    			.build();
-			jmsTemplate.convertAndSend("customerUpdated", message);
+			MpbTenantContext.addMessage(message);
+			
 		}
 	}
 	
 	@Override
 	public void onPostUpdate(PostUpdateEvent event) {
-		int[] updated = event.getDirtyProperties();
 		Object entity = event.getEntity();
 		if (entity.getClass() != Shipment.class && entity.getClass() != Sale.class && entity.getClass() != Customer.class) {
 			return;
@@ -118,8 +116,9 @@ public class MpbEventListener implements PostInsertEventListener, PostUpdateEven
 	    			.ready(jmsUtil.getBoolean("ready", keys, state))
 	    			.oldShippedDate(jmsUtil.getLocalDate("shippedDate", keys, oldState))
 	    			.shippedDate(jmsUtil.getLocalDate("shippedDate", keys, state))
+	    			.type("shipmentUpdated")
 	    			.build();
-			jmsTemplate.convertAndSend("shipmentUpdated", message);
+			MpbTenantContext.addMessage(message);
 		}
 		if (entity.getClass() == Sale.class) {
 	    	JmsSaleMessage message = JmsSaleMessage.builder().id((Long) event.getId())
@@ -128,16 +127,18 @@ public class MpbEventListener implements PostInsertEventListener, PostUpdateEven
 	    			.oldUnitsShipped(jmsUtil.getLong("unitsShipped", keys, oldState))
 	    			.unitsShipped(jmsUtil.getLong("unitsShipped", keys, state))
 	    			.unitsSold(jmsUtil.getLong("unitsSold", keys, state))
+	    			.type("saleUpdated")
 	    			.build();
-			jmsTemplate.convertAndSend("saleUpdated", message);
+	    	MpbTenantContext.addMessage(message);
 		}
 		if (entity.getClass() == Customer.class) {
 	    	JmsCustomerMessage message = JmsCustomerMessage.builder().id((Long) event.getId())
 	    			.oldUnitsShipped(jmsUtil.getLong("unitsShipped", keys, oldState))
 	    			.unitsShipped(jmsUtil.getLong("unitsShipped", keys, state))
 	    			.unitsSold(jmsUtil.getLong("unitsSold", keys, state))
+	    			.type("customerUpdated")
 	    			.build();
-			jmsTemplate.convertAndSend("customerUpdated", message);
+	    	MpbTenantContext.addMessage(message);
 		}
 	}
 

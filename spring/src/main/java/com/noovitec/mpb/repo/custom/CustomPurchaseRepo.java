@@ -17,7 +17,7 @@ import org.springframework.stereotype.Repository;
 import com.noovitec.mpb.entity.Purchase;
 
 public interface CustomPurchaseRepo {
-	Page<Purchase> findPagable(Pageable pageable, String purchaseName, Long componentId);
+	Page<Purchase> findPagable(Pageable pageable, String purchaseName, Long componentId, Long supplierId);
 
 	@Repository
 	public class CustomPurchaseRepoImpl implements CustomPurchaseRepo {
@@ -28,10 +28,11 @@ public interface CustomPurchaseRepo {
 		EntityManager entityManager;
 
 		@Override
-		public Page<Purchase> findPagable(Pageable pageable, String purchaseName, Long componentId) {
+		public Page<Purchase> findPagable(Pageable pageable, String purchaseName, Long componentId, Long supplierId) {
 			String q = "select distinct p from Purchase p " 
 					+ "join p.purchaseComponents pc "
 					+ "join pc.component c "
+					+ "join p.supplier su "
 					+ "where p.id is not null ";
 			if (purchaseName !=null && !purchaseName.isBlank()) {
 				q += "and (upper(p.number) like concat('%',upper(:purchaseName),'%') "
@@ -39,6 +40,9 @@ public interface CustomPurchaseRepo {
 			}
 			if (componentId !=null) {
 				q += "and c.id = :componentId ";
+			}
+			if (supplierId !=null) {
+				q += "and su.id = :supplierId ";
 			}
 			Order order = pageable.getSort().iterator().next();
 			q += "order by p."+order.getProperty() + " "+order.getDirection();
@@ -48,6 +52,9 @@ public interface CustomPurchaseRepo {
 			}
 			if (componentId !=null) {
 				query.setParameter("componentId", componentId);
+			}
+			if (supplierId !=null) {
+				query.setParameter("supplierId", supplierId);
 			}
 			long total = query.getResultStream().count();
 			@SuppressWarnings("unchecked")

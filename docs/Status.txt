@@ -9,6 +9,10 @@ Component:
 - Component and item report popup baed on expiration
 - Average price (based on all receivings)
 - Last price (based on last receiving)
+- Special checkbox for Viki (very biggggg....)
+- Align 
+Customer:
+- Shipping Pallet type: (Grade A, Chep)
 Receiving:
 - Allow to enter the price of component and invoice #
 - Allow to updated receiving (price, invoice number).
@@ -16,7 +20,10 @@ Accounting:
 - Permissions
 - Send email to client (andy as cc: by default).
 Schedule:
-- Ability to add random reciving event on schedule.
++ Ability to add random reciving event on schedule.
+- Hide delete on shipment.
+- Shipping link.
+- Different color when shpment ready vs shipped.
 Item:
 - Sort by (number (a-z), date (created)
 - Update list of Brands and Categories update (Hania or Michal to sent me list).

@@ -2,36 +2,29 @@ package com.noovitec.mpb.app;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.SessionScope;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.noovitec.mpb.dto.SettingDto;
-import com.noovitec.mpb.entity.BaseEntity;
+import com.noovitec.mpb.jms.message.JmsMessage;
 
 @Component
 @SessionScope
 public class MpbRequestContext {
 	
-	private Map<Long, BaseEntity> entityMap = new HashMap<Long, BaseEntity>();
+	private List<JmsMessage> messages = new ArrayList<JmsMessage>();
 	private String tenant;
 	private SettingDto setting;
 	
-	public List<BaseEntity> getList(){
-		List<BaseEntity> list = new ArrayList<BaseEntity>(entityMap.values());
-		return list;
+	public void addMessage(JmsMessage message) {
+		this.messages.add(message);
 	}
 	
-	public void add(BaseEntity baseEntity) {
-		this.entityMap.put(baseEntity.getId(), baseEntity);
-	}
-	
-	public BaseEntity get(Long entityId) {
-		return this.entityMap.get(entityId);
+	public List<JmsMessage> getMessages(){
+		return this.messages;
 	}
 	
 	public void setTenant(String tenant) {

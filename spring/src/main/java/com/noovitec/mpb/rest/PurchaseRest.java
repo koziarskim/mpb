@@ -36,7 +36,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfStamper;
-import com.noovitec.mpb.dto.ItemListDto;
 import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.dto.PurchaseListDto;
 import com.noovitec.mpb.entity.Component;
@@ -102,8 +101,9 @@ class PurchaseRest {
 	@GetMapping("/purchase/pageable")
 	Page<PurchaseListDto> getAllPageable(@RequestParam(name = "pageable", required = false) Pageable pageable, 
 			@RequestParam(required = false) String purchaseName, 
-			@RequestParam(required = false) Long componentId) {
-		Page<Purchase> purchases = purchaseRepo.findPagable(pageable, purchaseName, componentId);
+			@RequestParam(required = false) Long componentId,
+			@RequestParam(required = false) Long supplierId) {
+		Page<Purchase> purchases = purchaseRepo.findPagable(pageable, purchaseName, componentId, supplierId);
 		Page<PurchaseListDto> dtos = purchases.map(purchase -> {
 			PurchaseListDto dto = new PurchaseListDto();
 			dto.setId(purchase.getId());

@@ -1,18 +1,18 @@
 <template>
   <b-container fluid>
-    <b-row style="padding-bottom: 4px;">
-      <b-col cols="2">
-        <span style="text-align: left; font-size: 18px; font-weight: bold">Purchase Orders</span>
-      </b-col>
-      <b-col cols="3">
-        <input class="form-control" type="tel" v-model="searchPurchase" @keyup.enter="getPurchases()" placeholder="PO Name/Number"/>
+    <b-row style="padding-bottom: 4px; font-size: 12px">
+      <b-col cols=2>
+        <input class="form-control" style="font-size: 12px" type="tel" v-model="searchPurchase" @keyup.enter="getPurchases()" placeholder="PO Name/Number"/>
       </b-col>
       <b-col cols=3>
         <b-select option-value="id" option-text="name" :list="availableComponents" v-model="componentKv" placeholder="Component"></b-select>
       </b-col>
-      <b-col>
+      <b-col cols=2>
+        <b-select option-value="id" option-text="name" :list="availableSuppliers" v-model="supplierKv" placeholder="Supplier"></b-select>
+      </b-col>
+      <b-col cols=1 offset=4>
         <div style="text-align: right;">
-          <b-button type="submit" variant="primary" @click="goToPurchaseNew()">New P.O.</b-button>
+          <b-button size="sm" type="submit" variant="primary" @click="goToPurchaseNew()">New P.O.</b-button>
         </div>
       </b-col>
     </b-row>
@@ -70,6 +70,8 @@ export default {
       ],
       availableComponents: [],
       componentKv: {},
+      availableSuppliers: [],
+      supplierKv: {},
       component: {},
       purchases: [], //PurchaseListDto
       keyword: "",
@@ -81,6 +83,9 @@ export default {
   watch: {
     componentKv(newValue, oldValue){
       this.getPurchases();
+    },
+    supplierKv(newValue, oldValue){
+      this.getPurchases();
     }
   },
   methods: {
@@ -89,7 +94,11 @@ export default {
         this.availableComponents = response.data;
       }).catch(e => {console.log("API error: " + e);});
     },
-
+    getAvailableSuppliers(){
+      http.get("/supplier/kv").then(response => {
+        this.availableSuppliers = response.data;
+      }).catch(e => {console.log("API error: " + e);});
+    },
     paginationChange(page){
       this.pageable.currentPage = page;
       this.getPurchases();
@@ -106,7 +115,12 @@ export default {
       (this.alertSecs = 3), (this.alertMessage = message);
     },
     getPurchases() {
-      http.get("/purchase/pageable", {params: {pageable: this.pageable, purchaseName: this.searchPurchase, componentId: this.componentKv.id}}).then(response => {
+      http.get("/purchase/pageable", {params: {
+        pageable: this.pageable, 
+        purchaseName: this.searchPurchase, 
+        componentId: this.componentKv.id,
+        supplierId: this.supplierKv.id
+      }}).then(response => {
         this.purchases = response.data.content;
         this.pageable.totalElements = response.data.totalElements;
       }).catch(e => {console.log("API error: " + e);});
@@ -145,6 +159,7 @@ export default {
       this.componentKv = {id: componentId}
     }
     this.getAvailableComponents();
+    this.getAvailableSuppliers();
     this.getPurchases();
   }
 };

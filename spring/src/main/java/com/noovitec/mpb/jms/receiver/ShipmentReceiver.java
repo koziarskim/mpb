@@ -56,8 +56,8 @@ public interface ShipmentReceiver {
 				notificationService.sendMail(emails, body, Notification.TYPE.SHIPPING_READY);
 			}
 			//Shipment is shipped;
-			LocalDate oldShippedDate = message.getShippedDate();
-			LocalDate shippedDate = message.getOldShippedDate();
+			LocalDate oldShippedDate = message.getOldShippedDate();
+			LocalDate shippedDate = message.getShippedDate();
 			if(oldShippedDate == null && shippedDate !=null) {
 				if(shipment==null) {
 					shipment = shipmentRepo.findById(message.getId()).get();
