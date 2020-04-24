@@ -12,13 +12,13 @@ CREATE TABLE shared.calendar_event (
 	end_date date,
 	start_time time without time zone,
 	end_time time without time zone,
-	heading_1 character varying(255),
-	heading_2 character varying(255),
+	heading1 character varying(255),
+	heading2 character varying(255),
 	title character varying(255),
-	lane_1 character varying(255),
-	lane_2 character varying(255),
-	lane_3 character varying(255),
-	lane_4 character varying(255),
+	line1 character varying(255),
+	line2 character varying(255),
+	line3 character varying(255),
+	line4 character varying(255),
     CONSTRAINT calendar_event_pkey PRIMARY KEY (id)
 );
 

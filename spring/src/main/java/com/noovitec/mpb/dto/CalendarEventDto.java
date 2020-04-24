@@ -13,14 +13,12 @@ public class CalendarEventDto {
 	private String heading1;
 	private String heading2;
 	
-	private String title;
 	private String line1;
 	private String line2;
 	private String line3;
-	private String line4;
 	
 	private String start;
 	private String end;
-	private String klass = "mpb-default-event";
+	private String type;
 	
 }

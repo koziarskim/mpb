@@ -59,16 +59,16 @@ public interface ShipmentService {
 				dto.setHeading1(shipment.getNumber());
 				dto.setHeading2(shipment.getCustomer()==null?"":shipment.getCustomer().getName());
 				
-				dto.setLine1(shipment.getCustomer()==null?"":shipment.getCustomer().getName());
 				if(shipment.getShippingAddress()!=null){
-					dto.setLine2(shipment.getShippingAddress().getDc()+", "+shipment.getShippingAddress().getCity()+", "+shipment.getShippingAddress().getState());
+					dto.setLine1(shipment.getShippingAddress().getDc()+", "+shipment.getShippingAddress().getCity()+", "+shipment.getShippingAddress().getState());
 				}
-				dto.setLine3(shipment.getLoadNumber());
-				dto.setLine4(String.valueOf(shipment.getTotalPallets()));
+				dto.setLine2(shipment.getLoadNumber());
+				dto.setLine3(String.valueOf(shipment.getTotalPallets()));
 				DateTimeFormatter df = DateTimeFormatter.ofPattern("YYYY-MM-dd");
 				DateTimeFormatter tf = DateTimeFormatter.ofPattern("HH:mm");
 				dto.setStart(shipment.getShippingDate().format(df)+" "+shipment.getShippingTime().format(tf));
 				dto.setEnd(shipment.getShippingDate().format(df)+" "+shipment.getShippingTime().plusHours(1).format(tf));
+				dto.setType("SHIPMENT");
 				events.add(dto);
 			});
 			return events;

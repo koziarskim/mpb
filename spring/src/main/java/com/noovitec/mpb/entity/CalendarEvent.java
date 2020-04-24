@@ -17,19 +17,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table()
+@Table(schema="shared")
 public class CalendarEvent extends BaseEntity {
 	
 	public static enum TYPE {
-		SHIPMENT("mpb-default-event"), 
-		DELIVERY("mpb-default-event");
-		private String style;
-		public String style() { 
-	        return this.style; 
-	    }
-	    private TYPE(String style) { 
-	        this.style = style; 
-	    } 
+		SHIPMENT, DELIVERY 
 	}
 
 	private static final long serialVersionUID = -132754886694556898L;
@@ -48,6 +40,4 @@ public class CalendarEvent extends BaseEntity {
 	private String line3;
 	private String line4;
 	
-	@Transient
-	private String klass;
 }
