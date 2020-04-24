@@ -68,7 +68,11 @@ public interface ShipmentService {
 				DateTimeFormatter tf = DateTimeFormatter.ofPattern("HH:mm");
 				dto.setStart(shipment.getShippingDate().format(df)+" "+shipment.getShippingTime().format(tf));
 				dto.setEnd(shipment.getShippingDate().format(df)+" "+shipment.getShippingTime().plusHours(1).format(tf));
-				dto.setType("SHIPMENT");
+				if(shipment.getShippedDate()!=null) {
+					dto.setType("SHIPMENT_SHIPPED");
+				}else {
+					dto.setType("SHIPMENT_READY");
+				}
 				events.add(dto);
 			});
 			return events;

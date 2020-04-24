@@ -1,6 +1,6 @@
 In Progress/Done:
 Purchase
-- Search by supplier.
++ Search by supplier.
 - Freight terms (use supplierss's by defaut)
 - Pay Terms (use sppliers by default)
 Component:
@@ -21,9 +21,9 @@ Accounting:
 - Send email to client (andy as cc: by default).
 Schedule:
 + Ability to add random reciving event on schedule.
-- Hide delete on shipment.
-- Shipping link.
-- Different color when shpment ready vs shipped.
++ Hide delete on shipment.
++ Shipping link.
++ Different color when shpment ready vs shipped.
 Item:
 - Sort by (number (a-z), date (created)
 - Update list of Brands and Categories update (Hania or Michal to sent me list).

@@ -60,8 +60,11 @@ export default {
     },
     getStyleClass(calendarEvent){
       var styleClass = "mpb-default-event";
-      if(calendarEvent.type == 'SHIPMENT'){
-        return "mpb-shipment-event";
+      if(calendarEvent.type == 'SHIPMENT_READY'){
+        return "mpb-shipment-ready-event";
+      }
+      if(calendarEvent.type == 'SHIPMENT_SHIPPED'){
+        return "mpb-shipment-shipped-event";
       }
       if(calendarEvent.type == 'DELIVERY'){
         return "mpb-delivery-event";
@@ -121,14 +124,14 @@ export default {
 .vuecal__title-bar {
   min-height: 0 !important;
 }
-.mpb-default-event {
-  background-color: #9ff17566 !important;
+.mpb-shipment-ready-event {
+  background-color: #8875f166 !important;
   font-size: 10px !important;
   font-weight: 700 !important;
   border: 1px solid black !important;
   color: black !important;
 }
-.mpb-shipment-event {
+.mpb-shipment-shipped-event {
   background-color: #9ff17566 !important;
   font-size: 10px !important;
   font-weight: 700 !important;
