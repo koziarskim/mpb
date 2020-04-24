@@ -38,6 +38,8 @@ public class MpbEventListener implements PostInsertEventListener, PostUpdateEven
     private JmsTemplate jmsTemplate;
     @Autowired
     private JmsUtil jmsUtil;
+    @Autowired
+    private MpbRequestContext requestContext;
     
 	@Override
 	public boolean requiresPostCommitHanding(EntityPersister persister) {

@@ -1,26 +1,21 @@
 package com.noovitec.mpb.jms.message;
 
-import java.io.Serializable;
-
-import com.noovitec.mpb.app.MpbTenantContext;
-
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Data
-@Builder
+@EqualsAndHashCode(callSuper = false)
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class JmsCustomerMessage implements Serializable{
+public class JmsCustomerMessage extends JmsMessage {
 
-	private static final long serialVersionUID = 1L;
-	private Long id;
+	private static final long serialVersionUID = -7353248898605902858L;
 	private long oldUnitsShipped;
 	private long unitsShipped;
 	private long unitsSold;
-	@Builder.Default
-	private String tenant = MpbTenantContext.getCurrentTenant();
 
 }

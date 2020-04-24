@@ -1,28 +1,24 @@
 package com.noovitec.mpb.jms.message;
 
-import java.io.Serializable;
 import java.time.LocalDate;
 
-import com.noovitec.mpb.app.MpbTenantContext;
-
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Data
-@Builder
+@EqualsAndHashCode(callSuper = false)
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class JmsShipmentMessage implements Serializable{
+public class JmsShipmentMessage extends JmsMessage {
 
-	private static final long serialVersionUID = 1L;
-	private Long id;
+	private static final long serialVersionUID = -5369798288520560425L;
 	private boolean oldReady;
 	private boolean ready;
 	private LocalDate oldShippedDate;
 	private LocalDate shippedDate;
-	@Builder.Default
-	private String tenant = MpbTenantContext.getCurrentTenant();
 
 }
