@@ -7,7 +7,7 @@
       </b-col>
       <b-col cols=1>
         <label class="top-label">Account #:</label>
-        <input class="form-control" disabled type="text" v-model="customer.account" />
+        <input class="form-control" disabled type="text" v-model="customer.number" />
       </b-col>
       <b-col cols=1>
         <label class="top-label">Vendor #:</label>
@@ -264,7 +264,7 @@ export default {
       showAccounting: false,
       customer: {
         name: "",
-        account: "",
+        number: "",
         billingAddress: {},
         phone: "",
         paymentTerms: "",

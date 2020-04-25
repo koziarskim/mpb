@@ -11,7 +11,7 @@ public class SupplierDto {
 	
 	private Long id;
 	private String name;
-	private String account;
+	private String number;
 	private String city;
 	private String phone;
 }

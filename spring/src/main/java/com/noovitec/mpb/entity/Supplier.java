@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 public class Supplier extends BaseEntity {
 
 	private String name;
-	private String account;
+	private String number;
 
 	// TODO: Switch to defaultAddress
 	private String street;

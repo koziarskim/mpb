@@ -41,7 +41,7 @@ export default {
     return {
       pageable: {totalElements: 100, currentPage: 1, perPage: 25, sortBy: 'name', sortDesc: false},
       searchKey: "",
-      sortBy: "account",
+      sortBy: "number",
       sortDesc: false,
       fields: [
         { key: "name", label: "Name", sortable: false },

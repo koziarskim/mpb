@@ -59,7 +59,7 @@ class SupplierRest {
 			SupplierDto dto = new SupplierDto();
 			dto.setId(supplier.getId());
 			dto.setName(supplier.getName());
-			dto.setAccount(supplier.getAccount());
+			dto.setNumber(supplier.getNumber());
 			dto.setCity(supplier.getCity());
 			dto.setPhone(supplier.getPhone());
 			return dto;
@@ -80,7 +80,7 @@ class SupplierRest {
 			supplier = new Supplier();
 		}
 		Supplier result = supplierRepo.save(supplier);
-		result.setAccount(result.getId().toString());
+		result.setNumber(result.getId().toString());
 		result = supplierRepo.save(supplier);
 		return ResponseEntity.ok().body(result);
 	}

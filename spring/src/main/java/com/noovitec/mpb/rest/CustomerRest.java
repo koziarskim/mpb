@@ -74,7 +74,7 @@ class CustomerRest {
 		Page<CustomerDto> dtos = customers.map(customer -> {
 			CustomerDto dto = new CustomerDto();
 			dto.setId(customer.getId());
-			dto.setAccount(customer.getAccount());
+			dto.setNumber(customer.getNumber());
 			dto.setName(customer.getName());
 			dto.setAddressName(customer.getBillingAddress()==null?"":(customer.getBillingAddress().getCity()+", "+customer.getBillingAddress().getState()));
 			dto.setUnitsSold(customer.getUnitsSold());
@@ -93,7 +93,7 @@ class CustomerRest {
 //			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Invoice Type is required");
 //		}
 		Customer result = customerRepo.save(customer);
-		result.setAccount(result.getId().toString());
+		result.setNumber(result.getId().toString());
 		result = customerRepo.save(customer);
 		return ResponseEntity.ok().body(result);
 	}
