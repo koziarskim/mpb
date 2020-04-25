@@ -7,7 +7,7 @@
       </b-col>
       <b-col cols=1>
         <label class="top-label">Account #:</label>
-        <input class="form-control" disabled type="text" v-model="customer.number" />
+        <input class="form-control" type="text" v-model="customer.number" />
       </b-col>
       <b-col cols=1>
         <label class="top-label">Vendor #:</label>
@@ -18,18 +18,28 @@
         <input class="form-control" type="text" v-model="customer.paymentTerms" />
       </b-col>
       <b-col cols=2>
-        <label class="top-label">Freight Terms:</label>
-        <b-select option-value="code" option-text="name" :list="availableFreights" v-model="freightTerms"></b-select>
-      </b-col>
-      <b-col cols=2 style="padding-right: 0px">
-        <label class="top-label">Invoice Type:</label>
-        <b-select option-value="id" option-text="name" :list="availableInvoiceTypes" v-model="invoiceTypeKv"></b-select>
-      </b-col>
-      <b-col cols=2>
+        <label class="top-label">Year:</label>
+        <b-select :is-disabled="customer.id!=null" option-value="id" option-text="name" :list="availableYears" v-model="year" placeholder="Year"></b-select>
+      </b-col>              
+      <b-col cols=2 offset=2>
         <div style="display:flex; padding-top: 20px; padding-left: 75px">
           <upload-file v-if="customer.id" v-on:close="closeUpload" :entity-id="customer.id" type="Customer" :attachments="customer.attachments"></upload-file>
           <b-button size="sm" style="margin-left: 5px" type="reset" variant="success" @click="saveAndClose">Save</b-button>
         </div>
+      </b-col>
+    </b-row>
+    <b-row>
+      <b-col cols=2>
+        <label class="top-label">Freight Terms:</label>
+        <b-select option-value="code" option-text="name" :list="availableFreights" v-model="freightTerms"></b-select>
+      </b-col>
+      <b-col cols=2 offset=1 style="padding-right: 0px">
+        <label class="top-label">Invoice Type:</label>
+        <b-select option-value="id" option-text="name" :list="availableInvoiceTypes" v-model="invoiceTypeKv"></b-select>
+      </b-col>
+      <b-col cols=6 offset=1>
+        <label class="top-label">Billing Address:</label>
+        <input class="form-control" type="search" v-model="billingAddress.street" />
       </b-col>
     </b-row>
     <b-row>
@@ -40,20 +50,6 @@
       <b-col cols=3>
         <label class="top-label">Broker Email:</label>
         <input class="form-control" type="text" v-model="customer.brokerEmail" />
-      </b-col>
-      <b-col cols=6>
-        <label class="top-label">Billing Address:</label>
-        <input class="form-control" type="search" v-model="billingAddress.street" />
-      </b-col>
-    </b-row>
-    <b-row>
-      <b-col cols=3>
-        <label class="top-label">Broker Name:</label>
-        <input class="form-control" type="text" v-model="customer.brokerName" />
-      </b-col>
-      <b-col cols=3>
-        <label class="top-label">Broker Phone:</label>
-        <input class="form-control" type="text" v-model="customer.brokerPhone" />
       </b-col>
         <b-col cols=2>
           <label class="top-label">City:</label>
@@ -69,7 +65,15 @@
         </b-col>
       </b-row>
       <b-row>
-        <b-col cols=6 offset=6>
+        <b-col cols=3>
+          <label class="top-label">Broker Name:</label>
+          <input class="form-control" type="text" v-model="customer.brokerName" />
+        </b-col>
+        <b-col cols=3>
+          <label class="top-label">Broker Phone:</label>
+          <input class="form-control" type="text" v-model="customer.brokerPhone" />
+        </b-col>
+        <b-col cols=6>
           <label class="top-label">
             Shipping Addresses:
             <span style="cursor: pointer; color: blue" @click="openShipAddressModal()">(Edit/New)</span>
@@ -313,7 +317,9 @@ export default {
         { id: "GRADE_A", name: "Grade A" },
         { id: "CHEP", name: "Chep" },
       ],
-      invoiceTypeKv: {}
+      invoiceTypeKv: {},
+      availableYears: [],
+      year: {},
     };
   },
   computed: {},
@@ -326,9 +332,19 @@ export default {
         this.customer.billingAddress = this.billingAddress;
       },
       deep: true
+    },
+    year(newValue, oldValue){
+      this.customer.year = newValue;
     }
   },
   methods: {
+    getAvailableYears() {
+      http.get("/year").then(response => {
+        this.availableYears = response.data;
+      }).catch(e => {
+        console.log("API error: " + e);
+      });
+    },     
     closeUpload(attachments){
       this.customer.attachments = attachments;
       this.save();
@@ -343,12 +359,19 @@ export default {
           if (response.data.billingAddress) {
             this.billingAddress = response.data.billingAddress;
           }
+          if(response.data.year){
+            this.year = response.data.year;
+          }
         })
         .catch(e => {
           console.log("API error: " + e);
         });
     },
     validate() {
+      if(!this.customer.year){
+        alert("Please pick the year version");
+        return;
+      }
       if (this.customer.addresses.length < 1) {
         alert("At least one shipping address is required");
         return false;
@@ -363,7 +386,7 @@ export default {
       return http
         .post("/customer", this.customer)
         .then(response => {
-          this.getCustomer(this.customer.id);
+          this.getCustomer(response.data.id);
         })
         .catch(e => {
           console.log("API error: " + e);
@@ -412,6 +435,7 @@ export default {
     if (customer_id) {
       this.getCustomer(customer_id);
     }
+    this.getAvailableYears();
   }
 };
 </script>

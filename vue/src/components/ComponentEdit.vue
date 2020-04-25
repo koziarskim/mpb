@@ -55,6 +55,10 @@
               <input class="form-control" type="number" v-model="component.depth" />
             </div>
           </b-col>
+          <b-col cols=1>
+            <label class="top-label">Year:</label>
+            <b-select :is-disabled="component.id!=null" option-value="id" option-text="name" :list="availableYears" v-model="year" placeholder="Year"></b-select>
+          </b-col>              
         </b-row>
         <b-row>
           <b-col cols=5>
@@ -63,15 +67,15 @@
           </b-col>
           <b-col cols=4>
             <b-row>
-              <b-col cols=4>
+              <b-col cols=3>
                 <label class="top-label">Case Pack:</label>
                 <input class="form-control" type="number" min="0" v-model="component.casePack" />
               </b-col>
-              <b-col cols=4>
+              <b-col cols=3>
                 <label class="top-label">Weight:</label>
                 <input class="form-control" type="number" min="0" v-model="component.weight" />
               </b-col>
-              <b-col cols=4>
+              <b-col cols=3>
                 <label class="top-label" title="Full Container Load (units per container)">FCL:</label>
                 <input class="form-control" type="number" min="0" v-model="component.unitsPerContainer" />
               </b-col>
@@ -173,6 +177,8 @@ export default {
         { key: "unitsSchProd", label: "Sch/Prod", sortable: false }
       ],
       availableComponentTypes: [],
+      year: {},
+      availableYears: [],
 
     };
   },
@@ -205,9 +211,19 @@ export default {
     },
     totalLandedCost: function(newValue, oldValue) {
       this.component.totalLandedCost = newValue;
+    },
+    year(newValue, oldValue){
+      this.component.year = newValue;
     }
   },
   methods: {
+    getAvailableYears() {
+      http.get("/year").then(response => {
+        this.availableYears = response.data;
+      }).catch(e => {
+        console.log("API error: " + e);
+      });
+    },  
     allowEdit() {
       return securite.hasRole(["STANDARD_ADMIN"]);
     },
@@ -264,6 +280,9 @@ export default {
           if (r.data.supplier) {
             this.supplier = r.data.supplier;
           }
+          if (r.data.year){
+            this.year = r.data.year;
+          }
           return r.data;
         })
         .catch(e => {
@@ -311,8 +330,8 @@ export default {
         });
     },
     saveComponent() {
-      if (!this.component.name || !this.component.number) {
-        alert("Please enter Component Name and Number");
+      if (!this.component.name || !this.component.number || !this.component.year) {
+        alert("Please enter Component Name, Number and Year");
         return Promise.reject();
       }
       var formData = new FormData();
@@ -361,6 +380,7 @@ export default {
     this.getAvailableCategories();
     this.getAvailableComponentTypes();
     this.getAvailableItems();
+    this.getAvailableYears();
   }
 };
 </script>

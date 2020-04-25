@@ -54,6 +54,10 @@
         <b-select option-value="id" option-text="name" :list="availableSeasons" v-model="item.season" placeholder="Season"></b-select>
       </b-col>
       <b-col cols=2>
+        <label class="top-label">Year:</label>
+        <b-select :is-disabled="item.id!=null" option-value="id" option-text="name" :list="availableYears" v-model="item.year" placeholder="Year"></b-select>
+      </b-col>
+      <b-col cols=2>
         <label class="top-label">Category:</label>
         <b-select option-value="id" option-text="value" :list="availableItemCategories" v-model="item.category" placeholder="Category"></b-select>
       </b-col>
@@ -214,6 +218,7 @@ export default {
         brand: {},
         category: {},
         season: {},
+        year: {},
         upc:{},
         palletWeight: 60,
         // upc: {},
@@ -228,6 +233,7 @@ export default {
       availableItemCategories: [],
       availableCompCategories: [],
     availableSeasons: [],
+    availableYears: [],
     availableUpc: [],
     upc: {},
     upcUrl: "",
@@ -410,9 +416,16 @@ export default {
         console.log("API error: " + e);
       });
     },
+    getAvailableYears() {
+      http.get("/year").then(response => {
+        this.availableYears = response.data;
+      }).catch(e => {
+        console.log("API error: " + e);
+      });
+    },    
     validate(){
-        if(!this.item.name || !this.item.number || !this.item.season.id || !this.item.brand.id || !this.item.category.id){
-          alert("Item Name, Number, Season, Brand and Category are required");
+        if(!this.item.name || !this.item.number ||!this.item.year.id || !this.item.season.id || !this.item.brand.id || !this.item.category.id){
+          alert("Item Name, Number, Year, Season, Brand and Category are required");
           return false;
         }
 
@@ -485,6 +498,7 @@ export default {
     }
     this.getAvailableBrands();
     this.getAvailableCategories();
+    this.getAvailableYears();
     this.getAvailableSeasons();
   }
 };

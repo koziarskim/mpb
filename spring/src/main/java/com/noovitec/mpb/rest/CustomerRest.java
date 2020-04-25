@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,7 @@ import com.noovitec.mpb.dto.CustomerDto;
 import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.entity.Customer;
 import com.noovitec.mpb.repo.CustomerRepo;
+import com.noovitec.mpb.service.CrudService;
 
 
 @RestController
@@ -31,6 +33,8 @@ class CustomerRest {
 
 	private final Logger log = LoggerFactory.getLogger(CustomerRest.class);
 	private CustomerRepo customerRepo;
+	@Autowired
+	private CrudService crudService;
 
 	public CustomerRest(CustomerRepo customerRepo) {
 		this.customerRepo = customerRepo;
@@ -92,8 +96,8 @@ class CustomerRest {
 //		if(customer.getInvoiceType()==null) {
 //			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Invoice Type is required");
 //		}
+		customer = (Customer) crudService.merge(customer);
 		Customer result = customerRepo.save(customer);
-		result.setNumber(result.getId().toString());
 		result = customerRepo.save(customer);
 		return ResponseEntity.ok().body(result);
 	}
