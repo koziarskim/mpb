@@ -99,6 +99,7 @@ class CustomerRest {
 		customer = (Customer) crudService.merge(customer);
 		Customer result = customerRepo.save(customer);
 		result = customerRepo.save(customer);
+		result.setNumber(result.getId().toString());
 		return ResponseEntity.ok().body(result);
 	}
 

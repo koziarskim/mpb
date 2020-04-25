@@ -82,14 +82,7 @@ export default {
       if (id) {
         router.push("/supplierEdit/" + id);
       } else {
-        http
-          .post("/supplier")
-          .then(response => {
-            router.push("/supplierEdit/" + response.data.id);
-          })
-          .catch(e => {
-            console.log("API Error: " + e);
-          });
+        router.push("/supplierEdit");
       }
     }
   },

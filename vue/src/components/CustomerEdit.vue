@@ -368,8 +368,8 @@ export default {
         });
     },
     validate() {
-      if(!this.customer.year){
-        alert("Please pick the year version");
+      if(!this.customer.name || !this.customer.year || !this.customer.number){
+        alert("Name, account and year are required");
         return;
       }
       if (this.customer.addresses.length < 1) {

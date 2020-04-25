@@ -80,7 +80,6 @@ class SupplierRest {
 			supplier = new Supplier();
 		}
 		Supplier result = supplierRepo.save(supplier);
-		result.setNumber(result.getId().toString());
 		result = supplierRepo.save(supplier);
 		return ResponseEntity.ok().body(result);
 	}
