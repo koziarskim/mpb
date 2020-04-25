@@ -170,19 +170,20 @@
         <div style="margin-top:3px" class="top-label">Routing:</div>
         <input class="chkbx-lg-right" type="checkbox" style="margin-left: 5px;" v-model="customer.routing">
       </b-col>
-      <b-col cols=2>
+      <b-col cols=2 style="display: flex">
         <div style="margin-top:3px" class="top-label">Routing Guide:</div>
         <input class="chkbx-lg-right" type="checkbox" style="margin-left: 5px;" v-model="customer.routingGuide">
       </b-col>
-      <b-col cols=4>
+      <b-col cols=4 style="display: flex">
         <div style="margin-top:3px" class="top-label">ASN:</div>
         <input class="chkbx-lg-right" type="checkbox" style="margin-left: 5px;" v-model="customer.asn"><br/>
       </b-col>
-      <b-col cols=3>
+      <b-col cols=3 style="display: flex">
         <div style="margin-top:3px" class="top-label">Claim:</div>
         <input class="chkbx-lg-right" type="checkbox" style="margin-left: 5px;" v-model="customer.claim">
       </b-col>
     </b-row>
+    <br/>
     <b-row>
       <b-col cols=4>
         <label class="top-label">Routing Portal Link:</label>

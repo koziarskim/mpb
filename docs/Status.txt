@@ -9,10 +9,10 @@ Component:
 - Component and item report popup baed on expiration
 - Average price (based on all receivings)
 - Last price (based on last receiving)
-- Special checkbox for Viki (very biggggg....)
 - Align 
 Customer:
-- Shipping Pallet type: (Grade A, Chep)
++ Special checkbox for Viki (very biggggg....)
++ Shipping Pallet type: (Grade A, Chep)
 Receiving:
 - Allow to enter the price of component and invoice #
 - Allow to updated receiving (price, invoice number).

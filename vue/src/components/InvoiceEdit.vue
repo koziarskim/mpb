@@ -58,7 +58,7 @@
         <span>{{invoice.shipment.shippingAddress?(invoice.shipment.shippingAddress.city+', '+invoice.shipment.shippingAddress.state+' '+invoice.shipment.shippingAddress.zip):''}}</span>
       </b-col>
     </b-row>
-    <b-row style="margin-top: -35px">
+    <b-row>
       <b-col cols=2>
         <label class="top-label">Via:</label>
         <input class="form-control" type="tel" v-model="invoice.via">
