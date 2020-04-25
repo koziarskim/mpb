@@ -82,6 +82,12 @@ public class Component extends BaseEntity {
 	@OneToMany()
 	@JoinColumn(name = "component_id")
 	private Collection<PurchaseComponent> purchaseComponents = new HashSet<PurchaseComponent>();
+	
+	@JsonIgnoreProperties(value = { "components" }, allowSetters = true)
+	@ManyToOne()
+	@JoinColumn(name = "year_id", referencedColumnName = "id")
+	private Year year;
+
 
 	public void updateUnitsLocked() {
 		this.unitsLocked = 0L;

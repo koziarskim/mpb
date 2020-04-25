@@ -11,6 +11,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -106,5 +108,11 @@ public class Customer extends BaseEntity {
 	@JoinTable(name = "customer_attachment", joinColumns = @JoinColumn(name = "customer_id"), inverseJoinColumns = @JoinColumn(name = "attachment_id"))
 	@OrderBy("created DESC")
 	private Collection<Attachment> attachments = new HashSet<Attachment>();
+	
+	@JsonIgnoreProperties(value = { "customers" }, allowSetters = true)
+	@ManyToOne()
+	@JoinColumn(name = "year_id", referencedColumnName = "id")
+	private Year year;
+
 
 }

@@ -27,6 +27,7 @@ import lombok.NoArgsConstructor;
 @Entity
 public class Item extends BaseEntity {
 
+	private static final long serialVersionUID = 3661979431691248063L;
 	private String name;
 	private String number;
 	private String description;

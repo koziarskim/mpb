@@ -5,6 +5,8 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -37,5 +39,11 @@ public class Supplier extends BaseEntity {
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "address_id", referencedColumnName = "id")
 	private Address address;
+	
+	@JsonIgnoreProperties(value = { "suppliers" }, allowSetters = true)
+	@ManyToOne()
+	@JoinColumn(name = "year_id", referencedColumnName = "id")
+	private Year year;
+
 
 }
