@@ -27,6 +27,7 @@ import lombok.NoArgsConstructor;
 @Entity
 public class Item extends BaseEntity {
 
+	private static final long serialVersionUID = 3661979431691248063L;
 	private String name;
 	private String number;
 	private String description;
@@ -64,6 +65,11 @@ public class Item extends BaseEntity {
 	@ManyToOne()
 	@JoinColumn(name = "category_id", referencedColumnName = "id")
 	private Category category;
+
+	@JsonIgnoreProperties(value = { "items" }, allowSetters = true)
+	@ManyToOne()
+	@JoinColumn(name = "item_base	_id", referencedColumnName = "id")
+	private ItemBase base;
 
 	@JsonIgnoreProperties(value = { "items" }, allowSetters = true)
 	@ManyToOne()
@@ -187,5 +193,6 @@ public class Item extends BaseEntity {
 		}
 		this.updateUnitsReadyProd();
 	}
+	
 
 }
