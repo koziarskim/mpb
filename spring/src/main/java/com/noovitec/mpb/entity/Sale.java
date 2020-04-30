@@ -94,7 +94,7 @@ public class Sale extends BaseEntity {
 			this.unitsAdjusted += sa.getUnitsAdjusted();
 			this.unitsReturned += sa.getUnitsReturned();
 		}
-		this.unitsOnStock = this.unitsProduced + this.unitsTransferedTo - this.unitsTransferedFrom - this.unitsShipped + this.unitsReturned;
+		this.unitsOnStock = this.unitsProduced + this.unitsTransferedTo - this.unitsTransferedFrom + this.unitsReturned;
 		this.updateStatus();
 	}
 	
