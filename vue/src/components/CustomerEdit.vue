@@ -34,7 +34,7 @@
     </b-row>
     <b-row>
       <b-col cols=3>
-        <label class="top-label">Broker Contact:</label>
+        <label class="top-label">Compliance Contact:</label>
         <input class="form-control" type="text" v-model="customer.brokerContact" />
       </b-col>
       <b-col cols=3>
@@ -308,6 +308,7 @@ export default {
       ],
       availablePalletTypes: [
         { id: "GRADE_A", name: "Grade A" },
+        { id: "GRADE_B", name: "Grade B" },
         { id: "CHEP", name: "Chep" },
       ],
       invoiceTypeKv: {}

@@ -4,9 +4,9 @@ Supplier:
 + Add vendor/stock #
 Sale:
 + Units on stock should be remove when shippment is created (not send).
-- Option to cancel in addition to delete.
 + Change pay terms to be manual entry
 + Pay terms from customer by default.
+- Option to cancel in addition to delete.
 Purchase
 + Purchase list remove invoice column.
 + PO and ETA data format (MM/DD/YYYY)
@@ -16,9 +16,9 @@ Purchase
 + Show supplie'rs stock # on PDF
 + Case pack column
 + Add Case Qty the the PO
++ Delete component from PO
++ Deleete whole PO
 - Add PO Notes on Screen and PDF
-- Delete component from PO
-- Deleete whole PO
 Component:
 + Extend name to be 50 characters.
 - Auto generate with option to edit
@@ -29,8 +29,8 @@ Component:
 - Last price (based on last receiving)
 Customer:
 + Update freight list based on shipment.
-- Broker Contact change to Compliance Contact
-- Add grade B
++ Broker Contact change to Compliance Contact
++ Add grade B
 Receiving:
 - Allow to enter the price of component and invoice #
 - Allow to updated receiving (price, invoice number).
