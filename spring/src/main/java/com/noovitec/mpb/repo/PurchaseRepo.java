@@ -21,6 +21,9 @@ public interface PurchaseRepo extends JpaRepository<Purchase, Long>, CustomPurch
 	@Query("select p from Purchase p join p.purchaseComponents pc where pc.component.id = :component_id")
 	List<Purchase> findByComponent(@Param("component_id") Long component_id);
 
+	@Query("select count(*) from Purchase where date(created) = :date")
+	Long getLastNumber(LocalDate date);
+
 	@Query(value = "select new com.noovitec.mpb.dto.KeyValueDto(p.id, p.number) from Purchase p")
 	public List<KeyValueDto> findAllKv();
 

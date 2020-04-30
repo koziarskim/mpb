@@ -6,7 +6,7 @@ Purchase
 + Purchase list remove invoice column.
 + PO and ETA data format (MM/DD/YYYY)
 + Remove shipping date 
-- Auto generate PO number with option to edit.
++ Auto generate PO number with option to edit.
 - Show freight terms on PO list.
 - Case pack column
 - Add supplie'rs stock #

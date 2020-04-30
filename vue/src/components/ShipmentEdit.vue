@@ -544,7 +544,7 @@ export default {
           console.log("API error: " + e);
         });
     },
-    getCount() {
+    getShipmentNumber() {
       if(this.shipment.number){
         return
       }
@@ -597,7 +597,7 @@ export default {
       this.getShipment(id);
     }else{
       this.shipment.shippingDate = moment().format("YYYY-MM-DD");
-      this.getCount();
+      this.getShipmentNumber();
     }
     this.getAvailableCustomers();
     this.getAvailableFreightAddresses();

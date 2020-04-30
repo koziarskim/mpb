@@ -73,7 +73,8 @@ export default {
     return {
       purchase: {
         date: moment().format("YYYY-MM-DD"),
-        supplier: {}
+        supplier: {},
+        number: null
       },
       componentDtos: [],
       fields: [
@@ -94,6 +95,16 @@ export default {
   watch: {
   },
   methods: {
+    getPurchaseNumber() {
+      if(this.purchase.number){
+        return
+      }
+      return http.get("/purchase/number/"+moment.utc().local().format("YYYY-MM-DD")).then(r => {
+        this.purchase.number = r.data;
+      }).catch(e => {
+        console.log("API error: " + e);
+      });
+    },     
     getTotalPrice(item){
       return (item.units * item.unitPrice).toFixed(4);
     },
@@ -181,6 +192,7 @@ export default {
     if(componentIds){
       this.getComponentDtos(componentIds);
     }
+    this.getPurchaseNumber();
   }
 };
 </script>
