@@ -11,10 +11,10 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.noovitec.mpb.dto.KeyValueDto;
-import com.noovitec.mpb.entity.Purchase;
 import com.noovitec.mpb.entity.Receiving;
+import com.noovitec.mpb.repo.custom.CustomReceivingRepo;
 
-public interface ReceivingRepo extends JpaRepository<Receiving, Long> {
+public interface ReceivingRepo extends JpaRepository<Receiving, Long>, CustomReceivingRepo {
 
 	@Query("select new com.noovitec.mpb.dto.KeyValueDto(pc.component.id, sum(r.units)) "
 			+ "from Receiving r "

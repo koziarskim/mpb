@@ -1,6 +1,8 @@
 package com.noovitec.mpb.service;
 
-import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -16,16 +18,18 @@ import com.noovitec.mpb.entity.PurchaseComponent;
 import com.noovitec.mpb.entity.Receiving;
 import com.noovitec.mpb.repo.ComponentRepo;
 import com.noovitec.mpb.repo.ItemComponentRepo;
+import com.noovitec.mpb.repo.ReceivingRepo;
 
 public interface ComponentService {
 
-	public Component save(Component component) throws IOException;
+	public Component save(Component component);
 	public void delete(Long id);
 	public void updateUnitsOnStockByProduction(Long productionId, Long units);
 	public void updateUnitsOnStock(Long componentId, Long units);
 	public void updateUnitsLocked(List<Long> componentIds);
 	public void updateUnitsLockedByItem(Long itemId);
 	public void updateUnits(List<Long> componentIds);
+	public void updateLastPrice(Long componentId);
 
 	@Transactional
 	@Service("componentServiceImpl")
@@ -39,12 +43,14 @@ public interface ComponentService {
 		private AttachmentService attachmentService;
 		@Autowired
 		private ItemComponentRepo itemComponentRepo;
+		@Autowired
+		private ReceivingRepo receivingRepo;
 
 		public ComponentServiceImp(ComponentRepo componentRepo) {
 			this.componentRepo = componentRepo;
 		}
 		
-		public Component save(Component component) throws IOException {
+		public Component save(Component component) {
 			component = (Component) crudService.merge(component);
 			for(ItemComponent ic: component.getItemComponents()) {
 				ic.setComponent(component);
@@ -54,6 +60,13 @@ public interface ComponentService {
 		
 		public void delete(Long id) {
 			componentRepo.deleteById(id);
+		}
+		
+		public void updateLastPrice(Long componentId) {
+			Receiving receiving = receivingRepo.getLastByComponent(componentId);
+			Component component = componentRepo.findById(componentId).get();
+			component.setLastPrice(receiving.getUnitPrice());
+			componentRepo.save(component);
 		}
 		
 		public void updateUnitsOnStockByProduction(Long productionId, Long units) {
@@ -113,11 +126,22 @@ public interface ComponentService {
 				Long unitsForProduction = 0L;
 				Long unitsForSale = 0L;
 				Long unitsOrdered = 0L;
+				BigDecimal totalPrice = BigDecimal.ZERO;
+				long receivingsCount = 0;
+				LocalDateTime lastDate = LocalDateTime.parse("2000-01-01T01:01:01");
 				for(PurchaseComponent pc: component.getPurchaseComponents()) {
 					unitsOrdered += pc.getUnits();
 					for(Receiving r: pc.getReceivings()) {
 						if(r.getReceivingDate()!=null) {
 							unitsReceived += r.getUnits();
+							if(r.getUnitPrice()!=null) {
+								totalPrice = totalPrice.add(r.getUnitPrice());
+								receivingsCount++;
+								if(r.getUpdated().isAfter(lastDate)){
+									lastDate = r.getUpdated();
+									component.setLastPrice(r.getUnitPrice());
+								}
+							}
 						}
 					}
 				}
@@ -134,6 +158,7 @@ public interface ComponentService {
 				component.setUnitsForProduction(unitsForProduction);
 				component.setUnitsForSale(unitsForSale);
 				component.setUnitsShort((unitsForSale - unitsForProduction) - (unitsReceived - unitsForProduction) - (unitsOrdered - unitsReceived));
+				component.setAveragePrice(totalPrice.divide(BigDecimal.valueOf(receivingsCount)).setScale(4, RoundingMode.CEILING));
 				componentRepo.save(component);
 				counter++;
 				log.info("Updated Component: " + component.getId());

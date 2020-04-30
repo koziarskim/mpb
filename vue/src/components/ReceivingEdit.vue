@@ -9,7 +9,7 @@
       </b-col>
       <b-col cols="2" offset="4">
         <div style="text-align: right;">
-          <b-button v-if="editMode" type="reset" variant="success" @click="saveAndClose()">Save & Close</b-button>
+          <b-button type="reset" variant="success" @click="saveAndClose()">Save & Close</b-button>
         </div>
       </b-col>
     </b-row>
@@ -40,8 +40,12 @@
           </b-col>
           <b-col cols="4">
             <label class="top-label">Invoice:</label>
-            <input class="form-control" type="text" v-model="receiving.invoiceNumber" :disabled="!editMode" placeholder="Invoice #">
+            <input class="form-control" type="text" v-model="receiving.invoiceNumber">
           </b-col>
+          <b-col cols="4">
+            <label class="top-label">Unit Price:</label>
+            <input class="form-control" type="text" v-model="receiving.unitPrice">
+          </b-col>          
         </b-row>
       </b-col>
       <b-col>
@@ -50,6 +54,9 @@
             Component: {{purchaseComponent.component.name}}<br/>
             Ordered: {{purchaseComponent.units}}<br/>
             Received: {{purchaseComponent.unitsReceived}}<br/>
+            Average Unit Price: ${{purchaseComponent.component.averagePrice}}<br/>
+            Recent Unit Price: ${{purchaseComponent.component.lastPrice}}<br/>
+            P.O. Unit Price: ${{purchaseComponent.unitPrice}}<br/>
         </b-row>
       </b-col>
     </b-row>
@@ -91,8 +98,8 @@ export default {
         });
     },
     validate(){
-      if(!this.receiving.units){
-        alert("Please enter units!");
+      if(!this.receiving.units || !this.receiving.unitPrice){
+        alert("Please enter units and price!");
         return false;
       }
       if(!this.receiving.etaDate && !this.receiving.receivingDate){
@@ -132,6 +139,9 @@ export default {
           this.receiving.invoiceNumber = r.data.purchase.invoiceNumber;
           if(!this.receiving.number){
             this.receiving.number = r.data.purchase.number + "-" + r.data.component.number;
+          }
+          if(!this.receiving.unitPrice){
+            this.receiving.unitPrice = r.data.unitPrice;
           }
         }).catch(e => {
           console.log("API error: " + e);

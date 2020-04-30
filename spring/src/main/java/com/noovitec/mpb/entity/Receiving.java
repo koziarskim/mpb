@@ -1,5 +1,6 @@
 package com.noovitec.mpb.entity;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import javax.persistence.Entity;
@@ -26,6 +27,7 @@ public class Receiving extends BaseEntity {
 	private String containerNumber;
 	private String invoiceNumber;
 	private long units = 0;
+	private BigDecimal unitPrice = BigDecimal.ZERO;
 	private LocalDate shippingDate;
 	private LocalDate etaDate;
 	private LocalDate receivingDate;

@@ -53,6 +53,8 @@ public class Component extends BaseEntity {
 	private long unitsForSale = 0; //Sold
 	private long unitsSoldNotProd = 0; //unitsForSale - unitsForProduction
 	private long unitsShort = 0; //unitsSoldNotProduced - unitsOnStock - unitsOrdered - unitsReceived
+	private BigDecimal lastPrice = BigDecimal.ZERO;
+	private BigDecimal averagePrice =BigDecimal.ZERO;
 
 	@JsonIgnoreProperties(value = { "component" }, allowSetters = true)
 	@OneToMany()
