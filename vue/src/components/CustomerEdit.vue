@@ -19,7 +19,7 @@
       </b-col>
       <b-col cols=2>
         <label class="top-label">Freight Terms:</label>
-        <b-select option-value="code" option-text="name" :list="availableFreights" v-model="freightTerms"></b-select>
+        <b-select option-value="id" option-text="name" :list="availableFreightTerms" v-model="freightTerms"></b-select>
       </b-col>
       <b-col cols=2 style="padding-right: 0px">
         <label class="top-label">Invoice Type:</label>
@@ -275,16 +275,12 @@ export default {
       billingAddress: {},
       freightTerms: {},
       availableStates: state.states,
-      availableFreights: [
-        { code: "Delivered", name: "Delivered" },
-        { code: "Collect", name: "Collect" }
-      ],
-      availablePayTerms: [
-        { id: "TPB", name: "TP Bill" },
-        { id: "PRP", name: "Pre Paid" },
-        { id: "TPO", name: "TP Bill Other" },
-        { id: "COL", name: "Collect" },
-        { id: "CPU", name: "Customer Pickup" }
+      availableFreightTerms: [
+        {id: "TPB", name: "TP Bill"},
+        {id: "PRP", name: "Pre Paid"},
+        {id: "TPO", name: "TP Bill Other"},
+        {id: "COL", name: "Collect"},
+        {id: "CPU", name: "Customer Pickup"}
       ],
       availableInvoiceTypes: [
         { id: "PER_SHIPMENT_ITEM", name: "Per Shipment BOL" },
@@ -319,7 +315,7 @@ export default {
   computed: {},
   watch: {
     freightTerms(newValue, oldValue) {
-      this.customer.freightTerms = newValue.code;
+      this.customer.freightTerms = newValue.id;
     },
     billingAddress: {
       handler: function(newValue, oldValue) {
@@ -374,10 +370,10 @@ export default {
         window.history.back();
       });
     },
-    getFreightById(code) {
+    getFreightById(id) {
       var freight = {};
-      this.availableFreights.filter(it => {
-        if (it.code == code) {
+      this.availableFreightTerms.filter(it => {
+        if (it.id == id) {
           freight = it;
         }
       });
