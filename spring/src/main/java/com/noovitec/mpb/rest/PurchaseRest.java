@@ -258,7 +258,11 @@ class PurchaseRest {
 		stamper.setFormFlattening(true);
 		stamper.getAcroFields().setField("date", purchase.getDate().format(DateTimeFormatter.ofPattern("MM/dd/yyy")));
 		stamper.getAcroFields().setField("number", purchase.getNumber());
-		stamper.getAcroFields().setField("supplierName", s.getName());
+		String supplierInfo = s.getName() + "\n"
+				+s.getVendorNumber()+"\n"
+				+(s.getStreet()==null?"":(s.getStreet()+"\n"))
+				+(s.getCity()==null?"":(s.getCity()+", "))+(s.getState()==null?"":(s.getState()+" "))+(s.getZip()==null?"":s.getZip());
+		stamper.getAcroFields().setField("supplierName", supplierInfo);
 		stamper.getAcroFields().setField("paymentTerms", s.getPaymentTerms());
 		stamper.getAcroFields().setField("expectedDate", purchase.getExpectedDate() != null ? purchase.getExpectedDate().format(DateTimeFormatter.ofPattern("MM/dd/yyy")) : "");
 		stamper.getAcroFields().setField("freighTerms", s.getFreightTerms());

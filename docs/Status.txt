@@ -1,4 +1,7 @@
 In Progress/Done:
+Supplier:
++ Udate freight list
++ Add vendor/stock #
 Sale:
 + Units on stock should be remove when shippment is created (not send).
 - Option to cancel in addition to delete.
@@ -10,15 +13,12 @@ Purchase
 + Remove shipping date 
 + Auto generate PO number with option to edit.
 + Show freight terms on PO list.
++ Show supplie'rs stock # on PDF
 - Case pack column
-- Add supplie'rs stock #
-- Update po name
+- Add Case Qty the the PO List
 - Add PO Notes on Screen and PDF
 - Delete component from PO
 - Deleete whole PO
-- Freight terms (use supplierss's by defaut) use list from shipment.
-- Pay Terms (use sppliers by default)
-- Add Case Qty the the PO List
 Component:
 + Extend name to be 50 characters.
 - Auto generate with option to edit
@@ -27,7 +27,6 @@ Component:
 - Component and item report popup baed on expiration
 - Average price (based on all receivings)
 - Last price (based on last receiving)
-- Align 
 Customer:
 + Update freight list based on shipment.
 - Broker Contact change to Compliance Contact

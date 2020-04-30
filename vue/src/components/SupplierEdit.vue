@@ -12,9 +12,13 @@
                 <label class="top-label">Name:</label>
                 <input class="form-control" type="text" v-model="supplier.name" placeholder="Name"/>
             </b-col>
-            <b-col cols=3>
+            <b-col cols=1>
                 <label class="top-label">Account #:</label>
                 <input class="form-control" disabled type="text" v-model="supplier.account" placeholder="Account #"/>
+            </b-col>
+            <b-col cols=2>
+                <label class="top-label">Vendor/Stock #:</label>
+                <input class="form-control" type="text" v-model="supplier.vendorNumber"/>
             </b-col>
             <b-col cols=2>
                 <label class="top-label">Pay Terms:</label>

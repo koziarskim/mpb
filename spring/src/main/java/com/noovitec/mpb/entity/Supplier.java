@@ -33,6 +33,7 @@ public class Supplier extends BaseEntity {
 	private String email;
 	private String email2;
 	private String contactName;
+	private String vendorNumber;
 
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "address_id", referencedColumnName = "id")
