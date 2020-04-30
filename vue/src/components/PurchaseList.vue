@@ -32,14 +32,17 @@
           <img src="../assets/pdf-download.png" width="20px">
         </a>
       </template>
-      <template v-slot:cell(expectedDate)="row">
-        <span>{{row.item.expectedDate | formatDate}}</span>
+      <template v-slot:cell(poDate)="row">
+        <span>{{row.item.poDate | formatDate}}</span>
+      </template>
+      <template v-slot:cell(etaDate)="row">
+        <span>{{row.item.etaDate | formatDate}}</span>
       </template>
       <template v-slot:cell(unitsReceived)="row">
         <b-link role="button" @click.stop="goToReceiving(row.item.id)">{{row.item.unitsReceived}}</b-link>
       </template>
       <template v-slot:cell(date)="row">
-        <span>{{row.item.date | formatDate}}</span>
+        <span>{{row.item.date | formatDates}}</span>
       </template>
     </b-table>
     <b-pagination v-model="pageable.currentPage" :per-page="pageable.perPage" :total-rows="pageable.totalElements" @change="paginationChange"></b-pagination>
@@ -58,11 +61,9 @@ export default {
       searchComponent: "",
       fields: [
         { key: "number", label: "Purchase # (Name)", sortable: false },
-        { key: "invoiceNumber", label: "Invoice", sortable: false },
         { key: "supplierName", label: "Supplier", sortable: false },
         { key: "poDate", label: "P.O. Date", sortable: false },
         { key: "etaDate", label: "Expected", sortable: false },
-        { key: "shippingDate", label: "Shipping", sortable: false },
         { key: "unitsOrdered", label: "Purchased", sortable: false },
         { key: "unitsReceived", label: "Received", sortable: false },
         { key: "pdf", label: "PDF", sortable: false },

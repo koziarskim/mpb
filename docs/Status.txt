@@ -1,11 +1,11 @@
 In Progress/Done:
 Sale:
-- remove from stock when sale approved.
++ Units on stock should be remove when shippment is created (not send).
 - Option to cancel in addition to delete.
 Purchase
-- Purchase list remove invoice column.
-- Purhacese list date m/d/rok
-- remove shipping date 
++ Purchase list remove invoice column.
++ PO and ETA data format (MM/DD/YYYY)
++ Remove shipping date 
 - Auto generate PO number with option to edit.
 - Show freight terms on PO list.
 - Case pack column
@@ -16,6 +16,7 @@ Purchase
 - Deleete whole PO
 - Freight terms (use supplierss's by defaut)
 - Pay Terms (use sppliers by default)
+- Add Case Qty the the PO List
 Component:
 + Extend name to be 50 characters.
 - Auto generate with option to edit
