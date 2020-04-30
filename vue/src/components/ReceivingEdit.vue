@@ -55,7 +55,7 @@
             Ordered: {{purchaseComponent.units}}<br/>
             Received: {{purchaseComponent.unitsReceived}}<br/>
             Average Unit Price: ${{purchaseComponent.component.averagePrice}}<br/>
-            Recent Unit Price: ${{purchaseComponent.component.lastPrice}}<br/>
+            Recent Unit Price: ${{purchaseComponent.component.unitPrice}}<br/>
             P.O. Unit Price: ${{purchaseComponent.unitPrice}}<br/>
         </b-row>
       </b-col>

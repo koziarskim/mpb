@@ -29,7 +29,6 @@ public interface ComponentService {
 	public void updateUnitsLocked(List<Long> componentIds);
 	public void updateUnitsLockedByItem(Long itemId);
 	public void updateUnits(List<Long> componentIds);
-	public void updateLastPrice(Long componentId);
 
 	@Transactional
 	@Service("componentServiceImpl")
@@ -60,13 +59,6 @@ public interface ComponentService {
 		
 		public void delete(Long id) {
 			componentRepo.deleteById(id);
-		}
-		
-		public void updateLastPrice(Long componentId) {
-			Receiving receiving = receivingRepo.getLastByComponent(componentId);
-			Component component = componentRepo.findById(componentId).get();
-			component.setLastPrice(receiving.getUnitPrice());
-			componentRepo.save(component);
 		}
 		
 		public void updateUnitsOnStockByProduction(Long productionId, Long units) {
@@ -139,7 +131,7 @@ public interface ComponentService {
 								receivingsCount++;
 								if(r.getUpdated().isAfter(lastDate)){
 									lastDate = r.getUpdated();
-									component.setLastPrice(r.getUnitPrice());
+									component.setUnitCost(r.getUnitPrice());
 								}
 							}
 						}

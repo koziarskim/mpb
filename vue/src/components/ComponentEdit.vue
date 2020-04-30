@@ -84,10 +84,6 @@
     <hr class="hr-text" data-content="Unit prices/fees are in USD ($)" />
     <b-row>
       <b-col cols="2">
-        <label class="top-label">Unit Cost $:</label>
-        <input class="form-control" type="number" min="0" v-model="component.unitCost" />
-      </b-col>
-      <b-col cols="2">
         <label class="top-label">Duty %:</label>
         <input class="form-control" type="number" min="0" v-model="component.dutyPercentage" />
       </b-col>
@@ -98,6 +94,12 @@
       <b-col cols="2">
         <label class="top-label">Other $:</label>
         <input class="form-control" type="number" min="0" v-model="component.otherCost" />
+      </b-col>
+      <b-col cols="2">
+        <br />
+        <label class="top-label">Recent unit price: ${{component.unitCost}}</label>
+        <label class="top-label">Average price: ${{component.unitCost}}</label>
+        <br />
       </b-col>
       <b-col cols="2">
         <br />
