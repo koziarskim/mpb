@@ -116,6 +116,7 @@ class ComponentRest {
 			dto.setId(component.getId());
 			dto.setNumber(component.getNumber());
 			dto.setName(component.getName());
+			dto.setCasePack(component.getCasePack());
 			dto.setCategoryName(component.getCategory()==null?"":component.getCategory().getName());
 			dto.setComponentTypeName(component.getComponentType()==null?null:component.getComponentType().getName());
 			dto.setSupplierName(component.getSupplier()==null?"":component.getSupplier().getName());

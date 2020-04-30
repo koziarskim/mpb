@@ -84,6 +84,9 @@
             <input v-if="editMode" class="form-control" style="width: 120px" type="tel" v-model="row.item.units">   
             <span v-if="!editMode">{{row.item.units}}</span>
           </template>
+          <template v-slot:cell(cases)="row">
+            <span>{{Math.ceil(row.item.units / row.item.component.casePack)}}</span>
+          </template>             
           <template v-slot:cell(totalPrice)="row">
             ${{row.item.totalPrice = getTotalPrice(row.item)}}
           </template>
@@ -117,6 +120,8 @@ export default {
         { key: "component.unitCost", label: "Unit Cost", sortable: false },
         { key: "unitPrice", label: "P.O. Price", sortable: false },
         { key: "units", label: "P.O. Units", sortable: false },
+        { key: "component.casePack", label: "C/P", sortable: false },
+        { key: "cases", label: "Cases", sortable: false },
         { key: "unitsReceived", label: "Received", sortable: false },
         { key: "totalPrice", label: "Total", sortable: false },
       ],

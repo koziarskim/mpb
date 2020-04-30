@@ -14,8 +14,8 @@ Purchase
 + Auto generate PO number with option to edit.
 + Show freight terms on PO list.
 + Show supplie'rs stock # on PDF
-- Case pack column
-- Add Case Qty the the PO List
++ Case pack column
++ Add Case Qty the the PO
 - Add PO Notes on Screen and PDF
 - Delete component from PO
 - Deleete whole PO

@@ -17,6 +17,7 @@ public class ComponentDto {
 	private String categoryName;
 	private String componentTypeName;
 	private String supplierName;
+	private long casePack;
 	private Long supplierId;
 	private Long unitsSoldNotProd;
 	private Long unitsOnStock;

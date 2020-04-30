@@ -52,6 +52,9 @@
           <template v-slot:cell(units)="row">
             <b-form-input style="width:100px" class="form-control" type="tel" v-model="row.item.units"></b-form-input>
           </template>
+          <template v-slot:cell(cases)="row">
+            <span>{{Math.ceil(row.item.units / row.item.casePack)}}</span>
+          </template>          
           <template v-slot:cell(totalPrice)="row">
             ${{row.item.totalPrice = getTotalPrice(row.item)}}
           </template>
@@ -84,6 +87,8 @@ export default {
         { key: "unitCost", label: "Unit Cost", sortable: false },
         { key: "unitPrice", label: "P.O. Price", sortable: false },
         { key: "units", label: "P.O. Units", sortable: false },
+        { key: "casePack", label: "C/P", sortable: false },
+        { key: "cases", label: "Cases", sortable: false },
         { key: "totalPrice", label: "Total", sortable: false },
       ],
     };
