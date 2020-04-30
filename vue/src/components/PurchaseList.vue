@@ -24,9 +24,6 @@
       <template v-slot:cell(received)="row">
         <span>{{row.item.received?"Yes":"No"}}</span>
       </template>
-      <template v-slot:cell(action)="row">
-        <b-button size="sm" @click.stop="deletePurchase(row.item)">x</b-button>
-      </template>
       <template v-slot:cell(pdf)="row">
         <a :href="rowPdfUrl(row.item.id)" target="_blank">
           <img src="../assets/pdf-download.png" width="20px">
@@ -146,17 +143,6 @@ export default {
         this.purchases = response.data.content;
         this.pageable.totalElements = response.data.totalElements;
       }).catch(e => {console.log("API error: " + e);});
-    },
-    deletePurchase(purchase) {
-      if(purchase.unitsReceived > 0){
-        alert("There are units already received. Please delete receiving first");
-        return;
-      }
-      http.delete("/purchase/" + purchase.id).then(response => {
-        this.getPurchases();
-      }).catch(e => {
-        console.log("API Error: " + e);
-      });
     },
     goToPurchaseNew() {
       router.push("/purchaseNew");

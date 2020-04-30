@@ -96,6 +96,9 @@ public interface ItemService {
 		}
 		
 		public List<Long> findIdsByComponents(List<Long> componentIds){
+			if(componentIds.size()==0) {
+				return null;
+			}
 			List<Long> ids = itemRepo.findIdsByComponents(componentIds);
 			return ids;
 		}

@@ -228,9 +228,15 @@ class PurchaseRest {
 			}
 		}
 		purchaseRepo.deleteById(id);
-		itemService.updateUnits(itemIds);
-		componentService.updateUnits(componentIds);
-		itemService.updateUnitsReadyProd(itemIds);
+		if(itemIds.size()>0) {
+			itemService.updateUnits(itemIds);
+		}
+		if(componentIds.size()>0) {
+			componentService.updateUnits(componentIds);
+		}
+		if(itemIds.size()>0) {
+			itemService.updateUnitsReadyProd(itemIds);
+		}
 		return ResponseEntity.ok().build();
 	}
 

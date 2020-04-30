@@ -51,7 +51,8 @@
           </div>
           <div style="text-align: right;">
             <div v-if="!editMode && !receiveMode">
-              <b-button size="sm" style="margin-right: 2px; width: 70px; margin-left: -50px" type="reset" variant="success" @click="edit()">Edit</b-button><br/>
+              <b-button size="sm" style="margin-right: 2px; width: 40px; margin-left: -50px" type="reset" variant="success" @click="edit()">Edit</b-button>
+              <b-button size="sm" style="width: 28px;" type="reset" variant="secondary" @click="deletePo()">x</b-button><br/>
               <b-button size="sm" style="margin: 2px; width: 70px" type="reset" variant="success" @click="receive()">Receive</b-button>
             </div>
             <div v-if="editMode || receiveMode">
@@ -90,6 +91,9 @@
           <template v-slot:cell(totalPrice)="row">
             ${{row.item.totalPrice = getTotalPrice(row.item)}}
           </template>
+          <template v-slot:cell(action)="row">
+            <b-button :disabled="!editMode" size="sm" @click="deletePc(row.item)">x</b-button>
+          </template>
         </b-table>
       </b-col>
     </b-row>
@@ -124,6 +128,7 @@ export default {
         { key: "cases", label: "Cases", sortable: false },
         { key: "unitsReceived", label: "Received", sortable: false },
         { key: "totalPrice", label: "Total", sortable: false },
+        { key: "action", label: "Action", sortable: false },
       ],
     };
   },
@@ -131,6 +136,22 @@ export default {
   watch: {
   },
   methods: {
+    deletePo(){
+      if(this.purchase.unitsReceived > 0){
+        alert("There are units already received!");
+        return;
+      }
+      http.delete("/purchase/" + this.purchase.id).then(response => {
+        router.push("/purchaseList");
+      }).catch(e => {
+        console.log("API Error: " + e);
+      });
+    },
+    deletePc(pc){
+      var idx = this.purchase.purchaseComponents.findIndex(it => it.id == pc.id);
+      this.purchase.purchaseComponents.splice(idx, 1);
+      this.save();
+    },
     cancel(){
       this.getPurchase(this.purchase.id).then(purchase =>{
         this.editMode = false;

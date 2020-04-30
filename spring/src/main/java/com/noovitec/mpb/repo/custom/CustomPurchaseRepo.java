@@ -30,9 +30,9 @@ public interface CustomPurchaseRepo {
 		@Override
 		public Page<Purchase> findPagable(Pageable pageable, String purchaseName, Long componentId, Long supplierId) {
 			String q = "select distinct p from Purchase p " 
-					+ "join p.purchaseComponents pc "
-					+ "join pc.component c "
-					+ "join p.supplier su "
+					+ "left join p.purchaseComponents pc "
+					+ "left join pc.component c "
+					+ "left join p.supplier su "
 					+ "where p.id is not null ";
 			if (purchaseName !=null && !purchaseName.isBlank()) {
 				q += "and (upper(p.number) like concat('%',upper(:purchaseName),'%') "
