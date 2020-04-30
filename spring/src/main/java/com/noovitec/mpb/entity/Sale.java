@@ -83,6 +83,7 @@ public class Sale extends BaseEntity {
 		this.unitsTransferedFrom = 0L;
 		this.unitsAdjusted = 0L;
 		this.unitsReturned = 0L;
+		this.unitsOnStock = 0L;
 		for (SaleItem sa : this.getSaleItems()) {
 			sa.updateUnits();
 			this.unitsSold += sa.getUnits();
@@ -93,8 +94,9 @@ public class Sale extends BaseEntity {
 			this.unitsTransferedFrom += sa.getUnitsTransferedFrom();
 			this.unitsAdjusted += sa.getUnitsAdjusted();
 			this.unitsReturned += sa.getUnitsReturned();
+			this.unitsOnStock += sa.getUnitsOnStock();
 		}
-		this.unitsOnStock = this.unitsProduced + this.unitsTransferedTo - this.unitsTransferedFrom + this.unitsReturned;
+//		this.unitsOnStock = this.unitsProduced + this.unitsTransferedTo - this.unitsTransferedFrom - this.unitsShipped + this.unitsReturned;
 		this.updateStatus();
 	}
 	

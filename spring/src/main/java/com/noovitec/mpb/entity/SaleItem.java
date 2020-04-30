@@ -102,7 +102,7 @@ public class SaleItem extends BaseEntity {
 		for (SaleItemTransfer sit: this.getTransfersTo()) {
 			this.unitsTransferedTo += sit.getUnitsTransfered();
 		}
-		this.unitsOnStock = this.unitsProduced + this.unitsTransferedTo - this.unitsTransferedFrom - this.unitsReturned;
+		this.unitsOnStock = this.unitsProduced + this.unitsTransferedTo - this.unitsTransferedFrom - this.unitsShipped + this.unitsReturned;
 		if(this.unitsOnStock < 0) {
 			this.unitsOnStock = 0;
 		}
