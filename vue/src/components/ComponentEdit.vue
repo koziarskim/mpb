@@ -7,7 +7,7 @@
       </b-col>
       <b-col cols=3>
         <label class="top-label">Name/Short Description:</label>
-        <input class="form-control" type="tel" maxlength="35" v-model="component.name" />
+        <input class="form-control" type="tel" maxlength="50" v-model="component.name" />
       </b-col>
       <b-col cols=2>
         <label class="top-label">Category:</label>

@@ -85,7 +85,7 @@ export default {
       router.push("/shipmentEdit/"+shipmentId);
     },
     allowEdit(){
-      return this.event.type == 'SHIPMENT'?false:true;
+      return !this.event.type.includes('SHIPMENT');
     },
     getStartDate(){
       return moment(this.event.start).format("MMMM, dddd DD");

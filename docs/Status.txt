@@ -1,9 +1,24 @@
 In Progress/Done:
+Sale:
+- remove from stock when sale approved.
+- Option to cancel in addition to delete.
 Purchase
-+ Search by supplier.
+- Purchase list remove invoice column.
+- Purhacese list date m/d/rok
+- remove shipping date 
+- Auto generate PO number with option to edit.
+- Show freight terms on PO list.
+- Case pack column
+- Add supplie'rs stock #
+- Update po name
+- Add PO Notes on Screen and PDF
+- Delete component from PO
+- Deleete whole PO
 - Freight terms (use supplierss's by defaut)
 - Pay Terms (use sppliers by default)
 Component:
++ Extend name to be 50 characters.
+- Auto generate with option to edit
 - Update component Type (Hania or Michal to sent me list).
 - Expiration date on component and item
 - Component and item report popup baed on expiration
@@ -11,8 +26,8 @@ Component:
 - Last price (based on last receiving)
 - Align 
 Customer:
-+ Special checkbox for Viki (very biggggg....)
-+ Shipping Pallet type: (Grade A, Chep)
+- Broker Contact change to Compliance Contact
+- Add grade B
 Receiving:
 - Allow to enter the price of component and invoice #
 - Allow to updated receiving (price, invoice number).
@@ -20,16 +35,14 @@ Accounting:
 - Permissions
 - Send email to client (andy as cc: by default).
 Schedule:
-+ Ability to add random reciving event on schedule.
-+ Hide delete on shipment.
-+ Shipping link.
-+ Different color when shpment ready vs shipped.
+- Make it independent from year context.
 Item:
 - Sort by (number (a-z), date (created)
 - Update list of Brands and Categories update (Hania or Michal to sent me list).
 - Show component picture when mouse over.
 - Expiration date on item
 Shipment:
+- BOL Goods for tender
 - Trasfer window date from sale
 	single PO - transfer same shipping window
 	multiple PO's with the same date -  transfer same shipping window
