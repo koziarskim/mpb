@@ -131,6 +131,7 @@ class PurchaseRest {
 			dto.setPoDate(purchase.getDate());
 			dto.setShippingDate(purchase.getShippingDate());
 			dto.setSupplierName(purchase.getSupplier().getName());
+			dto.setFreightTermId(purchase.getSupplier().getFreightTerms());
 			dto.setUnitsOrdered(purchase.getUnitsPurchased());
 			dto.setUnitsReceived(purchase.getUnitsReceived());
 			return dto;

@@ -23,7 +23,7 @@
           </b-col>
           <b-col cols=4>
             <label class="top-label">Pay Terms:</label>
-            <b-select :isDisabled="!allowEdit()" option-value="id" option-text="name" :list="availablePayTerms" v-model="sale.paymentTerms" placeholder="Pick Freight"></b-select>
+            <input :disabled="!allowEdit()" class="form-control" type="tel" v-model="sale.paymentTerms">
           </b-col>
         </b-row>
       </b-col>
@@ -354,6 +354,7 @@ export default {
     getCustomer(customer_id){
       http.get("/customer/"+customer_id).then(response =>{
         this.customer = response.data;
+        this.sale.paymentTerms = customer.paymentTerms;
       }).catch(e =>{
         console.log("API error: " + e);
       })

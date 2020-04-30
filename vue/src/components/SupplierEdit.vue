@@ -28,7 +28,7 @@
             </b-col>
             <b-col cols=2 offset=3>
                 <label class="top-label">Freight Terms:</label>
-                <b-select option-value="code" option-text="name" :list="availableFreights" v-model="freightTerms" placeholder="Freight terms"></b-select>
+                <b-select option-value="id" option-text="name" :list="availableFreightTerms" v-model="freightTerms" placeholder="Freight terms"></b-select>
             </b-col>
         </b-row>
         <b-row>
@@ -95,13 +95,20 @@ export default {
       },
       freightTerms: {},
       availableStates: state.states,
-      availableFreights: [{code: "Delivered", name: "Delivered"},{code: "Collect", name: "Collect"}]
+      availableFreightTerms: [
+        {id: "TPB", name: "TP Bill"},
+        {id: "PRP", name: "Pre Paid"},
+        {id: "TPO", name: "TP Bill Other"},
+        {id: "COL", name: "Collect"},
+        {id: "DEL", name: "Delivered"},
+        {id: "CPU", name: "Customer Pickup"}
+      ],
     };
   },
   computed: {},
   watch: {
       freightTerms: function(newValue, oldValue) {
-        this.supplier.freightTerms=newValue.code;
+        this.supplier.freightTerms=newValue.id;
     },
   },
   methods: {
@@ -129,10 +136,10 @@ export default {
             window.history.back();
         })
     },
-    getFreightById(code) {
+    getFreightById(id) {
         var freight = {};
-        this.availableFreights.filter(it =>{
-            if(it.code == code){
+        this.availableFreightTerms.filter(it =>{
+            if(it.id == id){
                 freight = it;
             }
         })

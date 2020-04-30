@@ -280,6 +280,7 @@ export default {
         {id: "PRP", name: "Pre Paid"},
         {id: "TPO", name: "TP Bill Other"},
         {id: "COL", name: "Collect"},
+        {id: "DEL", name: "Delivered"},
         {id: "CPU", name: "Customer Pickup"}
       ],
       availableInvoiceTypes: [

@@ -19,6 +19,7 @@ public class PurchaseListDto {
 	private LocalDate poDate;
 	private LocalDate etaDate;
 	private LocalDate shippingDate;
+	private String freightTermId;
 	private long unitsOrdered;
 	private long unitsReceived;
 	

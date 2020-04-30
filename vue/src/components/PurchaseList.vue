@@ -35,6 +35,9 @@
       <template v-slot:cell(poDate)="row">
         <span>{{row.item.poDate | formatDate}}</span>
       </template>
+      <template v-slot:cell(freightTerm)="row">
+        <span>{{getFreightName(row.item.freightTermId)}}</span>
+      </template>
       <template v-slot:cell(etaDate)="row">
         <span>{{row.item.etaDate | formatDate}}</span>
       </template>
@@ -66,8 +69,17 @@ export default {
         { key: "etaDate", label: "Expected", sortable: false },
         { key: "unitsOrdered", label: "Purchased", sortable: false },
         { key: "unitsReceived", label: "Received", sortable: false },
+        { key: "freightTerm", label: "Freight", sortable: false },
         { key: "pdf", label: "PDF", sortable: false },
         { key: "action", label: "", sortable: false }
+      ],
+      availableFreightTerms: [
+        {id: "TPB", name: "TP Bill"},
+        {id: "PRP", name: "Pre Paid"},
+        {id: "TPO", name: "TP Bill Other"},
+        {id: "COL", name: "Collect"},
+        {id: "DEL", name: "Delivered"},
+        {id: "CPU", name: "Customer Pickup"}
       ],
       availableComponents: [],
       componentKv: {},
@@ -90,6 +102,15 @@ export default {
     }
   },
   methods: {
+    getFreightName(id) {
+        var name = "";
+        this.availableFreightTerms.filter(it =>{
+            if(it.id == id){
+                name = it.name;
+            }
+        })
+        return name;
+    },    
     getAvailableComponents(){
       http.get("/component/kv").then(response => {
         this.availableComponents = response.data;
