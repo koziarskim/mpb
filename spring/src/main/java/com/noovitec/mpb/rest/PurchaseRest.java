@@ -3,6 +3,8 @@ package com.noovitec.mpb.rest;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -249,13 +251,21 @@ class PurchaseRest {
 		String componentUnits = "";
 		String componentPrice = "";
 		String componentTotalPrice = "";
+		String componentCases = "";
+		BigDecimal totalCases = BigDecimal.ZERO;
+		long totalUnits = 0;
+		
 		for (PurchaseComponent pc : purchase.getPurchaseComponents()) {
 			Component c = this.componentRepo.findById(pc.getComponent().getId()).get();
 			componentName += c.getNumber() + "\n";
-			componentDescription += c.getName() + "\n";
+			componentDescription += c.getName() +", "+ (c.getSupplierStockNumber()==null?"":c.getSupplierStockNumber()) + "\n";
 			componentUnits += pc.getUnits() + "\n";
 			componentPrice += currencyFormat.format(pc.getUnitPrice()) + "\n";
 			componentTotalPrice += currencyFormat.format(pc.getTotalPrice()) + "\n";
+			BigDecimal cases = totalCases.add(BigDecimal.valueOf(pc.getUnits()/pc.getComponent().getCasePack())).setScale(0, RoundingMode.CEILING);
+			componentCases += cases + " - "+pc.getComponent().getCasePack()+  "\n";
+			totalCases = totalCases.add(cases);
+			totalUnits += pc.getUnits();
 		}
 		InputStream in = this.getClass().getClassLoader().getResourceAsStream("pdf/PO-Template.pdf");
 		PdfReader pdfTemplate = new PdfReader(in);
@@ -265,7 +275,6 @@ class PurchaseRest {
 		stamper.getAcroFields().setField("date", purchase.getDate().format(DateTimeFormatter.ofPattern("MM/dd/yyy")));
 		stamper.getAcroFields().setField("number", purchase.getNumber());
 		String supplierInfo = s.getName() + "\n"
-				+s.getVendorNumber()+"\n"
 				+(s.getStreet()==null?"":(s.getStreet()+"\n"))
 				+(s.getCity()==null?"":(s.getCity()+", "))+(s.getState()==null?"":(s.getState()+" "))+(s.getZip()==null?"":s.getZip());
 		stamper.getAcroFields().setField("supplierName", supplierInfo);
@@ -276,8 +285,11 @@ class PurchaseRest {
 		stamper.getAcroFields().setField("componentDescription", componentDescription);
 		stamper.getAcroFields().setField("componentUnits", componentUnits);
 		stamper.getAcroFields().setField("componentPrice", componentPrice);
+		stamper.getAcroFields().setField("componentCases", componentCases);
 		stamper.getAcroFields().setField("componentTotalPrice", componentTotalPrice);
 		stamper.getAcroFields().setField("totalPrice", currencyFormat.format(purchase.getTotalPrice()));
+		stamper.getAcroFields().setField("totalCases", totalCases.toString());
+		stamper.getAcroFields().setField("totalUnits", String.valueOf(totalUnits));
 		stamper.close();
 		pdfTemplate.close();
 		return baos.toByteArray();

@@ -3,7 +3,8 @@ Supplier:
 + Udate freight list
 + Add vendor/stock #
 Sale:
-+ Units on stock should be remove when shippment is created (not send).
++ Units on stock based on sold (this won't work). Sale needs to be produced in order to take from stock.
+	if you need to resever for some other sale, you should do the transfer.
 + Change pay terms to be manual entry
 + Pay terms from customer by default.
 - Option to cancel in addition to delete.
@@ -13,7 +14,8 @@ Purchase
 + Remove shipping date 
 + Auto generate PO number with option to edit.
 + Show freight terms on PO list.
-+ Show supplie'rs stock # on PDF
++ Supplier's stock # from component on PDF
+- Total cases and total price.
 + Case pack column
 + Add Case Qty the the PO
 + Delete component from PO
