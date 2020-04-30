@@ -10,6 +10,6 @@ import com.noovitec.mpb.entity.Brand;
 
 public interface BrandRepo extends JpaRepository<Brand, Long> {
 	
-	@Query("select new com.noovitec.mpb.dto.KeyValueDto(id, name) from Brand")
+	@Query("select new com.noovitec.mpb.dto.KeyValueDto(id, name) from Brand where active = true")
 	List<KeyValueDto> findAllKvs();
 }

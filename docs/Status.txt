@@ -21,8 +21,11 @@ Purchase
 - Add PO Notes on Screen and PDF
 Component:
 + Extend name to be 50 characters.
-- Auto generate with option to edit
-- Update component Type (Hania or Michal to sent me list).
++ Update component Types
+- Change weight to case weight - right now, total weight is based on component weight.
+- Add new box (Net Weight) - is that net weight of coponent?
+- Delete FCL
+- Add Shelf Life - (6 moths, 9 months, 12 months, 24 months, 36 months) 
 - Expiration date on component and item
 - Component and item report popup baed on expiration
 - Average price (based on all receivings)
@@ -40,8 +43,8 @@ Accounting:
 Schedule:
 - Make it independent from year context.
 Item:
++ Update list of Brands and Categories
 - Sort by (number (a-z), date (created)
-- Update list of Brands and Categories update (Hania or Michal to sent me list).
 - Show component picture when mouse over.
 - Expiration date on item
 Shipment:
