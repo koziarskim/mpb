@@ -119,7 +119,7 @@ public interface ComponentService {
 				Long unitsForSale = 0L;
 				Long unitsOrdered = 0L;
 				BigDecimal totalPrice = BigDecimal.ZERO;
-				long receivingsCount = 0;
+				long receivingsCount = 1;
 				LocalDateTime lastDate = LocalDateTime.parse("2000-01-01T01:01:01");
 				for(PurchaseComponent pc: component.getPurchaseComponents()) {
 					unitsOrdered += pc.getUnits();
