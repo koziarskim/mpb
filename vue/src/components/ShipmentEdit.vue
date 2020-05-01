@@ -293,7 +293,7 @@ export default {
         if(this.shipment.customer && this.shipment.customer.id != new_value.id){
           this.shipment.notes =  c.shipmentNotes;
         }
-        this.shipment.payTemrs = c.payTerms;
+        this.shipment.freightTerms = c.freightTerms;
       })
       this.getAvailableSaleItems();
       this.getAvailableShippingAddresses(new_value.id)

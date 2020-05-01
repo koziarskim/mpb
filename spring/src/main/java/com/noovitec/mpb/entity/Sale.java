@@ -36,6 +36,7 @@ public class Sale extends BaseEntity {
 	private String number;
 	private String name;
 	private String paymentTerms;
+	private String freightTerms;
 	private LocalDate expectedDate;
 	private BigDecimal totalPrice = BigDecimal.ZERO;
 	private long unitsProduced = 0 ;

@@ -61,6 +61,10 @@
         <label class="top-label">Shipping Window To:</label>
         <input :disabled="!allowEdit()" class="form-control" type="date" v-model="sale.shippingTo" placeholder="Date">
       </b-col>
+      <b-col cols=2>
+        <label class="top-label">Freight Terms:</label>
+        <b-select option-value="id" option-text="name" :list="availableFreightTerms" v-model="sale.freightTerms"></b-select>
+      </b-col>
     </b-row>
     <hr class="hr-text" data-content="Sale Items">
     <b-row>
@@ -183,7 +187,9 @@ export default {
       sale: {
         saleItems: [],
         customer: {},
-        shippingAddress: {}
+        shippingAddress: {},
+        freightTerms: {},
+        paymentTerms: "",
       },
       customer: {
         addresses: []
@@ -215,11 +221,12 @@ export default {
       unitPrice: null,
       saleItem: {},
       saleFromIds: [],
-      availablePayTerms: [
+      availableFreightTerms: [
         {id: "TPB", name: "TP Bill"},
         {id: "PRP", name: "Pre Paid"},
         {id: "TPO", name: "TP Bill Other"},
         {id: "COL", name: "Collect"},
+        {id: "DEL", name: "Delivered"},
         {id: "CPU", name: "Customer Pickup"}
       ],
       availableSales: [],
@@ -274,13 +281,6 @@ export default {
     customerDto(new_value, old_value){
       if(new_value && new_value.id){
         this.getCustomer(new_value.id);
-      }
-    },
-    customer(new_value, old_value) {
-      this.sale.customer = new_value;
-      if (old_value.id && new_value.id != old_value.id) {
-        this.shippingAddress = {};
-        this.sale.paymentTerms = new_value.paymentTerms;
       }
     },
     itemDto(new_value, old_value){
@@ -354,7 +354,9 @@ export default {
     getCustomer(customer_id){
       http.get("/customer/"+customer_id).then(response =>{
         this.customer = response.data;
-        this.sale.paymentTerms = customer.paymentTerms;
+        this.shippingAddress = {};
+        this.sale.paymentTerms = response.data.paymentTerms;
+        this.sale.freightTerms = response.data.freightTerms;
       }).catch(e =>{
         console.log("API error: " + e);
       })
