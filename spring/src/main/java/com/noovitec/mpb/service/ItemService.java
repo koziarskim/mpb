@@ -1,6 +1,7 @@
 package com.noovitec.mpb.service;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -69,6 +70,9 @@ public interface ItemService {
 		}
 
 		public void updateUnits(List<Long> itemIds) {
+			if(itemIds != null && itemIds.size()==0) {
+				return;
+			}
 			Long counter = 0L;
 			Iterable<Item> items = itemIds==null?itemRepo.findAll():itemRepo.findByIds(itemIds);
 			for (Item item : items) {
@@ -96,8 +100,8 @@ public interface ItemService {
 		}
 		
 		public List<Long> findIdsByComponents(List<Long> componentIds){
-			if(componentIds.size()==0) {
-				return null;
+			if(componentIds != null && componentIds.size()==0) {
+				return new ArrayList<Long>();
 			}
 			List<Long> ids = itemRepo.findIdsByComponents(componentIds);
 			return ids;
