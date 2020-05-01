@@ -13,8 +13,6 @@ Receiving:
 Accounting:
 - Permissions
 - Send email to client (andy as cc: by default).
-Schedule:
-- Make it independent from year context.
 Item:
 - Sort by (number (a-z), date (created)
 - Show component picture when mouse over.
