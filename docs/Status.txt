@@ -1,7 +1,9 @@
 In Progress/Done:
 Purchase
 - Add PO Notes on Screen and PDF
+- PO list search by freigh terms
 Component:
+- Show component type based on category
 - Change weight to case weight - right now, total weight is based on component weight.
 - Add new box (Net Weight) - is that net weight of coponent?
 - Delete FCL

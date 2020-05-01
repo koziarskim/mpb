@@ -258,12 +258,12 @@ class PurchaseRest {
 		for (PurchaseComponent pc : purchase.getPurchaseComponents()) {
 			Component c = this.componentRepo.findById(pc.getComponent().getId()).get();
 			componentName += c.getNumber() + "\n";
-			componentDescription += c.getName() +", "+ (c.getSupplierStockNumber()==null?"":c.getSupplierStockNumber()) + "\n";
+			componentDescription += c.getName() +", "+ (c.getSupplierStockNumber()==null?"":"Item: "+c.getSupplierStockNumber()) + "\n";
 			componentUnits += pc.getUnits() + "\n";
 			componentPrice += currencyFormat.format(pc.getUnitPrice()) + "\n";
 			componentTotalPrice += currencyFormat.format(pc.getTotalPrice()) + "\n";
 			BigDecimal cases = totalCases.add(BigDecimal.valueOf(pc.getUnits()/pc.getComponent().getCasePack())).setScale(0, RoundingMode.CEILING);
-			componentCases += cases + " - "+pc.getComponent().getCasePack()+  "\n";
+			componentCases += cases+ "\n";
 			totalCases = totalCases.add(cases);
 			totalUnits += pc.getUnits();
 		}
