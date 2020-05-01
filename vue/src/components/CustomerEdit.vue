@@ -111,11 +111,11 @@
       </b-col>
       <b-col cols=4>
         <label class="top-label">Pre Ticketing Ordering Source:</label>
-        <b-form-textarea type="text" :rows="3" v-model="customer.ticketSource"></b-form-textarea>
+        <b-form-textarea maxlength="250" type="text" :rows="3" v-model="customer.ticketSource"></b-form-textarea>
       </b-col>
       <b-col cols=6>
         <label class="top-label">Pre Ticket Position:</label>
-        <b-form-textarea type="text" :rows="3" v-model="customer.ticketPosition"></b-form-textarea>
+        <b-form-textarea maxlength="250" type="text" :rows="3" v-model="customer.ticketPosition"></b-form-textarea>
       </b-col>
     </b-row>
     <div style="text-align: left;"><b>&#8226; Carton Labeling</b></div>
@@ -126,7 +126,7 @@
       </b-col>
       <b-col cols=4>
         <label class="top-label">Seasonal Carton Requirements:</label>
-        <b-form-textarea type="text" :rows="3" v-model="customer.cartonRequirements"></b-form-textarea>
+        <b-form-textarea maxlength="250" type="text" :rows="3" v-model="customer.cartonRequirements"></b-form-textarea>
       </b-col>
       <b-col cols=2>
         <div style="display:flex">
@@ -138,7 +138,7 @@
       </b-col>
       <b-col cols=4>
         <label class="top-label">Carton Label Requirements:</label>
-        <b-form-textarea type="text" :rows="3" v-model="customer.labelRequirements"></b-form-textarea>
+        <b-form-textarea maxlength="250" type="text" :rows="3" v-model="customer.labelRequirements"></b-form-textarea>
       </b-col>
     </b-row>
     <div style="text-align: left;"><b>&#8226; Pallet Labeling</b></div>
@@ -149,7 +149,7 @@
       </b-col>
       <b-col cols=4>
         <label class="top-label">Seasonal Pallet Requirements:</label>
-        <b-form-textarea type="text" :rows="3" v-model="customer.palletRequirements"></b-form-textarea>
+        <b-form-textarea maxlength="250" type="text" :rows="3" v-model="customer.palletRequirements"></b-form-textarea>
       </b-col>
       <b-col cols=2>
         <label class="top-label">Pallet Tag Size:</label>
@@ -157,7 +157,7 @@
       </b-col>
       <b-col cols=4>
         <label class="top-label">Pallet Tag Requirements:</label>
-        <b-form-textarea type="text" :rows="3" v-model="customer.palletTagRequirements"></b-form-textarea>
+        <b-form-textarea maxlength="250" type="text" :rows="3" v-model="customer.palletTagRequirements"></b-form-textarea>
       </b-col>
     </b-row>
     </div>
@@ -191,15 +191,15 @@
         <label class="top-label">Routing Credentials:</label>
         <input class="form-control" v-model="customer.routingCredentials">
         <label class="top-label">Routing Process/Notes:</label>
-        <b-form-textarea type="text" :rows="3" v-model="customer.routingNotes"></b-form-textarea>
+        <b-form-textarea maxlength="250" type="text" :rows="3" v-model="customer.routingNotes"></b-form-textarea>
         <label class="top-label">Traffic Department Contacts:</label>
-        <b-form-textarea type="text" :rows="3" v-model="customer.trafficContact"></b-form-textarea>
+        <b-form-textarea maxlength="250" type="text" :rows="3" v-model="customer.trafficContact"></b-form-textarea>
       </b-col>
       <b-col cols=4>
         <label class="top-label">ASN Portal & Process:</label>
         <input class="form-control" v-model="customer.asnPortal">
         <label class="top-label">BOL & Packaging Requirements:</label>
-        <b-form-textarea type="text" :rows="3" v-model="customer.bolReqirements"></b-form-textarea>
+        <b-form-textarea maxlength="250" type="text" :rows="3" v-model="customer.bolReqirements"></b-form-textarea>
         <b-row style="margin-bottom: -7px">
           <b-col cols=6 style="display:flex; margin-top: 22px">
             <div style="margin-top:3px" class="top-label">Preffered Carrier:</div>
@@ -211,17 +211,17 @@
           </b-col>
         </b-row>
         <label class="top-label">Carrier List:</label>
-        <b-form-textarea type="text" :rows="3" v-model="customer.carrierList"></b-form-textarea>
+        <b-form-textarea maxlength="250" type="text" :rows="3" v-model="customer.carrierList"></b-form-textarea>
       </b-col>
       <b-col cols=4>
         <label class="top-label">Claim/Dispute Link:</label>
         <input class="form-control" v-model="customer.claimLink">
         <label class="top-label">Contact:</label>
-        <b-form-textarea type="text" :rows="3" v-model="customer.claimContact"></b-form-textarea>
+        <b-form-textarea maxlength="250" type="text" :rows="3" v-model="customer.claimContact"></b-form-textarea>
         <label class="top-label">Claim/Dispute Credentials:</label>
         <input class="form-control" v-model="customer.claimCredentials">
         <label class="top-label">Claim/Dispute Process:</label>
-        <b-form-textarea type="text" :rows="3" v-model="customer.claimProcess"></b-form-textarea>
+        <b-form-textarea maxlength="250" type="text" :rows="3" v-model="customer.claimProcess"></b-form-textarea>
       </b-col>
     </b-row>
     </div>
