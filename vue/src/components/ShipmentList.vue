@@ -2,12 +2,12 @@
     <b-container fluid>
         <b-row style="padding-bottom: 4px; font-size: 12px">
           <b-col cols=1 style="margin-right: -45px">
-            <b-button id="shipmentListMenu" size="sm" @click="openFilterMenu()">Filter</b-button>
-            <b-popover :show="showFilterMenu" placement="bottom" target="shipmentListMenu" variant="secondary">
+            <b-button id="filterMenu" size="sm" @click="showFilterMenu = true">Filter</b-button>
+            <b-popover :show="showFilterMenu" placement="bottom" target="filterMenu" variant="secondary">
               <template v-slot:title>
                 <span>Advanced Filters</span>
                 <b-button style="margin-left: 185px" size="sm" @click="searchFilterMenu()">Search</b-button>
-                <b-button style="margin-left: 10px" size="sm" @click="closeFilterMenu()">X</b-button>
+                <b-button style="margin-left: 10px" size="sm" @click="clearFilterMenu()">Clear</b-button>
               </template>
               <div style="width: 400px">
                 <b-row>
@@ -141,16 +141,16 @@ export default {
         console.log("API error: " + e);
       });
     },
-    openFilterMenu(){
-      this.showFilterMenu = true;
-    },
-    closeFilterMenu(){
-      this.showFilterMenu = false;
-    },
     searchFilterMenu(){
       this.getShipments();
       this.showFilterMenu = false;
     },
+    clearFilterMenu(){
+      this.filter.shipFrom = null;
+      this.filter.shipTo = null;
+      this.getShipments();
+      this.showFilterMenu = false;
+    }, 
     browserHeight(){
       return +window.innerHeight - 170 +"px";
     },

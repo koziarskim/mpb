@@ -11,11 +11,11 @@
       </b-col>
       <b-col cols=2>
         <label class="top-label">Category:</label>
-        <b-select option-value="id" option-text="name" :list="availableCategories" v-model="component.category.id"></b-select>
+        <b-select option-value="id" option-text="name" :list="availableCategories" v-model="category"></b-select>
       </b-col>
       <b-col cols=2>
         <label class="top-label">Type:</label>
-        <b-select option-value="id" option-text="name" :list="availableComponentTypes" v-model="component.componentType.id"></b-select>
+        <b-select option-value="id" option-text="name" :list="availableComponentTypes" v-model="componentType"></b-select>
       </b-col>
       <b-col cols=2 style="margin-top: 20px">
         <upload :on-upload="onUpload" :file-url="getImageUrl()"></upload>
@@ -161,6 +161,7 @@ export default {
       supplier: {},
       availableSuppliers: [],
       availableCategories: [],
+      category: {},
       availableItems: [],
       item: {},
       icUnits: 0,
@@ -175,6 +176,7 @@ export default {
         { key: "unitsSchProd", label: "Sch/Prod", sortable: false }
       ],
       availableComponentTypes: [],
+      componentType: {},
 
     };
   },
@@ -199,14 +201,22 @@ export default {
     }
   },
   watch: {
-    supplier: function(newValue, oldValue) {
+    supplier(newValue, oldValue) {
       this.component.supplier = newValue;
     },
-    deliveryCost: function(newValue, oldValue) {
+    deliveryCost(newValue, oldValue) {
       this.component.deliveryCost = newValue;
     },
-    totalLandedCost: function(newValue, oldValue) {
+    totalLandedCost(newValue, oldValue) {
       this.component.totalLandedCost = newValue;
+    }, 
+    category(newValue, oldValue) {
+      this.component.category = newValue;
+      this.component.componentType = {};
+      this.getAvailableComponentTypes();
+    },
+    componentType(newValue, oldValue) {
+      this.component.componentType = newValue;
     }
   },
   methods: {
@@ -266,6 +276,12 @@ export default {
           if (r.data.supplier) {
             this.supplier = r.data.supplier;
           }
+          if(r.data.category){
+            this.category = r.data.category;
+          }
+          if (r.data.componentType){
+            this.componentType = r.data.componentType;
+          }
           return r.data;
         })
         .catch(e => {
@@ -288,7 +304,8 @@ export default {
       }).catch(e => {console.log("API error: " + e);});
     },
     getAvailableComponentTypes() {
-      http.get("/registery/componentType/kv").then(response => {
+      var query = {params: {categoryId: this.category.id}}
+      http.get("/registery/componentType/kv", query).then(response => {
         this.availableComponentTypes = response.data;
       }).catch(e => {console.log("API error: " + e);});
     },
@@ -312,11 +329,15 @@ export default {
           console.log("API error: " + e);
         });
     },
-    saveComponent() {
-      if (!this.component.name || !this.component.number) {
-        alert("Please enter Component Name and Number");
-        return Promise.reject();
+    validate(){
+      if(!this.component.name || !this.component.number || !this.component.supplier || !this.component.category.id || !this.component.componentType.id){
+        alert("Number, Name, Supplier, Category and Type are required");
+        return false;
       }
+      return true;
+    },
+    saveComponent() {
+      if (!this.validate()) {return false}
       var formData = new FormData();
       formData.append("image", this.uploadedFile);
       formData.append("jsonComponent", JSON.stringify(this.component));
@@ -361,7 +382,6 @@ export default {
     }
     this.getAvailableSuppliers();
     this.getAvailableCategories();
-    this.getAvailableComponentTypes();
     this.getAvailableItems();
   }
 };

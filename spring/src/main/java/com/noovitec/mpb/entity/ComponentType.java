@@ -1,7 +1,11 @@
 package com.noovitec.mpb.entity;
 
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,4 +24,10 @@ public class ComponentType extends BaseEntity {
 	
 	private String name;
 	private String code;
+	
+	@JsonIgnoreProperties(value = { "componentTypes" }, allowSetters = true)
+	@ManyToOne()
+	@JoinColumn(name = "category_id")
+	private Category category;
+
 }

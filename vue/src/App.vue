@@ -374,4 +374,13 @@ export default {
   0%,100% { opacity: 0; }
   50% { opacity: 1; }
 }
+.b-popover-secondary .popover-header {
+  background-color: #a8accc !important
+}
+.b-popover-secondary.popover {
+  background-color: #a8accc !important
+}
+.b-popover-secondary.bs-popover-bottom > .arrow::after, .b-popover-secondary.bs-popover-auto[x-placement^="bottom"] > .arrow::after {
+    border-bottom-color: #a8accc !important
+}
 </style>

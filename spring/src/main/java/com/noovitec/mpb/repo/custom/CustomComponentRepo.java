@@ -18,7 +18,7 @@ import com.noovitec.mpb.entity.Component;
 
 public interface CustomComponentRepo {
 	Page<Component> findPage(Pageable pageable, String nameSearch, Long supplierId, Long itemId, String unitFilter,
-			Long componentTypeId);
+			Long categoryId, Long componentTypeId);
 
 	@Repository
 	public class CustomComponentRepoImpl implements CustomComponentRepo {
@@ -30,10 +30,11 @@ public interface CustomComponentRepo {
 
 		@Override
 		public Page<Component> findPage(Pageable pageable, String nameSearch, Long supplierId, Long itemId, String unitFilter,
-				Long componentTypeId) {
+				Long categoryId, Long componentTypeId) {
 			String q = "select distinct c from Component c "
 					+ "left join c.supplier supplier "
 					+ "left join c.itemComponents ic "
+					+ "left join c.category cat "
 					+ "left join c.componentType ct "
 					+ "where c.id is not null ";
 			if (nameSearch != null && !nameSearch.isEmpty()) {
@@ -42,6 +43,9 @@ public interface CustomComponentRepo {
 			}
 			if (itemId != null) {
 				q += "and ic.item.id = :itemId ";
+			}
+			if (categoryId != null) {
+				q += "and cat.id = :categoryId ";
 			}
 			if (componentTypeId != null) {
 				q += "and ct.id = :componentTypeId ";
@@ -69,6 +73,9 @@ public interface CustomComponentRepo {
 			}
 			if (itemId != null) {
 				query.setParameter("itemId", itemId);
+			}
+			if (categoryId != null) {
+				query.setParameter("categoryId", categoryId);
 			}
 			if (componentTypeId != null) {
 				query.setParameter("componentTypeId", componentTypeId);

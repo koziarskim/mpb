@@ -71,8 +71,9 @@ class ComponentRest {
 			@RequestParam(required = false) Long supplierId,
 			@RequestParam(required = false) Long itemId,
 			@RequestParam(required = false) String unitFilter,
+			@RequestParam(required = false) Long categoryId,
 			@RequestParam(required = false) Long componentTypeId) {
-		Page<Component> components = componentRepo.findPage(pageable, nameSearch, supplierId, itemId,unitFilter, componentTypeId);
+		Page<Component> components = componentRepo.findPage(pageable, nameSearch, supplierId, itemId,unitFilter, categoryId, componentTypeId);
 		Page<ComponentDto> dtos = components.map(component -> {
 			ComponentDto dto = new ComponentDto();
 			dto.setId(component.getId());

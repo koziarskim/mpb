@@ -1,6 +1,26 @@
 <template>
   <b-container fluid>
     <b-row style="padding-bottom: 4px; font-size: 12px">
+      <b-col cols=1 style="margin-right: -45px;">
+        <b-button id="filterMenu" size="sm" @click="showFilterMenu = true">Filter</b-button>
+        <b-popover :show="showFilterMenu" placement="bottom" target="filterMenu" variant="secondary">
+          <template v-slot:title>
+            <span>Advanced Filters</span>
+            <b-button style="margin-left: 185px" size="sm" @click="searchFilterMenu()">Search</b-button>
+            <b-button style="margin-left: 10px" size="sm" @click="clearFilterMenu()">Clear</b-button>
+          </template>
+          <div style="width: 400px">
+            <b-row>
+              <b-col cols=6>
+                <b-select option-value="id" option-text="name" :list="availableCategories" v-model="category" placeholder="Category"></b-select>
+              </b-col>
+              <b-col cols=6>
+                <b-select option-value="id" option-text="name" :list="availableComponentTypes" v-model="componentType" placeholder="Type"></b-select>
+              </b-col>
+            </b-row>
+          </div>
+        </b-popover>
+      </b-col>
       <b-col cols=2>
         <input class="form-control" style="font-size: 12px" type="tel" v-model="nameSearch" @keyup.enter="getComponents()" placeholder="Number or Name"/>
       </b-col>
@@ -12,9 +32,6 @@
       </b-col>
       <b-col cols=2>
         <b-select option-value="id" option-text="name" :list="availableUnitFilters" v-model="unitFilter" placeholder="Units"></b-select>
-      </b-col>
-      <b-col cols=2>
-        <b-select option-value="id" option-text="name" :list="availableComponentTypes" v-model="componentType" placeholder="Filter"></b-select>
       </b-col>
       <b-col>
         <div style="text-align: right;">
@@ -92,24 +109,37 @@ export default {
       ],
       unitFilter: {},
       availableComponentTypes: [],
-      componentType: {}
+      componentType: {},
+      availableCategories: [],
+      category: {},
+      showFilterMenu: false,
     };
   },
   watch: {
-    supplierKv(old_value, new_value){
+    supplierKv(new_value, old_value){
       this.getComponents();
     },
-    itemKv(old_value, new_value){
+    itemKv(new_value, old_value){
       this.getComponents();
     },
-    unitFilter(old_value, new_value){
+    unitFilter(new_value, old_value){
       this.getComponents();
     },
-    componentType(old_value, new_value){
-      this.getComponents();
-    }
+    category(new_value, old_value){
+      this.getAvailableComponentTypes();
+    },
   },
   methods: {
+    searchFilterMenu(){
+      this.getComponents();
+      this.showFilterMenu = false;
+    },
+    clearFilterMenu(){
+      this.category = {};
+      this.componentType = {};
+      this.getComponents();
+      this.showFilterMenu = false;
+    },    
     getUnitsShort(component){
       return component.unitsShort<0?0:component.unitsShort;
     },
@@ -161,7 +191,7 @@ export default {
     },
     getComponents() {
       var query = {params: {pageable: this.pageable, nameSearch: this.nameSearch, supplierId: this.supplierKv.id,
-          itemId: this.itemKv.id, unitFilter: this.unitFilter.id, componentTypeId: this.componentType.id}};
+          itemId: this.itemKv.id, unitFilter: this.unitFilter.id, categoryId: this.category.id, componentTypeId: this.componentType.id}};
       http.get("/component/pageable", query).then(response => {
         this.components = response.data.content;
         this.pageable.totalElements = response.data.totalElements;
@@ -169,8 +199,14 @@ export default {
         console.log("API error: " + e);
       });
     },
+    getAvailableCategories() {
+      http.get("/category/component/kv").then(r => {
+        this.availableCategories = r.data;
+      }).catch(e => {console.log("API error: " + e);});
+    },
     getAvailableComponentTypes() {
-      http.get("/registery/componentType/kv").then(r => {
+      var query = {params: {categoryId: this.category.id}}
+      http.get("/registery/componentType/kv", query).then(r => {
         this.availableComponentTypes = r.data;
       }).catch(e => {console.log("API error: " + e);});
     },
@@ -215,6 +251,7 @@ export default {
     this.getComponents();
     this.getAvailableSuppliers();
     this.getAvailableItems();
+    this.getAvailableCategories();
     this.getAvailableComponentTypes();
   }
 };
