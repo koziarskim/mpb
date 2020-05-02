@@ -3,7 +3,8 @@ Purchase
 - Add PO Notes on Screen and PDF
 - PO list search by freigh terms
 Component:
-- Show component type based on category
++ Show edit component type based on category
++ Search component list based on category and type.
 - Change weight to case weight - right now, total weight is based on component weight.
 - Add new box (Net Weight) - is that net weight of coponent?
 - Delete FCL
@@ -20,6 +21,9 @@ Item:
 - Show component picture when mouse over.
 - Expiration date on item
 Shipment:
+- Two and One week notification based on Window From
+- Under BOL
+- The goods were tendered to the carrier in a sorted and segregated manner.
 - BOL Goods for tender
 - Trasfer window date from sale
 	single PO - transfer same shipping window
