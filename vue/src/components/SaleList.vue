@@ -87,7 +87,6 @@ export default {
         {id: 'PENDING_PROD', name: 'Pending Prod'},
         {id: 'PENDING_SHIPMENT', name: 'Pending Shipment'},
         {id: 'SHIPPED', name: 'Fully Shipped'},
-        {id: 'PENDING_TRANSFER', name: 'Pending Transfer'}
       ],
       statusKv: {},
       itemView: false,
@@ -157,7 +156,6 @@ export default {
         if(statusId == 'PENDING_PROD'){ return "status-blue"}
         if(statusId == 'PENDING_SHIPMENT'){ return "status-purple"}
         if(statusId == 'SHIPPED'){ return "status-green"}
-        if(statusId == 'PENDING_TRANSFER'){ return "status-yellow"}
         return "status-red"
     },
     getStatus(statusId){

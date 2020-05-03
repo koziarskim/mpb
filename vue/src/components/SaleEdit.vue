@@ -238,7 +238,6 @@ export default {
         {id: 'PENDING_PROD', name: 'Pending Prod'},
         {id: 'PENDING_SHIPMENT', name: 'Pending Shipment'},
         {id: 'SHIPPED', name: 'Fully Shipped'},
-        {id: 'PENDING_TRANSFER', name: 'Pending Transfer'}
       ],
     };
   },
@@ -357,6 +356,7 @@ export default {
         this.shippingAddress = {};
         this.sale.paymentTerms = response.data.paymentTerms;
         this.sale.freightTerms = response.data.freightTerms;
+        this.sale.customer = response.data;
       }).catch(e =>{
         console.log("API error: " + e);
       })
@@ -427,9 +427,6 @@ export default {
         si.units == si.units || 0;
       })
       this.sale.totalPrice = this.totalPrice;
-      if(!this.sale.customer || !this.sale.customer.id){
-        this.sale.customer = null;
-      }
       if(!this.sale.shippingAddress || !this.sale.shippingAddress.id){
         this.sale.shippingAddress = null;
       }
@@ -442,8 +439,8 @@ export default {
       return r;
     },
     validate(){
-      if(!this.sale.number){
-        alert("Sale Number required");
+      if(!this.sale.number || !this.sale.customer.id){
+        alert("Number, Customer required");
         return false;
       }
       return true;

@@ -28,8 +28,10 @@ import lombok.NoArgsConstructor;
 @Entity
 public class Sale extends BaseEntity {
 
+	private static final long serialVersionUID = 3963121563435423199L;
+
 	public enum STATUS {
-		DRAFT, PENDING_APPROVAL, APPROVED, PENDING_PROD, PENDING_SHIPMENT, SHIPPED, PENDING_TRANSFER
+		DRAFT, PENDING_APPROVAL, APPROVED, PENDING_PROD, PENDING_SHIPMENT, SHIPPED
 	}
 
 	private LocalDate date;
@@ -115,11 +117,8 @@ public class Sale extends BaseEntity {
 		if(this.getUnitsOnStock() > 0 && this.getUnitsOnStock() >= (this.unitsSold + this.unitsAdjusted)) {
 			this.status = STATUS.PENDING_SHIPMENT.name();
 		}
-		if(this.unitsShipped > 0 && this.unitsShipped >= (this.unitsSold + this.unitsAdjusted)) {
+		if(this.unitsSold > 0 && this.unitsShipped >= (this.unitsSold + this.unitsAdjusted)) {
 			status = STATUS.SHIPPED.name();
-		}
-		if(this.unitsShipped > 0 && this.unitsShipped >= (this.unitsSold + this.unitsAdjusted) && this.unitsOnStock > 0) {
-			status = STATUS.PENDING_TRANSFER.name();
 		}
 	}
 

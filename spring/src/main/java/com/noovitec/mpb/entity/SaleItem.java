@@ -9,7 +9,6 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.noovitec.mpb.entity.Sale.STATUS;
@@ -26,6 +25,7 @@ import lombok.NoArgsConstructor;
 @Entity
 public class SaleItem extends BaseEntity {
 
+	private static final long serialVersionUID = -6345762674113542595L;
 	private BigDecimal unitPrice = BigDecimal.ZERO;
 	private BigDecimal totalUnitPrice = BigDecimal.ZERO;
 	private long units = 0; // unitsSold.
@@ -123,11 +123,8 @@ public class SaleItem extends BaseEntity {
 		if(this.getUnitsOnStock() > 0 && this.unitsOnStock >= (this.units + this.unitsAdjusted)) {
 			this.status = Sale.STATUS.PENDING_SHIPMENT.name();
 		}
-		if(this.unitsShipped > 0 && this.unitsShipped >= (this.units + this.unitsAdjusted)) {
+		if(this.units > 0 && this.unitsShipped >= (this.units + this.unitsAdjusted)) {
 			status = Sale.STATUS.SHIPPED.name();
-		}
-		if(this.unitsShipped > 0 && this.unitsShipped >= (this.units + this.unitsAdjusted) && this.unitsOnStock > 0) {
-			status = Sale.STATUS.PENDING_TRANSFER.name();
 		}
 	}
 

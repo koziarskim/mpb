@@ -99,7 +99,6 @@ export default {
         {id: 'PENDING_PROD', name: 'Pending Prod'},
         {id: 'PENDING_SHIPMENT', name: 'Pending Shipment'},
         {id: 'SHIPPED', name: 'Fully Shipped'},
-        {id: 'PENDING_TRANSFER', name: 'Pending Transfer'}
       ],
       statusKv: {},
       availableUnitsFilters: [
