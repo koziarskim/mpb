@@ -17,7 +17,10 @@
             <span>{{getDc(row.item)}}</span>
           </template>
           <template v-slot:cell(unitsSchedProd)="row">
-            <b-button size="sm" @click.stop="goToScheduled(row.item.sale.id)" variant="link">{{row.item.unitsScheduled}}/{{row.item.unitsProduced}}</b-button>
+            <b-button size="sm" @click="goToScheduled(row.item.sale.id)" variant="link">{{row.item.unitsScheduled}}/{{row.item.unitsProduced}}</b-button>
+          </template>
+          <template v-slot:cell(status)="row">
+            <span>{{getStatus(row.item.status)}}</span>
           </template>
           <template v-slot:cell(action)="row">
             <b-button size="sm" :disabled="disableSchedule(row.item)" type="submit" variant="primary" @click="toggleModal(row.item)">Schedule</b-button>
@@ -89,6 +92,7 @@ export default {
         { key: "dc", label: "DC (State)", sortable: false },
         { key: "units", label: "Sold", sortable: false },
         { key: "unitsSchedProd", label: "Sched/Prod", sortable: false },
+        { key: "status", label: "Status", sortable: false },
         { key: "action", label: "", sortable: false },
       ],
       scheduleData: {
@@ -115,13 +119,25 @@ export default {
         { id: 6, number: 6 },
         { id: 7, number: 7 },
         { id: 8, number: 8 }
-		  ]
+      ],
+      availableStatus: [
+        {id: 'DRAFT', name: 'Draft'},
+        {id: 'PENDING_APPROVAL', name: 'Pending Approval'},
+        {id: 'APPROVED', name: 'Pending Schedule'},
+        {id: 'PENDING_PROD', name: 'Pending Prod'},
+        {id: 'PENDING_SHIPMENT', name: 'Pending Shipment'},
+        {id: 'SHIPPED', name: 'Fully Shipped'},
+      ],
     };
   },
 
   computed: {},
   watch: {},
   methods: {
+    getStatus(statusId){
+      var statusKv = this.availableStatus.find(stat => stat.id == statusId)
+      return statusKv.name
+    },
     getDc(si){
       var dc = "";
       if(si.sale.shippingAddress){

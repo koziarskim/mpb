@@ -54,6 +54,7 @@ public class Item extends BaseEntity {
 	private long unitsReadyProd = 0;
 	private long unitsReturned = 0;
 	private long unitsOnStock = 0;
+	private long unitsAdjusted = 0;
 
 	@JsonIgnoreProperties(value = { "item" }, allowSetters = true)
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
@@ -165,11 +166,12 @@ public class Item extends BaseEntity {
 	}
 	
 	public void updateUnits() {
-		this.unitsSold = 0L;
-		this.unitsScheduled = 0L;
-		this.unitsProduced = 0L;
-		this.unitsShipped = 0L;
-		this.unitsReturned = 0L;
+		this.unitsSold = 0;
+		this.unitsScheduled = 0;
+		this.unitsProduced = 0;
+		this.unitsShipped = 0;
+		this.unitsReturned = 0;
+		this.unitsAdjusted = 0;
 		for(ItemReturn ir: this.getItemReturns()) {
 			ir.updateUnits();
 		}
@@ -180,6 +182,7 @@ public class Item extends BaseEntity {
 			this.unitsScheduled += sa.getUnitsScheduled();
 			this.unitsProduced += sa.getUnitsProduced();
 			this.unitsShipped += sa.getUnitsShipped();
+			this.unitsAdjusted += sa.getUnitsAdjusted();
 		}
 		this.unitsOnStock = this.unitsProduced - this.unitsShipped + this.unitsReturned;
 		if(this.unitsOnStock < 0) {
@@ -187,5 +190,14 @@ public class Item extends BaseEntity {
 		}
 		this.updateUnitsReadyProd();
 	}
-
+	
+	@Transient
+	private long unitsOverstock = 0;
+	
+	public long getUnitsOverstock() {
+		this.unitsOverstock = (this.unitsProduced + this.unitsReturned) - (this.unitsSold + this.unitsAdjusted);
+		this.unitsOverstock = this.unitsOverstock<0?0:this.unitsOverstock;
+		return this.unitsOverstock;
+	}
+	
 }

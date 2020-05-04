@@ -63,6 +63,7 @@ export default {
         { key: "brand", sortable: true, label: "Brand" },
         { key: "category", sortable: true, label: "Category" },
         { key: "unitsOnStock", sortable: false, label: "Stock" },
+        { key: "unitsOverstock", sortable: false, label: "Overstock" },
         { key: "unitsSold", sortable: false, label: "Sold" },
         { key: "unitsScheduled", sortable: false, label: "Sched/Produced" },
         { key: "unitsShipped", sortable: false, label: "Shipped" },
