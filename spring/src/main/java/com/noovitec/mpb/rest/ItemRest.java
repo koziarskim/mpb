@@ -30,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.noovitec.mpb.dto.ItemDto;
 import com.noovitec.mpb.dto.ItemListDto;
 import com.noovitec.mpb.dto.ItemTreeDto;
 import com.noovitec.mpb.dto.KeyValueDto;
@@ -82,6 +83,25 @@ class ItemRest {
 	@GetMapping("/item")
 	Collection<Item> getAll() {
 		return (Collection<Item>) itemRepo.findAll();
+	}
+	
+	@GetMapping("/item/{id}/dto")
+	ItemDto getDto(@PathVariable Long id) {
+		Item item = itemRepo.findById(id).get();
+		ItemDto dto = new ItemDto();
+		dto.setId(item.getId());
+		dto.setBrandName(item.getBrand().getName());
+		dto.setCategoryName(item.getCategory().getName());
+		dto.setName(item.getName());
+		dto.setNumber(item.getNumber());
+		dto.setUnitsAdjusted(item.getUnitsAdjusted());
+		dto.setUnitsOnStock(item.getUnitsOnStock());
+		dto.setUnitsProduced(item.getUnitsProduced());
+		dto.setUnitsReturned(item.getUnitsReturned());
+		dto.setUnitsScheduled(item.getUnitsScheduled());
+		dto.setUnitsShipped(item.getUnitsShipped());
+		dto.setUnitsSold(item.getUnitsSold());
+		return dto;
 	}
 
 	@GetMapping("/item/kv")

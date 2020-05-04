@@ -27,7 +27,24 @@
         <b-link role="button" @click.stop="updateItem(row.item.id)">{{row.item.number}}</b-link>
         <div class="name-md" :title="row.item.name">({{row.item.name}})</div>
       </template>
-      <template v-slot:cell(unitsSold)="row">
+      <template v-slot:cell(unitsOnStock)="row">
+        <b-link role="button" :id="'popover-unitsOnStock'+row.item.id" @click="getUnits(row.item.id)">{{row.item.unitsOnStock}}</b-link>
+        <b-popover placement="bottomright" :target="'popover-unitsOnStock'+row.item.id" triggers="focus" variant="primary">
+          <div>Units Produced: <b-button size="sm" style="padding-bottom: 0px; padding-left:0px; padding-top: 0px" variant="link" @click="goToItemScheduleList(row.item.id)">{{itemDto.unitsProduced}}</b-button></div>
+          <div>Units Returned: + {{itemDto.unitsReturned}}</div>
+          <div>Units Shipped: - <b-button size="sm" style="padding-bottom: 0px; padding-left:0px; padding-top: 0px" variant="link" @click="goToItemShippedList(row.item.id)">{{itemDto.unitsShipped}}</b-button></div>
+        </b-popover>
+      </template>
+      <template v-slot:cell(unitsOverstock)="row">
+        <b-link role="button" :id="'popover-unitsOverstock'+row.item.id" @click="getUnits(row.item.id)">{{row.item.unitsOverstock}}</b-link>
+        <b-popover placement="bottomright" :target="'popover-unitsOverstock'+row.item.id" triggers="focus" variant="primary">
+          <div>Units Produced: <b-button size="sm" style="padding-bottom: 0px; padding-left:0px; padding-top: 0px" variant="link" @click="goToItemScheduleList(row.item.id)">{{itemDto.unitsProduced}}</b-button></div>
+          <div>Units Returned: + {{itemDto.unitsReturned}}</div>
+          <div>Units Sold: - <b-button size="sm" style="padding-bottom: 0px; padding-left:0px; padding-top: 0px" variant="link" @click="goToItemSaleList(row.item.id)">{{itemDto.unitsSold}}</b-button></div>
+          <div>Units Adjusted: {{itemDto.unitsAdjusted}}</div>
+        </b-popover>
+      </template>
+      <!-- <template v-slot:cell(unitsSold)="row">
         <b-button size="sm" variant="link" @click.stop="goToItemSaleList(row.item.id)">{{row.item.unitsSold}}</b-button>
       </template>
       <template v-slot:cell(unitsScheduled)="row">
@@ -35,7 +52,7 @@
       </template>
       <template v-slot:cell(unitsShipped)="row">
         <b-button size="sm" variant="link" @click.stop="goToItemShippedList(row.item.id)">{{row.item.unitsShipped}}</b-button>
-      </template>
+      </template> -->
     </b-table>
     <div style="display: flex">
       <b-pagination size="sm" v-model="pageable.currentPage" :per-page="pageable.perPage" :total-rows="pageable.totalElements" @change="paginationChange"></b-pagination>
@@ -64,9 +81,9 @@ export default {
         { key: "category", sortable: true, label: "Category" },
         { key: "unitsOnStock", sortable: false, label: "Stock" },
         { key: "unitsOverstock", sortable: false, label: "Overstock" },
-        { key: "unitsSold", sortable: false, label: "Sold" },
-        { key: "unitsScheduled", sortable: false, label: "Sched/Produced" },
-        { key: "unitsShipped", sortable: false, label: "Shipped" },
+        // { key: "unitsSold", sortable: false, label: "Sold" },
+        // { key: "unitsScheduled", sortable: false, label: "Sched/Produced" },
+        // { key: "unitsShipped", sortable: false, label: "Shipped" },
         { key: "unitsReadyProd", sortable: false, label: "RFP" }
       ],
       items: [], //ItemListDto
@@ -80,7 +97,9 @@ export default {
         {id: "ON_STOCK", name: "On Stock"},
         {id: "RFP_ONLY", name: "RFP Only"}
       ],
-      unitsFilter: {}
+      unitsFilter: {},
+      itemDto: {
+      },
     };
   },
   watch: {
@@ -98,6 +117,12 @@ export default {
     }
   },
   methods: {
+    getUnits(itemId){
+      http.get("/item/"+itemId+"/dto").then(r => {
+        r.data.unitsAdjusted = r.data.unitsAdjusted < 0 ? r.data.unitsAdjusted: '+'+r.data.unitsAdjusted;
+        this.itemDto = r.data;
+      }).catch(e => {console.log("API error: "+ e)})
+    },
     sorted(e) {
       if (!e.sortBy) {
         return;

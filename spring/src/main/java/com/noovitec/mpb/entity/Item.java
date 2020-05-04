@@ -184,7 +184,7 @@ public class Item extends BaseEntity {
 			this.unitsShipped += sa.getUnitsShipped();
 			this.unitsAdjusted += sa.getUnitsAdjusted();
 		}
-		this.unitsOnStock = this.unitsProduced - this.unitsShipped + this.unitsReturned;
+		this.unitsOnStock = this.unitsProduced + this.unitsReturned - this.unitsShipped;
 		if(this.unitsOnStock < 0) {
 			this.unitsOnStock = 0;
 		}
@@ -195,7 +195,7 @@ public class Item extends BaseEntity {
 	private long unitsOverstock = 0;
 	
 	public long getUnitsOverstock() {
-		this.unitsOverstock = (this.unitsProduced + this.unitsReturned) - (this.unitsSold + this.unitsAdjusted);
+		this.unitsOverstock = this.unitsProduced + this.unitsReturned - this.unitsSold + this.unitsAdjusted;
 		this.unitsOverstock = this.unitsOverstock<0?0:this.unitsOverstock;
 		return this.unitsOverstock;
 	}
