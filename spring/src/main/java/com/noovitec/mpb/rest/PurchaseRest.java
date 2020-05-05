@@ -262,7 +262,7 @@ class PurchaseRest {
 			componentUnits += pc.getUnits() + "\n";
 			componentPrice += currencyFormat.format(pc.getUnitPrice()) + "\n";
 			componentTotalPrice += currencyFormat.format(pc.getTotalPrice()) + "\n";
-			BigDecimal cases = totalCases.add(BigDecimal.valueOf(pc.getUnits()/pc.getComponent().getCasePack())).setScale(0, RoundingMode.CEILING);
+			BigDecimal cases = BigDecimal.valueOf(pc.getUnits()/pc.getComponent().getCasePack()).setScale(0, RoundingMode.CEILING);
 			componentCases += cases+ "\n";
 			totalCases = totalCases.add(cases);
 			totalUnits += pc.getUnits();
