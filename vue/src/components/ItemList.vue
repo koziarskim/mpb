@@ -36,12 +36,15 @@
         </b-popover>
       </template>
       <template v-slot:cell(unitsOverstock)="row">
-        <b-link role="button" :id="'popover-unitsOverstock'+row.item.id" @click="getUnits(row.item.id)">{{row.item.unitsOverstock}}</b-link>
+        <b-link role="button" :id="'popover-unitsOverstock'+row.item.id" @click="getUnits(row.item.id)">{{getUnitsOverstock(row.item)}}</b-link>
         <b-popover placement="bottomright" :target="'popover-unitsOverstock'+row.item.id" triggers="focus" variant="primary">
           <div>Units Sold & Adj: <b-button size="sm" style="padding-bottom: 0px; padding-left:0px; padding-top: 0px" variant="link" @click="goToItemSaleList(row.item.id)">{{+itemDto.unitsSold + +itemDto.unitsAdjusted}}</b-button></div>
           <div>Units Produced: <b-button size="sm" style="padding-bottom: 0px; padding-left:0px; padding-top: 0px" variant="link" @click="goToItemScheduleList(row.item.id)">{{itemDto.unitsProduced}}</b-button></div>
           <div>Units Returned: {{itemDto.unitsReturned}}</div>
         </b-popover>
+      </template>
+      <template v-slot:cell(openSales)="row">
+        <b-button size="sm" variant="link" @click="goToItemSaleList(row.item.id)">{{+row.item.unitsSold + +row.item.unitsAdjusted - +row.item.unitsShipped}}</b-button>
       </template>
       <!-- <template v-slot:cell(unitsSold)="row">
         <b-button size="sm" variant="link" @click.stop="goToItemSaleList(row.item.id)">{{row.item.unitsSold}}</b-button>
@@ -80,6 +83,7 @@ export default {
         { key: "category", sortable: true, label: "Category" },
         { key: "unitsOnStock", sortable: false, label: "Stock" },
         { key: "unitsOverstock", sortable: false, label: "Overstock" },
+        { key: "openSales", sortable: false, label: "Open Sales" },
         // { key: "unitsSold", sortable: false, label: "Sold" },
         // { key: "unitsScheduled", sortable: false, label: "Sched/Produced" },
         // { key: "unitsShipped", sortable: false, label: "Shipped" },
@@ -94,7 +98,9 @@ export default {
       categoryKv: {},
       availableUnitFilters: [
         {id: "ON_STOCK", name: "On Stock"},
-        {id: "RFP_ONLY", name: "RFP Only"}
+        {id: "OVERSTOCK", name: "Overstock"},
+        {id: "OPEN_SALES", name: "Open Sales"},
+        {id: "RFP", name: "RFP"}
       ],
       unitsFilter: {},
       itemDto: {
@@ -121,6 +127,9 @@ export default {
         r.data.unitsAdjusted = r.data.unitsAdjusted < 0 ? r.data.unitsAdjusted: '+'+r.data.unitsAdjusted;
         this.itemDto = r.data;
       }).catch(e => {console.log("API error: "+ e)})
+    },
+    getUnitsOverstock(item){
+      return item.unitsOverstock<0?0:item.unitsOverstock
     },
     sorted(e) {
       if (!e.sortBy) {

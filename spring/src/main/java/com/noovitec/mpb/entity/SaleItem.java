@@ -38,6 +38,7 @@ public class SaleItem extends BaseEntity {
 	private long unitsTransferedFrom = 0;
 	private long unitsReturned = 0;
 	private long unitsAdjusted = 0;
+	private long unitsOverstock = 0;
 	private String sku;
 	private String status;
 	
@@ -83,6 +84,8 @@ public class SaleItem extends BaseEntity {
 		this.unitsTransferedTo = 0;
 		this.unitsTransferedFrom = 0;
 		this.unitsReturned = 0;
+		this.unitsOnStock = 0;
+		this.unitsOverstock = 0;
 		
 		for(SaleItemReturn sir: this.getSaleItemReturns()) {
 			this.unitsReturned += sir.getUnitsReturned();
@@ -104,9 +107,13 @@ public class SaleItem extends BaseEntity {
 			this.unitsTransferedTo += sit.getUnitsTransfered();
 		}
 		this.unitsOnStock = this.unitsProduced + this.unitsTransferedTo - this.unitsTransferedFrom - this.unitsShipped + this.unitsReturned;
-		if(this.unitsOnStock < 0) {
-			this.unitsOnStock = 0;
-		}
+//		if(this.unitsOnStock < 0) {
+//			this.unitsOnStock = 0;
+//		}
+		this.unitsOverstock = this.unitsProduced + this.unitsReturned + (this.unitsTransferedTo - this.unitsTransferedFrom) - (this.units + this.unitsAdjusted);
+//		if(this.unitsOverstock < 0) {
+//			this.unitsOverstock = 0;
+//		}
 		this.updateStatus();
 	}
 	
@@ -128,14 +135,4 @@ public class SaleItem extends BaseEntity {
 			status = Sale.STATUS.SHIPPED.name();
 		}
 	}
-
-	@Transient
-	private long unitsOverstock = 0;
-	
-	public long getUnitsOverstock() {
-		this.unitsOverstock = this.unitsProduced + this.unitsReturned + (this.unitsTransferedTo - this.unitsTransferedFrom) - (this.units + this.unitsAdjusted);
-		this.unitsOverstock = this.unitsOverstock<0?0:this.unitsOverstock;
-		return this.unitsOverstock;
-	}
-
 }

@@ -1,7 +1,7 @@
 <template>
   <b-container fluid>
     <div style="border: 0px" class="d-flex justify-content-between align-items-center">
-      <h4 style="text-align: left;">Sales for Item: {{item.name}}</h4>
+      <h4 style="text-align: left;">Sales for Item: {{item.number}} - {{item.name}}</h4>
       <div style="text-align: right;">
         <b-button type="reset" variant="success" @click="close">Close</b-button>
       </div>
@@ -11,7 +11,7 @@
         <label class="top-label"></label>
         <b-table v-if="item.saleItems && item.saleItems.length>0" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="item.saleItems" :fields="columns">
           <template v-slot:head(unitsNeeded)="row">
-            <div>Sold</div><div class="mpb-head-line">Sold & Adjusted</div>
+            <div>Sold</div><div style="width: 50px" class="mpb-head-line">Sold & Adj</div>
           </template>
           <template v-slot:head(unitsSchedNotProd)="row">
             <div>Scheduled</div><div style="font-size: 10px">Not Yet Produced</div>
@@ -50,6 +50,9 @@
           </template>
           <template v-slot:cell(unitsSchedNotProd)="row">
             <b-button size="sm" @click="goToScheduled(row.item.sale.id)" variant="link">{{+row.item.unitsScheduled - +row.item.unitsScheduled}}</b-button>
+          </template>
+          <template v-slot:cell(unitsShipped)="row">
+            <b-button size="sm" @click="goToShipment(row.item.sale.id)" variant="link">{{row.item.unitsShipped}}</b-button>
           </template>
           <template v-slot:cell(unitsSchedProd)="row">
             <b-button size="sm" @click="goToScheduled(row.item.sale.id)" variant="link">{{row.item.unitsScheduled}}/{{row.item.unitsProduced}}</b-button>
@@ -129,6 +132,7 @@ export default {
         { key: "unitsOverstock", label: "Overstock", sortable: false },
         { key: "unitsNeeded", label: "Sold (inc. Adj)", sortable: false },
         { key: "unitsShort", label: "Short", sortable: false },
+        { key: "unitsShipped", label: "Shipped", sortable: false },
         // { key: "unitsSchedNotProd", label: "Scheduled", sortable: false },
         { key: "unitsSchedProd", label: "Sched/Prod", sortable: false },
         { key: "status", label: "Status", sortable: false },
@@ -278,6 +282,10 @@ export default {
     goToScheduled(sale_id) {
       router.push("/scheduleEventList/" + this.item.id + "/sale/" + sale_id);
     },
+    goToShipment(saleId){
+    var query = { itemId: this.item.id, saleId: saleId };
+    router.push({path: "/shipmentList", query: query})
+  },
   },
   mounted() {
     var item_id = this.$route.params.item_id;
