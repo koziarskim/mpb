@@ -41,6 +41,7 @@ Shipment:
 ------------------------------------------------------------------
 
 Backlog
+- Delete item from component not updating items because it doesn't exist in post sale.
 - Keep the list of jms messages in requeuest until transaction is over. Then call JMS Receivier.
 	Creating new shipment is not created until transaction completes. Jms runs before trans complete.
 - Setting file

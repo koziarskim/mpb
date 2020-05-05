@@ -23,6 +23,9 @@
       </b-col>
     </b-row>
     <b-table :items="items" :fields="fields" no-local-sorting @sort-changed="sorted">
+      <template v-slot:head(unitsOnStock)="row">
+        <div>Stock</div><div class="mpb-head-line">Including Overstock</div>
+      </template>
       <template v-slot:cell(name)="row">
         <b-link role="button" @click.stop="updateItem(row.item.id)">{{row.item.number}}</b-link>
         <div class="name-md" :title="row.item.name">({{row.item.name}})</div>

@@ -86,7 +86,7 @@ class SaleItemRest {
 		for(SaleItem saleItem: saleItems) {
 			KeyValueDto dto = new KeyValueDto();
 			dto.setId(saleItem.getId());
-			dto.setName(saleItem.getSale().getNumber() + "("+saleItem.getSale().getCustomer().getName()+"), S: "+saleItem.getUnitsOnStock()+", R: "+saleItem.getUnitsReturned());
+			dto.setName(saleItem.getSale().getNumber() + "("+saleItem.getSale().getCustomer().getName()+"), Stock: "+saleItem.getUnitsOnStock());
 			dtos.add(dto);
 		}		
 
