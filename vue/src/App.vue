@@ -383,4 +383,9 @@ export default {
 .b-popover-secondary.bs-popover-bottom > .arrow::after, .b-popover-secondary.bs-popover-auto[x-placement^="bottom"] > .arrow::after {
     border-bottom-color: #a8accc !important
 }
+.mpb-head-line {
+  font-size: 10px;
+  font-weight: normal;
+  margin-bottom: -10px;
+}
 </style>

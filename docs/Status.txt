@@ -21,7 +21,7 @@ Accounting:
 - Permissions
 - Send email to client (andy as cc: by default).
 Item:
-- Change the popup display for overstock (parentasis).
++ Change the way units are displayed.
 - Sort by (number (a-z), date (created)
 - Show component picture when mouse over.
 - Expiration date on item

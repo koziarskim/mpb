@@ -10,6 +10,9 @@
       <b-col>
         <label class="top-label"></label>
         <b-table v-if="item.saleItems && item.saleItems.length>0" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="item.saleItems" :fields="columns">
+          <template v-slot:head(unitsNeeded)="row">
+            <div>Sold</div><div class="mpb-head-line">Sold & Adjusted</div>
+          </template>
           <template v-slot:head(unitsSchedNotProd)="row">
             <div>Scheduled</div><div style="font-size: 10px">Not Yet Produced</div>
           </template>
@@ -124,7 +127,7 @@ export default {
         { key: "dc", label: "DC (State)", sortable: false },
         { key: "unitsOnStock", label: "Stock", sortable: false },
         { key: "unitsOverstock", label: "Overstock", sortable: false },
-        { key: "unitsNeeded", label: "Needed", sortable: false },
+        { key: "unitsNeeded", label: "Sold (inc. Adj)", sortable: false },
         { key: "unitsShort", label: "Short", sortable: false },
         // { key: "unitsSchedNotProd", label: "Scheduled", sortable: false },
         { key: "unitsSchedProd", label: "Sched/Prod", sortable: false },
