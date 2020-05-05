@@ -387,5 +387,6 @@ export default {
   font-size: 10px;
   font-weight: normal;
   margin-bottom: -10px;
+  margin-top: -7px;
 }
 </style>
