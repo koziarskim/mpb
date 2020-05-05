@@ -97,7 +97,7 @@ export default {
         { key: "sale.customer.name", label: "Customer", sortable: false },
         { key: "dc", label: "DC (State)", sortable: false },
         { key: "unitsSoldAdj", label: "Sold (+/-Adj)", sortable: false },
-        { key: "unitsOnStock", label: "Stock (Prod +Ret +/-Trans)", sortable: false },
+        { key: "unitsOnStock", label: "Stock (Pro+Ret+/-Tran-Ship)", sortable: false },
         { key: "unitsOverstock", label: "Overstock", sortable: false },
         { key: "unitsSchedProd", label: "Sched/Prod", sortable: false },
         { key: "status", label: "Status", sortable: false },
