@@ -10,17 +10,43 @@
       <b-col>
         <label class="top-label"></label>
         <b-table v-if="item.saleItems && item.saleItems.length>0" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="item.saleItems" :fields="columns">
+          <template v-slot:head(unitsSchedNotProd)="row">
+            <div>Scheduled</div><div style="font-size: 10px">Not Yet Produced</div>
+          </template>
           <template v-slot:cell(sale)="row">
             <b-link role="button" @click.stop="goToSale(row.item.sale.id)">{{row.item.sale?row.item.sale.number:''}}</b-link>
           </template>
           <template v-slot:cell(dc)="row">
             <span>{{getDc(row.item)}}</span>
           </template>
-          <template v-slot:cell(unitsSoldAdj)="row">
-            <span>{{row.item.units}} {{row.item.unitsAdjusted >= 0?'+':''}}{{row.item.unitsAdjusted}}</span>
+          <template v-slot:cell(unitsNeeded)="row">
+            <b-link role="button" :id="'popover-unitsNeeded'+row.item.id">{{+row.item.units + +row.item.unitsAdjusted}}</b-link>
+            <b-popover placement="bottomright" :target="'popover-unitsNeeded'+row.item.id" triggers="focus" variant="primary">
+              <div>Units Sold: {{row.item.units}}</div>
+              <div>Units Adjusted: {{row.item.unitsAdjusted >= 0?'+':''}}{{row.item.unitsAdjusted}}</div>
+            </b-popover>
           </template>
           <template v-slot:cell(unitsOnStock)="row">
-            <span>{{getUnitsOnStock(row.item)}}</span>
+            <b-link role="button" :id="'popover-unitsOnStock'+row.item.id">{{+row.item.unitsOnStock}}</b-link>
+            <b-popover placement="bottomright" :target="'popover-unitsOnStock'+row.item.id" triggers="focus" variant="primary">
+              <div>Units Produced: {{row.item.unitsProduced}}</div>
+              <div>Units Transfered: {{+row.item.unitsTransferedTo - +row.item.unitsTransferedFrom}}</div>
+              <div>Units Shipped: {{row.item.unitsShipped}}</div>
+              <div>Units Returned: {{row.item.unitsReturned}}</div>
+            </b-popover>
+          </template>
+          <template v-slot:cell(unitsShort)="row">
+            <b-link role="button" :id="'popover-unitsShort'+row.item.id">{{getUnitsShort(row.item)}}</b-link>
+            <b-popover placement="bottomright" :target="'popover-unitsShort'+row.item.id" triggers="focus" variant="primary">
+              <div>Units Sold: {{row.item.units}}</div>
+              <div>Units Adjusted: {{row.item.unitsAdjusted >= 0?'+':''}}{{row.item.unitsAdjusted}}</div>
+              <div>Units Returned: {{row.item.unitsReturned}}</div>
+              <div>Units Transfered: {{+row.item.unitsTransferedTo - +row.item.unitsTransferedFrom}}</div>
+              <div>Units Produced: {{row.item.unitsProduced}}</div>
+            </b-popover>
+          </template>
+          <template v-slot:cell(unitsSchedNotProd)="row">
+            <b-button size="sm" @click="goToScheduled(row.item.sale.id)" variant="link">{{+row.item.unitsScheduled - +row.item.unitsScheduled}}</b-button>
           </template>
           <template v-slot:cell(unitsSchedProd)="row">
             <b-button size="sm" @click="goToScheduled(row.item.sale.id)" variant="link">{{row.item.unitsScheduled}}/{{row.item.unitsProduced}}</b-button>
@@ -96,9 +122,11 @@ export default {
         { key: "sale", label: "Sale", sortable: false },
         { key: "sale.customer.name", label: "Customer", sortable: false },
         { key: "dc", label: "DC (State)", sortable: false },
-        { key: "unitsSoldAdj", label: "Sold (+/-Adj)", sortable: false },
-        { key: "unitsOnStock", label: "Stock (Pro+Ret+/-Tran-Ship)", sortable: false },
+        { key: "unitsOnStock", label: "Stock", sortable: false },
         { key: "unitsOverstock", label: "Overstock", sortable: false },
+        { key: "unitsNeeded", label: "Needed", sortable: false },
+        { key: "unitsShort", label: "Short", sortable: false },
+        // { key: "unitsSchedNotProd", label: "Scheduled", sortable: false },
         { key: "unitsSchedProd", label: "Sched/Prod", sortable: false },
         { key: "status", label: "Status", sortable: false },
         { key: "action", label: "", sortable: false },
@@ -142,11 +170,23 @@ export default {
   computed: {},
   watch: {},
   methods: {
-    getUnitsOnStock(si){
+    getUnitsTransfered(si){
       var unitsTransfered = +si.unitsTransferedTo - +si.unitsTransferedFrom;
       var transfered = unitsTransfered<0?" "+unitsTransfered:" +"+unitsTransfered;
-      var units = si.unitsOnStock +" ("+si.unitsProduced+ " +" +si.unitsReturned + transfered +" -" +si.unitsShipped +")";
-      return units;
+      return transfered;
+    },
+    getRevUnitsTransfered(si){
+      var unitsTransfered = (+si.unitsTransferedTo - +si.unitsTransferedFrom)*(-1);
+      var transfered = unitsTransfered<0?" "+unitsTransfered:" +"+unitsTransfered;
+      return transfered;
+    },
+    getUnitsShort(si){
+      var unitsShort = +si.units + +si.unitsAdjusted - +si.unitsReturned 
+      - (+si.unitsTransferedTo - +si.unitsTransferedFrom) - +si.unitsProduced;
+      return unitsShort<0?0:unitsShort;
+    },
+    disableSchedule(si){
+      return this.getUnitsShort(si) <=0;
     },
     getStatus(statusId){
       var statusKv = this.availableStatus.find(stat => stat.id == statusId)
@@ -165,9 +205,6 @@ export default {
       this.scheduleData.maxUnits = this.scheduleData.units;
       this.scheduleData.saleItem = saleItem;
       this.scheduleData.item = this.item;
-    },
-    disableSchedule(saleItem){
-      return +saleItem.units - +saleItem.unitsScheduled <=0;
     },
     saveSchedule() {
       var schedule = {
