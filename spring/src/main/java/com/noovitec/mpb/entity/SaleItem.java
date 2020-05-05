@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.noovitec.mpb.entity.Sale.STATUS;
@@ -128,5 +129,13 @@ public class SaleItem extends BaseEntity {
 		}
 	}
 
+	@Transient
+	private long unitsOverstock = 0;
+	
+	public long getUnitsOverstock() {
+		this.unitsOverstock = this.unitsProduced + this.unitsReturned + (this.unitsTransferedTo - this.unitsTransferedFrom) - (this.units + this.unitsAdjusted);
+		this.unitsOverstock = this.unitsOverstock<0?0:this.unitsOverstock;
+		return this.unitsOverstock;
+	}
 
 }

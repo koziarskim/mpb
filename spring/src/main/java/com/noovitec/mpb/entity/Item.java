@@ -195,7 +195,7 @@ public class Item extends BaseEntity {
 	private long unitsOverstock = 0;
 	
 	public long getUnitsOverstock() {
-		this.unitsOverstock = this.unitsProduced + this.unitsReturned - this.unitsSold + this.unitsAdjusted;
+		this.unitsOverstock = this.unitsProduced + this.unitsReturned - (this.unitsSold + this.unitsAdjusted);
 		this.unitsOverstock = this.unitsOverstock<0?0:this.unitsOverstock;
 		return this.unitsOverstock;
 	}

@@ -16,6 +16,12 @@
           <template v-slot:cell(dc)="row">
             <span>{{getDc(row.item)}}</span>
           </template>
+          <template v-slot:cell(unitsSoldAdj)="row">
+            <span>{{row.item.units}} {{row.item.unitsAdjusted >= 0?'+':''}}{{row.item.unitsAdjusted}}</span>
+          </template>
+          <template v-slot:cell(unitsOnStock)="row">
+            <span>{{getUnitsOnStock(row.item)}}</span>
+          </template>
           <template v-slot:cell(unitsSchedProd)="row">
             <b-button size="sm" @click="goToScheduled(row.item.sale.id)" variant="link">{{row.item.unitsScheduled}}/{{row.item.unitsProduced}}</b-button>
           </template>
@@ -90,7 +96,9 @@ export default {
         { key: "sale", label: "Sale", sortable: false },
         { key: "sale.customer.name", label: "Customer", sortable: false },
         { key: "dc", label: "DC (State)", sortable: false },
-        { key: "units", label: "Sold", sortable: false },
+        { key: "unitsSoldAdj", label: "Sold (+/-Adj)", sortable: false },
+        { key: "unitsOnStock", label: "Stock (Prod +Ret +/-Trans)", sortable: false },
+        { key: "unitsOverstock", label: "Overstock", sortable: false },
         { key: "unitsSchedProd", label: "Sched/Prod", sortable: false },
         { key: "status", label: "Status", sortable: false },
         { key: "action", label: "", sortable: false },
@@ -134,6 +142,12 @@ export default {
   computed: {},
   watch: {},
   methods: {
+    getUnitsOnStock(si){
+      var unitsTransfered = +si.unitsTransferedTo - +si.unitsTransferedFrom;
+      var transfered = unitsTransfered<0?" "+unitsTransfered:" +"+unitsTransfered;
+      var units = si.unitsOnStock +" ("+si.unitsProduced+ " +" +si.unitsReturned + transfered +" -" +si.unitsShipped +")";
+      return units;
+    },
     getStatus(statusId){
       var statusKv = this.availableStatus.find(stat => stat.id == statusId)
       return statusKv.name
