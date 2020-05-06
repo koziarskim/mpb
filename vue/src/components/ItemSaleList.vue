@@ -22,15 +22,22 @@
           <template v-slot:cell(dc)="row">
             <span>{{getDc(row.item)}}</span>
           </template>
+          <template v-slot:cell(unitsTransfered)="row">
+            <b-link role="button" style="color: #000000" :id="'popover-unitsTransfered'+row.item.id">{{+row.item.unitsTransferedTo - +row.item.unitsTransferedFrom}}</b-link>
+            <b-popover placement="bottomright" :target="'popover-unitsTransfered'+row.item.id" triggers="focus" variant="primary">
+              <div>Units Transfered To: {{row.item.unitsTransferedTo}}</div>
+              <div>Units Transfered From: {{row.item.unitsTransferedFrom}}</div>
+            </b-popover>
+          </template>
           <template v-slot:cell(unitsNeeded)="row">
-            <b-link role="button" :id="'popover-unitsNeeded'+row.item.id">{{+row.item.units + +row.item.unitsAdjusted}}</b-link>
+            <b-link role="button" style="color: #000000" :id="'popover-unitsNeeded'+row.item.id">{{+row.item.units + +row.item.unitsAdjusted}}</b-link>
             <b-popover placement="bottomright" :target="'popover-unitsNeeded'+row.item.id" triggers="focus" variant="primary">
               <div>Units Sold: {{row.item.units}}</div>
               <div>Units Adjusted: {{row.item.unitsAdjusted >= 0?'+':''}}{{row.item.unitsAdjusted}}</div>
             </b-popover>
           </template>
           <template v-slot:cell(unitsOnStock)="row">
-            <b-link role="button" :id="'popover-unitsOnStock'+row.item.id">{{+row.item.unitsOnStock}}</b-link>
+            <b-link role="button" style="color: #000000" :id="'popover-unitsOnStock'+row.item.id">{{+row.item.unitsOnStock}}</b-link>
             <b-popover placement="bottomright" :target="'popover-unitsOnStock'+row.item.id" triggers="focus" variant="primary">
               <div>Units Produced: {{row.item.unitsProduced}}</div>
               <div>Units Transfered: {{+row.item.unitsTransferedTo - +row.item.unitsTransferedFrom}}</div>
@@ -39,13 +46,22 @@
             </b-popover>
           </template>
           <template v-slot:cell(unitsShort)="row">
-            <b-link role="button" :id="'popover-unitsShort'+row.item.id">{{getUnitsShort(row.item)}}</b-link>
+            <b-link role="button" style="color: #000000" :id="'popover-unitsShort'+row.item.id">{{getUnitsShort(row.item)}}</b-link>
             <b-popover placement="bottomright" :target="'popover-unitsShort'+row.item.id" triggers="focus" variant="primary">
               <div>Units Sold: {{row.item.units}}</div>
               <div>Units Adjusted: {{row.item.unitsAdjusted >= 0?'+':''}}{{row.item.unitsAdjusted}}</div>
               <div>Units Returned: {{row.item.unitsReturned}}</div>
               <div>Units Transfered: {{+row.item.unitsTransferedTo - +row.item.unitsTransferedFrom}}</div>
               <div>Units Produced: {{row.item.unitsProduced}}</div>
+            </b-popover>
+          </template>
+          <template v-slot:cell(unitsOverstock)="row">
+            <b-link role="button" style="color: #000000" :id="'popover-unitsOverstock'+row.item.id">{{row.item.unitsOverstock}}</b-link>
+            <b-popover placement="bottomright" :target="'popover-unitsOverstock'+row.item.id" triggers="focus" variant="primary">
+              <div>Units Produced: {{row.item.unitsProduced}}</div>
+              <div>Units Returned: {{row.item.unitsReturned}}</div>
+              <div>Units Transfered: {{+row.item.unitsTransferedTo - +row.item.unitsTransferedFrom}}</div>
+              <div>Units Adjusted: {{row.item.unitsAdjusted >= 0?'+':''}}{{row.item.unitsAdjusted}}</div>
             </b-popover>
           </template>
           <template v-slot:cell(unitsSchedNotProd)="row">
@@ -129,12 +145,12 @@ export default {
         { key: "sale.customer.name", label: "Customer", sortable: false },
         { key: "dc", label: "DC (State)", sortable: false },
         { key: "unitsOnStock", label: "Stock", sortable: false },
-        { key: "unitsOverstock", label: "Overstock", sortable: false },
+        { key: "unitsOverstock", label: "Over", sortable: false },
         { key: "unitsNeeded", label: "Sold (inc. Adj)", sortable: false },
-        { key: "unitsShort", label: "Short", sortable: false },
-        { key: "unitsShipped", label: "Shipped", sortable: false },
-        // { key: "unitsSchedNotProd", label: "Scheduled", sortable: false },
+        { key: "unitsTransfered", label: "Transf", sortable: false },
         { key: "unitsSchedProd", label: "Sched/Prod", sortable: false },
+        { key: "unitsShipped", label: "Shipped", sortable: false },
+        { key: "unitsShort", label: "Short", sortable: false },
         { key: "status", label: "Status", sortable: false },
         { key: "action", label: "", sortable: false },
       ],

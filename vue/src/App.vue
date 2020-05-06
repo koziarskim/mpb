@@ -386,7 +386,7 @@ export default {
 .mpb-head-line {
   font-size: 10px;
   font-weight: normal;
-  margin-bottom: -10px;
+  margin-bottom: -7px;
   margin-top: -7px;
 }
 </style>

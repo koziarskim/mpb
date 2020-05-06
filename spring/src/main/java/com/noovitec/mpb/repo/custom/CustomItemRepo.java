@@ -1,6 +1,8 @@
 package com.noovitec.mpb.repo.custom;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -28,7 +30,7 @@ public interface CustomItemRepo {
 
 		@Override
 		public Page<Item> findPagable(Pageable pageable, String numberName, Long componentId, Long brandId, Long categoryId, String unitsFilter) {
-			String q = "select distinct i from Item i "
+			String q = "select distinct i, (i.unitsSold + i.unitsAdjusted - i.unitsShipped) as open from Item i "
 					+ "left join i.itemComponents ic "
 					+ "left join ic.component c "
 					+ "left join i.brand b "
@@ -58,7 +60,7 @@ public interface CustomItemRepo {
 			}			if(unitsFilter != null && unitsFilter.equalsIgnoreCase("RFP")) {
 				q += "and i.unitsReadyProd > 0 ";
 			}
-			q += "order by i.created desc";
+			q += "order by open desc";
 			Query query = entityManager.createQuery(q);
 			if(numberName!=null && !numberName.isBlank()) {
 				query.setParameter("numberName", numberName);
@@ -74,8 +76,13 @@ public interface CustomItemRepo {
 			}
 			long total = query.getResultStream().count();
 			@SuppressWarnings("unchecked")
-			List<Item> result = query.setFirstResult(pageable.getPageNumber()*pageable.getPageSize())
+			List<Object[]> temp = query.setFirstResult(pageable.getPageNumber()*pageable.getPageSize())
 				.setMaxResults(pageable.getPageSize()).getResultList();
+			List<Item> result = new ArrayList<Item>();
+			for(Object[] arr: temp) {
+				Item i = (Item) arr[0];
+				result.add(i);
+			}
 			Page<Item> page = new PageImpl<Item>(result, pageable, total);
 			return page;
 		}

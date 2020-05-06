@@ -31,7 +31,7 @@
         <div class="name-md" :title="row.item.name">({{row.item.name}})</div>
       </template>
       <template v-slot:cell(unitsOnStock)="row">
-        <b-link role="button" :id="'popover-unitsOnStock'+row.item.id" @click="getUnits(row.item.id)">{{row.item.unitsOnStock}}</b-link>
+        <b-link role="button" style="color: #000000" :id="'popover-unitsOnStock'+row.item.id" @click="getUnits(row.item.id)">{{row.item.unitsOnStock}}</b-link>
         <b-popover placement="bottomright" :target="'popover-unitsOnStock'+row.item.id" triggers="focus" variant="primary">
           <div>Units Produced: <b-button size="sm" style="padding-bottom: 0px; padding-left:0px; padding-top: 0px" variant="link" @click="goToItemScheduleList(row.item.id)">{{itemDto.unitsProduced}}</b-button></div>
           <div>Units Shipped: <b-button size="sm" style="padding-bottom: 0px; padding-left:0px; padding-top: 0px" variant="link" @click="goToItemShippedList(row.item.id)">{{itemDto.unitsShipped}}</b-button></div>
@@ -39,7 +39,7 @@
         </b-popover>
       </template>
       <template v-slot:cell(unitsOverstock)="row">
-        <b-link role="button" :id="'popover-unitsOverstock'+row.item.id" @click="getUnits(row.item.id)">{{getUnitsOverstock(row.item)}}</b-link>
+        <b-link role="button" style="color: #000000" :id="'popover-unitsOverstock'+row.item.id" @click="getUnits(row.item.id)">{{getUnitsOverstock(row.item)}}</b-link>
         <b-popover placement="bottomright" :target="'popover-unitsOverstock'+row.item.id" triggers="focus" variant="primary">
           <div>Units Sold & Adj: <b-button size="sm" style="padding-bottom: 0px; padding-left:0px; padding-top: 0px" variant="link" @click="goToItemSaleList(row.item.id)">{{+itemDto.unitsSold + +itemDto.unitsAdjusted}}</b-button></div>
           <div>Units Produced: <b-button size="sm" style="padding-bottom: 0px; padding-left:0px; padding-top: 0px" variant="link" @click="goToItemScheduleList(row.item.id)">{{itemDto.unitsProduced}}</b-button></div>
