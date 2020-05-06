@@ -74,7 +74,7 @@
             <b-button size="sm" @click="goToScheduled(row.item.sale.id)" variant="link">{{row.item.unitsScheduled}}/{{row.item.unitsProduced}}</b-button>
           </template>
           <template v-slot:cell(status)="row">
-            <span>{{getStatus(row.item.status)}}</span>
+            <b :class="getStatusClass(row.item.status)">{{getStatus(row.item.status)}}</b>
           </template>
           <template v-slot:cell(action)="row">
             <b-button size="sm" :disabled="disableSchedule(row.item)" type="submit" variant="primary" @click="toggleModal(row.item)">Schedule</b-button>
@@ -193,6 +193,13 @@ export default {
   computed: {},
   watch: {},
   methods: {
+    getStatusClass(statusId){
+        if(statusId == 'APPROVED'){ return "status-black"}
+        if(statusId == 'PENDING_PROD'){ return "status-blue"}
+        if(statusId == 'PENDING_SHIPMENT'){ return "status-purple"}
+        if(statusId == 'SHIPPED'){ return "status-green"}
+        return "status-red"
+    },
     getUnitsTransfered(si){
       var unitsTransfered = +si.unitsTransferedTo - +si.unitsTransferedFrom;
       var transfered = unitsTransfered<0?" "+unitsTransfered:" +"+unitsTransfered;

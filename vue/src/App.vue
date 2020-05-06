@@ -309,7 +309,7 @@ export default {
   color: #0219b9f7 !important
 }
 .status-green {
-  color: #0eb902f7 !important
+  color: #89e083f7 !important
 }
 .status-yellow {
   color: #9db902f7 !important
