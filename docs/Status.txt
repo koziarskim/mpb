@@ -1,14 +1,14 @@
 In Progress/Done:
 Purchase
-- Add PO Notes on Screen and PDF
-- Po number not increasing.
++ Po number not increasing.
 - Search by staus Open/Not Received, Receind in Full, Received Partial.
-- PO, format units with comma (24,200)
 - PDF name as "PO_<number>_<name>
 - Delete enteir PO without deleting components
 - Confirmation for delete.
 - "PO Confirmed" checkbox.
 - PO Totals on screen (units, cases, total amout)
+- Add PO Notes on Screen and PDF
+- PO, format units with comma (24,200)
 Component:
 - Change "Weight" to "Net Weight"
 - Add "Case Weight"
@@ -19,6 +19,7 @@ Return:
 - Validate that it cannot return more that shipped.
 Receiving:
 - Update unit price based on PO.
+- Enforce to enter price from PO receiving.
 Accounting:
 - Permissions
 - Send email to client (andy as cc: by default).

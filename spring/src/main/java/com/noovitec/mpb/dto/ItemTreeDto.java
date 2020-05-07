@@ -43,7 +43,7 @@ public class ItemTreeDto {
 		if(count==0L) {
 			return 0L;
 		}
-		Long average = BigDecimal.valueOf(total).divide(BigDecimal.valueOf(count),2,RoundingMode.HALF_DOWN).longValue();
+		Long average = BigDecimal.valueOf(total).divide(BigDecimal.valueOf(count),2,RoundingMode.CEILING).longValue();
 		return average;
 	}
 

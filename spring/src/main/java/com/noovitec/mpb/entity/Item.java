@@ -142,7 +142,7 @@ public class Item extends BaseEntity {
 			}
 		}
 		if(schedules >0) {
-			perf = BigDecimal.valueOf(average).divide(BigDecimal.valueOf(schedules),2,RoundingMode.HALF_UP);
+			perf = BigDecimal.valueOf(average).divide(BigDecimal.valueOf(schedules),2,RoundingMode.CEILING);
 		}
 		return perf.longValue();
 	}
@@ -158,7 +158,7 @@ public class Item extends BaseEntity {
 			if(unitsLocked < 0) {
 				unitsLocked = 0;
 			}
-			long units = BigDecimal.valueOf(ic.getComponent().getUnitsOnStock() - unitsLocked).divide(ic.getUnits()).setScale(0, RoundingMode.CEILING).longValue();
+			long units = BigDecimal.valueOf(ic.getComponent().getUnitsOnStock() - unitsLocked).divide(ic.getUnits(),0, RoundingMode.CEILING).longValue();
 			if(units < this.unitsReadyProd) {
 				this.unitsReadyProd = units<0?0:units;
 			}

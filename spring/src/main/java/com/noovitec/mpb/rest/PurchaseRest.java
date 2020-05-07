@@ -11,8 +11,6 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -51,10 +49,9 @@ import com.noovitec.mpb.repo.AttachmentRepo;
 import com.noovitec.mpb.repo.ComponentRepo;
 import com.noovitec.mpb.repo.PurchaseRepo;
 import com.noovitec.mpb.repo.SupplierRepo;
-import com.noovitec.mpb.service.AttachmentService;
 import com.noovitec.mpb.service.ComponentService;
-import com.noovitec.mpb.service.CrudService;
 import com.noovitec.mpb.service.ItemService;
+import com.noovitec.mpb.service.PurchaseService;
 
 
 @RestController
@@ -67,23 +64,21 @@ class PurchaseRest {
 	AttachmentRepo attachmentRepo;
 
 	private final Logger log = LoggerFactory.getLogger(PurchaseRest.class);
+	private PurchaseService purchaseService;
+	
+	@Autowired
+	private ComponentRepo componentRepo;
+	@Autowired
+	private SupplierRepo supplierRepo;
+	@Autowired
+	private ItemService itemService;
+	@Autowired
+	private ComponentService componentService;
+	@Autowired
 	private PurchaseRepo purchaseRepo;
 	
-	@Autowired
-	ComponentRepo componentRepo;
-	@Autowired
-	SupplierRepo supplierRepo;
-	@Autowired
-	ItemService itemService;
-	@Autowired
-	ComponentService componentService;
-	@Autowired
-	CrudService crudService;
-	@Autowired
-	AttachmentService attachmentService;
-	
-	public PurchaseRest(PurchaseRepo purchaseRepo) {
-		this.purchaseRepo = purchaseRepo;
+	public PurchaseRest(PurchaseService purchaseService) {
+		this.purchaseService = purchaseService;
 	}
 
 	@GetMapping("/purchase")
@@ -116,7 +111,6 @@ class PurchaseRest {
 		return ResponseEntity.ok().body(String.valueOf(date.getYear())+month+day+number);
 	}
 
-
 	@GetMapping("/purchase/pageable")
 	Page<PurchaseListDto> getAllPageable(@RequestParam(name = "pageable", required = false) Pageable pageable, 
 			@RequestParam(required = false) String purchaseName, 
@@ -139,24 +133,6 @@ class PurchaseRest {
 			return dto;
 		});
 		return dtos;
-	}
-
-	@GetMapping("/purchase/active")
-	Collection<Purchase> getAllActive(@RequestParam(name = "component_id", required = false) Long component_id) {
-		Collection<Purchase> result = new HashSet<Purchase>();
-		for(Purchase p : (component_id == null?purchaseRepo.findAll():purchaseRepo.findByComponent(component_id))) {
-			if(!p.isReceived()) {
-				result.add(p);
-			}
-		}
-		return result;
-	}
-
-	//TODO: Use getAll instead.
-	@GetMapping("/purchase/submitted")
-	Collection<Purchase> getAllSubmitted() {
-		Collection<Purchase> result = purchaseRepo.findAll();
-		return result;
 	}
 
 	@GetMapping("/purchase/{id}")
@@ -207,6 +183,7 @@ class PurchaseRest {
 			componentIds.add(pc.getComponent().getId());
 		}
 		purchase = purchaseRepo.save(purchase);
+		purchaseService.updateUnits(purchase.getId());
 		List<Long> itemIds = itemService.findIdsByComponents(componentIds);
 		itemService.updateUnits(itemIds);
 		componentService.updateUnits(componentIds);

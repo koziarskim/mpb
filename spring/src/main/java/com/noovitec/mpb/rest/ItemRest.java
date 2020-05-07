@@ -48,6 +48,7 @@ import com.noovitec.mpb.service.AttachmentService;
 import com.noovitec.mpb.service.ComponentService;
 import com.noovitec.mpb.service.CustomerService;
 import com.noovitec.mpb.service.ItemService;
+import com.noovitec.mpb.service.PurchaseService;
 import com.noovitec.mpb.service.SaleService;
 
 @RestController
@@ -72,6 +73,8 @@ class ItemRest {
 	private CustomerService customerService;
 	@Autowired
 	private AttachmentService attachmentService;
+	@Autowired
+	private PurchaseService purchaseService;
 	
 	private ItemService itemService;
 	private final Logger log = LoggerFactory.getLogger(ItemRest.class);
@@ -251,6 +254,7 @@ class ItemRest {
 			saleService.updateUnits(null);
 			customerService.updateUnits(null);
 			itemService.updateUnitsReadyProd(null);
+			purchaseService.updateAllUnits();
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

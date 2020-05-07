@@ -22,14 +22,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.noovitec.mpb.entity.Component;
 import com.noovitec.mpb.entity.Purchase;
 import com.noovitec.mpb.entity.Receiving;
 import com.noovitec.mpb.repo.PurchaseRepo;
 import com.noovitec.mpb.repo.ReceivingRepo;
 import com.noovitec.mpb.service.ComponentService;
-import com.noovitec.mpb.service.CrudService;
 import com.noovitec.mpb.service.ItemService;
+import com.noovitec.mpb.service.PurchaseService;
 import com.noovitec.mpb.service.ReceivingService;
 
 @RestController
@@ -47,7 +46,7 @@ class ReceivingRest {
 	@Autowired
 	private ItemService itemService;
 	@Autowired
-	private CrudService crudService;
+	private PurchaseService purchaseService;
 	
 	public ReceivingRest(ReceivingRepo receivingRepo) {
 		this.receivingRepo = receivingRepo;
@@ -90,23 +89,26 @@ class ReceivingRest {
 			this.post(receiving);
 		}
 		purchaseRepo.updateReceivingDate(receivings[0].getReceivingDate(), purchase_id);
+		purchaseService.updateUnits(purchase_id);
 		Purchase purchase = purchaseRepo.getOne(purchase_id);
 		return ResponseEntity.ok().body(purchase);
 	}
 
 	@PostMapping("/receiving")
 	ResponseEntity<?> post(@RequestBody Receiving receiving) {
-		Receiving result = receivingService.save(receiving);
-		List<Long> itemIds = itemService.findIdsByComponents(Arrays.asList(result.getPurchaseComponent().getComponent().getId()));
+		receiving = receivingService.save(receiving);
+		purchaseService.updateUnits(receiving.getPurchaseComponent().getPurchase().getId());
+		List<Long> itemIds = itemService.findIdsByComponents(Arrays.asList(receiving.getPurchaseComponent().getComponent().getId()));
 		itemService.updateUnits(itemIds);
 		componentService.updateUnits(Arrays.asList(receiving.getPurchaseComponent().getComponent().getId()));
 		itemService.updateUnitsReadyProd(itemIds);
-		return ResponseEntity.ok().body(result);
+		return ResponseEntity.ok().body(receiving);
 	}
 
 	@DeleteMapping("/receiving/{id}")
 	public ResponseEntity<?> delete(@PathVariable Long id) {
 		Receiving receiving = receivingRepo.getOne(id);
+		Long purchaseId = receiving.getPurchaseComponent().getPurchase().getId();
 		Long componentId = receiving.getPurchaseComponent().getComponent().getId();
 		List<Long> itemIds = new ArrayList<Long>();
 		receiving.getPurchaseComponent().getComponent().getItemComponents().forEach(ic -> {
@@ -116,6 +118,7 @@ class ReceivingRest {
 		itemService.updateUnits(itemIds);
 		componentService.updateUnits(Arrays.asList(componentId));
 		itemService.updateUnitsReadyProd(itemIds);
+		purchaseService.updateUnits(purchaseId);
 		return ResponseEntity.ok().build();
 	}
 }

@@ -24,8 +24,10 @@ import lombok.NoArgsConstructor;
 @Entity
 public class PurchaseComponent extends BaseEntity {
 
+	private static final long serialVersionUID = 5426750019869118874L;
 	private long units = 0;
 	private BigDecimal unitPrice = BigDecimal.ZERO;
+	private long unitsReceived = 0;
 
 	@JsonIgnoreProperties(value = { "purchaseComponents" }, allowSetters = true)
 	@ManyToOne()
@@ -42,40 +44,13 @@ public class PurchaseComponent extends BaseEntity {
 	@JoinColumn(name = "purchaseComponent_id")
 	private Collection<Receiving> receivings = new HashSet<Receiving>();
 
-	@Transient
-	private Long unitsReceived;
-
-	public Long getUnitsReceived() {
-		Long units = 0L;
+	public void updateUnits() {
+		this.unitsReceived = 0;
 		for (Receiving r : this.getReceivings()) {
 			if (r.getReceivingDate() != null) {
-				units += Long.valueOf(r.getUnits());
+				this.unitsReceived += r.getUnits();
 			}
 		}
-		return units;
-	}
-
-	@Transient
-	private Long unitsInTransit = 0L;
-
-	public Long getUnitsInTransit() {
-		Long units = 0L;
-		for (Receiving r : this.getReceivings()) {
-			if (r.getReceivingDate() == null) {
-				units += Long.valueOf(r.getUnits());
-			}
-		}
-		return units;
-	}
-
-	@Transient
-	private boolean received;
-
-	public boolean isReceived() {
-		if (this.getUnitsReceived() != 0 && this.getUnitsReceived() >= this.getUnits()) {
-			return true;
-		}
-		return false;
 	}
 
 	@Transient

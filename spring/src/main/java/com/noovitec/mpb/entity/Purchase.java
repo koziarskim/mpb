@@ -26,6 +26,7 @@ import lombok.NoArgsConstructor;
 @Entity
 public class Purchase extends BaseEntity {
 
+	private static final long serialVersionUID = 1865476568296951741L;
 	private LocalDate date;
 	private String number;
 	private String name;
@@ -34,6 +35,8 @@ public class Purchase extends BaseEntity {
 	private LocalDate receivingDate;
 	private String invoiceNumber;
 	private String containerNumber;
+	private long unitsReceived = 0;
+	private long unitsPurchased = 0;
 
 	@JsonIgnoreProperties({ "components" })
 	@ManyToOne()
@@ -50,40 +53,17 @@ public class Purchase extends BaseEntity {
 	@JoinColumn(name = "purchase_id")
 	private Collection<PurchaseComponent> purchaseComponents = new HashSet<PurchaseComponent>();
 
-	@Transient
-	private Long unitsReceived;
+	public void updateUnits() {
+		this.unitsPurchased = 0;
+		this.unitsReceived = 0;
+		for (PurchaseComponent pc : this.getPurchaseComponents()) {
+			this.unitsPurchased += pc.getUnitsReceived();
+		}
+		for (PurchaseComponent pc : this.getPurchaseComponents()) {
+			this.unitsReceived += pc.getUnitsReceived();
+		}
+	}
 	
-	public Long getUnitsReceived() {
-		Long units = 0L;
-		for (PurchaseComponent pc : this.getPurchaseComponents()) {
-			units += pc.getUnitsReceived();
-		}
-		return units;
-	}
-
-	@Transient
-	private Long unitsPurchased;
-	
-	public Long getUnitsPurchased() {
-		Long units = 0L;
-		for (PurchaseComponent pc : this.getPurchaseComponents()) {
-			units += pc.getUnits();
-		}
-		return units;
-	}
-
-	@Transient
-	private boolean received;
-
-	public boolean isReceived() {
-		for (PurchaseComponent pc : this.getPurchaseComponents()) {
-			if (!pc.isReceived()) {
-				return false;
-			}
-		}
-		return true;
-	}
-
 	public BigDecimal getTotalPrice() {
 		BigDecimal price = BigDecimal.ZERO;
 		for (PurchaseComponent pc : this.getPurchaseComponents()) {
