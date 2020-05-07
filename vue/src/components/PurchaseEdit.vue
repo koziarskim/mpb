@@ -1,7 +1,7 @@
 <template>
   <b-container fluid>
     <b-row>
-      <b-col>
+      <b-col cols=10>
         <div style="display:flex">
           <div style="margin-top:-5px;">
             <span style="font-size: 18px; font-weight: bold">Purchase Order</span>
@@ -24,7 +24,6 @@
               <label class="top-label">Received Date:</label>
               <input style="width: 175px" class="form-control" type="date" v-model="receivingDate">
             </div>
-            <div style="width: 300px"></div>
           </div>
           <div v-if="!receiveMode" style="display:flex">
             <div style="width: 175px; padding-left: 3px; padding-right: 3px;">
@@ -47,20 +46,21 @@
               <label class="top-label">Invoice:</label>
               <input class="form-control" type="text" v-model="purchase.invoiceNumber" :disabled="!editMode">
             </div>
-            <div style="width: 125px"></div>
           </div>
+        </div>
+      </b-col>
+      <b-col cols=2>
           <div style="text-align: right;">
             <div v-if="!editMode && !receiveMode">
-              <b-button size="sm" style="margin-right: 2px; width: 40px; margin-left: -50px" type="reset" variant="success" @click="edit()">Edit</b-button>
+              <b-button size="sm" style="margin-right: 2px;" type="reset" variant="success" @click="edit()">Edit</b-button>
               <b-button size="sm" style="width: 28px;" type="reset" variant="secondary" @click="deletePo()">x</b-button><br/>
               <b-button size="sm" style="margin: 2px; width: 70px" type="reset" variant="success" @click="receive()">Receive</b-button>
             </div>
             <div v-if="editMode || receiveMode">
-            <b-button size="sm" style="margin-right: 2px; width: 70px; margin-left: -50px" type="reset" variant="success" @click="cancel()">Cancel</b-button><br/>
+            <b-button size="sm" style="margin-right: 2px;" type="reset" variant="success" @click="cancel()">Cancel</b-button><br/>
             <b-button size="sm" style="margin: 2px; width: 70px" type="reset" variant="success" @click="save()">Save</b-button>
             </div>
           </div>
-        </div>
       </b-col>
     </b-row>
     <b-row style="font-size: 12px">
@@ -73,13 +73,16 @@
           <template v-slot:cell(unitsReceived)="row">
             <b-button v-if="!receiveMode" size="sm" @click.stop="goToReceiving(purchase.id, row.item.component.id)" variant="link">{{row.item.unitsReceived}}</b-button>
             <div v-if="receiveMode" style="display:flex">
-              <span style="margin-top:10px">{{row.item.unitsReceived}}&nbsp;</span>
+              <span style="margin-top:10px">{{row.item.unitsReceived}}&nbsp;+&nbsp;</span>
               <input class="form-control" style="width: 80px" type="tel" v-model="row.item.unitsToReceive" placeholder="0">
+              <span style="font-size: 20px; margin-left: 10px">$</span><input class="form-control" style="width: 80px" type="tel" v-model="row.item.unitPriceReceived" placeholder="0">
             </div>          
           </template>
           <template v-slot:cell(unitPrice)="row">
-            <input v-if="editMode" class="form-control" style="width: 120px" type="tel" v-model="row.item.unitPrice">          
-            <span v-if="!editMode">{{row.item.unitPrice}}</span>
+            <div v-if="editMode" style="display:flex">
+              <span style="font-size:20px">$</span><input class="form-control" style="width: 100px" type="tel" v-model="row.item.unitPrice">
+            </div>
+            <span v-if="!editMode">${{row.item.unitPrice}}</span>
           </template>
           <template v-slot:cell(units)="row">
             <input v-if="editMode" class="form-control" style="width: 120px" type="tel" v-model="row.item.units">   
@@ -176,6 +179,7 @@ export default {
     receive(){
       this.purchase.purchaseComponents.forEach(pc=> {
         pc.unitsToReceive = +pc.units - +pc.unitsReceived;
+        pc.unitPriceReceived = pc.unitPrice;
       })
       this.receivingNumber = "Rec-"+this.purchase.number;
       this.receivingContainerNumber = this.purchase.containerNumber;
@@ -219,6 +223,7 @@ export default {
         receiving.etaDate = this.purchase.expectedDate;
         receiving.receivingDate = this.receivingDate;
         receiving.units = pc.unitsToReceive;
+        receiving.unitPrice = pc.unitPriceReceived;
         receivings.push(receiving);
       })
       if(isNegative){

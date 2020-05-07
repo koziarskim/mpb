@@ -20,8 +20,7 @@ Component:
 Return:
 - Validate that it cannot return more that shipped.
 Receiving:
-- Update unit price based on PO.
-- Enforce to enter price from PO receiving.
++ Allow to enter price from PO receiving.
 - Search by invoice
 Accounting:
 - Permissions

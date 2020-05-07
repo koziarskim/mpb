@@ -22,6 +22,7 @@ import lombok.NoArgsConstructor;
 @Entity
 public class Receiving extends BaseEntity {
 
+	private static final long serialVersionUID = 2235282577329783460L;
 	private String number;
 	private String name;
 	private String containerNumber;
