@@ -10,7 +10,13 @@
       <b-col cols=2>
         <b-select option-value="id" option-text="name" :list="availableSuppliers" v-model="supplierKv" placeholder="Supplier"></b-select>
       </b-col>
-      <b-col cols=1 offset=4>
+      <b-col cols=2>
+        <b-select option-value="id" option-text="name" :list="availableStatuses" v-model="status" placeholder="Status"></b-select>
+      </b-col>
+      <b-col cols=2>
+        <b-select option-value="id" option-text="name" :list="availableFreightTerms" v-model="freightTerms" placeholder="Freight"></b-select>
+      </b-col>
+      <b-col cols=1>
         <div style="text-align: right;">
           <b-button size="sm" type="submit" variant="primary" @click="goToPurchaseNew()">New P.O.</b-button>
         </div>
@@ -81,6 +87,13 @@ export default {
         {id: "DEL", name: "Delivered"},
         {id: "CPU", name: "Customer Pickup"}
       ],
+      freightTerms: {},
+      availableStatuses: [
+        {id: "OPEN", name: "Open/No Recivings"},
+        {id: "PARTIAL", name: "Partially Received"},
+        {id: "RECEIVED", name: "Fully Received"},
+      ],
+      status: {},
       availableComponents: [],
       componentKv: {},
       availableSuppliers: [],
@@ -98,6 +111,12 @@ export default {
       this.getPurchases();
     },
     supplierKv(newValue, oldValue){
+      this.getPurchases();
+    },
+    freightTerms(newValue, oldValue){
+      this.getPurchases();
+    },
+    status(newValue, oldValue){
       this.getPurchases();
     }
   },
@@ -141,7 +160,9 @@ export default {
         pageable: this.pageable, 
         purchaseName: this.searchPurchase, 
         componentId: this.componentKv.id,
-        supplierId: this.supplierKv.id
+        supplierId: this.supplierKv.id,
+        freightTerms: this.freightTerms.id,
+        status: this.status.id
       }}).then(response => {
         this.purchases = response.data.content;
         this.pageable.totalElements = response.data.totalElements;

@@ -2,7 +2,6 @@ package com.noovitec.mpb.repo.custom;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -76,14 +75,11 @@ public interface CustomItemRepo {
 			}
 			long total = query.getResultStream().count();
 			@SuppressWarnings("unchecked")
-			List<Object[]> temp = query.setFirstResult(pageable.getPageNumber()*pageable.getPageSize())
+			List<Object[]> result = query.setFirstResult(pageable.getPageNumber()*pageable.getPageSize())
 				.setMaxResults(pageable.getPageSize()).getResultList();
-			List<Item> result = new ArrayList<Item>();
-			for(Object[] arr: temp) {
-				Item i = (Item) arr[0];
-				result.add(i);
-			}
-			Page<Item> page = new PageImpl<Item>(result, pageable, total);
+			List<Item> entities = new ArrayList<Item>();
+			result.forEach(o -> entities.add((Item) o[0]));
+			Page<Item> page = new PageImpl<Item>(entities, pageable, total);
 			return page;
 		}
 	}

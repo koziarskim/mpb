@@ -115,8 +115,10 @@ class PurchaseRest {
 	Page<PurchaseListDto> getAllPageable(@RequestParam(name = "pageable", required = false) Pageable pageable, 
 			@RequestParam(required = false) String purchaseName, 
 			@RequestParam(required = false) Long componentId,
-			@RequestParam(required = false) Long supplierId) {
-		Page<Purchase> purchases = purchaseRepo.findPagable(pageable, purchaseName, componentId, supplierId);
+			@RequestParam(required = false) Long supplierId,
+			@RequestParam(required = false) String status,
+			@RequestParam(required = false) String freightTerms) {
+		Page<Purchase> purchases = purchaseRepo.findPagable(pageable, purchaseName, componentId, supplierId, status, freightTerms);
 		Page<PurchaseListDto> dtos = purchases.map(purchase -> {
 			PurchaseListDto dto = new PurchaseListDto();
 			dto.setId(purchase.getId());
