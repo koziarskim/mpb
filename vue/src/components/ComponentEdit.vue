@@ -118,6 +118,9 @@
       <b-col>
         <label class="top-label">Component is used in following Items:</label>
         <b-table :items="component.itemComponents" :fields="columns">
+          <template v-slot:head(units)="row">
+            <div>Assembly</div><div class="mpb-head-line">Units per item</div>
+          </template>
           <template v-slot:cell(item.number)="row">
             <b-button size="sm" @click="goToItem(row.item.item.id)" variant="link">{{row.item.item.number}}</b-button>
           </template>
