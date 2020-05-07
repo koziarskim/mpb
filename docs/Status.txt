@@ -21,12 +21,14 @@ Return:
 Receiving:
 - Update unit price based on PO.
 - Enforce to enter price from PO receiving.
+- Search by invoice
 Accounting:
 - Permissions
 - Send email to client (andy as cc: by default).
 Item:
 + Component quantity decimal places
 + Don't reserve UPC.
++ Palet height fix.
 - Show component picture when mouse over.
 - Expiration date on item
 Shipment:

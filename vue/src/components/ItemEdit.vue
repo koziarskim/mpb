@@ -262,7 +262,7 @@ export default {
     },
 
     palletHeight() {
-      return +this.item.caseHeight * +this.item.ti;
+      return +this.item.caseHeight * +this.item.hi;
     },
     itemCubic() {
       return (
