@@ -57,7 +57,7 @@ public class Purchase extends BaseEntity {
 		this.unitsPurchased = 0;
 		this.unitsReceived = 0;
 		for (PurchaseComponent pc : this.getPurchaseComponents()) {
-			this.unitsPurchased += pc.getUnitsReceived();
+			this.unitsPurchased += pc.getUnits();
 		}
 		for (PurchaseComponent pc : this.getPurchaseComponents()) {
 			this.unitsReceived += pc.getUnitsReceived();

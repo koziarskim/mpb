@@ -128,7 +128,7 @@ class PurchaseRest {
 			dto.setShippingDate(purchase.getShippingDate());
 			dto.setSupplierName(purchase.getSupplier().getName());
 			dto.setFreightTermId(purchase.getSupplier().getFreightTerms());
-			dto.setUnitsOrdered(purchase.getUnitsPurchased());
+			dto.setUnitsPurchased(purchase.getUnitsPurchased());
 			dto.setUnitsReceived(purchase.getUnitsReceived());
 			return dto;
 		});

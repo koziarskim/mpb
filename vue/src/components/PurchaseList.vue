@@ -38,8 +38,11 @@
       <template v-slot:cell(etaDate)="row">
         <span>{{row.item.etaDate | formatDate}}</span>
       </template>
-      <template v-slot:cell(unitsReceived)="row">
-        <b-link role="button" @click.stop="goToReceiving(row.item.id)">{{row.item.unitsReceived}}</b-link>
+      <template v-slot:cell(unitsPurchRec)="row">
+        <b-link role="button" @click.stop="goToReceiving(row.item.id)">{{row.item.unitsPurchased}} / {{row.item.unitsReceived}}</b-link>
+      </template>
+      <template v-slot:cell(unitsPending)="row">
+        <div>{{+row.item.unitsPurchased - +row.item.unitsReceived}}</div>
       </template>
       <template v-slot:cell(date)="row">
         <span>{{row.item.date | formatDates}}</span>
@@ -64,8 +67,8 @@ export default {
         { key: "supplierName", label: "Supplier", sortable: false },
         { key: "poDate", label: "P.O. Date", sortable: false },
         { key: "etaDate", label: "Expected", sortable: false },
-        { key: "unitsOrdered", label: "Purchased", sortable: false },
-        { key: "unitsReceived", label: "Received", sortable: false },
+        { key: "unitsPurchRec", label: "Purch/Rec", sortable: false },
+        { key: "unitsPending", label: "Pending", sortable: false },
         { key: "freightTerm", label: "Freight", sortable: false },
         { key: "pdf", label: "PDF", sortable: false },
         { key: "action", label: "", sortable: false }
