@@ -13,8 +13,8 @@ public interface UpcRepo extends JpaRepository<Upc, Long> {
 	@Query(value = "select * from Upc u left join item i on i.upc_id = u.id where assigned = false and i.upc_id is null order by u.id asc limit 1", nativeQuery = true)
 	Upc getFirstAvailable();
 	
-	@Query("select new com.noovitec.mpb.dto.KeyValueDto(u.id, u.code) from Upc u "
-			+ "where u.id not in (select i.upc.id from Item i where i.upc.id is not null)")
+	@Query("select new com.noovitec.mpb.dto.KeyValueDto(u.id, concat(u.code,' used by ', count(i.upc.id), ' item')) from Upc u "
+			+ "left join Item i on i.upc.id = u.id group by u.id")
 	List<KeyValueDto> getKv();
 	
 }

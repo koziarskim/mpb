@@ -23,8 +23,8 @@ Accounting:
 - Permissions
 - Send email to client (andy as cc: by default).
 Item:
-- Component quantity decimal places
-- Don't reserve UPC.
++ Component quantity decimal places
++ Don't reserve UPC.
 - Show component picture when mouse over.
 - Expiration date on item
 Shipment:

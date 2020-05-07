@@ -15,9 +15,9 @@
         <b-row>
           <b-col cols=4>
             <label class="top-label">UPC Number:</label>
-            <b-select option-value="id" option-text="name" :list="availableUpc" v-model="upc" placeholder="UPC"></b-select>
+            <b-select option-value="id" style="width: 165px" option-text="name" :list="availableUpc" v-model="upc" placeholder="UPC"></b-select>
           </b-col>
-          <b-col cols=6>
+          <b-col cols=6 style="margin-left: 10px">
             <label class="top-label">Brand:</label>
             <b-select option-value="id" option-text="name" :list="availableBrands" v-model="item.brand" placeholder="Brand"></b-select>
           </b-col>
@@ -45,11 +45,11 @@
         </b-row>
       </b-col>
     </b-row>
-    <b-row>
+    <b-row style="margin-top: -15px">
       <b-col cols=2>
-        <img style="margin-top: 25px; width: 150px; height: 40px" :src="upcUrl" fluid>
+        <img style="margin-top: 25px; width: 165px; height: 40px" :src="upcUrl" fluid>
       </b-col>
-      <b-col cols=2>
+      <b-col cols=2 style="margin-left: -23px">
         <label class="top-label">Season:</label>
         <b-select option-value="id" option-text="name" :list="availableSeasons" v-model="item.season" placeholder="Season"></b-select>
       </b-col>
@@ -374,7 +374,7 @@ export default {
       return http.get("/item/" + item_id).then(response => {
         this.item = response.data;
         if(response.data.upc){
-          this.availableUpc.push({id: response.data.upc.id, name: response.data.upc.code})
+          // this.availableUpc.push({id: response.data.upc.id, name: response.data.upc.code})
           this.upc = {id: response.data.upc.id};
           this.setUpcUrl(response.data.upc.id);
         }
