@@ -14,7 +14,6 @@ import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import jdk.internal.jline.internal.Log;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -159,7 +158,7 @@ public class Item extends BaseEntity {
 			if(unitsLocked < 0) {
 				unitsLocked = 0;
 			}
-			long units = (ic.getComponent().getUnitsOnStock() - unitsLocked)/ic.getUnits();
+			long units = BigDecimal.valueOf(ic.getComponent().getUnitsOnStock() - unitsLocked).divide(ic.getUnits()).setScale(0, RoundingMode.CEILING).longValue();
 			if(units < this.unitsReadyProd) {
 				this.unitsReadyProd = units<0?0:units;
 			}

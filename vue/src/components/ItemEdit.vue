@@ -175,12 +175,15 @@
       <b-row>
         <b-col>
           <b-table v-if="item.itemComponents.length>0" :items="item.itemComponents" :fields="columns" sort-by="component.category.name">
+            <template v-slot:head(units)="row">
+              <div>Assembly</div><div class="mpb-head-line">Units per item</div>
+            </template>
             <template v-slot:cell(component)="row">
               <b-link role="button" @click="goToComponent(row.item.component.id)">{{row.item.component.number}}</b-link>
               <span style="font-size:11px"> {{row.item.component.name}}</span>
             </template>
             <template v-slot:cell(units)="row">
-              <input class="form-control" style="width:50px" type="tel" v-model="row.item.units">
+              <input class="form-control" style="width:70px" type="tel" v-model="row.item.units">
             </template>
             <template v-slot:cell(unitsOnStock)="row">
               <b-link role="button" @click="goToReceiving(row.item.component.id)">{{row.item.component.unitsOnStock}}</b-link>

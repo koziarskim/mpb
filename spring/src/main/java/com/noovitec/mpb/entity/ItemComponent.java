@@ -1,5 +1,7 @@
 package com.noovitec.mpb.entity;
 
+import java.math.BigDecimal;
+
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -18,7 +20,9 @@ import lombok.NoArgsConstructor;
 @Entity
 public class ItemComponent extends BaseEntity {
 
-	private long units = 0;
+	private static final long serialVersionUID = 1769855029579272138L;
+
+	private BigDecimal units = BigDecimal.ZERO;
 
 	@JsonIgnoreProperties(value = { "itemComponents" }, allowSetters = true)
 	@ManyToOne()

@@ -1,6 +1,7 @@
 package com.noovitec.mpb.entity;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -85,9 +86,10 @@ public class Component extends BaseEntity {
 	private Collection<PurchaseComponent> purchaseComponents = new HashSet<PurchaseComponent>();
 
 	public void updateUnitsLocked() {
-		this.unitsLocked = 0L;
+		BigDecimal units = BigDecimal.ZERO;
 		for(ItemComponent ic: this.getItemComponents()) {
-			this.unitsLocked += (ic.getItem().getUnitsScheduled() - ic.getItem().getUnitsProduced()) * ic.getUnits();
+			units = units.add(new BigDecimal(ic.getItem().getUnitsScheduled() - ic.getItem().getUnitsProduced())).multiply(ic.getUnits());
 		}
+		this.unitsLocked = units.setScale(0, RoundingMode.CEILING).longValue();
 	}
 }
