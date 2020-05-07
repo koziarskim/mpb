@@ -1,7 +1,8 @@
 In Progress/Done:
 Purchase
 + Po number not increasing.
-- Search by staus Open/Not Received, Receind in Full, Received Partial.
++ Search by staus Open/Not Received, Receind in Full, Received Partial.
++ Search PO by freight terms
 - PDF name as "PO_<number>_<name>
 - Delete enteir PO without deleting components
 - Confirmation for delete.

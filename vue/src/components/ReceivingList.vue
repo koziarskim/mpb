@@ -30,11 +30,7 @@
         >{{row.item.purchaseComponent?row.item.purchaseComponent.purchase.number:''}}</b-button>
       </template>
       <template v-slot:cell(component)="row">
-        <b-button
-          size="sm"
-          @click.stop="goToComponent(row.item.purchaseComponent.component.id)"
-          variant="link"
-        >{{row.item.purchaseComponent?row.item.purchaseComponent.component.name:''}}</b-button>
+        <div style="width:200px; overflow: wrap; font-size: 14px"><b-link role="button" :title="row.item.name" @click.stop="goToComponent(row.item.purchaseComponent.component.id)">{{row.item.purchaseComponent.component.number}}</b-link> - {{row.item.purchaseComponent.component.name}}</div>
       </template>
       <template v-slot:cell(shippedDate)="row">
         <span>{{formatDate(row.item.shippedDate)}}</span>
