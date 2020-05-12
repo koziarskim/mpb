@@ -194,9 +194,9 @@ class PurchaseRest {
 	@DeleteMapping("/purchase/{id}")
 	public ResponseEntity<?> delete(@PathVariable Long id) {
 		Purchase purchase = purchaseRepo.getOne(id);
-		if(purchase.getPurchaseComponents().size()>0) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("There are existing Components!");
-		}
+//		if(purchase.getPurchaseComponents().size()>0) {
+//			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("There are existing Components!");
+//		}
 		List<Long> itemIds = new ArrayList<Long>();
 		List<Long> componentIds = new ArrayList<Long>();
 		for (PurchaseComponent pc : purchase.getPurchaseComponents()) {

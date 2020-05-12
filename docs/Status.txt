@@ -3,9 +3,9 @@ Purchase
 + Po number not increasing.
 + Search by staus Open/Not Received, Receind in Full, Received Partial.
 + Search PO by freight terms
-- Sort by last uupdated order.
++ Sort by last uupdated order.
 + PDF name as "PO_<number>_<name>
-- Delete enteir PO without deleting components
++ Delete enteir PO without deleting components
 - Confirmation for delete.
 - "PO Confirmed" checkbox.
 - PO Totals on screen (units, cases, total amout)
