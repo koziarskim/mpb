@@ -67,6 +67,17 @@
           </div>
       </b-col>
     </b-row>
+    <b-row>
+      <b-col cols=2>
+        Units: {{totalUnits}}
+      </b-col>
+      <b-col cols=2>
+        Cases: {{totalCases}}
+      </b-col>
+      <b-col cols=2>
+        Amount: ${{totalAmount}}
+      </b-col>
+    </b-row>
     <b-row style="font-size: 12px">
       <b-col>
         <b-table sort-by.sync="name" sort-desc.sync="false" :items="purchase.purchaseComponents" :fields="fields">
@@ -139,7 +150,29 @@ export default {
       ],
     };
   },
-  computed: {},
+  computed: {
+    totalUnits(){
+      var units = 0;
+      this.purchase.purchaseComponents.forEach(pc => {
+        units += +pc.units;
+      })
+      return units;
+    },
+    totalCases(){
+      var cases = 0;
+      this.purchase.purchaseComponents.forEach(pc => {
+        cases += +Math.ceil(pc.units / pc.component.casePack);
+      })
+      return cases;
+    },
+    totalAmount(){
+      var amount = 0;
+      this.purchase.purchaseComponents.forEach(pc => {
+        amount += +this.getTotalPrice(pc);
+      })
+      return amount.toFixed(4);
+    }
+  },
   watch: {
   },
   methods: {
