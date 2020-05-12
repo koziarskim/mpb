@@ -148,7 +148,7 @@ class PurchaseRest {
 		Purchase purchase = purchaseRepo.findById(id).get();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-		String fileName = "PO_"+purchase.getNumber()+"_"+purchase.getId() + "-" + sdf.format(timestamp) +".pdf";
+		String fileName = "PO_"+purchase.getNumber()+"_"+purchase.getName() +".pdf";
 		byte[] data = this.generatePdf(purchase);
 		HttpHeaders header = new HttpHeaders();
 		header.setContentType(MediaType.APPLICATION_OCTET_STREAM);

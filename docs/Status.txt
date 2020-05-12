@@ -3,13 +3,16 @@ Purchase
 + Po number not increasing.
 + Search by staus Open/Not Received, Receind in Full, Received Partial.
 + Search PO by freight terms
-- PDF name as "PO_<number>_<name>
+- Sort by last uupdated order.
++ PDF name as "PO_<number>_<name>
 - Delete enteir PO without deleting components
 - Confirmation for delete.
 - "PO Confirmed" checkbox.
 - PO Totals on screen (units, cases, total amout)
 - Add PO Notes on Screen and PDF
 - PO, format units with comma (24,200)
+- PO Add componnet if not yet received.
+- Allow casepack on component to be blank (not calculate cases on purchase)
 Component:
 + Update Type list.
 - Change "Weight" to "Net Weight"
@@ -32,9 +35,10 @@ Item:
 - Show component picture when mouse over.
 - Expiration date on item
 Shipment:
-- Two and One week notification based on Window From
-- The goods were tendered to the carrier in a sorted and segregated manner.
-- BOL Goods for tender
+- Two and One week notification based on Window From (Routing)
+- Add to BOL "The goods were tendered to the carrier in a sorted and segregated manner"
+Schedule:
+- Email notification on create new delivery.
 
 ------------------------------------------------------------------
 
