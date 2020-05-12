@@ -17,7 +17,7 @@
         <label class="top-label">Type:</label>
         <b-select option-value="id" option-text="name" :list="availableComponentTypes" v-model="componentType"></b-select>
       </b-col>
-      <b-col cols=2 style="margin-top: 20px">
+      <b-col cols=2 style="margin-top: 5px">
         <upload :on-upload="onUpload" :file-url="getImageUrl()"></upload>
       </b-col>
       <b-col cols=1 style="margin-left: -50px">
@@ -34,7 +34,7 @@
         <label class="top-label">Reserved: {{component.unitsLocked}}</label>
       </b-col>
     </b-row>
-    <b-row style="margin-top: -80px">
+    <b-row style="margin-top: -60px">
       <b-col cols=12>
         <b-row>
           <b-col cols=3>
@@ -55,30 +55,33 @@
               <input class="form-control" type="number" v-model="component.depth" />
             </div>
           </b-col>
+          <b-col cols=1>
+            <label class="top-label">Net Weight:</label>
+            <input class="form-control" type="number" min="0" v-model="component.weight" />
+          </b-col>          
         </b-row>
-        <b-row>
-          <b-col cols=5>
-            <label class="top-label">Notes:</label>
-            <b-form-textarea type="text" :rows="3" v-model="component.description"></b-form-textarea>
-          </b-col>
-          <b-col cols=4>
-            <b-row>
-              <b-col cols=4>
-                <label class="top-label">Case Pack:</label>
-                <input class="form-control" type="number" min="0" v-model="component.casePack" />
-              </b-col>
-              <b-col cols=4>
-                <label class="top-label">Weight:</label>
-                <input class="form-control" type="number" min="0" v-model="component.weight" />
-              </b-col>
-              <b-col cols=4>
-                <label class="top-label" title="Full Container Load (units per container)">FCL:</label>
-                <input class="form-control" type="number" min="0" v-model="component.unitsPerContainer" />
-              </b-col>
-            </b-row>
-          </b-col>
-        </b-row>
-        <b-row></b-row>
+      </b-col>
+    </b-row>
+    <b-row>
+      <b-col cols=5>
+        <label class="top-label">Notes:</label>
+        <b-form-textarea type="text" :rows="3" v-model="component.description"></b-form-textarea>
+      </b-col>
+      <b-col cols=1>
+        <label class="top-label">Case Pack:</label>
+        <input class="form-control" type="number" min="0" v-model="component.casePack" />
+      </b-col>
+      <b-col cols=1>
+        <label class="top-label">Case Weight:</label>
+        <input class="form-control" type="number" min="0" v-model="component.caseWeight" />
+      </b-col>
+      <b-col cols=2>
+        <label class="top-label">Shelf Life:</label>
+        <b-select option-value="id" option-text="name" :list="availableShelfs" v-model="shelf"></b-select>
+      </b-col>
+      <b-col cols=2>
+        <label class="top-label">Expiration:</label>
+        <input class="form-control" type="date" v-model="component.expiration" />
       </b-col>
     </b-row>
     <hr class="hr-text" data-content="Unit prices/fees are in USD ($)" />
@@ -180,6 +183,14 @@ export default {
       ],
       availableComponentTypes: [],
       componentType: {},
+      availableShelfs: [
+        {id: "6_MONTHS", name: "6 Months"},
+        {id: "9_MONTHS", name: "9 Months"},
+        {id: "12_MONTHS", name: "12 Months"},
+        {id: "24_MONTHS", name: "24 Months"},
+        {id: "36_MONTHS", name: "36 Months"},
+      ],
+      shelf: {},
 
     };
   },
@@ -193,7 +204,7 @@ export default {
     },
     deliveryCost() {
       return (
-        +this.component.containerCost / +this.component.unitsPerContainer
+        +this.component.containerCost
       ).toFixed(2);
     },
     dutyCost: function() {
@@ -220,6 +231,9 @@ export default {
     },
     componentType(newValue, oldValue) {
       this.component.componentType = newValue;
+    },
+    shelf(newValue, oldValue) {
+      this.component.shelf = newValue.id;
     }
   },
   methods: {
@@ -284,6 +298,9 @@ export default {
           }
           if (r.data.componentType){
             this.componentType = r.data.componentType;
+          }
+          if (r.data.shelf){
+            this.shelf = {id: r.data.shelf};
           }
           return r.data;
         })

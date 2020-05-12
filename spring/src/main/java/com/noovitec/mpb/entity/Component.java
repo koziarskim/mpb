@@ -2,6 +2,7 @@ package com.noovitec.mpb.entity;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -34,7 +35,7 @@ public class Component extends BaseEntity {
 	private String number;
 	private String supplierStockNumber;
 	private String description;
-	private Long unitsPerContainer = 1L;
+	private long caseWeight;
 	private BigDecimal height;
 	private BigDecimal width;
 	private BigDecimal depth;
@@ -55,6 +56,8 @@ public class Component extends BaseEntity {
 	private long unitsSoldNotProd = 0; //unitsForSale - unitsForProduction
 	private long unitsShort = 0; //unitsSoldNotProduced - unitsOnStock - unitsOrdered - unitsReceived
 	private BigDecimal averagePrice =BigDecimal.ZERO;
+	private String shelf;
+	private LocalDate expiration;
 
 	@JsonIgnoreProperties(value = { "component" }, allowSetters = true)
 	@OneToMany()
