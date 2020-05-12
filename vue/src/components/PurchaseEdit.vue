@@ -104,7 +104,7 @@
             <span v-if="!editMode">{{row.item.units.toLocaleString()}}</span>
           </template>
           <template v-slot:cell(cases)="row">
-            <span>{{Math.ceil(row.item.units / row.item.component.casePack).toLocaleString()}}</span>
+            <span>{{getCases(row.item)}}</span>
           </template>             
           <template v-slot:cell(totalPrice)="row">
             ${{row.item.totalPrice = getTotalPrice(row.item).toLocaleString('en-US',{minimumFractionDigits: 4})}}
@@ -186,6 +186,13 @@ export default {
   watch: {
   },
   methods: {
+    getCases(pc){
+      var cases = 0;
+      if(pc.casePack>0){
+        cases = Math.ceil(pc.units / pc.component.casePack).toLocaleString();
+      }
+      return cases;
+    },
     formatter(value){
       console.log("Format: "+value)
     },
