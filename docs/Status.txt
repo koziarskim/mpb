@@ -6,7 +6,7 @@ Purchase
 + Sort by last uupdated order.
 + PDF name as "PO_<number>_<name>
 + Delete enteir PO without deleting components
-- Confirmation for delete.
++ Confirmation for delete.
 - "PO Confirmed" checkbox.
 - PO Totals on screen (units, cases, total amout)
 - Add PO Notes on Screen and PDF

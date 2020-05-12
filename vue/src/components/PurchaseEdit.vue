@@ -144,11 +144,13 @@ export default {
         alert("There are units already received!");
         return;
       }
-      http.delete("/purchase/" + this.purchase.id).then(response => {
-        router.push("/purchaseList");
-      }).catch(e => {
-        console.log("API Error: " + e);
-      });
+      this.$bvModal.msgBoxConfirm('Are you sure you want to delete?').then(ok => {
+        if(ok){
+          http.delete("/purchase/" + this.purchase.id).then(response => {
+            router.push("/purchaseList");
+          }).catch(e => {console.log("API Error: " + e);});          }
+      })
+
     },
     deletePc(pc){
       var idx = this.purchase.purchaseComponents.findIndex(it => it.id == pc.id);
