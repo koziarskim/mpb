@@ -270,6 +270,7 @@ class PurchaseRest {
 		stamper.getAcroFields().setField("totalPrice", currencyFormat.format(purchase.getTotalPrice()));
 		stamper.getAcroFields().setField("totalCases", totalCases.toString());
 		stamper.getAcroFields().setField("totalUnits", String.valueOf(totalUnits));
+		stamper.getAcroFields().setField("notes", purchase.getNotes());
 		stamper.close();
 		pdfTemplate.close();
 		return baos.toByteArray();

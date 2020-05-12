@@ -69,13 +69,12 @@
     </b-row>
     <b-row>
       <b-col cols=2>
-        Units: {{totalUnits.toLocaleString()}}
-      </b-col>
-      <b-col cols=2>
-        Cases: {{totalCases.toLocaleString()}}
-      </b-col>
-      <b-col cols=2>
+        Units: {{totalUnits.toLocaleString()}}<br/>
+        Cases: {{totalCases.toLocaleString()}}<br/>
         Amount: ${{totalAmount.toLocaleString('en-US',{minimumFractionDigits: 4})}}
+      </b-col>
+      <b-col cols=6>
+        <b-form-textarea maxlength="250" type="text" :rows="3" v-model="purchase.notes" placeholder="Notes"></b-form-textarea>
       </b-col>
     </b-row>
     <b-row style="font-size: 12px">
