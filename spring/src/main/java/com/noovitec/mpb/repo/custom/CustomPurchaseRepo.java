@@ -60,7 +60,7 @@ public interface CustomPurchaseRepo {
 					q += "and p.unitsReceived > 0 and p.unitsReceived >= p.unitsPurchased ";
 				}
 			}
-			q += "order by pending desc";
+			q += "order by p.updated desc";
 			Query query = entityManager.createQuery(q);
 			if (purchaseName !=null && !purchaseName.isBlank()) {
 				query.setParameter("purchaseName", purchaseName);
