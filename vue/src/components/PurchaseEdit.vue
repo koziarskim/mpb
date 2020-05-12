@@ -46,19 +46,23 @@
               <label class="top-label">Invoice:</label>
               <input class="form-control" type="text" v-model="purchase.invoiceNumber" :disabled="!editMode">
             </div>
+            <div>
+              <label class="top-label">Confirmed:</label>
+              <b-form-checkbox style="margin-left: 20px" size="lg" v-model="purchase.confirmed" :disabled="!editMode"></b-form-checkbox>
+            </div>
           </div>
         </div>
       </b-col>
-      <b-col cols=2>
+      <b-col cols=1 offset=1>
           <div style="text-align: right;">
             <div v-if="!editMode && !receiveMode">
               <b-button size="sm" style="margin-right: 2px;" type="reset" variant="success" @click="edit()">Edit</b-button>
               <b-button size="sm" style="width: 28px;" type="reset" variant="secondary" @click="deletePo()">x</b-button><br/>
-              <b-button size="sm" style="margin: 2px; width: 70px" type="reset" variant="success" @click="receive()">Receive</b-button>
+              <b-button size="sm" style="margin: 2px;" type="reset" variant="success" @click="receive()">Receive</b-button>
             </div>
             <div v-if="editMode || receiveMode">
             <b-button size="sm" style="margin-right: 2px;" type="reset" variant="success" @click="cancel()">Cancel</b-button><br/>
-            <b-button size="sm" style="margin: 2px; width: 70px" type="reset" variant="success" @click="save()">Save</b-button>
+            <b-button size="sm" style="margin: 2px;" type="reset" variant="success" @click="save()">Save</b-button>
             </div>
           </div>
       </b-col>
