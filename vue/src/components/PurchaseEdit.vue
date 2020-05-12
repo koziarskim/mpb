@@ -69,13 +69,13 @@
     </b-row>
     <b-row>
       <b-col cols=2>
-        Units: {{totalUnits}}
+        Units: {{totalUnits.toLocaleString()}}
       </b-col>
       <b-col cols=2>
-        Cases: {{totalCases}}
+        Cases: {{totalCases.toLocaleString()}}
       </b-col>
       <b-col cols=2>
-        Amount: ${{totalAmount}}
+        Amount: ${{totalAmount.toLocaleString('en-US',{minimumFractionDigits: 4})}}
       </b-col>
     </b-row>
     <b-row style="font-size: 12px">
@@ -101,13 +101,13 @@
           </template>
           <template v-slot:cell(units)="row">
             <input v-if="editMode" class="form-control" style="width: 120px" type="tel" v-model="row.item.units">   
-            <span v-if="!editMode">{{row.item.units}}</span>
+            <span v-if="!editMode">{{row.item.units.toLocaleString()}}</span>
           </template>
           <template v-slot:cell(cases)="row">
-            <span>{{Math.ceil(row.item.units / row.item.component.casePack)}}</span>
+            <span>{{Math.ceil(row.item.units / row.item.component.casePack).toLocaleString()}}</span>
           </template>             
           <template v-slot:cell(totalPrice)="row">
-            ${{row.item.totalPrice = getTotalPrice(row.item)}}
+            ${{row.item.totalPrice = getTotalPrice(row.item).toLocaleString('en-US',{minimumFractionDigits: 4})}}
           </template>
           <template v-slot:cell(action)="row">
             <b-button :disabled="!editMode" size="sm" @click="deletePc(row.item)">x</b-button>
@@ -124,8 +124,12 @@ import router from "../router";
 import moment from "moment";
 import vue from "vue";
 import ComponentSearch from "./ComponentSearch";
+import MaskedInput from 'vue-text-mask'
 
 export default {
+  components: {
+      MaskedInput
+    },
   data() {
     return {
       receivingDate: null,
@@ -153,29 +157,38 @@ export default {
   computed: {
     totalUnits(){
       var units = 0;
-      this.purchase.purchaseComponents.forEach(pc => {
-        units += +pc.units;
-      })
+      if(this.purchase.purchaseComponents){
+        this.purchase.purchaseComponents.forEach(pc => {
+          units += +pc.units;
+        })
+      }
       return units;
     },
     totalCases(){
       var cases = 0;
-      this.purchase.purchaseComponents.forEach(pc => {
-        cases += +Math.ceil(pc.units / pc.component.casePack);
-      })
+      if(this.purchase.purchaseComponents){
+        this.purchase.purchaseComponents.forEach(pc => {
+          cases += +Math.ceil(pc.units / pc.component.casePack);
+        })
+      }
       return cases;
     },
     totalAmount(){
       var amount = 0;
-      this.purchase.purchaseComponents.forEach(pc => {
-        amount += +this.getTotalPrice(pc);
-      })
-      return amount.toFixed(4);
+      if(this.purchase.purchaseComponents){
+        this.purchase.purchaseComponents.forEach(pc => {
+          amount += +this.getTotalPrice(pc);
+        })
+      }
+      return amount;
     }
   },
   watch: {
   },
   methods: {
+    formatter(value){
+      console.log("Format: "+value)
+    },
     deletePo(){
       if(this.purchase.unitsReceived > 0){
         alert("There are units already received!");
@@ -282,7 +295,7 @@ export default {
       }
     },
     getTotalPrice(pc){
-      return (pc.units * pc.unitPrice).toFixed(4);
+      return (pc.units * pc.unitPrice);
     },
     getPurchase(purchase_id) {
       return http.get("/purchase/" + purchase_id).then(r => {
