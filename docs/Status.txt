@@ -12,7 +12,7 @@ Purchase
 - Add PO Notes on Screen and PDF
 - PO, format units with comma (24,200)
 - PO Add componnet if not yet received.
-- Allow casepack on component to be blank (not calculate cases on purchase)
++ Allow zero case pack.
 Component:
 + Update Type list.
 - Change "Weight" to "Net Weight"

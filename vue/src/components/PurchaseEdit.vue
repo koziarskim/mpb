@@ -168,7 +168,9 @@ export default {
       var cases = 0;
       if(this.purchase.purchaseComponents){
         this.purchase.purchaseComponents.forEach(pc => {
-          cases += +Math.ceil(pc.units / pc.component.casePack);
+          if(pc.component.casePack>0){
+            cases += +Math.ceil(pc.units / pc.component.casePack);
+          }
         })
       }
       return cases;
