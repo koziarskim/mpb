@@ -146,8 +146,6 @@ class PurchaseRest {
 	@GetMapping("/purchase/{id}/pdf")
 	HttpEntity<byte[]> getPdf(@PathVariable Long id) throws DocumentException, IOException {
 		Purchase purchase = purchaseRepo.findById(id).get();
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
-		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 		String fileName = "PO_"+purchase.getNumber()+"_"+purchase.getName() +".pdf";
 		byte[] data = this.generatePdf(purchase);
 		HttpHeaders header = new HttpHeaders();
