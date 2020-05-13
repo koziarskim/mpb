@@ -88,7 +88,7 @@
             <b-button v-if="!receiveMode" size="sm" @click.stop="goToReceiving(purchase.id, row.item.component.id)" variant="link">{{row.item.unitsReceived}}</b-button>
             <div v-if="receiveMode" style="display:flex">
               <span style="margin-top:10px">{{row.item.unitsReceived}}&nbsp;+&nbsp;</span>
-              <input class="form-control" style="width: 120px" type="tel" v-model="row.item.unitsToReceive" placeholder="0">
+              <input class="form-control" type="tel" style="width: 120px" v-model="row.item.unitsToReceive" placeholder="0">
               <span style="font-size: 20px; margin-left: 10px">$</span><input class="form-control" style="width: 80px" type="tel" v-model="row.item.unitPriceReceived" placeholder="0">
             </div>          
           </template>

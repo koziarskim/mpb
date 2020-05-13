@@ -11,8 +11,11 @@ Purchase
 + PO Totals on screen (units, cases, total amout)
 + Add PO Notes on Screen and PDF
 + Allow zero case pack.
+- Make notes disabled.
 - PO, format units with comma (24,200)
 - PO Add componnet if not yet received.
+- Show "Confirmed Only" and "Not Confirmed"
+- Increase width amount column. (High priority)
 Component:
 + Update Type list.
 + Change "Weight" to "Net Weight"
@@ -20,6 +23,9 @@ Component:
 + Delete FCL
 + Add Shelf Life - (6 moths, 9 months, 12 months, 24 months, 36 months) 
 + Expiration date on component and item
+- Fix assembly decimal.
+Sale:
+- Fix pay terms not saved.
 Return:
 - Validate that it cannot return more that shipped.
 Receiving:
@@ -32,6 +38,7 @@ Item:
 + Component quantity decimal places
 + Don't reserve UPC.
 + Palet height fix.
+- Case barcode upc (14 characters)
 - Show component picture when mouse over.
 - Expiration date on item
 Shipment:
@@ -39,6 +46,7 @@ Shipment:
 - Add to BOL "The goods were tendered to the carrier in a sorted and segregated manner"
 Schedule:
 - Email notification on create new delivery.
+- Delete confirmation
 
 ------------------------------------------------------------------
 
