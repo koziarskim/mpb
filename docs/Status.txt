@@ -10,9 +10,9 @@ Purchase
 + "PO Confirmed" checkbox.
 + PO Totals on screen (units, cases, total amout)
 + Add PO Notes on Screen and PDF
++ Allow zero case pack.
 - PO, format units with comma (24,200)
 - PO Add componnet if not yet received.
-+ Allow zero case pack.
 Component:
 + Update Type list.
 + Change "Weight" to "Net Weight"

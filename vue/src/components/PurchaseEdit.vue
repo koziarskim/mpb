@@ -88,7 +88,7 @@
             <b-button v-if="!receiveMode" size="sm" @click.stop="goToReceiving(purchase.id, row.item.component.id)" variant="link">{{row.item.unitsReceived}}</b-button>
             <div v-if="receiveMode" style="display:flex">
               <span style="margin-top:10px">{{row.item.unitsReceived}}&nbsp;+&nbsp;</span>
-              <input class="form-control" style="width: 80px" type="tel" v-model="row.item.unitsToReceive" placeholder="0">
+              <input class="form-control" style="width: 120px" type="tel" v-model="row.item.unitsToReceive" placeholder="0">
               <span style="font-size: 20px; margin-left: 10px">$</span><input class="form-control" style="width: 80px" type="tel" v-model="row.item.unitPriceReceived" placeholder="0">
             </div>          
           </template>
@@ -123,12 +123,8 @@ import router from "../router";
 import moment from "moment";
 import vue from "vue";
 import ComponentSearch from "./ComponentSearch";
-import MaskedInput from 'vue-text-mask'
 
 export default {
-  components: {
-      MaskedInput
-    },
   data() {
     return {
       receivingDate: null,
@@ -151,6 +147,20 @@ export default {
         { key: "totalPrice", label: "Total", sortable: false },
         { key: "action", label: "Action", sortable: false },
       ],
+      moneyConfig: {
+        // The character used to show the decimal place.
+        decimal: '.',
+        // The character used to separate numbers in groups of three.
+        thousands: ',',
+        // The currency name or symbol followed by a space.
+        prefix: '',
+        // The suffix (If a suffix is used by the target currency.)
+        suffix: '',
+        // Level of decimal precision. REQUIRED
+        precision: 4,
+        // If mask is false, outputs the number to the model. Otherwise outputs the masked string.
+        masked: false
+      }
     };
   },
   computed: {
