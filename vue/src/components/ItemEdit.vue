@@ -39,8 +39,8 @@
             <b-select option-value="id" option-text="value" :list="availableItemCategories" v-model="item.category" placeholder="Category"></b-select>
           </b-col>
           <b-col cols=2>
-            <img style="margin-top: 30px; width: 165px; height: 40px" :src="upcUrl" fluid>
-            <img style="margin-top: 20px; width: 165px; height: 40px" :src="caseUrl" fluid>
+            <img style="margin-top: 27px; width: 165px; height: 40px" :src="upcUrl" fluid>
+            <img style="margin-top: 5px; width: 165px; height: 64px" :src="caseUrl" fluid>
           </b-col>
           <b-col cols=2 style="margin-top: 70px;">
             <label class="top-label">Season:</label>

@@ -89,7 +89,7 @@ class UpcRest {
 			bean.setHeight(8);
 		}
 		String format = "image/png";
-		int dpi = 150;
+		int dpi = 100;
 		BitmapCanvasProvider canvas = new BitmapCanvasProvider(ous, format, dpi, BufferedImage.TYPE_BYTE_BINARY, false,0);
 		bean.generateBarcode(canvas, msg);
 		canvas.finish();
