@@ -78,6 +78,9 @@
       </b-col>
     </b-row>
     <b-row style="font-size: 12px">
+      <b-col cols=2>
+        <component-search v-if="editMode" v-on:componentsUpdated="updateComponents"></component-search>
+      </b-col>
       <b-col>
         <b-table sort-by.sync="name" sort-desc.sync="false" :items="purchase.purchaseComponents" :fields="fields">
           <template v-slot:cell(name)="row">
@@ -102,8 +105,11 @@
             <v-money v-if="editMode" class="form-control" style="width: 120px" type="tel" v-bind="{precision: 0}" v-model="row.item.units"></v-money>  
             <span v-if="!editMode">{{row.item.units.toLocaleString()}}</span>
           </template>
+          <template v-slot:cell(casePack)="row">
+            <span>{{row.item.component.casePack.toLocaleString()}}</span>
+          </template>             
           <template v-slot:cell(cases)="row">
-            <span>{{getCases(row.item)}}</span>
+            <span>{{Math.ceil(row.item.units / row.item.component.casePack).toLocaleString()}}</span>
           </template>             
           <template v-slot:cell(totalPrice)="row">
             ${{row.item.totalPrice = getTotalPrice(row.item).toLocaleString('en-US',{minimumFractionDigits: 2})}}
@@ -125,6 +131,9 @@ import vue from "vue";
 import ComponentSearch from "./ComponentSearch";
 
 export default {
+  components:{
+    'component-search': ComponentSearch
+  },
   data() {
     return {
       receivingDate: null,
@@ -133,7 +142,10 @@ export default {
       receivingInvoiceNumber: null,
       editMode: false,
       receiveMode: false,
-      purchase: {},
+      purchase: {
+        purchaseComponents: [],
+        supplier: {}
+      },
       purchaseComponents: [],
       purchaseComponent: {},
       fields: [
@@ -141,12 +153,13 @@ export default {
         { key: "component.unitCost", label: "Unit Cost", sortable: false },
         { key: "unitPrice", label: "P.O. Price", sortable: false },
         { key: "units", label: "P.O. Units", sortable: false },
-        { key: "component.casePack", label: "C/P", sortable: false },
+        { key: "casePack", label: "C/P", sortable: false },
         { key: "cases", label: "Cases", sortable: false },
         { key: "unitsReceived", label: "Received", sortable: false },
         { key: "totalPrice", label: "Total", sortable: false },
         { key: "action", label: "Action", sortable: false },
       ],
+      componentDtos: [],
     };
   },
   computed: {
@@ -183,6 +196,38 @@ export default {
   watch: {
   },
   methods: {
+    updateComponents(searchDto){
+      this.getComponentDtos(searchDto.components.join(","));
+    },
+    getComponentDtos(componentIds){
+      http.get("/components/dto/", {params: {componentIds: componentIds}}).then(r=> {
+        if(!this.purchase.supplier.id){
+          this.purchase.supplier = {id: r.data[0].supplierId}
+        }
+        var missmatch = false;
+        r.data.forEach(dto => {
+          if(dto.supplierId != this.purchase.supplier.id){
+            missmatch = true;
+          }
+        })
+        if(missmatch){
+            alert("Supplier missmatch! Only components to single supplier are allowed!");
+            if(this.componentDtos.length==0){
+              this.purchase.supplier = {};
+            }
+            return Promise.reject();
+        }
+        r.data.forEach(dto => {
+          var existing = this.componentDtos.find(selected => selected.id == dto.id)
+          if(!existing){
+            this.purchase.purchaseComponents.push({component: {id: dto.id, name: dto.name, number: dto.number, casePack: dto.casePack, unitCost: dto.unitCost}, 
+              units: dto.unitsShort, unitPrice: dto.unitCost, unitsReceived: dto.unitsReceived});
+          }
+        })
+      }).catch(e=> {
+        console.log("API error: "+e);
+      })
+    },
     getCases(pc){
       var cases = 0;
       if(pc.casePack>0){
@@ -250,7 +295,24 @@ export default {
         this.saveReceive();
       }
     },
+    validate(){
+      if(this.purchase.purchaseComponents.length == 0){
+        alert("No Component selected.");
+        return false;
+      }
+      if(!this.purchase.number || !this.purchase.date){
+        alert("Purchase number and date required");
+        return false;
+      }
+      var empty = this.purchase.purchaseComponents.find(c => c.units <= 0 || c.unitPrice <=0);
+      if(empty){
+          alert("Enter positive units and price for each component");
+          return false;
+      }
+      return true;
+    },
     updatePurchase(){
+      if(!this.validate()) {return}
       return http.post("/purchase", this.purchase).then(r => {
         this.purchase = r.data;
         this.editMode = false;
@@ -322,8 +384,13 @@ export default {
     },
   },
   mounted() {
-    var purchase_id = this.$route.params.purchase_id;
-    this.getPurchase(purchase_id);
+    var purchaseId = this.$route.params.purchase_id;
+    if(purchaseId){
+      this.getPurchase(purchaseId);
+    }else{
+      //New purchase
+      this.editMode = true;
+    }
   }
 };
 </script>

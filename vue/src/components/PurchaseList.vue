@@ -169,7 +169,7 @@ export default {
       }).catch(e => {console.log("API error: " + e);});
     },
     goToPurchaseNew() {
-      router.push("/purchaseNew");
+      router.push("/purchaseEdit");
     },
     goToPurchaseEdit(id) {
       router.push("/purchaseEdit/" + id);

@@ -221,7 +221,7 @@ const router = new Router({
       }
     },
     {
-      path: "/purchaseEdit/:purchase_id",
+      path: "/purchaseEdit/:purchase_id?",
       name: "PurchaseEdit",
       component: PurchaseEdit,
       meta: {

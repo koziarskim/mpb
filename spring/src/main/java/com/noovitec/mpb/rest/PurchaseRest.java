@@ -175,7 +175,6 @@ class PurchaseRest {
 		if((purchase.getId()==null && id !=null) || (purchase.getId()!=null && id !=null && !purchase.getId().equals(id))) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Purchase Number already exists. Please, choose differrent.");
 		}
-
 		purchase = purchaseRepo.save(purchase);
 		List<Long> componentIds = new ArrayList<Long>();
 		for (PurchaseComponent pc : purchase.getPurchaseComponents()) {
