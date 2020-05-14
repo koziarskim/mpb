@@ -1,10 +1,10 @@
 In Progress/Done:
 Purchase
++ Increase width amount column. (High priority)
 + Make notes disabled.
 + PO, format units with comma (24,200)
 - PO Add componnet if not yet received.
 - Show "Confirmed Only" and "Not Confirmed"
-+ Increase width amount column. (High priority)
 Component:
 + Fix assembly decimal.
 Sale:
