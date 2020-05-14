@@ -27,6 +27,7 @@ import com.noovitec.mpb.entity.Receiving;
 import com.noovitec.mpb.repo.PurchaseRepo;
 import com.noovitec.mpb.repo.ReceivingRepo;
 import com.noovitec.mpb.service.ComponentService;
+import com.noovitec.mpb.service.CrudService;
 import com.noovitec.mpb.service.ItemService;
 import com.noovitec.mpb.service.PurchaseService;
 import com.noovitec.mpb.service.ReceivingService;
@@ -47,6 +48,8 @@ class ReceivingRest {
 	private ItemService itemService;
 	@Autowired
 	private PurchaseService purchaseService;
+	@Autowired
+	private CrudService crudService;
 	
 	public ReceivingRest(ReceivingRepo receivingRepo) {
 		this.receivingRepo = receivingRepo;
@@ -86,7 +89,7 @@ class ReceivingRest {
 	@PostMapping("/receivings/purchase/{purchase_id}")
 	ResponseEntity<?> postPurchase(@PathVariable Long purchase_id, @RequestBody Receiving[] receivings) throws URISyntaxException {
 		for(Receiving receiving: receivings) {
-			this.post(receiving);
+			receiving = this.receive(receiving);
 		}
 		purchaseRepo.updateReceivingDate(receivings[0].getReceivingDate(), purchase_id);
 		purchaseService.updateUnits(purchase_id);
@@ -96,13 +99,28 @@ class ReceivingRest {
 
 	@PostMapping("/receiving")
 	ResponseEntity<?> post(@RequestBody Receiving receiving) {
+		receiving = this.receive(receiving);
+		return ResponseEntity.ok().body(receiving);
+	}
+
+	private Receiving receive(Receiving receiving) {
 		receiving = receivingService.save(receiving);
+		//TODO: There is something strang with timing that receivng is not added to list.
+		boolean exists = false;
+		for(Receiving r: receiving.getPurchaseComponent().getReceivings()) {
+			if(r.getId() == receiving.getId()) {
+				exists = true;
+			}
+		}
+		if(!exists) {
+			receiving.getPurchaseComponent().getReceivings().add(receiving);
+		}
 		purchaseService.updateUnits(receiving.getPurchaseComponent().getPurchase().getId());
 		List<Long> itemIds = itemService.findIdsByComponents(Arrays.asList(receiving.getPurchaseComponent().getComponent().getId()));
 		itemService.updateUnits(itemIds);
 		componentService.updateUnits(Arrays.asList(receiving.getPurchaseComponent().getComponent().getId()));
 		itemService.updateUnitsReadyProd(itemIds);
-		return ResponseEntity.ok().body(receiving);
+		return receiving;
 	}
 
 	@DeleteMapping("/receiving/{id}")

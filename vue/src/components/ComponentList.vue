@@ -174,7 +174,7 @@ export default {
         return false;
       }
       var query = { componentIds: this.selectedComponents.map(c=> c.id).join(",") };
-      router.push({ path: "/purchaseNew", query: query })
+      router.push({ path: "/purchaseEdit", query: query })
     },
     sorted(e){
         if(!e.sortBy){ return }
