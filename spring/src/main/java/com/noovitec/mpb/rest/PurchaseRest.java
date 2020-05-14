@@ -223,6 +223,7 @@ class PurchaseRest {
 		Supplier s = supplierRepo.findById(purchase.getSupplier().getId()).get();
 		NumberFormat currencyFormat = NumberFormat.getCurrencyInstance();
 		currencyFormat.setMaximumFractionDigits(4);
+		NumberFormat unitFormat = NumberFormat.getNumberInstance();
 		String componentName = "";
 		String componentDescription = "";
 		String componentUnits = "";
@@ -236,14 +237,14 @@ class PurchaseRest {
 			Component c = this.componentRepo.findById(pc.getComponent().getId()).get();
 			componentName += c.getNumber() + "\n";
 			componentDescription += c.getName() +", "+ (c.getSupplierStockNumber()==null?"":"Item: "+c.getSupplierStockNumber()) + "\n";
-			componentUnits += pc.getUnits() + "\n";
+			componentUnits += unitFormat.format(pc.getUnits()) + "\n";
 			componentPrice += currencyFormat.format(pc.getUnitPrice()) + "\n";
 			componentTotalPrice += currencyFormat.format(pc.getTotalPrice()) + "\n";
 			BigDecimal cases = BigDecimal.ZERO;
 			if(pc.getComponent().getCasePack()>0) {
 				cases = BigDecimal.valueOf(pc.getUnits()/pc.getComponent().getCasePack()).setScale(0, RoundingMode.CEILING);
 			}
-			componentCases += cases+ "\n";
+			componentCases += unitFormat.format(cases)+ "\n";
 			totalCases = totalCases.add(cases);
 			totalUnits += pc.getUnits();
 		}
@@ -268,8 +269,8 @@ class PurchaseRest {
 		stamper.getAcroFields().setField("componentCases", componentCases);
 		stamper.getAcroFields().setField("componentTotalPrice", componentTotalPrice);
 		stamper.getAcroFields().setField("totalPrice", currencyFormat.format(purchase.getTotalPrice()));
-		stamper.getAcroFields().setField("totalCases", totalCases.toString());
-		stamper.getAcroFields().setField("totalUnits", String.valueOf(totalUnits));
+		stamper.getAcroFields().setField("totalCases", unitFormat.format(totalCases));
+		stamper.getAcroFields().setField("totalUnits", unitFormat.format(totalUnits));
 		stamper.getAcroFields().setField("notes", purchase.getNotes());
 		stamper.close();
 		pdfTemplate.close();

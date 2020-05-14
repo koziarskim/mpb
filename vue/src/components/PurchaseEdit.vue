@@ -71,7 +71,7 @@
       <b-col cols=2>
         Units: {{totalUnits.toLocaleString()}}<br/>
         Cases: {{totalCases.toLocaleString()}}<br/>
-        Amount: ${{totalAmount.toLocaleString('en-US',{minimumFractionDigits: 4})}}
+        Amount: ${{totalAmount.toLocaleString('en-US',{minimumFractionDigits: 2})}}
       </b-col>
       <b-col cols=6>
         <b-form-textarea :disabled="!editMode" maxlength="250" type="text" :rows="3" v-model="purchase.notes" placeholder="Notes"></b-form-textarea>
@@ -106,7 +106,7 @@
             <span>{{getCases(row.item)}}</span>
           </template>             
           <template v-slot:cell(totalPrice)="row">
-            ${{row.item.totalPrice = getTotalPrice(row.item).toLocaleString('en-US',{minimumFractionDigits: 4})}}
+            ${{row.item.totalPrice = getTotalPrice(row.item).toLocaleString('en-US',{minimumFractionDigits: 2})}}
           </template>
           <template v-slot:cell(action)="row">
             <b-button :disabled="!editMode" size="sm" @click="deletePc(row.item)">x</b-button>
