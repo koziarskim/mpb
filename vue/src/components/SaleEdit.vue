@@ -278,9 +278,11 @@ export default {
       this.sale.shippingAddress = new_value;
     },
     customerDto(new_value, old_value){
-      if(new_value && new_value.id){
-        this.getCustomer(new_value.id);
+      if(this.sale.customer.id != new_value.id){
+        this.sale.freightTerms = "";
+        this.sale.paymentTerms = "";
       }
+      this.getCustomer(new_value.id);
     },
     itemDto(new_value, old_value){
       if(new_value && new_value.id){
@@ -354,8 +356,12 @@ export default {
       http.get("/customer/"+customer_id).then(response =>{
         this.customer = response.data;
         this.shippingAddress = {};
-        this.sale.paymentTerms = response.data.paymentTerms;
-        this.sale.freightTerms = response.data.freightTerms;
+        if(!this.sale.paymentTerms){
+          this.sale.paymentTerms = response.data.paymentTerms;
+        }
+        if(!this.sale.freightTerms){
+          this.sale.freightTerms = response.data.freightTerms;
+        }
         this.sale.customer = response.data;
       }).catch(e =>{
         console.log("API error: " + e);
