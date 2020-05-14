@@ -17,10 +17,10 @@
             <label class="top-label">UPC Number:</label>
             <b-select option-value="id" style="width: 165px" option-text="name" :list="availableUpc" v-model="upc" placeholder="UPC"></b-select>
           </b-col>
-          <b-col cols=6 style="margin-left: 10px">
-            <label class="top-label">Brand:</label>
-            <b-select option-value="id" option-text="name" :list="availableBrands" v-model="item.brand" placeholder="Brand"></b-select>
-          </b-col>
+          <!-- <b-col cols=4>
+            <label class="top-label">Case Upc:</label>
+            <b-select option-value="id" style="width: 165px" option-text="name" :list="availableUpc" v-model="caseUpc" placeholder="UPC"></b-select>
+          </b-col> -->
         </b-row>
       </b-col>
       <b-col cols=7>
@@ -49,7 +49,14 @@
       <b-col cols=2>
         <img style="margin-top: 25px; width: 165px; height: 40px" :src="upcUrl" fluid>
       </b-col>
-      <b-col cols=2 style="margin-left: -23px">
+      <!-- <b-col cols=2>
+        <img style="margin-top: 25px; width: 165px; height: 40px; margin-left: -35px" :src="caseUrl" fluid>
+      </b-col> -->
+      <b-col cols=2 style="margin-left: -25px">
+        <label class="top-label">Brand:</label>
+        <b-select option-value="id" option-text="name" :list="availableBrands" v-model="item.brand" placeholder="Brand"></b-select>
+      </b-col>
+      <b-col cols=2>
         <label class="top-label">Season:</label>
         <b-select option-value="id" option-text="name" :list="availableSeasons" v-model="item.season" placeholder="Season"></b-select>
       </b-col>
@@ -218,10 +225,8 @@ export default {
         category: {},
         season: {},
         upc:{},
+        caseUpc: {},
         palletWeight: 60,
-        // upc: {},
-        // caseUpc: {},
-        // caseUpc: {},
       },
       image: "",
       httpUtils: httpUtils,
@@ -233,7 +238,9 @@ export default {
     availableSeasons: [],
     availableUpc: [],
     upc: {},
+    caseUpc: {},
     upcUrl: "",
+    caseUrl: "",
     uploadedFile: null,
     columns: [
         { key: "component", label: "Component", sortable: false },
@@ -300,12 +307,26 @@ export default {
   watch: {
     upc(newValue, oldValue){
       this.setUpcUrl(newValue.id);
+      this.caseUpc = newValue.id;
+      this.setCaseUrl(newValue.id);
+    },
+    caseUpc(newValue, oldValue){
+      this.setCaseUrl(newValue.id);
     }
   },
   methods: {
     setUpcUrl(upcId){
       if(upcId){
         this.upcUrl = httpUtils.getUrl("/upc/image/" + upcId);
+      }else{
+        this.upcUrl = "";
+      }
+    },
+    setCaseUrl(upcId){
+      if(upcId){
+        this.caseUrl = httpUtils.getUrl("/upc/case/image/" + upcId);
+      }else{
+        this.caseUrl = "";
       }
     },
     allowEdit(){
@@ -376,7 +397,9 @@ export default {
         if(response.data.upc){
           // this.availableUpc.push({id: response.data.upc.id, name: response.data.upc.code})
           this.upc = {id: response.data.upc.id};
+          // this.caseUpc = {id: response.data.caseUpc.id};
           this.setUpcUrl(response.data.upc.id);
+          // this.setCaseUrl(response.data.caseUpc.id);
         }
         return response.data;
       }).catch(e => {
@@ -428,6 +451,9 @@ export default {
       this.item.totalCost = this.totalCost;
       if(this.upc.id){
         this.item.upc = {id: this.upc.id}
+      }
+      if(this.caseUpc.id){
+        this.item.caseUpc = {id: this.caseUpc.id}
       }
       var formData = new FormData();
       formData.append("image", this.uploadedFile);

@@ -55,10 +55,9 @@ class UpcRest {
 
 	@GetMapping("/upc/image/{upcId}")
 	@ResponseBody
-	HttpEntity<byte[]> generateImage(@PathVariable Long upcId) throws WriterException, IOException {
-//		byte[] image = getQRCodeImage(code, 300, 50);
+	HttpEntity<byte[]> generateUpcImage(@PathVariable Long upcId) throws WriterException, IOException {
 		Upc upc = upcRepo.getOne(upcId);
-		byte[] image = generateItemBarcode(upc.getCode());
+		byte[] image = generateItemBarcode(upc.getCode(), false);
 		HttpHeaders header = new HttpHeaders();
 		header.setContentType(MediaType.APPLICATION_OCTET_STREAM);
 		header.set("Content-Disposition", "inline; filename=" + upc.getCode()+".jpg");
@@ -66,15 +65,28 @@ class UpcRest {
 		return new HttpEntity<byte[]>(image, header);
 	}
 
-	private byte[] generateItemBarcode(String msg) throws IOException {
+	@GetMapping("/upc/case/image/{upcId}")
+	@ResponseBody
+	HttpEntity<byte[]> generateCaseImage(@PathVariable Long upcId) throws WriterException, IOException {
+//		byte[] image = getQRCodeImage(code, 300, 50);
+		Upc upc = upcRepo.getOne(upcId);
+		byte[] image = generateItemBarcode(upc.getCode(), true);
+		HttpHeaders header = new HttpHeaders();
+		header.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+		header.set("Content-Disposition", "inline; filename=" + upc.getCode()+".jpg");
+		header.setContentLength(image.length);
+		return new HttpEntity<byte[]>(image, header);
+	}
+
+	private byte[] generateItemBarcode(String msg, boolean caseUpc) throws IOException {
 		ByteArrayOutputStream ous = new ByteArrayOutputStream();
 		AbstractBarcodeBean bean = null;
-		if (msg.length() == 12) {
+		if (caseUpc) {
+			bean = new ITF14Bean();
+			msg = "10"+msg.substring(0, 11);
+		}else {
 			bean = new UPCABean();
 			bean.setHeight(8);
-		}
-		if (msg.length() == 14) {
-			bean = new ITF14Bean();
 		}
 		String format = "image/png";
 		int dpi = 150;
