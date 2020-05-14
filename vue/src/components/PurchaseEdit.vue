@@ -74,7 +74,7 @@
         Amount: ${{totalAmount.toLocaleString('en-US',{minimumFractionDigits: 4})}}
       </b-col>
       <b-col cols=6>
-        <b-form-textarea maxlength="250" type="text" :rows="3" v-model="purchase.notes" placeholder="Notes"></b-form-textarea>
+        <b-form-textarea :disabled="!editMode" maxlength="250" type="text" :rows="3" v-model="purchase.notes" placeholder="Notes"></b-form-textarea>
       </b-col>
     </b-row>
     <b-row style="font-size: 12px">
@@ -85,10 +85,10 @@
             <span style="font-size: 11px"> ({{row.item.component.name}})</span>
           </template>
           <template v-slot:cell(unitsReceived)="row">
-            <b-button v-if="!receiveMode" size="sm" @click.stop="goToReceiving(purchase.id, row.item.component.id)" variant="link">{{row.item.unitsReceived}}</b-button>
+            <b-button v-if="!receiveMode" size="sm" @click.stop="goToReceiving(purchase.id, row.item.component.id)" variant="link">{{row.item.unitsReceived.toLocaleString()}}</b-button>
             <div v-if="receiveMode" style="display:flex">
-              <span style="margin-top:10px">{{row.item.unitsReceived}}&nbsp;+&nbsp;</span>
-              <input class="form-control" type="tel" style="width: 120px" v-model="row.item.unitsToReceive" placeholder="0">
+              <span style="margin-top:10px">{{row.item.unitsReceived.toLocaleString()}}&nbsp;+&nbsp;</span>
+              <v-money class="form-control" type="tel" style="width: 120px" v-bind="{precision: 0}" v-model="row.item.unitsToReceive" placeholder="0"></v-money>
               <span style="font-size: 20px; margin-left: 10px">$</span><input class="form-control" style="width: 80px" type="tel" v-model="row.item.unitPriceReceived" placeholder="0">
             </div>          
           </template>
@@ -99,7 +99,7 @@
             <span v-if="!editMode">${{row.item.unitPrice}}</span>
           </template>
           <template v-slot:cell(units)="row">
-            <input v-if="editMode" class="form-control" style="width: 120px" type="tel" v-model="row.item.units">   
+            <v-money v-if="editMode" class="form-control" style="width: 120px" type="tel" v-bind="{precision: 0}" v-model="row.item.units"></v-money>  
             <span v-if="!editMode">{{row.item.units.toLocaleString()}}</span>
           </template>
           <template v-slot:cell(cases)="row">
@@ -147,20 +147,6 @@ export default {
         { key: "totalPrice", label: "Total", sortable: false },
         { key: "action", label: "Action", sortable: false },
       ],
-      moneyConfig: {
-        // The character used to show the decimal place.
-        decimal: '.',
-        // The character used to separate numbers in groups of three.
-        thousands: ',',
-        // The currency name or symbol followed by a space.
-        prefix: '',
-        // The suffix (If a suffix is used by the target currency.)
-        suffix: '',
-        // Level of decimal precision. REQUIRED
-        precision: 4,
-        // If mask is false, outputs the number to the model. Otherwise outputs the masked string.
-        masked: false
-      }
     };
   },
   computed: {

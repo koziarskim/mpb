@@ -153,7 +153,7 @@ public interface ComponentService {
 				component.setUnitsForProduction(unitsForProduction);
 				component.setUnitsForSale(unitsForSale);
 				component.setUnitsShort((unitsForSale - unitsForProduction) - (unitsReceived - unitsForProduction) - (unitsOrdered - unitsReceived));
-				component.setAveragePrice(totalPrice.divide(BigDecimal.valueOf(receivingsCount)).setScale(4, RoundingMode.CEILING));
+				component.setAveragePrice(totalPrice.divide(BigDecimal.valueOf(receivingsCount), 4, RoundingMode.CEILING).setScale(4, RoundingMode.CEILING));
 				componentRepo.save(component);
 				counter++;
 				log.info("Updated Component: " + component.getId());

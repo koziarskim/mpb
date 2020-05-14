@@ -13,10 +13,10 @@ import ScheduleModal from "./components/ScheduleModal";
 import Chart from "./directives/Chart";
 import VueCal from "vue-cal";
 import "vue-cal/dist/vuecal.css";
-import money from 'v-money'
+import { Money } from 'v-money'
 
 Vue.use(BootstrapVue);
-Vue.use(money, {name: "v-money", precision: 4, thousands: ',', decimal: '.', masked: false})
+Vue.component("v-money", Money)
 Vue.component("chart", Chart);
 Vue.component("upload", UploadImage);
 Vue.component("b-select", ModelListSelect);

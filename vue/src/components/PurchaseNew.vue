@@ -50,7 +50,7 @@
             </div>
           </template>
           <template v-slot:cell(units)="row">
-            <b-form-input style="width:100px" class="form-control" type="tel" v-model="row.item.units"></b-form-input>
+            <v-money style="width:100px" class="form-control" type="tel" v-bind="{precision: 0}" v-model="row.item.units"></v-money>
           </template>
           <template v-slot:cell(cases)="row">
             <span>{{Math.ceil(row.item.units / row.item.casePack)}}</span>
