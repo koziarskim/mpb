@@ -19,7 +19,8 @@ import com.noovitec.mpb.entity.Item;
 import com.noovitec.mpb.entity.Purchase;
 
 public interface CustomPurchaseRepo {
-	Page<Purchase> findPagable(Pageable pageable, String purchaseName, Long componentId, Long supplierId, String status, String freightTerms);
+	Page<Purchase> findPagable(Pageable pageable, String purchaseName, Long componentId, Long supplierId, 
+			String status, String freightTerms, String confirmed);
 
 	@Repository
 	public class CustomPurchaseRepoImpl implements CustomPurchaseRepo {
@@ -30,7 +31,8 @@ public interface CustomPurchaseRepo {
 		EntityManager entityManager;
 
 		@Override
-		public Page<Purchase> findPagable(Pageable pageable, String purchaseName, Long componentId, Long supplierId, String status, String freightTerms) {
+		public Page<Purchase> findPagable(Pageable pageable, String purchaseName, Long componentId, Long supplierId, 
+				String status, String freightTerms, String confirmed) {
 			String q = "select distinct p, (p.unitsPurchased - p.unitsReceived) as pending from Purchase p " 
 					+ "left join p.purchaseComponents pc "
 					+ "left join pc.component c "
@@ -49,18 +51,21 @@ public interface CustomPurchaseRepo {
 			if(freightTerms != null) {
 				q += "and su.freightTerms = :freightTerms ";
 			}
-			if(status != null) {
-				if("OPEN".equalsIgnoreCase(status)) {
-					q += "and p.unitsPurchased > 0 and p.unitsReceived = 0 ";
-				}
-				if("PARTIAL".equalsIgnoreCase(status)) {
-					q += "and p.unitsReceived > 0 and p.unitsReceived < p.unitsPurchased ";
-				}
-				if("RECEIVED".equalsIgnoreCase(status)) {
-					q += "and p.unitsReceived > 0 and p.unitsReceived >= p.unitsPurchased ";
-				}
+			if("OPEN".equalsIgnoreCase(status)) {
+				q += "and p.unitsPurchased > 0 and p.unitsReceived = 0 ";
 			}
-			q += "order by p.updated desc";
+			if("PARTIAL".equalsIgnoreCase(status)) {
+				q += "and p.unitsReceived > 0 and p.unitsReceived < p.unitsPurchased ";
+			}
+			if("RECEIVED".equalsIgnoreCase(status)) {
+				q += "and p.unitsReceived > 0 and p.unitsReceived >= p.unitsPurchased ";
+			}
+			if("CONFIRMED".equalsIgnoreCase(confirmed)) {
+				q += "and p.confirmed = true ";
+			}
+			if("NOT_CONFIRMED".equalsIgnoreCase(confirmed)) {
+				q += "and p.confirmed = false ";
+			}			q += "order by p.updated desc";
 			Query query = entityManager.createQuery(q);
 			if (purchaseName !=null && !purchaseName.isBlank()) {
 				query.setParameter("purchaseName", purchaseName);

@@ -4,7 +4,7 @@ Purchase
 + Make notes disabled.
 + PO, format units with comma (24,200)
 + PO Add componnet if not yet received.
-- Show "Confirmed Only" and "Not Confirmed"
++ Show "Confirmed Only" and "Not Confirmed"
 - Allow to upload file.
 Component:
 + Fix assembly decimal.

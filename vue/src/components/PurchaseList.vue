@@ -1,6 +1,31 @@
 <template>
   <b-container fluid>
     <b-row style="padding-bottom: 4px; font-size: 12px">
+      <b-col cols=1 style="margin-right: -45px;">
+        <b-button id="filterMenu" size="sm" @click="showFilterMenu = true">Filter</b-button>
+        <b-popover :show="showFilterMenu" placement="bottom" target="filterMenu" variant="secondary">
+          <template v-slot:title>
+            <span>Advanced Filters</span>
+            <b-button style="margin-left: 185px" size="sm" @click="searchFilterMenu()">Search</b-button>
+            <b-button style="margin-left: 10px" size="sm" @click="clearFilterMenu()">Clear</b-button>
+          </template>
+          <div style="width: 400px">
+            <b-row>
+              <b-col cols=6>
+                <b-select option-value="id" option-text="name" :list="availableFreightTerms" v-model="freightTerms" placeholder="Freight"></b-select>
+              </b-col>
+            </b-row>
+            <b-row style="margin-top: 10px">
+              <b-col cols=6>
+                <b-form-checkbox size="lg" v-model="confirmedFilter" value="CONFIRMED">Confirmed Only</b-form-checkbox>
+              </b-col>
+              <b-col cols=6>
+                <b-form-checkbox size="lg" v-model="confirmedFilter" value="NOT_CONFIRMED">Not-Confirmed</b-form-checkbox>
+              </b-col>
+            </b-row>
+          </div>
+        </b-popover>
+      </b-col>      
       <b-col cols=2>
         <input class="form-control" style="font-size: 12px" type="tel" v-model="searchPurchase" @keyup.enter="getPurchases()" placeholder="PO Name/Number"/>
       </b-col>
@@ -13,10 +38,7 @@
       <b-col cols=2>
         <b-select option-value="id" option-text="name" :list="availableStatuses" v-model="status" placeholder="Status"></b-select>
       </b-col>
-      <b-col cols=2>
-        <b-select option-value="id" option-text="name" :list="availableFreightTerms" v-model="freightTerms" placeholder="Freight"></b-select>
-      </b-col>
-      <b-col cols=1>
+      <b-col cols=1 offset=1>
         <div style="text-align: right;">
           <b-button size="sm" type="submit" variant="primary" @click="goToPurchaseNew()">New P.O.</b-button>
         </div>
@@ -101,7 +123,9 @@ export default {
       component: {},
       purchases: [], //PurchaseListDto
       keyword: "",
-      showAll: false
+      showAll: false,
+      showFilterMenu: false,
+      confirmedFilter: false,
     };
   },
   computed: {
@@ -113,14 +137,24 @@ export default {
     supplierKv(newValue, oldValue){
       this.getPurchases();
     },
-    freightTerms(newValue, oldValue){
-      this.getPurchases();
-    },
+    // freightTerms(newValue, oldValue){
+    //   this.getPurchases();
+    // },
     status(newValue, oldValue){
       this.getPurchases();
     }
   },
   methods: {
+    searchFilterMenu(){
+      this.getPurchases();
+      this.showFilterMenu = false;
+    },
+    clearFilterMenu(){
+      this.freightTerms = {};
+      this.confirmedFilter = false;
+      this.getPurchases();
+      this.showFilterMenu = false;
+    },     
     getFreightName(id) {
         var name = "";
         this.availableFreightTerms.filter(it =>{
@@ -162,7 +196,8 @@ export default {
         componentId: this.componentKv.id,
         supplierId: this.supplierKv.id,
         freightTerms: this.freightTerms.id,
-        status: this.status.id
+        status: this.status.id,
+        confirmed: this.confirmedFilter,
       }}).then(response => {
         this.purchases = response.data.content;
         this.pageable.totalElements = response.data.totalElements;

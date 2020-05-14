@@ -117,8 +117,9 @@ class PurchaseRest {
 			@RequestParam(required = false) Long componentId,
 			@RequestParam(required = false) Long supplierId,
 			@RequestParam(required = false) String status,
-			@RequestParam(required = false) String freightTerms) {
-		Page<Purchase> purchases = purchaseRepo.findPagable(pageable, purchaseName, componentId, supplierId, status, freightTerms);
+			@RequestParam(required = false) String freightTerms,
+			@RequestParam(required = false) String confirmed) {
+		Page<Purchase> purchases = purchaseRepo.findPagable(pageable, purchaseName, componentId, supplierId, status, freightTerms, confirmed);
 		Page<PurchaseListDto> dtos = purchases.map(purchase -> {
 			PurchaseListDto dto = new PurchaseListDto();
 			dto.setId(purchase.getId());
