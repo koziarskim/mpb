@@ -1,38 +1,22 @@
 <template>
   <b-container fluid>
-    <b-row>
-      <b-col cols=5>
         <b-row>
-          <b-col cols=4>
+          <b-col cols=2>
             <label class="top-label">Item Number:</label>
             <input class="form-control" type="text" v-model="item.number">
           </b-col>
-          <b-col cols=8>
+          <b-col cols=4>
             <label class="top-label">Item Name:</label>
             <input class="form-control" type="text" v-model="item.name">
           </b-col>
-        </b-row>
-        <b-row>
-          <b-col cols=4>
+          <b-col cols=2>
             <label class="top-label">UPC Number:</label>
             <b-select option-value="id" style="width: 165px" option-text="name" :list="availableUpc" v-model="upc" placeholder="UPC"></b-select>
           </b-col>
-          <!-- <b-col cols=4>
-            <label class="top-label">Case Upc:</label>
-            <b-select option-value="id" style="width: 165px" option-text="name" :list="availableUpc" v-model="caseUpc" placeholder="UPC"></b-select>
-          </b-col> -->
-        </b-row>
-      </b-col>
-      <b-col cols=7>
-        <b-row>
-          <b-col cols=6>
-            <label class="top-label">Notes:</label>
-            <b-form-textarea type="text" :rows="4" v-model="item.description"></b-form-textarea>
-          </b-col>
-          <b-col cols=3 style="margin-top:3px">
+          <b-col cols=2 style="margin-top:3px">
             <upload :on-upload="onUpload" :file-url="getImageUrl()"></upload>
           </b-col>
-          <b-col cols=3 style="margin-top: 10px">
+          <b-col cols=2 style="margin-top: 10px">
             <div style="text-align: right">
               <b-button :disabled="!allowEdit()" size="sm" variant="success" @click="saveItem()">Save</b-button>
               <b-button :disabled="!allowEdit()" style="margin-left: 3px" size="sm" @click="deleteItem()">x</b-button>
@@ -43,27 +27,33 @@
             <label class="top-label">Shipped: <b-link role="button" @click="goToItemShippedList()">{{item.unitsShipped}}</b-link></label>
           </b-col>
         </b-row>
-      </b-col>
-    </b-row>
-    <b-row style="margin-top: -15px">
-      <b-col cols=2>
-        <img style="margin-top: 25px; width: 165px; height: 40px" :src="upcUrl" fluid>
-      </b-col>
-      <!-- <b-col cols=2>
-        <img style="margin-top: 25px; width: 165px; height: 40px; margin-left: -35px" :src="caseUrl" fluid>
-      </b-col> -->
-      <b-col cols=2 style="margin-left: -25px">
-        <label class="top-label">Brand:</label>
-        <b-select option-value="id" option-text="name" :list="availableBrands" v-model="item.brand" placeholder="Brand"></b-select>
-      </b-col>
-      <b-col cols=2>
-        <label class="top-label">Season:</label>
-        <b-select option-value="id" option-text="name" :list="availableSeasons" v-model="item.season" placeholder="Season"></b-select>
-      </b-col>
-      <b-col cols=2>
-        <label class="top-label">Category:</label>
-        <b-select option-value="id" option-text="value" :list="availableItemCategories" v-model="item.category" placeholder="Category"></b-select>
-      </b-col>
+        <b-row style="margin-top: -75px">
+          <b-col cols=4>
+            <label class="top-label">Notes:</label>
+            <b-form-textarea type="text" :rows="4" v-model="item.description"></b-form-textarea>
+          </b-col>
+          <b-col cols=2>
+            <label class="top-label">Brand:</label>
+            <b-select option-value="id" option-text="name" :list="availableBrands" v-model="item.brand" placeholder="Brand"></b-select>
+            <label class="top-label">Category:</label>
+            <b-select option-value="id" option-text="value" :list="availableItemCategories" v-model="item.category" placeholder="Category"></b-select>
+          </b-col>
+          <b-col cols=2>
+            <img style="margin-top: 30px; width: 165px; height: 40px" :src="upcUrl" fluid>
+            <img style="margin-top: 20px; width: 165px; height: 40px" :src="caseUrl" fluid>
+          </b-col>
+          <b-col cols=2 style="margin-top: 70px;">
+            <label class="top-label">Season:</label>
+            <b-select option-value="id" option-text="name" :list="availableSeasons" v-model="item.season" placeholder="Season"></b-select>
+          </b-col>
+          <!-- <b-col cols=4>
+            <label class="top-label">Case Upc:</label>
+            <b-select option-value="id" style="width: 165px" option-text="name" :list="availableUpc" v-model="caseUpc" placeholder="UPC"></b-select>
+          </b-col> -->
+        </b-row>
+        <b-row>
+        </b-row>
+    <b-row>
     </b-row>
     <b-row style="margin-top: 10px">
       <b-col cols=3 style="border-right: 1px solid #c5c5c5">
@@ -225,7 +215,7 @@ export default {
         category: {},
         season: {},
         upc:{},
-        caseUpc: {},
+        // caseUpc: {},
         palletWeight: 60,
       },
       image: "",
@@ -238,7 +228,7 @@ export default {
     availableSeasons: [],
     availableUpc: [],
     upc: {},
-    caseUpc: {},
+    // caseUpc: {},
     upcUrl: "",
     caseUrl: "",
     uploadedFile: null,
@@ -307,12 +297,12 @@ export default {
   watch: {
     upc(newValue, oldValue){
       this.setUpcUrl(newValue.id);
-      this.caseUpc = newValue.id;
+      // this.caseUpc = {id: newValue.id};
       this.setCaseUrl(newValue.id);
     },
-    caseUpc(newValue, oldValue){
-      this.setCaseUrl(newValue.id);
-    }
+    // caseUpc(newValue, oldValue){
+    //   this.setCaseUrl(newValue.id);
+    // }
   },
   methods: {
     setUpcUrl(upcId){
@@ -395,12 +385,13 @@ export default {
       return http.get("/item/" + item_id).then(response => {
         this.item = response.data;
         if(response.data.upc){
-          // this.availableUpc.push({id: response.data.upc.id, name: response.data.upc.code})
           this.upc = {id: response.data.upc.id};
-          // this.caseUpc = {id: response.data.caseUpc.id};
           this.setUpcUrl(response.data.upc.id);
-          // this.setCaseUrl(response.data.caseUpc.id);
         }
+        // if(response.data.caseUpc){
+        //   this.caseUpc = {id: response.data.caseUpc.id};
+        //   this.setCaseUrl(response.data.caseUpc.id);
+        // }
         return response.data;
       }).catch(e => {
         console.log("API error: " + e);
@@ -452,9 +443,9 @@ export default {
       if(this.upc.id){
         this.item.upc = {id: this.upc.id}
       }
-      if(this.caseUpc.id){
-        this.item.caseUpc = {id: this.caseUpc.id}
-      }
+      // if(this.caseUpc.id){
+      //   this.item.caseUpc = {id: this.caseUpc.id}
+      // }
       var formData = new FormData();
       formData.append("image", this.uploadedFile);
       formData.append("jsonItem", JSON.stringify(this.item));
