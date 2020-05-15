@@ -1,26 +1,21 @@
 In Progress/Done:
 Purchase
-+ Increase width amount column. (High priority)
-+ Make notes disabled.
-+ PO, format units with comma (24,200)
-+ PO Add componnet if not yet received.
-+ Show "Confirmed Only" and "Not Confirmed"
 - Allow to upload file.
+- Add Pay Terms
+- Freight Terms (FOB).
 Component:
-+ Fix assembly decimal.
+Customer:
+- Address (add line for name).
 Sale:
-+ Fix pay terms not saved.
 - Transfer to (show sales with 0 stock).
 Return:
 - Validate that it cannot return more that shipped.
 Receiving:
-+ Fix units on stock updated.
 - Search by invoice
 Accounting:
 - Permissions
 - Send email to client (andy as cc: by default).
 Item:
-+ Case barcode upc (14 characters)
 - Show component picture when mouse over.
 - Expiration date on item
 Shipment:
@@ -29,6 +24,8 @@ Shipment:
 Schedule:
 - Email notification on create new delivery.
 - Delete confirmation
+Global:
+- Create document describing columns (Components, Items).
 
 ------------------------------------------------------------------
 

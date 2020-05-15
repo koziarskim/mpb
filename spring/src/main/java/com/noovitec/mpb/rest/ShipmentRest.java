@@ -111,7 +111,7 @@ class ShipmentRest {
 			dto.setNumber(ship.getNumber());
 			dto.setShippingDate(ship.getShippingDate());
 			dto.setShippedDate(ship.getShippedDate());
-			dto.setModifiedDate(ship.getModifiedDate().format(dateFormat));
+			dto.setModifiedDate(ship.getUpdated().format(dateFormat));
 			String shippingFrom = ship.getShippingFrom()==null?"":ship.getShippingFrom().format(windowFormat);
 			String shippingTo = ship.getShippingTo()==null?"":ship.getShippingTo().format(windowFormat);
 			dto.setShippingWindow(shippingFrom +" - "+shippingTo);
@@ -276,7 +276,7 @@ class ShipmentRest {
 		ByteArrayOutputStream bolBaos = new ByteArrayOutputStream();
 		PdfStamper bolStamper = new PdfStamper(bolTemplate, bolBaos);
 		bolStamper.setFormFlattening(true);
-		bolStamper.getAcroFields().setField("date", (shipment.getModifiedDate()==null?"":shipment.getModifiedDate().format(DateTimeFormatter.ofPattern("MM/dd/yyy"))));
+		bolStamper.getAcroFields().setField("date", (shipment.getUpdated()==null?"":shipment.getUpdated().format(DateTimeFormatter.ofPattern("MM/dd/yyy"))));
 		bolStamper.getAcroFields().setField("shippingDate", (shipment.getShippingDate()==null?"":shipment.getShippingDate().format(DateTimeFormatter.ofPattern("MM/dd/yyy"))));
 		bolStamper.getAcroFields().setField("number", shipment.getNumber());
 		bolStamper.getAcroFields().setField("via", shipment.getVia());
