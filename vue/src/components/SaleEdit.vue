@@ -355,7 +355,7 @@ export default {
     getCustomer(customer_id){
       http.get("/customer/"+customer_id).then(response =>{
         this.customer = response.data;
-        this.shippingAddress = {};
+        // this.shippingAddress = {};
         if(!this.sale.paymentTerms){
           this.sale.paymentTerms = response.data.paymentTerms;
         }
