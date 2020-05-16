@@ -94,6 +94,5 @@ public class Component extends BaseEntity {
 			units = units.add(new BigDecimal(ic.getItem().getUnitsScheduled() - ic.getItem().getUnitsProduced())).multiply(ic.getUnits());
 		}
 		this.unitsLocked = units.setScale(0, RoundingMode.CEILING).longValue();
-		this.unitsLocked = this.unitsLocked<0?0:this.unitsLocked;
 	}
 }

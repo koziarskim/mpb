@@ -192,9 +192,9 @@ class ShipmentRest {
 			si.getSaleItem().getItem().updateUnits();
 			si.getSaleItem().getSale().updateUnits();
 		}
-//		if(shipment.getCustomer()!=null) {
-//			customerService.updateUnits(Arrays.asList(shipment.getCustomer().getId()));
-//		}
+		if(shipment.getCustomer()!=null) {
+			customerService.updateUnits(Arrays.asList(shipment.getCustomer().getId()));
+		}
 		return ResponseEntity.ok().body(shipment);
 	}
 
@@ -219,7 +219,7 @@ class ShipmentRest {
 			sale.updateUnits();
 			crudService.save(sale);
 		}
-//		customerService.updateUnits(Arrays.asList(customerId));
+		customerService.updateUnits(Arrays.asList(customerId));
 		return ResponseEntity.ok().build();
 	}
 	

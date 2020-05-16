@@ -33,11 +33,13 @@ public class Customer extends BaseEntity {
 	private String name;
 	private String account;
 	private String vendor;
+//	private String phone;
 	private String paymentTerms;
 	private String freightTerms;
+//	private String contactName;
 	private String shipmentNotes;
-//	private long unitsSold = 0;
-//	private long unitsShipped = 0;
+	private long unitsSold = 0;
+	private long unitsShipped = 0;
 	private String invoiceType;
 	private String brokerContact;
 	private String brokerName;
