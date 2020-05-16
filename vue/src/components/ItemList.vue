@@ -27,7 +27,7 @@
         <div>Stock</div><div class="mpb-head-line">Including Overstock</div>
       </template>
       <template v-slot:cell(name)="row">
-        <b-link role="button" :id="'popover-name'+row.item.id" @click="getUnits(row.item.id)">{{row.item.number}}</b-link>
+        <b-button variant="link" :id="'popover-name'+row.item.id" @click="getUnits(row.item.id)">{{row.item.number}}</b-button>
         <div class="name-md" :title="row.item.name">({{row.item.name}})</div>
         <b-popover placement="bottomright" :target="'popover-name'+row.item.id" triggers="focus" variant="primary">
           <b-link role="button" style="font-weight: bold" @click="updateItem(row.item.id)">View Details</b-link>

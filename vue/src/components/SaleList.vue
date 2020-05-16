@@ -25,7 +25,7 @@
       </b-row>
       <b-table :items="sales" :fields="fields" no-local-sorting @sort-changed="sorted">
         <template v-slot:cell(number)="row">
-            <b-link role="button" :id="'popover-button-variant'+row.item.id" @click="showPopover(row.item)">{{row.item.number}}</b-link>
+            <b-button variant="link" :id="'popover-button-variant'+row.item.id" @click="showPopover(row.item)">{{row.item.number}}</b-button>
             <b-popover placement="bottomright" :target="'popover-button-variant'+row.item.id" triggers="focus" variant="primary">
               <template v-slot:title>
                 <b-button size="sm" @click="goToSale(row.item.id)" variant="link">View/Edit Details</b-button>
