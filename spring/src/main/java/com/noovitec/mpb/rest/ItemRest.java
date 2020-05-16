@@ -252,7 +252,6 @@ class ItemRest {
 			itemService.updateUnits(null);
 			componentService.updateUnits(null);
 			saleService.updateUnits(null);
-			customerService.updateUnits(null);
 			itemService.updateUnitsReadyProd(null);
 			purchaseService.updateAllUnits();
 		} catch (Exception e) {

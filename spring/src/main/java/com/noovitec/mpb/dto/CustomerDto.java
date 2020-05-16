@@ -14,6 +14,4 @@ public class CustomerDto {
 	private String name;
 	private String phone;
 	private String addressName;
-	private Long unitsSold;
-	private Long unitsShipped;
 }

@@ -9,7 +9,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -192,9 +191,6 @@ class ShipmentRest {
 			si.getSaleItem().getItem().updateUnits();
 			si.getSaleItem().getSale().updateUnits();
 		}
-		if(shipment.getCustomer()!=null) {
-			customerService.updateUnits(Arrays.asList(shipment.getCustomer().getId()));
-		}
 		return ResponseEntity.ok().body(shipment);
 	}
 
@@ -203,7 +199,6 @@ class ShipmentRest {
 		Shipment shipment = shipmentRepo.findById(id).get();
 		List<Item> items = new ArrayList<Item>();
 		List<Sale> sales = new ArrayList<Sale>();
-		Long customerId = shipment.getCustomer().getId();
 		for(ShipmentItem si: shipment.getShipmentItems()) {
 			if(si.getSaleItem()!=null) {
 				items.add(si.getSaleItem().getItem());
@@ -219,7 +214,6 @@ class ShipmentRest {
 			sale.updateUnits();
 			crudService.save(sale);
 		}
-		customerService.updateUnits(Arrays.asList(customerId));
 		return ResponseEntity.ok().build();
 	}
 	

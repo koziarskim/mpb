@@ -355,7 +355,6 @@ class SaleRest {
 			componentService.updateUnits(componentIds);
 			sa.getItem().updateUnits();
 		}
-		customerService.updateUnits(Arrays.asList(sale.getCustomer().getId()));
 		Sale result = (Sale) crudService.save(sale);
 		return ResponseEntity.ok().body(result);
 	}
@@ -367,7 +366,6 @@ class SaleRest {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("There are existing Sale Items!");
 		}
 		List<Item> items = new ArrayList<Item>();
-		Long customerId = sale.getCustomer().getId();
 		for (SaleItem sa : sale.getSaleItems()) {
 			items.add(sa.getItem());
 		}
@@ -376,7 +374,6 @@ class SaleRest {
 			item.updateUnits();
 			crudService.save(item);
 		}
-		customerService.updateUnits(Arrays.asList(customerId));
 		return ResponseEntity.ok().build();
 	}
 	
