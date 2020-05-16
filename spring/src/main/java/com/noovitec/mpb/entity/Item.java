@@ -148,20 +148,10 @@ public class Item extends BaseEntity {
 	}
 
 	public void updateUnitsReadyProd() {
-		this.unitsReadyProd = 1000000000;
-		if(this.getItemComponents().size()==0) {
-			this.unitsReadyProd = 0;
-			return;
-		}
+		this.unitsReadyProd = 999999999;
 		for (ItemComponent ic: this.getItemComponents()) {
-			long unitsLocked = this.getUnitsScheduled()-this.getUnitsProduced();
-			if(unitsLocked < 0) {
-				unitsLocked = 0;
-			}
-			long units = BigDecimal.valueOf(ic.getComponent().getUnitsOnStock() - unitsLocked).divide(ic.getUnits(),0, RoundingMode.CEILING).longValue();
-			if(units < this.unitsReadyProd) {
-				this.unitsReadyProd = units<0?0:units;
-			}
+			ic.updateUnits();
+			this.unitsReadyProd += ic.getUnitsReadyProd();
 		}
 	}
 	
@@ -174,6 +164,7 @@ public class Item extends BaseEntity {
 		this.unitsAdjusted = 0;
 		this.unitsOnStock = 0;
 		this.unitsOverstock = 0;
+		this.unitsReadyProd = 0;
 		for(ItemReturn ir: this.getItemReturns()) {
 			ir.updateUnits();
 		}
@@ -188,14 +179,9 @@ public class Item extends BaseEntity {
 			this.unitsOnStock += sa.getUnitsOnStock();
 			this.unitsOverstock += sa.getUnitsOverstock();
 		}
-//		this.unitsOnStock = this.unitsProduced + this.unitsReturned - this.unitsShipped;
-//		if(this.unitsOnStock < 0) {
-//			this.unitsOnStock = 0;
-//		}
-//		this.unitsOverstock = this.unitsProduced + this.unitsReturned - (this.unitsSold + this.unitsAdjusted);
-//		if(this.unitsOverstock < 0) {
-//			this.unitsOverstock = 0;
-//		}
-		this.updateUnitsReadyProd();
+		for (ItemComponent ic: this.getItemComponents()) {
+			ic.updateUnits();
+			this.unitsReadyProd += ic.getUnitsReadyProd();
+		}
 	}
 }

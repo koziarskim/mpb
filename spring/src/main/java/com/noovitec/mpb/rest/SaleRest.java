@@ -355,7 +355,7 @@ class SaleRest {
 			componentService.updateUnits(componentIds);
 			sa.getItem().updateUnits();
 		}
-		customerService.updateUnits(Arrays.asList(sale.getCustomer().getId()));
+//		customerService.updateUnits(Arrays.asList(sale.getCustomer().getId()));
 		Sale result = (Sale) crudService.save(sale);
 		return ResponseEntity.ok().body(result);
 	}
@@ -376,7 +376,7 @@ class SaleRest {
 			item.updateUnits();
 			crudService.save(item);
 		}
-		customerService.updateUnits(Arrays.asList(customerId));
+//		customerService.updateUnits(Arrays.asList(customerId));
 		return ResponseEntity.ok().build();
 	}
 	
