@@ -45,7 +45,7 @@ public class Shipment extends BaseEntity {
 	private String freightTerms;
 	private String freightClass;
 	private String loadNumber;
-	private long totalUnits = 0;
+	private long unitsShipped = 0;
 	private long totalCases = 0;
 	private long totalPallets = 0;
 	private long totalPalletsCustom = 0;

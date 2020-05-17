@@ -311,7 +311,7 @@ class ShipmentRest {
 			bolStamper.getAcroFields().setField("freightAddress", freightAddress);
 		}
 		bolStamper.getAcroFields().setField("notes", shipment.getNotes());
-		bolStamper.getAcroFields().setField("totalUnits", String.valueOf(shipment.getTotalUnits()));
+		bolStamper.getAcroFields().setField("totalUnits", String.valueOf(shipment.getUnitsShipped()));
 		bolStamper.getAcroFields().setField("totalCasePack", String.valueOf(totalCasePack));
 		bolStamper.getAcroFields().setField("totalCases", String.valueOf(shipment.getTotalCases()));
 		bolStamper.getAcroFields().setField("totalPallets", String.valueOf(shipment.getTotalPalletsCustom()));

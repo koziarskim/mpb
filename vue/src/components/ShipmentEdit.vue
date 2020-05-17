@@ -101,7 +101,7 @@
         <b-button size="sm" variant="primary" @click="openSaleItemPicker()">Pick Sales to Add</b-button>
       </b-col>
       <b-col style="margin-top: 7px">
-          <b>Total units:</b>{{totalUnits}}
+          <b>Total units:</b>{{unitsShipped}}
       </b-col>
       <b-col style="margin-top: 7px">
           <b>Total cases:</b>{{totalCases}}
@@ -247,7 +247,7 @@ export default {
     };
   },
   computed: {
-    totalUnits() {
+    unitsShipped() {
       var total = 0;
       this.shipment.shipmentItems.forEach(si => {
         total += +si.units;
@@ -472,7 +472,7 @@ export default {
       this.shipment.customer = this.customer.id?this.customer:null;
       this.shipment.shippingAddress = this.shippingAddress.id?{ id: this.shippingAddress.id }:null;
       this.shipment.freightAddress = this.freightAddress.id?{ id: this.freightAddress.id }:null;
-      this.shipment.totalUnits = this.totalUnits;
+      this.shipment.unitsShipped = this.unitsShipped;
       this.shipment.totalCases = this.totalCases;
       this.shipment.totalPallets = this.totalPallets;
       this.shipment.totalWeight = this.totalWeight;
