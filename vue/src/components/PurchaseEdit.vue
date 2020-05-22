@@ -3,9 +3,9 @@
     <b-row>
       <b-col cols=10>
         <div style="display:flex">
-          <div style="margin-top:-5px;">
-            <span style="font-size: 18px; font-weight: bold">Purchase Order</span>
-            <input style="width: 175px" class="form-control" type="text" v-model="purchase.number" :disabled="receiveMode">
+          <div>
+            <label class="top-label">Purchase Order</label>
+            <input style="width: 130px" class="form-control" type="text" v-model="purchase.number" :disabled="receiveMode">
           </div>
           <div v-if="receiveMode" style="display:flex">
             <div style="margin-top:-2px; margin-left: 8px;">
@@ -66,6 +66,10 @@
     </b-row>
     <b-row>
       <b-col cols=2>
+          <div style="width: 200px; padding-left: 3px; padding-right: 3px;">
+            <label class="top-label">P.O. Name:</label>
+            <input class="form-control" type="text" v-model="purchase.name" placeholder="P.O. Name/Description">
+          </div>
         Units: {{totalUnits.toLocaleString()}}<br/>
         Cases: {{totalCases.toLocaleString()}}<br/>
         Amount: ${{totalAmount.toLocaleString('en-US',{minimumFractionDigits: 2})}}
@@ -140,7 +144,11 @@ export default {
       receiveMode: false,
       purchase: {
         purchaseComponents: [],
-        supplier: {}
+        supplier: {},
+        number: null,
+        date: moment().format("YYYY-MM-DD"),
+        shippingDate: moment().format("YYYY-MM-DD"),
+        expectedDate: moment().format("YYYY-MM-DD"),
       },
       purchaseComponents: [],
       purchaseComponent: {},
