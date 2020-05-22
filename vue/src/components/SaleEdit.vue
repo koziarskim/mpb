@@ -527,7 +527,7 @@ export default {
         alert("Make sure there is no Schedule, Production, Transfers or Shipment for this item!");
         return false;
       }
-      var idx = this.sale.saleItems.findIndex(it => it.item.id == si.id);
+      var idx = this.sale.saleItems.findIndex(it => it.id == si.id);
       this.sale.saleItems.splice(idx, 1);
       this.saveSale();
     },
