@@ -80,16 +80,7 @@ public class MpbEventListener implements PostInsertEventListener, PostUpdateEven
 	    			.build();
 			MpbTenantContext.addMessage(message);
 		}
-		if (entity.getClass() == Customer.class) {
-	    	JmsCustomerMessage message = JmsCustomerMessage.builder().id((Long) event.getId())
-	    			.oldUnitsShipped(jmsUtil.getLong("unitsShipped", keys, null))
-	    			.unitsShipped(jmsUtil.getLong("unitsShipped", keys, state))
-	    			.unitsSold(jmsUtil.getLong("unitsSold", keys, state))
-	    			.type("customerUpdated")
-	    			.build();
-			MpbTenantContext.addMessage(message);
-			
-		}
+
 	}
 	
 	@Override
@@ -131,15 +122,7 @@ public class MpbEventListener implements PostInsertEventListener, PostUpdateEven
 	    			.build();
 	    	MpbTenantContext.addMessage(message);
 		}
-//		if (entity.getClass() == Customer.class) {
-//	    	JmsCustomerMessage message = JmsCustomerMessage.builder().id((Long) event.getId())
-//	    			.oldUnitsShipped(jmsUtil.getLong("unitsShipped", keys, oldState))
-//	    			.unitsShipped(jmsUtil.getLong("unitsShipped", keys, state))
-//	    			.unitsSold(jmsUtil.getLong("unitsSold", keys, state))
-//	    			.type("customerUpdated")
-//	    			.build();
-//	    	MpbTenantContext.addMessage(message);
-//		}
+
 	}
 
 	@Override

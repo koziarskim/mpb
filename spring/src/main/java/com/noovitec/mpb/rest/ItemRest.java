@@ -253,7 +253,7 @@ class ItemRest {
 			componentService.updateUnits(null);
 			saleService.updateUnits(null);
 			itemService.updateUnitsReadyProd(null);
-			purchaseService.updateAllUnits();
+			purchaseService.updateUnits(null);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

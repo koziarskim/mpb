@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -183,7 +184,7 @@ class PurchaseRest {
 			componentIds.add(pc.getComponent().getId());
 		}
 		purchase = purchaseRepo.save(purchase);
-		purchaseService.updateUnits(purchase.getId());
+		purchaseService.updateUnits(Arrays.asList(purchase.getId()));
 		List<Long> itemIds = itemService.findIdsByComponents(componentIds);
 		itemService.updateUnits(itemIds);
 		componentService.updateUnits(componentIds);

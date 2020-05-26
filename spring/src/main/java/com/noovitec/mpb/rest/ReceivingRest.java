@@ -92,7 +92,7 @@ class ReceivingRest {
 			receiving = this.receive(receiving);
 		}
 		purchaseRepo.updateReceivingDate(receivings[0].getReceivingDate(), purchase_id);
-		purchaseService.updateUnits(purchase_id);
+		purchaseService.updateUnits(Arrays.asList(purchase_id));
 		Purchase purchase = purchaseRepo.getOne(purchase_id);
 		return ResponseEntity.ok().body(purchase);
 	}
@@ -115,7 +115,7 @@ class ReceivingRest {
 		if(!exists) {
 			receiving.getPurchaseComponent().getReceivings().add(receiving);
 		}
-		purchaseService.updateUnits(receiving.getPurchaseComponent().getPurchase().getId());
+		purchaseService.updateUnits(Arrays.asList(receiving.getPurchaseComponent().getPurchase().getId()));
 		List<Long> itemIds = itemService.findIdsByComponents(Arrays.asList(receiving.getPurchaseComponent().getComponent().getId()));
 		itemService.updateUnits(itemIds);
 		componentService.updateUnits(Arrays.asList(receiving.getPurchaseComponent().getComponent().getId()));
@@ -136,7 +136,7 @@ class ReceivingRest {
 		itemService.updateUnits(itemIds);
 		componentService.updateUnits(Arrays.asList(componentId));
 		itemService.updateUnitsReadyProd(itemIds);
-		purchaseService.updateUnits(purchaseId);
+		purchaseService.updateUnits(Arrays.asList(purchaseId));
 		return ResponseEntity.ok().build();
 	}
 }

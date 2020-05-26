@@ -17,8 +17,7 @@ import com.noovitec.mpb.repo.PurchaseRepo;
 public interface PurchaseService {
 
 	public Purchase save(Purchase purchase) throws IOException;
-	public void updateUnits(Long purchaseId);
-	public void updateAllUnits();
+	public void updateUnits(List<Long> purchaseIds);
 
 	@Transactional
 	@Service("purchaseServiceImpl")
@@ -44,24 +43,18 @@ public interface PurchaseService {
 			return purchase;
 		}
 
-		public void updateAllUnits() {
-			int count = 0;
-			List<Purchase> purchases = purchaseRepo.findAll();
+		public void updateUnits(List<Long> purchaseIds) {
+			if(purchaseIds != null && purchaseIds.size()==0) {
+				return;
+			}
+			Iterable<Purchase> purchases = purchaseIds==null?purchaseRepo.findAll():purchaseRepo.findByIds(purchaseIds);
 			for(Purchase purchase: purchases) {
-				this.updateUnits(purchase.getId());
-				count ++;
+				for(PurchaseComponent pc: purchase.getPurchaseComponents()) {
+					pc.updateUnits();
+				}
+				purchase.updateUnits();
+				purchaseRepo.save(purchase);
 			}
-			log.info("Total Purchase Updated: "+count);
-		}
-		
-		public void updateUnits(Long purchaseId) {
-			Purchase purchase = purchaseRepo.getOne(purchaseId);
-			for(PurchaseComponent pc: purchase.getPurchaseComponents()) {
-				pc.updateUnits();
-			}
-			purchase.updateUnits();
-			purchaseRepo.save(purchase);
-			log.info("Updated Purchase: "+purchase.getId());
 		}
 		
 	}
