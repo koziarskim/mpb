@@ -103,9 +103,13 @@ export default {
       }).catch(e=> {console.log("API error: " + e);})
     },
     deleteEvent(){
-      http.delete("/calendarEvent/"+this.event.id).then(r => {
-        this.close();
-      }).catch(e=> {console.log("API error: " + e);})
+      this.$bvModal.msgBoxConfirm("Are you sure you want to delete?").then(ok => {
+        if (ok) {
+          http.delete("/calendarEvent/"+this.event.id).then(r => {
+            this.close();
+          }).catch(e=> {console.log("API error: " + e);})
+        }
+      });
     }
   },
   mounted() {
