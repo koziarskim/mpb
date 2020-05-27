@@ -168,7 +168,7 @@ class SaleRest {
 		byte[] data = generateXls(saleIds);
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-		String fileName = "Sales_" + "-" + sdf.format(timestamp) +".xls";
+		String fileName = "Sales_" + "-" + sdf.format(timestamp) +".xlsx";
 		HttpHeaders header = new HttpHeaders();
 		header.setContentType(MediaType.APPLICATION_OCTET_STREAM);
 		header.set("Content-Disposition", "inline; filename=" + fileName);

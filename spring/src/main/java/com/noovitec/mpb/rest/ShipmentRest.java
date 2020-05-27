@@ -3,8 +3,6 @@ package com.noovitec.mpb.rest;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -17,13 +15,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.xssf.usermodel.XSSFFont;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,10 +42,8 @@ import com.itextpdf.text.pdf.PdfStamper;
 import com.noovitec.mpb.dto.CalendarEventDto;
 import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.dto.ShipmentDto;
-import com.noovitec.mpb.entity.Address;
 import com.noovitec.mpb.entity.Item;
 import com.noovitec.mpb.entity.Sale;
-import com.noovitec.mpb.entity.SaleItem;
 import com.noovitec.mpb.entity.Shipment;
 import com.noovitec.mpb.entity.ShipmentItem;
 import com.noovitec.mpb.repo.ShipmentRepo;
@@ -165,10 +154,10 @@ class ShipmentRest {
 	@PutMapping("/shipment/xls")
 	HttpEntity<byte[]> getXls(@RequestBody List<Long> shipmentIds) throws IOException {
 		log.info("Sale IDs: "+shipmentIds);
-		byte[] data = generateXls(shipmentIds);
+		byte[] data = shipmentService.generateXls(shipmentIds);
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-		String fileName = "Shipments_" + "-" + sdf.format(timestamp) +".xls";
+		String fileName = "Shipments_" + "-" + sdf.format(timestamp) +".xlsx";
 		HttpHeaders header = new HttpHeaders();
 		header.setContentType(MediaType.APPLICATION_OCTET_STREAM);
 		header.set("Content-Disposition", "inline; filename=" + fileName);
@@ -176,130 +165,6 @@ class ShipmentRest {
 		header.setContentLength(data.length);
 		return new HttpEntity<byte[]>(data, header);
 	}
-	
-	private byte[] generateXls(List<Long> saleIds) throws IOException {
-		DateTimeFormatter windowFormat = DateTimeFormatter.ofPattern("MM/dd");
-		List<Sale> sales = new ArrayList<Sale>();//saleRepo.findAllById(saleIds);
-		XSSFWorkbook workbook = new XSSFWorkbook();
-		Sheet sheet = workbook.createSheet("Persons");
-//		sheet.setColumnWidth(0, 6000);
-//		sheet.setColumnWidth(1, 6000);
-		 
-		Row rowHeader = sheet.createRow(0);	 
-		CellStyle headerStyle = workbook.createCellStyle();
-		XSSFFont headerFont = ((XSSFWorkbook) workbook).createFont();
-		headerFont.setFontName("Arial");
-		headerFont.setBold(true);
-		headerStyle.setFont(headerFont);
-		addCell(0, "ED", rowHeader);
-		addCell(1, "PO#", rowHeader);
-		addCell(2, "Ship Address", rowHeader);
-		addCell(3, "Expected", rowHeader);
-		addCell(4, "SKU", rowHeader);
-		addCell(5, "Items", rowHeader);
-		addCell(6, "Description", rowHeader);
-		addCell(7, "C/P", rowHeader);
-		addCell(8, "Units", rowHeader);
-		addCell(9, "Total", rowHeader);
-		addCell(10, "Cases", rowHeader);
-		addCell(11, "Pallets", rowHeader);
-		addCell(12, "Total Weight", rowHeader);
-		addCell(13, "Total Pallets", rowHeader);
-		
-		XSSFFont cellFont = ((XSSFWorkbook) workbook).createFont();
-		cellFont.setFontName("Arial");
-		cellFont.setBold(false);
-		CellStyle cellStyle = workbook.createCellStyle();
-		int count = 1;
-		int saleCount = 0;
-		for(Sale sale: sales) {
-			saleCount++;
-			if(sale.getSaleItems().size()==0) {
-				Row row = sheet.createRow(count);
-				cellStyle.setFont(cellFont);
-				addCell(0, String.valueOf(saleCount), row);
-				addCell(1, sale.getNumber(), row);
-				Address address = sale.getShippingAddress();
-				String addressLabel = "";
-				if(sale.getShippingAddress()!=null) {
-					addressLabel = address.getDc()+", "+address.getStreet()+", "+address.getCity()+", "+address.getState()+", "+address.getZip();
-				}
-				addCell(2, addressLabel, row);
-				String windowDate = "";
-				if(sale.getShippingFrom()!=null) {
-					windowDate += sale.getShippingFrom().format(windowFormat)+"-";
-				}
-				if(sale.getShippingTo()!=null) {
-					windowDate += sale.getShippingTo().format(windowFormat);
-				}
-				addCell(3, windowDate, row);
-				count++;
-			}
-			int totalPallets = 0;
-			for(SaleItem si: sale.getSaleItems()) {
-				int cases = (int) Math.round(si.getUnits()/si.getItem().getCasePack());
-				int pallets = (int) Math.round(cases/(si.getItem().getHi()*si.getItem().getTi()));
-				totalPallets += pallets;
-			}
-			for(SaleItem si: sale.getSaleItems()) {
-				Row row = sheet.createRow(count);
-				cellStyle.setFont(cellFont);
-				addCell(0, String.valueOf(saleCount), row);
-				addCell(1, sale.getNumber(), row);
-				Address address = sale.getShippingAddress();
-				String addressLabel = "";
-				if(sale.getShippingAddress()!=null) {
-					addressLabel = address.getDc()+", "+address.getStreet()+", "+address.getCity()+", "+address.getState()+", "+address.getZip();
-				}
-				addCell(2, addressLabel, row);
-				String windowDate = "";
-				if(sale.getShippingFrom()!=null) {
-					windowDate += sale.getShippingFrom().format(windowFormat)+"-";
-				}
-				if(sale.getShippingTo()!=null) {
-					windowDate += sale.getShippingTo().format(windowFormat);
-				}
-				addCell(3, windowDate, row);
-				addCell(3, sale.getDate().format(windowFormat), row);
-				addCell(4, si.getSku(), row);
-				addCell(5, si.getItem().getNumber(), row);
-				addCell(6, si.getItem().getName(), row);
-				addCell(7, String.valueOf(si.getItem().getCasePack()), row);
-				addCell(8, String.valueOf(si.getUnits()), row);
-				addCell(9, String.valueOf(si.getTotalUnitPrice()), row);
-				int cases = BigDecimal.valueOf(si.getUnits()).divide(BigDecimal.valueOf(si.getItem().getCasePack()),RoundingMode.CEILING).intValue();
-				cases = cases==0?1:cases;
-				int pallets = (si.getItem().getTi()*si.getItem().getHi())/cases;
-				pallets = pallets==0?1:pallets;
-				BigDecimal unitsWeight = si.getItem().getWeight().multiply(BigDecimal.valueOf(si.getUnits()));
-				BigDecimal palletsWeight = si.getItem().getPalletWeight().multiply(BigDecimal.valueOf(pallets));
-				int totalWeight = unitsWeight.add(palletsWeight).intValue();
-				addCell(10, String.valueOf(cases), row);
-				addCell(11, String.valueOf(pallets), row);
-				addCell(12, String.valueOf(totalWeight), row);
-				addCell(13, String.valueOf(totalPallets), row);
-				count++;
-			}
-			int firstRow = count-(sale.getSaleItems().size()==0?1:sale.getSaleItems().size());
-			int lastRow = count-1;
-			if(firstRow!=lastRow) {
-				sheet.addMergedRegion(new CellRangeAddress(firstRow, lastRow, 0,0));
-				sheet.addMergedRegion(new CellRangeAddress(firstRow, lastRow, 1,1));
-				sheet.addMergedRegion(new CellRangeAddress(firstRow, lastRow, 2,2));
-				sheet.addMergedRegion(new CellRangeAddress(firstRow, lastRow, 3,3));
-			}
-		}
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		workbook.write(baos);
-		workbook.close();
-		return baos.toByteArray();
-	}
-
-	private void addCell(int column, String value, Row row) {
-		Cell cell = row.createCell(column);
-		cell.setCellValue(value);
-	}
-
 
 	@PostMapping("/shipment")
 	ResponseEntity<?> post(@RequestBody(required = false) Shipment shipment) throws Exception {
