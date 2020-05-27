@@ -27,8 +27,7 @@
         <div>Stock</div><div class="mpb-head-line">Including Overstock</div>
       </template>
       <template v-slot:cell(name)="row">
-        <b-button variant="link" :id="'popover-name'+row.item.id" @click="getUnits(row.item.id)">{{row.item.number}}</b-button>
-        <div class="name-md" :title="row.item.name">({{row.item.name}})</div>
+        <div style="width:200px; overflow: wrap; font-size: 14px"><b-link role="button" :id="'popover-name'+row.item.id" @click="getUnits(row.item.id)">{{row.item.number}}</b-link> - {{row.item.name}}</div>
         <b-popover placement="bottomright" :target="'popover-name'+row.item.id" triggers="focus" variant="primary">
           <b-link role="button" style="font-weight: bold" @click="updateItem(row.item.id)">View Details</b-link>
           <div>Units Sold & Adj: <b-button size="sm" style="padding-bottom: 0px; padding-left:0px; padding-top: 0px" variant="link" @click="goToItemSaleList(row.item.id)">{{+itemDto.unitsSold + +itemDto.unitsAdjusted}}</b-button></div>
@@ -37,33 +36,12 @@
           <div>Units Returned: {{itemDto.unitsReturned}}</div>
         </b-popover>
       </template>
-      <!-- <template v-slot:cell(name)="row">
-        <b-link role="button" @click.stop="updateItem(row.item.id)">{{row.item.number}}</b-link>
-        <div class="name-md" :title="row.item.name">({{row.item.name}})</div>
-      </template> -->
-      <!-- <template v-slot:cell(unitsOnStock)="row">
-        <b-link role="button" style="color: #000000" :id="'popover-unitsOnStock'+row.item.id" @click="getUnits(row.item.id)">{{row.item.unitsOnStock}}</b-link>
-        <b-popover placement="bottomright" :target="'popover-unitsOnStock'+row.item.id" triggers="focus" variant="primary">
-          <div>Units Produced: <b-button size="sm" style="padding-bottom: 0px; padding-left:0px; padding-top: 0px" variant="link" @click="goToItemScheduleList(row.item.id)">{{itemDto.unitsProduced}}</b-button></div>
-          <div>Units Shipped: <b-button size="sm" style="padding-bottom: 0px; padding-left:0px; padding-top: 0px" variant="link" @click="goToItemShippedList(row.item.id)">{{itemDto.unitsShipped}}</b-button></div>
-          <div>Units Returned: {{itemDto.unitsReturned}}</div>
-        </b-popover>
-      </template> -->
       <template v-slot:cell(unitsOverstock)="row">
         <div>{{getUnitsOverstock(row.item)}}</div>
       </template>
       <template v-slot:cell(openSales)="row">
         <b-button size="sm" variant="link" @click="goToItemSaleList(row.item.id)">{{+row.item.unitsSold + +row.item.unitsAdjusted - +row.item.unitsShipped}}</b-button>
       </template>
-      <!-- <template v-slot:cell(unitsSold)="row">
-        <b-button size="sm" variant="link" @click.stop="goToItemSaleList(row.item.id)">{{row.item.unitsSold}}</b-button>
-      </template>
-      <template v-slot:cell(unitsScheduled)="row">
-        <b-button size="sm" variant="link" @click.stop="goToItemScheduleList(row.item.id)">{{row.item.unitsScheduled}} / {{row.item.unitsProduced}}</b-button>
-      </template>
-      <template v-slot:cell(unitsShipped)="row">
-        <b-button size="sm" variant="link" @click.stop="goToItemShippedList(row.item.id)">{{row.item.unitsShipped}}</b-button>
-      </template> -->
     </b-table>
     <div style="display: flex">
       <b-pagination size="sm" v-model="pageable.currentPage" :per-page="pageable.perPage" :total-rows="pageable.totalElements" @change="paginationChange"></b-pagination>
@@ -93,9 +71,6 @@ export default {
         { key: "unitsOnStock", sortable: false, label: "Stock" },
         { key: "unitsOverstock", sortable: false, label: "Overstock" },
         { key: "openSales", sortable: false, label: "Open Sales" },
-        // { key: "unitsSold", sortable: false, label: "Sold" },
-        // { key: "unitsScheduled", sortable: false, label: "Sched/Produced" },
-        // { key: "unitsShipped", sortable: false, label: "Shipped" },
         { key: "unitsReadyProd", sortable: false, label: "RFP" }
       ],
       items: [], //ItemListDto

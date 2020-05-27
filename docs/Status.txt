@@ -3,6 +3,7 @@ Purchase
 - Allow to upload file.
 - Add Pay Terms
 - Freight Terms (FOB).
+- Send pdf from mims.
 Component:
 Customer:
 - Address (add line for name).

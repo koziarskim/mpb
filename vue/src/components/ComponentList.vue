@@ -42,7 +42,7 @@
     </b-row>
     <b-table no-local-sorting @sort-changed="sorted" :items="components" :fields="fields">
       <template v-slot:cell(name)="row">
-        <div style="width:200px; overflow: wrap; font-size: 14px"><b-link role="button" :title="row.item.name" @click.stop="goToComponent(row.item.id)">{{row.item.number}}</b-link> - {{row.item.name}}</div>
+        <div style="width:200px; overflow: wrap; font-size: 14px"><b-link role="button" @click.stop="goToComponent(row.item.id)">{{row.item.number}}</b-link> - {{row.item.name}}</div>
       </template>
       <template v-slot:cell(unitsOnStock)="row">
         <span>{{getUnitsOnStock(row.item)}}</span>
