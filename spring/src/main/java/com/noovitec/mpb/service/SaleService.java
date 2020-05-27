@@ -21,6 +21,7 @@ public interface SaleService {
 	public void updateUnits(List<Long> salIds);
 	public void updateNumber();
 	public void mergeSales();
+	public Sale save(Sale sale);
 
 	@Transactional
 	@Service
@@ -33,6 +34,10 @@ public interface SaleService {
 
 		public SaleServiceImp(SaleRepo saleRepo) {
 			this.saleRepo = saleRepo;
+		}
+		
+		public Sale save(Sale sale) {
+			return saleRepo.save(sale);
 		}
 
 		public void updateUnitsByItem(List<Long> itemIds) {

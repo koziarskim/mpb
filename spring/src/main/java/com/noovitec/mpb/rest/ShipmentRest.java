@@ -46,9 +46,7 @@ import com.noovitec.mpb.entity.Sale;
 import com.noovitec.mpb.entity.Shipment;
 import com.noovitec.mpb.entity.ShipmentItem;
 import com.noovitec.mpb.repo.ShipmentRepo;
-import com.noovitec.mpb.service.AttachmentService;
 import com.noovitec.mpb.service.CrudService;
-import com.noovitec.mpb.service.CustomerService;
 import com.noovitec.mpb.service.ShipmentService;
 
 @RestController
@@ -60,11 +58,7 @@ class ShipmentRest {
 	@Autowired
 	private ShipmentRepo shipmentRepo;
 	@Autowired
-	private AttachmentService attachmentService;
-	@Autowired
 	private CrudService crudService;
-	@Autowired
-	private CustomerService customerService;
 	
 	public ShipmentRest(ShipmentService shipmentService) {
 		this.shipmentService = shipmentService;
@@ -190,6 +184,8 @@ class ShipmentRest {
 		for(ShipmentItem si: shipment.getShipmentItems()) {
 			si.getSaleItem().getItem().updateUnits();
 			si.getSaleItem().getSale().updateUnits();
+			crudService.save(si.getSaleItem().getSale());
+			crudService.save(si.getSaleItem().getItem());
 		}
 		return ResponseEntity.ok().body(shipment);
 	}
