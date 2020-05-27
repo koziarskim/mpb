@@ -19,11 +19,16 @@
         <b-col>
           <div style="text-align: right;">
           <b-button type="submit" variant="primary" size="sm" @click="goToSale('')">New S.O.</b-button>
-          <b-button size="sm" style="margin-left:3px" variant="primary" @click="exportSales()">Export ({{selectedSales.length}})</b-button>          
+          <b-button size="sm" style="margin-left:3px" variant="primary" @click="exportSelected()">Export ({{selectedSales.length}})</b-button>          
           </div>
         </b-col>
       </b-row>
       <b-table :items="sales" :fields="fields" no-local-sorting @sort-changed="sorted">
+        <template v-slot:head(action)="row">
+          <div style="display: flex; width: 20px; margin-left: -25px">
+            <b-button size="sm" @click="triggerAll(false)" variant="link">(-)</b-button><b-button size="sm" @click="triggerAll(true)" variant="link">(+)</b-button>
+          </div>
+        </template>
         <template v-slot:cell(number)="row">
             <b-button variant="link" :id="'popover-button-variant'+row.item.id" @click="showPopover(row.item)">{{row.item.number}}</b-button>
             <b-popover placement="bottomright" :target="'popover-button-variant'+row.item.id" triggers="focus" variant="primary">
@@ -52,9 +57,6 @@
         </template>
         <template v-slot:cell(action)="row">
           <input type="checkbox" v-model="selectedSales" :value="row.item">
-        </template>
-        <template v-slot:head(action)="row">
-            <b-button style="margin-left:-10px; margin-bottom:-10px" size="sm" @click="triggerAll(false)" variant="link">(-)</b-button><br/><b-button style="margin-left: -10px; margin-bottom: -10px" size="sm" @click="triggerAll(true)" variant="link">(+)</b-button>
         </template>
       </b-table>
       <div style="display: flex">
@@ -135,7 +137,7 @@ export default {
         }
       })
     },
-    exportSales(){
+    exportSelected(){
       var saleIds = [];
       this.selectedSales.forEach(sale=> {
         saleIds.push(sale.id);

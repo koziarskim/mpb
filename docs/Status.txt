@@ -10,6 +10,7 @@ Customer:
 Sale:
 - Remove item, removes first item always.
 - Transfer to (show sales with 0 stock).
+- Search by shipment #
 Return:
 - Validate that it cannot return more that shipped.
 Receiving:

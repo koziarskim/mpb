@@ -39,12 +39,18 @@
             <b-select option-value="id" option-text="name" :list="availableStatuses" v-model="status" placeholder="Search Status"></b-select>
           </b-col>
           <b-col>
-              <div style="text-align: right;">
+            <div style="text-align: right; margin-left: -10px">
               <b-button size="sm" type="submit" variant="primary" @click="goToShipment('new')">New</b-button>
-              </div>
+              <b-button size="sm" style="margin-left:3px" variant="primary" @click="exportSelected()">Export ({{selectedShipments.length}})</b-button>          
+            </div>
           </b-col>
       </b-row>
       <b-table :items="shipments" :fields="fields">
+        <template v-slot:head(action)="row">
+          <div style="display: flex; width: 20px; margin-left: -25px">
+            <b-button size="sm" @click="triggerAll(false)" variant="link">(-)</b-button><b-button size="sm" @click="triggerAll(true)" variant="link">(+)</b-button>
+          </div>
+        </template>
         <template v-slot:cell(number)="row">
             <b-link role="button" :id="'popover-'+row.item.id" @click="getShipmentItems(row.item)">{{row.item.number}}</b-link>
             <b-popover placement="bottomright" :target="'popover-'+row.item.id" triggers="focus" variant="primary">
@@ -67,6 +73,9 @@
         </template>
         <template v-slot:cell(status)="row">
             <b :class="getStatusClass(row.item)">{{getStatus(row.item)}}</b>
+        </template>
+        <template v-slot:cell(action)="row">
+          <input type="checkbox" v-model="selectedShipments" :value="row.item">
         </template>
       </b-table>
       <div style="display: flex">
@@ -112,6 +121,7 @@ export default {
       ],
       status: {},
       showFilterMenu: false,
+      selectedShipments: [],
     };
   },
   watch: {
@@ -129,6 +139,34 @@ export default {
     }
   },
   methods: {
+    exportSelected(){
+      var selectedIds = [];
+      this.selectedShipments.forEach(ship=> {
+        selectedIds.push(ship.id);
+      })
+      http.put("/shipment/xls", selectedIds, { responseType: 'blob'}).then(r => {
+        const url = URL.createObjectURL(new Blob([r.data], { type: r.headers['content-type']}))
+        const link = document.createElement('a')
+        link.href = url
+        link.setAttribute("download", r.headers['file-name'])
+        document.body.appendChild(link)
+        link.click()
+      }).catch(e => {
+        console.log("API error: "+e);
+      });
+    },    
+    triggerAll(add){
+      this.shipments.forEach(ship => {
+        if(add){
+          var idx = this.selectedShipments.findIndex(s => s.id == ship.id);
+          if(idx == -1){
+            this.selectedShipments.push(ship);
+          }
+        }else{
+          this.selectedShipments = [];
+        }
+      })
+    },
     getStatusClass(shipItem){
       if(shipItem.status == "REA") { return "status-blue" }
       if(shipItem.status == "SHP") { return "status-green" }
