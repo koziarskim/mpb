@@ -2,12 +2,12 @@ package com.noovitec.mpb.service;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.transaction.Transactional;
 
@@ -15,7 +15,6 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
@@ -92,7 +91,18 @@ public interface ShipmentService {
 		}
 		
 		public byte[] generateXls(List<Long> shipmentIds) throws IOException {
-			DateTimeFormatter windowFormat = DateTimeFormatter.ofPattern("MM/dd");
+			DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MM/dd/YYYY");
+			Map<String, String> ft = new HashMap<String, String>();
+			ft.put("TPB", "TP Bill");
+			ft.put("PRP", "Pre Paid");
+			ft.put("TPO", "TP Bill Other");
+			ft.put("COL","Collect");
+			ft.put("CPU", "Customer Pickup");
+			ft.put("DEL", "Delivered");
+			Map<String, String> stats = new HashMap<String, String>();
+			stats.put("INP", "Progress");
+			stats.put("REA", "Ready");
+			stats.put("SHP", "Shipped");
 			List<Shipment> shipments = shipmentRepo.findAllById(shipmentIds);
 			XSSFWorkbook workbook = new XSSFWorkbook();
 			Sheet sheet = workbook.createSheet("Shipment");
@@ -103,19 +113,20 @@ public interface ShipmentService {
 			headerFont.setFontName("Arial");
 			headerFont.setBold(true);
 			headerStyle.setFont(headerFont);
-			addCell(0, "Shipment #", rowHeader);
-			addCell(1, "Customer", rowHeader);
-			addCell(2, "Sale #", rowHeader);
-			addCell(3, "Item #", rowHeader);
-			addCell(4, "Item Name", rowHeader);
-			addCell(5, "Units", rowHeader);
-			addCell(6, "Cases", rowHeader);
-			addCell(7, "Pallets", rowHeader);
-			addCell(8, "Freight", rowHeader);
-			addCell(9, "Shipped Date", rowHeader);
-			addCell(10, "Load #", rowHeader);
-			addCell(11, "Shipment Address", rowHeader);
-			addCell(12, "Status", rowHeader);
+			addCell(0, "ED", rowHeader);
+			addCell(1, "Shipment #", rowHeader);
+			addCell(2, "Customer", rowHeader);
+			addCell(3, "Sale #", rowHeader);
+			addCell(4, "Item #", rowHeader);
+			addCell(5, "Item Name", rowHeader);
+			addCell(6, "Units", rowHeader);
+			addCell(7, "Cases", rowHeader);
+			addCell(8, "Pallets", rowHeader);
+			addCell(9, "Freight", rowHeader);
+			addCell(10, "Shipped Date", rowHeader);
+			addCell(11, "Load #", rowHeader);
+			addCell(12, "Shipment Address", rowHeader);
+			addCell(13, "Status", rowHeader);
 			
 			XSSFFont cellFont = ((XSSFWorkbook) workbook).createFont();
 			cellFont.setFontName("Arial");
@@ -128,42 +139,24 @@ public interface ShipmentService {
 					cellStyle.setFont(cellFont);
 					addCell(0, String.valueOf(count), row);
 					addCell(1, ship.getNumber(), row);
-					addCell(5, String.valueOf(si.getUnits()), row);
-					log.info("Shipment: "+ship.getNumber());
+					addCell(2, ship.getCustomer().getName(), row);
+					addCell(3, si.getSaleItem().getSale().getNumber(), row);
+					addCell(4, si.getSaleItem().getItem().getNumber(), row);
+					addCell(5, si.getSaleItem().getItem().getName(), row);
+					addCell(6, String.valueOf(si.getUnits()), row);
+					addCell(7, String.valueOf(si.getCases()), row);
+					addCell(8, String.valueOf(si.getPallets()), row);
+					addCell(9, ft.get(ship.getFreightTerms()), row);
+					addCell(10, ship.getShippedDate().format(dateFormat), row);
+					addCell(11, ship.getLoadNumber(), row);
+					Address address = ship.getShippingAddress();
+					String addressLabel = "";
+					if(ship.getShippingAddress()!=null) {
+						addressLabel = address.getDc()+", "+address.getStreet()+", "+address.getCity()+", "+address.getState()+", "+address.getZip();
+					}
+					addCell(12, addressLabel, row);
+					addCell(13, stats.get(ship.getStatus()), row);
 					count++;
-//					Address address = ship.getShippingAddress();
-//					String addressLabel = "";
-//					if(ship.getShippingAddress()!=null) {
-//						addressLabel = address.getDc()+", "+address.getStreet()+", "+address.getCity()+", "+address.getState()+", "+address.getZip();
-//					}
-//					addCell(2, addressLabel, row);
-//					String windowDate = "";
-//					if(ship.getShippingFrom()!=null) {
-//						windowDate += ship.getShippingFrom().format(windowFormat)+"-";
-//					}
-//					if(ship.getShippingTo()!=null) {
-//						windowDate += ship.getShippingTo().format(windowFormat);
-//					}
-//					addCell(3, windowDate, row);
-//					addCell(3, ship.getDate().format(windowFormat), row);
-//					addCell(4, si.getSku(), row);
-//					addCell(5, si.getItem().getNumber(), row);
-//					addCell(6, si.getItem().getName(), row);
-//					addCell(7, String.valueOf(si.getItem().getCasePack()), row);
-//					addCell(8, String.valueOf(si.getUnits()), row);
-//					addCell(9, String.valueOf(si.getTotalUnitPrice()), row);
-//					int cases = BigDecimal.valueOf(si.getUnits()).divide(BigDecimal.valueOf(si.getItem().getCasePack()),RoundingMode.CEILING).intValue();
-//					cases = cases==0?1:cases;
-//					int pallets = (si.getItem().getTi()*si.getItem().getHi())/cases;
-//					pallets = pallets==0?1:pallets;
-//					BigDecimal unitsWeight = si.getItem().getWeight().multiply(BigDecimal.valueOf(si.getUnits()));
-//					BigDecimal palletsWeight = si.getItem().getPalletWeight().multiply(BigDecimal.valueOf(pallets));
-//					int totalWeight = unitsWeight.add(palletsWeight).intValue();
-//					addCell(10, String.valueOf(cases), row);
-//					addCell(11, String.valueOf(pallets), row);
-//					addCell(12, String.valueOf(totalWeight), row);
-//					addCell(13, String.valueOf(totalPallets), row);
-//					count++;
 				}
 			}
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();

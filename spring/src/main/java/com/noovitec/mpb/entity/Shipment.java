@@ -29,6 +29,7 @@ import lombok.NoArgsConstructor;
 @Entity
 public class Shipment extends BaseEntity {
 
+	private static final long serialVersionUID = -8138964487526041657L;
 	private String number;
 	private LocalDate shippingDate;
 	private LocalDate shippedDate;

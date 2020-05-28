@@ -236,6 +236,7 @@ class ShipmentRest {
 		ft.put("TPO", "TP Bill Other");
 		ft.put("COL","Collect");
 		ft.put("CPU", "Customer Pickup");
+		ft.put("DEL", "Delivered");
 		String itemQuantity = "";
 		String saleNumber = "";
 		String itemDescription = "";
