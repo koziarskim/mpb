@@ -93,9 +93,10 @@ class ShipmentRest {
 			@RequestParam(required = false) Long saleId,
 			@RequestParam(required = false) Long itemId, 
 			@RequestParam(required = false) String status,
+			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate updated,
 			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate shipFrom,
 			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate shipTo) {
-		Page<Shipment> shipments = shipmentRepo.findIds(pageable, number, customerId, saleId, itemId, status, shipFrom, shipTo);
+		Page<Shipment> shipments = shipmentRepo.findIds(pageable, number, customerId, saleId, itemId, status, updated, shipFrom, shipTo);
 		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		DateTimeFormatter windowFormat = DateTimeFormatter.ofPattern("MM/dd");
 		Page<ShipmentDto> all = shipments.map(ship -> {

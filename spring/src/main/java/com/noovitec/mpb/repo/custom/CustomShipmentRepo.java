@@ -1,7 +1,7 @@
 package com.noovitec.mpb.repo.custom;
 
 import java.time.LocalDate;
-import java.util.Iterator;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -13,13 +13,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Repository;
 
 import com.noovitec.mpb.entity.Shipment;
 
 public interface CustomShipmentRepo {
-	Page<Shipment> findIds(Pageable pageable, String number, Long customerId, Long saleId, Long itemId, String status, LocalDate shipFrom, LocalDate shipTo);
+	Page<Shipment> findIds(Pageable pageable, String number, Long customerId, Long saleId, Long itemId, String status, LocalDate updated, LocalDate shipFrom, LocalDate shipTo);
 	public Shipment getFirstBySale(Long saleId);
 	public Shipment getLastBySale(Long saleId);
 	public Shipment getFirstByCustomer(Long customerId);
@@ -34,7 +33,7 @@ public interface CustomShipmentRepo {
 		EntityManager entityManager;
 
 		@Override
-		public Page<Shipment> findIds(Pageable pageable, String number, Long customerId, Long saleId, Long itemId, String status, LocalDate shipFrom, LocalDate shipTo) {
+		public Page<Shipment> findIds(Pageable pageable, String number, Long customerId, Long saleId, Long itemId, String status, LocalDate updated, LocalDate shipFrom, LocalDate shipTo) {
 			String q = "select distinct ship from Shipment ship " 
 					+ "left join ship.shipmentItems shipItem " 
 					+ "left join shipItem.saleItem si "
@@ -56,6 +55,9 @@ public interface CustomShipmentRepo {
 			}
 			if (status != null) {
 				q += "and ship.status = :status ";
+			}
+			if(updated != null) {
+				q += "and (ship.updated > :updatedStart and ship.updated < :updatedEnd) ";
 			}
 			if(shipFrom != null) {
 				q += "and ship.shippedDate >= :shipFrom ";
@@ -79,6 +81,10 @@ public interface CustomShipmentRepo {
 			}
 			if (status != null) {
 				query.setParameter("status", status);
+			}
+			if(updated !=null) {
+				query.setParameter("updatedStart",updated.atStartOfDay());
+				query.setParameter("updatedEnd",updated.atStartOfDay().plusDays(1));
 			}
 			if(shipFrom !=null) {
 				query.setParameter("shipFrom", shipFrom);

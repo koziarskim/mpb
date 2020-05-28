@@ -12,6 +12,12 @@
               <div style="width: 400px">
                 <b-row>
                   <b-col cols=6>
+                    <label class="top-label">Created/Modified On:</label>
+                    <input class="form-control" type="date" v-model="filter.updated">                    
+                  </b-col>
+                </b-row>
+                <b-row>
+                  <b-col cols=6>
                     <label class="top-label">Ship From:</label>
                     <input class="form-control" type="date" v-model="filter.shipFrom">
                   </b-col>
@@ -103,6 +109,7 @@ export default {
         { key: "action", label: "", sortable: false }
       ],
       filter: {
+        updated: null,
         shipFrom: null,
         shipTo: null,
       },
@@ -184,6 +191,7 @@ export default {
       this.showFilterMenu = false;
     },
     clearFilterMenu(){
+      this.filter.updated = null;
       this.filter.shipFrom = null;
       this.filter.shipTo = null;
       this.getShipments();
@@ -209,7 +217,7 @@ export default {
     getShipments() {
       http.get("/shipment/pageable", {params: {pageable: this.pageable, 
           number: this.number, customerId: this.customer.id, saleId: this.sale.id, itemId: this.item.id, 
-          status: this.status.id, shipFrom: this.filter.shipFrom, shipTo: this.filter.shipTo}}).then(r => {
+          status: this.status.id, updated: this.filter.updated, shipFrom: this.filter.shipFrom, shipTo: this.filter.shipTo}}).then(r => {
         r.data.content.forEach(ship => {
           ship.shipmentItems = []
         })
