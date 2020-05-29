@@ -1,20 +1,37 @@
 <template>
   <b-container fluid>
-    <b-row style="padding-bottom: 4px;">
-      <b-col cols="2">
-        <span style="text-align: left; font-size: 18px; font-weight: bold">Receivings</span>
+    <b-row style="padding-bottom: 4px; font-size: 12px">
+      <b-col cols=1 style="margin-right: -45px;">
+        <b-button id="filterMenu" size="sm" @click="showFilterMenu = true">Filter</b-button>
+        <b-popover :show="showFilterMenu" placement="bottom" target="filterMenu" variant="secondary">
+          <template v-slot:title>
+            <span>Advanced Filters</span>
+            <b-button style="margin-left: 185px" size="sm" @click="searchFilterMenu()">Search</b-button>
+            <b-button style="margin-left: 10px" size="sm" @click="clearFilterMenu()">Clear</b-button>
+          </template>
+          <div style="width: 400px">
+            <b-row>
+              <b-col cols=6>
+              </b-col>
+            </b-row>
+          </div>
+        </b-popover>
+      </b-col>      
+      <b-col cols=2>
+        <b-select option-value="id" option-text="name" :list="availablePurchases" v-model="purchaseKv" placeholder="Purchase"></b-select>
       </b-col>
-      <b-col cols=3 style="margin-top: -12px">
-        <label class="top-label">Purchase:</label>
-        <b-select option-value="id" option-text="name" :list="availablePurchases" v-model="purchase"></b-select>
+      <b-col cols=3>
+        <b-select option-value="id" option-text="name" :list="availableComponents" v-model="componentKv" placeholder="Component"></b-select>
       </b-col>
-      <b-col cols=3 style="margin-top: -12px">
-        <label class="top-label">Component:</label>
-        <b-select option-value="id" option-text="name" :list="availableComponents" v-model="component"></b-select>
+      <b-col cols=2>
+        <b-select option-value="id" option-text="name" :list="availableSuppliers" v-model="supplierKv" placeholder="Supplier"></b-select>
       </b-col>
-      <b-col>
+      <b-col cols=2>
+        <input class="form-control" style="font-size: 12px" type="tel" v-model="searchInvoice" @keyup.enter="getPurchases()" placeholder="Inoice #"/>
+      </b-col>
+      <b-col cols=1 offset=1>
         <div style="text-align: right;">
-          <b-button type="submit" variant="primary" @click="goToReceiving('')">New Receiving</b-button>
+          <b-button size="sm" type="submit" variant="primary" @click="goToReceiving('')">New Rec</b-button>
         </div>
       </b-col>
     </b-row>
@@ -69,35 +86,42 @@ export default {
         { key: "action", label: "", sortable: false }
       ],
       availablePurchases: [],
-      purchase: {},
+      purchaseKv: {},
       availableComponents: [],
-      component: {},
+      componentKv: {},
+      availableSuppliers: [],
+      supplierKv: {},
+      searchInvoice: "",
       receivings: [],
+      showFilterMenu: false,
     };
   },
   computed: {},
   watch: {
-    purchase(new_value, old_value) {
-      if(new_value.id == old_value.id){
-        return;
-      }
-      this.getAvailableComponents().then(r => {
-        this.getReceivings(new_value.id, null);
-      });
+    purchaseKv(new_value, old_value) {
+      this.getReceivings();
     },
-    component(new_value, old_value) {
-      if(new_value.id == old_value.id){
-        return;
-      }
-      this.getAvailablePurchases().then(r => {
-        this.getReceivings(this.purchase.id, new_value.id);
-      })
+    componentKv(new_value, old_value) {
+      this.getReceivings();
     }
   },
   methods: {
+    searchFilterMenu(){
+      this.getReceivings();
+      this.showFilterMenu = false;
+    },
+    clearFilterMenu(){
+      this.getReceivings();
+      this.showFilterMenu = false;
+    },     
+    getAvailableSuppliers(){
+      http.get("/supplier/kv").then(response => {
+        this.availableSuppliers = response.data;
+      }).catch(e => {console.log("API error: " + e);});
+    },
     paginationChange(page){
       this.pageable.currentPage = page;
-      this.getReceivings(this.purchase.id, this.component.id);
+      this.getReceivings();
     },
     formatDate(date){
         return date
@@ -106,8 +130,8 @@ export default {
                 .format("YYYY-MM-DD")
             : "";
     },
-    getReceivings(purchase_id, component_id) {
-      http.get("/receiving/pageable", {params: {pageable: this.pageable, purchase_id: purchase_id, component_id: component_id}})
+    getReceivings() {
+      http.get("/receiving/pageable", {params: {pageable: this.pageable, purchase_id: this.purchaseKv.id, component_id: this.componentKv.id}})
         .then(r => {
           this.receivings = r.data.content;
           this.pageable.totalElements = r.data.totalElements;
@@ -116,25 +140,15 @@ export default {
           console.log("API error: " + e);
         });
     },
-    getAvailablePurchases(purchase_id) {
-      return http.get("/purchase/kv", {params: {component_id: this.component.id}}).then(response => {
+    getAvailablePurchases() {
+      return http.get("/purchase/kv").then(response => {
         this.availablePurchases = response.data;
-        if (purchase_id) {
-          this.purchase = {id: purchase_id}
-        }
-      }).catch(e => {
-        console.log("API error: " + e);
-      });
+      }).catch(e => {console.log("API error: " + e);});
     },
-    getAvailableComponents(component_id) {
-      return http.get("/component/kv", {params: {purchase_id: this.purchase.id}}).then(response => {
+    getAvailableComponents() {
+      return http.get("/component/kv").then(response => {
         this.availableComponents = response.data;
-        if (component_id) {
-          this.component = {id: component_id};
-        }
-      }).catch(e => {
-        console.log("API error: " + e);
-      });
+      }).catch(e => {console.log("API error: " + e);});
     },
     getPurchaseComponent(purchase_id, component_id) {
       return http.get("/purchaseComponent/purchase/"+purchase_id+"/component/"+component_id).then(r => {
@@ -145,11 +159,11 @@ export default {
     },
     goToReceiving(receiving_id) {
       if (!receiving_id) {
-        if(!this.purchase.id || !this.component.id){
+        if(!this.purchaseKv.id || !this.componentKv.id){
           alert("Please pick Purchase and Component first!")
           return Promise.resolve();
         }
-        this.getPurchaseComponent(this.purchase.id, this.component.id).then(pc => {
+        this.getPurchaseComponent(this.purchaseKv.id, this.componentKv.id).then(pc => {
           router.push("/receivingEdit/pc/" + pc.id);
         })
       } else {
@@ -176,11 +190,16 @@ export default {
   mounted() {
     var purchase_id = this.$route.query.purchase_id;
     var component_id = this.$route.query.component_id;
-    this.getAvailablePurchases(purchase_id).then(r => {
-      this.getAvailableComponents(component_id).then(r => {
-        this.getReceivings(purchase_id, component_id);
-      });
-    });
+    if(purchase_id){
+      this.purchaseKv = {id: purchase_id};
+    }
+    if(component_id){
+      this.componentKv = {id: component_id};
+    }
+    this.getAvailableSuppliers();
+    this.getAvailablePurchases();
+    this.getAvailableComponents();
+    this.getReceivings();
     window.history.replaceState({}, document.title, window.location.pathname);
   }
 };
