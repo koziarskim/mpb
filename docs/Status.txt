@@ -21,15 +21,14 @@ Accounting:
 - Send email to client (andy as cc: by default).
 - Total quantity
 - Total price
-- Search by invoice
-- Search by 
++ Search by invoice
++ Search by supplier.
 Item:
 - Show component picture when mouse over.
-- Expiration date on item
 Shipment:
 - List order by: Progress, Ready, Shipped (secondary sort earlied shipped to oldest shipped date).
 - Two and One week notification based on Window From (Routing)
-- Add to BOL "The goods were tendered to the carrier in a sorted and segregated manner"
++ Add to BOL "The goods were tendered to the carrier in a sorted and segregated manner"
 Schedule:
 - Email notification on create new delivery.
 - Delete confirmation
