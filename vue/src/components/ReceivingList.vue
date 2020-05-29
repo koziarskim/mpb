@@ -54,9 +54,6 @@
       <template v-slot:cell(receivedDate)="row">
         <span>{{formatDate(row.item.receivedDate)}}</span>
       </template>
-      <!-- <template v-slot:cell(action)="row">
-        <b-button size="sm" @click.stop="deleteReceiving(row.item.id)">x</b-button>
-      </template> -->
     </b-table>
     <b-pagination v-model="pageable.currentPage" :per-page="pageable.perPage" :total-rows="pageable.totalElements" @change="paginationChange"></b-pagination>
   </b-container>
@@ -175,16 +172,6 @@ export default {
     goToComponent(component_id) {
       router.push("/componentEdit/" + component_id);
     },
-    deleteReceiving(receiving_id) {
-      http
-        .delete("/receiving/" + receiving_id)
-        .then(response => {
-          this.getReceivings();
-        })
-        .catch(e => {
-          console.log("API Error: " + e);
-        });
-    }
   },
   mounted() {
     var purchase_id = this.$route.query.purchase_id;

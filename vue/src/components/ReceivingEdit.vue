@@ -9,7 +9,8 @@
       </b-col>
       <b-col cols="2" offset="4">
         <div style="text-align: right;">
-          <b-button type="reset" variant="success" @click="saveAndClose()">Save & Close</b-button>
+          <b-button size="sm" type="reset" variant="success" @click="saveAndClose()">Save & Close</b-button>
+          <b-button size="sm" style="width: 28px; margin-left: 3px" type="reset" variant="secondary" @click="deleteReceiving()">x</b-button>
         </div>
       </b-col>
     </b-row>
@@ -84,6 +85,11 @@ export default {
   watch: {
   },
   methods: {
+    deleteReceiving() {
+      http.delete("/receiving/" + this.receiving.id).then(response => {
+        router.push("/receivingList");
+      }).catch(e => {console.log("API Error: " + e);});
+    },
     getReceiving(receiving_id) {
       return http.get("/receiving/" + receiving_id).then(r => {
           this.receiving = r.data;
