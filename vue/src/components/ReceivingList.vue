@@ -27,7 +27,7 @@
         <b-select option-value="id" option-text="name" :list="availableSuppliers" v-model="supplierKv" placeholder="Supplier"></b-select>
       </b-col>
       <b-col cols=2>
-        <input class="form-control" style="font-size: 12px" type="tel" v-model="searchInvoice" @keyup.enter="getPurchases()" placeholder="Inoice #"/>
+        <input class="form-control" style="font-size: 12px" type="tel" v-model="invoiceNumber" @keyup.enter="getReceivings()" placeholder="Inoice #"/>
       </b-col>
       <b-col cols=1 offset=1>
         <div style="text-align: right;">
@@ -37,30 +37,26 @@
     </b-row>
     <b-table :items="receivings" :fields="fields" no-local-sorting>
       <template v-slot:cell(name)="row">
-        <b-button size="sm" @click.stop="goToReceiving(row.item.id)" variant="link">{{row.item.number}} ({{row.item.name}})</b-button>
+        <div style="width:200px; overflow: wrap; font-size: 14px">
+          <b-link role="button" @click.stop="goToReceiving(row.item.id)">{{row.item.number}}</b-link> {{row.item.name}}
+        </div>
       </template>
       <template v-slot:cell(purchase)="row">
-        <b-button
-          size="sm"
-          @click.stop="goToPurchase(row.item.purchaseComponent.purchase.id)"
-          variant="link"
-        >{{row.item.purchaseComponent?row.item.purchaseComponent.purchase.number:''}}</b-button>
+        <div style="width:200px; overflow: wrap; font-size: 14px">
+          <b-link role="button" @click.stop="goToPurchase(row.item.purchaseId)">{{row.item.purchaseNumber}}</b-link> {{row.item.purchaseName}}
+        </div>
       </template>
       <template v-slot:cell(component)="row">
-        <div style="width:200px; overflow: wrap; font-size: 14px"><b-link role="button" :title="row.item.name" @click.stop="goToComponent(row.item.purchaseComponent.component.id)">{{row.item.purchaseComponent.component.number}}</b-link> - {{row.item.purchaseComponent.component.name}}</div>
-      </template>
-      <template v-slot:cell(shippedDate)="row">
-        <span>{{formatDate(row.item.shippedDate)}}</span>
-      </template>
-      <template v-slot:cell(etaDate)="row">
-        <span>{{formatDate(row.item.etaDate)}}</span>
+        <div style="width:200px; overflow: wrap; font-size: 14px">
+          <b-link role="button" @click.stop="goToComponent(row.item.componentId)">{{row.item.componentNumber}}</b-link> {{row.item.componentName}}
+        </div>
       </template>
       <template v-slot:cell(receivedDate)="row">
         <span>{{formatDate(row.item.receivedDate)}}</span>
       </template>
-      <template v-slot:cell(action)="row">
+      <!-- <template v-slot:cell(action)="row">
         <b-button size="sm" @click.stop="deleteReceiving(row.item.id)">x</b-button>
-      </template>
+      </template> -->
     </b-table>
     <b-pagination v-model="pageable.currentPage" :per-page="pageable.perPage" :total-rows="pageable.totalElements" @change="paginationChange"></b-pagination>
   </b-container>
@@ -79,10 +75,10 @@ export default {
         { key: "name", label: "Receiving # (Name)", sortable: false },
         { key: "purchase", label: "Purchase", sortable: false },
         { key: "component", label: "Component", sortable: false },
+        { key: "supplierName", label: "Supplier", sortable: false },
         { key: "containerNumber", label: "Container", sortable: false },
-        { key: "shippingDate", label: "Shipped", sortable: false },
-        { key: "receivingDate", label: "Received", sortable: false },
-        { key: "units", label: "Units", sortable: false },
+        { key: "receivedDate", label: "Received", sortable: false },
+        { key: "unitsReceived", label: "Units", sortable: false },
         { key: "action", label: "", sortable: false }
       ],
       availablePurchases: [],
@@ -91,8 +87,8 @@ export default {
       componentKv: {},
       availableSuppliers: [],
       supplierKv: {},
-      searchInvoice: "",
-      receivings: [],
+      invoiceNumber: "",
+      receivings: [], //ReceivingListDto
       showFilterMenu: false,
     };
   },
@@ -102,6 +98,9 @@ export default {
       this.getReceivings();
     },
     componentKv(new_value, old_value) {
+      this.getReceivings();
+    },
+    supplierKv(new_value, old_value) {
       this.getReceivings();
     }
   },
@@ -124,14 +123,14 @@ export default {
       this.getReceivings();
     },
     formatDate(date){
-        return date
-            ? moment(date)
-                .utc()
-                .format("YYYY-MM-DD")
-            : "";
+        return date? moment(date).utc().format("MM/DD/YYYY"):"";
     },
     getReceivings() {
-      http.get("/receiving/pageable", {params: {pageable: this.pageable, purchase_id: this.purchaseKv.id, component_id: this.componentKv.id}})
+      http.get("/receiving/pageable", {params: {pageable: this.pageable, 
+        purchaseId: this.purchaseKv.id, 
+        componentId: this.componentKv.id,
+        supplierId: this.supplierKv.id,
+        invoiceNumber: this.invoiceNumber}})
         .then(r => {
           this.receivings = r.data.content;
           this.pageable.totalElements = r.data.totalElements;

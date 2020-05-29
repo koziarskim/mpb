@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.noovitec.mpb.dto.PurchaseListDto;
+import com.noovitec.mpb.dto.ReceivingListDto;
 import com.noovitec.mpb.entity.Purchase;
 import com.noovitec.mpb.entity.Receiving;
 import com.noovitec.mpb.repo.PurchaseRepo;
@@ -61,23 +63,31 @@ class ReceivingRest {
 	}
 
 	@GetMapping("/receiving/pageable")
-	Page<Receiving> getAllPageable(@RequestParam(name = "pageable", required = false) Pageable pageable, 
-			@RequestParam(name = "purchase_id", required = false) Long purchase_id,
-			@RequestParam(name = "component_id", required = false) Long component_id) {
-		Page<Receiving> receivings = null;
-		if(purchase_id != null && component_id !=null) {
-			receivings = receivingRepo.findByPurchaseAndComponent(pageable, purchase_id, component_id);
-		}else if(purchase_id != null && component_id == null) {
-			receivings = receivingRepo.findByPurchase(pageable, purchase_id);
-		}else if(purchase_id == null && component_id !=null) {
-			receivings = receivingRepo.findByComponent(pageable, component_id);
-		}else {
-			receivings = receivingRepo.findPage(pageable);
-		}
-		if(receivings == null) {
-			receivings = Page.empty();
-		}
-		return receivings;
+	Page<ReceivingListDto> getAllPageable(@RequestParam(required = false) Pageable pageable, 
+			@RequestParam(required = false) Long purchaseId,
+			@RequestParam(required = false) Long componentId,
+			@RequestParam(required = false) Long supplierId,
+			@RequestParam(required = false) String invoiceNumber) {
+		Page<Receiving> receivings = receivingRepo.findPagable(pageable, purchaseId, componentId, supplierId, invoiceNumber);
+		Page<ReceivingListDto> dtos = receivings.map(receiving -> {
+			ReceivingListDto dto = new ReceivingListDto();
+			dto.setId(receiving.getId());
+			dto.setNumber(receiving.getNumber());
+			dto.setName(receiving.getName());
+			dto.setPurchaseId(receiving.getPurchaseComponent().getPurchase().getId());
+			dto.setPurchaseNumber(receiving.getPurchaseComponent().getPurchase().getNumber());
+			dto.setPurchaseName(receiving.getPurchaseComponent().getPurchase().getName());
+			dto.setComponentId(receiving.getPurchaseComponent().getComponent().getId());
+			dto.setComponentNumber(receiving.getPurchaseComponent().getComponent().getNumber());
+			dto.setComponentName(receiving.getPurchaseComponent().getComponent().getName());
+			dto.setSupplierName(receiving.getPurchaseComponent().getPurchase().getSupplier().getName());
+			dto.setInvoiceNumber(receiving.getInvoiceNumber());
+			dto.setContainerNumber(receiving.getContainerNumber());
+			dto.setReceivedDate(receiving.getReceivingDate());
+			dto.setUnitsReceived(receiving.getUnits());
+			return dto;
+		});
+		return dtos;
 	}
 
 	@GetMapping("/receiving/{id}")
