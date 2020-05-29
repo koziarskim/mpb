@@ -48,7 +48,7 @@ public interface CustomReceivingRepo {
 				q += "and su.id = :supplierId ";
 			}
 			if (invoiceNumber !=null && !invoiceNumber.isBlank()) {
-				q += "and upper(r.invoiceNumber) like concat('%',upper(:invoiceNumber),'%') ";
+				q += "and upper(r.invoiceNumber) = upper(:invoiceNumber) ";
 			}
 			q += "order by r.updated desc";
 			Query query = entityManager.createQuery(q);

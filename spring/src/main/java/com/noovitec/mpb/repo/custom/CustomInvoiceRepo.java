@@ -38,7 +38,7 @@ public interface CustomInvoiceRepo {
 					+ "join ship.customer cu "
 					+ "where inv.id is not null ";
 			if (invoiceNumber != null && !invoiceNumber.isEmpty()) {
-				q += "and (upper(inv.number) like concat('%',upper(:invoiceNumber),'%')) ";
+				q += "and upper(inv.number) = upper(:invoiceNumber) ";
 			}
 			if (saleId != null) {
 				q += "and s.id = :saleId ";
