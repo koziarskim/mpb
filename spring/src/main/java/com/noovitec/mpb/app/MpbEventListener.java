@@ -76,6 +76,8 @@ public class MpbEventListener implements PostInsertEventListener, PostUpdateEven
 	    			.oldUnitsShipped(jmsUtil.getLong("unitsShipped", keys, null))
 	    			.unitsShipped(jmsUtil.getLong("unitsShipped", keys, state))
 	    			.unitsSold(jmsUtil.getLong("unitsSold", keys, state))
+	    			.oldStatus(jmsUtil.getString("status", keys, null))
+	    			.status(jmsUtil.getString("status", keys, state))
 	    			.type("saleUpdated")
 	    			.build();
 			MpbTenantContext.addMessage(message);
@@ -118,6 +120,8 @@ public class MpbEventListener implements PostInsertEventListener, PostUpdateEven
 	    			.oldUnitsShipped(jmsUtil.getLong("unitsShipped", keys, oldState))
 	    			.unitsShipped(jmsUtil.getLong("unitsShipped", keys, state))
 	    			.unitsSold(jmsUtil.getLong("unitsSold", keys, state))
+	    			.oldStatus(jmsUtil.getString("status", keys, oldState))
+	    			.status(jmsUtil.getString("status", keys, state))
 	    			.type("saleUpdated")
 	    			.build();
 	    	MpbTenantContext.addMessage(message);

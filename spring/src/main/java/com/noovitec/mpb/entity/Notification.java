@@ -21,6 +21,7 @@ public class Notification extends BaseEntity {
 		INVOICE_CREATED("mail/invoiceCreated.vm"), 
 		CUSTOMER_SHIPPED("mail/customerShipped.vm"),
 		SALE_READY("mail/saleReady.vm"),
+		PENDING_SHIPMENT("mail/pendingShipment.vm"),
 		CUSTOMER_CREATED("mail/customerCreated.vm"),
 		SCHEDULE_CREATED("mail/scheduleCreated.vm"),
 		COMPONENT_RECEIVED("mail/componentReceived.vm"),

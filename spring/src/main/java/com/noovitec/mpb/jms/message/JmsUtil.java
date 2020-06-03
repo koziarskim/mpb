@@ -38,4 +38,14 @@ public class JmsUtil {
 		value = obj==null?0:((long) obj);
 		return value;
 	}
+	
+	public String getString(String name, String[] keys, Object[] values) {
+		String value = "";
+		if(keys == null || values == null) {
+			return value;
+		}
+		Object obj = values[ArrayUtils.indexOf(keys, name)];
+		value = obj==null?"":((String) obj);
+		return value;
+	}
 }

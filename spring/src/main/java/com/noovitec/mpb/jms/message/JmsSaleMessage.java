@@ -19,5 +19,7 @@ public class JmsSaleMessage extends JmsMessage{
 	private long oldUnitsShipped;
 	private long unitsShipped;
 	private long unitsSold;
+	private String oldStatus;
+	private String status;
 
 }

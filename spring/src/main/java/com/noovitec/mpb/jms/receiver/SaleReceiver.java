@@ -43,6 +43,15 @@ public interface SaleReceiver {
 			List<String> emails = null;
 			Map<String, String> body = new HashMap<String, String>();
 			Sale sale = null;
+			if(!Sale.STATUS.PENDING_SHIPMENT.name().equalsIgnoreCase(message.getOldStatus())
+					&& Sale.STATUS.PENDING_SHIPMENT.name().equalsIgnoreCase(message.getStatus())){
+				if(sale == null) {
+					sale = saleRepo.getOne(message.getId());
+				}
+				emails = new ArrayList<>(Arrays.asList("kzygulska@marketplacebrands.com"));
+				body.put("saleNumber", sale.getNumber());
+				notificationService.sendMail(emails, body, Notification.TYPE.SALE_READY);
+			}
 			//Sale ready/pending approval
 			boolean oldPendingApproval = message.isOldPendingApproval();
 			boolean pendingApproval = message.isPendingApproval();
