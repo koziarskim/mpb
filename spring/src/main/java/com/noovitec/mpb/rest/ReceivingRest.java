@@ -3,7 +3,9 @@ package com.noovitec.mpb.rest;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -22,8 +24,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.noovitec.mpb.dto.PurchaseListDto;
 import com.noovitec.mpb.dto.ReceivingListDto;
+import com.noovitec.mpb.entity.Notification;
 import com.noovitec.mpb.entity.Purchase;
 import com.noovitec.mpb.entity.Receiving;
 import com.noovitec.mpb.repo.PurchaseRepo;
@@ -31,6 +33,7 @@ import com.noovitec.mpb.repo.ReceivingRepo;
 import com.noovitec.mpb.service.ComponentService;
 import com.noovitec.mpb.service.CrudService;
 import com.noovitec.mpb.service.ItemService;
+import com.noovitec.mpb.service.NotificationService;
 import com.noovitec.mpb.service.PurchaseService;
 import com.noovitec.mpb.service.ReceivingService;
 
@@ -52,6 +55,8 @@ class ReceivingRest {
 	private PurchaseService purchaseService;
 	@Autowired
 	private CrudService crudService;
+	@Autowired
+	private NotificationService notificationService;
 	
 	public ReceivingRest(ReceivingRepo receivingRepo) {
 		this.receivingRepo = receivingRepo;
@@ -109,6 +114,14 @@ class ReceivingRest {
 
 	@PostMapping("/receiving")
 	ResponseEntity<?> post(@RequestBody Receiving receiving) {
+		if(receiving.getId()==null && receiving.getPurchaseComponent().getComponent().getCategory().getName().equalsIgnoreCase("Food")) {
+			List<String> emails = new ArrayList<String>();
+			emails.add("hpyzikiewicz@marketplacebrands.com");
+			Map<String, String> model = new HashMap<String, String>();
+			String componentNumber = receiving.getPurchaseComponent().getComponent().getNumber() + " "+receiving.getPurchaseComponent().getComponent().getName();
+			model.put("componentNumber", componentNumber);
+			notificationService.sendMail(emails, model, Notification.TYPE.COMPONENT_RECEIVED);
+		}
 		receiving = this.receive(receiving);
 		return ResponseEntity.ok().body(receiving);
 	}

@@ -45,7 +45,7 @@ Global:
 
 Notifications:
 + New customer created: Kate & Vicky.
-- Schedule created (Include Item and Sale): Erica and Daniel.
++ Schedule created (Include Item and Sale): Erica and Daniel.
 - Component of category Food was received: Hanna
 - Production complited (each item on sale): Kate
 - Sale status = pending shipment: Kate
