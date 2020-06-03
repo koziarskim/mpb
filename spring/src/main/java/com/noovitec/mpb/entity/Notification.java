@@ -14,12 +14,14 @@ import lombok.NoArgsConstructor;
 @Entity
 public class Notification extends BaseEntity {
 	
+	private static final long serialVersionUID = -7247964667375378237L;
 	public static enum TYPE {
 		SHIPPING_READY("mail/shipmentReady.vm"), 
 		SHIPPING_SHIPPED("mail/shipmentShipped.vm"), 
 		INVOICE_CREATED("mail/invoiceCreated.vm"), 
 		CUSTOMER_SHIPPED("mail/customerShipped.vm"),
-		SALE_READY("mail/saleReady.vm");;
+		SALE_READY("mail/saleReady.vm"),
+		CUSTOMER_CREATED("mail/customerCreated.vm");
 		private String template;
 		public String template() { 
 	        return this.template; 

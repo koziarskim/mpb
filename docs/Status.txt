@@ -44,8 +44,7 @@ Global:
 - Lock all PDFs. Option to lock.
 
 Notifications:
-- New customer created: Kate & Vicky.
-- RFP. This will be sent when Michal finishes receiving for the last component and all components are in stock for production. Include a link that will take Hanna to the ITEM screen.
++ New customer created: Kate & Vicky.
 - Schedule created (Include Item and Sale): Erica and Daniel.
 - Component of category Food was received: Hanna
 - Production complited (each item on sale): Kate

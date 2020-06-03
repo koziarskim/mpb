@@ -1,11 +1,16 @@
 package com.noovitec.mpb.rest;
 
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -22,7 +27,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.noovitec.mpb.dto.CustomerDto;
 import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.entity.Customer;
+import com.noovitec.mpb.entity.Notification;
 import com.noovitec.mpb.repo.CustomerRepo;
+import com.noovitec.mpb.service.NotificationService;
 
 
 @RestController
@@ -31,6 +38,8 @@ class CustomerRest {
 
 	private final Logger log = LoggerFactory.getLogger(CustomerRest.class);
 	private CustomerRepo customerRepo;
+	@Autowired
+	private NotificationService notificationService;
 
 	public CustomerRest(CustomerRepo customerRepo) {
 		this.customerRepo = customerRepo;
@@ -87,9 +96,14 @@ class CustomerRest {
 		if (customer == null) {
 			customer = new Customer();
 		}
-//		if(customer.getInvoiceType()==null) {
-//			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Invoice Type is required");
-//		}
+		if(customer.getId()==null) {
+			List<String> emails = new ArrayList<String>();
+			emails.add("kzygulska@marketplacebrands.com");
+			emails.add("vtomasik@marketplacebrands.com");
+			Map<String, String> model = new HashMap<String, String>();
+			model.put("customerName", customer.getName());
+			notificationService.sendMail(emails, model, Notification.TYPE.CUSTOMER_CREATED);
+		}
 		Customer result = customerRepo.save(customer);
 		result.setAccount(result.getId().toString());
 		result = customerRepo.save(customer);
