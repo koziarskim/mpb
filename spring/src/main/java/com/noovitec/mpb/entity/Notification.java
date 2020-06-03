@@ -21,7 +21,8 @@ public class Notification extends BaseEntity {
 		INVOICE_CREATED("mail/invoiceCreated.vm"), 
 		CUSTOMER_SHIPPED("mail/customerShipped.vm"),
 		SALE_READY("mail/saleReady.vm"),
-		CUSTOMER_CREATED("mail/customerCreated.vm");
+		CUSTOMER_CREATED("mail/customerCreated.vm"),
+		SCHEDULE_CREATED("mail/scheduleCreated.vm");
 		private String template;
 		public String template() { 
 	        return this.template; 

@@ -1,9 +1,12 @@
 package com.noovitec.mpb.rest;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -21,11 +24,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.noovitec.mpb.entity.Notification;
 import com.noovitec.mpb.entity.Production;
 import com.noovitec.mpb.entity.ScheduleEvent;
 import com.noovitec.mpb.repo.ScheduleEventRepo;
 import com.noovitec.mpb.service.ComponentService;
 import com.noovitec.mpb.service.ItemService;
+import com.noovitec.mpb.service.NotificationService;
 import com.noovitec.mpb.service.SaleService;
 import com.noovitec.mpb.service.ScheduleEventService;
 
@@ -43,6 +48,8 @@ class ScheduleEventRest {
 	private SaleService saleService;
 	@Autowired
 	private ScheduleEventService scheduleEventService;
+	@Autowired
+	private NotificationService notificationService;
 
 	public ScheduleEventRest(ScheduleEventRepo scheduleEventRepo) {
 		this.scheduleEventRepo = scheduleEventRepo;
@@ -75,6 +82,17 @@ class ScheduleEventRest {
 
 	@PostMapping("/scheduleEvent")
 	ResponseEntity<ScheduleEvent> post(@RequestBody ScheduleEvent scheduleEvent) {
+		if(scheduleEvent.getId()==null) {
+			List<String> emails = new ArrayList<String>();
+			emails.add("dramirez@marketplacebrands.com");
+			emails.add("evazquez@marketplacebrands.com");
+			Map<String, String> model = new HashMap<String, String>();
+			String itemNumber = scheduleEvent.getSaleItem().getItem().getNumber() + " " + scheduleEvent.getSaleItem().getItem().getName();
+			String saleNumber = scheduleEvent.getSaleItem().getSale().getNumber();
+			model.put("itemNumber", itemNumber);
+			model.put("saleNumber", saleNumber);
+			notificationService.sendMail(emails, model, Notification.TYPE.CUSTOMER_CREATED);
+		}
 		for (Production production : scheduleEvent.getProductions()) {
 			production.setScheduleEvent(scheduleEvent);
 			Long unitsDiff = production.getUnitsProduced() - production.getPreUnitsProduced();
