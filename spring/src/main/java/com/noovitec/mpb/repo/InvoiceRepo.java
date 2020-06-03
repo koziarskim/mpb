@@ -2,6 +2,7 @@ package com.noovitec.mpb.repo;
 
 import java.util.List;
 
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
@@ -18,5 +19,5 @@ public interface InvoiceRepo extends PagingAndSortingRepository<Invoice, Long>, 
 			+ "join ship.customer cu "
 			+ "where cu.id = :customerId")
 	Invoice getIdByCustomer(Long customerId);
-
+	
 }

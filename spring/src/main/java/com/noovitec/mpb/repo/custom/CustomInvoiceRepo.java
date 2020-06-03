@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Order;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Repository;
 
 import com.noovitec.mpb.entity.Invoice;
@@ -19,6 +20,7 @@ import com.noovitec.mpb.entity.Invoice;
 public interface CustomInvoiceRepo {
 	public Page<Invoice> findPagable(Pageable pageable, String invoiceNumer, Long saleId, Long customerId, Long shipmentId);
 	public boolean findBySale(Long saleId);
+	public void deleteByShipment(Long shipmentId);
 	
 	@Repository
 	public class CustomInvoiceRepoImpl implements CustomInvoiceRepo {
@@ -85,6 +87,26 @@ public interface CustomInvoiceRepo {
 				return true;
 			}
 			return false;
+		}
+		
+		public void deleteByShipment(Long shipmentId) {
+			String q = "select inv from Invoice inv "
+					+ "join inv.shipment ship "
+					+ "where ship.id = :shipmentId";
+			Query query = entityManager.createQuery(q);
+			query.setParameter("shipmentId", shipmentId);
+			List<Invoice> invoices = query.getResultList();
+			for(Invoice invoice: invoices) {
+				String q2 = "delete from InvoiceItem ii where ii.invoice.id = :invoiceId";
+				Query query2 = entityManager.createQuery(q2);
+				query2.setParameter("invoiceId", invoice.getId());
+				query2.executeUpdate();
+				String q3 = "delete from Invoice inv where inv.id = :invoiceId";
+				Query query3 = entityManager.createQuery(q3);
+				query3.setParameter("invoiceId", invoice.getId());
+				query3.executeUpdate();
+				
+			}
 		}
 	}
 }
