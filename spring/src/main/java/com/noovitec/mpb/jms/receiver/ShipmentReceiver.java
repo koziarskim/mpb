@@ -51,7 +51,9 @@ public interface ShipmentReceiver {
 				//TODO: Shipment might not be created yet. Transaction was not completed
 				//Need to call this from API Interceptor or Transaction Complete Event.
 				shipment = shipmentRepo.findById(message.getId()).get();
-				emails = new ArrayList<>(Arrays.asList("shipping@marketplacebrands.com"));
+				emails = new ArrayList<String>();
+				emails.add("shipping@marketplacebrands.com");
+				emails.add("mramirez@marketplacebrands.com");
 				body.put("shipmentNumber", shipment.getNumber());
 				notificationService.sendMail(emails, body, Notification.TYPE.SHIPPING_READY);
 			}

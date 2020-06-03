@@ -48,8 +48,8 @@ Notifications:
 + Schedule created (Include Item and Sale): Erica and Daniel.
 + Component of category Food was received: Hanna
 + Production complited (each item on sale): Kate
-- Sale status = pending shipment: Kate
-- Shipment ready (Misael). Please include a link in the notification email that will take him to Bill of Lading pdf only. This notification should include details: Customer name, PO#, location, total pallet. 
++ Sale status = pending shipment: Kate
++ Shipment ready (Misael). Please include a link in the notification email that will take him to Bill of Lading pdf only. This notification should include details: Customer name, PO#, location, total pallet. 
 
 ------------------------------------------------------------------
 
