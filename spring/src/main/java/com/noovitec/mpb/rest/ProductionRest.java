@@ -3,7 +3,9 @@ package com.noovitec.mpb.rest;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -20,10 +22,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.noovitec.mpb.entity.ItemComponent;
+import com.noovitec.mpb.entity.Notification;
 import com.noovitec.mpb.entity.Production;
 import com.noovitec.mpb.repo.ProductionRepo;
 import com.noovitec.mpb.service.ComponentService;
 import com.noovitec.mpb.service.ItemService;
+import com.noovitec.mpb.service.NotificationService;
 import com.noovitec.mpb.service.ProductionService;
 import com.noovitec.mpb.service.SaleService;
 
@@ -41,6 +45,8 @@ class ProductionRest {
 	private SaleService saleService;
 	@Autowired
 	private ComponentService componentService;
+	@Autowired
+	private NotificationService notificationService;
 
 	ProductionRest(ProductionRepo productionRepo) {
 		this.productionRepo = productionRepo;
@@ -60,6 +66,16 @@ class ProductionRest {
 	@PostMapping("/production")
 	ResponseEntity<Production> post(@RequestBody Production production) {
 		Long unitsDiff = production.getUnitsProduced() - production.getPreUnitsProduced();
+		if(production.getFinishTime()!=null) {
+			List<String> emails = new ArrayList<String>();
+			emails.add("kzygulska@marketplacebrands.com");
+			Map<String, String> model = new HashMap<String, String>();
+			String itemNumber = production.getScheduleEvent().getSaleItem().getItem().getNumber()+" "+production.getScheduleEvent().getSaleItem().getItem().getName();
+			String saleNumber = production.getScheduleEvent().getSaleItem().getSale().getNumber();
+			model.put("itemNumber", itemNumber);
+			model.put("saleNumber", saleNumber);
+			notificationService.sendMail(emails, model, Notification.TYPE.COMPONENT_RECEIVED);
+		}
 		production = productionService.save(production);
 		componentService.updateUnitsOnStockByProduction(production.getId(), unitsDiff);
 		itemService.updateUnits(Arrays.asList(production.getScheduleEvent().getSaleItem().getItem().getId()));
