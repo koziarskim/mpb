@@ -50,7 +50,7 @@ public interface SaleReceiver {
 				}
 				emails = new ArrayList<>(Arrays.asList("kzygulska@marketplacebrands.com"));
 				body.put("saleNumber", sale.getNumber());
-				notificationService.sendMail(emails, body, Notification.TYPE.SALE_READY);
+				notificationService.sendMail(emails, body, Notification.TYPE.PENDING_SHIPMENT);
 			}
 			//Sale ready/pending approval
 			boolean oldPendingApproval = message.isOldPendingApproval();
