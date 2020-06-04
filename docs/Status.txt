@@ -12,27 +12,23 @@ Customer:
 - Address (add line for name).
 Sale:
 - Cancelled.
-- Remove item, removes first item always.
 - Transfer to (show sales with 0 stock).
 - Search by shipment #
 Return:
 - Validate that it cannot return more that shipped.
 Receiving:
-- Search by invoice
 Accounting:
 - Permissions
 - Send email to client (andy as cc: by default).
 - Total quantity
 - Total price
-+ Search by invoice
-+ Search by supplier.
 Item:
 - Show component picture when mouse over.
 Shipment:
 - Select ship to address based on first sale (if not selected yet).
 - Show DC in freight address list.
 - Shipment name.
-- Duplicated invoices.
++ Duplicated invoices.
 - List order by: Progress, Ready, Shipped (secondary sort earlied shipped to oldest shipped date).
 - Two and One week notification based on Window From (Routing)
 + Add to BOL "The goods were tendered to the carrier in a sorted and segregated manner"

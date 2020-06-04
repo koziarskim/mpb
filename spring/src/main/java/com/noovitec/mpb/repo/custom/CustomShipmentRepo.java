@@ -65,7 +65,7 @@ public interface CustomShipmentRepo {
 			if(shipTo !=null) {
 				q += "and ship.shippedDate <= :shipTo ";
 			}
-			q += "order by ship.status, ship.updated desc";
+			q += "order by ship.status asc, ship.shippedDate asc";
 			Query query = entityManager.createQuery(q);
 			if (number != null && !number.isEmpty()) {
 				query.setParameter("number", number);
