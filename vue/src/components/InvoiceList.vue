@@ -5,6 +5,9 @@
           <input class="form-control" style="font-size: 12px" type="tel" v-model="invoiceNumber" @keyup.enter="getInvoices()" placeholder="Invoice"/>
         </b-col>
         <b-col cols=2>
+          <b-select option-value="id" option-text="name" :list="availableItems" v-model="itemKv" placeholder="Item"></b-select>
+        </b-col>
+        <b-col cols=2>
           <b-select option-value="id" option-text="name" :list="availableSales" v-model="saleKv" placeholder="Sale"></b-select>
         </b-col>
         <b-col cols=2>
@@ -61,6 +64,8 @@ export default {
       customerKv: {},
       availableShipments: [],
       shipmentKv: {},
+      availableItems: [],
+      itemKv: {},
       invoiceNumber: "",
     };
   },
@@ -74,6 +79,9 @@ export default {
     shipmentKv(newValue, oldValue){
       this.getInvoices();
     },
+    itemKv(newValue, oldValue){
+      this.getInvoices();
+    },
   },
   methods: {
     paginationChange(page){
@@ -84,6 +92,7 @@ export default {
       var query = {params: {
         pageable: this.pageable,
         invoiceNumber: this.invoiceNumber,
+        itemId: this.itemKv.id,
         saleId: this.saleKv.id,
         customerId: this.customerKv.id,
         shipmentId: this.shipmentKv.id
@@ -97,6 +106,11 @@ export default {
     },
     goToInvoice(id){
       router.push('/invoiceEdit/'+(id?id:''));
+    },
+    getAvailableItems() {
+      http.get("/item/kv").then(r => {
+        this.availableItems = r.data;
+      }).catch(e => {console.log("API error: "+e);});
     },
     getAvailableSales() {
       http.get("/sale/kv").then(r => {
@@ -116,6 +130,7 @@ export default {
   },
   mounted() {
     this.getInvoices();
+    this.getAvailableItems();
     this.getAvailableSales();
     this.getAvailableCustomers();
     this.getAvailableShipments();

@@ -18,7 +18,7 @@ import org.springframework.stereotype.Repository;
 import com.noovitec.mpb.entity.Invoice;
 
 public interface CustomInvoiceRepo {
-	public Page<Invoice> findPagable(Pageable pageable, String invoiceNumer, Long saleId, Long customerId, Long shipmentId);
+	public Page<Invoice> findPagable(Pageable pageable, String invoiceNumer, Long itemId, Long saleId, Long customerId, Long shipmentId);
 	public boolean findBySale(Long saleId);
 	public void deleteByShipment(Long shipmentId);
 	
@@ -31,20 +31,25 @@ public interface CustomInvoiceRepo {
 		EntityManager entityManager;
 
 		@Override
-		public Page<Invoice> findPagable(Pageable pageable, String invoiceNumber, Long saleId, Long customerId, Long shipmentId) {
+		public Page<Invoice> findPagable(Pageable pageable, String invoiceNumber, Long itemId, Long saleId, Long customerId, Long shipmentId) {
 			String q = "select distinct inv from Invoice inv "
 					+ "join inv.shipment ship "
 					+ "join ship.shipmentItems shipItem "
 					+ "join shipItem.saleItem si "
 					+ "join si.sale s "
+					+ "join si.item i "
 					+ "join ship.customer cu "
 					+ "where inv.id is not null ";
 			if (invoiceNumber != null && !invoiceNumber.isEmpty()) {
 				q += "and upper(inv.number) = upper(:invoiceNumber) ";
 			}
+			if (itemId != null) {
+				q += "and i.id = :itemId ";
+			}			
 			if (saleId != null) {
 				q += "and s.id = :saleId ";
-			}			if (customerId != null) {
+			}			
+			if (customerId != null) {
 				q += "and cu.id = :customerId ";
 			}
 			if (shipmentId != null) {
@@ -58,6 +63,9 @@ public interface CustomInvoiceRepo {
 			}
 			if (customerId != null) {
 				query.setParameter("customerId", customerId);
+			}
+			if (itemId != null) {
+				query.setParameter("itemId", itemId);
 			}
 			if (saleId != null) {
 				query.setParameter("saleId", saleId);

@@ -67,10 +67,11 @@ class InvoiceRest {
 	@GetMapping("/invoice/pageable")
 	Page<InvoiceListDto> getAllPageable(@RequestParam(required = false) Pageable pageable,
 			@RequestParam(required=false) String invoiceNumber,
+			@RequestParam(required=false) Long itemId,
 			@RequestParam(required=false) Long saleId,
 			@RequestParam(required=false) Long customerId,
 			@RequestParam(required=false) Long shipmentId) {
-		Page<Invoice> invoices = invoiceRepo.findPagable(pageable, invoiceNumber, saleId, customerId, shipmentId);
+		Page<Invoice> invoices = invoiceRepo.findPagable(pageable, invoiceNumber, itemId, saleId, customerId, shipmentId);
 		Page<InvoiceListDto> dtos = invoices.map(invoice -> {
 			InvoiceListDto dto = new InvoiceListDto();
 			dto.setId(invoice.getId());
