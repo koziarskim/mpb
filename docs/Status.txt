@@ -17,11 +17,13 @@ Sale:
 Return:
 - Validate that it cannot return more that shipped.
 Receiving:
-Accounting:
+Invoices:
 - Permissions
 - Send email to client (andy as cc: by default).
 - Total quantity
 - Total price
++ Filter by Item
++ Filter by date
 Item:
 - Show component picture when mouse over.
 Shipment:
