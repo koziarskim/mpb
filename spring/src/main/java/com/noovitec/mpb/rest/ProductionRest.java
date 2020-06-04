@@ -26,6 +26,7 @@ import com.noovitec.mpb.entity.Notification;
 import com.noovitec.mpb.entity.Production;
 import com.noovitec.mpb.repo.ProductionRepo;
 import com.noovitec.mpb.service.ComponentService;
+import com.noovitec.mpb.service.CrudService;
 import com.noovitec.mpb.service.ItemService;
 import com.noovitec.mpb.service.NotificationService;
 import com.noovitec.mpb.service.ProductionService;
@@ -47,6 +48,8 @@ class ProductionRest {
 	private ComponentService componentService;
 	@Autowired
 	private NotificationService notificationService;
+	@Autowired
+	private CrudService crudService;
 
 	ProductionRest(ProductionRepo productionRepo) {
 		this.productionRepo = productionRepo;
@@ -66,6 +69,7 @@ class ProductionRest {
 	@PostMapping("/production")
 	ResponseEntity<Production> post(@RequestBody Production production) {
 		Long unitsDiff = production.getUnitsProduced() - production.getPreUnitsProduced();
+		production = (Production) crudService.merge(production);
 		if(production.getFinishTime()!=null) {
 			List<String> emails = new ArrayList<String>();
 			emails.add("kzygulska@marketplacebrands.com");
