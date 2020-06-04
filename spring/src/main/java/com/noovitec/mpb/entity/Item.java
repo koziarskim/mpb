@@ -180,7 +180,9 @@ public class Item extends BaseEntity {
 		for (SaleItem sa : this.getSaleItems()) {
 			sa.updateUnits();
 			this.unitsReturned += sa.getUnitsReturned();
-			this.unitsSold += sa.getUnits();
+			if(!sa.getSale().isCancelled()) {
+				this.unitsSold += sa.getUnits();
+			}
 			this.unitsScheduled += sa.getUnitsScheduled();
 			this.unitsProduced += sa.getUnitsProduced();
 			this.unitsShipped += sa.getUnitsShipped();

@@ -37,6 +37,7 @@
           <b-button v-if="!sale.approved && sale.pendingApproval" style="margin-left: 3px" size="sm" variant="success" @click="approveSale()">Approve</b-button>
           <b-button v-if="!sale.pendingApproval" style="margin-left: 3px" size="sm" variant="success" @click="readySale()">Ready</b-button>
           <b-button :title="getSaveTitle(sale)" style="margin-left: 3px" :disabled="!allowSave()" size="sm" variant="success" @click="saveSale()">Save</b-button>
+          <b-button style="margin-left: 3px" :disabled="!allowEdit()" size="sm" @click="cancelSale()">Cancel</b-button>
           <b-button style="margin-left: 3px" :disabled="!allowEdit()" size="sm" @click="deleteSale()">x</b-button>
         </div>
         <br/>
@@ -238,6 +239,7 @@ export default {
         {id: 'PENDING_PROD', name: 'Pending Prod'},
         {id: 'PENDING_SHIPMENT', name: 'Pending Shipment'},
         {id: 'SHIPPED', name: 'Fully Shipped'},
+        {id: 'CANCELLED', name: 'Cancelled'},
       ],
     };
   },
@@ -450,6 +452,10 @@ export default {
         return false;
       }
       return true;
+    },
+    cancelSale(){
+      this.sale.cancelled = !this.sale.cancelled;
+      this.saveSale();
     },
     deleteSale() {
       if(this.sale.saleItems.length > 0 ){

@@ -11,7 +11,7 @@ Schedule:
 Customer:
 - Address (add line for name).
 Sale:
-- Cancelled.
++ Cancelled.
 - Transfer to (show sales with 0 stock).
 - Search by shipment #
 Return:
@@ -29,12 +29,11 @@ Shipment:
 - Show DC in freight address list.
 - Shipment name.
 + Duplicated invoices.
-- List order by: Progress, Ready, Shipped (secondary sort earlied shipped to oldest shipped date).
++ List order by: Progress, Ready, Shipped (secondary sort earlied shipped to oldest shipped date).
 - Two and One week notification based on Window From (Routing)
 + Add to BOL "The goods were tendered to the carrier in a sorted and segregated manner"
 Schedule:
 - Email notification on create new delivery.
-- Delete confirmation
 Global:
 - Create document describing columns (Components, Items).
 - Lock all PDFs. Option to lock.
