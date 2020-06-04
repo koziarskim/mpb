@@ -1,6 +1,28 @@
 <template>
     <b-container fluid>
       <b-row style="font-size: 12px">
+        <b-col cols=1 style="margin-right: -45px;">
+          <b-button id="filterMenu" size="sm" @click="showFilterMenu = true">Filter</b-button>
+          <b-popover :show="showFilterMenu" placement="bottom" target="filterMenu" variant="secondary">
+            <template v-slot:title>
+              <span>Advanced Filters</span>
+              <b-button style="margin-left: 185px" size="sm" @click="searchFilterMenu()">Search</b-button>
+              <b-button style="margin-left: 10px" size="sm" @click="clearFilterMenu()">Clear</b-button>
+            </template>
+            <div style="width: 400px">
+                <b-row>
+                  <b-col cols=6>
+                    <label class="top-label">Ship From:</label>
+                    <input class="form-control" type="date" v-model="filter.invoiceFrom">
+                  </b-col>
+                  <b-col cols=6>
+                    <label class="top-label">Ship To:</label>
+                    <input class="form-control" type="date" v-model="filter.invoiceTo">
+                  </b-col>
+                </b-row>
+            </div>
+          </b-popover>
+        </b-col>      
         <b-col cols=2>
           <input class="form-control" style="font-size: 12px" type="tel" v-model="invoiceNumber" @keyup.enter="getInvoices()" placeholder="Invoice"/>
         </b-col>
@@ -16,11 +38,6 @@
         <b-col cols=2>
           <b-select option-value="id" option-text="name" :list="availableShipments" v-model="shipmentKv" placeholder="Shipment"></b-select>
         </b-col>
-        <!-- <b-col cols=1>
-          <div style="text-align: right;">
-          <b-button type="submit" variant="primary" size="sm" @click="goToInvoice()">New</b-button>
-          </div>
-        </b-col> -->
       </b-row>
       <b-table :items="invoices" :fields="fields" no-local-sorting>
         <template v-slot:cell(number)="row">
@@ -67,6 +84,11 @@ export default {
       availableItems: [],
       itemKv: {},
       invoiceNumber: "",
+      showFilterMenu: false,
+      filter: {
+        invoiceFrom: null,
+        invoiceTo: null,
+      },
     };
   },
   watch: {
@@ -84,6 +106,16 @@ export default {
     },
   },
   methods: {
+    searchFilterMenu(){
+      this.getInvoices();
+      this.showFilterMenu = false;
+    },
+    clearFilterMenu(){
+      this.filter.invoiceFrom = null;
+      this.filter.invoiceTo = null;
+      this.getInvoices();
+      this.showFilterMenu = false;
+    },      
     paginationChange(page){
         this.pageable.currentPage = page;
         this.getInvoices();
@@ -95,7 +127,9 @@ export default {
         itemId: this.itemKv.id,
         saleId: this.saleKv.id,
         customerId: this.customerKv.id,
-        shipmentId: this.shipmentKv.id
+        shipmentId: this.shipmentKv.id,
+        invoiceFrom: this.filter.invoiceFrom,
+        invoiceTo: this.filter.invoiceTo
       }}
       http.get("/invoice/pageable", query).then(r => {
         this.invoices = r.data.content;

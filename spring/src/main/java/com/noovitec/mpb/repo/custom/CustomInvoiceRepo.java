@@ -1,5 +1,6 @@
 package com.noovitec.mpb.repo.custom;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -18,7 +19,8 @@ import org.springframework.stereotype.Repository;
 import com.noovitec.mpb.entity.Invoice;
 
 public interface CustomInvoiceRepo {
-	public Page<Invoice> findPagable(Pageable pageable, String invoiceNumer, Long itemId, Long saleId, Long customerId, Long shipmentId);
+	public Page<Invoice> findPagable(Pageable pageable, String invoiceNumer, Long itemId, Long saleId, Long customerId, Long shipmentId,
+			LocalDate invoiceFrom, LocalDate invoiceTo);
 	public boolean findBySale(Long saleId);
 	public void deleteByShipment(Long shipmentId);
 	
@@ -31,7 +33,8 @@ public interface CustomInvoiceRepo {
 		EntityManager entityManager;
 
 		@Override
-		public Page<Invoice> findPagable(Pageable pageable, String invoiceNumber, Long itemId, Long saleId, Long customerId, Long shipmentId) {
+		public Page<Invoice> findPagable(Pageable pageable, String invoiceNumber, Long itemId, Long saleId, Long customerId, Long shipmentId,
+				LocalDate invoiceFrom, LocalDate invoiceTo) {
 			String q = "select distinct inv from Invoice inv "
 					+ "join inv.shipment ship "
 					+ "join ship.shipmentItems shipItem "
@@ -55,6 +58,12 @@ public interface CustomInvoiceRepo {
 			if (shipmentId != null) {
 				q += "and ship.id = :shipmentId ";
 			}
+			if(invoiceFrom != null) {
+				q += "and inv.date >= :invoiceFrom ";
+			}
+			if(invoiceTo !=null) {
+				q += "and inv.date <= :invoiceTo ";
+			}
 			Order order = pageable.getSort().iterator().next();
 			q += "order by inv."+order.getProperty() + " "+order.getDirection();
 			Query query = entityManager.createQuery(q);
@@ -72,6 +81,12 @@ public interface CustomInvoiceRepo {
 			}
 			if (shipmentId != null) {
 				query.setParameter("shipmentId", shipmentId);
+			}
+			if(invoiceFrom !=null) {
+				query.setParameter("invoiceFrom", invoiceFrom);
+			}
+			if(invoiceTo !=null) {
+				query.setParameter("invoiceTo", invoiceTo);
 			}
 			long total = query.getResultStream().count();
 			@SuppressWarnings("unchecked")
