@@ -69,17 +69,6 @@ class ProductionRest {
 	@PostMapping("/production")
 	ResponseEntity<Production> post(@RequestBody Production production) {
 		Long unitsDiff = production.getUnitsProduced() - production.getPreUnitsProduced();
-		production = (Production) crudService.merge(production);
-		if(production.getFinishTime()!=null) {
-			List<String> emails = new ArrayList<String>();
-			emails.add("kzygulska@marketplacebrands.com");
-			Map<String, String> model = new HashMap<String, String>();
-			String itemNumber = production.getScheduleEvent().getSaleItem().getItem().getNumber()+" "+production.getScheduleEvent().getSaleItem().getItem().getName();
-			String saleNumber = production.getScheduleEvent().getSaleItem().getSale().getNumber();
-			model.put("itemNumber", itemNumber);
-			model.put("saleNumber", saleNumber);
-			notificationService.sendMail(emails, model, Notification.TYPE.COMPONENT_RECEIVED);
-		}
 		production = productionService.save(production);
 		componentService.updateUnitsOnStockByProduction(production.getId(), unitsDiff);
 		itemService.updateUnits(Arrays.asList(production.getScheduleEvent().getSaleItem().getItem().getId()));

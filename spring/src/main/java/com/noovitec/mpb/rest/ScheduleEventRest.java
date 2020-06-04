@@ -91,7 +91,17 @@ class ScheduleEventRest {
 			String saleNumber = scheduleEvent.getSaleItem().getSale().getNumber();
 			model.put("itemNumber", itemNumber);
 			model.put("saleNumber", saleNumber);
-			notificationService.sendMail(emails, model, Notification.TYPE.CUSTOMER_CREATED);
+			notificationService.sendMail(emails, model, Notification.TYPE.SCHEDULE_CREATED);
+		}
+		if(scheduleEvent.getFinishTime()!=null) {
+			List<String> emails = new ArrayList<String>();
+			emails.add("kzygulska@marketplacebrands.com");
+			Map<String, String> model = new HashMap<String, String>();
+			String itemNumber = scheduleEvent.getSaleItem().getItem().getNumber()+" "+scheduleEvent.getSaleItem().getItem().getName();
+			String saleNumber = scheduleEvent.getSaleItem().getSale().getNumber();
+			model.put("itemNumber", itemNumber);
+			model.put("saleNumber", saleNumber);
+			notificationService.sendMail(emails, model, Notification.TYPE.PRODUCTION_COMPLETED);
 		}
 		for (Production production : scheduleEvent.getProductions()) {
 			production.setScheduleEvent(scheduleEvent);
