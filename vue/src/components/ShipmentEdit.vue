@@ -2,22 +2,22 @@
   <b-container fluid>
     <b-row>
       <b-col cols=2>
-          <label class="top-label">Shipment:</label>
+          <label class="top-label">Shipment #:</label>
           <input class="form-control" type="tel" v-model="shipment.number">
       </b-col>
+      <b-col cols=3>
+        <label class="top-label">Shipment Name:</label>
+        <input class="form-control" type="tel" v-model="shipment.name">
+      </b-col>      
       <b-col cols=2>
         <label class="top-label">Customer:</label>
         <b-select option-value="id" option-text="name" :list="availableCustomers" v-model="customer" placeholder="Select Customer"></b-select>
       </b-col>
-      <b-col cols=2>
-        <label class="top-label">Load Number:</label>
-        <input class="form-control" type="tel" v-model="shipment.loadNumber">
-      </b-col>      
-      <b-col cols=2>
+      <b-col cols=1>
         <label class="top-label">Est. Cost:</label>
         <input class="form-control" type="tel" v-model="shipment.estimatedCost">
       </b-col>
-      <b-col cols=2>
+      <b-col cols=1>
         <label class="top-label">Invoiced Cost:</label>
         <input class="form-control" type="tel" v-model="shipment.invoicedCost">
       </b-col>
@@ -38,14 +38,10 @@
         <label class="top-label">Freight Terms:</label>
         <b-select option-value="id" option-text="name" :list="availableFreightTerms" v-model="shipment.freightTerms" placeholder="Pick Freight"></b-select>
       </b-col>
-      <b-col cols=1>
-        <label class="top-label">NMFC:</label>
-        <input class="form-control" type="tel" v-model="shipment.freightNmfc">
-      </b-col>
-      <b-col cols=1>
-        <label class="top-label">Freight Class:</label>
-        <input class="form-control" type="tel" v-model="shipment.freightClass">
-      </b-col>
+      <b-col cols=2>
+        <label class="top-label">Load Number:</label>
+        <input class="form-control" type="tel" v-model="shipment.loadNumber">
+      </b-col>      
        <b-col cols=2>
         <label class="top-label">Via:</label>
         <input class="form-control" type="tel" v-model="shipment.via">
@@ -86,7 +82,13 @@
       </b-col>
     </b-row>
     <b-row>
-      <b-col cols=6>
+      <b-col cols=2>
+        <label class="top-label">NMFC:</label>
+        <input class="form-control" type="tel" v-model="shipment.freightNmfc">
+        <label class="top-label">Freight Class:</label>
+        <input class="form-control" type="tel" v-model="shipment.freightClass">
+      </b-col>
+      <b-col cols=4>
         <label class="top-label">Comments (Excluded from BOL):</label>
         <b-form-textarea type="text" :rows="4" v-model="shipment.comments"></b-form-textarea>
       </b-col>

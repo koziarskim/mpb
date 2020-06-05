@@ -58,7 +58,7 @@
           </div>
         </template>
         <template v-slot:cell(number)="row">
-            <b-link role="button" :id="'popover-'+row.item.id" @click="getShipmentItems(row.item)">{{row.item.number}}</b-link>
+          <div style="width:200px; overflow: wrap; font-size: 14px"><b-link role="button" :id="'popover-'+row.item.id" @click="getShipmentItems(row.item)">{{row.item.number}}</b-link> {{row.item.name}}</div>
             <b-popover placement="bottomright" :target="'popover-'+row.item.id" triggers="focus" variant="primary">
               <template v-slot:title>
                 <b-button size="sm" @click="goToShipment(row.item.id)" variant="link">View/Edit Details</b-button>

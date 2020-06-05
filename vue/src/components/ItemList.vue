@@ -27,8 +27,8 @@
         <div>Stock</div><div class="mpb-head-line">Including Overstock</div>
       </template>
       <template v-slot:cell(name)="row">
-        <div style="width:200px; overflow: wrap; font-size: 14px"><b-link role="button" :id="'popover-name'+row.item.id" @click="getUnits(row.item.id)">{{row.item.number}}</b-link> - {{row.item.name}}</div>
-        <b-popover placement="bottomright" :target="'popover-name'+row.item.id" triggers="focus" variant="primary">
+        <div style="width:200px; overflow: wrap; font-size: 14px"><b-link role="button" :id="'popover-'+row.item.id" @click="getUnits(row.item.id)">{{row.item.number}}</b-link> {{row.item.name}}</div>
+        <b-popover placement="bottomright" :target="'popover-'+row.item.id" triggers="focus" variant="primary">
           <b-link role="button" style="font-weight: bold" @click="updateItem(row.item.id)">View Details</b-link>
           <div>Units Sold & Adj: <b-button size="sm" style="padding-bottom: 0px; padding-left:0px; padding-top: 0px" variant="link" @click="goToItemSaleList(row.item.id)">{{+itemDto.unitsSold + +itemDto.unitsAdjusted}}</b-button></div>
           <div>Units Produced: <b-button size="sm" style="padding-bottom: 0px; padding-left:0px; padding-top: 0px" variant="link" @click="goToItemScheduleList(row.item.id)">{{itemDto.unitsProduced}}</b-button></div>

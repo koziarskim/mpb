@@ -9,9 +9,7 @@ Component:
 Schedule:
 - Show legend.
 Customer:
-- Address (add line for name).
 Sale:
-+ Cancelled.
 - Transfer to (show sales with 0 stock).
 - Search by shipment #
 Return:
@@ -22,31 +20,20 @@ Invoices:
 - Send email to client (andy as cc: by default).
 - Total quantity
 - Total price
-+ Filter by Item
-+ Filter by date
 Item:
 - Show component picture when mouse over.
+- Items ready for production and shippped.
+- Items not ready for production and shipped.
 Shipment:
 - Select ship to address based on first sale (if not selected yet).
 - Show DC in freight address list.
-- Shipment name.
-+ Duplicated invoices.
-+ List order by: Progress, Ready, Shipped (secondary sort earlied shipped to oldest shipped date).
++ Shipment name. KASKA!!!
 - Two and One week notification based on Window From (Routing)
-+ Add to BOL "The goods were tendered to the carrier in a sorted and segregated manner"
 Schedule:
 - Email notification on create new delivery.
 Global:
 - Create document describing columns (Components, Items).
 - Lock all PDFs. Option to lock.
-
-Notifications:
-+ New customer created: Kate & Vicky.
-+ Schedule created (Include Item and Sale): Erica and Daniel.
-+ Component of category Food was received: Hanna
-+ Production complited (each item on sale): Kate
-+ Sale status = pending shipment: Kate
-+ Shipment ready (Misael). Please include a link in the notification email that will take him to Bill of Lading pdf only. This notification should include details: Customer name, PO#, location, total pallet. 
 
 ------------------------------------------------------------------
 

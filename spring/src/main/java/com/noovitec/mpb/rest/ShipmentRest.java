@@ -104,6 +104,7 @@ class ShipmentRest {
 			dto.setId(ship.getId());
 			dto.setCustomerId(ship.getCustomer()==null?null:ship.getCustomer().getId());
 			dto.setNumber(ship.getNumber());
+			dto.setName(ship.getName());
 			dto.setShippingDate(ship.getShippingDate());
 			dto.setShippedDate(ship.getShippedDate());
 			dto.setModifiedDate(ship.getUpdated().format(dateFormat));
