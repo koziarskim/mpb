@@ -29,6 +29,7 @@ import com.noovitec.mpb.entity.Production;
 import com.noovitec.mpb.entity.ScheduleEvent;
 import com.noovitec.mpb.repo.ScheduleEventRepo;
 import com.noovitec.mpb.service.ComponentService;
+import com.noovitec.mpb.service.CrudService;
 import com.noovitec.mpb.service.ItemService;
 import com.noovitec.mpb.service.NotificationService;
 import com.noovitec.mpb.service.SaleService;
@@ -50,6 +51,8 @@ class ScheduleEventRest {
 	private ScheduleEventService scheduleEventService;
 	@Autowired
 	private NotificationService notificationService;
+	@Autowired
+	private CrudService crudService;
 
 	public ScheduleEventRest(ScheduleEventRepo scheduleEventRepo) {
 		this.scheduleEventRepo = scheduleEventRepo;
@@ -82,7 +85,9 @@ class ScheduleEventRest {
 
 	@PostMapping("/scheduleEvent")
 	ResponseEntity<ScheduleEvent> post(@RequestBody ScheduleEvent scheduleEvent) {
-		if(scheduleEvent.getId()==null) {
+		boolean isNew = scheduleEvent.getId()==null;
+		scheduleEvent = (ScheduleEvent) crudService.merge(scheduleEvent);
+		if(isNew) {
 			List<String> emails = new ArrayList<String>();
 			emails.add("dramirez@marketplacebrands.com");
 			emails.add("evazquez@marketplacebrands.com");
