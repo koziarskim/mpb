@@ -1,6 +1,7 @@
 package com.noovitec.mpb.rest;
 
 import java.net.URISyntaxException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -13,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -73,8 +75,11 @@ class ReceivingRest {
 			@RequestParam(required = false) Long componentId,
 			@RequestParam(required = false) Long supplierId,
 			@RequestParam(required = false) String invoiceNumber,
-			@RequestParam(required = false) String packingList) {
-		Page<Receiving> receivings = receivingRepo.findPagable(pageable, purchaseId, componentId, supplierId, invoiceNumber, packingList);
+			@RequestParam(required = false) String packingList,
+			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate receivedFrom,
+			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate receivedTo) {
+		Page<Receiving> receivings = receivingRepo.findPagable(pageable, purchaseId, componentId, supplierId, invoiceNumber, packingList,
+				receivedFrom, receivedTo);
 		Page<ReceivingListDto> dtos = receivings.map(receiving -> {
 			ReceivingListDto dto = new ReceivingListDto();
 			dto.setId(receiving.getId());

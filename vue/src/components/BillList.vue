@@ -12,6 +12,12 @@
           <div style="width: 400px">
             <b-row>
               <b-col cols=6>
+                <label class="top-label">Received From:</label>
+                <input class="form-control" type="date" v-model="filter.receivedFrom">
+              </b-col>
+              <b-col cols=6>
+                <label class="top-label">Received To:</label>
+                <input class="form-control" type="date" v-model="filter.receivedTo">
               </b-col>
             </b-row>
           </div>
@@ -102,7 +108,11 @@ export default {
       receivings: [], //ReceivingListDto
       showFilterMenu: false,
       showTotalsMenu: false,
-      availableTotals: []
+      availableTotals: [],
+      filter: {
+        receivedFrom: null,
+        receivedTo: null,
+      },
     };
   },
   computed: {},
@@ -126,6 +136,8 @@ export default {
       this.showFilterMenu = false;
     },
     clearFilterMenu(){
+      this.filter.receivedFrom = null;
+      this.filter.receivedTo = null;
       this.getReceivings();
       this.showFilterMenu = false;
     },     
@@ -147,7 +159,9 @@ export default {
         componentId: this.componentKv.id,
         supplierId: this.supplierKv.id,
         invoiceNumber: this.invoiceNumber,
-        packingList: this.packingList}})
+        packingList: this.packingList,
+        receivedFrom: this.filter.receivedFrom,
+        receivedTo: this.filter.receivedTo}})
         .then(r => {
           this.receivings = r.data.content;
           this.pageable.totalElements = r.data.totalElements;

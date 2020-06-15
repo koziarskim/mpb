@@ -12,11 +12,11 @@
             <div style="width: 400px">
                 <b-row>
                   <b-col cols=6>
-                    <label class="top-label">Ship From:</label>
+                    <label class="top-label">Invoice From:</label>
                     <input class="form-control" type="date" v-model="filter.invoiceFrom">
                   </b-col>
                   <b-col cols=6>
-                    <label class="top-label">Ship To:</label>
+                    <label class="top-label">Invoice To:</label>
                     <input class="form-control" type="date" v-model="filter.invoiceTo">
                   </b-col>
                 </b-row>

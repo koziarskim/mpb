@@ -1,6 +1,6 @@
 package com.noovitec.mpb.repo.custom;
 
-import java.util.ArrayList;
+import java.time.LocalDate;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -14,12 +14,12 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-import com.noovitec.mpb.entity.Component;
 import com.noovitec.mpb.entity.Receiving;
 
 public interface CustomReceivingRepo {
 
-	public Page<Receiving> findPagable(Pageable pageable, Long purchaseId, Long componentId, Long supplierId, String invoiceNumber, String packingList);
+	public Page<Receiving> findPagable(Pageable pageable, Long purchaseId, Long componentId, Long supplierId, String invoiceNumber, String packingList,
+			LocalDate receivedFrom, LocalDate receivedTo);
 	public Receiving getLastByComponent(Long componentId);
 	
 	@Repository
@@ -31,7 +31,8 @@ public interface CustomReceivingRepo {
 		EntityManager entityManager;
 
 		@Override
-		public Page<Receiving> findPagable(Pageable pageable, Long purchaseId, Long componentId, Long supplierId, String invoiceNumber, String packingList) {
+		public Page<Receiving> findPagable(Pageable pageable, Long purchaseId, Long componentId, Long supplierId, String invoiceNumber, String packingList,
+				LocalDate receivedFrom, LocalDate receivedTo) {
 			String q = "select distinct r from Receiving r " 
 					+ "left join r.purchaseComponent pc " 
 					+ "left join pc.purchase p " 
@@ -52,7 +53,13 @@ public interface CustomReceivingRepo {
 			}
 			if (packingList !=null && !packingList.isBlank()) {
 				q += "and upper(r.number) = upper(:packingList) ";
-			}			
+			}
+			if(receivedFrom != null) {
+				q += "and r.receivingDate >= :receivedFrom ";
+			}
+			if(receivedTo !=null) {
+				q += "and r.receivingDate <= :receivedTo ";
+			}
 			q += "order by r.updated desc";
 			Query query = entityManager.createQuery(q);
 			if (purchaseId != null) {
@@ -70,6 +77,13 @@ public interface CustomReceivingRepo {
 			if (packingList !=null && !packingList.isBlank()) {
 				query.setParameter("packingList", packingList);
 			}
+			if(receivedFrom !=null) {
+				query.setParameter("receivedFrom", receivedFrom);
+			}
+			if(receivedTo !=null) {
+				query.setParameter("receivedTo", receivedTo);
+			}
+			
 			long total = query.getResultStream().count();
 			@SuppressWarnings("unchecked")
 			List<Receiving> result = query.setFirstResult(pageable.getPageNumber()*pageable.getPageSize())
