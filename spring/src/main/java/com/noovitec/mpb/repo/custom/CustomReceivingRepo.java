@@ -19,7 +19,7 @@ import com.noovitec.mpb.entity.Receiving;
 
 public interface CustomReceivingRepo {
 
-	public Page<Receiving> findPagable(Pageable pageable, Long purchaseId, Long componentId, Long supplierId, String invoiceNumber);
+	public Page<Receiving> findPagable(Pageable pageable, Long purchaseId, Long componentId, Long supplierId, String invoiceNumber, String packingList);
 	public Receiving getLastByComponent(Long componentId);
 	
 	@Repository
@@ -31,7 +31,7 @@ public interface CustomReceivingRepo {
 		EntityManager entityManager;
 
 		@Override
-		public Page<Receiving> findPagable(Pageable pageable, Long purchaseId, Long componentId, Long supplierId, String invoiceNumber) {
+		public Page<Receiving> findPagable(Pageable pageable, Long purchaseId, Long componentId, Long supplierId, String invoiceNumber, String packingList) {
 			String q = "select distinct r from Receiving r " 
 					+ "left join r.purchaseComponent pc " 
 					+ "left join pc.purchase p " 
@@ -50,6 +50,9 @@ public interface CustomReceivingRepo {
 			if (invoiceNumber !=null && !invoiceNumber.isBlank()) {
 				q += "and upper(r.invoiceNumber) = upper(:invoiceNumber) ";
 			}
+			if (packingList !=null && !packingList.isBlank()) {
+				q += "and upper(r.number) = upper(:packingList) ";
+			}			
 			q += "order by r.updated desc";
 			Query query = entityManager.createQuery(q);
 			if (purchaseId != null) {
@@ -63,6 +66,9 @@ public interface CustomReceivingRepo {
 			}
 			if (invoiceNumber !=null && !invoiceNumber.isBlank()) {
 				query.setParameter("invoiceNumber", invoiceNumber);
+			}
+			if (packingList !=null && !packingList.isBlank()) {
+				query.setParameter("packingList", packingList);
 			}
 			long total = query.getResultStream().count();
 			@SuppressWarnings("unchecked")

@@ -22,14 +22,13 @@ Accounting:
 - Bills view - incoming (recevings)
 + Show invoice #
 + Show price
-- Allow to search by Packing List # (show all components for that packing), 
-- Allow to enter $ amount for each component, 
++ Allow to search by Packing List # (show all components for that packing), 
++ Allow to enter $ amount for each component received
 - Allow to enter invoice number for all
+- Show Total Inventory value based on search (Component based on average cost)
 
-- Invoice view - outgoing (our sales/shipments)
-- Item view
-- Inventory value (Component based on average cost)
-- Inventory value (Item) stock value $ (based on material cost (components))
+- Invoice Item view - outgoing (our sales/shipments)
+- Show total Inventory value (Item) stock value $ (based on material cost (components))
 Invoices:
 - Permissions
 - Send email to client (andy as cc: by default).

@@ -72,8 +72,9 @@ class ReceivingRest {
 			@RequestParam(required = false) Long purchaseId,
 			@RequestParam(required = false) Long componentId,
 			@RequestParam(required = false) Long supplierId,
-			@RequestParam(required = false) String invoiceNumber) {
-		Page<Receiving> receivings = receivingRepo.findPagable(pageable, purchaseId, componentId, supplierId, invoiceNumber);
+			@RequestParam(required = false) String invoiceNumber,
+			@RequestParam(required = false) String packingList) {
+		Page<Receiving> receivings = receivingRepo.findPagable(pageable, purchaseId, componentId, supplierId, invoiceNumber, packingList);
 		Page<ReceivingListDto> dtos = receivings.map(receiving -> {
 			ReceivingListDto dto = new ReceivingListDto();
 			dto.setId(receiving.getId());

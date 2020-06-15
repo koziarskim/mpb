@@ -20,15 +20,27 @@
       <b-col cols=2>
         <b-select option-value="id" option-text="name" :list="availablePurchases" v-model="purchaseKv" placeholder="Purchase"></b-select>
       </b-col>
-      <b-col cols=3>
+      <b-col cols=2>
         <b-select option-value="id" option-text="name" :list="availableComponents" v-model="componentKv" placeholder="Component"></b-select>
       </b-col>
       <b-col cols=2>
         <b-select option-value="id" option-text="name" :list="availableSuppliers" v-model="supplierKv" placeholder="Supplier"></b-select>
       </b-col>
       <b-col cols=2>
+        <input class="form-control" style="font-size: 12px" type="tel" v-model="packingList" @keyup.enter="getReceivings()" placeholder="Packing Slip"/>
+      </b-col>
+      <b-col cols=2>
         <input class="form-control" style="font-size: 12px" type="tel" v-model="invoiceNumber" @keyup.enter="getReceivings()" placeholder="Inoice #"/>
       </b-col>
+      <b-col cols=1 style="margin-right: -45px;">
+        <b-button id="totalsMenu" size="sm" @click="toggleShowTotals()">Totals</b-button>
+        <b-popover :show="showTotalsMenu" placement="bottom" target="totalsMenu" variant="secondary">
+          <div style="width: 200px; font-size: 16px">
+            <div>Total unit price:</div>
+            <div>Total inventory value:</div>
+          </div>
+        </b-popover>
+      </b-col>      
     </b-row>
     <b-table :items="receivings" :fields="fields" no-local-sorting>
       <template v-slot:cell(name)="row">
@@ -82,8 +94,11 @@ export default {
       availableSuppliers: [],
       supplierKv: {},
       invoiceNumber: "",
+      packingList: "",
       receivings: [], //ReceivingListDto
       showFilterMenu: false,
+      showTotalsMenu: false,
+      availableTotals: []
     };
   },
   computed: {},
@@ -99,6 +114,9 @@ export default {
     }
   },
   methods: {
+    toggleShowTotals(){
+      this.showTotalsMenu = !this.showTotalsMenu;
+    },
     searchFilterMenu(){
       this.getReceivings();
       this.showFilterMenu = false;
@@ -124,7 +142,8 @@ export default {
         purchaseId: this.purchaseKv.id, 
         componentId: this.componentKv.id,
         supplierId: this.supplierKv.id,
-        invoiceNumber: this.invoiceNumber}})
+        invoiceNumber: this.invoiceNumber,
+        packingList: this.packingList}})
         .then(r => {
           this.receivings = r.data.content;
           this.pageable.totalElements = r.data.totalElements;
