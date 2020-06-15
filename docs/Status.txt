@@ -16,9 +16,9 @@ Current priority
 		+ Allow to search by date range
 	- Invoice Item view - outgoing (our sales/shipments)
 		+ Create new screen
-		- Show sale #
-		- Show item #
-		+ Show total sale item price
+		+ Show sale #
+		+ Show item #
+		- Show total sale item price
 		- Show total Inventory value (Item) stock value $ (based on material cost (components))
 	Receiving:
 	+ Allow to enter Packing list #.
