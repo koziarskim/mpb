@@ -1,4 +1,6 @@
-In Progress/Done:
+In progrees or Not yet started/Future requests: (-)
+Done but not yet reviewed: (+)
+
 Purchase
 - Allow to upload file.
 - Add Pay Terms
@@ -54,6 +56,7 @@ Shipment:
 - Show DC in freight address list.
 + Shipment name. KASKA!!!
 - Two and One week notification based on Window From (Routing)
+- Attach picking list to notification when shipment is ready.
 Schedule:
 - Email notification on create new delivery.
 Global:
@@ -62,7 +65,7 @@ Global:
 
 ------------------------------------------------------------------
 
-Backlog
+Marcin's Backlog
 - Delete item from component not updating items because it doesn't exist in post sale.
 - Keep the list of jms messages in requeuest until transaction is over. Then call JMS Receivier.
 	Creating new shipment is not created until transaction completes. Jms runs before trans complete.
