@@ -1,67 +1,66 @@
 In progrees or Not yet started/Future requests: (-)
 Done but not yet reviewed: (+)
 
-Purchase
-- Allow to upload file.
-- Add Pay Terms
-- Freight Terms (FOB).
-- Send pdf from mims.
-- Cancel PO.
-- Produced set scheduled and produced.
-- Arrow on production.
-Component:
-Schedule:
-- Show legend.
-Customer:
-Sale:
-- Transfer to (show sales with 0 stock).
-- Search by shipment #
-Return:
-- Validate that it cannot return more that shipped.
-Receiving:
-+ Allow to enter Packing list #.
-Accounting:
-+ Change menu to dropdown with (Invoice view, Invoice Item view, Bill view)
-
-- Bills view - incoming (recevings)
-	+ Create new screen
-	+ Show invoice #
-	+ Show price
-	+ Allow to search by Packing List # (show all components for that packing), 
-	+ Allow to enter $ amount for each component received
-	- Allow to enter invoice number for all
-	- Show Total Inventory value based on search (Component based on average cost)
-
-- Invoice view
-	+ Allow to search by date range
-
-
-- Invoice Item view - outgoing (our sales/shipments)
-	+ Create new screen
-	- Show sale #
-	- Show item #
-	+ Show total sale item price
-	- Show total Inventory value (Item) stock value $ (based on material cost (components))
-Invoices:
-- Permissions
-- Send email to client (andy as cc: by default).
-- Total quantity
-- Total price
-Item:
-- Show component picture when mouse over.
-- Items ready for production and shippped.
-- Items not ready for production and shipped.
-Shipment:
-- Select ship to address based on first sale (if not selected yet).
-- Show DC in freight address list.
-+ Shipment name. KASKA!!!
-- Two and One week notification based on Window From (Routing)
-- Attach picking list to notification when shipment is ready.
-Schedule:
-- Email notification on create new delivery.
-Global:
-- Create document describing columns (Components, Items).
-- Lock all PDFs. Option to lock.
+Current priority
+	Accounting:
+	+ Change menu to dropdown with (Invoice view, Invoice Item view, Bill view)
+	- Bills view - incoming (recevings)
+		+ Create new screen
+		+ Show invoice #
+		+ Show price
+		+ Allow to search by Packing List # (show all components for that packing), 
+		+ Allow to enter $ amount for each component received
+		- Allow to enter invoice number for all
+		- Show Total Inventory value based on search (Component based on average cost)
+	- Invoice view
+		+ Allow to search by date range
+	- Invoice Item view - outgoing (our sales/shipments)
+		+ Create new screen
+		- Show sale #
+		- Show item #
+		+ Show total sale item price
+		- Show total Inventory value (Item) stock value $ (based on material cost (components))
+	Receiving:
+	+ Allow to enter Packing list #.
+	
+Future requests (priority not set yet)
+	Purchase
+	- Allow to upload file.
+	- Add Pay Terms
+	- Freight Terms (FOB).
+	- Send pdf from mims.
+	- Cancel PO.
+	- Produced set scheduled and produced.
+	- Arrow on production.
+	Component:
+	Schedule:
+	- Show legend.
+	Customer:
+	Sale:
+	- Transfer to (show sales with 0 stock).
+	- Search by shipment #
+	Return:
+	- Validate that it cannot return more that shipped.
+	Invoices:
+	- Permissions
+	- Send email to client (andy as cc: by default).
+	- Total quantity
+	- Total price
+	Item:
+	- Show component picture when mouse over.
+	- Items ready for production and shippped.
+	- Items not ready for production and shipped.
+	Shipment:
+	- Select ship to address based on first sale (if not selected yet).
+	- Show DC in freight address list.
+	+ Shipment name. KASKA!!!
+	- Two and One week notification based on Window From (Routing)
+	- Attach picking list to notification when shipment is ready.
+	Schedule:
+	- Email notification on create new delivery.
+	Global:
+	- Create document describing columns (Components, Items).
+	- Lock all PDFs. Option to lock.
 
 ------------------------------------------------------------------
 
