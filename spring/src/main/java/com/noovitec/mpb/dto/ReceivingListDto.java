@@ -1,5 +1,6 @@
 package com.noovitec.mpb.dto;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import lombok.AllArgsConstructor;
@@ -25,5 +26,6 @@ public class ReceivingListDto {
 	private String containerNumber;
 	private LocalDate receivedDate;
 	private long unitsReceived;
+	private BigDecimal unitPrice;
 	
 }

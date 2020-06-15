@@ -38,7 +38,9 @@ import ItemGraph from "./components/ItemGraph";
 import ItemReturnList from "./components/ItemReturnList";
 import ShipmentSchedule from "./components/ShipmentSchedule";
 import InvoiceList from "./components/InvoiceList";
+import InvoiceItemList from "./components/InvoiceItemList";
 import InvoiceEdit from "./components/InvoiceEdit";
+import BillList from "./components/BillList";
 
 Vue.use(Router);
 
@@ -391,9 +393,29 @@ const router = new Router({
       }
     },
     {
+      path: "/InvoiceItemList",
+      name: "InvoiceItemList",
+      component: InvoiceItemList,
+      meta: {
+        roles: ["READ_ONLY"],
+        group: "invoice",
+        viewClass: "view-invoice"
+      }
+    },    
+    {
       path: "/InvoiceEdit/:invoiceId?",
       name: "InvoiceEdit",
       component: InvoiceEdit,
+      meta: {
+        roles: ["READ_ONLY"],
+        group: "invoice",
+        viewClass: "view-invoice"
+      }
+    },
+    {
+      path: "/BillList",
+      name: "BillList",
+      component: BillList,
       meta: {
         roles: ["READ_ONLY"],
         group: "invoice",

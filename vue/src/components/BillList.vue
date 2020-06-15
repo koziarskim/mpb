@@ -29,11 +29,6 @@
       <b-col cols=2>
         <input class="form-control" style="font-size: 12px" type="tel" v-model="invoiceNumber" @keyup.enter="getReceivings()" placeholder="Inoice #"/>
       </b-col>
-      <b-col cols=1 offset=1>
-        <div style="text-align: right;">
-          <b-button size="sm" type="submit" variant="primary" @click="goToReceiving('')">New Rec</b-button>
-        </div>
-      </b-col>
     </b-row>
     <b-table :items="receivings" :fields="fields" no-local-sorting>
       <template v-slot:cell(name)="row">
@@ -76,6 +71,8 @@ export default {
         { key: "containerNumber", label: "Container", sortable: false },
         { key: "receivedDate", label: "Received", sortable: false },
         { key: "unitsReceived", label: "Units", sortable: false },
+        { key: "invoiceNumber", label: "Invoice", sortable: false },
+        { key: "unitPrice", label: "Price", sortable: false },
         { key: "action", label: "", sortable: false }
       ],
       availablePurchases: [],

@@ -90,6 +90,7 @@ class ReceivingRest {
 			dto.setContainerNumber(receiving.getContainerNumber());
 			dto.setReceivedDate(receiving.getReceivingDate());
 			dto.setUnitsReceived(receiving.getUnits());
+			dto.setUnitPrice(receiving.getUnitPrice());
 			return dto;
 		});
 		return dtos;

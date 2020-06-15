@@ -9,7 +9,7 @@
           </div>
           <div v-if="receiveMode" style="display:flex">
             <div style="margin-top:-2px; margin-left: 8px;">
-              <label class="top-label">Receiving Number:</label>
+              <label class="top-label">Packing List #:</label>
               <input style="width: 175px" class="form-control" type="text" v-model="receivingNumber">
             </div>
             <div style="margin-top:-2px; margin-left: 8px;">
@@ -286,7 +286,7 @@ export default {
           pc.unitsToReceive = (+pc.units - +pc.unitsReceived) < 0?0:(+pc.units - +pc.unitsReceived);
           pc.unitPriceReceived = pc.unitPrice;
         })
-        this.receivingNumber = "Rec-"+this.purchase.number;
+        // this.receivingNumber = "Rec-"+this.purchase.number;
         this.receivingContainerNumber = this.purchase.containerNumber;
         this.receivingInvoiceNumber = this.purchase.invoiceNumber;
         this.receivingDate = null;
@@ -300,7 +300,14 @@ export default {
         this.updatePurchase();
       }
     },
-    validate(){
+    validateReceiving(){
+      if(!this.receivingNumber || !this.receivingDate){
+        alert("Packing list # and Received date required");
+        return false;
+      }
+      return true;
+    },
+    validatePurchase(){
       if(this.purchase.purchaseComponents.length == 0){
         alert("No Component selected.");
         return false;
@@ -317,7 +324,7 @@ export default {
       return true;
     },
     updatePurchase(){
-      if(!this.validate()) {return}
+      if(!this.validatePurchase()) {return}
       return http.post("/purchase", this.purchase).then(r => {
         this.purchase = r.data;
         this.receiveMode = false;
@@ -327,6 +334,7 @@ export default {
       });
     },
     saveReceive(){
+      if(!this.validateReceiving()) {return}
       if(!this.receivingDate || moment(this.receivingDate).isAfter(moment.utc())){
         alert("Received Date cannot be in future");
         return Promise.reject();

@@ -1,13 +1,11 @@
 <template>
   <b-container fluid>
     <b-row>
-      <b-col cols="2">
-        <h4 style="text-align: left;">Receiving: </h4>
+      <b-col cols=3>
+        <label class="top-label">Packing list #:</label>
+        <input class="form-control" type="text" v-model="receiving.number">
       </b-col>
-      <b-col cols="3">
-        <input class="form-control" type="text" v-model="receiving.number" :disabled="!editMode" placeholder="Name/Description">
-      </b-col>
-      <b-col cols="2" offset="4">
+      <b-col cols=3 offset=5>
         <div style="text-align: right;">
           <b-button size="sm" type="reset" variant="success" @click="saveAndClose()">Save & Close</b-button>
           <b-button size="sm" style="width: 28px; margin-left: 3px" type="reset" variant="secondary" @click="deleteReceiving()">x</b-button>
@@ -19,25 +17,25 @@
         <b-row>
           <b-col cols="4">
             <label class="top-label">Shipped Date:</label>
-            <input class="form-control" type="date" v-model="receiving.shippingDate" :disabled="!editMode">
+            <input class="form-control" type="date" v-model="receiving.shippingDate">
           </b-col>
           <b-col cols="4">
             <label class="top-label">ETA Date:</label>
-            <input class="form-control" type="date" v-model="receiving.etaDate" :disabled="!editMode">
+            <input class="form-control" type="date" v-model="receiving.etaDate">
           </b-col>
           <b-col cols="4">
             <label class="top-label">Received Date:</label>
-            <input class="form-control" type="date" v-model="receiving.receivingDate" :disabled="!editMode">
+            <input class="form-control" type="date" v-model="receiving.receivingDate">
           </b-col>
         </b-row>
         <b-row>
           <b-col cols="4">
             <label class="top-label">Units (Shipped/Received):</label>
-            <input class="form-control" type="text" v-model="receiving.units" :disabled="!editMode" placeholder="Units Received">
+            <input class="form-control" type="text" v-model="receiving.units" placeholder="Units Received">
           </b-col>
           <b-col cols="4">
             <label class="top-label">Container:</label>
-            <input class="form-control" type="text" v-model="receiving.containerNumber" :disabled="!editMode" placeholder="Container #">
+            <input class="form-control" type="text" v-model="receiving.containerNumber" placeholder="Container #">
           </b-col>
           <b-col cols="4">
             <label class="top-label">Invoice:</label>
