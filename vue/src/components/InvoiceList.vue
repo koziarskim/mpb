@@ -27,10 +27,10 @@
           <input class="form-control" style="font-size: 12px" type="tel" v-model="invoiceNumber" @keyup.enter="getInvoices()" placeholder="Invoice"/>
         </b-col>
         <b-col cols=2>
-          <b-select option-value="id" option-text="name" :list="availableItems" v-model="itemKv" placeholder="Item"></b-select>
+          <b-select option-value="id" option-text="name" :list="availableSales" v-model="saleKv" placeholder="Sale"></b-select>
         </b-col>
         <b-col cols=2>
-          <b-select option-value="id" option-text="name" :list="availableSales" v-model="saleKv" placeholder="Sale"></b-select>
+          <b-select option-value="id" option-text="name" :list="availableItems" v-model="itemKv" placeholder="Item"></b-select>
         </b-col>
         <b-col cols=2>
           <b-select option-value="id" option-text="name" :list="availableCustomers" v-model="customerKv" placeholder="Customer"></b-select>
@@ -41,7 +41,15 @@
       </b-row>
       <b-table :items="invoices" :fields="fields" no-local-sorting>
         <template v-slot:cell(number)="row">
-          <b-button size="sm" @click="goToInvoice(row.item.id)" variant="link">{{row.item.number}}</b-button>
+            <b-button variant="link" :id="'popover-number'+row.item.id" @click="showPopover(row.item)">{{row.item.number}}</b-button>
+            <b-popover placement="bottomright" :target="'popover-number'+row.item.id" triggers="focus" variant="primary">
+              <template v-slot:title>
+                <b-button size="sm" @click="goToInvoice(row.item.id)" variant="link">View/Edit Details</b-button>
+              </template>
+              <div v-for="ii in row.item.invoiceItems" :key="ii.id">
+                <div>Sale: {{ii.saleItem.sale.number}}, Item: {{ii.saleItem.item.number}} {{ii.saleItem.item.name}}, Units: {{ii.unitsInvoiced}}, Price: {{ii.unitPrice}}</div>
+              </div>
+            </b-popover>
         </template>
         <template v-slot:cell(sent)="row">
           <span>{{row.item.sent?'Yes':'No'}}</span>
@@ -106,6 +114,11 @@ export default {
     },
   },
   methods: {
+    showPopover(dto){
+      this.getInvoice(dto.id).then(invoice => {
+        dto.invoiceItems = invoice.invoiceItems;
+      })
+    },
     searchFilterMenu(){
       this.getInvoices();
       this.showFilterMenu = false;
@@ -132,6 +145,9 @@ export default {
         invoiceTo: this.filter.invoiceTo
       }}
       http.get("/invoice/pageable", query).then(r => {
+        r.data.content.forEach(dto => {
+          dto.invoiceItems = []
+        })
         this.invoices = r.data.content;
         this.pageable.totalElements = r.data.totalElements;
       }).catch(e => {
@@ -140,6 +156,11 @@ export default {
     },
     goToInvoice(id){
       router.push('/invoiceEdit/'+(id?id:''));
+    },
+    getInvoice(invoiceId) {
+      return http.get("/invoice/"+invoiceId).then(r => {
+        return r.data;
+      }).catch(e => {console.log("API error: "+e);});
     },
     getAvailableItems() {
       http.get("/item/kv").then(r => {

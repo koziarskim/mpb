@@ -18,6 +18,9 @@
         </b-popover>
       </b-col>      
       <b-col cols=2>
+        <input class="form-control" style="font-size: 12px" type="tel" v-model="packingList" @keyup.enter="getReceivings()" placeholder="Packing Slip"/>
+      </b-col>
+      <b-col cols=2>
         <b-select option-value="id" option-text="name" :list="availablePurchases" v-model="purchaseKv" placeholder="Purchase"></b-select>
       </b-col>
       <b-col cols=2>
@@ -27,15 +30,13 @@
         <b-select option-value="id" option-text="name" :list="availableSuppliers" v-model="supplierKv" placeholder="Supplier"></b-select>
       </b-col>
       <b-col cols=2>
-        <input class="form-control" style="font-size: 12px" type="tel" v-model="packingList" @keyup.enter="getReceivings()" placeholder="Packing Slip"/>
-      </b-col>
-      <b-col cols=2>
         <input class="form-control" style="font-size: 12px" type="tel" v-model="invoiceNumber" @keyup.enter="getReceivings()" placeholder="Inoice #"/>
       </b-col>
       <b-col cols=1 style="margin-right: -45px;">
         <b-button id="totalsMenu" size="sm" @click="toggleShowTotals()">Totals</b-button>
         <b-popover :show="showTotalsMenu" placement="bottom" target="totalsMenu" variant="secondary">
           <div style="width: 300px; font-size: 16px">
+            <div>Total of {{pageable.totalElements}} rows</div>
             <div>Total unit price:</div>
             <div>Total inventory value:</div>
           </div>
@@ -62,7 +63,10 @@
         <span>{{formatDate(row.item.receivedDate)}}</span>
       </template>
     </b-table>
-    <b-pagination v-model="pageable.currentPage" :per-page="pageable.perPage" :total-rows="pageable.totalElements" @change="paginationChange"></b-pagination>
+    <div style="display: flex">
+      <b-pagination size="sm" v-model="pageable.currentPage" :per-page="pageable.perPage" :total-rows="pageable.totalElements" @change="paginationChange"></b-pagination>
+      <span style="margin-top: 5px">Total of {{pageable.totalElements}} rows</span>
+    </div>
   </b-container>
 </template>
 <script>

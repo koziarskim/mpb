@@ -27,10 +27,10 @@
           <input class="form-control" style="font-size: 12px" type="tel" v-model="invoiceNumber" @keyup.enter="getInvoiceItems()" placeholder="Invoice"/>
         </b-col>
         <b-col cols=2>
-          <b-select option-value="id" option-text="name" :list="availableItems" v-model="itemKv" placeholder="Item"></b-select>
+          <b-select option-value="id" option-text="name" :list="availableSales" v-model="saleKv" placeholder="Sale"></b-select>
         </b-col>
         <b-col cols=2>
-          <b-select option-value="id" option-text="name" :list="availableSales" v-model="saleKv" placeholder="Sale"></b-select>
+          <b-select option-value="id" option-text="name" :list="availableItems" v-model="itemKv" placeholder="Item"></b-select>
         </b-col>
         <b-col cols=2>
           <b-select option-value="id" option-text="name" :list="availableCustomers" v-model="customerKv" placeholder="Customer"></b-select>
@@ -42,6 +42,7 @@
         <b-button id="totalsMenu" size="sm" @click="toggleShowTotals()">Totals</b-button>
         <b-popover :show="showTotalsMenu" placement="bottom" target="totalsMenu" variant="secondary">
           <div style="width: 300px; font-size: 16px">
+            <div>Total of {{pageable.totalElements}} rows</div>
             <div>Total sale item invoiced:</div>
           </div>
         </b-popover>
