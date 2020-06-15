@@ -38,6 +38,15 @@
         <b-col cols=2>
           <b-select option-value="id" option-text="name" :list="availableShipments" v-model="shipmentKv" placeholder="Shipment"></b-select>
         </b-col>
+      <b-col cols=1 style="margin-right: -45px;">
+        <b-button id="totalsMenu" size="sm" @click="toggleShowTotals()">Totals</b-button>
+        <b-popover :show="showTotalsMenu" placement="bottom" target="totalsMenu" variant="secondary">
+          <div style="width: 300px; font-size: 16px">
+            <div>Total sale item invoiced:</div>
+          </div>
+        </b-popover>
+      </b-col>      
+
       </b-row>
       <b-table :items="invoices" :fields="fields" no-local-sorting>
         <template v-slot:cell(number)="row">
@@ -67,6 +76,8 @@ export default {
       pageable: {totalElements: 100, currentPage: 1, perPage: 25, sortBy: 'date', sortDesc: false},
       fields: [
         { key: "number", label: "Invoice #", sortable: false },
+        { key: "saleNumber", label: "Sale #", sortable: false },
+        { key: "itemNumber", label: "Item #", sortable: false },
         { key: "date", label: "Date", sortable: false },
         { key: "customerName", label: "Customer", sortable: false },
         { key: "shipmentNumber", label: "Shipment", sortable: false },
@@ -85,6 +96,7 @@ export default {
       itemKv: {},
       invoiceNumber: "",
       showFilterMenu: false,
+      showTotalsMenu: false,
       filter: {
         invoiceFrom: null,
         invoiceTo: null,
@@ -106,6 +118,9 @@ export default {
     },
   },
   methods: {
+    toggleShowTotals(){
+      this.showTotalsMenu = !this.showTotalsMenu;
+    },
     searchFilterMenu(){
       this.getInvoices();
       this.showFilterMenu = false;

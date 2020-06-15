@@ -54,7 +54,7 @@
         </div>
       </template>
       <template v-slot:cell(component)="row">
-        <div style="width:200px; overflow: wrap; font-size: 14px">
+        <div style="width:300px; overflow: wrap; font-size: 14px">
           <b-link role="button" @click.stop="goToComponent(row.item.componentId)">{{row.item.componentNumber}}</b-link> {{row.item.componentName}}
         </div>
       </template>
