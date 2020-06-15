@@ -21,8 +21,8 @@
           <b-nav-item @click="goTo('/schedule')" :class="navClass('schedule')" style="margin-left: -17px">Schedule</b-nav-item>
           <b-nav-item-dropdown text="Accounting" :class="navClass('invoice')">
             <b-dropdown-item @click="goTo('/invoiceList')"><span style="color: black">Invoices (Sales)</span></b-dropdown-item>
-            <b-dropdown-item @click="goTo('/invoiceItemList')"><span style="color: black">Invoice Items (Sales)</span></b-dropdown-item>
             <b-dropdown-item @click="goTo('/billList')"><span style="color: black">Bills (Receivings)</span></b-dropdown-item>
+            <b-dropdown-item @click="goTo('/invoiceItemList')"><span style="color: black">Invoices by Sale/Item</span></b-dropdown-item>
           </b-nav-item-dropdown>
 
 		      

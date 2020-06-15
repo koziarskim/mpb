@@ -35,7 +35,7 @@
       <b-col cols=1 style="margin-right: -45px;">
         <b-button id="totalsMenu" size="sm" @click="toggleShowTotals()">Totals</b-button>
         <b-popover :show="showTotalsMenu" placement="bottom" target="totalsMenu" variant="secondary">
-          <div style="width: 200px; font-size: 16px">
+          <div style="width: 300px; font-size: 16px">
             <div>Total unit price:</div>
             <div>Total inventory value:</div>
           </div>
