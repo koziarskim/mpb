@@ -24,7 +24,7 @@
           </b-popover>
         </b-col>      
         <b-col cols=2>
-          <input class="form-control" style="font-size: 12px" type="tel" v-model="invoiceNumber" @keyup.enter="getInvoices()" placeholder="Invoice"/>
+          <input class="form-control" style="font-size: 12px" type="tel" v-model="invoiceNumber" @keyup.enter="getInvoiceItems()" placeholder="Invoice"/>
         </b-col>
         <b-col cols=2>
           <b-select option-value="id" option-text="name" :list="availableItems" v-model="itemKv" placeholder="Item"></b-select>
@@ -48,7 +48,7 @@
       </b-col>      
 
       </b-row>
-      <b-table :items="invoices" :fields="fields" no-local-sorting>
+      <b-table :items="invoiceItems" :fields="fields" no-local-sorting>
         <template v-slot:cell(number)="row">
           <b-button size="sm" @click="goToInvoice(row.item.id)" variant="link">{{row.item.number}}</b-button>
         </template>
@@ -73,7 +73,7 @@ export default {
     return {
       securite: securite,
       navigation: navigation,
-      pageable: {totalElements: 100, currentPage: 1, perPage: 25, sortBy: 'date', sortDesc: false},
+      pageable: {totalElements: 100, currentPage: 1, perPage: 25, sortBy: 'updated', sortDesc: false},
       fields: [
         { key: "number", label: "Invoice #", sortable: false },
         { key: "saleNumber", label: "Sale #", sortable: false },
@@ -85,7 +85,7 @@ export default {
         { key: "sent", label: "Sent", sortable: false },
         { key: "action", label: "", sortable: false}
       ],
-      invoices: [], //InvoiceListDto
+      invoiceItems: [], //InvoiceItemListDto
       availableSales: [],
       saleKv: {},
       availableCustomers: [],
@@ -105,16 +105,16 @@ export default {
   },
   watch: {
     saleKv(newValue, oldValue){
-      this.getInvoices();
+      this.getInvoiceItems();
     },
     customerKv(newValue, oldValue){
-      this.getInvoices();
+      this.getInvoiceItems();
     },
     shipmentKv(newValue, oldValue){
-      this.getInvoices();
+      this.getInvoiceItems();
     },
     itemKv(newValue, oldValue){
-      this.getInvoices();
+      this.getInvoiceItems();
     },
   },
   methods: {
@@ -122,20 +122,20 @@ export default {
       this.showTotalsMenu = !this.showTotalsMenu;
     },
     searchFilterMenu(){
-      this.getInvoices();
+      this.getInvoiceItems();
       this.showFilterMenu = false;
     },
     clearFilterMenu(){
       this.filter.invoiceFrom = null;
       this.filter.invoiceTo = null;
-      this.getInvoices();
+      this.getInvoiceItems();
       this.showFilterMenu = false;
     },      
     paginationChange(page){
         this.pageable.currentPage = page;
-        this.getInvoices();
+        this.getInvoiceItems();
     },
-	  getInvoices() {
+	  getInvoiceItems() {
       var query = {params: {
         pageable: this.pageable,
         invoiceNumber: this.invoiceNumber,
@@ -146,8 +146,8 @@ export default {
         invoiceFrom: this.filter.invoiceFrom,
         invoiceTo: this.filter.invoiceTo
       }}
-      http.get("/invoice/pageable", query).then(r => {
-        this.invoices = r.data.content;
+      http.get("/invoiceItem/pageable", query).then(r => {
+        this.invoiceItems = r.data.content;
         this.pageable.totalElements = r.data.totalElements;
       }).catch(e => {
         console.log("API error: "+e);
@@ -155,6 +155,9 @@ export default {
     },
     goToInvoice(id){
       router.push('/invoiceEdit/'+(id?id:''));
+    },
+    goToSale(id){
+      router.push('/saleEdit/'+(id?id:''));
     },
     getAvailableItems() {
       http.get("/item/kv").then(r => {
@@ -178,7 +181,7 @@ export default {
     },
   },
   mounted() {
-    this.getInvoices();
+    this.getInvoiceItems();
     this.getAvailableItems();
     this.getAvailableSales();
     this.getAvailableCustomers();
