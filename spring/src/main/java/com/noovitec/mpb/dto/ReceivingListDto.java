@@ -27,5 +27,6 @@ public class ReceivingListDto {
 	private LocalDate receivedDate;
 	private long unitsReceived;
 	private BigDecimal unitPrice;
+	private BigDecimal totalPrice;
 	
 }

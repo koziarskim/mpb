@@ -43,15 +43,15 @@
         <b-popover :show="showTotalsMenu" placement="bottom" target="totalsMenu" variant="secondary">
           <div style="width: 300px; font-size: 16px">
             <div>Total of {{pageable.totalElements}} rows</div>
-            <div>Total units price: {{totalUnitsPrice}}</div>
-            <div>Total inventory value:</div>
+            <div>Total price: ${{totalUnitsPrice}}</div>
+            <!-- <div>Total inventory value:</div> -->
           </div>
         </b-popover>
       </b-col>      
     </b-row>
     <b-table :items="receivings" :fields="fields" no-local-sorting>
       <template v-slot:cell(name)="row">
-        <div style="width:200px; overflow: wrap; font-size: 14px">
+        <div style="width:150px; overflow: wrap; font-size: 14px">
           <b-link role="button" @click.stop="goToReceiving(row.item.id)">{{row.item.number}}</b-link> {{row.item.name}}
         </div>
       </template>
@@ -61,12 +61,18 @@
         </div>
       </template>
       <template v-slot:cell(component)="row">
-        <div style="width:300px; overflow: wrap; font-size: 14px">
+        <div style="width:200px; overflow: wrap; font-size: 14px">
           <b-link role="button" @click.stop="goToComponent(row.item.componentId)">{{row.item.componentNumber}}</b-link> {{row.item.componentName}}
         </div>
       </template>
       <template v-slot:cell(receivedDate)="row">
         <span>{{formatDate(row.item.receivedDate)}}</span>
+      </template>
+      <template v-slot:cell(unitPrice)="row">
+        <span>${{row.item.unitPrice}}</span>
+      </template>
+      <template v-slot:cell(totalPrice)="row">
+        <span>${{row.item.totalPrice}}</span>
       </template>
     </b-table>
     <div style="display: flex">
@@ -90,11 +96,11 @@ export default {
         { key: "purchase", label: "Purchase", sortable: false },
         { key: "component", label: "Component", sortable: false },
         { key: "supplierName", label: "Supplier", sortable: false },
-        // { key: "containerNumber", label: "Container", sortable: false },
         { key: "receivedDate", label: "Received", sortable: false },
-        { key: "unitsReceived", label: "Units", sortable: false },
         { key: "invoiceNumber", label: "Invoice", sortable: false },
+        { key: "unitsReceived", label: "Units", sortable: false },
         { key: "unitPrice", label: "Price", sortable: false },
+        { key: "totalPrice", label: "Total", sortable: false },
         { key: "action", label: "", sortable: false }
       ],
       availablePurchases: [],
@@ -169,7 +175,7 @@ export default {
         receivedTo: this.filter.receivedTo}})
         .then(r => {
           if(totals){
-            this.totalUnitsPrice = r.data.content[0];
+            this.totalUnitsPrice = parseFloat(r.data.content[0]).toFixed(2);
           }else{
             this.receivings = r.data.content;
             this.pageable.totalElements = r.data.totalElements;

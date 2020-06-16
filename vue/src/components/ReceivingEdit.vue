@@ -45,6 +45,10 @@
             <label class="top-label">Unit Price:</label>
             <input class="form-control" type="text" v-model="receiving.unitPrice">
           </b-col>          
+          <b-col cols="4">
+            <label class="top-label">Total Price:</label>
+            <input class="form-control" type="text" v-model="totalPrice" disabled="true">
+          </b-col>          
         </b-row>
       </b-col>
       <b-col>
@@ -79,9 +83,12 @@ export default {
       purchaseComponent: {purchase: {}, component: {}},
     };
   },
-  computed: {},
-  watch: {
+  computed: {
+    totalPrice(){
+      return (+this.receiving.unitPrice * +this.receiving.units).toFixed(2);
+    }
   },
+  watch: {},
   methods: {
     deleteReceiving() {
       http.delete("/receiving/" + this.receiving.id).then(response => {
@@ -123,6 +130,7 @@ export default {
       if(!this.receiving.id){
         this.receiving.purchaseComponent = this.purchaseComponent;
       }
+      this.receiving.totalPrice = this.totalPrice;
       return http.post("/receiving", this.receiving).then(r => {
         return Promise.resolve();
       }).catch(e => {

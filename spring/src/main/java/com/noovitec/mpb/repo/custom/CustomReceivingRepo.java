@@ -57,7 +57,7 @@ public interface CustomReceivingRepo {
 				LocalDate receivedFrom, LocalDate receivedTo) {
 			String q = "";
 			if(totals) {
-				q += "select distinct sum(r.unitPrice) as totalUnitsPrice ";
+				q += "select distinct sum(r.totalPrice) as totalUnitsPrice ";
 			}else {
 				q += "select distinct r ";
 			}

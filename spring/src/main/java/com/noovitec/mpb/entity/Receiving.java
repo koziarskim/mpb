@@ -32,6 +32,7 @@ public class Receiving extends BaseEntity {
 	private LocalDate shippingDate;
 	private LocalDate etaDate;
 	private LocalDate receivingDate;
+	private BigDecimal totalPrice;
 
 	@JsonIgnoreProperties(value = { "receivings" }, allowSetters = true)
 	@ManyToOne()
