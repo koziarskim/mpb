@@ -44,6 +44,7 @@
           <div style="width: 300px; font-size: 16px">
             <div>Total of {{pageable.totalElements}} rows</div>
             <div>Total price: ${{totalUnitsPrice}}</div>
+            <div>Total units: {{totalUnits}}</div>
             <!-- <div>Total inventory value:</div> -->
           </div>
         </b-popover>
@@ -120,6 +121,7 @@ export default {
         receivedTo: null,
       },
       totalUnitsPrice: 0,
+      totalUnits: 0,
     };
   },
   computed: {},
@@ -175,7 +177,8 @@ export default {
         receivedTo: this.filter.receivedTo}})
         .then(r => {
           if(totals){
-            this.totalUnitsPrice = parseFloat(r.data.content[0]).toFixed(2);
+            this.totalUnitsPrice = parseFloat(r.data.content[0][0]).toFixed(2);
+            this.totalUnits = r.data.content[0][1];
           }else{
             this.receivings = r.data.content;
             this.pageable.totalElements = r.data.totalElements;
