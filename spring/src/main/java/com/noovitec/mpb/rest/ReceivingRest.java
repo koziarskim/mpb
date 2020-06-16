@@ -70,7 +70,8 @@ class ReceivingRest {
 	}
 
 	@GetMapping("/receiving/pageable")
-	Page<ReceivingListDto> getAllPageable(@RequestParam(required = false) Pageable pageable, 
+	Page<?> getAllPageable(@RequestParam(required = false) Pageable pageable, 
+			@RequestParam(required = false) boolean totals,
 			@RequestParam(required = false) Long purchaseId,
 			@RequestParam(required = false) Long componentId,
 			@RequestParam(required = false) Long supplierId,
@@ -78,28 +79,36 @@ class ReceivingRest {
 			@RequestParam(required = false) String packingList,
 			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate receivedFrom,
 			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate receivedTo) {
-		Page<Receiving> receivings = receivingRepo.findPagable(pageable, purchaseId, componentId, supplierId, invoiceNumber, packingList,
-				receivedFrom, receivedTo);
-		Page<ReceivingListDto> dtos = receivings.map(receiving -> {
-			ReceivingListDto dto = new ReceivingListDto();
-			dto.setId(receiving.getId());
-			dto.setNumber(receiving.getNumber());
-			dto.setName(receiving.getName());
-			dto.setPurchaseId(receiving.getPurchaseComponent().getPurchase().getId());
-			dto.setPurchaseNumber(receiving.getPurchaseComponent().getPurchase().getNumber());
-			dto.setPurchaseName(receiving.getPurchaseComponent().getPurchase().getName());
-			dto.setComponentId(receiving.getPurchaseComponent().getComponent().getId());
-			dto.setComponentNumber(receiving.getPurchaseComponent().getComponent().getNumber());
-			dto.setComponentName(receiving.getPurchaseComponent().getComponent().getName());
-			dto.setSupplierName(receiving.getPurchaseComponent().getPurchase().getSupplier().getName());
-			dto.setInvoiceNumber(receiving.getInvoiceNumber());
-			dto.setContainerNumber(receiving.getContainerNumber());
-			dto.setReceivedDate(receiving.getReceivingDate());
-			dto.setUnitsReceived(receiving.getUnits());
-			dto.setUnitPrice(receiving.getUnitPrice());
-			return dto;
-		});
-		return dtos;
+		if(totals) {
+			@SuppressWarnings("unchecked")
+			Page<?> result = (Page<Receiving>) receivingRepo.findPagable(pageable, totals, purchaseId, componentId, supplierId, invoiceNumber, packingList,
+					receivedFrom, receivedTo);
+			return result;
+		}else {
+			@SuppressWarnings("unchecked")
+			Page<Receiving> receivings = (Page<Receiving>) receivingRepo.findPagable(pageable, totals, purchaseId, componentId, supplierId, invoiceNumber, packingList,
+					receivedFrom, receivedTo);
+			Page<ReceivingListDto> dtos = receivings.map(receiving -> {
+				ReceivingListDto dto = new ReceivingListDto();
+				dto.setId(receiving.getId());
+				dto.setNumber(receiving.getNumber());
+				dto.setName(receiving.getName());
+				dto.setPurchaseId(receiving.getPurchaseComponent().getPurchase().getId());
+				dto.setPurchaseNumber(receiving.getPurchaseComponent().getPurchase().getNumber());
+				dto.setPurchaseName(receiving.getPurchaseComponent().getPurchase().getName());
+				dto.setComponentId(receiving.getPurchaseComponent().getComponent().getId());
+				dto.setComponentNumber(receiving.getPurchaseComponent().getComponent().getNumber());
+				dto.setComponentName(receiving.getPurchaseComponent().getComponent().getName());
+				dto.setSupplierName(receiving.getPurchaseComponent().getPurchase().getSupplier().getName());
+				dto.setInvoiceNumber(receiving.getInvoiceNumber());
+				dto.setContainerNumber(receiving.getContainerNumber());
+				dto.setReceivedDate(receiving.getReceivingDate());
+				dto.setUnitsReceived(receiving.getUnits());
+				dto.setUnitPrice(receiving.getUnitPrice());
+				return dto;
+			});
+			return dtos;
+		}
 	}
 
 	@GetMapping("/receiving/{id}")

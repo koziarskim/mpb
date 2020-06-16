@@ -43,7 +43,7 @@
         <b-popover :show="showTotalsMenu" placement="bottom" target="totalsMenu" variant="secondary">
           <div style="width: 300px; font-size: 16px">
             <div>Total of {{pageable.totalElements}} rows</div>
-            <div>Total unit price:</div>
+            <div>Total units price: {{totalUnitsPrice}}</div>
             <div>Total inventory value:</div>
           </div>
         </b-popover>
@@ -113,6 +113,7 @@ export default {
         receivedFrom: null,
         receivedTo: null,
       },
+      totalUnitsPrice: 0,
     };
   },
   computed: {},
@@ -129,6 +130,9 @@ export default {
   },
   methods: {
     toggleShowTotals(){
+      if(!this.showTotalsMenu){
+        this.getReceivings(true);
+      }
       this.showTotalsMenu = !this.showTotalsMenu;
     },
     searchFilterMenu(){
@@ -153,8 +157,9 @@ export default {
     formatDate(date){
         return date? moment(date).utc().format("MM/DD/YYYY"):"";
     },
-    getReceivings() {
-      http.get("/receiving/pageable", {params: {pageable: this.pageable, 
+    getReceivings(totals) {
+      http.get("/receiving/pageable", {params: {pageable: this.pageable,
+        totals: totals, 
         purchaseId: this.purchaseKv.id, 
         componentId: this.componentKv.id,
         supplierId: this.supplierKv.id,
@@ -163,8 +168,12 @@ export default {
         receivedFrom: this.filter.receivedFrom,
         receivedTo: this.filter.receivedTo}})
         .then(r => {
-          this.receivings = r.data.content;
-          this.pageable.totalElements = r.data.totalElements;
+          if(totals){
+            this.totalUnitsPrice = r.data.content[0];
+          }else{
+            this.receivings = r.data.content;
+            this.pageable.totalElements = r.data.totalElements;
+          }
         })
         .catch(e => {
           console.log("API error: " + e);

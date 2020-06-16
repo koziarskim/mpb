@@ -1,7 +1,9 @@
 package com.noovitec.mpb.repo.custom;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -18,7 +20,7 @@ import com.noovitec.mpb.entity.Receiving;
 
 public interface CustomReceivingRepo {
 
-	public Page<Receiving> findPagable(Pageable pageable, Long purchaseId, Long componentId, Long supplierId, String invoiceNumber, String packingList,
+	public Page<?> findPagable(Pageable pageable, boolean totals, Long purchaseId, Long componentId, Long supplierId, String invoiceNumber, String packingList,
 			LocalDate receivedFrom, LocalDate receivedTo);
 	public Receiving getLastByComponent(Long componentId);
 	
@@ -31,9 +33,35 @@ public interface CustomReceivingRepo {
 		EntityManager entityManager;
 
 		@Override
-		public Page<Receiving> findPagable(Pageable pageable, Long purchaseId, Long componentId, Long supplierId, String invoiceNumber, String packingList,
+		public Page<?> findPagable(Pageable pageable, boolean totals, Long purchaseId, Long componentId, Long supplierId, String invoiceNumber, String packingList,
 				LocalDate receivedFrom, LocalDate receivedTo) {
-			String q = "select distinct r from Receiving r " 
+			Query query = getQuery(pageable, totals, purchaseId, componentId, supplierId, invoiceNumber, packingList,
+				receivedFrom, receivedTo);
+			long total = query.getResultStream().count();
+			if(totals) {
+				@SuppressWarnings("unchecked")
+				List<Object> result = query.getResultList();
+				Page<Object> page = new PageImpl<Object>(result, pageable, total);
+				return page;
+			}else {
+				@SuppressWarnings("unchecked")
+				List<Receiving> result = query.setFirstResult(pageable.getPageNumber()*pageable.getPageSize())
+				.setMaxResults(pageable.getPageSize()).getResultList();
+				Page<Receiving> page = new PageImpl<Receiving>(result, pageable, total);
+				return page;
+			}
+		}
+		
+		
+		private Query getQuery(Pageable pageable, boolean totals, Long purchaseId, Long componentId, Long supplierId, String invoiceNumber, String packingList,
+				LocalDate receivedFrom, LocalDate receivedTo) {
+			String q = "";
+			if(totals) {
+				q += "select distinct sum(r.unitPrice) as totalUnitsPrice ";
+			}else {
+				q += "select distinct r ";
+			}
+			q += "from Receiving r " 
 					+ "left join r.purchaseComponent pc " 
 					+ "left join pc.purchase p " 
 					+ "left join pc.component c "
@@ -60,7 +88,9 @@ public interface CustomReceivingRepo {
 			if(receivedTo !=null) {
 				q += "and r.receivingDate <= :receivedTo ";
 			}
-			q += "order by r.updated desc";
+			if(!totals) {
+				q += "order by r.updated desc";
+			}
 			Query query = entityManager.createQuery(q);
 			if (purchaseId != null) {
 				query.setParameter("purchaseId", purchaseId);
@@ -83,13 +113,7 @@ public interface CustomReceivingRepo {
 			if(receivedTo !=null) {
 				query.setParameter("receivedTo", receivedTo);
 			}
-			
-			long total = query.getResultStream().count();
-			@SuppressWarnings("unchecked")
-			List<Receiving> result = query.setFirstResult(pageable.getPageNumber()*pageable.getPageSize())
-				.setMaxResults(pageable.getPageSize()).getResultList();
-			Page<Receiving> page = new PageImpl<Receiving>(result, pageable, total);
-			return page;
+			return query;
 		}
 
 		public Receiving getLastByComponent(Long componentId) {

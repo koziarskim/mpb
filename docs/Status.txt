@@ -13,6 +13,9 @@ Current priority
 		+ Allow to enter $ amount for each component received
 		- Allow to enter invoice number for all
 		- Show Total Inventory value based on search (Component based on average cost)
+		- Column with total
+		- Export to excel
+		- Price, Totals based on invoice.
 	+ Invoice view
 		+ Allow to search by date range
 		+ Show quick popup.
@@ -23,6 +26,12 @@ Current priority
 		+ Allow to search by date range
 		- Show total sale item price
 		- Show total Inventory value (Item) stock value $ (based on material cost (components))
+		- Exell export
+		- Search by item brand
+		- Search by item category
+		- Remove type
+		- Add columns (units and price and total)
+		- Totals (units and total amount)
 	Receiving:
 	+ Allow to enter Packing list #.
 	
