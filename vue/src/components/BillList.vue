@@ -80,6 +80,10 @@
       <b-pagination size="sm" v-model="pageable.currentPage" :per-page="pageable.perPage" :total-rows="pageable.totalElements" @change="paginationChange"></b-pagination>
       <span style="margin-top: 5px">Total of {{pageable.totalElements}} rows</span>
     </div>
+
+    <div v-if="billEditVisible">
+			  <bill-edit :receivingId="receivingId" v-on:close="closeBillEdit"></bill-edit>
+		</div>  
   </b-container>
 </template>
 <script>
@@ -89,6 +93,9 @@ import httpUtils from "../httpUtils";
 import moment from "moment";
 
 export default {
+  components: {
+    BillEdit: () => import("./modals/BillEdit"),
+  },
   data() {
     return {
       pageable: {totalElements: 100, currentPage: 1, perPage: 25, sortBy: 'updated', sortDesc: true},
@@ -122,6 +129,8 @@ export default {
       },
       totalUnitsPrice: 0,
       totalUnits: 0,
+      billEditVisible: false,
+      receivingId: null,
     };
   },
   computed: {},
@@ -137,6 +146,10 @@ export default {
     }
   },
   methods: {
+    closeBillEdit(event){
+      this.billEditVisible = false;
+      this.getReceivings();
+    },
     toggleShowTotals(){
       if(!this.showTotalsMenu){
         this.getReceivings(true);
@@ -205,18 +218,9 @@ export default {
         console.log("API error: " + e);
       });
     },
-    goToReceiving(receiving_id) {
-      if (!receiving_id) {
-        if(!this.purchaseKv.id || !this.componentKv.id){
-          alert("Please pick Purchase and Component first!")
-          return Promise.resolve();
-        }
-        this.getPurchaseComponent(this.purchaseKv.id, this.componentKv.id).then(pc => {
-          router.push("/receivingEdit/pc/" + pc.id);
-        })
-      } else {
-        router.push("/receivingEdit/" + receiving_id);
-      }
+    goToReceiving(receivingId) {
+      this.receivingId = receivingId
+      this.billEditVisible = true;
     },
     goToPurchase(purchase_id) {
       router.push("/purchaseEdit/" + purchase_id);
