@@ -11,7 +11,7 @@ Current priority
 		+ Allow to search by Packing List # (show all components for that packing)
 		+ Allow to search by date range
 		+ Allow to enter $ amount for each component received
-		- Allow to enter invoice number for all
+		+ Allow to enter invoice number for all
 		- Show Total Inventory value based on search (Component based on average cost)
 		+ Column with total price
 		- Export to excel
