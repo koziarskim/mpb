@@ -35,22 +35,30 @@
       <b-col cols=2>
         <b-select option-value="id" option-text="name" :list="availableSuppliers" v-model="supplierKv" placeholder="Supplier"></b-select>
       </b-col>
-      <b-col cols=2>
-        <input class="form-control" style="font-size: 12px" type="tel" v-model="invoiceNumber" @keyup.enter="getReceivings()" placeholder="Inoice #"/>
+      <b-col cols=1 style="margin-right: 35px">
+        <input class="form-control" style="font-size: 12px; width: 140px" type="tel" v-model="invoiceNumber" @keyup.enter="getReceivings()" placeholder="Inoice #"/>
       </b-col>
-      <b-col cols=1 style="margin-right: -45px;">
-        <b-button id="totalsMenu" size="sm" @click="toggleShowTotals()">Totals</b-button>
-        <b-popover :show="showTotalsMenu" placement="bottom" target="totalsMenu" variant="secondary">
-          <div style="width: 300px; font-size: 16px">
-            <div>Total of {{pageable.totalElements}} rows</div>
-            <div>Total price: ${{totalUnitsPrice}}</div>
-            <div>Total units: {{totalUnits}}</div>
-            <!-- <div>Total inventory value:</div> -->
-          </div>
-        </b-popover>
-      </b-col>      
+      <b-col cols=2>
+        <div style="display: flex">
+          <b-button id="totalsMenu" size="sm" @click="toggleShowTotals()">Totals</b-button>
+          <b-popover :show="showTotalsMenu" placement="bottom" target="totalsMenu" variant="secondary">
+            <div style="width: 300px; font-size: 16px">
+              <div>Total of {{pageable.totalElements}} rows</div>
+              <div>Total price: ${{totalUnitsPrice}}</div>
+              <div>Total units: {{totalUnits}}</div>
+              <!-- <div>Total inventory value:</div> -->
+            </div>
+          </b-popover>
+          <b-button size="sm" style="margin-left:3px" variant="primary" @click="editReceivings()">Edit ({{selectedReceivings.length}})</b-button>
+        </div>
+      </b-col>  
     </b-row>
     <b-table :items="receivings" :fields="fields" no-local-sorting>
+      <template v-slot:head(action)="row">
+        <div style="display: flex; width: 20px; margin-left: -25px">
+          <b-button size="sm" @click="triggerAll(false)" variant="link">(-)</b-button><b-button size="sm" @click="triggerAll(true)" variant="link">(+)</b-button>
+        </div>
+      </template>
       <template v-slot:cell(name)="row">
         <div style="width:150px; overflow: wrap; font-size: 14px">
           <b-link role="button" @click.stop="goToReceiving(row.item.id)">{{row.item.number}}</b-link> {{row.item.name}}
@@ -75,6 +83,9 @@
       <template v-slot:cell(totalPrice)="row">
         <span>${{row.item.totalPrice}}</span>
       </template>
+      <template v-slot:cell(action)="row">
+        <input type="checkbox" v-model="selectedReceivings" :value="row.item">
+      </template>      
     </b-table>
     <div style="display: flex">
       <b-pagination size="sm" v-model="pageable.currentPage" :per-page="pageable.perPage" :total-rows="pageable.totalElements" @change="paginationChange"></b-pagination>
@@ -83,6 +94,9 @@
 
     <div v-if="billEditVisible">
 			  <bill-edit :receivingId="receivingId" v-on:close="closeBillEdit"></bill-edit>
+		</div>  
+    <div v-if="billEditMultipleVisible">
+			<bill-edit-multiple :receivingIds="receivingIds" v-on:close="closeBillEditMultiple"></bill-edit-multiple>
 		</div>  
   </b-container>
 </template>
@@ -95,6 +109,7 @@ import moment from "moment";
 export default {
   components: {
     BillEdit: () => import("./modals/BillEdit"),
+    BillEditMultiple: () => import("./modals/BillEditMultiple"),
   },
   data() {
     return {
@@ -130,7 +145,10 @@ export default {
       totalUnitsPrice: 0,
       totalUnits: 0,
       billEditVisible: false,
+      billEditMultipleVisible: false,
       receivingId: null,
+      selectedReceivings: [],
+      receivingIds: [],
     };
   },
   computed: {},
@@ -146,8 +164,32 @@ export default {
     }
   },
   methods: {
+    triggerAll(add){
+      this.receivings.forEach(receiving => {
+        if(add){
+          var idx = this.selectedReceivings.findIndex(sr => sr.id == receiving.id);
+          if(idx == -1){
+            this.selectedReceivings.push(receiving);
+          }
+        }else{
+          this.selectedReceivings = [];
+        }
+      })
+    },    
+    editReceivings(){
+      this.selectedReceivings.forEach(r=>{
+        this.receivingIds.push(r.id);
+      })
+      this.billEditMultipleVisible = true;
+    },
     closeBillEdit(event){
       this.billEditVisible = false;
+      this.getReceivings();
+    },
+    closeBillEditMultiple(event){
+      this.billEditMultipleVisible = false;
+      this.selectedReceivings = [];
+      this.receivingIds = [];
       this.getReceivings();
     },
     toggleShowTotals(){

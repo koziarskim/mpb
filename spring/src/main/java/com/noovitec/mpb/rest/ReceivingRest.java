@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -118,6 +119,16 @@ class ReceivingRest {
 		return result.map(response -> ResponseEntity.ok().body(response)).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
 	}
 
+	@PostMapping("/receiving/invoice/ids/{receivingIds}")
+	ResponseEntity<?> postInvoiceNumber(@PathVariable Long[] receivingIds, @RequestParam String invoiceNumber) throws URISyntaxException {
+		for(Long receivingId: receivingIds) {
+			Receiving receiving = receivingRepo.getOne(receivingId);
+			receiving.setInvoiceNumber(invoiceNumber);
+			receiving = this.receive(receiving);
+		}
+		return ResponseEntity.ok().build();
+	}
+	
 	@PostMapping("/receivings/purchase/{purchase_id}")
 	ResponseEntity<?> postPurchase(@PathVariable Long purchase_id, @RequestBody Receiving[] receivings) throws URISyntaxException {
 		for(Receiving receiving: receivings) {
