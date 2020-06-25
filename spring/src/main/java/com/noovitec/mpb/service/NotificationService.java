@@ -10,10 +10,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
 import javax.mail.MessagingException;
+import javax.mail.Multipart;
 import javax.mail.Session;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+import javax.mail.util.ByteArrayDataSource;
 import javax.transaction.Transactional;
 
 import org.apache.velocity.app.VelocityEngine;
@@ -39,6 +45,7 @@ import com.noovitec.mpb.repo.NotificationRepo;
 public interface NotificationService {
 	
 	public void sendMail(List<String> emails, Map<String, String> model, Notification.TYPE type);
+	public void sendMailAttachment(List<String> emails, Map<String, String> model, Notification.TYPE type, byte[] file, String fileName);
 	
 	@Transactional
 	@Service("notificationServiceImpl")
@@ -54,6 +61,10 @@ public interface NotificationService {
 		}
 		
 		public void sendMail(List<String> emails, Map<String, String> model, Notification.TYPE type) {
+			this.sendMailAttachment(emails, model, type, null, null);
+		}
+		
+		public void sendMailAttachment(List<String> emails, Map<String, String> model, Notification.TYPE type, byte[] file, String fileName) {
 			log.info("EmailNotification: "+type);
 			try {
 				emails.add("mkoziarski@marketplacebrands.com");
@@ -92,7 +103,18 @@ public interface NotificationService {
 				email.addRecipient(javax.mail.Message.RecipientType.TO, new InternetAddress("mims@marketplacebrands.com"));
 				email.addRecipients(javax.mail.Message.RecipientType.BCC, bcc);
 				email.setSubject(subject);
-				email.setText(body, "UTF-8");
+				Multipart multipart = new MimeMultipart();
+				MimeBodyPart messageBodyPart = new MimeBodyPart();
+				messageBodyPart.setText(body);
+				multipart.addBodyPart(messageBodyPart);
+				if(file != null) {
+					DataSource ds = new ByteArrayDataSource(file, "application/x-any");
+					MimeBodyPart messageFilePart = new MimeBodyPart();
+					messageFilePart.setDataHandler(new DataHandler(ds));
+					messageFilePart.setFileName(fileName);
+					multipart.addBodyPart(messageFilePart);
+				}
+				email.setContent(multipart);
 				email.writeTo(buffer);
 				byte[] bytes = buffer.toByteArray();
 				String encodedEmail = Base64.getUrlEncoder().encodeToString(bytes);
