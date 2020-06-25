@@ -100,6 +100,7 @@ public interface NotificationService {
 				ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 				Session session = Session.getDefaultInstance(new Properties());
 				MimeMessage email = new MimeMessage(session);
+				email.setFrom(new InternetAddress("mkoziarski@marketplacebrands.com"));
 				email.addRecipient(javax.mail.Message.RecipientType.TO, new InternetAddress("mims@marketplacebrands.com"));
 				email.addRecipients(javax.mail.Message.RecipientType.BCC, bcc);
 				email.setSubject(subject);
@@ -122,6 +123,7 @@ public interface NotificationService {
 				message.setRaw(encodedEmail);
 				if(!MpbRequestContext.getStaticSetting().isSkipNotification()) {
 					message = service.users().messages().send("me", message).execute();
+					log.info("Message ID: "+message.getId());
 				}else {
 					log.info("Email sent skip");
 				}

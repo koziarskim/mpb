@@ -1,7 +1,14 @@
 package com.noovitec.mpb.service;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +20,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.pdf.AcroFields;
+import com.itextpdf.text.pdf.PdfCopy;
+import com.itextpdf.text.pdf.PdfReader;
+import com.itextpdf.text.pdf.PdfSmartCopy;
+import com.itextpdf.text.pdf.PdfStamper;
 import com.noovitec.mpb.entity.Customer;
 import com.noovitec.mpb.entity.Invoice;
 import com.noovitec.mpb.entity.InvoiceItem;
@@ -31,6 +45,7 @@ public interface InvoiceService {
 	public Invoice createInvoiceForSale(Sale sale);
 	public Invoice save(Invoice invoice);
 	public void delete(Long id);
+	public byte[] generatePdf(Invoice invoice, boolean submitted) throws IOException, DocumentException;
 	
 	@Transactional
 	@Service("invoiceServiceImpl")
@@ -172,6 +187,118 @@ public interface InvoiceService {
 		public void delete(Long id) {
 			invoiceRepo.deleteById(id);
 		}
+		
+		public byte[] generatePdf(Invoice invoice, boolean submitted) throws IOException, DocumentException {
+			String itemSaleNumber = "";
+			String itemQuantity = "";
+			String itemDescription = "";
+			String itemCasePack = "";
+			String itemPrice = "";
+			String itemTotalPrice = "";
+			int totalUnits = 0;
+			BigDecimal totalAmount = BigDecimal.ZERO;
+			Long totalCases = 0L;
+			Long totalPallets = 0L;
+			Collection<InvoiceItem> invoiceItems = invoice.getInvoiceItems();
+			Map<Long, String> saleIds = new HashMap<Long, String>();
+			int count = 0;
+			for (InvoiceItem ii : invoiceItems) {
+					saleIds.put(ii.getSaleItem().getSale().getId(), ii.getSaleItem().getSale().getNumber());
+					itemSaleNumber += ii.getSaleItem().getSale().getNumber() +"\n\n";
+					itemQuantity += ii.getUnitsInvoiced() + "\n\n";
+					itemDescription += ii.getSaleItem().getItem().getNumber() + " - " +ii.getSaleItem().getItem().getName()+"\n" 
+							+(ii.getSaleItem().getItem().getUpc()==null?"":"UPC: "+ii.getSaleItem().getItem().getUpc())+(ii.getSaleItem().getSku()==null?"":", SKU# "+ ii.getSaleItem().getSku()) + "\n";
+					itemCasePack += ii.getSaleItem().getItem().getCasePack() + "\n\n";
+					itemPrice += ii.getUnitPrice() + "\n\n";
+					totalUnits += ii.getUnitsInvoiced();
+					BigDecimal itemTotalPriceBd = ii.getUnitPrice().multiply(new BigDecimal(ii.getUnitsInvoiced())).setScale(2, RoundingMode.CEILING);
+					itemTotalPrice += itemTotalPriceBd.toString()  + "\n\n";
+					totalAmount = totalAmount.add(itemTotalPriceBd==null?BigDecimal.ZERO:itemTotalPriceBd);
+					totalCases += ii.getUnitsInvoiced()/ii.getSaleItem().getItem().getCasePack();
+					totalPallets += ii.getUnitsInvoiced()/(ii.getSaleItem().getItem().getTi() * ii.getSaleItem().getItem().getHi());
+			}
+			totalAmount = totalAmount.add(invoice.getShippingCost()==null?BigDecimal.ZERO:invoice.getShippingCost());
+			InputStream bolIn = null;
+			if(count <= 22) {
+			bolIn = this.getClass().getClassLoader().getResourceAsStream("pdf/Invoice-Template-1.pdf");
+			} else {
+				bolIn = this.getClass().getClassLoader().getResourceAsStream("pdf/Invoice-Template-2.pdf");
+			}
+			PdfReader mainReader = new PdfReader(bolIn);
+			ByteArrayOutputStream bolBaos = new ByteArrayOutputStream();
+			PdfStamper bolStamper = new PdfStamper(mainReader, bolBaos);
+			bolStamper.setFormFlattening(true);
+			bolStamper.getAcroFields().setField("date", (invoice.getDate()==null?"":invoice.getDate().format(DateTimeFormatter.ofPattern("MM/dd/yyy"))));
+			bolStamper.getAcroFields().setField("number", invoice.getNumber());
+			Shipment shipment = invoice.getShipment();
+			Customer customer = shipment.getCustomer();
+			String saleNumber = "Multiple";
+			if(saleIds.size()==1) {
+				saleNumber = shipment.getShipmentItems().iterator().next().getSaleItem().getSale().getNumber();
+			}
+			bolStamper.getAcroFields().setField("saleNumber", saleNumber);
+			if(customer.getBillingAddress()!=null) {
+				String billingAddress = customer.getBillingAddress().getStreet() + "\n" 
+					+ customer.getBillingAddress().getCity() + ", "+ customer.getBillingAddress().getState() + " "+customer.getBillingAddress().getZip();		
+				bolStamper.getAcroFields().setField("billingAddress", billingAddress);
+			}
+			if(shipment.getShippingAddress()!=null) {
+				String phone = null;//shipment.getShippingAddress().getPhone()==null?shipment.getCustomer().getPhone():shipment.getShippingAddress().getPhone();
+				String shippingAddress = shipment.getCustomer().getName() + " - "+shipment.getShippingAddress().getDc() + "\n"
+					+ (shipment.getShippingAddress().getLine()==null?"":(shipment.getShippingAddress().getLine() + "\n"))	
+					+ shipment.getShippingAddress().getStreet() + "\n" 
+					+ shipment.getShippingAddress().getCity() + ", " + shipment.getShippingAddress().getState() + " "+shipment.getShippingAddress().getZip() + "\n"
+					+ (phone==null?"":("Phone: "+phone + "\n"))
+					+ (shipment.getShippingAddress().getNotes()==null?"":shipment.getShippingAddress().getNotes());
+				bolStamper.getAcroFields().setField("shippingAddress", shippingAddress);
+			}
+			bolStamper.getAcroFields().setField("paymentTerms",  invoice.getPaymentTerms());
+			bolStamper.getAcroFields().setField("shippingDate", invoice.getShippingDate()==null?"":invoice.getShippingDate().format(DateTimeFormatter.ofPattern("MM/dd/yyy")));
+			
+			bolStamper.getAcroFields().setField("via", invoice.getVia());
+			bolStamper.getAcroFields().setField("fob", invoice.getFob());
+			bolStamper.getAcroFields().setField("loadNumber", invoice.getLoadNumber());
+
+			bolStamper.getAcroFields().setField("itemSaleNumber", itemSaleNumber);
+			bolStamper.getAcroFields().setField("itemQuantity", itemQuantity);
+			bolStamper.getAcroFields().setField("itemDescription", itemDescription);
+			bolStamper.getAcroFields().setField("itemCasePack", itemCasePack);
+			bolStamper.getAcroFields().setField("itemPrice", itemPrice);
+			bolStamper.getAcroFields().setField("itemTotalPrice", itemTotalPrice);
+
+			bolStamper.getAcroFields().setField("totalUnits", String.valueOf(totalUnits));
+			bolStamper.getAcroFields().setField("totalCases", totalCases.toString());
+			bolStamper.getAcroFields().setField("totalPallets", totalPallets.toString());
+			bolStamper.getAcroFields().setField("balanceDue", invoice.getBalanceDue()==null?"0.00":invoice.getBalanceDue().toString());
+			bolStamper.getAcroFields().setField("shippingCost", invoice.getShippingCost()==null?"0.00":invoice.getShippingCost().toString());
+			bolStamper.getAcroFields().setField("totalAmount", totalAmount.toString());
+//			List<String> iss = Arrays.asList("pdf/Invoice-Template-2.pdf","pdf/Invoice-Template-2.pdf","pdf/Invoice-Template-2.pdf");
+//			this.concatenatePdfs(iss, bolBaos);
+			bolStamper.close();
+			mainReader.close();
+			return bolBaos.toByteArray();
+		}
+		
+		private void concatenatePdfs(List<String> listOfPdfFiles, ByteArrayOutputStream outputStream) throws DocumentException, IOException {
+			Document document = new Document();
+	        PdfCopy copy = new PdfSmartCopy(document, outputStream);
+	        document.open();
+	        int count = 0;
+	        for (String newPage : listOfPdfFiles) {
+	        	count++;
+	        	InputStream is = this.getClass().getClassLoader().getResourceAsStream(newPage);
+	            PdfReader reader = new PdfReader(is);
+	            ByteArrayOutputStream newIs = new ByteArrayOutputStream();
+	            PdfStamper stamper = new PdfStamper(reader, newIs);
+	            AcroFields form = stamper.getAcroFields();
+	            form.setField("saleNumber", "122344-"+count);
+	            stamper.setFormFlattening(true);
+	            stamper.close();
+	            reader.close();
+	            copy.addDocument(reader);
+	        }
+	        document.close();
+	}
 
 	}
 }
