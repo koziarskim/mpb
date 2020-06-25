@@ -4,6 +4,7 @@ Done but not yet reviewed: (+)
 Current priority
 	Accounting:
 	+ Change menu to dropdown with (Invoice view, Invoice Item view, Bill view)
+	- Permissions
 	- Bills view - incoming (recevings)
 		+ Create new screen
 		+ Show invoice #
@@ -19,6 +20,7 @@ Current priority
 	+ Invoice view
 		+ Allow to search by date range
 		+ Show quick popup.
+		- Send email to client (andy as cc: by default).
 	- Invoice Item view - outgoing (our sales/shipments)
 		+ Create new screen
 		+ Show sale #
@@ -53,11 +55,6 @@ Future requests (priority not set yet)
 	- Search by shipment #
 	Return:
 	- Validate that it cannot return more that shipped.
-	Invoices:
-	- Permissions
-	- Send email to client (andy as cc: by default).
-	- Total quantity
-	- Total price
 	Item:
 	- Show component picture when mouse over.
 	- Items ready for production and shippped.
