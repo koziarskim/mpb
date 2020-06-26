@@ -17,7 +17,8 @@ Current priority
 		+ Column with total price
 		- Export to excel
 		+ Totals price based on invoice.
-		- Update all totals in DB.
+		+ Update all totals in DB.
+		+ Format totalPrice.
 	+ Invoice view
 		+ Allow to search by date range
 		+ Show quick popup.

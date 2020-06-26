@@ -235,7 +235,7 @@ export default {
         receivedTo: this.filter.receivedTo}})
         .then(r => {
           if(totals){
-            this.totalUnitsPrice = parseFloat(r.data.content[0][0]).toFixed(2);
+            this.totalUnitsPrice = parseFloat(r.data.content[0][0]).toLocaleString('en-US',{minimumFractionDigits: 2});
             this.totalUnits = r.data.content[0][1];
           }else{
             this.receivings = r.data.content;
