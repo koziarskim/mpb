@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 @Entity
 public class Address extends BaseEntity {
 
+	private static final long serialVersionUID = -6663301163019664754L;
 	private String line;
 	private String street;
 	private String city;

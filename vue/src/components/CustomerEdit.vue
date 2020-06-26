@@ -263,6 +263,7 @@ export default {
       showShipping: false,
       showAccounting: false,
       customer: {
+        id: "",
         name: "",
         account: "",
         billingAddress: {},

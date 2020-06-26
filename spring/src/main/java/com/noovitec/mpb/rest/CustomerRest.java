@@ -29,6 +29,7 @@ import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.entity.Customer;
 import com.noovitec.mpb.entity.Notification;
 import com.noovitec.mpb.repo.CustomerRepo;
+import com.noovitec.mpb.service.CrudService;
 import com.noovitec.mpb.service.NotificationService;
 
 
@@ -40,6 +41,8 @@ class CustomerRest {
 	private CustomerRepo customerRepo;
 	@Autowired
 	private NotificationService notificationService;
+	@Autowired
+	private CrudService crudService;
 
 	public CustomerRest(CustomerRepo customerRepo) {
 		this.customerRepo = customerRepo;
@@ -96,7 +99,9 @@ class CustomerRest {
 		if (customer == null) {
 			customer = new Customer();
 		}
-		if(customer.getId()==null) {
+		Long customerId = customer.getId();
+		customer = (Customer) crudService.merge(customer);
+		if(customerId == null) {
 			List<String> emails = new ArrayList<String>();
 			emails.add("kzygulska@marketplacebrands.com");
 			emails.add("vtomasik@marketplacebrands.com");

@@ -77,14 +77,7 @@ export default {
       if (id) {
         router.push("/customerEdit/" + id);
       } else {
-        http
-          .post("/customer")
-          .then(response => {
-            router.push("/customerEdit/" + response.data.id);
-          })
-          .catch(e => {
-            console.log("API Error: " + e);
-          });
+        router.push("/customerEdit");
       }
     }
   },
