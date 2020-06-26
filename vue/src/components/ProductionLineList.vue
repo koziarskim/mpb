@@ -205,7 +205,6 @@ export default {
           this.totalScheduled = 0;
           this.totalProduced = 0;
           if(response.data){
-            this.schedule = response.data;
             response.data.scheduleEvents.forEach(se =>{
               se.edit = false;
               if(this.selectedLine.id && se.line.id != this.selectedLine.id){
@@ -218,6 +217,7 @@ export default {
               this.totalProduced += se.unitsProduced;
               this.scheduleEvents.push(se)
             })
+            this.schedule = response.data;
           }
           this.getAvailableItems();
         })
