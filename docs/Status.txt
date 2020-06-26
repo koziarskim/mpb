@@ -17,6 +17,7 @@ Current priority
 		+ Column with total price
 		- Export to excel
 		+ Totals price based on invoice.
+		- Update all totals in DB.
 	+ Invoice view
 		+ Allow to search by date range
 		+ Show quick popup.
@@ -38,6 +39,8 @@ Current priority
 	+ Allow to enter Packing list #.
 	
 Future requests (priority not set yet)
+	Production
+	+ Allow to modify units scheduled from Production List screen.
 	Purchase
 	- Allow to upload file.
 	- Add Pay Terms
@@ -46,10 +49,13 @@ Future requests (priority not set yet)
 	- Cancel PO.
 	- Produced set scheduled and produced.
 	- Arrow on production.
+	- Excel export.
 	Component:
 	Schedule:
 	- Show legend.
+	- Allow to modify date from popup.
 	Customer:
+	+ Fix customer name in create new customer notification.
 	Sale:
 	- Transfer to (show sales with 0 stock).
 	- Search by shipment #

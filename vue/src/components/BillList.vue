@@ -81,7 +81,7 @@
         <span>${{row.item.unitPrice}}</span>
       </template>
       <template v-slot:cell(totalPrice)="row">
-        <span>${{row.item.totalPrice}}</span>
+        <span>${{getTotalPrice(row.item)}}</span>
       </template>
       <template v-slot:cell(action)="row">
         <input type="checkbox" v-model="selectedReceivings" :value="row.item">
@@ -164,6 +164,9 @@ export default {
     }
   },
   methods: {
+    getTotalPrice(dto){
+      return parseFloat(dto.totalPrice).toLocaleString('en-US',{minimumFractionDigits: 2});
+    },
     triggerAll(add){
       this.receivings.forEach(receiving => {
         if(add){
