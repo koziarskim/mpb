@@ -57,7 +57,7 @@ public interface CustomReceivingRepo {
 				LocalDate receivedFrom, LocalDate receivedTo) {
 			String q = "";
 			if(totals) {
-				q += "select distinct sum(r.totalPrice), sum(r.units), sum(r.unitPrice) ";
+				q += "select distinct sum(r.totalPrice), sum(r.units), r.id ";
 			}else {
 				q += "select distinct r ";
 			}
@@ -90,6 +90,8 @@ public interface CustomReceivingRepo {
 			}
 			if(!totals) {
 				q += "order by r.updated desc";
+			} else {
+				q += "group by r.id ";
 			}
 			Query query = entityManager.createQuery(q);
 			if (purchaseId != null) {

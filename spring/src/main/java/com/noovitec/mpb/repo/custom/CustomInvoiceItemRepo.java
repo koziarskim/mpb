@@ -54,7 +54,7 @@ public interface CustomInvoiceItemRepo {
 				LocalDate invoiceFrom, LocalDate invoiceTo) {
 			String q = "";
 			if(totals) {
-				q += "select distinct sum(invItem.totalUnitPrice), sum(invItem.unitsInvoiced), sum(invItem.unitPrice), count(*) ";
+				q += "select distinct sum(invItem.totalUnitPrice), sum(invItem.unitsInvoiced), invItem.id ";
 			}else {
 				q += "select distinct invItem ";
 			}
@@ -91,6 +91,8 @@ public interface CustomInvoiceItemRepo {
 			if(!totals) {
 				Order order = pageable.getSort().iterator().next();
 				q += "order by invItem."+order.getProperty() + " "+order.getDirection();
+			} else {
+				q += "group by invItem.id ";
 			}
 			Query query = entityManager.createQuery(q);
 			if (invoiceNumber != null && !invoiceNumber.isEmpty()) {
