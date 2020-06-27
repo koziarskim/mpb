@@ -33,6 +33,7 @@ class InvoiceItemRest {
 
 	@GetMapping("/invoiceItem/pageable")
 	Page<InvoiceItemListDto> getAllPageable(@RequestParam(required = false) Pageable pageable,
+			@RequestParam(required=false) boolean totals,
 			@RequestParam(required=false) String invoiceNumber,
 			@RequestParam(required=false) Long itemId,
 			@RequestParam(required=false) Long saleId,
@@ -40,23 +41,30 @@ class InvoiceItemRest {
 			@RequestParam(required=false) Long shipmentId,
 			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate invoiceFrom,
 			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate invoiceTo) {
-		Page<InvoiceItem> invoiceItems = invoiceItemRepo.findPagable(pageable, invoiceNumber, itemId, saleId, customerId, shipmentId, invoiceFrom, invoiceTo);
-		Page<InvoiceItemListDto> dtos = invoiceItems.map(invoiceItem -> {
-			InvoiceItemListDto dto = new InvoiceItemListDto();
-			dto.setId(invoiceItem.getInvoice().getId());
-			dto.setNumber(invoiceItem.getInvoice().getNumber());
-			dto.setItemNumber(invoiceItem.getSaleItem().getItem().getNumber());
-			dto.setItemName(invoiceItem.getSaleItem().getItem().getName());
-			dto.setSaleNumber(invoiceItem.getSaleItem().getSale().getNumber());
-			dto.setDate(invoiceItem.getInvoice().getDate());
-			dto.setShippingDate(invoiceItem.getInvoice().getShippingDate());
-			dto.setSent(invoiceItem.getInvoice().isSent());
-			dto.setType(invoiceItem.getInvoice().getType());
-			dto.setShipmentNumber(invoiceItem.getInvoice().getShipment().getNumber());
-			dto.setCustomerName(invoiceItem.getInvoice().getShipment().getCustomer().getName());
-			return dto;
-		});
-		return dtos;
+		@SuppressWarnings("unchecked")
+		Page<InvoiceItem> invoiceItems = (Page<InvoiceItem>) invoiceItemRepo.findPagable(pageable, totals, invoiceNumber, itemId, saleId, customerId, shipmentId, invoiceFrom, invoiceTo);
+		if(totals) {
+			//TODO: Generate excel and return as byte response.
+			Page<InvoiceItemListDto> dtos = null;
+			return dtos;
+		} else {
+			Page<InvoiceItemListDto> dtos = invoiceItems.map(invoiceItem -> {
+				InvoiceItemListDto dto = new InvoiceItemListDto();
+				dto.setId(invoiceItem.getInvoice().getId());
+				dto.setNumber(invoiceItem.getInvoice().getNumber());
+				dto.setItemNumber(invoiceItem.getSaleItem().getItem().getNumber());
+				dto.setItemName(invoiceItem.getSaleItem().getItem().getName());
+				dto.setSaleNumber(invoiceItem.getSaleItem().getSale().getNumber());
+				dto.setDate(invoiceItem.getInvoice().getDate());
+				dto.setShippingDate(invoiceItem.getInvoice().getShippingDate());
+				dto.setSent(invoiceItem.getInvoice().isSent());
+				dto.setType(invoiceItem.getInvoice().getType());
+				dto.setShipmentNumber(invoiceItem.getInvoice().getShipment().getNumber());
+				dto.setCustomerName(invoiceItem.getInvoice().getShipment().getCustomer().getName());
+				return dto;
+			});
+			return dtos;
+		}
 	}
 
 }

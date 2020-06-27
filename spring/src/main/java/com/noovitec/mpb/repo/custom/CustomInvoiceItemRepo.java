@@ -16,10 +16,11 @@ import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Repository;
 
 import com.noovitec.mpb.entity.InvoiceItem;
+import com.noovitec.mpb.entity.Receiving;
 import com.noovitec.mpb.repo.custom.CustomInvoiceRepo.CustomInvoiceRepoImpl;
 
 public interface CustomInvoiceItemRepo {
-	public Page<InvoiceItem> findPagable(Pageable pageable, String invoiceNumer, Long itemId, Long saleId, Long customerId, Long shipmentId,
+	public Page<?> findPagable(Pageable pageable, boolean totals, String invoiceNumer, Long itemId, Long saleId, Long customerId, Long shipmentId,
 			LocalDate invoiceFrom, LocalDate invoiceTo);
 	
 	@Repository
@@ -31,8 +32,27 @@ public interface CustomInvoiceItemRepo {
 		EntityManager entityManager;
 
 		@Override
-		public Page<InvoiceItem> findPagable(Pageable pageable, String invoiceNumber, Long itemId, Long saleId, Long customerId, Long shipmentId,
+		public Page<?> findPagable(Pageable pageable, boolean totals, String invoiceNumber, Long itemId, Long saleId, Long customerId, Long shipmentId,
 				LocalDate invoiceFrom, LocalDate invoiceTo) {
+			Query query = this.getQuery(pageable, totals, invoiceNumber, itemId, saleId, customerId, shipmentId, invoiceFrom, invoiceTo);
+			long total = query.getResultStream().count();
+			if(totals) {
+				@SuppressWarnings("unchecked")
+				List<InvoiceItem> result = query.getResultList();
+				Page<InvoiceItem> page = new PageImpl<InvoiceItem>(result, pageable, total);
+				return page;
+			}else {
+				@SuppressWarnings("unchecked")
+				List<InvoiceItem> result = query.setFirstResult(pageable.getPageNumber()*pageable.getPageSize())
+					.setMaxResults(pageable.getPageSize()).getResultList();
+				Page<InvoiceItem> page = new PageImpl<InvoiceItem>(result, pageable, total);
+				return page;
+			}
+		}
+		
+		private Query getQuery(Pageable pageable, boolean totals, String invoiceNumber, Long itemId, Long saleId, Long customerId, Long shipmentId,
+				LocalDate invoiceFrom, LocalDate invoiceTo) {
+			
 			String q = "select distinct invItem from InvoiceItem invItem "
 					+ "join invItem.invoice inv "
 					+ "join inv.shipment ship "
@@ -87,12 +107,8 @@ public interface CustomInvoiceItemRepo {
 			if(invoiceTo !=null) {
 				query.setParameter("invoiceTo", invoiceTo);
 			}
-			long total = query.getResultStream().count();
-			@SuppressWarnings("unchecked")
-			List<InvoiceItem> result = query.setFirstResult(pageable.getPageNumber()*pageable.getPageSize())
-				.setMaxResults(pageable.getPageSize()).getResultList();
-			Page<InvoiceItem> page = new PageImpl<InvoiceItem>(result, pageable, total);
-			return page;
+			return query;
 		}
+
 	}
 }
