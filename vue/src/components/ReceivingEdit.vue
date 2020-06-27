@@ -37,18 +37,6 @@
             <label class="top-label">Container:</label>
             <input class="form-control" type="text" v-model="receiving.containerNumber" placeholder="Container #">
           </b-col>
-          <b-col cols="4">
-            <label class="top-label">Invoice:</label>
-            <input class="form-control" type="text" v-model="receiving.invoiceNumber">
-          </b-col>
-          <b-col cols="4">
-            <label class="top-label">Unit Price:</label>
-            <input class="form-control" type="text" v-model="receiving.unitPrice">
-          </b-col>          
-          <b-col cols="4">
-            <label class="top-label">Total Price:</label>
-            <input class="form-control" type="text" v-model="totalPrice" disabled="true">
-          </b-col>          
         </b-row>
       </b-col>
       <b-col>
@@ -57,9 +45,6 @@
             Component: {{purchaseComponent.component.name}}<br/>
             Ordered: {{purchaseComponent.units}}<br/>
             Received: {{purchaseComponent.unitsReceived}}<br/>
-            Average Unit Price: ${{purchaseComponent.component.averagePrice}}<br/>
-            Recent Unit Price: ${{purchaseComponent.component.unitCost}}<br/>
-            P.O. Unit Price: ${{purchaseComponent.unitPrice}}<br/>
         </b-row>
       </b-col>
     </b-row>
@@ -84,9 +69,6 @@ export default {
     };
   },
   computed: {
-    totalPrice(){
-      return (+this.receiving.unitPrice * +this.receiving.units).toFixed(2);
-    }
   },
   watch: {},
   methods: {
@@ -109,10 +91,6 @@ export default {
         });
     },
     validate(){
-      if(!this.receiving.units || !this.receiving.unitPrice){
-        alert("Please enter units and price!");
-        return false;
-      }
       if(!this.receiving.etaDate && !this.receiving.receivingDate){
         alert("Please enter ETA or Received Date!");
         return false;
@@ -130,7 +108,7 @@ export default {
       if(!this.receiving.id){
         this.receiving.purchaseComponent = this.purchaseComponent;
       }
-      this.receiving.totalPrice = this.totalPrice;
+      this.receiving.totalPrice = (+this.receiving.unitPrice * +this.receiving.units);
       return http.post("/receiving", this.receiving).then(r => {
         return Promise.resolve();
       }).catch(e => {
@@ -151,9 +129,6 @@ export default {
           this.receiving.invoiceNumber = r.data.purchase.invoiceNumber;
           if(!this.receiving.number){
             this.receiving.number = r.data.purchase.number + "-" + r.data.component.number;
-          }
-          if(!this.receiving.unitPrice){
-            this.receiving.unitPrice = r.data.unitPrice;
           }
         }).catch(e => {
           console.log("API error: " + e);
