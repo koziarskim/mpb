@@ -56,7 +56,7 @@
       </b-col>
       <b-col cols=2>
         <label class="top-label">Shipped (Actual Load Sent):</label>
-        <input @change="changeShippedDate" class="form-control" type="date" v-model="shippedDate">
+        <input @change="changeShippedDate" class="form-control" type="date" :disabled="shippedDate?true:false" v-model="shippedDate">
       </b-col>
     </b-row>
     <b-row>
