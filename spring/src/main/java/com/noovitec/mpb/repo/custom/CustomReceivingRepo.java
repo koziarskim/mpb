@@ -46,7 +46,7 @@ public interface CustomReceivingRepo {
 			}else {
 				@SuppressWarnings("unchecked")
 				List<Receiving> result = query.setFirstResult(pageable.getPageNumber()*pageable.getPageSize())
-				.setMaxResults(pageable.getPageSize()).getResultList();
+					.setMaxResults(pageable.getPageSize()).getResultList();
 				Page<Receiving> page = new PageImpl<Receiving>(result, pageable, total);
 				return page;
 			}

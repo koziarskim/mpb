@@ -38,8 +38,8 @@ public interface CustomInvoiceItemRepo {
 			long total = query.getResultStream().count();
 			if(totals) {
 				@SuppressWarnings("unchecked")
-				List<InvoiceItem> result = query.getResultList();
-				Page<InvoiceItem> page = new PageImpl<InvoiceItem>(result, pageable, total);
+				List<Object> result = query.getResultList();
+				Page<Object> page = new PageImpl<Object>(result, pageable, total);
 				return page;
 			}else {
 				@SuppressWarnings("unchecked")
@@ -52,8 +52,13 @@ public interface CustomInvoiceItemRepo {
 		
 		private Query getQuery(Pageable pageable, boolean totals, String invoiceNumber, Long itemId, Long saleId, Long customerId, Long shipmentId,
 				LocalDate invoiceFrom, LocalDate invoiceTo) {
-			
-			String q = "select distinct invItem from InvoiceItem invItem "
+			String q = "";
+			if(totals) {
+				q += "select distinct sum(invItem.totalUnitPrice), sum(invItem.unitsInvoiced), sum(invItem.unitPrice), count(*) ";
+			}else {
+				q += "select distinct invItem ";
+			}
+			q += "from InvoiceItem invItem "
 					+ "join invItem.invoice inv "
 					+ "join inv.shipment ship "
 					+ "join ship.shipmentItems shipItem "
@@ -83,8 +88,10 @@ public interface CustomInvoiceItemRepo {
 			if(invoiceTo !=null) {
 				q += "and inv.date <= :invoiceTo ";
 			}
-			Order order = pageable.getSort().iterator().next();
-			q += "order by invItem."+order.getProperty() + " "+order.getDirection();
+			if(!totals) {
+				Order order = pageable.getSort().iterator().next();
+				q += "order by invItem."+order.getProperty() + " "+order.getDirection();
+			}
 			Query query = entityManager.createQuery(q);
 			if (invoiceNumber != null && !invoiceNumber.isEmpty()) {
 				query.setParameter("invoiceNumber", invoiceNumber);

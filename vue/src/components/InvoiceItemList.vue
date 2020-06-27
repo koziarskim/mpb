@@ -43,7 +43,8 @@
         <b-popover :show="showTotalsMenu" placement="bottom" target="totalsMenu" variant="secondary">
           <div style="width: 300px; font-size: 16px">
             <div>Total of {{pageable.totalElements}} rows</div>
-            <div>Total sale item invoiced:</div>
+            <div>Total price: ${{totalUnitsPrice}}</div>
+            <div>Total units: {{totalUnits}}</div>
           </div>
         </b-popover>
       </b-col>      
@@ -110,6 +111,8 @@ export default {
         invoiceFrom: null,
         invoiceTo: null,
       },
+      totalUnitsPrice: 0,
+      totalUnits: 0,
     };
   },
   watch: {
@@ -131,6 +134,9 @@ export default {
       return parseFloat(ii.totalUnitPrice).toLocaleString('en-US',{minimumFractionDigits: 2})
     },
     toggleShowTotals(){
+      if(!this.showTotalsMenu){
+        this.getInvoiceItems(true);
+      }
       this.showTotalsMenu = !this.showTotalsMenu;
     },
     searchFilterMenu(){
@@ -147,8 +153,9 @@ export default {
         this.pageable.currentPage = page;
         this.getInvoiceItems();
     },
-	  getInvoiceItems() {
+	  getInvoiceItems(totals) {
       var query = {params: {
+        totals: totals,
         pageable: this.pageable,
         invoiceNumber: this.invoiceNumber,
         itemId: this.itemKv.id,
@@ -159,8 +166,13 @@ export default {
         invoiceTo: this.filter.invoiceTo
       }}
       http.get("/invoiceItem/pageable", query).then(r => {
-        this.invoiceItems = r.data.content;
-        this.pageable.totalElements = r.data.totalElements;
+        if(totals){
+          this.totalUnitsPrice = parseFloat(r.data.content[0][0]).toLocaleString('en-US',{minimumFractionDigits: 2});
+          this.totalUnits = r.data.content[0][1];
+        } else {
+          this.invoiceItems = r.data.content;
+          this.pageable.totalElements = r.data.totalElements;
+        }
       }).catch(e => {
         console.log("API error: "+e);
       });

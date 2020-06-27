@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.noovitec.mpb.dto.InvoiceItemListDto;
 import com.noovitec.mpb.entity.InvoiceItem;
+import com.noovitec.mpb.entity.Receiving;
 import com.noovitec.mpb.repo.InvoiceItemRepo;
 import com.noovitec.mpb.service.InvoiceService;
 
@@ -32,7 +33,7 @@ class InvoiceItemRest {
 	}
 
 	@GetMapping("/invoiceItem/pageable")
-	Page<InvoiceItemListDto> getAllPageable(@RequestParam(required = false) Pageable pageable,
+	Page<?> getAllPageable(@RequestParam(required = false) Pageable pageable,
 			@RequestParam(required=false) boolean totals,
 			@RequestParam(required=false) String invoiceNumber,
 			@RequestParam(required=false) Long itemId,
@@ -44,9 +45,9 @@ class InvoiceItemRest {
 		@SuppressWarnings("unchecked")
 		Page<InvoiceItem> invoiceItems = (Page<InvoiceItem>) invoiceItemRepo.findPagable(pageable, totals, invoiceNumber, itemId, saleId, customerId, shipmentId, invoiceFrom, invoiceTo);
 		if(totals) {
-			//TODO: Generate excel and return as byte response.
-			Page<InvoiceItemListDto> dtos = null;
-			return dtos;
+			@SuppressWarnings("unchecked")
+			Page<?> result = (Page<InvoiceItem>) invoiceItemRepo.findPagable(pageable, totals, invoiceNumber, itemId, saleId, customerId, shipmentId, invoiceFrom, invoiceTo);
+			return result;
 		} else {
 			Page<InvoiceItemListDto> dtos = invoiceItems.map(invoiceItem -> {
 				InvoiceItemListDto dto = new InvoiceItemListDto();
