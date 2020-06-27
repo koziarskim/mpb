@@ -20,7 +20,8 @@ import lombok.NoArgsConstructor;
 @Entity
 public class InvoiceItem extends BaseEntity {
 
-    private BigDecimal unitPrice;
+	private static final long serialVersionUID = -4854545044411436045L;
+	private BigDecimal unitPrice;
     private long unitsInvoiced = 0;
 	private BigDecimal totalUnitPrice;
 	

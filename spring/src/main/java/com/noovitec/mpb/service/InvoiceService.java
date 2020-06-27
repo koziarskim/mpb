@@ -99,6 +99,7 @@ public interface InvoiceService {
 				ii.setSaleItem(saleItem);
 				ii.setUnitPrice(saleItem.getUnitPrice());
 				ii.setUnitsInvoiced(Long.valueOf(saleItem.getUnits()));
+				ii.setTotalUnitPrice(ii.getUnitPrice().multiply(BigDecimal.valueOf(ii.getUnitsInvoiced())));
 				invoice.getInvoiceItems().add(ii);
 			}
 			invoice = this.save(invoice);
@@ -130,6 +131,7 @@ public interface InvoiceService {
 					ii.setSaleItem(shipItem.getSaleItem());
 					ii.setUnitPrice(shipItem.getSaleItem().getUnitPrice());
 					ii.setUnitsInvoiced(shipItem.getUnits());
+					ii.setTotalUnitPrice(ii.getUnitPrice().multiply(BigDecimal.valueOf(ii.getUnitsInvoiced())));
 					invoice.getInvoiceItems().add(ii);
 				}
 				invoice = this.save(invoice);

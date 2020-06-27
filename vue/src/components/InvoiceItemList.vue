@@ -56,6 +56,12 @@
         <template v-slot:cell(sent)="row">
           <span>{{row.item.sent?'Yes':'No'}}</span>
         </template>
+        <template v-slot:cell(unitPrice)="row">
+          <span>${{row.item.unitPrice}}</span>
+        </template>
+        <template v-slot:cell(totalUnitPrice)="row">
+          <span>${{getTotalUnitPrice(row.item)}}</span>
+        </template>
       </b-table>
       <div style="display: flex">
 		    <b-pagination size="sm" v-model="pageable.currentPage" :per-page="pageable.perPage" :total-rows="pageable.totalElements" @change="paginationChange"></b-pagination>
@@ -82,7 +88,9 @@ export default {
         { key: "date", label: "Date", sortable: false },
         { key: "customerName", label: "Customer", sortable: false },
         { key: "shipmentNumber", label: "Shipment", sortable: false },
-        { key: "type", label: "Type", sortable: false },
+        { key: "unitsInvoiced", label: "Units", sortable: false },
+        { key: "unitPrice", label: "Price", sortable: false },
+        { key: "totalUnitPrice", label: "Total", sortable: false },
         { key: "sent", label: "Sent", sortable: false },
         { key: "action", label: "", sortable: false}
       ],
@@ -119,6 +127,9 @@ export default {
     },
   },
   methods: {
+    getTotalUnitPrice(ii){
+      return parseFloat(ii.totalUnitPrice).toLocaleString('en-US',{minimumFractionDigits: 2})
+    },
     toggleShowTotals(){
       this.showTotalsMenu = !this.showTotalsMenu;
     },

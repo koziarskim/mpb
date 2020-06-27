@@ -61,6 +61,9 @@ class InvoiceItemRest {
 				dto.setType(invoiceItem.getInvoice().getType());
 				dto.setShipmentNumber(invoiceItem.getInvoice().getShipment().getNumber());
 				dto.setCustomerName(invoiceItem.getInvoice().getShipment().getCustomer().getName());
+				dto.setUnitsInvoiced(invoiceItem.getUnitsInvoiced());
+				dto.setUnitPrice(invoiceItem.getUnitPrice());
+				dto.setTotalUnitPrice(invoiceItem.getTotalUnitPrice());
 				return dto;
 			});
 			return dtos;
