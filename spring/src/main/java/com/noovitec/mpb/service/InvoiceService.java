@@ -240,7 +240,8 @@ public interface InvoiceService {
 			}
 			bolStamper.getAcroFields().setField("saleNumber", saleNumber);
 			if(customer.getBillingAddress()!=null) {
-				String billingAddress = customer.getBillingAddress().getStreet() + "\n" 
+				String billingAddress = customer.getName() + "\n" 
+					+ customer.getBillingAddress().getStreet() + "\n" 
 					+ customer.getBillingAddress().getCity() + ", "+ customer.getBillingAddress().getState() + " "+customer.getBillingAddress().getZip();		
 				bolStamper.getAcroFields().setField("billingAddress", billingAddress);
 			}
