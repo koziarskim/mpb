@@ -221,11 +221,7 @@ public interface InvoiceService {
 			}
 			totalAmount = totalAmount.add(invoice.getShippingCost()==null?BigDecimal.ZERO:invoice.getShippingCost());
 			InputStream bolIn = null;
-			if(count <= 22) {
 			bolIn = this.getClass().getClassLoader().getResourceAsStream("pdf/Invoice-Template-1.pdf");
-			} else {
-				bolIn = this.getClass().getClassLoader().getResourceAsStream("pdf/Invoice-Template-2.pdf");
-			}
 			PdfReader mainReader = new PdfReader(bolIn);
 			ByteArrayOutputStream bolBaos = new ByteArrayOutputStream();
 			PdfStamper bolStamper = new PdfStamper(mainReader, bolBaos);
