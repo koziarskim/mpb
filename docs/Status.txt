@@ -6,36 +6,37 @@ Current priority
 	+ Change menu to dropdown with (Invoice view, Invoice Item view, Bill view)
 	- Permissions
 	- Bills view - incoming (recevings)
-		+ Create new screen
-		+ Show invoice #
-		+ Show price
-		+ Allow to search by Packing List # (show all components for that packing)
-		+ Allow to search by date range
-		+ Allow to enter $ amount for each component received
-		+ Allow to enter invoice number for all
-		+ Column with total price
-		- Export to excel
-		+ Totals price based on invoice.
+		++ Create new screen
+		++ Show invoice #
+		++ Show price
+		++ Allow to search by Packing List # (show all components for that packing)
+		++ Allow to search by date range
+		++ Allow to enter $ amount for each component received
+		++ Allow to enter invoice number for all
+		++ Column with total price
+		++ Totals price based on invoice.
 		+ Update all totals in DB.
 		+ Format totalPrice.
+		- Export to excel
 	+ Invoice view
-		+ Allow to search by date range
-		+ Show quick popup.
+		++ Allow to search by date range
+		++ Show quick popup.
 		- Send email to client (andy as cc: by default).
+		+ Show cutomer name (bill to) on PDF.
 	- Invoice Item view - outgoing (our sales/shipments)
-		+ Create new screen
-		+ Show sale #
-		+ Show item #
-		+ Allow to search by date range
+		++ Create new screen
+		++ Show sale #
+		++ Show item #
+		++ Allow to search by date range
+		+ Remove type
+		+ Add columns (units and price and total)
+		- Totals (units and total amount)
 		- Show total sale item price
 		- Exell export
 		- Search by item brand
 		- Search by item category
-		+ Remove type
-		+ Add columns (units and price and total)
-		- Totals (units and total amount)
 	Receiving:
-	+ Allow to enter Packing list #.
+	++ Allow to enter Packing list #.
 	
 Future requests (priority not set yet)
 	Production
