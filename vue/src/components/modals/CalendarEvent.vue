@@ -2,10 +2,11 @@
   <b-container fluid>
     <b-modal centered size="md" v-model="visible" :hide-header="true" :hide-footer="true">
       <b-row>
-        <b-col cols=5>
-          <div>{{getStartDate()}}</div>
-        </b-col>
         <b-col cols=3>
+          <div>{{getStartDate()}} </div>
+        </b-col>
+        <b-col cols=5>
+          <input v-if="!event.type.includes('SHIPMENT')" class="form-control" type="date" v-model="startDate">
           <div><b-link v-if="event.type.includes('SHIPMENT')" role="button" @click="goToShipment(event.id)">{{event.heading1}}</b-link></div>
         </b-col>
         <b-col style="display: flex; justify-content: flex-end">
@@ -69,6 +70,7 @@ export default {
   data() {
     return {
       visible: true,
+      startDate: "",
     };
   },
   computed: {},
@@ -81,14 +83,14 @@ export default {
     }
   },
   methods: {
+    getStartDate(){
+      return moment(this.event.start).format("MMMM, ddd DD");
+    },
     goToShipment(shipmentId){
       router.push("/shipmentEdit/"+shipmentId);
     },
     allowEdit(){
       return !this.event.type.includes('SHIPMENT');
-    },
-    getStartDate(){
-      return moment(this.event.start).format("MMMM, dddd DD");
     },
     validate() {
       return true;
@@ -98,6 +100,9 @@ export default {
     },
     save(){
       if(!this.validate()){return}
+      this.event.startDate = moment(this.startDate).format("YYYY-MM-DD");
+      this.event.endDate = moment(this.startDate).format("YYYY-MM-DD");
+      // this.event.start = moment(this.startDate, "YYYY-MM-dd").set({hour: moment(this.event.startTime, "HH"), minute: moment(this.event.startTime, "mm")});
       http.post("/calendarEvent", this.event).then(r => {
         this.close(this.event);
       }).catch(e=> {console.log("API error: " + e);})
@@ -113,6 +118,7 @@ export default {
     }
   },
   mounted() {
+    this.startDate = moment(this.event.start).format("YYYY-MM-DD");
   }
 };
 </script>
