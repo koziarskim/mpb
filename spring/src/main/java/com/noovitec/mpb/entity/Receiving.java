@@ -29,7 +29,7 @@ public class Receiving extends BaseEntity {
 	private String invoiceNumber;
 	private long units = 0;
 	private BigDecimal unitPrice = BigDecimal.ZERO;
-	private LocalDate shippingDate;
+	private LocalDate expirationDate;
 	private LocalDate etaDate;
 	private LocalDate receivingDate;
 	private BigDecimal totalPrice;

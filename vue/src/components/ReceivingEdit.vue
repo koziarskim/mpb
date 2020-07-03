@@ -16,13 +16,13 @@
       <b-col cols=8>
         <b-row>
           <b-col cols="4">
-            <label class="top-label">Shipped Date:</label>
-            <input class="form-control" type="date" v-model="receiving.shippingDate">
+            <label class="top-label">Expiration Date:</label>
+            <input class="form-control" type="date" v-model="receiving.expirationDate">
           </b-col>
-          <b-col cols="4">
+          <!-- <b-col cols="4">
             <label class="top-label">ETA Date:</label>
             <input class="form-control" type="date" v-model="receiving.etaDate">
-          </b-col>
+          </b-col> -->
           <b-col cols="4">
             <label class="top-label">Received Date:</label>
             <input class="form-control" type="date" v-model="receiving.receivingDate">

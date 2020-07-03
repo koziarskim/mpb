@@ -18,6 +18,8 @@ Current priority
 		+ Update all totals in DB.
 		+ Format totalPrice.
 		- Export to excel
+		- Remove shipping and eta date
+		- Add expiration date
 	+ Invoice view
 		++ Allow to search by date range
 		++ Show quick popup.
@@ -36,7 +38,9 @@ Current priority
 		- Search by item brand
 		- Search by item category
 	Receiving:
-	++ Allow to enter Packing list #.
+	++ Allow to enter Packing list #
+	- Remove shipping and eta date
+	- Add expiration date
 	
 Future requests (priority not set yet)
 	Production
