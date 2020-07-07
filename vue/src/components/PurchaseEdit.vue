@@ -358,6 +358,7 @@ export default {
         receiving.receivingDate = this.receivingDate;
         receiving.units = pc.unitsToReceive;
         receiving.unitPrice = pc.unitPriceReceived;
+        receiving.totalPrice = (+receiving.units * +receiving.unitPrice);
         receivings.push(receiving);
       })
       if(isNegative){
