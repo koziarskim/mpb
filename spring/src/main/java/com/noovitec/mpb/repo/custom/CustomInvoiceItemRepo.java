@@ -1,6 +1,7 @@
 package com.noovitec.mpb.repo.custom;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -37,9 +38,8 @@ public interface CustomInvoiceItemRepo {
 			Query query = this.getQuery(pageable, totals, invoiceNumber, itemId, saleId, customerId, shipmentId, invoiceFrom, invoiceTo);
 			long total = query.getResultStream().count();
 			if(totals) {
-				@SuppressWarnings("unchecked")
-				List<Object> result = query.getResultList();
-				Page<Object> page = new PageImpl<Object>(result, pageable, total);
+				Object result = query.getSingleResult();
+				Page<Object> page = new PageImpl<Object>(Arrays.asList(result), pageable, total);
 				return page;
 			}else {
 				@SuppressWarnings("unchecked")
@@ -54,15 +54,14 @@ public interface CustomInvoiceItemRepo {
 				LocalDate invoiceFrom, LocalDate invoiceTo) {
 			String q = "";
 			if(totals) {
-				q += "select distinct sum(invItem.totalUnitPrice), sum(invItem.unitsInvoiced), invItem.id ";
+				q += "select distinct sum(invItem.totalUnitPrice), sum(invItem.unitsInvoiced) ";
 			}else {
 				q += "select distinct invItem ";
 			}
 			q += "from InvoiceItem invItem "
 					+ "join invItem.invoice inv "
 					+ "join inv.shipment ship "
-					+ "join ship.shipmentItems shipItem "
-					+ "join shipItem.saleItem si "
+					+ "join invItem.saleItem si "
 					+ "join si.sale s "
 					+ "join si.item i "
 					+ "join ship.customer cu "
@@ -91,8 +90,6 @@ public interface CustomInvoiceItemRepo {
 			if(!totals) {
 				Order order = pageable.getSort().iterator().next();
 				q += "order by invItem."+order.getProperty() + " "+order.getDirection();
-			} else {
-				q += "group by invItem.id ";
 			}
 			Query query = entityManager.createQuery(q);
 			if (invoiceNumber != null && !invoiceNumber.isEmpty()) {
