@@ -37,8 +37,8 @@ public interface CustomInvoiceRepo {
 				LocalDate invoiceFrom, LocalDate invoiceTo) {
 			String q = "select distinct inv from Invoice inv "
 					+ "join inv.shipment ship "
-					+ "join ship.shipmentItems shipItem "
-					+ "join shipItem.saleItem si "
+					+ "join inv.invoiceItems invItem "
+					+ "join invItem.saleItem si "
 					+ "join si.sale s "
 					+ "join si.item i "
 					+ "join ship.customer cu "
