@@ -37,6 +37,7 @@ public class Invoice extends BaseEntity {
 	private boolean sent;
 	private BigDecimal shippingCost;
 	private BigDecimal balanceDue;
+	private String apEmail;
 
 	@JsonIgnoreProperties(value = { "items" }, allowSetters = true)
 	@ManyToOne()

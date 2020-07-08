@@ -25,7 +25,7 @@
       </b-col>
       <b-col cols=2 style="text-align: right; margin-top: 20px">
         <label class="top-label">Sent</label>
-        <input type="checkbox" style="margin-left: 3px;" v-model="invoice.sent">
+        <input type="checkbox" disabled="true" style="margin-left: 3px;" v-model="invoice.sent">
         <a :href="getPdfUrl(invoice.id)" target="_blank" style="margin-left: 10px;">
           <img src="../assets/pdf-download.png" width="23px">
         </a>
@@ -74,6 +74,13 @@
       <b-col cols=2>
         <label class="top-label">Balance Due:</label>
         <input class="form-control" type="tel" v-model="invoice.balanceDue">
+      </b-col>
+      <b-col cols=3>
+        <label class="top-label">A-P Email:</label>
+        <input class="form-control" type="tel" v-model="invoice.apEmail">
+      </b-col>
+      <b-col cols=1>
+        <b-button style="margin-top: 25px" size="sm" variant="success" @click="sendInvoice()">Send</b-button>
       </b-col>
 
     </b-row>
@@ -284,6 +291,9 @@ export default {
     getInvoice(invoiceId) {
       return http.get("/invoice/" + invoiceId).then(r => {
         this.invoice = r.data;
+        if(!this.invoice.apEmail){
+          this.invoice.apEmail = r.data.shipment.customer.apEmail;
+        }
         return r.data;
       }).catch(e => {
         console.log("API error: " + e);
