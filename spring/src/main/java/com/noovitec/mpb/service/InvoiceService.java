@@ -45,7 +45,7 @@ public interface InvoiceService {
 	public Invoice createInvoiceForSale(Sale sale);
 	public Invoice save(Invoice invoice);
 	public void delete(Long id);
-	public byte[] generatePdf(Invoice invoice, boolean submitted) throws IOException, DocumentException;
+	public byte[] generatePdf(Long invoiceId) throws IOException, DocumentException;
 	
 	@Transactional
 	@Service("invoiceServiceImpl")
@@ -190,7 +190,8 @@ public interface InvoiceService {
 			invoiceRepo.deleteById(id);
 		}
 		
-		public byte[] generatePdf(Invoice invoice, boolean submitted) throws IOException, DocumentException {
+		public byte[] generatePdf(Long invoiceId) throws IOException, DocumentException {
+			Invoice invoice = invoiceRepo.findById(invoiceId).get();
 			String itemSaleNumber = "";
 			String itemQuantity = "";
 			String itemDescription = "";

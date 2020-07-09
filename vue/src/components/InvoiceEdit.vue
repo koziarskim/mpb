@@ -29,7 +29,7 @@
         <a :href="getPdfUrl(invoice.id)" target="_blank" style="margin-left: 10px;">
           <img src="../assets/pdf-download.png" width="23px">
         </a>
-        <b-button style="margin-left: 5px" size="sm" variant="success" @click="saveInvoice()">Save</b-button>
+        <b-button style="margin-left: 5px" size="sm" variant="success" @click="saveInvoice(false)">Save</b-button>
         <b-button style="margin-left: 3px" size="sm" @click="deleteInvoice()">x</b-button>
       </b-col>
     </b-row>
@@ -80,26 +80,10 @@
         <input class="form-control" type="tel" v-model="invoice.apEmail">
       </b-col>
       <b-col cols=1>
-        <b-button style="margin-top: 25px" size="sm" variant="success" @click="sendInvoice()">Send</b-button>
+        <b-button style="margin-top: 25px" size="sm" variant="success" @click="saveInvoice(true)">Send</b-button>
       </b-col>
 
     </b-row>
-    <!-- <b-row>
-      <b-col cols=3>
-        <label class="top-label">Sale Items:</label>
-        <b-select option-value="id" option-text="name" :list="availableSaleItems" v-model="saleItemKv"></b-select>
-      </b-col>
-      <b-col cols=1 style="padding-top: 30px">
-        <b-button variant="link" @click="addSaleItem()">(+)</b-button>
-      </b-col>
-      <b-col cols=3>
-        <label class="top-label">Shipment Items:</label>
-        <b-select option-value="id" option-text="name" :list="availableShipmentItems" v-model="shipmentItemKv"></b-select>
-      </b-col>
-      <b-col cols=1 style="padding-top: 30px">
-        <b-button variant="link" @click="addShipmentItem()">(+)</b-button>
-      </b-col>
-    </b-row> -->
     <b-row>
       <b-col>
         <label class="top-label"></label>
@@ -202,9 +186,7 @@ export default {
       return http.get("/customer/kv").then(r => {
         this.availableCustomers = r.data;
         return r.data;
-      }).catch(e => {
-        console.log("API error: " + e);
-      });
+      }).catch(e => {console.log("API error: " + e);});
     },
     getAvailableShipments(customerId) {
       return http.get("/shipment/kv/customer/"+customerId).then(r => {
@@ -261,8 +243,14 @@ export default {
           saleItem: this.saleItem,
       });
     },
-    saveInvoice() {
-      return http.post("/invoice/", this.invoice).then(r => {
+    saveInvoice(sendEmail) {
+      if(sendEmail && !this.invoice.apEmail){
+        //TODO: Verify apEmail format;
+        alert("A-P Email is wrong!");
+        return false;
+      }
+      var query = {params: {sendEmail: sendEmail}}
+      return http.post("/invoice/", this.invoice, query).then(r => {
         this.invoice = r.data;
         return r.data;
       }).catch(e => {

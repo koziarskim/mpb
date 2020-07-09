@@ -44,8 +44,8 @@ import com.noovitec.mpb.repo.NotificationRepo;
 
 public interface NotificationService {
 	
-	public void sendMail(List<String> emails, Map<String, String> model, Notification.TYPE type);
-	public void sendMailAttachment(List<String> emails, Map<String, String> model, Notification.TYPE type, byte[] file, String fileName);
+	public void sendMail(List<String> emailsTo, Map<String, String> model, Notification.TYPE type);
+	public void sendMailAttachment(List<String> emailsTo, Map<String, String> model, Notification.TYPE type, byte[] file, String fileName);
 	
 	@Transactional
 	@Service("notificationServiceImpl")
@@ -60,39 +60,42 @@ public interface NotificationService {
 			this.notificationRepo = notificationRepo;
 		}
 		
-		public void sendMail(List<String> emails, Map<String, String> model, Notification.TYPE type) {
-			this.sendMailAttachment(emails, model, type, null, null);
+		public void sendMail(List<String> emailsTo, Map<String, String> model, Notification.TYPE type) {
+			this.sendMailAttachment(emailsTo, model, type, null, null);
 		}
-		
-		public void sendMailAttachment(List<String> emails, Map<String, String> model, Notification.TYPE type, byte[] file, String fileName) {
+
+		public void sendMailAttachment(List<String> emailsTo, Map<String, String> model, Notification.TYPE type, byte[] file, String fileName) {
 			log.info("EmailNotification: "+type);
 			try {
-				emails.add("mkoziarski@marketplacebrands.com");
+				emailsTo.add("mkoziarski@marketplacebrands.com");
 				Notification notification = new Notification();
-				notification.setEmails(emails.toString());
+				notification.setEmails(emailsTo.toString());
 				notification.setType(type.name());
 				notification = notificationRepo.save(notification);
 				List<String> SCOPES = Arrays.asList(GmailScopes.GMAIL_SEND, GmailScopes.GMAIL_LABELS);
 				String MIMS_JSON_KEY = "oauth/mims-268617-f7755598ac50.json";
 		        model.put("type", type.name());
-		        model.put("yearContext", MpbTenantContext.getCurrentTenant().replace("y", ""));
 		        String subject = "MIMS Notification";
 				String body = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, type.template(), model);
 				if(MpbRequestContext.getStaticSetting().isDevEnv()) {
-					emails = Arrays.asList("mkoziarski@marketplacebrands.com");
+					emailsTo = Arrays.asList("mkoziarski@marketplacebrands.com");
 				}
-				InternetAddress[] bcc = new InternetAddress[emails.size()]; 
-			    for (int i =0; i < emails.size(); i++) 
-			    	bcc[i] = new InternetAddress(emails.get(i)); 
+				InternetAddress[] bcc = new InternetAddress[emailsTo.size()]; 
+			    for (int i =0; i < emailsTo.size(); i++) 
+			    	bcc[i] = new InternetAddress(emailsTo.get(i)); 
 				HttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
 				JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
 				InputStream credentialsJSON = this.getClass().getClassLoader().getResourceAsStream(MIMS_JSON_KEY);
 				GoogleCredential gcFromJson = GoogleCredential.fromStream(credentialsJSON, HTTP_TRANSPORT, JSON_FACTORY).createScoped(SCOPES);
+				String emailFrom = "mims@marketplacebrands.com";
+				if(Notification.TYPE.INVOICE_EMAIL.equals(type)) {
+					emailFrom = "accounting@marketplacebrands.com";
+				}
 				GoogleCredential credential = new GoogleCredential.Builder()
 						.setTransport(gcFromJson.getTransport())
 						.setJsonFactory(gcFromJson.getJsonFactory())
 						.setServiceAccountId(gcFromJson.getServiceAccountId())
-						.setServiceAccountUser("mims@marketplacebrands.com")
+						.setServiceAccountUser(emailFrom)
 						.setServiceAccountPrivateKey(gcFromJson.getServiceAccountPrivateKey())
 						.setServiceAccountScopes(gcFromJson.getServiceAccountScopes())
 						.build();

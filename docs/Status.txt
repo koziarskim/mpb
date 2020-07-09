@@ -33,8 +33,7 @@ Current priority
 		++ Allow to search by date range
 		+ Remove type
 		+ Add columns (units and price and total)
-		- Totals (units and total amount)
-		- Show total sale item price
+		+ Totals (units and total amount)
 		- Exell export
 		- Search by item brand
 		- Search by item category
@@ -46,7 +45,9 @@ Current priority
 Future requests (priority not set yet)
 	Production
 	+ Allow to modify units scheduled from Production List screen.
-	Purchase
+	- Dayly Production status (item view): Add column with "units still to produce" (total sold - total produced).
+	- Dayly Production status (item view): Add column with "total people since begining of day"
+	- Daily production status screen - verify if totals calculater correctly.
 	- Allow to upload file.
 	- Add Pay Terms
 	- Freight Terms (FOB).
@@ -77,7 +78,7 @@ Future requests (priority not set yet)
 	- Two and One week notification based on Window From (Routing)
 	- Attach picking list to notification when shipment is ready.
 	Schedule:
-	- Email notification on create new delivery.
+	- Add customer name (Schedule ready notification).
 	Global:
 	- Create document describing columns (Components, Items).
 	- Lock all PDFs. Option to lock.

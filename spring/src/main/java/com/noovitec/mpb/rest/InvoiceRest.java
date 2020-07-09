@@ -1,22 +1,14 @@
 package com.noovitec.mpb.rest;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,20 +30,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.pdf.AcroFields;
-import com.itextpdf.text.pdf.PdfCopy;
-import com.itextpdf.text.pdf.PdfReader;
-import com.itextpdf.text.pdf.PdfSmartCopy;
-import com.itextpdf.text.pdf.PdfStamper;
 import com.noovitec.mpb.dto.InvoiceListDto;
-import com.noovitec.mpb.entity.Customer;
 import com.noovitec.mpb.entity.Invoice;
-import com.noovitec.mpb.entity.InvoiceItem;
-import com.noovitec.mpb.entity.Shipment;
+import com.noovitec.mpb.entity.Notification;
 import com.noovitec.mpb.repo.InvoiceRepo;
 import com.noovitec.mpb.service.InvoiceService;
+import com.noovitec.mpb.service.NotificationService;
 
 @RestController
 @RequestMapping("/api")
@@ -61,6 +46,8 @@ class InvoiceRest {
 	private InvoiceService invoiceService;
 	@Autowired
 	private InvoiceRepo invoiceRepo;
+	@Autowired
+	private NotificationService notificationService;
 	
 	public InvoiceRest(InvoiceService invoiceService) {
 		this.invoiceService = invoiceService;
@@ -103,7 +90,7 @@ class InvoiceRest {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 		String fileName = "INV_"+invoice.getNumber()+"_"+invoice.getId() + "-" + sdf.format(timestamp) +".pdf";
-		byte[] data = invoiceService.generatePdf(invoice, true);
+		byte[] data = invoiceService.generatePdf(invoice.getId());
 		HttpHeaders header = new HttpHeaders();
 		header.setContentType(MediaType.APPLICATION_OCTET_STREAM);
 		header.set("Content-Disposition", "inline; filename=" + fileName);
@@ -112,7 +99,8 @@ class InvoiceRest {
 	}
 
 	@PostMapping("/invoice")
-	ResponseEntity<?> post(@RequestBody Invoice invoice) {
+	ResponseEntity<?> post(@RequestBody Invoice invoice, 
+			@RequestParam(required=false) boolean sendEmail) throws IOException, DocumentException {
 		if(!invoice.getNumber().matches("^[a-zA-Z0-9\\-]{1,15}$")) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Invoice Number is invalid. Alphanumeric and hyphen only allowed. Maximum 15 characters.");
 		}
@@ -121,6 +109,16 @@ class InvoiceRest {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Invoice Number already exists. Please, choose differrent.");
 		}
 		invoice = invoiceService.save(invoice);
+		if(sendEmail) {
+			List<String> emails = new ArrayList<String>();
+			emails.add(invoice.getApEmail());
+			Map<String, String> model = new HashMap<String, String>();
+			model.put("invoiceNumber", invoice.getNumber());
+			byte[] data = invoiceService.generatePdf(invoice.getId());
+			notificationService.sendMailAttachment(emails, model, Notification.TYPE.INVOICE_EMAIL, data, "MPB_Invoice_"+invoice.getNumber()+".pdf");
+			invoice.setSent(true);
+			invoice = invoiceService.save(invoice);
+		}
 		return ResponseEntity.ok().body(invoice);
 	}
 
