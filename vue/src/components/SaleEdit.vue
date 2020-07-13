@@ -71,7 +71,7 @@
     <b-row>
       <b-col cols=4>
         <label class="top-label">Available Items:</label>
-        <b-select :isDisabled="!allowEdit()" option-value="id" option-text="name" :list="availableItems" v-model="itemDto" placeholder="Customer"></b-select>
+        <b-select :isDisabled="!allowEdit()" option-value="id" option-text="name" :list="availableItems" v-model="itemDto" placeholder="Items"></b-select>
       </b-col>
       <b-col cols=1 style="padding-top: 30px">
         <b-button :disabled="!allowEdit()" variant="link" @click="addItem()">(+)</b-button>

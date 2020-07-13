@@ -44,41 +44,27 @@ Current priority
 	
 Future requests (priority not set yet)
 	Production
-	+ Allow to modify units scheduled from Production List screen.
 	- Dayly Production status (item view): Add column with "units still to produce" (total sold - total produced).
 	- Dayly Production status (item view): Add column with "total people since begining of day"
 	- Daily production status screen - verify if totals calculater correctly.
-	- Allow to upload file.
-	- Add Pay Terms
-	- Freight Terms (FOB).
-	- Send pdf from mims.
-	- Cancel PO.
-	- Produced set scheduled and produced.
-	- Arrow on production.
-	- Excel export.
+	- Daily, Weekly, monthly view/report.
+	- Show total produced, Sold.
 	Component:
 	Schedule:
 	- Show legend.
-	- Allow to modify date from popup.
+	- Add customer name (Schedule ready notification).
 	Customer:
-	+ Fix customer name in create new customer notification.
 	Sale:
-	- Transfer to (show sales with 0 stock).
-	- Search by shipment #
+	- Totals: Sold, Scheduled, produced.
+	+ Available items (change customer placeholder)
 	Return:
 	- Validate that it cannot return more that shipped.
 	Item:
-	+ Disable schedule for sale when canceled.
-	- Show component picture when mouse over.
-	- Items ready for production and shippped.
-	- Items not ready for production and shipped.
 	Shipment:
 	- Select ship to address based on first sale (if not selected yet).
 	- Show DC in freight address list.
 	- Two and One week notification based on Window From (Routing)
 	- Attach picking list to notification when shipment is ready.
-	Schedule:
-	- Add customer name (Schedule ready notification).
 	Global:
 	- Create document describing columns (Components, Items).
 	- Lock all PDFs. Option to lock.
