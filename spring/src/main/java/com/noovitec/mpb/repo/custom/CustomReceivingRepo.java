@@ -1,6 +1,7 @@
 package com.noovitec.mpb.repo.custom;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,9 +40,8 @@ public interface CustomReceivingRepo {
 				receivedFrom, receivedTo);
 			long total = query.getResultStream().count();
 			if(totals) {
-				@SuppressWarnings("unchecked")
-				List<Object> result = query.getResultList();
-				Page<Object> page = new PageImpl<Object>(result, pageable, total);
+				Object result = query.getSingleResult();
+				Page<Object> page = new PageImpl<Object>(Arrays.asList(result), pageable, total);
 				return page;
 			}else {
 				@SuppressWarnings("unchecked")
@@ -57,7 +57,7 @@ public interface CustomReceivingRepo {
 				LocalDate receivedFrom, LocalDate receivedTo) {
 			String q = "";
 			if(totals) {
-				q += "select distinct sum(r.totalPrice), sum(r.units), r.id ";
+				q += "select distinct sum(r.totalPrice), sum(r.units) ";
 			}else {
 				q += "select distinct r ";
 			}
@@ -90,8 +90,6 @@ public interface CustomReceivingRepo {
 			}
 			if(!totals) {
 				q += "order by r.updated desc";
-			} else {
-				q += "group by r.id ";
 			}
 			Query query = entityManager.createQuery(q);
 			if (purchaseId != null) {
