@@ -192,6 +192,8 @@ class ItemRest {
 			eventDto.setDailyScheduled(se.getUnitsScheduled());
 			eventDto.setDailyProduced(se.getUnitsProduced());
 			eventDto.setDailySeconds(se.getDurationSeconds());
+			eventDto.setDailyPeople(se.getTotalPeople());
+			itemDto.setTotalPeople(itemDto.getTotalPeople() + eventDto.getDailyPeople());
 			itemDto.getEvents().add(eventDto);
 		}
 		return dtos;

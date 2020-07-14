@@ -125,6 +125,16 @@ public class ScheduleEvent extends BaseEntity {
 		return totalSecs;
 	}
 	
+	@Transient
+	private long totalPeople = 0;
+	
+	public long getTotalPeople() {
+		for (Production p : this.getProductions()) {
+			this.totalPeople += p.getPeople();
+		}
+		return this.totalPeople;
+	}
+	
 	public void updateUnits() {
 		this.unitsProduced = 0L;
 		for (Production p : this.getProductions()) {

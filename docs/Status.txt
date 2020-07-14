@@ -44,8 +44,8 @@ Current priority
 	
 Future requests (priority not set yet)
 	Production
-	- Dayly Production status (item view): Add column with "units still to produce" (total sold - total produced).
-	- Dayly Production status (item view): Add column with "total people since begining of day"
+	+ Dayly Production status (item view): Add column with "units still to produce" (total sold - total produced).
+	+ Dayly Production status (item view): Add column with "total people since begining of day"
 	- Daily production status screen - verify if totals calculater correctly.
 	- Daily, Weekly, monthly view/report.
 	- Show total produced, Sold.

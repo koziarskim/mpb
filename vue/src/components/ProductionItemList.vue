@@ -10,9 +10,10 @@
       </b-col>
     </b-row>
     <b-row style="font-weight:bold; background-color:lightgray">
-      <b-col cols=4>Item<br/> (Sale - Customer)</b-col>
-      <b-col cols=1>Total<br/>Sold</b-col>
-      <b-col cols=1>Total<br/>Produced</b-col>
+      <b-col cols=3>Item<br/> (Sale - Customer)</b-col>
+      <b-col cols=1>Total<br/>Sold/Prod</b-col>
+      <b-col cols=1>Short</b-col>
+      <b-col cols=1>Labor</b-col>
       <b-col cols=1>Total %<br/>Produced</b-col>
       <b-col cols=1>Daily [u]<br/>Sched/Prod</b-col>
       <b-col cols=1>Daily %<br/>Produced</b-col>
@@ -22,13 +23,12 @@
     </b-row>
     <div v-for="treeItem in treeItems" v-bind:key="treeItem.id">
       <b-row>
-        <b-col cols=4 style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
+        <b-col cols=3 style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
           <b-button size="sm" @click="toggleRow(treeItem)" variant="link">{{treeItem.show?'[-]':'[+]'}}</b-button>{{treeItem.name}}
         </b-col>
-        <b-col cols=1>{{treeItem.totalSold}}</b-col>
-        <b-col cols=1>
-          {{treeItem.totalProduced}}
-        </b-col>
+        <b-col cols=1>{{treeItem.totalSold+"/"+treeItem.totalProduced}}</b-col>
+        <b-col cols=1>{{+treeItem.totalSold - +treeItem.totalProduced}}</b-col>
+        <b-col cols=1>{{treeItem.totalPeople}}</b-col>
         <b-col cols=1>{{percOut(treeItem.totalProduced,treeItem.totalSold)}}</b-col>
         <b-col cols=1>{{treeItem.dailyScheduled+"/"+treeItem.dailyProduced}}</b-col>
         <b-col cols=1>{{percOut(treeItem.dailyProduced,treeItem.dailyScheduled)}}</b-col>
@@ -39,9 +39,10 @@
         <div v-for="event in treeItem.events" v-bind:key="event.id">
           <div v-if="treeItem.show">
           <b-row style="color: gray; font-style: italic">
-            <b-col cols=4><div style="padding-left:50px">{{"Line "+event.lineNumber+": ("+event.saleNumber + " - " + event.customerName+")"}}</div></b-col>
-            <b-col cols=1>{{event.unitsSold}}</b-col>
-            <b-col cols=1>{{event.saleTotalProduced}}</b-col>
+            <b-col cols=3><div style="padding-left:50px">{{"Line "+event.lineNumber+": ("+event.saleNumber + " - " + event.customerName+")"}}</div></b-col>
+            <b-col cols=1>{{event.unitsSold+"/"+event.saleTotalProduced}}</b-col>
+            <b-col cols=1>{{+event.unitsSold - +event.saleTotalProduced}}</b-col>
+            <b-col cols=1>{{event.dailyPeople}}</b-col>
             <b-col cols=1>{{percOut(event.saleTotalProduced,event.unitsSold)}}</b-col>
             <b-col cols=1><a href="#" @click="goToProductionLine(event.id)">{{event.dailyScheduled+"/"+event.dailyProduced}}</a></b-col>
             <b-col cols=1>{{percOut(event.dailyProduced,event.dailyScheduled)}}</b-col>

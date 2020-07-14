@@ -18,12 +18,13 @@ public class ScheduleEventTreeDto {
 	private String lineNumber;
 	private String status;
 	private boolean show;
-	private Long unitsSold = 0L;
-	private Long saleTotalProduced = 0L;
-	private Long dailyScheduled = 0L;
-	private Long dailyProduced = 0L;
-	private Long dailyAverage = 0L;
-	private Long dailySeconds = 0L;
+	private long unitsSold = 0;
+	private long saleTotalProduced = 0;
+	private long dailyScheduled = 0;
+	private long dailyProduced = 0;
+	private long dailyAverage = 0;
+	private long dailySeconds = 0;
+	private long dailyPeople = 0;
 	
 	public Long getDailyAverage() {
 		if(this.getDailySeconds()==0L) {

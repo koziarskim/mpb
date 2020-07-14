@@ -18,15 +18,16 @@ public class ItemTreeDto {
 	private String name;
 	private String status;
 	private boolean show;
-	private Long unitsOnStock = 0L;
-	private Long totalSold = 0L;
-	private Long totalProduced = 0L;
-	private Long totalSeconds = 0L;
-	private Long totalAverage = 0L;
-	private Long dailyScheduled = 0L;
-	private Long dailyProduced = 0L;
-	private Long dailySeconds = 0L;
-	private Long dailyAverage = 0L;
+	private long unitsOnStock = 0;
+	private long totalSold = 0;
+	private long totalProduced = 0;
+	private long totalSeconds = 0;
+	private long totalAverage = 0;
+	private long totalPeople = 0;
+	private long dailyScheduled = 0;
+	private long dailyProduced = 0;
+	private long dailySeconds = 0;
+	private long dailyAverage = 0;
 	
 	List<ScheduleEventTreeDto> events = new ArrayList<ScheduleEventTreeDto>();
 	
