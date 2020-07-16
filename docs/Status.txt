@@ -49,14 +49,17 @@ Future requests (priority not set yet)
 	- Daily production status screen - verify if totals calculater correctly.
 	- Daily, Weekly, monthly view/report.
 	- Show total produced, Sold.
+	- Allow to change start time.
 	Component:
 	Schedule:
 	- Show legend.
-	- Add customer name (Schedule ready notification).
+	+ Add customer name (Schedule ready notification).
+	+ Disable schedule buttom if sold=scheduled (not produced).
 	Customer:
 	Sale:
 	- Totals: Sold, Scheduled, produced.
 	+ Available items (change customer placeholder)
+	- Allow to duplicate sale
 	Return:
 	- Validate that it cannot return more that shipped.
 	Item:

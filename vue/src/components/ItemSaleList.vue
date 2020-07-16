@@ -217,7 +217,8 @@ export default {
       return unitsShort<0?0:unitsShort;
     },
     disableSchedule(si){
-      return this.getUnitsShort(si) <=0 || si.status == 'CANCELLED';
+      // return this.getUnitsShort(si) <=0 || si.status == 'CANCELLED';
+      return si.units <= si.unitsScheduled || si.status == 'CANCELLED';
     },
     getStatus(statusId){
       var statusKv = this.availableStatus.find(stat => stat.id == statusId)

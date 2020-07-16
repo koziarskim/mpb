@@ -94,8 +94,10 @@ class ScheduleEventRest {
 			Map<String, String> model = new HashMap<String, String>();
 			String itemNumber = scheduleEvent.getSaleItem().getItem().getNumber() + " " + scheduleEvent.getSaleItem().getItem().getName();
 			String saleNumber = scheduleEvent.getSaleItem().getSale().getNumber();
+			String customerName = scheduleEvent.getSaleItem().getSale().getCustomer().getName();
 			model.put("itemNumber", itemNumber);
 			model.put("saleNumber", saleNumber);
+			model.put("customerName", customerName);
 			notificationService.sendMail(emails, model, Notification.TYPE.SCHEDULE_CREATED);
 		}
 		if(scheduleEvent.getFinishTime()!=null) {
