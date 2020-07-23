@@ -68,6 +68,9 @@ Future requests (priority not set yet)
 	- Show DC in freight address list.
 	- Two and One week notification based on Window From (Routing)
 	- Attach picking list to notification when shipment is ready.
+	Receiving:
+	- Mark reveiving to be over if received units more that purchased.
+	- Create extra receiving if units received are more that purchased.
 	Global:
 	- Create document describing columns (Components, Items).
 	- Lock all PDFs. Option to lock.
