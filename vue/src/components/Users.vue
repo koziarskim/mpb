@@ -37,11 +37,11 @@
           <b-row>
             <b-col cols="4">
               <label class="top-label">Username:</label>
-              <input class="form-control" type="text" v-model="user.username" placeholder="Username">
+              <input class="form-control" type="tel" v-model="user.username">
             </b-col>
             <b-col cols="4">
               <label class="top-label">Password:</label>
-              <input class="form-control" type="password" v-model="user.password" placeholder="Password">
+              <input class="form-control" type="password" v-model="user.password">
             </b-col>
           </b-row>
           <br>
@@ -75,7 +75,11 @@ export default {
       ],
       users: [],
       availableRoles: [],
-      user: {},
+      user: {
+        roles: [],
+        username: "",
+        password: "",
+      },
       editMode: false
     };
   },
@@ -85,9 +89,6 @@ export default {
         .get("/user")
         .then(response => {
           this.users = response.data;
-          if (response.data.length == 0) {
-            this.createUser();
-          }
           this.getAvailableRoles();
         })
         .catch(e => {
@@ -115,7 +116,7 @@ export default {
     },
     saveAndClose() {
       this.save().then(r => {
-        // this.editMode = false;
+        this.editMode = false;
       });
     },
     deleteUser(id) {
@@ -129,14 +130,12 @@ export default {
         });
     },
     createUser() {
-      return http
-        .post("/user")
-        .then(response => {
-          this.editUser(response.data);
-        })
-        .catch(e => {
-          console.log("API error: " + e);
-        });
+      this.user = {
+        username: "",
+        password: "",
+        roles: []
+      };
+      this.editMode = true;
     },
     editUser(user) {
       this.user = user;

@@ -63,8 +63,8 @@ class UserRest {
 		if (user == null) {
 			user = new User();
 		}
-		User existingUSer = userRepo.getOne(user.getId());
-		user.setPassword(existingUSer.getPassword());
+//		User existingUSer = userRepo.getOne(user.getId());
+//		user.setPassword(existingUSer.getPassword());
 		User result = userRepo.save(user);
 		return ResponseEntity.ok().body(result);
 	}
