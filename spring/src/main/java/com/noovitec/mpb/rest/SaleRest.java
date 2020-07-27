@@ -310,8 +310,8 @@ class SaleRest {
 
 	@PostMapping("/sale")
 	ResponseEntity<?> post(@RequestBody Sale sale) {
-		if(!sale.getNumber().matches("^[a-zA-Z0-9\\-]{1,15}$")) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Sale Number is invalid. Alphanumeric and hyphen only allowed. Maximum 15 characters.");
+		if(!sale.getNumber().matches("^[a-zA-Z0-9\\-]{1,25}$")) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Sale Number is invalid. Alphanumeric and hyphen only allowed. Maximum 25 characters.");
 		}
 		Long id = saleRepo.getIdByNumber(sale.getNumber());
 		if((sale.getId()==null && id !=null) || (sale.getId()!=null && id !=null && !sale.getId().equals(id))) {
