@@ -107,6 +107,7 @@ class ReceivingRest {
 				dto.setUnitsReceived(receiving.getUnits());
 				dto.setUnitPrice(receiving.getUnitPrice());
 				dto.setTotalPrice(receiving.getTotalPrice());
+				dto.setExtraUnits(receiving.isExtraUnits());
 				return dto;
 			});
 			return dtos;

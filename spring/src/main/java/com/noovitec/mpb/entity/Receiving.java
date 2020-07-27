@@ -28,6 +28,7 @@ public class Receiving extends BaseEntity {
 	private String containerNumber;
 	private String invoiceNumber;
 	private long units = 0;
+	private boolean extraUnits;
 	private BigDecimal unitPrice = BigDecimal.ZERO;
 	private LocalDate expirationDate;
 	private LocalDate etaDate;

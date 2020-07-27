@@ -83,6 +83,10 @@
       <template v-slot:cell(totalPrice)="row">
         <span>${{getTotalPrice(row.item)}}</span>
       </template>
+      <template v-slot:cell(unitsReceived)="row">
+        <span style="color:red" v-if="row.item.extraUnits">+{{row.item.unitsReceived}}</span>
+        <span v-if="!row.item.extraUnits">{{row.item.unitsReceived}}</span>
+      </template>
       <template v-slot:cell(action)="row">
         <input type="checkbox" v-model="selectedReceivings" :value="row.item">
       </template>      

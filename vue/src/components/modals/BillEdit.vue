@@ -30,23 +30,27 @@
             </b-col>
           </b-row>
           <b-row>
-            <b-col cols="4">
+            <b-col cols=4>
               <label class="top-label">Units (Shipped/Received):</label>
               <input class="form-control" type="text" v-model="receiving.units" placeholder="Units Received">
             </b-col>
-            <b-col cols="4">
+            <b-col cols=1>
+              <label class="top-label">Extra units:</label>
+              <b-form-checkbox size="sm" v-model="receiving.extraUnits"></b-form-checkbox>
+            </b-col>            
+            <b-col cols=4>
               <label class="top-label">Container:</label>
               <input class="form-control" type="text" v-model="receiving.containerNumber" placeholder="Container #">
             </b-col>
-            <b-col cols="4">
+            <b-col cols=4>
               <label class="top-label">Invoice:</label>
               <input class="form-control" type="text" v-model="receiving.invoiceNumber">
             </b-col>
-            <b-col cols="4">
+            <b-col cols=4>
               <label class="top-label">Unit Price:</label>
               <input class="form-control" type="text" v-model="receiving.unitPrice">
             </b-col>          
-            <b-col cols="4">
+            <b-col cols=4>
               <label class="top-label">Total Price:</label>
               <input class="form-control" type="text" v-model="totalPrice" disabled="true">
             </b-col>          

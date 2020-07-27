@@ -28,5 +28,6 @@ public class ReceivingListDto {
 	private long unitsReceived;
 	private BigDecimal unitPrice;
 	private BigDecimal totalPrice;
+	private boolean extraUnits;
 	
 }
