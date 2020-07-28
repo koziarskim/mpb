@@ -229,13 +229,17 @@
       <hr class="left"><img class="customer-image" style="width: 153px" src="../assets/customer-accounting.png">
     </b-link>
     <b-row v-if="showAccounting">
-      <b-col cols="3">
+      <b-col cols=3>
         <label class="top-label">Portal:</label>
         <input class="form-control" type="text" v-model="customer.portal" />
       </b-col>
-      <b-col cols="3">
+      <b-col cols=3>
         <label class="top-label">A-P Email:</label>
         <input class="form-control" type="text" v-model="customer.apEmail" />
+      </b-col>
+      <b-col cols=3>
+        <label class="top-label">Invoice Send Email:</label>
+        <input class="form-control" type="text" v-model="customer.invoiceEmail" />
       </b-col>
     </b-row>
     <div v-if="shipAddressModalVisible">

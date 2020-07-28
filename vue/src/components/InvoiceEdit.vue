@@ -76,8 +76,8 @@
         <input class="form-control" type="tel" v-model="invoice.balanceDue">
       </b-col>
       <b-col cols=3>
-        <label class="top-label">A-P Email:</label>
-        <input class="form-control" type="tel" v-model="invoice.apEmail">
+        <label class="top-label">Invoice Send Email:</label>
+        <input class="form-control" type="tel" v-model="invoice.invoiceEmail">
       </b-col>
       <b-col cols=1>
         <b-button style="margin-top: 25px" size="sm" variant="success" @click="saveInvoice(true)">Send</b-button>
@@ -244,8 +244,8 @@ export default {
       });
     },
     saveInvoice(sendEmail) {
-      if(sendEmail && !this.invoice.apEmail){
-        //TODO: Verify apEmail format;
+      if(sendEmail && !this.invoice.invoiceEmail){
+        //TODO: Verify invoiceEmail format;
         alert("A-P Email is wrong!");
         return false;
       }
@@ -279,8 +279,8 @@ export default {
     getInvoice(invoiceId) {
       return http.get("/invoice/" + invoiceId).then(r => {
         this.invoice = r.data;
-        if(!this.invoice.apEmail){
-          this.invoice.apEmail = r.data.shipment.customer.apEmail;
+        if(!this.invoice.invoiceEmail){
+          this.invoice.invoiceEmail = r.data.shipment.customer.invoiceEmail;
         }
         return r.data;
       }).catch(e => {

@@ -111,7 +111,7 @@ class InvoiceRest {
 		invoice = invoiceService.save(invoice);
 		if(sendEmail) {
 			List<String> emails = new ArrayList<String>();
-			emails.add(invoice.getApEmail());
+			emails.add(invoice.getInvoiceEmail());
 			Map<String, String> model = new HashMap<String, String>();
 			model.put("invoiceNumber", invoice.getNumber());
 			byte[] data = invoiceService.generatePdf(invoice.getId());

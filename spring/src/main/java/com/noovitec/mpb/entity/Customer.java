@@ -86,6 +86,7 @@ public class Customer extends BaseEntity {
 
 	private String portal;
 	private String apEmail;
+	private String invoiceEmail;
 	
 	
 
