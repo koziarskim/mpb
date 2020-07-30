@@ -305,12 +305,14 @@ export default {
 						return;
 					}
 				}
-				this.scheduleEvent.finishTime = this.sortedProductions[this.sortedProductions.length-1].finishTime;
-				return http.post("/scheduleEvent", this.scheduleEvent).then(response => {
-					this.getScheduleEvent(this.scheduleEvent.id);
-				}).catch(e => {
-					console.log("API error: " + e);
-				});
+				this.$bvModal.msgBoxConfirm("Are you sure you want to Finish production?").then(ok => {
+					if(ok){
+						this.scheduleEvent.finishTime = this.sortedProductions[this.sortedProductions.length-1].finishTime;
+						return http.post("/scheduleEvent", this.scheduleEvent).then(response => {
+							this.getScheduleEvent(this.scheduleEvent.id);
+						}).catch(e => {console.log("API error: " + e);});
+					}
+				})
 			},
 		openModal(){
 			this.modalVisible = true;
