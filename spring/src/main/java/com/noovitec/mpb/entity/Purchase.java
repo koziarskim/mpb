@@ -39,6 +39,7 @@ public class Purchase extends BaseEntity {
 	private long unitsPurchased = 0;
 	private boolean confirmed;
 	private String notes;
+	private boolean canceled;
 
 	@JsonIgnoreProperties({ "components" })
 	@ManyToOne()

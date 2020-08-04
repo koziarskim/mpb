@@ -59,7 +59,8 @@
             <b-button size="sm" style="margin-right: 2px;" type="reset" variant="success" @click="save()">Save</b-button>
             <b-button v-if="!receiveMode" size="sm" style="width: 28px;" type="reset" variant="secondary" @click="deletePo()">x</b-button><br/>
             <b-button v-if="!receiveMode" size="sm" style="margin: 2px;" type="reset" variant="success" @click="receive()">Receive</b-button>
-            <b-button v-if="receiveMode" size="sm" style="margin: 2px;" type="reset" variant="success" @click="cancel()">Cancel</b-button><br/>
+            <b-button v-if="!receiveMode" :disabled="purchase.canceled" size="sm" style="margin: 2px;" type="reset" variant="success" @click="cancelPO()">Cancel</b-button>
+            <b-button v-if="receiveMode" size="sm" style="margin: 2px;" type="reset" variant="success" @click="back()">Back</b-button><br/>
           </div>          
         </div>
       </b-col>
@@ -275,10 +276,14 @@ export default {
       this.purchase.purchaseComponents.splice(idx, 1);
       // this.save();
     },
-    cancel(){
+    back(){
       this.getPurchase(this.purchase.id).then(purchase =>{
         this.receiveMode = false;
       })
+    },
+    cancelPO(){
+      this.purchase.canceled = true;
+      this.updatePurchase();
     },
     receive(){
       this.updatePurchase().then(r => {
