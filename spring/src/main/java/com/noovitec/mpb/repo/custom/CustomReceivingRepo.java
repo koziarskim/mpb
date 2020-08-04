@@ -138,7 +138,7 @@ public interface CustomReceivingRepo {
 			String q = "select distinct sum(pc.unitPrice * pc.units), sum(pc.units) ";
 			q += "from PurchaseComponent pc " 
 					+ "left join pc.purchase p " 
-					+ "left join pc.receivings r " 
+//					+ "left join pc.receivings r " 
 					+ "left join pc.component c "
 					+ "left join p.supplier su " 
 					+ "where pc.id is not null ";
@@ -162,9 +162,6 @@ public interface CustomReceivingRepo {
 			}
 			if(receivedTo !=null) {
 				q += "and r.receivingDate <= :receivedTo ";
-			}
-			if(!totals) {
-				q += "order by r.updated desc";
 			}
 			Query query = entityManager.createQuery(q);
 			if (purchaseId != null) {
