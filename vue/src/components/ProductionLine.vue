@@ -213,15 +213,15 @@ export default {
 				this.saveScheduleEvent();
 		},
 		deleteProduction(production_id){
-      http.delete("/production/"+production_id).then(response => {
-				this.getScheduleEvents();
-				this.getScheduleEvent(this.scheduleEvent.id);
-      }).catch(e => {
-        console.log("API error: " + e);
-      });
+			http.delete("/production/"+production_id).then(response => {
+						this.getScheduleEvents();
+						this.getScheduleEvent(this.scheduleEvent.id);
+			}).catch(e => {
+				console.log("API error: " + e);
+			});
 		},
 		saveScheduleEvent(){
-				this.scheduleEvent.finishTime = this.sortedProductions[this.sortedProductions.length-1].finishTime;
+				// this.scheduleEvent.finishTime = this.sortedProductions[this.sortedProductions.length-1].finishTime;
 				http.post("/scheduleEvent", this.scheduleEvent).then(response => {
 					this.getScheduleEvent(this.scheduleEvent.id);
 				}).catch(e => {
