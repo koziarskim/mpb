@@ -24,6 +24,8 @@ public interface CustomReceivingRepo {
 	public Page<?> findPagable(Pageable pageable, boolean totals, Long purchaseId, Long componentId, Long supplierId, String invoiceNumber, String packingList,
 			LocalDate receivedFrom, LocalDate receivedTo);
 	public Receiving getLastByComponent(Long componentId);
+	public Page<?> getTotalPo(Pageable pageable, boolean totals, Long purchaseId, Long componentId, Long supplierId, String invoiceNumber, String packingList,
+			LocalDate receivedFrom, LocalDate receivedTo);
 	
 	@Repository
 	public class CustomReceivingRepoImpl implements CustomReceivingRepo {
@@ -128,5 +130,69 @@ public interface CustomReceivingRepo {
 			Receiving receiving = (Receiving) query.getSingleResult();
 			return receiving;
 		}
+		
+		
+		@Override
+		public Page<?> getTotalPo(Pageable pageable, boolean totals, Long purchaseId, Long componentId, Long supplierId, String invoiceNumber, String packingList,
+				LocalDate receivedFrom, LocalDate receivedTo) {
+			String q = "select distinct sum(pc.unitPrice * pc.units), sum(pc.units) ";
+			q += "from PurchaseComponent pc " 
+					+ "left join pc.purchase p " 
+					+ "left join pc.receivings r " 
+					+ "left join pc.component c "
+					+ "left join p.supplier su " 
+					+ "where pc.id is not null ";
+			if (purchaseId !=null) {
+				q += "and p.id = :purchaseId ";
+			}
+			if (componentId !=null) {
+				q += "and c.id = :componentId ";
+			}
+			if (supplierId !=null) {
+				q += "and su.id = :supplierId ";
+			}
+			if (invoiceNumber !=null && !invoiceNumber.isBlank()) {
+				q += "and upper(r.invoiceNumber) = upper(:invoiceNumber) ";
+			}
+			if (packingList !=null && !packingList.isBlank()) {
+				q += "and upper(r.number) = upper(:packingList) ";
+			}
+			if(receivedFrom != null) {
+				q += "and r.receivingDate >= :receivedFrom ";
+			}
+			if(receivedTo !=null) {
+				q += "and r.receivingDate <= :receivedTo ";
+			}
+			if(!totals) {
+				q += "order by r.updated desc";
+			}
+			Query query = entityManager.createQuery(q);
+			if (purchaseId != null) {
+				query.setParameter("purchaseId", purchaseId);
+			}
+			if (componentId !=null) {
+				query.setParameter("componentId", componentId);
+			}
+			if(supplierId != null) {
+				query.setParameter("supplierId", supplierId);
+			}
+			if (invoiceNumber !=null && !invoiceNumber.isBlank()) {
+				query.setParameter("invoiceNumber", invoiceNumber);
+			}
+			if (packingList !=null && !packingList.isBlank()) {
+				query.setParameter("packingList", packingList);
+			}
+			if(receivedFrom !=null) {
+				query.setParameter("receivedFrom", receivedFrom);
+			}
+			if(receivedTo !=null) {
+				query.setParameter("receivedTo", receivedTo);
+			}
+			long total = query.getResultStream().count();
+			Object result = query.getSingleResult();
+			Page<Object> page = new PageImpl<Object>(Arrays.asList(result), pageable, total);
+			return page;
+		}
+
 	}
 }

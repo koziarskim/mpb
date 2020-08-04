@@ -44,8 +44,10 @@
           <b-popover :show="showTotalsMenu" placement="bottom" target="totalsMenu" variant="secondary">
             <div style="width: 300px; font-size: 16px">
               <div>Total of {{pageable.totalElements}} rows</div>
-              <div>Total price: ${{totalUnitsPrice}}</div>
-              <div>Total units: {{totalUnits}}</div>
+              <div>Total ordered: ${{totalOrdered}}</div>
+              <div>Total received: ${{totalUnitsPrice}}</div>
+              <div>Units ordered: {{unitsOrdered}}</div>
+              <div>Units received: {{unitsReceived}}</div>
               <!-- <div>Total inventory value:</div> -->
             </div>
           </b-popover>
@@ -147,7 +149,9 @@ export default {
         receivedTo: null,
       },
       totalUnitsPrice: 0,
-      totalUnits: 0,
+      totalOrdered: 0,
+      unitsReceived: 0,
+      unitsOrdered: 0,
       billEditVisible: false,
       billEditMultipleVisible: false,
       receivingId: null,
@@ -202,8 +206,24 @@ export default {
     toggleShowTotals(){
       if(!this.showTotalsMenu){
         this.getReceivings(true);
+        this.getTotalPo();
       }
       this.showTotalsMenu = !this.showTotalsMenu;
+    },
+    getTotalPo(){
+      http.get("/receiving/total/po", {params: {pageable: this.pageable,
+        totals: true, 
+        purchaseId: this.purchaseKv.id, 
+        componentId: this.componentKv.id,
+        supplierId: this.supplierKv.id,
+        invoiceNumber: this.invoiceNumber,
+        packingList: this.packingList,
+        receivedFrom: this.filter.receivedFrom,
+        receivedTo: this.filter.receivedTo}})
+        .then(r => {
+              this.totalOrdered = parseFloat(r.data.content[0][0]).toLocaleString('en-US',{minimumFractionDigits: 2});
+              this.unitsOrdered = r.data.content[0][1].toLocaleString('en-US',{minimumFractionDigits: 2});
+        }).catch(e => {console.log("API error: " + e);});
     },
     searchFilterMenu(){
       this.getReceivings();
@@ -240,7 +260,8 @@ export default {
         .then(r => {
           if(totals){
             this.totalUnitsPrice = parseFloat(r.data.content[0][0]).toLocaleString('en-US',{minimumFractionDigits: 2});
-            this.totalUnits = r.data.content[0][1];
+            this.unitsReceived = r.data.content[0][1].toLocaleString('en-US',{minimumFractionDigits: 2});
+            this.getTotalPo();
           }else{
             this.receivings = r.data.content;
             this.pageable.totalElements = r.data.totalElements;

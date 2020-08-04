@@ -114,6 +114,23 @@ class ReceivingRest {
 		}
 	}
 
+	
+	@GetMapping("/receiving/total/po")
+	Page<?> getTotalPo(@RequestParam(required = false) Pageable pageable, 
+			@RequestParam(required = false) boolean totals,
+			@RequestParam(required = false) Long purchaseId,
+			@RequestParam(required = false) Long componentId,
+			@RequestParam(required = false) Long supplierId,
+			@RequestParam(required = false) String invoiceNumber,
+			@RequestParam(required = false) String packingList,
+			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate receivedFrom,
+			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate receivedTo) {
+			@SuppressWarnings("unchecked")
+			Page<?> result = (Page<Receiving>) receivingRepo.getTotalPo(pageable, totals, purchaseId, componentId, supplierId, invoiceNumber, packingList,
+					receivedFrom, receivedTo);
+			return result;
+	}
+
 	@GetMapping("/receiving/{id}")
 	ResponseEntity<Receiving> get(@PathVariable Long id) {
 		Optional<Receiving> result = receivingRepo.findById(id);
