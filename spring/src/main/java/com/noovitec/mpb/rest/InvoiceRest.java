@@ -112,6 +112,7 @@ class InvoiceRest {
 		if(sendEmail) {
 			List<String> emails = new ArrayList<String>();
 			emails.add(invoice.getInvoiceEmail());
+			emails.add("akoziarski@marketplacebrands.com");
 			Map<String, String> model = new HashMap<String, String>();
 			model.put("invoiceNumber", invoice.getNumber());
 			byte[] data = invoiceService.generatePdf(invoice.getId());
