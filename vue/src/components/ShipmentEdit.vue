@@ -443,8 +443,8 @@ export default {
       }).catch(e => { console.log("API error: " + e); });
     },
     validate(){
-      if(moment(this.shippedDate).isBefore('1900-01-01')){
-        alert("Shipped date cannot be less that 1900.")
+      if(moment(this.shippedDate).isBefore('2019-01-01')){
+        alert("Shipped date cannot be less that 2019.")
         this.shippedDate = null;
         return false;
       }
