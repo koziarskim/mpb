@@ -25,7 +25,7 @@
       </b-col>
       <b-col cols=2 style="text-align: right; margin-top: 20px">
         <label class="top-label">Sent</label>
-        <input type="checkbox" disabled="true" style="margin-left: 3px;" v-model="invoice.sent">
+        <input type="checkbox" style="margin-left: 3px;" v-model="invoice.sent">
         <a :href="getPdfUrl(invoice.id)" target="_blank" style="margin-left: 10px;">
           <img src="../assets/pdf-download.png" width="23px">
         </a>
