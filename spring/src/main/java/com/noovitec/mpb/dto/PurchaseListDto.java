@@ -1,5 +1,6 @@
 package com.noovitec.mpb.dto;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import lombok.AllArgsConstructor;
@@ -22,5 +23,6 @@ public class PurchaseListDto {
 	private String freightTermId;
 	private long unitsPurchased;
 	private long unitsReceived;
+	private BigDecimal totalPoAmount;	
 	
 }

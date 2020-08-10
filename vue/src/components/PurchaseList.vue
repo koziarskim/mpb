@@ -74,6 +74,9 @@
       <template v-slot:cell(date)="row">
         <span>{{row.item.date | formatDates}}</span>
       </template>
+      <template v-slot:cell(totalPoAmount)="row">
+        <span>${{parseFloat(row.item.totalPoAmount).toLocaleString('en-US',{minimumFractionDigits: 2, maximumFractionDigits: 2})}}</span>
+      </template>
     </b-table>
     <b-pagination v-model="pageable.currentPage" :per-page="pageable.perPage" :total-rows="pageable.totalElements" @change="paginationChange"></b-pagination>
   </b-container>
@@ -97,6 +100,7 @@ export default {
         { key: "unitsPurchRec", label: "Purch/Rec", sortable: false },
         { key: "unitsPending", label: "Pending", sortable: false },
         { key: "freightTerm", label: "Freight", sortable: false },
+        { key: "totalPoAmount", label: "Total", sortable: false },
         { key: "pdf", label: "PDF", sortable: false },
         { key: "action", label: "", sortable: false }
       ],

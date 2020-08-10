@@ -134,6 +134,7 @@ class PurchaseRest {
 			dto.setFreightTermId(purchase.getSupplier().getFreightTerms());
 			dto.setUnitsPurchased(purchase.getUnitsPurchased());
 			dto.setUnitsReceived(purchase.getUnitsReceived());
+			dto.setTotalPoAmount(purchase.getTotalPrice());
 			return dto;
 		});
 		return dtos;
