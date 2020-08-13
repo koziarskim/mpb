@@ -2,77 +2,21 @@ In progrees or Not yet started/Future requests: (-)
 Done but not yet reviewed: (+)
 
 Current priority
-	Accounting:
-	+ Change menu to dropdown with (Invoice view, Invoice Item view, Bill view)
-	- Permissions
-	- Bills view - incoming (recevings)
-		++ Create new screen
-		++ Show invoice #
-		++ Show price
-		++ Allow to search by Packing List # (show all components for that packing)
-		++ Allow to search by date range
-		++ Allow to enter $ amount for each component received
-		++ Allow to enter invoice number for all
-		++ Column with total price
-		++ Totals price based on invoice.
-		+ Update all totals in DB.
-		+ Format totalPrice.
-		+ Remove shipping and eta date
-		+ Add expiration date
-		- Export to excel
-	+ Invoice view
-		++ Allow to search by date range
-		++ Show quick popup.
-		+ Show cutomer name (bill to) on PDF.
-		+ Adjust bill to address for envelope.
-		- Send email to client (andy as cc: by default).
-	- Invoice Item view - outgoing (our sales/shipments)
-		++ Create new screen
-		++ Show sale #
-		++ Show item #
-		++ Allow to search by date range
-		+ Remove type
-		+ Add columns (units and price and total)
-		+ Totals (units and total amount)
-		- Exell export
-		- Search by item brand
-		- Search by item category
-	Receiving:
-	++ Allow to enter Packing list #
-	+ Remove shipping and eta date
-	+ Add expiration date
+
 	
 Future requests (priority not set yet)
 	Production
-	+ Dayly Production status (item view): Add column with "units still to produce" (total sold - total produced).
-	+ Dayly Production status (item view): Add column with "total people since begining of day"
-	- Daily production status screen - verify if totals calculater correctly.
 	- Daily, Weekly, monthly view/report.
-	- Show total produced, Sold.
-	- Allow to change start time.
-	Component:
 	Schedule:
 	- Show legend.
-	+ Add customer name (Schedule ready notification).
-	+ Disable schedule buttom if sold=scheduled (not produced).
-	Customer:
-	Sale:
-	- Totals: Sold, Scheduled, produced.
-	+ Available items (change customer placeholder)
-	- Allow to duplicate sale
 	Return:
 	- Validate that it cannot return more that shipped.
-	Item:
 	Shipment:
 	- Select ship to address based on first sale (if not selected yet).
 	- Show DC in freight address list.
 	- Two and One week notification based on Window From (Routing)
 	- Attach picking list to notification when shipment is ready.
-	Receiving:
-	- Mark reveiving to be over if received units more that purchased.
-	- Create extra receiving if units received are more that purchased.
 	Global:
-	- Create document describing columns (Components, Items).
 	- Lock all PDFs. Option to lock.
 
 ------------------------------------------------------------------
