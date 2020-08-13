@@ -110,12 +110,12 @@
       </b-col>
       <b-col>
         <div style="display: flex">
-          <b style="margin-top: 7px">Total pallets:</b><input class="form-control" style="width: 60px" type="tel" v-model="totalPalletsCustom" @input="overwrite=true">
+          <b style="margin-top: 7px">Total pallets:</b><input class="form-control" style="width: 60px" type="tel" v-model="totalPallets">
         </div>
       </b-col>
       <b-col>    
         <div style="display: flex">
-          <b style="margin-top: 7px">Total weight:</b><input class="form-control" style="width: 80px" type="tel" v-model="totalWeightCustom" @input="overwrite=true">
+          <b style="margin-top: 7px">Total weight:</b><input class="form-control" style="width: 80px" type="tel" v-model="totalWeight">
         </div>
       </b-col>
       <b-col cols=2>
@@ -193,9 +193,6 @@ export default {
       securite: securite,
       transferModalVisible: false,
       saleItemTransfer: {},
-      overwrite: false,
-      totalPalletsCustom: 0,
-      totalWeightCustom: 0,
       selectionVisible: false,
       saleItemPickerVisible: false,
       selected: [],
@@ -268,9 +265,6 @@ export default {
       this.shipment.shipmentItems.forEach(si => {
         total += +si.pallets;
       });
-      if(!this.overwrite){
-        this.totalPalletsCustom = total;
-      }
       return total;
     },
     totalWeight() {
@@ -279,9 +273,6 @@ export default {
         var totalPaletWeight = +si.saleItem.item.palletWeight * +si.pallets
         total += (+si.saleItem.item.weight * +si.units) + +totalPaletWeight;
       });
-      if(!this.overwrite){
-        this.totalWeightCustom = total.toFixed();
-      }
       return total.toFixed();
     }
   },
@@ -372,9 +363,7 @@ export default {
     },
     getNumberOfPallets(shipmentItem){
       var number = null;
-      if(!this.overwrite){
-        number = Math.ceil(+shipmentItem.cases / (+shipmentItem.saleItem.item.ti * +shipmentItem.saleItem.item.hi))
-      }
+      number = Math.ceil(+shipmentItem.cases / (+shipmentItem.saleItem.item.ti * +shipmentItem.saleItem.item.hi))
       return number;
     },
     keyDown(event){
@@ -430,14 +419,6 @@ export default {
         if (response.data.freightAddress){
           this.freightAddress = response.data.freightAddress;
         }
-        if(response.data.totalPallets != response.data.totalPalletsCustom){
-          this.overwrite = true;
-        }
-        if(response.data.totalWeight != response.data.totalWeightCustom){
-          this.overwrite = true;
-        }
-        this.totalPalletsCustom = response.data.totalPalletsCustom;
-        this.totalWeightCustom = response.data.totalWeightCustom;
         this.shipment = response.data;
         this.shippedDate = response.data.shippedDate;
       }).catch(e => { console.log("API error: " + e); });
@@ -483,8 +464,6 @@ export default {
       this.shipment.totalCases = this.totalCases;
       this.shipment.totalPallets = this.totalPallets;
       this.shipment.totalWeight = this.totalWeight;
-      this.shipment.totalPalletsCustom = this.totalPalletsCustom;
-      this.shipment.totalWeightCustom = this.totalWeightCustom;
       this.shipment.shippedDate = this.shippedDate;
       return http.post("/shipment", this.shipment).then(r => {
         this.shipment = r.data;

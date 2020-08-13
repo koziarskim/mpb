@@ -329,8 +329,8 @@ class ShipmentRest {
 		bolStamper.getAcroFields().setField("totalUnits", String.valueOf(shipment.getUnitsShipped()));
 		bolStamper.getAcroFields().setField("totalCasePack", String.valueOf(totalCasePack));
 		bolStamper.getAcroFields().setField("totalCases", String.valueOf(shipment.getTotalCases()));
-		bolStamper.getAcroFields().setField("totalPallets", String.valueOf(shipment.getTotalPalletsCustom()));
-		bolStamper.getAcroFields().setField("totalWeight", shipment.getTotalWeightCustom().toString());
+		bolStamper.getAcroFields().setField("totalPallets", String.valueOf(shipment.getTotalPallets()));
+		bolStamper.getAcroFields().setField("totalWeight", shipment.getTotalWeight().toString());
 		bolStamper.close();
 		bolTemplate.close();
 		
