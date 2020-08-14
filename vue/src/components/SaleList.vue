@@ -210,7 +210,7 @@ export default {
     }}
     http.get("/sale/pageable", query).then(r => {
       if(totals){
-        this.totalSold = r.data.content[0][0].toLocaleString('en-US',{minimumFractionDigits: 2});
+        this.totalSold = r.data.content[0][0].toLocaleString();
       }else{
         this.sales = r.data.content;
         this.pageable.totalElements = r.data.totalElements;
