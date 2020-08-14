@@ -87,12 +87,18 @@ class SaleRest {
 	}
 
 	@GetMapping("/sale/pageable")
-	Page<SaleListDto> getAllPageable(
+	Page<?> getAllPageable(
 			@RequestParam(required = false) Pageable pageable, 
+			@RequestParam(required = false) boolean totals,
 			@RequestParam(required = false) String saleNumber,
 			@RequestParam(required = false) Long itemId,
 			@RequestParam(required = false) Long customerId,
 			@RequestParam(required = false) String status) {
+		if(totals) {
+			Page<?> resultTotals = saleRepo.getTotals(pageable, saleNumber, itemId, customerId, status);
+			return resultTotals;
+			
+		}
 		Page<Sale> sales = saleRepo.findPagable(pageable, saleNumber, itemId, customerId, status);
 		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		DateTimeFormatter windowFormat = DateTimeFormatter.ofPattern("MM/dd");

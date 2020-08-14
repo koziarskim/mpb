@@ -1,5 +1,6 @@
 package com.noovitec.mpb.repo.custom;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Repository;
 import com.noovitec.mpb.entity.Sale;
 
 public interface CustomSaleRepo {
+	public Page<?> getTotals(Pageable pageable, String saleNumber, Long itemId, Long customerId, String status);
 	Page<Sale> findPagable(Pageable pageable, String saleNumber, Long itemId, Long customerId, String status);
 	public Sale getFirstByCustomer(Long customerId);
 	public Sale getLastByCustomer(Long customerId);
@@ -29,6 +31,49 @@ public interface CustomSaleRepo {
 		@PersistenceContext
 		EntityManager entityManager;
 
+		@Override
+		public Page<?> getTotals(Pageable pageable, String saleNumber, Long itemId, Long customerId, String status) {
+			String q = "select distinct s.id from Sale s " 
+					+ "left join s.saleItems si " 
+					+ "left join si.item i "
+					+ "left join s.customer c " 
+					+ "where s.id is not null ";
+			if (saleNumber !=null && !saleNumber.isBlank()) {
+				q += "and upper(s.number) like concat('%',upper(:saleNumber),'%') ";
+			}
+			if (itemId !=null) {
+				q += "and i.id = :itemId ";
+			}
+			if (customerId !=null) {
+				q += "and c.id = :customerId ";
+			}
+			if (status != null && !status.isBlank()) {
+				q += "and s.status = :status ";
+			}
+			Query query = entityManager.createQuery(q);
+			if (saleNumber !=null && !saleNumber.isBlank()) {
+				query.setParameter("saleNumber", saleNumber);
+			}
+			if (itemId !=null) {
+				query.setParameter("itemId", itemId);
+			}
+			if (customerId !=null) {
+				query.setParameter("customerId", customerId);
+			}
+			if (status !=null && !status.isBlank()) {
+				query.setParameter("status", status);
+			}
+			List<Long> ids = query.getResultList();
+			
+			q = "select sum(s.unitsSold), sum(s.unitsProduced) from Sale s where s.id in :ids ";
+			query = entityManager.createQuery(q);
+			query.setParameter("ids", ids);
+			long total = query.getResultStream().count();
+			Object result = query.getSingleResult();
+			Page<Object> page = new PageImpl<Object>(Arrays.asList(result), pageable, total);
+			return page;
+		}
+		
 		@Override
 		public Page<Sale> findPagable(Pageable pageable, String saleNumber, Long itemId, Long customerId, String status) {
 			String q = "select distinct s from Sale s " 

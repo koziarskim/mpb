@@ -119,7 +119,8 @@ export default {
       sales: [], //SaleListDto
       selectedSales: [],
       showTotalsMenu: false,
-      totalSold: 0
+      totalSold: 0,
+      totalProduced: 0
     };
   },
   watch: {
