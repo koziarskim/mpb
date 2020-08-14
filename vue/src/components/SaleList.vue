@@ -16,6 +16,17 @@
         <b-col cols="2">
           <b-select option-value="id" option-text="name" :list="availableStatus" v-model="statusKv" placeholder="Status"></b-select>
         </b-col>
+        <b-col cols=1>
+          <div style="display: flex">
+            <b-button id="totalsMenu" size="sm" @click="toggleShowTotals()">Totals</b-button>
+            <b-popover :show="showTotalsMenu" placement="bottom" target="totalsMenu" variant="secondary">
+              <div style="width: 300px; font-size: 16px">
+                <div>Total of {{pageable.totalElements}} rows</div>
+                <div>Total sold: {{totalSold}}</div>
+              </div>
+            </b-popover>
+          </div>
+        </b-col>  
         <b-col>
           <div style="text-align: right;">
           <b-button type="submit" variant="primary" size="sm" @click="goToSale('')">New S.O.</b-button>
@@ -106,7 +117,9 @@ export default {
         { key: "action", label: "", sortable: false}
       ],
       sales: [], //SaleListDto
-      selectedSales: []
+      selectedSales: [],
+      showTotalsMenu: false,
+      totalSold: 0
     };
   },
   watch: {
@@ -126,6 +139,10 @@ export default {
     },
   },
   methods: {
+    toggleShowTotals(){
+      this.getSales(true);
+      this.showTotalsMenu = !this.showTotalsMenu;
+    },
     triggerAll(add){
       this.sales.forEach(sale => {
         if(add){
@@ -181,17 +198,22 @@ export default {
         this.pageable.currentPage = page;
         this.getSales();
     },
-	getSales() {
+	getSales(totals) {
     var query = {params: {
-      pageable: this.pageable, 
+      pageable: this.pageable,
+      totals: totals, 
       saleNumber: this.saleNumber, 
       itemId: this.itemKv.id,
       customerId: this.customerKv.id,
       status: this.statusKv.id 
     }}
     http.get("/sale/pageable", query).then(r => {
-      this.sales = r.data.content;
-      this.pageable.totalElements = r.data.totalElements;
+      if(totals){
+        this.totalSold = r.data.content[0][0];
+      }else{
+        this.sales = r.data.content;
+        this.pageable.totalElements = r.data.totalElements;
+      }
     }).catch(e => {
       console.log("API error: "+e);
     });
