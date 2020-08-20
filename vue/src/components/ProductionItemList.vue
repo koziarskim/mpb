@@ -13,7 +13,7 @@
       <b-col cols=3>Item<br/> (Sale - Customer)</b-col>
       <b-col cols=1>Total<br/>Sold/Prod</b-col>
       <b-col cols=1>Short</b-col>
-      <b-col cols=1>Labor</b-col>
+      <b-col cols=1>Max. Labor</b-col>
       <b-col cols=1>Total %<br/>Produced</b-col>
       <b-col cols=1>Daily [u]<br/>Sched/Prod</b-col>
       <b-col cols=1>Daily %<br/>Produced</b-col>
