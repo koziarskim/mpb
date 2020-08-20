@@ -16,9 +16,20 @@
             <b-col cols=2>
               <b-select option-value="id" option-text="name" :list="availableStatus" v-model="statusKv" placeholder="Status"></b-select>
             </b-col>
-            <b-col cols=2>
+            <b-col cols=1>
               <b-select option-value="id" option-text="name" :list="availableUnitsFilters" v-model="unitsFilter" placeholder="Units"></b-select>
             </b-col>
+            <b-col cols=1>
+              <div style="display: flex">
+                <b-button id="totalsMenu" size="sm" @click="toggleShowTotals()">Totals</b-button>
+                <b-popover :show="showTotalsMenu" placement="bottom" target="totalsMenu" variant="secondary">
+                  <div style="width: 300px; font-size: 16px">
+                    <div>Total of {{pageable.totalElements}} rows</div>
+                    <div>Total sold: {{totalSold}}</div>
+                  </div>
+                </b-popover>
+              </div>
+            </b-col>  
             <b-col cols=1>
                 <div style="text-align: right;">
                 <b-button type="submit" size="sm" variant="primary" @click="newShipment()">Ship ({{selectedSaleItemIds.length}})</b-button>
@@ -106,7 +117,9 @@ export default {
         {id: "ON_STOCK", name: "On Stock"},
         {id: "RFP_ONLY", name: "RFP Only"}
       ],
-      unitsFilter: {}
+      unitsFilter: {},
+      showTotalsMenu: false,
+      totalSold: 0,
     };
   },
   watch: {
@@ -129,6 +142,10 @@ export default {
     },
   },
   methods: {
+    toggleShowTotals(){
+      this.getSaleItems(true);
+      this.showTotalsMenu = !this.showTotalsMenu;
+    },    
     getStatus(statusId){
       var statusKv = this.availableStatus.find(stat => stat.id == statusId)
       return statusKv.name
@@ -154,17 +171,22 @@ export default {
         this.pageable.currentPage = page;
         this.getSaleItems();
     },
-  getSaleItems(){
+  getSaleItems(totals){
     http.get("/saleItem/pageable", {params: {
         pageable: this.pageable,  
+        totals: totals, 
         numberName: this.numberName, 
         customerId: this.customer.id, 
         itemId: this.item.id, 
         status: this.statusKv.id,
         unitsFilter: this.unitsFilter.id
       }}).then(r => {
-      this.saleItems = r.data.content;
-      this.pageable.totalElements = r.data.totalElements;
+      if(totals){
+        this.totalSold = r.data.content[0][0].toLocaleString();
+      }else{
+        this.saleItems = r.data.content;
+        this.pageable.totalElements = r.data.totalElements;
+      }
     }).catch(e => {
       console.log("API error: "+e);
     });

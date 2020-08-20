@@ -49,14 +49,20 @@ class SaleItemRest {
 	}
 
 	@GetMapping("/saleItem/pageable")
-	Page<SaleItemDto> getAllPageable(
+	Page<?> getAllPageable(
 			@RequestParam Pageable pageable, 
+			@RequestParam(required = false) boolean totals,
 			@RequestParam(required = false) String numberName,
 			@RequestParam(required = false) Long saleId,
 			@RequestParam(required = false) Long itemId, 
 			@RequestParam(required = false) Long customerId, 
 			@RequestParam(required = false) String status,
 			@RequestParam(required = false) String unitsFilter) {
+		if(totals) {
+			Page<?> resultTotals = saleItemRepo.getTotals(pageable, numberName, saleId, customerId, itemId, status, unitsFilter);
+			return resultTotals;
+			
+		}
 		Page<SaleItem> saleItems = saleItemRepo.findPageable(pageable, numberName, saleId, customerId, itemId, status, unitsFilter);
 		return this.mapToDto(saleItems);
 	}
