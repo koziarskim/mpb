@@ -25,6 +25,13 @@
                 <div>Total sold: {{totalSold}}</div>
               </div>
             </b-popover>
+            <b-button id="sortMenu" size="sm" style="margin-left:3px">Sort</b-button>
+            <b-popover :show="showSortMenu" @click="showSortMenu = !showSortMenu" placement="bottom" target="sortMenu" variant="secondary">
+              <div style="width: 300px; font-size: 16px">
+                <b-button variant="link" @click="toggleSortTotals('shippingFrom', false)">Ship From A-Z</b-button><br/>
+                <b-button variant="link" @click="toggleSortTotals('shippingFrom', true)">Ship From Z-A</b-button>
+              </div>
+            </b-popover>
           </div>
         </b-col>  
         <b-col>
@@ -106,7 +113,7 @@ export default {
       itemView: false,
       fields: [
         { key: "number", label: "Sale #", sortable: false },
-        { key: "customerName", label: "Customer", sortable: false },
+        { key: "customerName", label: "Customer", sortable: true },
         { key: "dc", label: "DC (State)", sortable: false },
         { key: "shippingWindow", label: "Ship Window", sortable: false },
         { key: "unitsSold", label: "Sold", sortable: false },
@@ -119,6 +126,7 @@ export default {
       sales: [], //SaleListDto
       selectedSales: [],
       showTotalsMenu: false,
+      showSortMenu: false,
       totalSold: 0,
       totalProduced: 0
     };
@@ -143,6 +151,12 @@ export default {
     toggleShowTotals(){
       this.getSales(true);
       this.showTotalsMenu = !this.showTotalsMenu;
+    },
+    toggleSortTotals(sortBy, sortDesc){
+      this.pageable.sortBy = sortBy;
+      this.pageable.sortDesc = sortDesc;
+      this.getSales();
+      this.showSortMenu = false;
     },
     triggerAll(add){
       this.sales.forEach(sale => {
@@ -190,9 +204,9 @@ export default {
       })
     },
 	  sorted(e){
-      if(!e.sortBy){ return }
-      this.pageable.sortBy = e.sortBy;
-      this.pageable.sortDesc = e.sortDesc;
+      // if(!e.sortBy){ return }
+      // this.pageable.sortBy = e.sortBy;
+      // this.pageable.sortDesc = e.sortDesc;
       this.getSales();
     },
     paginationChange(page){
