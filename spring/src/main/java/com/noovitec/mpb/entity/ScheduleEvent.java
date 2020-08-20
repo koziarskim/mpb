@@ -129,8 +129,12 @@ public class ScheduleEvent extends BaseEntity {
 	private long totalPeople = 0;
 	
 	public long getTotalPeople() {
+		this.totalPeople = 0;
 		for (Production p : this.getProductions()) {
-			this.totalPeople += p.getPeople();
+			if(p.getPeople() > this.totalPeople) {
+				this.totalPeople = p.getPeople();
+			}
+//			this.totalPeople += p.getPeople();
 		}
 		return this.totalPeople;
 	}
