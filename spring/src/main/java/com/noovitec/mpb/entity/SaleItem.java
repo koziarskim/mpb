@@ -37,7 +37,6 @@ public class SaleItem extends BaseEntity {
 	private long unitsTransferedFrom = 0;
 	private long unitsReturned = 0;
 	private long unitsAdjusted = 0;
-	private long unitsOverstock = 0;
 	private String sku;
 	private String status;
 	
@@ -84,7 +83,6 @@ public class SaleItem extends BaseEntity {
 		this.unitsTransferedFrom = 0;
 		this.unitsReturned = 0;
 		this.unitsOnStock = 0;
-		this.unitsOverstock = 0;
 		
 		for(SaleItemReturn sir: this.getSaleItemReturns()) {
 			this.unitsReturned += sir.getUnitsReturned();
@@ -106,7 +104,6 @@ public class SaleItem extends BaseEntity {
 			this.unitsTransferedTo += sit.getUnitsTransfered();
 		}
 		this.unitsOnStock = this.unitsProduced + this.unitsTransferedTo - this.unitsTransferedFrom - this.unitsShipped + this.unitsReturned;
-		this.unitsOverstock = this.unitsProduced + this.unitsReturned + (this.unitsTransferedTo - this.unitsTransferedFrom) - (this.units + this.unitsAdjusted);
 		this.updateStatus();
 	}
 	

@@ -20,7 +20,6 @@ public class ItemListDto {
 	private long unitsProduced = 0;
 	private long unitsShipped = 0;
 	private long unitsReadyProd = 0;
-	private long unitsOverstock = 0;
 	private long unitsAdjusted = 0;
 	private long performance = 0;
 }

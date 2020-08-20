@@ -36,9 +36,6 @@
           <div>Units Returned: {{itemDto.unitsReturned}}</div>
         </b-popover>
       </template>
-      <template v-slot:cell(unitsOverstock)="row">
-        <div>{{getUnitsOverstock(row.item)}}</div>
-      </template>
       <template v-slot:cell(openSales)="row">
         <b-button size="sm" variant="link" @click="goToItemSaleList(row.item.id)">{{+row.item.unitsSold + +row.item.unitsAdjusted - +row.item.unitsShipped}}</b-button>
       </template>
@@ -69,7 +66,6 @@ export default {
         { key: "brand", sortable: true, label: "Brand" },
         { key: "category", sortable: true, label: "Category" },
         { key: "unitsOnStock", sortable: false, label: "Stock" },
-        { key: "unitsOverstock", sortable: false, label: "Overstock" },
         { key: "openSales", sortable: false, label: "Open Sales" },
         { key: "unitsReadyProd", sortable: false, label: "RFP" }
       ],
@@ -82,7 +78,6 @@ export default {
       categoryKv: {},
       availableUnitFilters: [
         {id: "ON_STOCK", name: "On Stock"},
-        {id: "OVERSTOCK", name: "Overstock"},
         {id: "OPEN_SALES", name: "Open Sales"},
         {id: "RFP", name: "RFP"}
       ],
@@ -111,9 +106,6 @@ export default {
         r.data.unitsAdjusted = r.data.unitsAdjusted < 0 ? r.data.unitsAdjusted: '+'+r.data.unitsAdjusted;
         this.itemDto = r.data;
       }).catch(e => {console.log("API error: "+ e)})
-    },
-    getUnitsOverstock(item){
-      return item.unitsOverstock<0?0:item.unitsOverstock
     },
     sorted(e) {
       if (!e.sortBy) {

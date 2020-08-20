@@ -54,7 +54,6 @@ public class Item extends BaseEntity {
 	private long unitsReturned = 0;
 	private long unitsOnStock = 0;
 	private long unitsAdjusted = 0;
-	private long unitsOverstock = 0;
 
 	@JsonIgnoreProperties(value = { "item" }, allowSetters = true)
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
@@ -173,7 +172,6 @@ public class Item extends BaseEntity {
 		this.unitsReturned = 0;
 		this.unitsAdjusted = 0;
 		this.unitsOnStock = 0;
-		this.unitsOverstock = 0;
 		for(ItemReturn ir: this.getItemReturns()) {
 			ir.updateUnits();
 		}
@@ -188,16 +186,7 @@ public class Item extends BaseEntity {
 			this.unitsShipped += sa.getUnitsShipped();
 			this.unitsAdjusted += sa.getUnitsAdjusted();
 			this.unitsOnStock += sa.getUnitsOnStock();
-			this.unitsOverstock += sa.getUnitsOverstock();
 		}
-//		this.unitsOnStock = this.unitsProduced + this.unitsReturned - this.unitsShipped;
-//		if(this.unitsOnStock < 0) {
-//			this.unitsOnStock = 0;
-//		}
-//		this.unitsOverstock = this.unitsProduced + this.unitsReturned - (this.unitsSold + this.unitsAdjusted);
-//		if(this.unitsOverstock < 0) {
-//			this.unitsOverstock = 0;
-//		}
 		this.updateUnitsReadyProd();
 	}
 }

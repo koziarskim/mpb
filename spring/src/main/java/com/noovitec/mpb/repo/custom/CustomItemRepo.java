@@ -51,9 +51,6 @@ public interface CustomItemRepo {
 			if(unitsFilter != null && unitsFilter.equalsIgnoreCase("ON_STOCK")) {
 				q += "and i.unitsOnStock > 0 ";
 			}
-			if(unitsFilter != null && unitsFilter.equalsIgnoreCase("OVERSTOCK")) {
-				q += "and i.unitsOverstock > 0 ";
-			}
 			if(unitsFilter != null && unitsFilter.equalsIgnoreCase("OPEN_SALES")) {
 				q += "and (i.unitsSold + i.unitsAdjusted - i.unitsShipped) > 0 ";
 			}			if(unitsFilter != null && unitsFilter.equalsIgnoreCase("RFP")) {
