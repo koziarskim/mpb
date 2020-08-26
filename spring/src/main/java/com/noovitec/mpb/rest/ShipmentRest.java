@@ -3,6 +3,7 @@ package com.noovitec.mpb.rest;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -330,7 +331,11 @@ class ShipmentRest {
 		bolStamper.getAcroFields().setField("totalCasePack", String.valueOf(totalCasePack));
 		bolStamper.getAcroFields().setField("totalCases", String.valueOf(shipment.getTotalCases()));
 		bolStamper.getAcroFields().setField("totalPallets", String.valueOf(shipment.getTotalPallets()));
-		bolStamper.getAcroFields().setField("totalWeight", shipment.getTotalWeight().toString());
+		String totalWeight = shipment.getTotalWeight().toString();
+		if(shipment.getTotalWeightCustom()!=null && shipment.getTotalWeightCustom().compareTo(BigDecimal.ZERO) != 0){
+			totalWeight = shipment.getTotalWeightCustom().toString();
+		}
+		bolStamper.getAcroFields().setField("totalWeight", totalWeight);
 		bolStamper.close();
 		bolTemplate.close();
 		

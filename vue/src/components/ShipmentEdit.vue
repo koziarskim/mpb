@@ -113,14 +113,11 @@
           <b style="margin-top: 7px">Total pallets:</b><input class="form-control" style="width: 60px" type="tel" v-model="totalPallets">
         </div>
       </b-col>
-      <b-col>    
+      <b-col cols=3>    
         <div style="display: flex">
-          <b style="margin-top: 7px">Total weight:</b><input class="form-control" style="width: 80px" type="tel" v-model="totalWeight">
+          <b style="margin-top: 7px">Total weight:</b><input disabled class="form-control" style="width: 80px" type="tel" v-model="totalWeight">
+          <input class="form-control" style="width: 80px" type="tel" v-model="shipment.totalWeightCustom">
         </div>
-      </b-col>
-      <b-col cols=2>
-        <span style="visibility: hidden">{{totalPallets}}</span>
-        <span style="visibility: hidden">{{totalWeight}}</span><br/>
       </b-col>
     </b-row>
     <div style="border: 1px solid #d6d3d3; margin-top: 10px;">
@@ -274,7 +271,7 @@ export default {
         total += (+si.saleItem.item.weight * +si.units) + +totalPaletWeight;
       });
       return total.toFixed();
-    }
+    },
   },
   watch: {
     customer(new_value, old_value) {
