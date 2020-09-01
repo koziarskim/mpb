@@ -82,7 +82,11 @@
       <b-col cols=1>
         <b-button style="margin-top: 25px" size="sm" variant="success" @click="saveInvoice(true)">Send</b-button>
       </b-col>
-
+    </b-row>
+    <b-row style="margin-bottom: -30px; margin-top: 10px">
+      <b-col cols=2 offset=9>
+        <b>Total: ${{invoiceTotal}}</b>
+      </b-col>
     </b-row>
     <b-row>
       <b-col>
@@ -101,7 +105,7 @@
             <input class="form-control" style="width:100px" type="tel" v-model="row.item.unitPrice">
           </template>          
           <template v-slot:cell(totalUnitPrice)="row">
-            <span>{{getTotalUnitPrice(row.item)}}</span>
+            <span>${{getTotalUnitPrice(row.item)}}</span>
           </template>          
           <template v-slot:cell(action)="row">
             <b-button size="sm" @click="deleteInvoiceItem(row.item)">x</b-button>
@@ -154,6 +158,13 @@ export default {
     }
   },
   computed: {
+    invoiceTotal(){
+      var total = 0;
+      this.invoice.invoiceItems.forEach(ii=> {
+        total += ii.totalUnitPrice;
+      })
+      return total.toLocaleString('en-US',{minimumFractionDigits: 2});;
+    }
   },
   watch: {
     customerKv(newValue, oldValue){
@@ -176,7 +187,7 @@ export default {
     },
     getTotalUnitPrice(invoiceItem){
       invoiceItem.totalUnitPrice = +invoiceItem.unitPrice * +invoiceItem.unitsInvoiced;
-      return invoiceItem.totalUnitPrice.toFixed(2);
+      return invoiceItem.totalUnitPrice.toLocaleString('en-US',{minimumFractionDigits: 2});;
     },
     deleteInvoiceItem(invoiceItem) {
       var idx = this.invoice.invoiceItems.findIndex(ii => ii.id == invoiceItem.id);
