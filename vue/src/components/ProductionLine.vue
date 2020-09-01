@@ -5,7 +5,7 @@
 				<div style="display:flex">
 					<input class="form-control" style="width: 170px; height: 33px; margin-top: -10px; margin-right: 5px;" type="date" v-model="date"> 
 					<b-button size="sm" type="submit" variant="success" style="margin-top: -10px; margin-right: 5px;" @click="setToday()">Today</b-button>
-					Line: <span style="font-weight: bold; margin-right: 5px;">{{line_id}}</span> 
+					Line: <span style="font-weight: bold; margin-right: 5px;">{{scheduleEvent.line.number}}</span>
 					Started: <span style="font-weight: bold; margin-right: 5px;">{{scheduleEvent.startTime}}</span> 
 					Finished: <span style="font-weight: bold; margin-right: 5px;">{{scheduleEvent.finishTime}}</span> 
 					Units Scheduled: <span style="font-weight: bold; margin-right: 5px;">{{scheduleEvent.unitsScheduled}}</span> 
@@ -184,7 +184,7 @@ export default {
 		getTreeItemStyle(active){
 			var style = "";
 			if(active){
-				style = "background-color: #dbe0db"; 
+				style = "background-color: #1be0db"; 
 			}
 			return style;
 		},
