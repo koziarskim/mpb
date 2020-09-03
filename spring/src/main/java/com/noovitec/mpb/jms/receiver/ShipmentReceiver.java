@@ -55,6 +55,7 @@ public interface ShipmentReceiver {
 				emails.add("shipping@marketplacebrands.com");
 				emails.add("mramirez@marketplacebrands.com");
 				body.put("shipmentNumber", shipment.getNumber());
+				body.put("customerName", shipment.getCustomer().getName());
 				notificationService.sendMail(emails, body, Notification.TYPE.SHIPPING_READY);
 			}
 			//Shipment is shipped;
