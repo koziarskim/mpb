@@ -14,9 +14,10 @@
 				</div>
 			</b-col>
 			<b-col>
-				<b-button v-if="inProgress() && !isFinished()" style="margin-right: 3px" type="submit" variant="success" @click="openModal()">Add Units</b-button>
-				<b-button v-if="this.scheduleEvent.id !=null && !inProgress() && !isFinished()" type="submit" variant="success" @click="startProduction()">Start</b-button>
-				<b-button v-if="inProgress() && !isFinished()" type="submit" variant="success" @click="finishProduction">Finish</b-button>
+				<b-button style="margin-right: 3px;" type="submit" size="sm" variant="success" @click="editScheduleEvent()">Edit</b-button>
+				<b-button v-if="inProgress() && !isFinished()"  size="sm" style="margin-right: 3px" type="submit" variant="success" @click="openModal()">Add Units</b-button>
+				<b-button v-if="this.scheduleEvent.id !=null && !inProgress() && !isFinished()" size="sm" type="submit" variant="success" @click="startProduction()">Start</b-button>
+				<b-button v-if="inProgress() && !isFinished()" size="sm" type="submit" variant="success" @click="finishProduction">Finish</b-button>
 			</b-col>
 		</b-row>
 		<b-row>
@@ -85,6 +86,9 @@
 			</b-col>
 		</b-row>
 	</b-modal>
+	<div v-if="scheduleEventModalVisible">
+		<schedule-event-modal :scheduleEventId="this.scheduleEvent.id" v-on:close="closeScheduleEventModal"></schedule-event-modal>
+	</div>  
   </b-container>
 </template>
 
@@ -97,11 +101,13 @@ import securite from "../securite";
 
 export default {
 	components: {
-    ProductionModal: () => import("./ProductionModal")
+	ProductionModal: () => import("./ProductionModal"),
+	ScheduleEventModal: () => import("./modals/ScheduleEventModal")
   },
   data() {
     return {
 			chartVisibility: "visibility: hidden",
+			scheduleEventModalVisible: false,
 			startModalVisible: false,
 			date: moment().format("YYYY-MM-DD"),
 			startTime: moment().format("HH:mm:ss"),
@@ -175,6 +181,14 @@ export default {
 		}
 	},
   methods: {
+	    closeScheduleEventModal(){
+			this.scheduleEventModalVisible = false;
+			this.getScheduleEvents();
+			this.getScheduleEvent(this.scheduleEvent.id);
+		},
+		editScheduleEvent(){
+			this.scheduleEventModalVisible = true;
+		},
 		startProduction(){
 			this.startModalVisible = true;
 		},
@@ -221,7 +235,6 @@ export default {
 			});
 		},
 		saveScheduleEvent(){
-				// this.scheduleEvent.finishTime = this.sortedProductions[this.sortedProductions.length-1].finishTime;
 				http.post("/scheduleEvent", this.scheduleEvent).then(response => {
 					this.getScheduleEvent(this.scheduleEvent.id);
 				}).catch(e => {
