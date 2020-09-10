@@ -5,8 +5,6 @@ set schema 'shared';
 --End SHARED
 set schema 'y2019';
 
-alter table item drop column units_overstock;
-
-alter table sale_item drop column units_overstock;
+alter table invoice add column payments numeric(19,2);
 
 

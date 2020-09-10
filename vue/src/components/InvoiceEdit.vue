@@ -67,14 +67,6 @@
         <label class="top-label">FOB:</label>
         <input class="form-control" type="tel" v-model="invoice.fob">
       </b-col>
-      <b-col cols=2>
-        <label class="top-label">Shipping Cost:</label>
-        <input class="form-control" type="tel" v-model="invoice.shippingCost">
-      </b-col>
-      <b-col cols=2>
-        <label class="top-label">Balance Due:</label>
-        <input class="form-control" type="tel" v-model="invoice.balanceDue">
-      </b-col>
       <b-col cols=3>
         <label class="top-label">Invoice Send Email:</label>
         <input class="form-control" type="tel" v-model="invoice.invoiceEmail">
@@ -83,9 +75,22 @@
         <b-button style="margin-top: 25px" size="sm" variant="success" @click="saveInvoice(true)">Send</b-button>
       </b-col>
     </b-row>
-    <b-row style="margin-bottom: -30px; margin-top: 10px">
-      <b-col cols=2 offset=9>
-        <b>Total: ${{invoiceTotal}}</b>
+    <b-row>
+      <b-col cols=2>
+        <label class="top-label">Total:</label><br/>
+        <b>${{invoiceTotal.toLocaleString('en-US',{minimumFractionDigits: 2})}}</b>
+      </b-col>
+      <b-col cols=2>
+        <label class="top-label">Shipping Cost:</label>
+        <input class="form-control" type="tel" v-model="invoice.shippingCost">
+      </b-col>
+      <b-col cols=2>
+        <label class="top-label">Payments:</label>
+        <input class="form-control" type="tel" v-model="invoice.payments">
+      </b-col>      
+      <b-col cols=2>
+        <label class="top-label">Balance Due:</label><br/>
+        <b>${{balanceDue.toLocaleString('en-US',{minimumFractionDigits: 2})}}</b>
       </b-col>
     </b-row>
     <b-row>
@@ -154,7 +159,7 @@ export default {
       availableShipments: [],
       shipmentKv: {},
       availableShipmentItems: [],
-      shipmentItemKv: {}
+      shipmentItemKv: {},
     }
   },
   computed: {
@@ -163,7 +168,12 @@ export default {
       this.invoice.invoiceItems.forEach(ii=> {
         total += ii.totalUnitPrice;
       })
-      return total.toLocaleString('en-US',{minimumFractionDigits: 2});;
+      return total;;
+    },
+    balanceDue(){
+      var total = 0;
+      total = parseFloat(this.invoiceTotal) + parseFloat(this.invoice.shippingCost) - parseFloat(this.invoice.payments);
+      return total;
     }
   },
   watch: {
@@ -260,6 +270,7 @@ export default {
         alert("A-P Email is wrong!");
         return false;
       }
+      this.invoice.balanceDue = this.balanceDue;
       var query = {params: {sendEmail: sendEmail}}
       return http.post("/invoice/", this.invoice, query).then(r => {
         this.invoice = r.data;

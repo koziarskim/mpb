@@ -36,6 +36,7 @@ public class Invoice extends BaseEntity {
     private String type;
 	private boolean sent;
 	private BigDecimal shippingCost;
+	private BigDecimal payments;
 	private BigDecimal balanceDue;
 	private String invoiceEmail;
 

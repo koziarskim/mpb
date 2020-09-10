@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -205,6 +206,8 @@ public interface InvoiceService {
 			Collection<InvoiceItem> invoiceItems = invoice.getInvoiceItems();
 			Map<Long, String> saleIds = new HashMap<Long, String>();
 			int count = 0;
+			NumberFormat currencyFormat = NumberFormat.getCurrencyInstance();
+			currencyFormat.setMaximumFractionDigits(2);
 			for (InvoiceItem ii : invoiceItems) {
 					saleIds.put(ii.getSaleItem().getSale().getId(), ii.getSaleItem().getSale().getNumber());
 					itemSaleNumber += ii.getSaleItem().getSale().getNumber() +"\n\n";
@@ -215,7 +218,7 @@ public interface InvoiceService {
 					itemPrice += ii.getUnitPrice() + "\n\n";
 					totalUnits += ii.getUnitsInvoiced();
 					BigDecimal itemTotalPriceBd = ii.getUnitPrice().multiply(new BigDecimal(ii.getUnitsInvoiced())).setScale(2, RoundingMode.CEILING);
-					itemTotalPrice += itemTotalPriceBd.toString()  + "\n\n";
+					itemTotalPrice += currencyFormat.format(itemTotalPriceBd)  + "\n\n";
 					totalAmount = totalAmount.add(itemTotalPriceBd==null?BigDecimal.ZERO:itemTotalPriceBd);
 					totalCases += ii.getUnitsInvoiced()/ii.getSaleItem().getItem().getCasePack();
 					totalPallets += ii.getUnitsInvoiced()/(ii.getSaleItem().getItem().getTi() * ii.getSaleItem().getItem().getHi());
@@ -269,9 +272,10 @@ public interface InvoiceService {
 			bolStamper.getAcroFields().setField("totalUnits", String.valueOf(totalUnits));
 			bolStamper.getAcroFields().setField("totalCases", totalCases.toString());
 			bolStamper.getAcroFields().setField("totalPallets", totalPallets.toString());
-			bolStamper.getAcroFields().setField("balanceDue", invoice.getBalanceDue()==null?"0.00":invoice.getBalanceDue().toString());
-			bolStamper.getAcroFields().setField("shippingCost", invoice.getShippingCost()==null?"0.00":invoice.getShippingCost().toString());
-			bolStamper.getAcroFields().setField("totalAmount", totalAmount.toString());
+			bolStamper.getAcroFields().setField("payments", invoice.getPayments()==null?"$0.00":currencyFormat.format(invoice.getPayments()));
+			bolStamper.getAcroFields().setField("balanceDue", invoice.getBalanceDue()==null?"$0.00":currencyFormat.format(invoice.getBalanceDue()));
+			bolStamper.getAcroFields().setField("shippingCost", invoice.getShippingCost()==null?"$0.00":currencyFormat.format(invoice.getShippingCost()));
+			bolStamper.getAcroFields().setField("totalAmount", currencyFormat.format(totalAmount));
 //			List<String> iss = Arrays.asList("pdf/Invoice-Template-2.pdf","pdf/Invoice-Template-2.pdf","pdf/Invoice-Template-2.pdf");
 //			this.concatenatePdfs(iss, bolBaos);
 			bolStamper.close();
