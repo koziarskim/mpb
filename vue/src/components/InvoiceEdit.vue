@@ -304,6 +304,12 @@ export default {
         if(!this.invoice.invoiceEmail){
           this.invoice.invoiceEmail = r.data.shipment.customer.invoiceEmail;
         }
+        if(!this.invoice.shippingCost){
+          this.invoice.shippingCost = 0;
+        }
+        if(!this.invoice.payments){
+          this.invoice.payments = 0;
+        }
         return r.data;
       }).catch(e => {
         console.log("API error: " + e);
