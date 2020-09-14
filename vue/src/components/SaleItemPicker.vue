@@ -68,7 +68,7 @@ export default {
 				this.availableSaleItems = [];
 				r.data.content.forEach(si=> {
 					var found = this.addedSaleItemIds.find(siId=> siId == si.id);
-					if(!found){
+					if(!found && si.status != "SHIPPED"){
 						this.availableSaleItems.push(si);
 					}
 				})
