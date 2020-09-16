@@ -87,9 +87,7 @@ class InvoiceRest {
 	@GetMapping("/invoice/{invoiceId}/pdf")
 	HttpEntity<byte[]> getPdf(@PathVariable Long invoiceId) throws DocumentException, IOException {
 		Invoice invoice = invoiceRepo.findById(invoiceId).get();
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
-		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-		String fileName = "INV_"+invoice.getNumber()+"_"+invoice.getId() + "-" + sdf.format(timestamp) +".pdf";
+		String fileName = "INV_"+invoice.getNumber() +".pdf";
 		byte[] data = invoiceService.generatePdf(invoice.getId());
 		HttpHeaders header = new HttpHeaders();
 		header.setContentType(MediaType.APPLICATION_OCTET_STREAM);
