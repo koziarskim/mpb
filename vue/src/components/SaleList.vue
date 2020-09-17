@@ -23,6 +23,7 @@
               <div style="width: 300px; font-size: 16px">
                 <div>Total of {{pageable.totalElements}} rows</div>
                 <div>Total sold: {{totalSold}}</div>
+                <div>Total amount: ${{totalAmount.toLocaleString('en-US',{minimumFractionDigits: 2})}}</div>
               </div>
             </b-popover>
             <b-button id="sortMenu" size="sm" style="margin-left:3px">Sort</b-button>
@@ -128,7 +129,7 @@ export default {
       showTotalsMenu: false,
       showSortMenu: false,
       totalSold: 0,
-      totalProduced: 0
+      totalAmount: 0
     };
   },
   watch: {
@@ -225,6 +226,7 @@ export default {
     http.get("/sale/pageable", query).then(r => {
       if(totals){
         this.totalSold = r.data.content[0][0].toLocaleString();
+        this.totalAmount = parseFloat(r.data.content[0][1]);
       }else{
         this.sales = r.data.content;
         this.pageable.totalElements = r.data.totalElements;
