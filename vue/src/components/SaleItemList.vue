@@ -2,7 +2,6 @@
     <b-container fluid>
         <b-row style="padding-bottom: 4px; font-size: 12px">
             <b-col cols=1>
-              <b-form-checkbox size="sm" v-model="itemView">Item View</b-form-checkbox>
             </b-col>
             <b-col cols=2>
               <input style="font-size: 12px" class="form-control" type="tel" v-model="numberName" @keyup.enter="getSaleItems()" placeholder="Sale"/>
@@ -80,7 +79,6 @@ export default {
       pageable: {totalElements: 100, currentPage: 1, perPage: 25, sortBy: 'id', sortDesc: false},
       searchSale: "",
       searchItem: "",
-      itemView: true,
       selectedSaleItemIds: [],
       saleItems: [], //SaleItemDto
       numberName: "",
@@ -123,11 +121,6 @@ export default {
     };
   },
   watch: {
-    itemView(newValue, oldValue){
-      if(newValue==false){
-        navigation.goTo("/saleList/")
-      }
-    },
     item(newValue, oldValue){
       this.getSaleItems();
     },

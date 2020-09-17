@@ -12,7 +12,10 @@
           <b-nav-item @click="goTo('/componentList')" :class="navClass('component')">Component</b-nav-item>
           <b-nav-item @click="goTo('/itemList')" :class="navClass('item')">Item</b-nav-item>
           <b-nav-item @click="goTo('/customerList')" :class="navClass('customer')">Customer</b-nav-item>
-          <b-nav-item @click="goTo('/saleList')" :class="navClass('sale')">Sale</b-nav-item>
+          <b-nav-item-dropdown text="Sale" :class="navClass('sale')">
+            <b-dropdown-item @click="goTo('/saleList')"><span style="color: black">Sale List</span></b-dropdown-item>
+            <b-dropdown-item @click="goTo('/saleItemList')"><span style="color: black">Sale Items (Item View)</span></b-dropdown-item>
+          </b-nav-item-dropdown>
           <b-nav-item @click="goTo('/purchaseList')" :class="navClass('purchase')">Purchase</b-nav-item>
           <b-nav-item @click="goTo('/receivingList')" :class="navClass('receiving')">Receiving</b-nav-item>
           <b-nav-item @click="goTo('/shipmentList')" :class="navClass('shipment')">Shipment</b-nav-item>
