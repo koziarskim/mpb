@@ -87,7 +87,7 @@ class InvoiceRest {
 	@GetMapping("/invoice/{invoiceId}/pdf")
 	HttpEntity<byte[]> getPdf(@PathVariable Long invoiceId) throws DocumentException, IOException {
 		Invoice invoice = invoiceRepo.findById(invoiceId).get();
-		String fileName = "INV_"+invoice.getNumber() +".pdf";
+		String fileName = invoice.getNumber() +".pdf";
 		byte[] data = invoiceService.generatePdf(invoice.getId());
 		HttpHeaders header = new HttpHeaders();
 		header.setContentType(MediaType.APPLICATION_OCTET_STREAM);
@@ -117,7 +117,7 @@ class InvoiceRest {
 			Map<String, String> model = new HashMap<String, String>();
 			model.put("invoiceNumber", invoice.getNumber());
 			byte[] data = invoiceService.generatePdf(invoice.getId());
-			notificationService.sendMailAttachment(emails, model, Notification.TYPE.INVOICE_EMAIL, data, "MPB_Invoice_"+invoice.getNumber()+".pdf");
+			notificationService.sendMailAttachment(emails, model, Notification.TYPE.INVOICE_EMAIL, data, invoice.getNumber()+".pdf");
 			invoice.setSent(true);
 			invoice = invoiceService.save(invoice);
 		}
