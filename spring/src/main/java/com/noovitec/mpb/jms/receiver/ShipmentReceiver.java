@@ -47,7 +47,11 @@ public interface ShipmentReceiver {
 			//Shipment is ready
 			boolean oldReady = message.isOldReady();
 			boolean ready = message.isReady();
-			if(!oldReady && ready) {
+			boolean shippingDateChanged = message.isShippingDateChanged();
+			if(oldReady && !ready) {
+				shippingDateChanged = true;
+			}
+			if((!oldReady && ready) || (oldReady && shippingDateChanged)) {
 				//TODO: Shipment might not be created yet. Transaction was not completed
 				//Need to call this from API Interceptor or Transaction Complete Event.
 				shipment = shipmentRepo.findById(message.getId()).get();
@@ -56,6 +60,9 @@ public interface ShipmentReceiver {
 				emails.add("mramirez@marketplacebrands.com");
 				body.put("shipmentNumber", shipment.getNumber());
 				body.put("customerName", shipment.getCustomer().getName());
+				if(shippingDateChanged) {
+					body.put("shippingDateChanged", "changed");
+				}
 				notificationService.sendMail(emails, body, Notification.TYPE.SHIPPING_READY);
 			}
 			//Shipment is shipped;
