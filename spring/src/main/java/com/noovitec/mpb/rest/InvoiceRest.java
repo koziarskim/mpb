@@ -98,7 +98,8 @@ class InvoiceRest {
 
 	@PostMapping("/invoice")
 	ResponseEntity<?> post(@RequestBody Invoice invoice, 
-			@RequestParam(required=false) boolean sendEmail) throws IOException, DocumentException {
+			@RequestParam(required=false) boolean sendEmail,
+			@RequestParam(required=false) boolean includeCc) throws IOException, DocumentException {
 		if(!invoice.getNumber().matches("^[a-zA-Z0-9\\-]{1,15}$")) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Invoice Number is invalid. Alphanumeric and hyphen only allowed. Maximum 15 characters.");
 		}
@@ -110,7 +111,9 @@ class InvoiceRest {
 		if(sendEmail) {
 			List<String> emails = new ArrayList<String>();
 			emails.add(invoice.getInvoiceEmail());
-			emails.add("akoziarski@marketplacebrands.com");
+			if(includeCc) {
+				emails.add("akoziarski@marketplacebrands.com");
+			}
 			Map<String, String> model = new HashMap<String, String>();
 			model.put("invoiceNumber", invoice.getNumber());
 			byte[] data = invoiceService.generatePdf(invoice.getId());

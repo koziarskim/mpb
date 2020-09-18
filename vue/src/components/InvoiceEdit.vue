@@ -11,12 +11,10 @@
       </b-col>
       <b-col cols=2>
         <label class="top-label">Customers:</label><br/>
-        <!-- <b-select option-value="id" option-text="name" :list="availableCustomers" v-model="customerKv"></b-select> -->
         <b-link role="button" @click="goToCustomer(invoice.shipment.customer.id)">{{invoice.shipment.customer.name}}</b-link>
       </b-col>
       <b-col cols=2>
         <label class="top-label">Shipments:</label><br/>
-        <!-- <b-select option-value="id" option-text="name" :list="availableShipments" v-model="shipmentKv"></b-select> -->
         <b-link role="button" @click="goToShipment(invoice.shipment.id)">{{invoice.shipment.number}}</b-link>
       </b-col>
       <b-col cols=2>
@@ -72,7 +70,11 @@
         <input class="form-control" type="tel" v-model="invoice.invoiceEmail">
       </b-col>
       <b-col cols=1>
-        <b-button style="margin-top: 25px" size="sm" variant="success" @click="saveInvoice(true)">Send</b-button>
+        <label class="top-label" style="margin-top: 15px">CC</label><br/>
+        <input type="checkbox" v-model="includeCc">
+      </b-col>
+      <b-col cols=1>
+        <b-button style="margin-top: 25px; margin-left: -80px" size="sm" variant="success" @click="saveInvoice(true)">Send</b-button>
       </b-col>
     </b-row>
     <b-row>
@@ -160,6 +162,7 @@ export default {
       shipmentKv: {},
       availableShipmentItems: [],
       shipmentItemKv: {},
+      includeCc: true
     }
   },
   computed: {
@@ -271,7 +274,7 @@ export default {
         return false;
       }
       this.invoice.balanceDue = this.balanceDue;
-      var query = {params: {sendEmail: sendEmail}}
+      var query = {params: {sendEmail: sendEmail, includeCc: this.includeCc}}
       return http.post("/invoice/", this.invoice, query).then(r => {
         this.invoice = r.data;
         return r.data;
