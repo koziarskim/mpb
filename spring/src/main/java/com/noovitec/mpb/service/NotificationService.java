@@ -67,7 +67,9 @@ public interface NotificationService {
 		public void sendMailAttachment(List<String> emailsTo, Map<String, String> model, Notification.TYPE type, byte[] file, String fileName) {
 			log.info("EmailNotification: "+type);
 			try {
-				emailsTo.add("mkoziarski@marketplacebrands.com");
+				if(!Notification.TYPE.INVOICE_EMAIL.equals(type)) {
+					emailsTo.add("mkoziarski@marketplacebrands.com");
+				}
 				Notification notification = new Notification();
 				notification.setEmails(emailsTo.toString());
 				notification.setType(type.name());
@@ -82,7 +84,7 @@ public interface NotificationService {
 				}
 				InternetAddress[] bcc = new InternetAddress[emailsTo.size()]; 
 			    for (int i =0; i < emailsTo.size(); i++) 
-			    	bcc[i] = new InternetAddress(emailsTo.get(i)); 
+				    bcc[i] = new InternetAddress(emailsTo.get(i)); 
 				HttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
 				JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
 				InputStream credentialsJSON = this.getClass().getClassLoader().getResourceAsStream(MIMS_JSON_KEY);
@@ -103,9 +105,13 @@ public interface NotificationService {
 				ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 				Session session = Session.getDefaultInstance(new Properties());
 				MimeMessage email = new MimeMessage(session);
-				email.setFrom(new InternetAddress("mkoziarski@marketplacebrands.com"));
-				email.addRecipient(javax.mail.Message.RecipientType.TO, new InternetAddress("mims@marketplacebrands.com"));
-				email.addRecipients(javax.mail.Message.RecipientType.BCC, bcc);
+//				email.setFrom(new InternetAddress("mkoziarski@marketplacebrands.com"));
+				if(Notification.TYPE.INVOICE_EMAIL.equals(type)) {
+					email.addRecipient(javax.mail.Message.RecipientType.TO, new InternetAddress(emailsTo.get(0)));
+				} else {
+					email.addRecipient(javax.mail.Message.RecipientType.TO, new InternetAddress("mims@marketplacebrands.com"));
+					email.addRecipients(javax.mail.Message.RecipientType.BCC, bcc);
+				}
 				email.setSubject(subject);
 				Multipart multipart = new MimeMultipart();
 				MimeBodyPart messageBodyPart = new MimeBodyPart();
