@@ -86,7 +86,7 @@
     <b-row>
       <b-col>
         <label class="top-label"></label>
-        <b-table v-if="sale.saleItems.length>0" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="sale.saleItems" :fields="columns">
+        <b-table v-if="sale.saleItems.length>0" :tbody-tr-class="rowClass" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="sale.saleItems" :fields="columns">
           <template v-slot:cell(item)="row">
             <b-link role="button" @click.stop="goToItem(row.item.item.id)">{{row.item.item.number}}</b-link>
             <div class="name-sm" :title="row.item.item.name"> ({{row.item.item.name}})</div>
@@ -293,6 +293,12 @@ export default {
     }
   },
   methods: {
+    rowClass(item, type) {
+        if(item.status == 'SHIPPED'){
+          return 'fully-shipped'
+        }
+        return;
+      },
     goToItemReturnList(saleItem){
       var query = { saleId: this.sale.id, itemId: saleItem.item.id };
       router.push({path: "/itemReturnList", query: query});
@@ -553,4 +559,7 @@ export default {
 </script>
 
 <style>
+.fully-shipped {
+  background-color: #b6e6c9;
+}
 </style>
