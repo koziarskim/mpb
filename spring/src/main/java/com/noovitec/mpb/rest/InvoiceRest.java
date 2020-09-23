@@ -111,15 +111,17 @@ class InvoiceRest {
 		if(sendEmail) {
 			List<String> emails = new ArrayList<String>();
 			emails.add(invoice.getInvoiceEmail());
-			if(includeCc) {
-				emails.add("akoziarski@marketplacebrands.com");
-			}
 			Map<String, String> model = new HashMap<String, String>();
 			model.put("invoiceNumber", invoice.getNumber());
 			byte[] data = invoiceService.generatePdf(invoice.getId());
 			notificationService.sendMailAttachment(emails, model, Notification.TYPE.INVOICE_EMAIL, data, invoice.getNumber()+".pdf");
 			invoice.setSent(true);
 			invoice = invoiceService.save(invoice);
+			if(includeCc) {
+				List<String> ccEmails = new ArrayList<String>();
+				ccEmails.add("akoziarski@marketplacebrands.com");
+				notificationService.sendMailAttachment(ccEmails, model, Notification.TYPE.INVOICE_EMAIL, data, invoice.getNumber()+".pdf");
+			}
 		}
 		return ResponseEntity.ok().body(invoice);
 	}

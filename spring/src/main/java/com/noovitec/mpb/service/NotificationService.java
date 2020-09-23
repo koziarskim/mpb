@@ -105,7 +105,6 @@ public interface NotificationService {
 				ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 				Session session = Session.getDefaultInstance(new Properties());
 				MimeMessage email = new MimeMessage(session);
-//				email.setFrom(new InternetAddress("mkoziarski@marketplacebrands.com"));
 				if(Notification.TYPE.INVOICE_EMAIL.equals(type)) {
 					email.addRecipient(javax.mail.Message.RecipientType.TO, new InternetAddress(emailsTo.get(0)));
 				} else {
