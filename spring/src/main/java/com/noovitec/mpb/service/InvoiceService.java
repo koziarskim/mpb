@@ -221,7 +221,7 @@ public interface InvoiceService {
 					itemSaleNumber += ii.getSaleItem().getSale().getNumber() +"\n\n";
 					itemQuantity += ii.getUnitsInvoiced() + "\n\n";
 					itemDescription += ii.getSaleItem().getItem().getNumber() + " - " +ii.getSaleItem().getItem().getName()+"\n" 
-							+(ii.getSaleItem().getItem().getUpc()==null?"":"UPC: "+ii.getSaleItem().getItem().getUpc())+(ii.getSaleItem().getSku()==null?"":", SKU# "+ ii.getSaleItem().getSku()) + "\n";
+							+(ii.getSaleItem().getItem().getUpc()==null?"":"UPC: "+ii.getSaleItem().getItem().getUpc().getCode())+(ii.getSaleItem().getSku()==null?"":", SKU# "+ ii.getSaleItem().getSku()) + "\n";
 					itemCasePack += ii.getSaleItem().getItem().getCasePack() + "\n\n";
 					itemPrice += ii.getUnitPrice() + "\n\n";
 					BigDecimal itemTotalPriceBd = ii.getUnitPrice().multiply(new BigDecimal(ii.getUnitsInvoiced())).setScale(2, RoundingMode.CEILING);
