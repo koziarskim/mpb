@@ -120,6 +120,7 @@ class InvoiceRest {
 			if(includeCc) {
 				List<String> ccEmails = new ArrayList<String>();
 				ccEmails.add("akoziarski@marketplacebrands.com");
+				ccEmails.add("mkoziarski@marketplacebrands.com");
 				notificationService.sendMailAttachment(ccEmails, model, Notification.TYPE.INVOICE_EMAIL, data, invoice.getNumber()+".pdf");
 			}
 		}
