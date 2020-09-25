@@ -18,9 +18,9 @@ import com.noovitec.mpb.entity.SaleItem;
 
 public interface CustomSaleItemRepo {
 	public Page<?> getTotals(Pageable pageable, String numberName, Long saleId, Long customerId, Long itemId, 
-			String status, String unitsFilter);
+			String status, String unitsFilter, boolean showAll);
 	Page<SaleItem> findPageable(Pageable pageable, String numberName, Long saleId, Long customerId, Long itemId, String status,
-			String unitsFilter);
+			String unitsFilter, boolean showAll);
 
 	@Repository
 	public class SaleItemRepoImpl implements CustomSaleItemRepo {
@@ -32,7 +32,7 @@ public interface CustomSaleItemRepo {
 
 		@Override
 		public Page<?> getTotals(Pageable pageable, String numberName, Long saleId, Long customerId, Long itemId, 
-				String status, String unitsFilter) {
+				String status, String unitsFilter, boolean showAll) {
 			String q = "select distinct si.id from SaleItem si " 
 					+ "join si.item i " 
 					+ "join si.sale s " 
@@ -59,6 +59,9 @@ public interface CustomSaleItemRepo {
 				}
 				if ("RFP_ONLY".equalsIgnoreCase(unitsFilter)) {
 					q += "and i.unitsReadyProd > 0 ";
+				}
+				if (!showAll) {
+					q += "and s.cancelled = false and s.paidInFull = false ";
 				}
 				Query query = entityManager.createQuery(q);
 				if (numberName != null && !numberName.isEmpty()) {
@@ -89,7 +92,7 @@ public interface CustomSaleItemRepo {
 		
 		@Override
 		public Page<SaleItem> findPageable(Pageable pageable, String numberName, Long saleId, Long customerId, Long itemId, 
-				String status, String unitsFilter) {
+				String status, String unitsFilter, boolean showAll) {
 			String q = "select distinct si from SaleItem si " 
 				+ "join si.item i " 
 				+ "join si.sale s " 
@@ -116,6 +119,9 @@ public interface CustomSaleItemRepo {
 			}
 			if ("RFP_ONLY".equalsIgnoreCase(unitsFilter)) {
 				q += "and i.unitsReadyProd > 0 ";
+			}
+			if (!showAll) {
+				q += "and s.cancelled = false and s.paidInFull = false ";
 			}
 			q += "order by si.updated desc ";
 			Query query = entityManager.createQuery(q);

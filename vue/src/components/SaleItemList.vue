@@ -1,8 +1,6 @@
 <template>
     <b-container fluid>
         <b-row style="padding-bottom: 4px; font-size: 12px">
-            <b-col cols=1>
-            </b-col>
             <b-col cols=2>
               <input style="font-size: 12px" class="form-control" type="tel" v-model="numberName" @keyup.enter="getSaleItems()" placeholder="Sale"/>
             </b-col>
@@ -17,6 +15,10 @@
             </b-col>
             <b-col cols=1>
               <b-select option-value="id" option-text="name" :list="availableUnitsFilters" v-model="unitsFilter" placeholder="Units"></b-select>
+            </b-col>
+            <b-col cols=1>
+              <label class="top-label">Show All</label><br/>
+              <input type="checkbox" style="margin-left: 20px" v-model="showAll">
             </b-col>
             <b-col cols=1>
               <div style="display: flex">
@@ -109,6 +111,7 @@ export default {
         {id: 'PENDING_SHIPMENT', name: 'Pending Shipment'},
         {id: 'SHIPPED', name: 'Fully Shipped'},
         {id: 'CANCELLED', name: 'Cancelled'},
+        {id: 'PAID', name: 'Paid In Full'},
       ],
       statusKv: {},
       availableUnitsFilters: [
@@ -118,6 +121,7 @@ export default {
       unitsFilter: {},
       showTotalsMenu: false,
       totalSold: 0,
+      showAll: false
     };
   },
   watch: {
@@ -127,10 +131,16 @@ export default {
     customer(newValue, oldValue){
       this.getSaleItems();
     },
-    statusKv(old_value, new_value){
+    statusKv(new_value, old_value){
+      if(new_value.id == "PAID" || new_value.id == "CANCELLED"){
+        this.showAll = true;
+      }
       this.getSaleItems();      
     },
-    unitsFilter(old_value, new_value){
+    unitsFilter(new_value, old_value){
+      this.getSaleItems();      
+    },
+    showAll(new_value, old_value){
       this.getSaleItems();      
     },
   },
@@ -172,7 +182,8 @@ export default {
         customerId: this.customer.id, 
         itemId: this.item.id, 
         status: this.statusKv.id,
-        unitsFilter: this.unitsFilter.id
+        unitsFilter: this.unitsFilter.id,
+        showAll: this.showAll
       }}).then(r => {
       if(totals){
         this.totalSold = r.data.content[0][0].toLocaleString();

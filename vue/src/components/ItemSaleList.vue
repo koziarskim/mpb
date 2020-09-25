@@ -9,7 +9,7 @@
     <b-row>
       <b-col>
         <label class="top-label"></label>
-        <b-table v-if="item.saleItems && item.saleItems.length>0" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="item.saleItems" :fields="columns">
+        <b-table v-if="item.saleItems && item.saleItems.length>0" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="getSaleItems(item.saleItems)" :fields="columns">
           <template v-slot:head(unitsNeeded)="row">
             <div>Sold</div><div style="width: 50px" class="mpb-head-line">Sold & Adj</div>
           </template>
@@ -187,6 +187,7 @@ export default {
         {id: 'PENDING_SHIPMENT', name: 'Pending Shipment'},
         {id: 'SHIPPED', name: 'Fully Shipped'},
         {id: 'CANCELLED', name: 'Cancelled'},
+        {id: 'PAID', name: 'Paid In Full'},
       ],
     };
   },
@@ -194,6 +195,12 @@ export default {
   computed: {},
   watch: {},
   methods: {
+    getSaleItems(saleItems){
+      var sis = saleItems.filter(si => {
+        return (si.sale.paidInFull == false && si.sale.cancelled == false);
+      })
+      return sis;
+    },
     getStatusClass(statusId){
         if(statusId == 'APPROVED'){ return "status-black"}
         if(statusId == 'PENDING_PROD'){ return "status-blue"}

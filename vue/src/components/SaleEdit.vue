@@ -40,6 +40,7 @@
           <b-button style="margin-left: 3px" :disabled="!allowEdit()" size="sm" @click="cancelSale()">Cancel</b-button>
           <b-button style="margin-left: 3px" :disabled="!allowEdit()" size="sm" @click="deleteSale()">x</b-button>
         </div>
+        <input type="checkbox" style="margin-top: 10px" v-model="sale.paidInFull"><span style="font-size: 14px"> Paid in Full</span>
         <br/>
         <span style="font-weight: bold">{{getStatus(sale.status)}}</span><br/>
         <label class="top-label">Stock: {{sale.unitsOnStock}},&nbsp;&nbsp;</label>
@@ -191,6 +192,7 @@ export default {
         shippingAddress: {},
         freightTerms: {},
         paymentTerms: "",
+        paidInFull: false,
       },
       customer: {
         addresses: []
@@ -240,6 +242,7 @@ export default {
         {id: 'PENDING_SHIPMENT', name: 'Pending Shipment'},
         {id: 'SHIPPED', name: 'Fully Shipped'},
         {id: 'CANCELLED', name: 'Cancelled'},
+        {id: 'PAID', name: 'Paid In Full'},
       ],
     };
   },

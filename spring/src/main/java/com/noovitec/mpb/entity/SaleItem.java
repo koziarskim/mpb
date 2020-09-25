@@ -127,5 +127,9 @@ public class SaleItem extends BaseEntity {
 		if(this.getSale().isCancelled()) {
 			status = Sale.STATUS.CANCELLED.name();
 		}
+		if(this.getSale().isPaidInFull()) {
+			status = STATUS.PAID.name();
+		}
+
 	}
 }

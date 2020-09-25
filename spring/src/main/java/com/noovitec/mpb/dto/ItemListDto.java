@@ -16,6 +16,7 @@ public class ItemListDto {
 	private String category;
 	private long unitsOnStock = 0;
 	private long unitsSold = 0;
+	private long unitsOpenSale = 0;
 	private long unitsScheduled = 0;
 	private long unitsProduced = 0;
 	private long unitsShipped = 0;

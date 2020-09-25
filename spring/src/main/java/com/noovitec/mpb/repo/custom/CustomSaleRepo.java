@@ -18,8 +18,8 @@ import org.springframework.stereotype.Repository;
 import com.noovitec.mpb.entity.Sale;
 
 public interface CustomSaleRepo {
-	public Page<?> getTotals(Pageable pageable, String saleNumber, Long itemId, Long customerId, String status);
-	Page<Sale> findPagable(Pageable pageable, String saleNumber, Long itemId, Long customerId, String status);
+	public Page<?> getTotals(Pageable pageable, String saleNumber, Long itemId, Long customerId, String status, boolean showAll);
+	Page<Sale> findPagable(Pageable pageable, String saleNumber, Long itemId, Long customerId, String status, boolean showAll);
 	public Sale getFirstByCustomer(Long customerId);
 	public Sale getLastByCustomer(Long customerId);
 
@@ -32,7 +32,7 @@ public interface CustomSaleRepo {
 		EntityManager entityManager;
 
 		@Override
-		public Page<?> getTotals(Pageable pageable, String saleNumber, Long itemId, Long customerId, String status) {
+		public Page<?> getTotals(Pageable pageable, String saleNumber, Long itemId, Long customerId, String status, boolean showAll) {
 			String q = "select distinct s.id from Sale s " 
 					+ "left join s.saleItems si " 
 					+ "left join si.item i "
@@ -63,8 +63,10 @@ public interface CustomSaleRepo {
 			if (status !=null && !status.isBlank()) {
 				query.setParameter("status", status);
 			}
+			if (!showAll) {
+				q += "and s.cancelled = false and s.paidInFull = false ";
+			}
 			List<Long> ids = query.getResultList();
-			
 			q = "select sum(s.unitsSold), sum(s.totalPrice) from Sale s where s.id in :ids ";
 			query = entityManager.createQuery(q);
 			query.setParameter("ids", ids);
@@ -75,7 +77,7 @@ public interface CustomSaleRepo {
 		}
 		
 		@Override
-		public Page<Sale> findPagable(Pageable pageable, String saleNumber, Long itemId, Long customerId, String status) {
+		public Page<Sale> findPagable(Pageable pageable, String saleNumber, Long itemId, Long customerId, String status, boolean showAll) {
 			String q = "select distinct s from Sale s " 
 					+ "left join s.saleItems si " 
 					+ "left join si.item i "
@@ -92,6 +94,9 @@ public interface CustomSaleRepo {
 			}
 			if (status != null && !status.isBlank()) {
 				q += "and s.status = :status ";
+			}
+			if (!showAll) {
+				q += "and s.cancelled = false and s.paidInFull = false ";
 			}
 			Order order = pageable.getSort().iterator().next();
 			q += "order by s."+order.getProperty() + " "+order.getDirection();

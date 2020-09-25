@@ -31,7 +31,7 @@ public class Sale extends BaseEntity {
 	private static final long serialVersionUID = 3963121563435423199L;
 
 	public enum STATUS {
-		DRAFT, PENDING_APPROVAL, APPROVED, PENDING_PROD, PENDING_SHIPMENT, SHIPPED, CANCELLED
+		DRAFT, PENDING_APPROVAL, APPROVED, PENDING_PROD, PENDING_SHIPMENT, SHIPPED, CANCELLED, PAID
 	}
 
 	private LocalDate date;
@@ -54,6 +54,7 @@ public class Sale extends BaseEntity {
 	private boolean approved;
 	private boolean pendingApproval;
 	private boolean cancelled;
+	private boolean paidInFull;
 	private LocalDateTime modifiedDate;
 	private LocalDate shippingFrom;
 	private LocalDate shippingTo;
@@ -124,6 +125,10 @@ public class Sale extends BaseEntity {
 		if(this.cancelled) {
 			status = STATUS.CANCELLED.name();
 		}
+		if(this.paidInFull) {
+			status = STATUS.PAID.name();
+		}
+		
 	}
 
 }

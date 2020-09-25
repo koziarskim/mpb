@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import com.noovitec.mpb.entity.Item;
+import com.noovitec.mpb.entity.Shipment;
 
 public interface CustomItemRepo {
 	public Page<Item> findPagable(Pageable pageable, String numberName, Long componentId, Long brandId, Long categoryId, String unitsFilter);
@@ -29,7 +30,7 @@ public interface CustomItemRepo {
 
 		@Override
 		public Page<Item> findPagable(Pageable pageable, String numberName, Long componentId, Long brandId, Long categoryId, String unitsFilter) {
-			String q = "select distinct i, (i.unitsSold + i.unitsAdjusted - i.unitsShipped) as open from Item i "
+			String q = "select distinct i from Item i "
 					+ "left join i.itemComponents ic "
 					+ "left join ic.component c "
 					+ "left join i.brand b "
@@ -52,11 +53,12 @@ public interface CustomItemRepo {
 				q += "and i.unitsOnStock > 0 ";
 			}
 			if(unitsFilter != null && unitsFilter.equalsIgnoreCase("OPEN_SALES")) {
-				q += "and (i.unitsSold + i.unitsAdjusted - i.unitsShipped) > 0 ";
-			}			if(unitsFilter != null && unitsFilter.equalsIgnoreCase("RFP")) {
+				q += "and i.unitsOpenSale > 0 ";
+			}
+			if(unitsFilter != null && unitsFilter.equalsIgnoreCase("RFP")) {
 				q += "and i.unitsReadyProd > 0 ";
 			}
-			q += "order by open desc";
+			q += "order by i.unitsOpenSale desc";
 			Query query = entityManager.createQuery(q);
 			if(numberName!=null && !numberName.isBlank()) {
 				query.setParameter("numberName", numberName);
@@ -71,12 +73,15 @@ public interface CustomItemRepo {
 				query.setParameter("categoryId", categoryId);
 			}
 			long total = query.getResultStream().count();
+//			@SuppressWarnings("unchecked")
+//			List<Object[]> result = query.setFirstResult(pageable.getPageNumber()*pageable.getPageSize())
+//				.setMaxResults(pageable.getPageSize()).getResultList();
+//			List<Item> entities = new ArrayList<Item>();
+//			result.forEach(o -> entities.add((Item) o[0]));
+//			Page<Item> page = new PageImpl<Item>(entities, pageable, total);
 			@SuppressWarnings("unchecked")
-			List<Object[]> result = query.setFirstResult(pageable.getPageNumber()*pageable.getPageSize())
-				.setMaxResults(pageable.getPageSize()).getResultList();
-			List<Item> entities = new ArrayList<Item>();
-			result.forEach(o -> entities.add((Item) o[0]));
-			Page<Item> page = new PageImpl<Item>(entities, pageable, total);
+			List<Item> result = query.setFirstResult(pageable.getPageNumber() * pageable.getPageSize()).setMaxResults(pageable.getPageSize()).getResultList();
+			Page<Item> page = new PageImpl<Item>(result, pageable, total);
 			return page;
 		}
 	}

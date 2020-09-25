@@ -6,10 +6,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -93,14 +91,14 @@ class SaleRest {
 			@RequestParam(required = false) String saleNumber,
 			@RequestParam(required = false) Long itemId,
 			@RequestParam(required = false) Long customerId,
-			@RequestParam(required = false) String status) {
+			@RequestParam(required = false) String status,
+			@RequestParam(required = false) boolean showAll) {
 		if(totals) {
-			Page<?> resultTotals = saleRepo.getTotals(pageable, saleNumber, itemId, customerId, status);
+			Page<?> resultTotals = saleRepo.getTotals(pageable, saleNumber, itemId, customerId, status, showAll);
 			return resultTotals;
 			
 		}
-		Page<Sale> sales = saleRepo.findPagable(pageable, saleNumber, itemId, customerId, status);
-		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		Page<Sale> sales = saleRepo.findPagable(pageable, saleNumber, itemId, customerId, status, showAll);
 		DateTimeFormatter windowFormat = DateTimeFormatter.ofPattern("MM/dd");
 		Page<SaleListDto> all = sales.map(sale -> {
 			SaleListDto dto = new SaleListDto();

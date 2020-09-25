@@ -48,6 +48,7 @@ public class Item extends BaseEntity {
 	private BigDecimal totalCost;
 	private long unitsProduced = 0;
 	private long unitsSold = 0;
+	private long unitsOpenSale = 0;
 	private long unitsScheduled = 0;
 	private long unitsShipped = 0;
 	private long unitsReadyProd = 0;
@@ -84,11 +85,6 @@ public class Item extends BaseEntity {
 	@ManyToOne()
 	@JoinColumn(name = "upc_id", referencedColumnName = "id")
 	private Upc upc;
-
-//	@JsonIgnoreProperties(value = { "items" }, allowSetters = true)
-//	@ManyToOne()
-//	@JoinColumn(name = "case_upc_id", referencedColumnName = "id")
-//	private Upc caseUpc;
 
 	@ManyToOne()
 	@JoinColumn(name = "attachment_id", referencedColumnName = "id")
@@ -166,6 +162,7 @@ public class Item extends BaseEntity {
 	
 	public void updateUnits() {
 		this.unitsSold = 0;
+		this.unitsOpenSale = 0;
 		this.unitsScheduled = 0;
 		this.unitsProduced = 0;
 		this.unitsShipped = 0;
@@ -180,6 +177,9 @@ public class Item extends BaseEntity {
 			this.unitsReturned += sa.getUnitsReturned();
 			if(!sa.getSale().isCancelled()) {
 				this.unitsSold += sa.getUnits();
+			}
+			if(!sa.getSale().isCancelled() && !sa.getSale().isPaidInFull()) {
+				this.unitsOpenSale += 1;
 			}
 			this.unitsScheduled += sa.getUnitsScheduled();
 			this.unitsProduced += sa.getUnitsProduced();

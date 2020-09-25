@@ -1,8 +1,6 @@
 <template>
     <b-container fluid>
       <b-row style="padding-bottom: 4px; font-size: 12px">
-        <b-col cols=1>
-        </b-col>
         <b-col cols=2>
           <input class="form-control" style="font-size: 12px" type="tel" v-model="saleNumber" @keyup.enter="getSales()" placeholder="Sale"/>
         </b-col>
@@ -14,6 +12,10 @@
         </b-col>
         <b-col cols="2">
           <b-select option-value="id" option-text="name" :list="availableStatus" v-model="statusKv" placeholder="Status"></b-select>
+        </b-col>
+        <b-col cols=1>
+          <label class="top-label">Show All</label><br/>
+          <input type="checkbox" style="margin-left: 20px" v-model="showAll">
         </b-col>
         <b-col cols=1>
           <div style="display: flex">
@@ -108,6 +110,7 @@ export default {
         {id: 'PENDING_SHIPMENT', name: 'Pending Shipment'},
         {id: 'SHIPPED', name: 'Fully Shipped'},
         {id: 'CANCELLED', name: 'Cancelled'},
+        {id: 'PAID', name: 'Paid In Full'},
       ],
       statusKv: {},
       fields: [
@@ -127,17 +130,24 @@ export default {
       showTotalsMenu: false,
       showSortMenu: false,
       totalSold: 0,
-      totalAmount: 0
+      totalAmount: 0,
+      showAll: false
     };
   },
   watch: {
-    itemKv(old_value, new_value){
+    itemKv(new_value, old_value){
       this.getSales();      
     },
-    customerKv(old_value, new_value){
+    customerKv(new_value, old_value){
       this.getSales();      
     },
-    statusKv(old_value, new_value){
+    statusKv(new_value, old_value){
+      if(new_value.id == "PAID" || new_value.id == "CANCELLED"){
+        this.showAll = true;
+      }
+      this.getSales();      
+    },
+    showAll(new_value, old_value){
       this.getSales();      
     },
   },
@@ -192,7 +202,6 @@ export default {
       return statusKv.name
     },
     showPopover(saleDto){
-      // this.sales.forEach(sale => sale.show = false)
       this.getSale(saleDto.id).then(sale => {
         saleDto.saleItems = sale.saleItems;
       })
@@ -214,7 +223,8 @@ export default {
       saleNumber: this.saleNumber, 
       itemId: this.itemKv.id,
       customerId: this.customerKv.id,
-      status: this.statusKv.id 
+      status: this.statusKv.id,
+      showAll: this.showAll
     }}
     http.get("/sale/pageable", query).then(r => {
       if(totals){

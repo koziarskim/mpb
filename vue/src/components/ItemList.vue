@@ -26,6 +26,9 @@
       <template v-slot:head(unitsOnStock)="row">
         <div>Stock</div><div class="mpb-head-line">Including Overstock</div>
       </template>
+      <template v-slot:head(openSales)="row">
+        <div>Sales</div><div class="mpb-head-line">Open only</div>
+      </template>
       <template v-slot:cell(name)="row">
         <div style="width:200px; overflow: wrap; font-size: 14px"><b-link role="button" :id="'popover-'+row.item.id" @click="getUnits(row.item.id)">{{row.item.number}}</b-link> {{row.item.name}}</div>
         <b-popover placement="bottomright" :target="'popover-'+row.item.id" triggers="focus" variant="primary">
@@ -37,7 +40,7 @@
         </b-popover>
       </template>
       <template v-slot:cell(openSales)="row">
-        <b-button size="sm" variant="link" @click="goToItemSaleList(row.item.id)">{{+row.item.unitsSold + +row.item.unitsAdjusted - +row.item.unitsShipped}}</b-button>
+        <b-button size="sm" variant="link" @click="goToItemSaleList(row.item.id)">{{row.item.unitsOpenSale}}</b-button>
       </template>
     </b-table>
     <div style="display: flex">
@@ -66,8 +69,8 @@ export default {
         { key: "brand", sortable: true, label: "Brand" },
         { key: "category", sortable: true, label: "Category" },
         { key: "unitsOnStock", sortable: false, label: "Stock" },
-        { key: "openSales", sortable: false, label: "Open Sales" },
-        { key: "unitsReadyProd", sortable: false, label: "RFP" }
+        { key: "openSales", sortable: false, label: "Sales" },
+        // { key: "unitsReadyProd", sortable: false, label: "RFP" }
       ],
       items: [], //ItemListDto
       availableComponents: [],

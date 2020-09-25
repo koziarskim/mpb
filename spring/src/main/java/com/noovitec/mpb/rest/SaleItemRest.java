@@ -57,13 +57,14 @@ class SaleItemRest {
 			@RequestParam(required = false) Long itemId, 
 			@RequestParam(required = false) Long customerId, 
 			@RequestParam(required = false) String status,
-			@RequestParam(required = false) String unitsFilter) {
+			@RequestParam(required = false) String unitsFilter,
+			@RequestParam(required = false) boolean showAll) {
 		if(totals) {
-			Page<?> resultTotals = saleItemRepo.getTotals(pageable, numberName, saleId, customerId, itemId, status, unitsFilter);
+			Page<?> resultTotals = saleItemRepo.getTotals(pageable, numberName, saleId, customerId, itemId, status, unitsFilter, showAll);
 			return resultTotals;
 			
 		}
-		Page<SaleItem> saleItems = saleItemRepo.findPageable(pageable, numberName, saleId, customerId, itemId, status, unitsFilter);
+		Page<SaleItem> saleItems = saleItemRepo.findPageable(pageable, numberName, saleId, customerId, itemId, status, unitsFilter, showAll);
 		return this.mapToDto(saleItems);
 	}
 
