@@ -75,7 +75,7 @@ import router from "../router";
 import moment from "moment";
 
 export default {
-  name: "edit-component",
+  name: "ComponentList",
   data() {
     return {
       pageable: {totalElements: 100, currentPage: 1, perPage: 25, sortBy: 'number', sortDesc: true},

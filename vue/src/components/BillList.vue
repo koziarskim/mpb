@@ -113,6 +113,7 @@ import httpUtils from "../httpUtils";
 import moment from "moment";
 
 export default {
+  name: "BillList",
   components: {
     BillEdit: () => import("./modals/BillEdit"),
     BillEditMultiple: () => import("./modals/BillEditMultiple"),

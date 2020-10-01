@@ -32,6 +32,7 @@ import http from "../http-common";
 import router from "../router";
 
 export default {
+  name: "CustomerList",
   data() {
     return {
       pageable: {totalElements: 100, currentPage: 1, perPage: 25, sortBy: 'name', sortDesc: false},

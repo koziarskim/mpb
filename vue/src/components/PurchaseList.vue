@@ -87,6 +87,7 @@ import router from "../router";
 import httpUtils from "../httpUtils";
 
 export default {
+  name: "PurchaseList",
   data() {
     return {
       pageable: {totalElements: 100, currentPage: 1, perPage: 25, sortBy: 'updated', sortDesc: true},

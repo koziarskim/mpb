@@ -75,6 +75,7 @@ import router from "../router";
 import navigation from "../utils/navigation";
 
 export default {
+  name: "SaleItemList",
   data() {
     return {
       navigation: navigation,

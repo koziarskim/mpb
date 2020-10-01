@@ -65,6 +65,7 @@ import httpUtils from "../httpUtils";
 import moment from "moment";
 
 export default {
+  name: "ReceivingList",
   data() {
     return {
       pageable: {totalElements: 100, currentPage: 1, perPage: 25, sortBy: 'updated', sortDesc: true},

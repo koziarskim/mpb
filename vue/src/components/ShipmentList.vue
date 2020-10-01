@@ -95,6 +95,7 @@ import http from "../http-common";
 import router from "../router";
 
 export default {
+  name: "ShipmentList",
   data() {
     return {
       sortBy: "number",

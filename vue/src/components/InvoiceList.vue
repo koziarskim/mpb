@@ -68,6 +68,7 @@ import securite from "../securite"
 import navigation from "../utils/navigation";
 
 export default {
+  name: "InvoiceList",
   data() {
     return {
       securite: securite,

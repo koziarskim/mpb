@@ -54,6 +54,7 @@ import http from "../http-common";
 import router from "../router";
 
 export default {
+  name: "ItemList",
   data() {
     return {
       pageable: {
