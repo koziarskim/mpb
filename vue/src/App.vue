@@ -1,9 +1,5 @@
 <template>
   <div id="app">
-    <div v-if="yearName" class="fade-out">
-      <div style="font-size: 20px">You are in the year context</div>
-      <div>{{this.yearName}}</div>
-    </div>
     <b-navbar toggleable="md" type="dark" variant="dark" style="height:35px">
       <b-collapse is-nav id="nav_collapse">
         <b-navbar-nav v-if="showNav">
@@ -27,20 +23,8 @@
             <b-dropdown-item @click="goTo('/billList')"><span style="color: black">Bills (Receivings)</span></b-dropdown-item>
             <b-dropdown-item @click="goTo('/invoiceItemList')"><span style="color: black">Invoices by Sale/Item</span></b-dropdown-item>
           </b-nav-item-dropdown>
-
-		      
         </b-navbar-nav>
-        <b-navbar-nav v-if="showNav" style="margin:0px 0px 0px auto;">
-          <!-- <b-nav-item-dropdown right :text="user.season.name">
-            <b-dropdown-item v-for="season in availableSeasons" :key="season.id" @click="changeSeason(season)">{{season.name}}</b-dropdown-item>
-          </b-nav-item-dropdown> -->
-        </b-navbar-nav>
-        <b-navbar-nav v-if="showNav">
-          <b-nav-item-dropdown right :text="user.year.name">
-            <b-dropdown-item v-for="year in availableYears" :key="year.id" @click="changeYear(year)">{{year.name}}</b-dropdown-item>
-          </b-nav-item-dropdown>
-        </b-navbar-nav>
-        <b-navbar-nav v-if="showNav">
+        <b-navbar-nav v-if="showNav" style="margin-left: 8%">
           <b-nav-item-dropdown right :text="user.fullName">
             <b-dropdown-item @click="goTo('/Profile')">Profile</b-dropdown-item>
             <b-dropdown-item v-if="securite.hasRole(['ADMIN'])" @click="goTo('/users')">Manage Users</b-dropdown-item>
