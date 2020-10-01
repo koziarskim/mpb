@@ -41,7 +41,8 @@
       </b-row>
       <b-table :items="invoices" :fields="fields" no-local-sorting>
         <template v-slot:cell(number)="row">
-            <b-button variant="link" :id="'popover-number'+row.item.id" @click="showPopover(row.item)">{{row.item.number}}</b-button>
+            <b-button size="sm" @click="goToInvoice(row.item.id)" variant="link">{{row.item.number}}</b-button>
+            <!-- <b-button variant="link" :id="'popover-number'+row.item.id" @click="showPopover(row.item)">{{row.item.number}}</b-button>
             <b-popover placement="bottomright" :target="'popover-number'+row.item.id" triggers="focus" variant="primary">
               <template v-slot:title>
                 <b-button size="sm" @click="goToInvoice(row.item.id)" variant="link">View/Edit Details</b-button>
@@ -49,7 +50,7 @@
               <div v-for="ii in row.item.invoiceItems" :key="ii.id">
                 <div>Sale: {{ii.saleItem.sale.number}}, Item: {{ii.saleItem.item.number}} {{ii.saleItem.item.name}}, Units: {{ii.unitsInvoiced}}, Price: {{ii.unitPrice}}</div>
               </div>
-            </b-popover>
+            </b-popover> -->
         </template>
         <template v-slot:cell(sent)="row">
           <span>{{row.item.sent?'Yes':'No'}}</span>

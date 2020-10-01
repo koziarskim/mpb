@@ -50,7 +50,8 @@
           </div>
         </template>
         <template v-slot:cell(number)="row">
-            <b-button variant="link" :id="'popover-button-variant'+row.item.id" @click="showPopover(row.item)">{{row.item.number}}</b-button>
+          <b-button size="sm" @click="goToSale(row.item.id)" variant="link">{{row.item.number}}</b-button>
+            <!-- <b-button variant="link" :id="'popover-button-variant'+row.item.id" @click="showPopover(row.item)">{{row.item.number}}</b-button>
             <b-popover placement="bottomright" :target="'popover-button-variant'+row.item.id" triggers="focus" variant="primary">
               <template v-slot:title>
                 <b-button size="sm" @click="goToSale(row.item.id)" variant="link">View/Edit Details</b-button>
@@ -58,7 +59,7 @@
               <div v-for="si in row.item.saleItems" :key="si.id">
                 <div>{{si.item.number}} - {{si.item.name}}, Sold: {{si.units}}, Produced: {{si.unitsProduced}}, Price: ${{si.unitPrice}}</div>
               </div>
-            </b-popover>
+            </b-popover> -->
         </template>
         <template v-slot:cell(unitsSold)="row">
             <span>{{row.item.unitsSold}}</span>
