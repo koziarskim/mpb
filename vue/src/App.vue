@@ -54,7 +54,9 @@
       </b-collapse>
     </b-navbar>
     <div class="center pagebase" :class="getViewClass()">
-      <router-view :key="$route.fullPath"></router-view>
+      <!-- <keep-alive> -->
+        <router-view :key="$route.fullPath"></router-view>
+      <!-- </keep-alive> -->
     </div>
   </div>
 </template>

@@ -1,5 +1,6 @@
 package com.noovitec.mpb.dto;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -26,6 +27,7 @@ public class SaleListDto {
 	private Long unitsTransferedTo;
 	private Long unitsTransferedFrom;
 	private Long unitsAdjusted;
+	private BigDecimal invoicedAmount;
 	private List<?> saleItems;
 	private String status;
 	private String shippingWindow;

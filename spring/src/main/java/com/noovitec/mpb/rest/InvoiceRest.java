@@ -1,8 +1,6 @@
 package com.noovitec.mpb.rest;
 
 import java.io.IOException;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,10 +31,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.itextpdf.text.DocumentException;
 import com.noovitec.mpb.dto.InvoiceListDto;
 import com.noovitec.mpb.entity.Invoice;
+import com.noovitec.mpb.entity.InvoiceItem;
 import com.noovitec.mpb.entity.Notification;
 import com.noovitec.mpb.repo.InvoiceRepo;
 import com.noovitec.mpb.service.InvoiceService;
 import com.noovitec.mpb.service.NotificationService;
+import com.noovitec.mpb.service.SaleService;
 
 @RestController
 @RequestMapping("/api")
@@ -48,6 +48,8 @@ class InvoiceRest {
 	private InvoiceRepo invoiceRepo;
 	@Autowired
 	private NotificationService notificationService;
+	@Autowired
+	private SaleService saleService;
 	
 	public InvoiceRest(InvoiceService invoiceService) {
 		this.invoiceService = invoiceService;
@@ -124,12 +126,23 @@ class InvoiceRest {
 				notificationService.sendMailAttachment(ccEmails, model, Notification.TYPE.INVOICE_EMAIL, data, invoice.getNumber()+".pdf");
 			}
 		}
+		List<Long> saleIds = new ArrayList<Long>();
+		for(InvoiceItem ii: invoice.getInvoiceItems()) {
+			saleIds.add(ii.getSaleItem().getSale().getId());
+		}
+		saleService.updateUnits(saleIds);
 		return ResponseEntity.ok().body(invoice);
 	}
 
 	@DeleteMapping("/invoice/{id}")
 	public ResponseEntity<?> delete(@PathVariable Long id) {
+		Invoice invoice = invoiceRepo.findById(id).get();
+		List<Long> saleIds = new ArrayList<Long>();
+		for(InvoiceItem ii: invoice.getInvoiceItems()) {
+			saleIds.add(ii.getSaleItem().getSale().getId());
+		}
 		invoiceService.delete(id);
+		saleService.updateUnits(saleIds);
 		return ResponseEntity.ok().build();
 	}
 

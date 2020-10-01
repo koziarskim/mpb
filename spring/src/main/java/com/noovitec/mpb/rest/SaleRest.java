@@ -116,6 +116,7 @@ class SaleRest {
 			dto.setUnitsShipped(sale.getUnitsShipped());
 			dto.setUnitsOnStock(sale.getUnitsOnStock());
 			dto.setUnitsAdjusted(sale.getUnitsAdjusted());
+//			dto.setInvoicedAmount(sale.getInvoicedAmount());
 			dto.setStatus(sale.getStatus());
 			String shippingFrom = sale.getShippingFrom()==null?"":sale.getShippingFrom().format(windowFormat);
 			String shippingTo = sale.getShippingTo()==null?"":sale.getShippingTo().format(windowFormat);

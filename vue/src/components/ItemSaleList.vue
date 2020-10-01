@@ -186,6 +186,7 @@ export default {
         {id: 'PENDING_PROD', name: 'Pending Prod'},
         {id: 'PENDING_SHIPMENT', name: 'Pending Shipment'},
         {id: 'SHIPPED', name: 'Fully Shipped'},
+        {id: 'INVOICED_FULL', name: 'Fully Invoiced'},
         {id: 'CANCELLED', name: 'Cancelled'},
         {id: 'PAID', name: 'Paid In Full'},
       ],

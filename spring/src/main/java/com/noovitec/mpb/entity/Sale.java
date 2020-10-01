@@ -13,6 +13,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -31,7 +32,7 @@ public class Sale extends BaseEntity {
 	private static final long serialVersionUID = 3963121563435423199L;
 
 	public enum STATUS {
-		DRAFT, PENDING_APPROVAL, APPROVED, PENDING_PROD, PENDING_SHIPMENT, SHIPPED, CANCELLED, PAID
+		DRAFT, PENDING_APPROVAL, APPROVED, PENDING_PROD, PENDING_SHIPMENT, SHIPPED, INVOICED_FULL, CANCELLED, PAID
 	}
 
 	private LocalDate date;
@@ -41,6 +42,7 @@ public class Sale extends BaseEntity {
 	private String freightTerms;
 	private LocalDate expectedDate;
 	private BigDecimal totalPrice = BigDecimal.ZERO;
+	private BigDecimal invoicedAmount;
 	private long unitsProduced = 0 ;
 	private long unitsSold = 0 ;
 	private long unitsScheduled = 0;
@@ -89,17 +91,21 @@ public class Sale extends BaseEntity {
 		this.unitsAdjusted = 0L;
 		this.unitsReturned = 0L;
 		this.unitsOnStock = 0L;
-		for (SaleItem sa : this.getSaleItems()) {
-			sa.updateUnits();
-			this.unitsSold += sa.getUnits();
-			this.unitsScheduled += sa.getUnitsScheduled();
-			this.unitsProduced += sa.getUnitsProduced();
-			this.unitsShipped += sa.getUnitsShipped();
-			this.unitsTransferedTo += sa.getUnitsTransferedTo();
-			this.unitsTransferedFrom += sa.getUnitsTransferedFrom();
-			this.unitsAdjusted += sa.getUnitsAdjusted();
-			this.unitsReturned += sa.getUnitsReturned();
-			this.unitsOnStock += sa.getUnitsOnStock();
+		this.invoicedAmount = BigDecimal.ZERO;
+		for (SaleItem si : this.getSaleItems()) {
+			si.updateUnits();
+			this.unitsSold += si.getUnits();
+			this.unitsScheduled += si.getUnitsScheduled();
+			this.unitsProduced += si.getUnitsProduced();
+			this.unitsShipped += si.getUnitsShipped();
+			this.unitsTransferedTo += si.getUnitsTransferedTo();
+			this.unitsTransferedFrom += si.getUnitsTransferedFrom();
+			this.unitsAdjusted += si.getUnitsAdjusted();
+			this.unitsReturned += si.getUnitsReturned();
+			this.unitsOnStock += si.getUnitsOnStock();
+			if(si.getInvoicedAmount()!=null) {
+				this.invoicedAmount = this.invoicedAmount.add(si.getInvoicedAmount());
+			}
 		}
 //		this.unitsOnStock = this.unitsProduced + this.unitsTransferedTo - this.unitsTransferedFrom - this.unitsShipped + this.unitsReturned;
 		this.updateStatus();
@@ -122,13 +128,14 @@ public class Sale extends BaseEntity {
 		if(this.unitsSold > 0 && this.unitsShipped >= (this.unitsSold + this.unitsAdjusted)) {
 			status = STATUS.SHIPPED.name();
 		}
+		if(!this.totalPrice.equals(BigDecimal.ZERO) && this.invoicedAmount.compareTo(this.totalPrice) >= 0) {
+			status = STATUS.INVOICED_FULL.name();
+		}
 		if(this.cancelled) {
 			status = STATUS.CANCELLED.name();
 		}
 		if(this.paidInFull) {
 			status = STATUS.PAID.name();
 		}
-		
 	}
-
 }

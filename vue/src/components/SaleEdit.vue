@@ -119,7 +119,10 @@
             </div>
           </template>
           <template v-slot:cell(totalUnitPrice)="row">
-            <span>${{row.item.totalUnitPrice = (+row.item.unitPrice * +row.item.units).toFixed(2)}}</span>
+            <span>${{getTotalUnitPrice(row.item)}}</span>
+          </template>
+          <template v-slot:cell(invoicedAmount)="row">
+            <span>${{parseFloat(row.item.invoicedAmount).toLocaleString('en-US',{minimumFractionDigits: 2})}}</span>
           </template>
           <template v-slot:cell(unitsTransfered)="row">
             <b-button size="sm" variant="link" @click="openTransferModal(row.item)">{{row.item.unitsTransferedTo}}-{{row.item.unitsTransferedFrom}}</b-button>
@@ -216,6 +219,7 @@ export default {
         { key: "cost", label: "Cost", sortable: false },
         { key: "unitPrice", label: "Unit Price", sortable: false },
         { key: "totalUnitPrice", label: "Total", sortable: false },
+        { key: "invoicedAmount", label: "Invoiced", sortable: false },
         { key: "action", label: "", sortable: false }
       ],
       customerDto: {},
@@ -241,6 +245,7 @@ export default {
         {id: 'PENDING_PROD', name: 'Pending Prod'},
         {id: 'PENDING_SHIPMENT', name: 'Pending Shipment'},
         {id: 'SHIPPED', name: 'Fully Shipped'},
+        {id: 'INVOICED_FULL', name: 'Fully Invoiced'},
         {id: 'CANCELLED', name: 'Cancelled'},
         {id: 'PAID', name: 'Paid In Full'},
       ],
@@ -296,6 +301,10 @@ export default {
     }
   },
   methods: {
+    getTotalUnitPrice(saleItem){
+      saleItem.totalUnitPrice = saleItem.totalUnitPrice = (+saleItem.unitPrice * +saleItem.units);
+      return saleItem.totalUnitPrice.toLocaleString('en-US',{minimumFractionDigits: 2});
+    },
     rowClass(item, type) {
         if(item.status == 'SHIPPED'){
           return 'fully-shipped'

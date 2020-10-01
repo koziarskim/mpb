@@ -1,5 +1,7 @@
 package com.noovitec.mpb.dto;
 
+import java.math.BigDecimal;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,6 +30,7 @@ public class SaleItemDto {
 	private Long unitsTranferedFrom;
 	private Long unitsAdjusted;
 	private long unitsReadyProd;
+	private BigDecimal invoicedAmount;
 	private String status;
 	
 }

@@ -9,10 +9,12 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.noovitec.mpb.entity.Sale.STATUS;
 
+import jdk.internal.jline.internal.Log;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -37,6 +39,7 @@ public class SaleItem extends BaseEntity {
 	private long unitsTransferedFrom = 0;
 	private long unitsReturned = 0;
 	private long unitsAdjusted = 0;
+	private BigDecimal invoicedAmount;
 	private String sku;
 	private String status;
 	
@@ -59,6 +62,11 @@ public class SaleItem extends BaseEntity {
 	@OneToMany()
 	@JoinColumn(name = "sale_item_id")
 	private Collection<ShipmentItem> shipmentItems = new HashSet<ShipmentItem>();
+
+	@JsonIgnoreProperties(value = { "saleItem", "invoice" }, allowSetters = true)
+	@OneToMany()
+	@JoinColumn(name = "sale_item_id")
+	private Collection<InvoiceItem> invoiceItems = new HashSet<InvoiceItem>();
 
 	@JsonIgnoreProperties(value = { "saleItem", "itemReturn" }, allowSetters = true)
 	@OneToMany()
@@ -83,6 +91,7 @@ public class SaleItem extends BaseEntity {
 		this.unitsTransferedFrom = 0;
 		this.unitsReturned = 0;
 		this.unitsOnStock = 0;
+		this.invoicedAmount = BigDecimal.ZERO;
 		
 		for(SaleItemReturn sir: this.getSaleItemReturns()) {
 			this.unitsReturned += sir.getUnitsReturned();
@@ -102,6 +111,11 @@ public class SaleItem extends BaseEntity {
 		}
 		for (SaleItemTransfer sit: this.getTransfersTo()) {
 			this.unitsTransferedTo += sit.getUnitsTransfered();
+		}
+		for(InvoiceItem ii : this.invoiceItems) {
+			if(ii.getTotalUnitPrice()!=null && ii.getInvoice().isSent()) {
+				this.invoicedAmount = this.invoicedAmount.add(ii.getTotalUnitPrice());
+			}
 		}
 		this.unitsOnStock = this.unitsProduced + this.unitsTransferedTo - this.unitsTransferedFrom - this.unitsShipped + this.unitsReturned;
 		this.updateStatus();
@@ -124,12 +138,14 @@ public class SaleItem extends BaseEntity {
 		if(this.units > 0 && this.unitsShipped >= (this.units + this.unitsAdjusted)) {
 			status = Sale.STATUS.SHIPPED.name();
 		}
+		if(!this.totalUnitPrice.equals(BigDecimal.ZERO) && this.invoicedAmount.compareTo(this.totalUnitPrice) >= 0) {
+			status = STATUS.INVOICED_FULL.name();
+		}
 		if(this.getSale().isCancelled()) {
 			status = Sale.STATUS.CANCELLED.name();
 		}
 		if(this.getSale().isPaidInFull()) {
 			status = STATUS.PAID.name();
 		}
-
 	}
 }
