@@ -179,6 +179,9 @@ export default {
     this.getAvailableComponents();
     this.getAvailableCategories();
     this.getAvailableBrands();
+    // this.getItems();
+  },
+  activated(){
     this.getItems();
   }
 };

@@ -186,11 +186,14 @@ export default {
     },
   },
   mounted() {
-    this.getInvoices();
+    // this.getInvoices();
     this.getAvailableItems();
     this.getAvailableSales();
     this.getAvailableCustomers();
     this.getAvailableShipments();
+  },
+  activated(){
+    this.getInvoices();
   }
 };
 </script>

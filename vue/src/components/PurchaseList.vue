@@ -231,6 +231,9 @@ export default {
     }
     this.getAvailableComponents();
     this.getAvailableSuppliers();
+    // this.getPurchases();
+  },
+  activated(){
     this.getPurchases();
   }
 };

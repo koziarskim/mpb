@@ -95,6 +95,9 @@ export default {
     }
   },
   mounted() {
+    // this.getSuppliers();
+  },
+  activated(){
     this.getSuppliers();
   }
 };

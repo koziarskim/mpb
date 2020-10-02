@@ -83,6 +83,9 @@ export default {
     }
   },
   mounted() {
+    // this.getCustomers();
+  },
+  activated(){
     this.getCustomers();
   }
 };

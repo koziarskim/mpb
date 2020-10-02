@@ -304,6 +304,9 @@ export default {
   mounted() {
     this.getAvailableItems();
     this.getAvailableCustomers();
+    // this.getSales();
+  },
+  activated(){
     this.getSales();
   }
 };

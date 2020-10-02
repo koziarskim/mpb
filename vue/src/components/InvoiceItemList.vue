@@ -206,11 +206,14 @@ export default {
     },
   },
   mounted() {
-    this.getInvoiceItems();
+    // this.getInvoiceItems();
     this.getAvailableItems();
     this.getAvailableSales();
     this.getAvailableCustomers();
     this.getAvailableShipments();
+  },
+  activated(){
+    this.getInvoiceItems();
   }
 };
 </script>

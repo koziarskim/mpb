@@ -186,8 +186,11 @@ export default {
     this.getAvailableSuppliers();
     this.getAvailablePurchases();
     this.getAvailableComponents();
-    this.getReceivings();
+    // this.getReceivings();
     window.history.replaceState({}, document.title, window.location.pathname);
+  },
+  activated(){
+    this.getReceivings();
   }
 };
 </script>

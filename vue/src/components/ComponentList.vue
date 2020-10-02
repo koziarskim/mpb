@@ -248,11 +248,14 @@ export default {
     }
   },
   mounted() {
-    this.getComponents();
+    // this.getComponents();
     this.getAvailableSuppliers();
     this.getAvailableItems();
     this.getAvailableCategories();
     this.getAvailableComponentTypes();
+  },
+  activated(){
+    this.getComponents();
   }
 };
 </script>

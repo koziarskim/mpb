@@ -238,9 +238,12 @@ export default {
     },
   },
   mounted() {
-     this.getSaleItems();
+    //  this.getSaleItems();
      this.getAvailableCustomers();
      this.getAvailableItems();
+  },
+  activated(){
+    this.getSaleItems();
   }
 };
 </script>

@@ -273,10 +273,13 @@ export default {
     if(this.$route.query.saleId){this.sale = {id: this.$route.query.saleId};}
     if(this.$route.query.itemId){this.item = {id: this.$route.query.itemId};}
     window.history.replaceState({}, document.title, window.location.pathname);
-    this.getShipments();
+    // this.getShipments();
     this.getAvailableCustomers();
     this.getAvailableSales()
     this.getAvailableItems()
+  },
+  activated(){
+    this.getShipments();
   }
 };
 </script>
