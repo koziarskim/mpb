@@ -25,8 +25,8 @@ public interface CustomerRepo extends JpaRepository<Customer, Long> {
 	Page<Customer> findPage(Pageable pageable);
 
 	@Query("select cu from Customer cu "
-			+ "where upper(cu.name) LIKE CONCAT('%',UPPER(:searchKey),'%')")
-	Page<Customer> findPageByCustomer(Pageable pageable, String searchKey);
+			+ "where upper(cu.name) LIKE CONCAT('%',UPPER(:customerName),'%')")
+	Page<Customer> findPageByCustomer(Pageable pageable, String customerName);
 	
 	@Query("select cu from Customer cu where cu.id in :customerIds")
 	List<Customer> findByIds(List<Long> customerIds);

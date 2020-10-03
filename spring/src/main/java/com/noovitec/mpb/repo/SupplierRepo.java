@@ -15,8 +15,8 @@ public interface SupplierRepo extends PagingAndSortingRepository<Supplier, Long>
 	@Query("select s from Supplier s")
 	Page<Supplier> findPage(Pageable pageable);
 
-	@Query("select s from Supplier s where upper(s.name) LIKE CONCAT('%',UPPER(:searchKey),'%')")
-	Page<Supplier> findPageBySupplier(Pageable pageable, String searchKey);
+	@Query("select s from Supplier s where upper(s.name) LIKE CONCAT('%',UPPER(:supplierName),'%')")
+	Page<Supplier> findPageBySupplier(Pageable pageable, String supplierName);
 
 	@Query("select distinct new com.noovitec.mpb.dto.KeyValueDto(s.id, s.name) from Supplier s ")
 	public List<KeyValueDto> findAllDtos();
