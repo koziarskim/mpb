@@ -182,6 +182,74 @@ class SaleRest {
 		return new HttpEntity<byte[]>(data, header);
 	}
 	
+	@PostMapping("/sale")
+	ResponseEntity<?> post(@RequestBody Sale sale) {
+		if(!sale.getNumber().matches("^[a-zA-Z0-9\\-]{1,25}$")) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Sale Number is invalid. Alphanumeric and hyphen only allowed. Maximum 25 characters.");
+		}
+		Long id = saleRepo.getIdByNumber(sale.getNumber());
+		if((sale.getId()==null && id !=null) || (sale.getId()!=null && id !=null && !sale.getId().equals(id))) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Sale Number already exists. Please, choose differrent.");
+		}
+		for (SaleItem sa : sale.getSaleItems()) {
+			sa.setSale(sale);
+			for (SaleItemTransfer t : sa.getTransfersTo()) {
+				if (t.getSaleItemTo() == null) {
+					SaleItem saTo = new SaleItem();
+					saTo.setId(t.getSaleItemToId());
+					t.setSaleItemTo(saTo);
+				}
+				if (t.getSaleItemFrom() == null) {
+					SaleItem saFrom = new SaleItem();
+					saFrom.setId(t.getSaleItemFromId());
+					t.setSaleItemFrom(saFrom);
+				}
+			}
+			for (SaleItemTransfer t : sa.getTransfersFrom()) {
+				if (t.getSaleItemTo() == null) {
+					SaleItem saTo = new SaleItem();
+					saTo.setId(t.getSaleItemToId());
+					t.setSaleItemTo(saTo);
+				}
+				if (t.getSaleItemFrom() == null) {
+					SaleItem saFrom = new SaleItem();
+					saFrom.setId(t.getSaleItemFromId());
+					t.setSaleItemFrom(saFrom);
+				}
+			}
+		}
+		sale = (Sale) crudService.merge(sale);
+		sale.updateUnits();
+		for (SaleItem sa : sale.getSaleItems()) {
+			List<Long> componentIds = new ArrayList<Long>();
+			for (ItemComponent ic : sa.getItem().getItemComponents()) {
+				componentIds.add(ic.getComponent().getId());
+			}
+			componentService.updateUnits(componentIds);
+			sa.getItem().updateUnits();
+		}
+		Sale result = (Sale) crudService.save(sale);
+		return ResponseEntity.ok().body(result);
+	}
+
+	@DeleteMapping("/sale/{id}")
+	public ResponseEntity<?> delete(@PathVariable Long id) {
+		Sale sale = saleRepo.getOne(id);
+		if(sale.getSaleItems().size()>0) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("There are existing Sale Items!");
+		}
+		List<Item> items = new ArrayList<Item>();
+		for (SaleItem sa : sale.getSaleItems()) {
+			items.add(sa.getItem());
+		}
+		saleRepo.deleteById(id);
+		for (Item item : items) {
+			item.updateUnits();
+			crudService.save(item);
+		}
+		return ResponseEntity.ok().build();
+	}
+	
 	private byte[] generateXls(List<Long> saleIds) throws IOException {
 		DateTimeFormatter windowFormat = DateTimeFormatter.ofPattern("MM/dd");
 		List<Sale> sales = saleRepo.findAllById(saleIds);
@@ -305,116 +373,4 @@ class SaleRest {
 		cell.setCellValue(value);
 	}
 	
-	@PostMapping("/sale/units/{saleId}")
-	ResponseEntity<?> updateUnits(@PathVariable Long saleId) {
-		Sale sale = saleRepo.getOne(saleId);
-		sale.updateUnits();
-		saleRepo.save(sale);
-		return ResponseEntity.ok().body("OK");
-	}
-
-	@PostMapping("/sale")
-	ResponseEntity<?> post(@RequestBody Sale sale) {
-		if(!sale.getNumber().matches("^[a-zA-Z0-9\\-]{1,25}$")) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Sale Number is invalid. Alphanumeric and hyphen only allowed. Maximum 25 characters.");
-		}
-		Long id = saleRepo.getIdByNumber(sale.getNumber());
-		if((sale.getId()==null && id !=null) || (sale.getId()!=null && id !=null && !sale.getId().equals(id))) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Sale Number already exists. Please, choose differrent.");
-		}
-		for (SaleItem sa : sale.getSaleItems()) {
-			sa.setSale(sale);
-			for (SaleItemTransfer t : sa.getTransfersTo()) {
-				if (t.getSaleItemTo() == null) {
-					SaleItem saTo = new SaleItem();
-					saTo.setId(t.getSaleItemToId());
-					t.setSaleItemTo(saTo);
-				}
-				if (t.getSaleItemFrom() == null) {
-					SaleItem saFrom = new SaleItem();
-					saFrom.setId(t.getSaleItemFromId());
-					t.setSaleItemFrom(saFrom);
-				}
-			}
-			for (SaleItemTransfer t : sa.getTransfersFrom()) {
-				if (t.getSaleItemTo() == null) {
-					SaleItem saTo = new SaleItem();
-					saTo.setId(t.getSaleItemToId());
-					t.setSaleItemTo(saTo);
-				}
-				if (t.getSaleItemFrom() == null) {
-					SaleItem saFrom = new SaleItem();
-					saFrom.setId(t.getSaleItemFromId());
-					t.setSaleItemFrom(saFrom);
-				}
-			}
-		}
-		sale = (Sale) crudService.merge(sale);
-		sale.updateUnits();
-		for (SaleItem sa : sale.getSaleItems()) {
-			List<Long> componentIds = new ArrayList<Long>();
-			for (ItemComponent ic : sa.getItem().getItemComponents()) {
-				componentIds.add(ic.getComponent().getId());
-			}
-			componentService.updateUnits(componentIds);
-			sa.getItem().updateUnits();
-		}
-		Sale result = (Sale) crudService.save(sale);
-		return ResponseEntity.ok().body(result);
-	}
-
-	@DeleteMapping("/sale/{id}")
-	public ResponseEntity<?> delete(@PathVariable Long id) {
-		Sale sale = saleRepo.getOne(id);
-		if(sale.getSaleItems().size()>0) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("There are existing Sale Items!");
-		}
-		List<Item> items = new ArrayList<Item>();
-		for (SaleItem sa : sale.getSaleItems()) {
-			items.add(sa.getItem());
-		}
-		saleRepo.deleteById(id);
-		for (Item item : items) {
-			item.updateUnits();
-			crudService.save(item);
-		}
-		return ResponseEntity.ok().build();
-	}
-	
-	// This is acting as POST.
-	@GetMapping("/sale/update/units")
-	ResponseEntity<?> postUpdateUnits() {
-		try {
-			saleService.updateUnits(null);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-		}
-		return ResponseEntity.ok().body("OK");
-	}
-	
-	// This is acting as POST.
-	@GetMapping("/sale/update/number")
-	ResponseEntity<?> postUpdateNumber() {
-		try {
-			saleService.updateNumber();
-		} catch (Exception e) {
-			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-		}
-		return ResponseEntity.ok().body("OK");
-	}
-
-	// This is acting as POST.
-	@GetMapping("/sale/update/merge")
-	ResponseEntity<?> mergeSales() {
-		try {
-			saleService.mergeSales();
-		} catch (Exception e) {
-			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-		}
-		return ResponseEntity.ok().body("OK");
-	}
-
 }
