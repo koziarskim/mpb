@@ -44,8 +44,9 @@
         <label class="top-label">Load Number:</label>
         <input class="form-control" type="tel" v-model="invoice.loadNumber">
       </b-col>      
-      <b-col cols=2>
+      <b-col cols=3>
         <label class="top-label">Billing Address:</label><br/>
+        <span>{{invoice.shipment.customer.billingAddress?invoice.shipment.customer.billingAddress.line:''}}</span><br/>
         <span>{{invoice.shipment.customer.billingAddress?invoice.shipment.customer.billingAddress.street:''}}</span><br/>
         <span>{{invoice.shipment.customer.billingAddress?(invoice.shipment.customer.billingAddress.city+', '+invoice.shipment.customer.billingAddress.state+' '+invoice.shipment.customer.billingAddress.zip):''}}</span>
       </b-col>

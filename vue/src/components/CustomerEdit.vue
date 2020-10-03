@@ -42,8 +42,8 @@
         <input class="form-control" type="text" v-model="customer.brokerEmail" />
       </b-col>
       <b-col cols=6>
-        <label class="top-label">Billing Address:</label>
-        <input class="form-control" type="search" v-model="billingAddress.street" />
+        <label class="top-label">Address Line/Attention:</label>
+        <input class="form-control" type="search" v-model="billingAddress.line" />
       </b-col>
     </b-row>
     <b-row>
@@ -55,32 +55,36 @@
         <label class="top-label">Broker Phone:</label>
         <input class="form-control" type="text" v-model="customer.brokerPhone" />
       </b-col>
-        <b-col cols=2>
-          <label class="top-label">City:</label>
-          <input class="form-control" type="tel" v-model="billingAddress.city" placeholder="City" />
-        </b-col>
-        <b-col cols=2>
-          <label class="top-label">State:</label>
-          <input class="form-control" type="tel" v-model="billingAddress.state" placeholder />
-        </b-col>
-        <b-col cols=2>
-          <label class="top-label">Zip Code:</label>
-          <input class="form-control" type="tel" v-model="billingAddress.zip" placeholder="Zip" />
-        </b-col>
-      </b-row>
-      <b-row>
-        <b-col cols=6 offset=6>
-          <label class="top-label">
-            Shipping Addresses:
-            <span style="cursor: pointer; color: blue" @click="openShipAddressModal()">(Edit/New)</span>
-            <span v-if="shipAddress.id" style="cursor: pointer; color: blue" @click="deleteShipAddress()">(Delete)</span>
-          </label>
-          <b-select option-value="id" option-text="label" :list="customer.addresses" v-model="shipAddress" placeholder="Address"></b-select>
-        </b-col>
-      </b-row>
-        <br/><b-link role="button" @click="showCompliance = !showCompliance" style="margin-top: 20px; margin-bottom: 5px;">
-          <hr class="left"><img class="customer-image" src="../assets/customer-compliance.png">
-        </b-link>
+      <b-col cols=6>
+        <label class="top-label">Billing Address:</label>
+        <input class="form-control" type="search" v-model="billingAddress.street" />
+      </b-col>
+    </b-row>
+    <b-row>
+      <b-col cols=6>
+        <label class="top-label">
+          Shipping Addresses:
+          <span style="cursor: pointer; color: blue" @click="openShipAddressModal()">(Edit/New)</span>
+          <span v-if="shipAddress.id" style="cursor: pointer; color: blue" @click="deleteShipAddress()">(Delete)</span>
+        </label>
+        <b-select option-value="id" option-text="label" :list="customer.addresses" v-model="shipAddress" placeholder="Address"></b-select>
+      </b-col>
+      <b-col cols=2>
+        <label class="top-label">City:</label>
+        <input class="form-control" type="tel" v-model="billingAddress.city" placeholder="City" />
+      </b-col>
+      <b-col cols=2>
+        <label class="top-label">State:</label>
+        <input class="form-control" type="tel" v-model="billingAddress.state" placeholder />
+      </b-col>
+      <b-col cols=2>
+        <label class="top-label">Zip Code:</label>
+        <input class="form-control" type="tel" v-model="billingAddress.zip" placeholder="Zip" />
+      </b-col>
+    </b-row>
+    <br/><b-link role="button" @click="showCompliance = !showCompliance" style="margin-top: 20px; margin-bottom: 5px;">
+      <hr class="left"><img class="customer-image" src="../assets/customer-compliance.png">
+    </b-link>
     <b-row v-if="showCompliance">
       <b-col cols=4>
         <label class="top-label">Vendor Portal:</label>
