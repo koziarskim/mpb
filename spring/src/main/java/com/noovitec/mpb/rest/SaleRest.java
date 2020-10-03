@@ -182,6 +182,35 @@ class SaleRest {
 		return new HttpEntity<byte[]>(data, header);
 	}
 	
+	@PostMapping("/sale/{id}/duplicate")
+	ResponseEntity<?> post(@RequestBody Long saleId) {
+		Sale existingSale = saleRepo.getOne(saleId);
+		Sale sale = new Sale();
+		sale.setCustomer(existingSale.getCustomer());
+		sale.setDate(existingSale.getDate());
+		sale.setExpectedDate(existingSale.getExpectedDate());
+		sale.setFreightTerms(existingSale.getFreightTerms());
+		sale.setNotes(existingSale.getNotes());
+		sale.setNumber(existingSale.getNumber());
+		sale.setPaymentTerms(existingSale.getPaymentTerms());
+		sale.setShippingAddress(existingSale.getShippingAddress());
+		sale.setShippingFrom(existingSale.getShippingFrom());
+		sale.setShippingTo(existingSale.getShippingTo());
+		List<SaleItem> saleItems = new ArrayList<SaleItem>();
+		for(SaleItem existingSi: existingSale.getSaleItems()) {
+			SaleItem si = new SaleItem();
+			si.setItem(existingSi.getItem());
+			si.setSku(existingSi.getSku());
+			si.setUnits(existingSi.getUnits());
+			si.setUnitPrice(existingSi.getUnitPrice());
+			si.setTotalUnitPrice(existingSi.getTotalUnitPrice());
+			si.setSale(sale);
+			saleItems.add(si);
+		}
+		sale.setSaleItems(saleItems);
+		return this.post(sale);
+	}
+	
 	@PostMapping("/sale")
 	ResponseEntity<?> post(@RequestBody Sale sale) {
 		if(!sale.getNumber().matches("^[a-zA-Z0-9\\-]{1,25}$")) {
