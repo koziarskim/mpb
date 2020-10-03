@@ -42,7 +42,7 @@
         <input class="form-control" type="text" v-model="customer.brokerEmail" />
       </b-col>
       <b-col cols=6>
-        <label class="top-label">Address Line/Attention:</label>
+        <label class="top-label">Address Line:</label>
         <input class="form-control" type="search" v-model="billingAddress.line" />
       </b-col>
     </b-row>
