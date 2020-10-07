@@ -110,7 +110,8 @@
       </b-col>
       <b-col>
         <div style="display: flex">
-          <b style="margin-top: 7px">Total pallets:</b><input class="form-control" style="width: 60px" type="tel" v-model="totalPallets">
+          <b style="margin-top: 7px">Total pallets:</b><input disabled class="form-control" style="width: 60px" type="tel" v-model="totalPallets">
+          <input class="form-control" style="width: 60px" type="tel" v-model="shipment.totalPalletsCustom">
         </div>
       </b-col>
       <b-col cols=3>    
@@ -150,7 +151,7 @@
               <span>{{row.item.cases = Math.ceil(+row.item.units / +row.item.saleItem.item.casePack)}}</span>
             </template>
             <template v-slot:cell(pallets)="row">
-              <span>{{row.item.pallets = getNumberOfPallets(row.item)}}</span>
+              <span>{{getNumberOfPallets(row.item)}}</span>
             </template>
             <template v-slot:cell(action)="row">
               <b-button size="sm" @click.stop="removeSaleItem(row.item.saleItem.id)">x</b-button>
@@ -360,7 +361,9 @@ export default {
     },
     getNumberOfPallets(shipmentItem){
       var number = null;
-      number = Math.ceil(+shipmentItem.cases / (+shipmentItem.saleItem.item.ti * +shipmentItem.saleItem.item.hi))
+      if(this.shipment.totalPalletsCustom < 1){
+        number = Math.ceil(+shipmentItem.cases / (+shipmentItem.saleItem.item.ti * +shipmentItem.saleItem.item.hi))
+      }
       return number;
     },
     keyDown(event){

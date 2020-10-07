@@ -264,7 +264,11 @@ class ShipmentRest {
 						+ (si.getSaleItem().getSku()==null?"":" SKU# "+ si.getSaleItem().getSku()) + "\n";
 				itemCasePack += si.getSaleItem().getItem().getCasePack() + "\n";
 				itemCases += si.getCases() + "\n";
-				itemPallets += si.getPallets() + "\n";
+				if(shipment.getTotalPalletsCustom() < 1) {
+					itemPallets += si.getPallets() + "\n";
+				}else {
+					itemPallets += "\n";
+				}
 			}else {
 				saleNumber2 += si.getSaleItem().getSale().getNumber() +"\n";
 				itemQuantity2 += si.getUnits() + "\n";
@@ -272,7 +276,11 @@ class ShipmentRest {
 						+ (si.getSaleItem().getSku()==null?"":" SKU# "+ si.getSaleItem().getSku()) + "\n";
 				itemCasePack2 += si.getSaleItem().getItem().getCasePack() + "\n";
 				itemCases2 += si.getCases() + "\n";
-				itemPallets2 += si.getPallets() + "\n";
+				if(shipment.getTotalPalletsCustom() < 1) {
+					itemPallets2 += si.getPallets() + "\n";
+				}else {
+					itemPallets2 += "\n";
+				}
 			}
 			totalCasePack += si.getSaleItem().getItem().getCasePack();
 		}
@@ -330,12 +338,16 @@ class ShipmentRest {
 		bolStamper.getAcroFields().setField("totalUnits", String.valueOf(shipment.getUnitsShipped()));
 		bolStamper.getAcroFields().setField("totalCasePack", String.valueOf(totalCasePack));
 		bolStamper.getAcroFields().setField("totalCases", String.valueOf(shipment.getTotalCases()));
-		bolStamper.getAcroFields().setField("totalPallets", String.valueOf(shipment.getTotalPallets()));
 		String totalWeight = shipment.getTotalWeight().toString();
 		if(shipment.getTotalWeightCustom()!=null && shipment.getTotalWeightCustom().compareTo(BigDecimal.ZERO) != 0){
 			totalWeight = shipment.getTotalWeightCustom().toString();
 		}
 		bolStamper.getAcroFields().setField("totalWeight", totalWeight);
+		String totalPallets = String.valueOf(shipment.getTotalPallets());
+		if(shipment.getTotalPalletsCustom() > 0){
+			totalPallets = String.valueOf(shipment.getTotalPalletsCustom());
+		}
+		bolStamper.getAcroFields().setField("totalPallets", totalPallets);
 		bolStamper.close();
 		bolTemplate.close();
 		
