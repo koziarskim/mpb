@@ -37,8 +37,14 @@
           <b-button v-if="!sale.approved && sale.pendingApproval" style="margin-left: 3px" size="sm" variant="success" @click="approveSale()">Approve</b-button>
           <b-button v-if="!sale.pendingApproval" style="margin-left: 3px" size="sm" variant="success" @click="readySale()">Ready</b-button>
           <b-button :title="getSaveTitle(sale)" style="margin-left: 3px" :disabled="!allowSave()" size="sm" variant="success" @click="saveSale()">Save</b-button>
-          <b-button style="margin-left: 3px" :disabled="!allowEdit()" size="sm" @click="cancelSale()">Cancel</b-button>
-          <b-button style="margin-left: 3px" :disabled="!allowEdit()" size="sm" @click="deleteSale()">x</b-button>
+          <b-button size="sm" :id="'popover-menu'+sale.id" style="margin-left: 3px">...</b-button>
+            <b-popover placement="bottomleft" :target="'popover-menu'+sale.id" variant="secondary">
+              <div style="width: 240px">
+              <b-button style="margin-left: 3px" :disabled="!allowEdit()" size="sm" @click="cancelSale()">Cancel</b-button>
+              <b-button style="margin-left: 3px" :disabled="!allowEdit()" size="sm" @click="copySale()">Copy</b-button>
+              <b-button style="margin-left: 3px" :disabled="!allowEdit()" size="sm" @click="deleteSale()">Delete</b-button>
+              </div>
+            </b-popover>
         </div>
         <input type="checkbox" style="margin-top: 10px" v-model="sale.paidInFull"><span style="font-size: 14px"> Paid in Full</span>
         <br/>
@@ -463,6 +469,13 @@ export default {
         console.log("API error: " + e);
       });
       return r;
+    },
+    copySale() {
+      this.saveSale().then(r => {
+        http.post("/sale/"+r.data.id+"/duplicate").then(r => {
+          router.push("/saleEdit/"+r.data.id);
+      }).catch(e => {console.log("API error: " + e);});
+      })
     },
     validate(){
       if(!this.sale.number || !this.sale.customer.id){

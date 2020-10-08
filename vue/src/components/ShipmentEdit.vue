@@ -151,7 +151,7 @@
               <span>{{row.item.cases = Math.ceil(+row.item.units / +row.item.saleItem.item.casePack)}}</span>
             </template>
             <template v-slot:cell(pallets)="row">
-              <span>{{getNumberOfPallets(row.item)}}</span>
+              <span>{{row.item.pallets = getNumberOfPallets(row.item)}}</span>
             </template>
             <template v-slot:cell(action)="row">
               <b-button size="sm" @click.stop="removeSaleItem(row.item.saleItem.id)">x</b-button>

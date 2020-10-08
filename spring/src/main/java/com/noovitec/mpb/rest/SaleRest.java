@@ -182,8 +182,8 @@ class SaleRest {
 		return new HttpEntity<byte[]>(data, header);
 	}
 	
-	@PostMapping("/sale/{id}/duplicate")
-	ResponseEntity<?> post(@RequestBody Long saleId) {
+	@PostMapping("/sale/{saleId}/duplicate")
+	ResponseEntity<?> post(@PathVariable Long saleId) {
 		Sale existingSale = saleRepo.getOne(saleId);
 		Sale sale = new Sale();
 		sale.setCustomer(existingSale.getCustomer());
@@ -191,7 +191,7 @@ class SaleRest {
 		sale.setExpectedDate(existingSale.getExpectedDate());
 		sale.setFreightTerms(existingSale.getFreightTerms());
 		sale.setNotes(existingSale.getNotes());
-		sale.setNumber(existingSale.getNumber());
+		sale.setNumber(existingSale.getNumber()+"-Copy");
 		sale.setPaymentTerms(existingSale.getPaymentTerms());
 		sale.setShippingAddress(existingSale.getShippingAddress());
 		sale.setShippingFrom(existingSale.getShippingFrom());
