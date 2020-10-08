@@ -101,7 +101,9 @@ class InvoiceRest {
 	@PostMapping("/invoice")
 	ResponseEntity<?> post(@RequestBody Invoice invoice, 
 			@RequestParam(required=false) boolean sendEmail,
-			@RequestParam(required=false) boolean includeCc) throws IOException, DocumentException {
+			@RequestParam(required=false) boolean includeCc,
+			@RequestParam(required=false) String emailSubject,
+			@RequestParam(required=false) String emailBody) throws IOException, DocumentException {
 		if(!invoice.getNumber().matches("^[a-zA-Z0-9\\-]{1,15}$")) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Invoice Number is invalid. Alphanumeric and hyphen only allowed. Maximum 15 characters.");
 		}
@@ -116,14 +118,14 @@ class InvoiceRest {
 			Map<String, String> model = new HashMap<String, String>();
 			model.put("invoiceNumber", invoice.getNumber());
 			byte[] data = invoiceService.generatePdf(invoice.getId());
-			notificationService.sendMailAttachment(emails, model, Notification.TYPE.INVOICE_EMAIL, data, invoice.getNumber()+".pdf");
+			notificationService.sendMailAttachment(emails, model, Notification.TYPE.INVOICE_EMAIL, data, invoice.getNumber()+".pdf", emailSubject, emailBody);
 			invoice.setSent(true);
 			invoice = invoiceService.save(invoice);
 			if(includeCc) {
 				List<String> ccEmails = new ArrayList<String>();
 				ccEmails.add("akoziarski@marketplacebrands.com");
 				ccEmails.add("mkoziarski@marketplacebrands.com");
-				notificationService.sendMailAttachment(ccEmails, model, Notification.TYPE.INVOICE_EMAIL, data, invoice.getNumber()+".pdf");
+				notificationService.sendMailAttachment(ccEmails, model, Notification.TYPE.INVOICE_EMAIL, data, invoice.getNumber()+".pdf", emailSubject, emailBody);
 			}
 		}
 		List<Long> saleIds = new ArrayList<Long>();

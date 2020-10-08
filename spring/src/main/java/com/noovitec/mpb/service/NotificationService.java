@@ -46,6 +46,8 @@ public interface NotificationService {
 	
 	public void sendMail(List<String> emailsTo, Map<String, String> model, Notification.TYPE type);
 	public void sendMailAttachment(List<String> emailsTo, Map<String, String> model, Notification.TYPE type, byte[] file, String fileName);
+	public void sendMailAttachment(List<String> emailsTo, Map<String, String> model, Notification.TYPE type, byte[] file, String fileName,
+			String subject, String body);
 	
 	@Transactional
 	@Service("notificationServiceImpl")
@@ -65,6 +67,11 @@ public interface NotificationService {
 		}
 
 		public void sendMailAttachment(List<String> emailsTo, Map<String, String> model, Notification.TYPE type, byte[] file, String fileName) {
+			this.sendMailAttachment(emailsTo, model, type, file, fileName, null, null);
+		}
+
+		public void sendMailAttachment(List<String> emailsTo, Map<String, String> model, Notification.TYPE type, byte[] file, String fileName,
+				String subject, String body) {
 			log.info("EmailNotification: "+type);
 			try {
 				if(!Notification.TYPE.INVOICE_EMAIL.equals(type)) {
@@ -77,8 +84,12 @@ public interface NotificationService {
 				List<String> SCOPES = Arrays.asList(GmailScopes.GMAIL_SEND, GmailScopes.GMAIL_LABELS);
 				String MIMS_JSON_KEY = "oauth/mims-268617-f7755598ac50.json";
 		        model.put("type", type.name());
-		        String subject = "MIMS Notification";
-				String body = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, type.template(), model);
+		        if(subject  == null) {
+		        	subject = "MIMS Notification";
+		        }
+				if(body == null) {
+					body = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, type.template(), model);
+				}
 				if(MpbRequestContext.getStaticSetting().isDevEnv()) {
 					emailsTo = Arrays.asList("mkoziarski@marketplacebrands.com");
 				}

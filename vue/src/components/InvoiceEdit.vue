@@ -58,24 +58,34 @@
       </b-col>
     </b-row>
     <b-row>
-      <b-col cols=2>
-        <label class="top-label">Via:</label>
-        <input class="form-control" type="tel" v-model="invoice.via">
+      <b-col cols=4>
+        <b-row>
+          <b-col cols=6>
+            <label class="top-label">Via:</label>
+            <input class="form-control" type="tel" v-model="invoice.via">
+          </b-col>
+          <b-col cols=6>
+            <label class="top-label">FOB:</label>
+            <input class="form-control" type="tel" v-model="invoice.fob">
+          </b-col>
+        </b-row>
+        <b-row>
+          <b-col cols=12>
+            <label class="top-label">Subject:</label>
+            <input class="form-control" type="tel" v-model="emailSubject">
+          </b-col>
+        </b-row>
       </b-col>
-      <b-col cols=2>
-        <label class="top-label">FOB:</label>
-        <input class="form-control" type="tel" v-model="invoice.fob">
-      </b-col>
+      <b-col cols=4>
+        <label class="top-label">Email Body:</label>
+        <b-form-textarea type="text" :rows="4" v-model="emailBody"></b-form-textarea>
+      </b-col>      
       <b-col cols=3>
-        <label class="top-label">Invoice Send Email:</label>
-        <input class="form-control" type="tel" v-model="invoice.invoiceEmail">
-      </b-col>
-      <b-col cols=1>
-        <label class="top-label" style="margin-top: 15px">CC</label><br/>
-        <input type="checkbox" v-model="includeCc">
-      </b-col>
-      <b-col cols=1>
-        <b-button style="margin-top: 25px; margin-left: -80px" size="sm" variant="success" @click="saveInvoice(true)">Send</b-button>
+        <label class="top-label">Invoice Send Email To:</label>
+        <input class="form-control" type="tel" v-model="invoice.invoiceEmail"><br/>
+        <label class="top-label" style="margin-top: 15px">CC</label>
+        <input style="margin-left: 10px" type="checkbox" v-model="includeCc">
+        <b-button style="margin-left: 50px" size="sm" variant="success" @click="saveInvoice(true)">Send</b-button>
       </b-col>
     </b-row>
     <b-row>
@@ -138,6 +148,7 @@ export default {
       modalVisible: false,
       invoice: {
         invoiceItems: [],
+        number: "",
         shipment: {
           customer: {}
         },
@@ -163,7 +174,9 @@ export default {
       shipmentKv: {},
       availableShipmentItems: [],
       shipmentItemKv: {},
-      includeCc: true
+      includeCc: true,
+      emailBody: "",
+      emailSubject: "MIMS Notification",
     }
   },
   computed: {
@@ -196,6 +209,19 @@ export default {
     }
   },
   methods: {
+    setBody(){
+      this.emailBody = ""+     
+      "Dear Customer: \n\n"+
+
+      "Your invoice "+this.invoice.number+" is attached. Please remit payment at your earliest convenience.\n\n"+
+
+      "Thank you for your business - we appreciate it very much.\n\n"+
+
+      "Sincerely,\n\n"+
+
+      "Marketplace Brands, LLC\n"+
+      "630-766-6884\n"
+    },
     getPdfUrl(invoiceId) {
       return httpUtils.getUrl("/invoice/" + invoiceId + "/pdf");
     },
@@ -275,7 +301,7 @@ export default {
         return false;
       }
       this.invoice.balanceDue = this.balanceDue;
-      var query = {params: {sendEmail: sendEmail, includeCc: this.includeCc}}
+      var query = {params: {sendEmail: sendEmail, includeCc: this.includeCc, emailSubject: this.emailSubject, emailBody: this.emailBody}}
       return http.post("/invoice/", this.invoice, query).then(r => {
         this.invoice = r.data;
         return r.data;
@@ -314,6 +340,7 @@ export default {
         if(!this.invoice.payments){
           this.invoice.payments = 0;
         }
+        this.setBody();
         return r.data;
       }).catch(e => {
         console.log("API error: " + e);
