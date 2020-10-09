@@ -310,11 +310,13 @@ export default {
       });
     },
     deleteInvoice() {
-      http.delete("/invoice/"+this.invoice.id).then(r => {
-        router.push({path: "/invoiceList"});
-      }).catch(e => {
-        console.log("API error: " + e);
-      });
+      this.$bvModal.msgBoxConfirm("Are you sure you want to delete this Invoice?").then(ok => {
+        if(ok){
+          http.delete("/invoice/"+this.invoice.id).then(r => {
+            router.push({path: "/invoiceList"});
+          }).catch(e => {console.log("API error: " + e);});
+            }
+        })
     },
     goToSale(sale){
       router.push({path: "/saleEdit/"+sale.id})
