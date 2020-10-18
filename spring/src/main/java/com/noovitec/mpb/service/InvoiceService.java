@@ -207,8 +207,8 @@ public interface InvoiceService {
 			String itemTotalPrice2 = "";			
 			int totalUnits = 0;
 			BigDecimal totalAmount = BigDecimal.ZERO;
-			Long totalCases = 0L;
-			Long totalPallets = 0L;
+			long totalCases = 0;
+			long totalPallets = 0;
 			Collection<InvoiceItem> invoiceItems = invoice.getInvoiceItems();
 			Map<Long, String> saleIds = new HashMap<Long, String>();
 			int count = 0;
@@ -227,8 +227,6 @@ public interface InvoiceService {
 					BigDecimal itemTotalPriceBd = ii.getUnitPrice().multiply(new BigDecimal(ii.getUnitsInvoiced())).setScale(2, RoundingMode.CEILING);
 					itemTotalPrice += currencyFormat.format(itemTotalPriceBd)  + "\n\n";
 					totalAmount = totalAmount.add(itemTotalPriceBd==null?BigDecimal.ZERO:itemTotalPriceBd);
-					totalCases += ii.getUnitsInvoiced()/ii.getSaleItem().getItem().getCasePack();
-					totalPallets += ii.getUnitsInvoiced()/(ii.getSaleItem().getItem().getTi() * ii.getSaleItem().getItem().getHi());
 				}else {
 					itemSaleNumber2 += ii.getSaleItem().getSale().getNumber() +"\n\n";
 					itemQuantity2 += ii.getUnitsInvoiced() + "\n\n";
@@ -241,8 +239,8 @@ public interface InvoiceService {
 					totalAmount = totalAmount.add(itemTotalPriceBd2==null?BigDecimal.ZERO:itemTotalPriceBd2);
 				}
 				totalUnits += ii.getUnitsInvoiced();
-				totalCases += ii.getUnitsInvoiced()/ii.getSaleItem().getItem().getCasePack();
-				totalPallets += ii.getUnitsInvoiced()/(ii.getSaleItem().getItem().getTi() * ii.getSaleItem().getItem().getHi());
+				totalCases += Math.ceil(1.0*(ii.getUnitsInvoiced())/ii.getSaleItem().getItem().getCasePack());
+				totalPallets += Math.ceil((1.0*ii.getUnitsInvoiced())/(ii.getSaleItem().getItem().getTi() * ii.getSaleItem().getItem().getHi()));
 			}
 			InputStream bolIn = null;
 			if(count <= 20) {
@@ -302,8 +300,8 @@ public interface InvoiceService {
 			bolStamper.getAcroFields().setField("itemTotalPrice2", itemTotalPrice2);
 
 			bolStamper.getAcroFields().setField("totalUnits", String.valueOf(totalUnits));
-			bolStamper.getAcroFields().setField("totalCases", totalCases.toString());
-			bolStamper.getAcroFields().setField("totalPallets", totalPallets.toString());
+			bolStamper.getAcroFields().setField("totalCases", String.valueOf(totalCases));
+			bolStamper.getAcroFields().setField("totalPallets", String.valueOf(totalPallets));
 			bolStamper.getAcroFields().setField("payments", invoice.getPayments()==null?"$0.00":currencyFormat.format(invoice.getPayments()));
 			bolStamper.getAcroFields().setField("balanceDue", invoice.getBalanceDue()==null?"$0.00":currencyFormat.format(invoice.getBalanceDue()));
 			bolStamper.getAcroFields().setField("shippingCost", invoice.getShippingCost()==null?"$0.00":currencyFormat.format(invoice.getShippingCost()));
