@@ -3,7 +3,7 @@
     <b-row>
       <b-col cols=2>
         <label class="top-label">Invoice Number:</label>
-        <input class="form-control" type="tel" v-model="invoice.number">
+        <input class="form-control" type="tel" v-model="invoice.number" @input="invoiceNumberChanged()">
       </b-col>
       <b-col cols=2>
         <label class="top-label">Invoice Date:</label>
@@ -209,6 +209,9 @@ export default {
     }
   },
   methods: {
+    invoiceNumberChanged(){
+      this.setBody();
+    },
     setBody(){
       this.emailBody = ""+     
       "Dear Customer: \n\n"+
@@ -220,7 +223,7 @@ export default {
       "Sincerely,\n\n"+
 
       "Marketplace Brands, LLC\n"+
-      "630-766-6884\n"
+      "847-258-3558\n"
     },
     getPdfUrl(invoiceId) {
       return httpUtils.getUrl("/invoice/" + invoiceId + "/pdf");
