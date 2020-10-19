@@ -239,8 +239,9 @@ public interface InvoiceService {
 					totalAmount = totalAmount.add(itemTotalPriceBd2==null?BigDecimal.ZERO:itemTotalPriceBd2);
 				}
 				totalUnits += ii.getUnitsInvoiced();
-				totalCases += Math.ceil(1.0*(ii.getUnitsInvoiced())/ii.getSaleItem().getItem().getCasePack());
-				totalPallets += Math.ceil((1.0*ii.getUnitsInvoiced())/(ii.getSaleItem().getItem().getTi() * ii.getSaleItem().getItem().getHi()));
+				long casesPerItem = (long) Math.ceil(1.0*(ii.getUnitsInvoiced())/ii.getSaleItem().getItem().getCasePack());
+				totalCases += casesPerItem;
+				totalPallets += Math.ceil((1.0*casesPerItem)/(ii.getSaleItem().getItem().getTi() * ii.getSaleItem().getItem().getHi()));
 			}
 			InputStream bolIn = null;
 			if(count <= 20) {

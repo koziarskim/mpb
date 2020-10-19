@@ -362,7 +362,7 @@ export default {
     getNumberOfPallets(shipmentItem){
       var number = null;
       if(this.shipment.totalPalletsCustom < 1){
-        number = Math.ceil(+shipmentItem.units / (+shipmentItem.saleItem.item.ti * +shipmentItem.saleItem.item.hi))
+        number = Math.ceil(+shipmentItem.cases / (+shipmentItem.saleItem.item.ti * +shipmentItem.saleItem.item.hi))
       }
       return number;
     },
