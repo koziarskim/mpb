@@ -39,6 +39,7 @@ public class Invoice extends BaseEntity {
 	private BigDecimal payments;
 	private BigDecimal balanceDue;
 	private String invoiceEmail;
+	private String notes;
 
 	@JsonIgnoreProperties(value = { "items" }, allowSetters = true)
 	@ManyToOne()

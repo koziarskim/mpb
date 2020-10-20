@@ -199,6 +199,7 @@ public interface InvoiceService {
 			String itemCasePack = "";
 			String itemPrice = "";
 			String itemTotalPrice = "";
+			String notes = invoice.getNotes()==null?"":invoice.getNotes();
 			String itemSaleNumber2 = "";
 			String itemQuantity2 = "";
 			String itemDescription2 = "";
@@ -307,6 +308,8 @@ public interface InvoiceService {
 			bolStamper.getAcroFields().setField("balanceDue", invoice.getBalanceDue()==null?"$0.00":currencyFormat.format(invoice.getBalanceDue()));
 			bolStamper.getAcroFields().setField("shippingCost", invoice.getShippingCost()==null?"$0.00":currencyFormat.format(invoice.getShippingCost()));
 			bolStamper.getAcroFields().setField("totalAmount", currencyFormat.format(totalAmount));
+			
+			bolStamper.getAcroFields().setField("notes", notes);
 //			List<String> iss = Arrays.asList("pdf/Invoice-Template-2.pdf","pdf/Invoice-Template-2.pdf","pdf/Invoice-Template-2.pdf");
 //			this.concatenatePdfs(iss, bolBaos);
 			bolStamper.close();

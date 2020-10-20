@@ -92,10 +92,6 @@
     </b-row>
     <b-row>
       <b-col cols=2>
-        <label class="top-label">Total:</label><br/>
-        <b>${{invoiceTotal.toLocaleString('en-US',{minimumFractionDigits: 2})}}</b>
-      </b-col>
-      <b-col cols=2>
         <label class="top-label">Shipping Cost:</label>
         <input class="form-control" type="tel" v-model="invoice.shippingCost">
       </b-col>
@@ -104,8 +100,13 @@
         <input class="form-control" type="tel" v-model="invoice.payments">
       </b-col>      
       <b-col cols=2>
-        <label class="top-label">Balance Due:</label><br/>
-        <b>${{balanceDue.toLocaleString('en-US',{minimumFractionDigits: 2})}}</b>
+        <br/>
+        <b>Total: ${{invoiceTotal.toLocaleString('en-US',{minimumFractionDigits: 2})}}</b><br/>
+        <b>Balance Due: ${{balanceDue.toLocaleString('en-US',{minimumFractionDigits: 2})}}</b>
+      </b-col>
+      <b-col>
+        <label class="top-label">Notes</label>
+        <b-form-textarea type="text" rows="2" maxlength="255" v-model="invoice.notes"></b-form-textarea>
       </b-col>
     </b-row>
     <b-row>
@@ -291,6 +292,7 @@ export default {
         this.invoice.via = r.data.via;
         this.invoice.fob = r.data.fob;
         this.invoice.shippingCost = r.data.shippingCost?r.data.shippingCost:0;
+        this.invoice.invoiceEmail = r.data.customer.invoiceEmail;
         return r.data;
       }).catch(e => {
         console.log("API error: " + e);
