@@ -10,12 +10,14 @@
         <input class="form-control" type="date" v-model="invoice.date">
       </b-col>
       <b-col cols=2>
-        <label class="top-label">Customers:</label><br/>
-        <b-link role="button" @click="goToCustomer(invoice.shipment.customer.id)">{{invoice.shipment.customer.name}}</b-link>
+        <label class="top-label">Customer:</label><br/>
+        <!-- <b-link role="button" @click="goToCustomer(invoice.shipment.customer.id)">{{invoice.shipment.customer.name}}</b-link> -->
+        <b-select option-value="id" option-text="value" :list="availableCustomers" v-model="customerKv" placeholder="Pick Customer"></b-select>
       </b-col>
       <b-col cols=2>
-        <label class="top-label">Shipments:</label><br/>
-        <b-link role="button" @click="goToShipment(invoice.shipment.id)">{{invoice.shipment.number}}</b-link>
+        <label class="top-label">Shipment:</label><br/>
+        <!-- <b-link role="button" @click="goToShipment(invoice.shipment.id)">{{invoice.shipment.number}}</b-link> -->
+        <b-select option-value="id" option-text="value" :list="availableShipments" v-model="shipmentKv" placeholder="Pick Shipment"></b-select>
       </b-col>
       <b-col cols=2>
         <label class="top-label">Invoice Type:</label><br/>
@@ -33,7 +35,7 @@
     </b-row>
     <b-row>
       <b-col cols=2>
-        <label class="top-label">Shipping Date:</label>
+        <label class="top-label">Shipped Date:</label>
         <input class="form-control" type="date" v-model="invoice.shippingDate">
       </b-col>
       <b-col cols=2>
@@ -46,15 +48,15 @@
       </b-col>      
       <b-col cols=3>
         <label class="top-label">Billing Address:</label><br/>
-        <span>{{invoice.shipment.customer.billingAddress?invoice.shipment.customer.billingAddress.line:''}}</span><br/>
-        <span>{{invoice.shipment.customer.billingAddress?invoice.shipment.customer.billingAddress.street:''}}</span><br/>
-        <span>{{invoice.shipment.customer.billingAddress?(invoice.shipment.customer.billingAddress.city+', '+invoice.shipment.customer.billingAddress.state+' '+invoice.shipment.customer.billingAddress.zip):''}}</span>
+        <span>{{invoice.shipment.customer.billingAddress.line}}</span><br/>
+        <span>{{invoice.shipment.customer.billingAddress.street}}</span><br/>
+        <span>{{invoice.shipment.customer.billingAddress.city+', '+invoice.shipment.customer.billingAddress.state+' '+invoice.shipment.customer.billingAddress.zip}}</span>
       </b-col>
       <b-col cols=3>
         <label class="top-label">Shipping Address:</label><br/>
-        <span>{{invoice.shipment.shippingAddress?invoice.shipment.shippingAddress.dc:''}}</span><br/>
-        <span>{{invoice.shipment.shippingAddress?invoice.shipment.shippingAddress.street:''}}</span><br/>
-        <span>{{invoice.shipment.shippingAddress?(invoice.shipment.shippingAddress.city+', '+invoice.shipment.shippingAddress.state+' '+invoice.shipment.shippingAddress.zip):''}}</span>
+        <span>{{invoice.shipment.shippingAddress.dc}}</span><br/>
+        <span>{{invoice.shipment.shippingAddress.street}}</span><br/>
+        <span>{{invoice.shipment.shippingAddress.city+', '+invoice.shipment.shippingAddress.state+' '+invoice.shipment.shippingAddress.zip}}</span>
       </b-col>
     </b-row>
     <b-row>
@@ -107,6 +109,15 @@
       </b-col>
     </b-row>
     <b-row>
+      <b-col cols=4>
+        <label class="top-label">Available Sale Items to add:</label>
+        <b-select option-value="id" option-text="name" :list="availableSaleItems" v-model="saleItemKv" placeholder="Search Sale/Item"></b-select>
+      </b-col>
+      <b-col cols=1 style="padding-top: 30px">
+        <b-button variant="link" @click="addSaleItem()">(+)</b-button>
+      </b-col>
+    </b-row>    
+    <b-row>
       <b-col>
         <label class="top-label"></label>
         <b-table :items="invoice.invoiceItems" :fields="columns">
@@ -149,11 +160,13 @@ export default {
       invoice: {
         invoiceItems: [],
         number: "",
+        payments: 0,
         shipment: {
-          customer: {}
+          customer: {
+            billingAddress: {},
+          },
+          shippingAddress: {},
         },
-        billingAddress: {},
-        shippingAddress: {},
       },
       columns: [
         { key: "sale", label: "Sale", sortable: false },
@@ -199,7 +212,9 @@ export default {
       this.getAvailableSaleItems(newValue.id);
     },
     shipmentKv(newValue, oldValue){
-      this.getAvailableShipmentItems(newValue.id);
+      if(oldValue.id || !this.invoice.id){
+        this.getShipment(newValue.id);
+      }
     },
     saleItemKv(newValue, oldValue){
       this.getSaleItem(newValue.id);
@@ -266,6 +281,21 @@ export default {
         console.log("API error: " + e);
       });
     },
+    getShipment(shipmentId) {
+      return http.get("/shipment/" + shipmentId).then(r => {
+        this.invoice.shipment = r.data;
+        this.invoice.shippingDate = r.data.shippedDate;
+        this.invoice.type = r.data.customer.invoiceType;
+        this.invoice.paymentTerms = r.data.customer.paymentTerms;
+        this.invoice.loadNumber = r.data.loadNumber;
+        this.invoice.via = r.data.via;
+        this.invoice.fob = r.data.fob;
+        this.invoice.shippingCost = r.data.shippingCost?r.data.shippingCost:0;
+        return r.data;
+      }).catch(e => {
+        console.log("API error: " + e);
+      });
+    },
     getSaleItem(saleItemId) {
       return http.get("/saleItem/" + saleItemId).then(r => {
         this.saleItem = r.data;
@@ -298,6 +328,7 @@ export default {
       });
     },
     saveInvoice(sendEmail) {
+      this.invoice.shipment.id = this.shipmentKv.id;
       if(sendEmail && !this.invoice.invoiceEmail){
         //TODO: Verify invoiceEmail format;
         alert("A-P Email is wrong!");
@@ -336,6 +367,8 @@ export default {
     getInvoice(invoiceId) {
       return http.get("/invoice/" + invoiceId).then(r => {
         this.invoice = r.data;
+        this.customerKv = {id: r.data.shipment.customer.id}
+        this.shipmentKv = {id: r.data.shipment.id}
         if(!this.invoice.invoiceEmail){
           this.invoice.invoiceEmail = r.data.shipment.customer.invoiceEmail;
         }
@@ -355,7 +388,9 @@ export default {
   mounted() {
     var invoiceId = this.$route.params.invoiceId;
     if (invoiceId) {
-      this.getInvoice(invoiceId);
+      this.getInvoice(invoiceId).then(invoice => {
+        this.getAvailableSaleItems(invoice.shipment.customer.id);
+      });
     }
     this.getAvailableCustomers();
   }   
