@@ -169,7 +169,6 @@ class SaleRest {
 	
 	@PutMapping("/sale/xls")
 	HttpEntity<byte[]> getXls(@RequestBody List<Long> saleIds) throws IOException {
-		log.info("Sale IDs: "+saleIds);
 		byte[] data = generateXls(saleIds);
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
@@ -180,6 +179,20 @@ class SaleRest {
 		header.set("File-Name", fileName);
 		header.setContentLength(data.length);
 		return new HttpEntity<byte[]>(data, header);
+	}
+	
+	@PutMapping("/sale/paid")
+	HttpEntity<?> setSalesPaid(@RequestBody List<Long> saleIds) {
+		log.info("Testing...."+saleIds);
+		for(Long saleId: saleIds) {
+			Sale sale = saleRepo.getOne(saleId);
+			if(sale.isPaidInFull()) {
+				continue;
+			}
+			sale.setPaidInFull(true);
+			this.post(sale);
+		}
+		return ResponseEntity.ok().build();
 	}
 	
 	@PostMapping("/sale/{saleId}/duplicate")

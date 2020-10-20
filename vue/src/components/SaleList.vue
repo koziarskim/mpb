@@ -38,8 +38,11 @@
         </b-col>  
         <b-col>
           <div style="text-align: right;">
-          <b-button type="submit" variant="primary" size="sm" @click="goToSale('')">New S.O.</b-button>
-          <b-button size="sm" style="margin-left:3px" variant="primary" @click="exportSelected()">Export ({{selectedSales.length}})</b-button>          
+          <b-button type="submit" variant="primary" size="sm" @click="goToSale('')">New</b-button>
+          <b-dropdown style="width:50px; margin-left:3px" right size="sm" :text="selectedSales.length.toString()">
+            <b-dropdown-item-button @click="exportSelected()">Export/Download</b-dropdown-item-button>
+            <b-dropdown-item-button @click="setFullyPaid()">Set Fully Paid</b-dropdown-item-button>
+          </b-dropdown>
           </div>
         </b-col>
       </b-row>
@@ -155,6 +158,23 @@ export default {
     },
   },
   methods: {
+    setFullyPaid(){
+      if(this.selectedSales.length == 0){
+        return;
+      }
+      this.$bvModal.msgBoxConfirm("Are you sure you want to update all Sales as Paid?").then(ok => {
+        if(ok){
+          var saleIds = [];
+          this.selectedSales.forEach(sale=> {
+            saleIds.push(sale.id);
+          })
+          http.put("/sale/paid", saleIds).then(r => {
+            this.getSales();
+            this.selectedSales = [];
+          }).catch(e => {console.log("API error: "+e);});  
+        }
+      })
+    },
     toggleShowTotals(){
       this.getSales(true);
       this.showTotalsMenu = !this.showTotalsMenu;
@@ -189,6 +209,7 @@ export default {
         link.setAttribute("download", r.headers['file-name'])
         document.body.appendChild(link)
         link.click()
+        this.selectedSales = [];
       }).catch(e => {
         console.log("API error: "+e);
       });
