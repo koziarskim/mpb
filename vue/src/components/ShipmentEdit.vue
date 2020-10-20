@@ -293,8 +293,13 @@ export default {
   },
   methods: {
     unlockShipment(){
-      this.shippedDate = null;
-      this.saveShipment();
+      this.$bvModal.msgBoxConfirm('This Shipment was alread shipped. Invoices were generated and submitted'
+                                  +'These invoices needs to be submitted again. Please confirm with Accounting department').then(ok => {
+        if(ok){
+          this.shippedDate = null;
+          this.saveShipment();
+        }
+      })
     },
     openTransferModal(saleItem){
       this.saleItemTransfer = saleItem;
