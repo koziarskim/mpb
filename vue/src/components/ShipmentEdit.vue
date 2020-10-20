@@ -25,6 +25,7 @@
         <div style="display:flex; margin-left: 75px">
           <upload-file v-if="shipment.id" v-on:header-click="openPdf" v-on:close="closeUpload" :entity-id="shipment.id" header-text="Bill of Lading/Packing Slip (PDF)" type="Shipment" :attachments="shipment.attachments"></upload-file>
           <b-button :disabled="!allowEdit()" :title="getSaveTitle(shipment)" size="sm" style="margin-left: 5px" variant="success" @click="saveShipment()">Save</b-button>
+          <b-button style="margin-left: 3px" size="sm" @click="unlockShipment()">Unlock</b-button>
           <b-button style="margin-left: 3px" :disabled="!allowEdit()" size="sm" @click="deleteShipment()">x</b-button>
         </div>
         <div style="display: flex; margin-left: 85px; margin-top: 7px">
@@ -291,6 +292,10 @@ export default {
     },
   },
   methods: {
+    unlockShipment(){
+      this.shippedDate = null;
+      this.saveShipment();
+    },
     openTransferModal(saleItem){
       this.saleItemTransfer = saleItem;
       this.saleItemTransfer.saleNumber = saleItem.sale.number
@@ -431,10 +436,6 @@ export default {
       }
       if(!this.shipment.number){
         alert("Shipping Number required.")
-        return false;
-      }
-      if(this.shipment.shippedDate){
-        alert("Shipping was already shipped. No modification allowed");
         return false;
       }
       var overStock = false;
