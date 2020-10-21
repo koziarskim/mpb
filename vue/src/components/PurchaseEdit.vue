@@ -116,6 +116,9 @@
           <template v-slot:cell(totalPrice)="row">
             ${{row.item.totalPrice = getTotalPrice(row.item).toLocaleString('en-US',{minimumFractionDigits: 2})}}
           </template>
+          <template v-slot:cell(spoilage)="row">
+            ${{(getTotalPrice(row.item) + (getTotalPrice(row.item)* 0.03)).toLocaleString('en-US',{minimumFractionDigits: 2})}}
+          </template>
           <template v-slot:cell(action)="row">
             <b-button :disabled="receiveMode" size="sm" @click="deletePc(row.item)">x</b-button>
           </template>
@@ -162,6 +165,7 @@ export default {
         { key: "cases", label: "Cases", sortable: false },
         { key: "unitsReceived", label: "Received", sortable: false },
         { key: "totalPrice", label: "Total", sortable: false },
+        { key: "spoilage", label: "Spoilage", sortable: false },
         { key: "action", label: "Action", sortable: false },
       ],
       componentDtos: [],
