@@ -107,6 +107,9 @@
             <v-money v-if="!receiveMode" class="form-control" style="width: 120px" type="tel" v-bind="{precision: 0}" v-model="row.item.units"></v-money>  
             <span v-if="receiveMode">{{row.item.units.toLocaleString()}}</span>
           </template>
+          <template v-slot:cell(unitsSpoilage)="row">
+            ({{row.item.unitsExtra.toLocaleString()}})<br/>{{row.item.unitsSpoilage.toLocaleString()}}
+          </template>
           <template v-slot:cell(casePack)="row">
             <span>{{row.item.component.casePack.toLocaleString()}}</span>
           </template>             
@@ -115,9 +118,6 @@
           </template>             
           <template v-slot:cell(totalPrice)="row">
             ${{row.item.totalPrice = getTotalPrice(row.item).toLocaleString('en-US',{minimumFractionDigits: 2})}}
-          </template>
-          <template v-slot:cell(spoilage)="row">
-            ${{(getTotalPrice(row.item) + (getTotalPrice(row.item)* 0.03)).toLocaleString('en-US',{minimumFractionDigits: 2})}}
           </template>
           <template v-slot:cell(action)="row">
             <b-button :disabled="receiveMode" size="sm" @click="deletePc(row.item)">x</b-button>
@@ -161,11 +161,11 @@ export default {
         { key: "component.unitCost", label: "Unit Cost", sortable: false },
         { key: "unitPrice", label: "P.O. Price", sortable: false },
         { key: "units", label: "P.O. Units", sortable: false },
+        { key: "unitsSpoilage", label: "Spoilage", sortable: false },
         { key: "casePack", label: "C/P", sortable: false },
         { key: "cases", label: "Cases", sortable: false },
         { key: "unitsReceived", label: "Received", sortable: false },
         { key: "totalPrice", label: "Total", sortable: false },
-        { key: "spoilage", label: "Spoilage", sortable: false },
         { key: "action", label: "Action", sortable: false },
       ],
       componentDtos: [],
@@ -390,6 +390,10 @@ export default {
     },
     getPurchase(purchase_id) {
       return http.get("/purchase/" + purchase_id).then(r => {
+        r.data.purchaseComponents.forEach(pc => {
+          pc.unitsExtra = pc.units * 0.03;
+          pc.unitsSpoilage = pc.units + pc.unitsExtra;
+        })
         this.purchase = r.data;
         this.receivingDate = r.data.receivingDate;
         return r.data;
