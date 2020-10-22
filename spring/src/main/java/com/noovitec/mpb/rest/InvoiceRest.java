@@ -75,6 +75,7 @@ class InvoiceRest {
 			dto.setType(invoice.getType());
 			dto.setShipmentNumber(invoice.getShipment().getNumber());
 			dto.setCustomerName(invoice.getShipment().getCustomer().getName());
+			dto.setTotalAmount(invoice.getTotalAmount());
 			return dto;
 		});
 		return dtos;
@@ -148,6 +149,18 @@ class InvoiceRest {
 		return ResponseEntity.ok().build();
 	}
 
-	
+	@GetMapping("/invoice/updateTotals")
+	ResponseEntity<?> postUpdate() {
+		try {
+			List<Invoice> invoices = (List<Invoice>) invoiceRepo.findAll();
+			for(Invoice invoice: invoices) {
+				invoiceService.save(invoice);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity.ok().body("OK");
+	}
 
 }

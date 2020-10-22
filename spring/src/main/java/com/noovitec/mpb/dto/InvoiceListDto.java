@@ -1,5 +1,6 @@
 package com.noovitec.mpb.dto;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import lombok.AllArgsConstructor;
@@ -19,4 +20,5 @@ public class InvoiceListDto {
 	private String shipmentNumber;
 	private boolean sent;
 	private String customerName;
+	private BigDecimal totalAmount;
 }

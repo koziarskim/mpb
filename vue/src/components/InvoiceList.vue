@@ -46,6 +46,9 @@
         <template v-slot:cell(number)="row">
             <b-button size="sm" @click="goToInvoice(row.item.id)" variant="link">{{row.item.number}}</b-button>
         </template>
+        <template v-slot:cell(totalAmount)="row">
+          <span>${{parseFloat(row.item.totalAmount).toLocaleString('en-US',{minimumFractionDigits: 2})}}</span>
+        </template>
         <template v-slot:cell(sent)="row">
           <span>{{row.item.sent?'Yes':'No'}}</span>
         </template>
@@ -75,6 +78,7 @@ export default {
         { key: "customerName", label: "Customer", sortable: false },
         { key: "shipmentNumber", label: "Shipment", sortable: false },
         { key: "type", label: "Type", sortable: false },
+        { key: "totalAmount", label: "Total", sortable: false },
         { key: "sent", label: "Sent", sortable: false },
         { key: "action", label: "", sortable: false}
       ],

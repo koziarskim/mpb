@@ -38,6 +38,7 @@ public class Invoice extends BaseEntity {
 	private BigDecimal shippingCost;
 	private BigDecimal payments;
 	private BigDecimal balanceDue;
+	private BigDecimal totalAmount;
 	private String invoiceEmail;
 	private String notes;
 

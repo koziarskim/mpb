@@ -180,8 +180,10 @@ public interface InvoiceService {
 		}
 		
 		public Invoice save(Invoice invoice) {
+			invoice.setTotalAmount(BigDecimal.ZERO);
 			for (InvoiceItem ii : invoice.getInvoiceItems()) {
 				ii.setInvoice(invoice);
+				invoice.setTotalAmount(invoice.getTotalAmount().add(ii.getTotalUnitPrice()));
 			}
 			invoice = (Invoice) crudService.merge(invoice);
 			return invoiceRepo.save(invoice);
