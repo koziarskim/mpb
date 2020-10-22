@@ -183,7 +183,7 @@ public interface InvoiceService {
 			invoice.setTotalAmount(BigDecimal.ZERO);
 			for (InvoiceItem ii : invoice.getInvoiceItems()) {
 				ii.setInvoice(invoice);
-				invoice.setTotalAmount(invoice.getTotalAmount().add(ii.getTotalUnitPrice()));
+				invoice.setTotalAmount(invoice.getTotalAmount().add(ii.getTotalUnitPrice()==null?BigDecimal.ZERO:ii.getTotalUnitPrice()));
 			}
 			invoice = (Invoice) crudService.merge(invoice);
 			return invoiceRepo.save(invoice);
