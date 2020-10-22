@@ -238,7 +238,7 @@ export default {
         console.log("API error: "+e);
       })
     },
-    getPurchaseNumber() {
+    setPurchaseNumber() {
       if(this.purchase.number){
         return
       }
@@ -417,11 +417,13 @@ export default {
     var componentIds = this.$route.query.componentIds;
     if(purchaseId){
       this.getPurchase(purchaseId);
+    }else{
+          this.setPurchaseNumber();
     }
     if(componentIds){
       this.getComponentDtos(componentIds);
     }
-    this.getPurchaseNumber();
+
   }
 };
 </script>
