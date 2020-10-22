@@ -12,12 +12,12 @@
       <b-col cols=2>
         <label class="top-label">Customer:</label><br/>
         <!-- <b-link role="button" @click="goToCustomer(invoice.shipment.customer.id)">{{invoice.shipment.customer.name}}</b-link> -->
-        <b-select option-value="id" option-text="value" :list="availableCustomers" v-model="customerKv" placeholder="Pick Customer"></b-select>
+        <b-select :isDisabled="true" option-value="id" option-text="value" :list="availableCustomers" v-model="customerKv" placeholder="Pick Customer"></b-select>
       </b-col>
       <b-col cols=2>
         <label class="top-label">Shipment:</label><br/>
         <!-- <b-link role="button" @click="goToShipment(invoice.shipment.id)">{{invoice.shipment.number}}</b-link> -->
-        <b-select option-value="id" option-text="value" :list="availableShipments" v-model="shipmentKv" placeholder="Pick Shipment"></b-select>
+        <b-select :isDisabled="true" option-value="id" option-text="value" :list="availableShipments" v-model="shipmentKv" placeholder="Pick Shipment"></b-select>
       </b-col>
       <b-col cols=2>
         <label class="top-label">Invoice Type:</label><br/>
@@ -112,10 +112,10 @@
     <b-row>
       <b-col cols=4>
         <label class="top-label">Available Sale Items to add:</label>
-        <b-select option-value="id" option-text="name" :list="availableSaleItems" v-model="saleItemKv" placeholder="Search Sale/Item"></b-select>
+        <b-select :isDisabled="true" option-value="id" option-text="name" :list="availableSaleItems" v-model="saleItemKv" placeholder="Search Sale/Item"></b-select>
       </b-col>
       <b-col cols=1 style="padding-top: 30px">
-        <b-button variant="link" @click="addSaleItem()">(+)</b-button>
+        <b-button :disabled="true" variant="link" @click="addSaleItem()">(+)</b-button>
       </b-col>
     </b-row>    
     <b-row>

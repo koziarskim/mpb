@@ -39,7 +39,7 @@
           <b-select option-value="id" option-text="name" :list="availableShipments" v-model="shipmentKv" placeholder="Shipment"></b-select>
         </b-col>
         <b-col cols=1>
-          <b-button type="submit" variant="primary" size="sm" @click="goToInvoice('')">New</b-button>
+          <b-button type="submit" :disabled="true" variant="primary" size="sm" @click="goToInvoice('')">New</b-button>
         </b-col>
       </b-row>
       <b-table :items="invoices" :fields="fields" no-local-sorting>
