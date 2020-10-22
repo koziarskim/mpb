@@ -125,7 +125,7 @@ public class Sale extends BaseEntity {
 		if(this.getUnitsOnStock() > 0 && this.getUnitsOnStock() >= (this.unitsSold + this.unitsAdjusted)) {
 			this.status = STATUS.PENDING_SHIPMENT.name();
 		}
-		if(this.unitsSold > 0 && this.unitsShipped >= (this.unitsSold + this.unitsAdjusted)) {
+		if((this.unitsSold + this.unitsAdjusted) > 0 && this.unitsShipped >= (this.unitsSold + this.unitsAdjusted)) {
 			status = STATUS.SHIPPED.name();
 		}
 		if(!this.totalPrice.equals(BigDecimal.ZERO) && this.invoicedAmount.compareTo(this.totalPrice) >= 0) {
