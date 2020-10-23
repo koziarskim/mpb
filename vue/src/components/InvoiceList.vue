@@ -27,7 +27,17 @@
           <b-select style="width: 150px; margin-left: 15px" option-value="id" option-text="name" :list="availableCustomers" v-model="customerKv" placeholder="Customer"></b-select>
           <b-select style="width: 150px; margin-left: 15px" option-value="id" option-text="name" :list="availableShipments" v-model="shipmentKv" placeholder="Shipment"></b-select>
           <b-select style="width: 100px; margin-left: 15px" option-value="id" option-text="name" :list="availableSent" v-model="filterSent" placeholder="Sent"></b-select>
-          <b-button style="margin-left: 130px" type="submit" :disabled="true" variant="primary" size="sm" @click="goToInvoice('')">New</b-button>
+          <div style="margin-left: 15px">
+            <b-button id="totalsMenu" size="sm" @click="toggleShowTotals()">Totals</b-button>
+            <b-popover :show="showTotalsMenu" placement="bottom" target="totalsMenu" variant="secondary">
+              <div style="width: 300px; font-size: 16px">
+                <div>Total of {{pageable.totalElements}} rows</div>
+                <div>Total invoiced: ${{totalInvoiced}}</div>
+                <div>Total paid: {{totalPaid}}</div>
+              </div>
+            </b-popover>
+          </div>
+          <b-button style="margin-left: 50px" type="submit" :disabled="true" variant="primary" size="sm" @click="goToInvoice('')">New</b-button>
       </b-row>
       <b-table :items="invoices" :fields="fields" no-local-sorting>
         <template v-slot:cell(number)="row">
@@ -80,6 +90,8 @@ export default {
       itemKv: {},
       invoiceNumber: "",
       showFilterMenu: false,
+      totalInvoiced: 0,
+      totalPaid: 0,
       availableSent: [
         {id: "YES", name: "Yes"},
         {id: "NO", name: "No"},
@@ -109,6 +121,12 @@ export default {
     },
   },
   methods: {
+    toggleShowTotals(){
+      if(!this.showTotalsMenu){
+        this.getInvoices(true);
+      }
+      this.showTotalsMenu = !this.showTotalsMenu;
+    },
     showPopover(dto){
       this.getInvoice(dto.id).then(invoice => {
         dto.invoiceItems = invoice.invoiceItems;
@@ -119,19 +137,16 @@ export default {
       this.showFilterMenu = false;
     },
     clearFilterMenu(){
-      // this.filter.invoiceFrom = null;
-      // this.filter.invoiceTo = null;
-      // this.getInvoices();
-      // this.showFilterMenu = false;
       router.go();
     },      
     paginationChange(page){
         this.pageable.currentPage = page;
         this.getInvoices();
     },
-	  getInvoices() {
+	  getInvoices(totals) {
       var query = {params: {
         pageable: this.pageable,
+        totals: totals,
         invoiceNumber: this.invoiceNumber,
         itemId: this.itemKv.id,
         saleId: this.saleKv.id,
@@ -142,11 +157,16 @@ export default {
         sent: this.filterSent.id,
       }}
       http.get("/invoice/pageable", query).then(r => {
-        r.data.content.forEach(dto => {
-          dto.invoiceItems = []
-        })
-        this.invoices = r.data.content;
-        this.pageable.totalElements = r.data.totalElements;
+        if(totals){
+          this.totalInvoiced = parseFloat(r.data.content[0][0]).toLocaleString('en-US',{minimumFractionDigits: 2});
+          this.totalPaid = r.data.content[0][1];
+        } else {
+          r.data.content.forEach(dto => {
+            dto.invoiceItems = []
+          })
+          this.invoices = r.data.content;
+          this.pageable.totalElements = r.data.totalElements;
+        }
       }).catch(e => {
         console.log("API error: "+e);
       });

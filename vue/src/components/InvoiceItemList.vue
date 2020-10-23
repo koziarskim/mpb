@@ -43,7 +43,7 @@
         <b-popover :show="showTotalsMenu" placement="bottom" target="totalsMenu" variant="secondary">
           <div style="width: 300px; font-size: 16px">
             <div>Total of {{pageable.totalElements}} rows</div>
-            <div>Total price: ${{totalUnitsPrice}}</div>
+            <div>Total amount: ${{totalUnitsPrice}}</div>
             <div>Total units: {{totalUnits}}</div>
           </div>
         </b-popover>
@@ -114,6 +114,7 @@ export default {
       },
       totalUnitsPrice: 0,
       totalUnits: 0,
+      showTotalsMenu: false,
     };
   },
   watch: {

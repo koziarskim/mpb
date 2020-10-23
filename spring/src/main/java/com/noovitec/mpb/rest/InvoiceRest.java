@@ -56,7 +56,8 @@ class InvoiceRest {
 	}
 
 	@GetMapping("/invoice/pageable")
-	Page<InvoiceListDto> getAllPageable(@RequestParam(required = false) Pageable pageable,
+	Page<?> getAllPageable(@RequestParam(required = false) Pageable pageable,
+			@RequestParam(required=false) boolean totals,
 			@RequestParam(required=false) String invoiceNumber,
 			@RequestParam(required=false) Long itemId,
 			@RequestParam(required=false) Long saleId,
@@ -65,21 +66,28 @@ class InvoiceRest {
 			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate invoiceFrom,
 			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate invoiceTo,
 			@RequestParam(required=false) String sent) {
-		Page<Invoice> invoices = invoiceRepo.findPagable(pageable, invoiceNumber, itemId, saleId, customerId, shipmentId, invoiceFrom, invoiceTo, sent);
-		Page<InvoiceListDto> dtos = invoices.map(invoice -> {
-			InvoiceListDto dto = new InvoiceListDto();
-			dto.setId(invoice.getId());
-			dto.setNumber(invoice.getNumber());
-			dto.setDate(invoice.getDate());
-			dto.setShippingDate(invoice.getShippingDate());
-			dto.setSent(invoice.isSent());
-			dto.setType(invoice.getType());
-			dto.setShipmentNumber(invoice.getShipment().getNumber());
-			dto.setCustomerName(invoice.getShipment().getCustomer().getName());
-			dto.setTotalAmount(invoice.getTotalAmount());
-			return dto;
-		});
-		return dtos;
+		@SuppressWarnings("unchecked")
+		Page<Invoice> invoices = (Page<Invoice>) invoiceRepo.findPagable(pageable, totals, invoiceNumber, itemId, saleId, customerId, shipmentId, invoiceFrom, invoiceTo, sent);
+		if(totals) {
+			@SuppressWarnings("unchecked")
+			Page<?> result = (Page<Invoice>) invoiceRepo.findPagable(pageable, totals, invoiceNumber, itemId, saleId, customerId, shipmentId, invoiceFrom, invoiceTo, sent);
+			return result;
+		} else {
+			Page<InvoiceListDto> dtos = invoices.map(invoice -> {
+				InvoiceListDto dto = new InvoiceListDto();
+				dto.setId(invoice.getId());
+				dto.setNumber(invoice.getNumber());
+				dto.setDate(invoice.getDate());
+				dto.setShippingDate(invoice.getShippingDate());
+				dto.setSent(invoice.isSent());
+				dto.setType(invoice.getType());
+				dto.setShipmentNumber(invoice.getShipment().getNumber());
+				dto.setCustomerName(invoice.getShipment().getCustomer().getName());
+				dto.setTotalAmount(invoice.getTotalAmount());
+				return dto;
+			});
+			return dtos;
+		}
 	}
 
 	@GetMapping("/invoice/{id}")
