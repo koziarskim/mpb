@@ -1,13 +1,11 @@
 <template>
     <b-container fluid>
       <b-row style="font-size: 12px">
-        <b-col cols=1 style="margin-right: -45px;">
           <b-button id="filterMenu" size="sm" @click="showFilterMenu = true">Filter</b-button>
           <b-popover :show="showFilterMenu" placement="bottom" target="filterMenu" variant="secondary">
             <template v-slot:title>
               <span>Advanced Filters</span>
-              <b-button style="margin-left: 185px" size="sm" @click="searchFilterMenu()">Search</b-button>
-              <b-button style="margin-left: 10px" size="sm" @click="clearFilterMenu()">Clear</b-button>
+              <b-button style="margin-left: 220px" size="sm" @click="searchFilterMenu()">Search</b-button>
             </template>
             <div style="width: 400px">
                 <b-row>
@@ -22,25 +20,14 @@
                 </b-row>
             </div>
           </b-popover>
-        </b-col>      
-        <b-col cols=2>
-          <input class="form-control" style="font-size: 12px" type="tel" v-model="invoiceNumber" @keyup.enter="getInvoices()" placeholder="Invoice"/>
-        </b-col>
-        <b-col cols=2>
-          <b-select option-value="id" option-text="name" :list="availableSales" v-model="saleKv" placeholder="Sale"></b-select>
-        </b-col>
-        <b-col cols=2>
-          <b-select option-value="id" option-text="name" :list="availableItems" v-model="itemKv" placeholder="Item"></b-select>
-        </b-col>
-        <b-col cols=2>
-          <b-select option-value="id" option-text="name" :list="availableCustomers" v-model="customerKv" placeholder="Customer"></b-select>
-        </b-col>
-        <b-col cols=2>
-          <b-select option-value="id" option-text="name" :list="availableShipments" v-model="shipmentKv" placeholder="Shipment"></b-select>
-        </b-col>
-        <b-col cols=1>
-          <b-button type="submit" :disabled="true" variant="primary" size="sm" @click="goToInvoice('')">New</b-button>
-        </b-col>
+          <b-button style="margin-left: 3px" size="sm" @click="clearFilterMenu()">Clear</b-button>
+          <input class="form-control" style="font-size: 12px; width: 150px; margin-left: 15px" type="tel" v-model="invoiceNumber" @keyup.enter="getInvoices()" placeholder="Invoice"/>
+          <b-select style="width: 150px; margin-left: 15px" option-value="id" option-text="name" :list="availableSales" v-model="saleKv" placeholder="Sale"></b-select>
+          <b-select style="width: 150px; margin-left: 15px" option-value="id" option-text="name" :list="availableItems" v-model="itemKv" placeholder="Item"></b-select>
+          <b-select style="width: 150px; margin-left: 15px" option-value="id" option-text="name" :list="availableCustomers" v-model="customerKv" placeholder="Customer"></b-select>
+          <b-select style="width: 150px; margin-left: 15px" option-value="id" option-text="name" :list="availableShipments" v-model="shipmentKv" placeholder="Shipment"></b-select>
+          <b-select style="width: 100px; margin-left: 15px" option-value="id" option-text="name" :list="availableSent" v-model="filterSent" placeholder="Sent"></b-select>
+          <b-button style="margin-left: 130px" type="submit" :disabled="true" variant="primary" size="sm" @click="goToInvoice('')">New</b-button>
       </b-row>
       <b-table :items="invoices" :fields="fields" no-local-sorting>
         <template v-slot:cell(number)="row">
@@ -93,6 +80,11 @@ export default {
       itemKv: {},
       invoiceNumber: "",
       showFilterMenu: false,
+      availableSent: [
+        {id: "YES", name: "Yes"},
+        {id: "NO", name: "No"},
+      ],
+      filterSent: {},
       filter: {
         invoiceFrom: null,
         invoiceTo: null,
@@ -112,6 +104,9 @@ export default {
     itemKv(newValue, oldValue){
       this.getInvoices();
     },
+    filterSent(newValue, oldValue){
+      this.getInvoices();
+    },
   },
   methods: {
     showPopover(dto){
@@ -124,10 +119,11 @@ export default {
       this.showFilterMenu = false;
     },
     clearFilterMenu(){
-      this.filter.invoiceFrom = null;
-      this.filter.invoiceTo = null;
-      this.getInvoices();
-      this.showFilterMenu = false;
+      // this.filter.invoiceFrom = null;
+      // this.filter.invoiceTo = null;
+      // this.getInvoices();
+      // this.showFilterMenu = false;
+      router.go();
     },      
     paginationChange(page){
         this.pageable.currentPage = page;
@@ -142,7 +138,8 @@ export default {
         customerId: this.customerKv.id,
         shipmentId: this.shipmentKv.id,
         invoiceFrom: this.filter.invoiceFrom,
-        invoiceTo: this.filter.invoiceTo
+        invoiceTo: this.filter.invoiceTo,
+        sent: this.filterSent.id,
       }}
       http.get("/invoice/pageable", query).then(r => {
         r.data.content.forEach(dto => {

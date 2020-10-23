@@ -63,8 +63,9 @@ class InvoiceRest {
 			@RequestParam(required=false) Long customerId,
 			@RequestParam(required=false) Long shipmentId,
 			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate invoiceFrom,
-			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate invoiceTo) {
-		Page<Invoice> invoices = invoiceRepo.findPagable(pageable, invoiceNumber, itemId, saleId, customerId, shipmentId, invoiceFrom, invoiceTo);
+			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate invoiceTo,
+			@RequestParam(required=false) String sent) {
+		Page<Invoice> invoices = invoiceRepo.findPagable(pageable, invoiceNumber, itemId, saleId, customerId, shipmentId, invoiceFrom, invoiceTo, sent);
 		Page<InvoiceListDto> dtos = invoices.map(invoice -> {
 			InvoiceListDto dto = new InvoiceListDto();
 			dto.setId(invoice.getId());
