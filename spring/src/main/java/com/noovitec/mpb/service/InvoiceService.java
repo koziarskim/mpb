@@ -168,6 +168,7 @@ public interface InvoiceService {
 						ii.setSaleItem(shipItem.getSaleItem());
 						ii.setUnitPrice(shipItem.getSaleItem().getUnitPrice());
 						ii.setUnitsInvoiced(shipItem.getUnits());
+						ii.setTotalUnitPrice(ii.getUnitPrice().multiply(BigDecimal.valueOf(ii.getUnitsInvoiced())));
 						invoice.getInvoiceItems().add(ii);
 					}
 					invoice = this.save(invoice);
