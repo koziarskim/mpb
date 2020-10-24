@@ -82,7 +82,7 @@ export default {
     return {
       securite: securite,
       navigation: navigation,
-      pageable: {totalElements: 100, currentPage: 1, perPage: 25, sortBy: 'updated', sortDesc: false},
+      pageable: {totalElements: 100, currentPage: 1, perPage: 25, sortBy: 'updated', sortDesc: true},
       fields: [
         { key: "number", label: "Invoice #", sortable: false },
         { key: "saleNumber", label: "Sale #", sortable: false },

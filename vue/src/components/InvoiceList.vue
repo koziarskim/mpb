@@ -68,7 +68,7 @@ export default {
     return {
       securite: securite,
       navigation: navigation,
-      pageable: {totalElements: 100, currentPage: 1, perPage: 25, sortBy: 'date', sortDesc: true},
+      pageable: {totalElements: 100, currentPage: 1, perPage: 25, sortBy: 'updated', sortDesc: true},
       fields: [
         { key: "number", label: "Invoice #", sortable: false },
         { key: "date", label: "Date", sortable: false },

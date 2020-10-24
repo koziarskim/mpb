@@ -18,6 +18,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Repository;
 
 import com.noovitec.mpb.entity.Invoice;
+import com.noovitec.mpb.entity.InvoiceItem;
 
 public interface CustomInvoiceRepo {
 	public Page<?> findPagable(Pageable pageable, boolean totals, String invoiceNumer, Long itemId, Long saleId, Long customerId, Long shipmentId,
@@ -39,13 +40,12 @@ public interface CustomInvoiceRepo {
 			List<Long> ids = this.getIds(pageable, totals, invoiceNumber, itemId, saleId, customerId, shipmentId, invoiceFrom, invoiceTo, sent);
 			Query query = entityManager.createQuery("select count(*) from Invoice inv where inv.id in :ids");
 			query.setParameter("ids", ids);
-			Page<?> page = null;
 			long total = (long) query.getSingleResult();
 			if(totals) {
 				query = entityManager.createQuery("select distinct sum(inv.totalAmount), sum(inv.payments) from Invoice inv where inv.id in :ids");
 				query.setParameter("ids", ids);
 				Object result = query.getSingleResult();
-				page = new PageImpl<Object>(Arrays.asList(result), pageable, total);
+				Page<Object> page = new PageImpl<Object>(Arrays.asList(result), pageable, total);
 				return page;
 			}else {
 				String q = "select distinct inv from Invoice inv where inv.id in :ids ";
@@ -57,7 +57,7 @@ public interface CustomInvoiceRepo {
 				@SuppressWarnings("unchecked")
 				List<Invoice> result = query.setFirstResult(pageable.getPageNumber()*pageable.getPageSize())
 					.setMaxResults(pageable.getPageSize()).getResultList();
-				page = new PageImpl<Invoice>(result, pageable, total);
+				Page<Invoice> page = new PageImpl<Invoice>(result, pageable, total);
 				return page;
 			}
 		}
@@ -121,6 +121,7 @@ public interface CustomInvoiceRepo {
 			if(sent !=null) {
 				query.setParameter("sent", sent.equalsIgnoreCase("YES")?true:false);
 			}
+			@SuppressWarnings("unchecked")
 			List<Long> ids = query.getResultList();
 			return ids;
 		}
