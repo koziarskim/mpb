@@ -51,6 +51,7 @@ public interface CustomInvoiceRepo {
 				String q = "select distinct inv from Invoice inv where inv.id in :ids ";
 				Order order = pageable.getSort().iterator().next();
 				q += "order by inv."+order.getProperty() + " "+order.getDirection();
+				q += ", cast(inv.number as string) asc ";
 				query = entityManager.createQuery(q);
 				query.setParameter("ids", ids);
 				@SuppressWarnings("unchecked")
