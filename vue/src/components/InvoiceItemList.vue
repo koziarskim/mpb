@@ -42,9 +42,9 @@
         <b-button id="totalsMenu" size="sm" @click="toggleShowTotals()">Totals</b-button>
         <b-popover :show="showTotalsMenu" placement="bottom" target="totalsMenu" variant="secondary">
           <div style="width: 300px; font-size: 16px">
-            <div>Total of {{pageable.totalElements}} rows</div>
-            <div>Total amount: ${{totalUnitsPrice}}</div>
-            <div>Total units: {{totalUnits}}</div>
+            <div>Total items: {{pageable.totalElements}}</div>
+            <div>Total amount: ${{parseFloat(totalUnitsPrice).toLocaleString('en-US',{minimumFractionDigits: 2})}}</div>
+            <div>Total units: {{parseFloat(totalUnits).toLocaleString()}}</div>
           </div>
         </b-popover>
       </b-col>      
@@ -169,7 +169,7 @@ export default {
       }}
       http.get("/invoiceItem/pageable", query).then(r => {
         if(totals){
-          this.totalUnitsPrice = parseFloat(r.data.content[0][0]).toLocaleString('en-US',{minimumFractionDigits: 2});
+          this.totalUnitsPrice = r.data.content[0][0];
           this.totalUnits = r.data.content[0][1];
         } else {
           this.invoiceItems = r.data.content;
