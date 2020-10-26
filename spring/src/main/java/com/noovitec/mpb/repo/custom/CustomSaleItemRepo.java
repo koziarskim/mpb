@@ -80,6 +80,9 @@ public interface CustomSaleItemRepo {
 					query.setParameter("status", status);
 				}
 			List<Long> ids = query.getResultList();
+			if(ids.size()==0) {
+				ids.add(0L);
+			}
 			
 			q = "select sum(si.units), sum(si.unitsProduced) from SaleItem si where si.id in :ids ";
 			query = entityManager.createQuery(q);
