@@ -123,6 +123,9 @@ public interface CustomInvoiceRepo {
 			}
 			@SuppressWarnings("unchecked")
 			List<Long> ids = query.getResultList();
+			if(ids.size()==0) {
+				ids.add(0L);
+			}
 			return ids;
 		}
 
