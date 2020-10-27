@@ -46,10 +46,6 @@
             <label class="top-label">Season:</label>
             <b-select option-value="id" option-text="name" :list="availableSeasons" v-model="item.season" placeholder="Season"></b-select>
           </b-col>
-          <!-- <b-col cols=4>
-            <label class="top-label">Case Upc:</label>
-            <b-select option-value="id" style="width: 165px" option-text="name" :list="availableUpc" v-model="caseUpc" placeholder="UPC"></b-select>
-          </b-col> -->
         </b-row>
         <b-row>
         </b-row>
@@ -285,12 +281,8 @@ export default {
   watch: {
     upc(newValue, oldValue){
       this.setUpcUrl(newValue.id);
-      // this.caseUpc = {id: newValue.id};
       this.setCaseUrl(newValue.id);
     },
-    // caseUpc(newValue, oldValue){
-    //   this.setCaseUrl(newValue.id);
-    // }
   },
   methods: {
     setUpcUrl(upcId){
@@ -376,10 +368,6 @@ export default {
           this.upc = {id: response.data.upc.id};
           this.setUpcUrl(response.data.upc.id);
         }
-        // if(response.data.caseUpc){
-        //   this.caseUpc = {id: response.data.caseUpc.id};
-        //   this.setCaseUrl(response.data.caseUpc.id);
-        // }
         return response.data;
       }).catch(e => {
         console.log("API error: " + e);
@@ -487,9 +475,6 @@ export default {
     var item_id = this.$route.params.item_id;
     if (item_id) {
       this.getItem(item_id);
-    }else{
-      // this.item.season = navigation.getSeason();
-      // this.item.year = navigation.getYear();
     }
     this.getAvailableBrands();
     this.getAvailableCategories();
