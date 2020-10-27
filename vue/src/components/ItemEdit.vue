@@ -136,16 +136,6 @@
         <hr class="hr-text" data-content="Prices are in USD">
         <b-row>
           <b-col cols=6>
-            <label class="top-label">Labor ($):</label>
-            <input class="form-control" v-model="item.laborCost">
-          </b-col>
-          <b-col cols=6>
-            <label class="top-label">Other ($):</label>
-            <input class="form-control" v-model="item.otherCost">
-          </b-col>
-        </b-row>
-        <b-row>
-          <b-col cols=6>
             <br/>
             <label class="top-label">Warehouse ($): {{warehouseCost}}</label><br/>
             <label class="top-label">Package/mat. ($): {{packageCost}}</label>
@@ -252,9 +242,7 @@ export default {
       totalCost =
         +totalCost +
         +this.warehouseCost +
-        +this.packageCost +
-        +this.item.laborCost +
-        +this.item.otherCost;
+        +this.packageCost;
       return totalCost?totalCost.toFixed(2):0.00;
     },
 

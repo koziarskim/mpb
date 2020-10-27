@@ -43,8 +43,6 @@ public class Item extends BaseEntity {
 	private int hi = 1; // number of layers on pallet.
 	private BigDecimal warehouseCost = new BigDecimal(12);
 	private BigDecimal packageCost = new BigDecimal(12);
-	private BigDecimal laborCost;
-	private BigDecimal otherCost;
 	private BigDecimal totalCost;
 	private long unitsProduced = 0;
 	private long unitsSold = 0;
