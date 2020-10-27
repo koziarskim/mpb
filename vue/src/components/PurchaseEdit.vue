@@ -86,8 +86,8 @@
       <b-col>
         <b-table sort-by.sync="name" sort-desc.sync="false" :items="purchase.purchaseComponents" :fields="fields">
           <template v-slot:cell(name)="row">
-            <b-link @click.stop="goToComponent(row.item.component.id)">{{row.item.component.number}}</b-link>
-            <span style="font-size: 11px"> ({{row.item.component.name}})</span>
+            <div style="width:200px; overflow: wrap; font-size: 14px"><b-link @click.stop="goToComponent(row.item.component.id)">{{row.item.component.number}}</b-link>
+            <span style="font-size: 11px"> ({{row.item.component.name}})</span></div>
           </template>
           <template v-slot:cell(unitsReceived)="row">
             <b-button v-if="!receiveMode" size="sm" @click.stop="goToReceiving(purchase.id, row.item.component.id)" variant="link">{{row.item.unitsReceived.toLocaleString()}}</b-button>
@@ -104,7 +104,7 @@
             <span v-if="receiveMode">${{row.item.unitPrice}}</span>
           </template>
           <template v-slot:cell(units)="row">
-            <v-money v-if="!receiveMode" class="form-control" style="width: 120px" type="tel" v-bind="{precision: 0}" v-model="row.item.units"></v-money>  
+            <v-money v-if="!receiveMode" class="form-control" style="width: 100px" type="tel" v-bind="{precision: 0}" v-model="row.item.units"></v-money>  
             <span v-if="receiveMode">{{row.item.units.toLocaleString()}}</span>
           </template>
           <template v-slot:cell(unitsSpoilage)="row">
@@ -114,7 +114,8 @@
             <span>{{row.item.component.casePack.toLocaleString()}}</span>
           </template>             
           <template v-slot:cell(cases)="row">
-            <span>{{Math.ceil(row.item.units / row.item.component.casePack).toLocaleString()}}</span>
+            {{row.item.cases = Math.ceil(row.item.units / row.item.component.casePack).toLocaleString()}}<br>
+            ({{row.item.cases * row.item.component.casePack}})
           </template>             
           <template v-slot:cell(totalPrice)="row">
             ${{row.item.totalPrice = getTotalPrice(row.item).toLocaleString('en-US',{minimumFractionDigits: 2})}}
