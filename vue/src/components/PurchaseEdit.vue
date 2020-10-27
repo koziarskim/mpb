@@ -108,14 +108,14 @@
             <span v-if="receiveMode">{{row.item.units.toLocaleString()}}</span>
           </template>
           <template v-slot:cell(unitsSpoilage)="row">
-            ({{row.item.unitsExtra.toLocaleString()}})<br/>{{row.item.unitsSpoilage.toLocaleString()}}
+            ({{Math.ceil(row.item.unitsExtra).toLocaleString()}})<br/>{{Math.ceil(row.item.unitsSpoilage).toLocaleString()}}
           </template>
           <template v-slot:cell(casePack)="row">
             <span>{{row.item.component.casePack.toLocaleString()}}</span>
           </template>             
           <template v-slot:cell(cases)="row">
             {{row.item.cases = Math.ceil(row.item.units / row.item.component.casePack).toLocaleString()}}<br>
-            ({{row.item.cases * row.item.component.casePack}})
+            ({{Math.ceil(row.item.cases * row.item.component.casePack).toLocaleString()}})
           </template>             
           <template v-slot:cell(totalPrice)="row">
             ${{row.item.totalPrice = getTotalPrice(row.item).toLocaleString('en-US',{minimumFractionDigits: 2})}}
