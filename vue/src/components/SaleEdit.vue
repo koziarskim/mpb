@@ -217,6 +217,7 @@ export default {
         { key: "sku", label: "SKU#", sortable: false },
         { key: "units", label: "Sold", sortable: false },
         { key: "unitsAdjusted", label: "Adjusted", sortable: false },
+        // { key: "unitsAssigned", label: "Assigned", sortable: false },
         { key: "unitsOnStockRet", label: "Stock(R)", sortable: false },
         { key: "unitsSchedProd", label: "Sched/Prod", sortable: false },
         { key: "unitsTransfered", label: "Trans", sortable: false },

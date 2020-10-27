@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.dto.SaleItemDto;
+import com.noovitec.mpb.entity.Item;
 import com.noovitec.mpb.entity.SaleItem;
 import com.noovitec.mpb.repo.SaleItemRepo;
 import com.noovitec.mpb.service.CrudService;
@@ -162,6 +163,27 @@ class SaleItemRest {
 			return dto;
 		});
 		return all;
+	}
+	
+	@GetMapping("/saleItem/migrate")
+	ResponseEntity<?> migrate() {
+		int count = 0;
+		try {
+			List<SaleItem> saleItems = (List<SaleItem>) saleItemRepo.findAll();
+			for(SaleItem si: saleItems) {
+				long unitsAssigned = 0;
+				unitsAssigned += si.getUnitsProduced() + (si.getUnitsTransferedTo() - si.getUnitsTransferedFrom());
+				si.setUnitsAssigned(unitsAssigned);
+				saleItemRepo.save(si);
+				log.info("Updated: "+si.getId());
+				count++;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		log.info("Done: "+count);
+		return ResponseEntity.ok().body("OK");
 	}
 
 }

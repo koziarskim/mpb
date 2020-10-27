@@ -143,11 +143,16 @@ class ScheduleEventRest {
 	
 	@GetMapping("/scheduleEvent/migrate")
 	ResponseEntity<?> migrate(){
-		List<ScheduleEvent> scheduleEvents = scheduleEventRepo.findAll();
-		for(ScheduleEvent se: scheduleEvents) {
-			SaleItem si = se.getSaleItem();
-			se.setItem(si.getItem());
-			scheduleEventRepo.save(se);
+		try {
+			List<ScheduleEvent> scheduleEvents = scheduleEventRepo.findAll();
+			for(ScheduleEvent se: scheduleEvents) {
+				SaleItem si = se.getSaleItem();
+				se.setItem(si.getItem());
+				scheduleEventRepo.save(se);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 		log.info("done");
 		return ResponseEntity.ok().build();

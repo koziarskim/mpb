@@ -12,3 +12,7 @@ alter table item drop column labor_cost;
 alter table item drop column other_cost;
 
 alter table sale_item add column units_assigned bigint default 0;
+
+run /item/update/units
+run /scheduleEvent/migrate
+run /saleItem/migrate
