@@ -31,6 +31,8 @@ public class SaleItem extends BaseEntity {
 	private BigDecimal unitPrice = BigDecimal.ZERO;
 	private BigDecimal totalUnitPrice = BigDecimal.ZERO;
 	private long units = 0; // unitsSold.
+	private long unitsAssigned = 0;
+	
 	private long unitsOnStock = 0;
 	private long unitsProduced = 0;
 	private long unitsScheduled = 0;
@@ -39,6 +41,7 @@ public class SaleItem extends BaseEntity {
 	private long unitsTransferedFrom = 0;
 	private long unitsReturned = 0;
 	private long unitsAdjusted = 0;
+
 	private BigDecimal invoicedAmount;
 	private String sku;
 	private String status;
