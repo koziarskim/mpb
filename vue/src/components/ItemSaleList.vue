@@ -281,6 +281,7 @@ export default {
             schedule: { id: schedule.id },
             scheduleTime: this.scheduleData.time,
             unitsScheduled: this.scheduleData.units,
+            item: this.item,
           }
         http
           .post("/scheduleEvent", scheduleEvent)

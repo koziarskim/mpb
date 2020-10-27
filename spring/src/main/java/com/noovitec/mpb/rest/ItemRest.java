@@ -143,8 +143,8 @@ class ItemRest {
 
 	@GetMapping("/item/{id}")
 	ResponseEntity<?> get(@PathVariable Long id) {
-		Optional<Item> item = itemRepo.findById(id);
-		return item.map(response -> ResponseEntity.ok().body(response)).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+		Item item = itemRepo.findById(id).get();
+		return ResponseEntity.ok().body(item);
 	}
 
 	@GetMapping("/item/number/season/{season_id}")

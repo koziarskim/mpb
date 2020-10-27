@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.noovitec.mpb.entity.Notification;
 import com.noovitec.mpb.entity.Production;
+import com.noovitec.mpb.entity.SaleItem;
 import com.noovitec.mpb.entity.ScheduleEvent;
 import com.noovitec.mpb.repo.ScheduleEventRepo;
 import com.noovitec.mpb.service.ComponentService;
@@ -137,6 +138,18 @@ class ScheduleEventRest {
 		saleService.updateUnits(Arrays.asList(saleId));
 		componentService.updateUnitsLockedByItem(itemId);
 		itemService.updateUnitsReadyProd(Arrays.asList(itemId));
+		return ResponseEntity.ok().build();
+	}
+	
+	@GetMapping("/scheduleEvent/migrate")
+	ResponseEntity<?> migrate(){
+		List<ScheduleEvent> scheduleEvents = scheduleEventRepo.findAll();
+		for(ScheduleEvent se: scheduleEvents) {
+			SaleItem si = se.getSaleItem();
+			se.setItem(si.getItem());
+			scheduleEventRepo.save(se);
+		}
+		log.info("done");
 		return ResponseEntity.ok().build();
 	}
 

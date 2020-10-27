@@ -56,6 +56,11 @@ public class ScheduleEvent extends BaseEntity {
 	@JoinColumn(name = "sale_item_id", referencedColumnName = "id")
 	private SaleItem saleItem;
 
+//	@JsonIgnoreProperties(value = { "scheduleEvents" }, allowSetters = true)
+	@ManyToOne()
+	@JoinColumn(name = "item_id", referencedColumnName = "id")
+	private Item item;
+
 	@Transient
 	boolean completed = false;
 
