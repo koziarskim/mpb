@@ -30,6 +30,7 @@ import lombok.NoArgsConstructor;
 @Entity
 public class ScheduleEvent extends BaseEntity {
 
+	private static final long serialVersionUID = 920544982775913064L;
 	LocalTime scheduleTime;
 	LocalTime startTime;
 	LocalTime finishTime;
@@ -56,7 +57,7 @@ public class ScheduleEvent extends BaseEntity {
 	@JoinColumn(name = "sale_item_id", referencedColumnName = "id")
 	private SaleItem saleItem;
 
-//	@JsonIgnoreProperties(value = { "scheduleEvents" }, allowSetters = true)
+	@JsonIgnoreProperties(value = { "scheduleEvents" }, allowSetters = true)
 	@ManyToOne()
 	@JoinColumn(name = "item_id", referencedColumnName = "id")
 	private Item item;

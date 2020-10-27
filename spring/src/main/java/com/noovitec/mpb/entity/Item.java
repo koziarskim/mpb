@@ -12,6 +12,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.AllArgsConstructor;
@@ -97,6 +98,11 @@ public class Item extends BaseEntity {
 	@OneToMany()
 	@JoinColumn(name = "item_id")
 	private Collection<ItemReturn> itemReturns = new HashSet<ItemReturn>();
+
+	@JsonIgnore
+	@OneToMany()
+	@JoinColumn(name = "item_id")
+	private Collection<ScheduleEvent> scheduleEvents = new HashSet<ScheduleEvent>();
 
 	public Long getDurationSeconds() {
 		Long secs = 0L;
