@@ -47,6 +47,10 @@ public class ScheduleEvent extends BaseEntity {
 	@JoinColumn(name = "schedule_id", referencedColumnName = "id")
 	private Schedule schedule;
 
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "packaging_id", referencedColumnName = "id")
+	private Packaging packaging;
+
 	@JsonIgnoreProperties(value = { "scheduleEvent" }, allowSetters = true)
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "schedule_event_id")

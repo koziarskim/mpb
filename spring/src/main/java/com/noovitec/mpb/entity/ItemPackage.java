@@ -25,7 +25,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class SaleItem extends BaseEntity {
+public class ItemPackage extends BaseEntity {
 
 	private static final long serialVersionUID = -6345762674113542595L;
 	private BigDecimal unitPrice = BigDecimal.ZERO;
@@ -55,11 +55,6 @@ public class SaleItem extends BaseEntity {
 	@ManyToOne()
 	@JoinColumn(name = "item_id", referencedColumnName = "id")
 	private Item item;
-	
-	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "packaging_id", referencedColumnName = "id")
-	private Packaging packaging;
-
 
 	@JsonIgnoreProperties(value = { "saleItem", "item" }, allowSetters = true)
 	@OneToMany()

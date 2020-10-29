@@ -8,8 +8,10 @@ import java.util.HashSet;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -34,6 +36,7 @@ public class Item extends BaseEntity {
 	private BigDecimal width;
 	private BigDecimal depth;
 	private BigDecimal weight;
+	//Package
 	private int casePack = 1;
 	private BigDecimal caseHeight;
 	private BigDecimal caseWidth;
@@ -44,6 +47,7 @@ public class Item extends BaseEntity {
 	private int hi = 1; // number of layers on pallet.
 	private BigDecimal warehouseCost = new BigDecimal(12);
 	private BigDecimal packageCost = new BigDecimal(12);
+	//------
 	private BigDecimal totalCost;
 	private long unitsProduced = 0;
 	private long unitsSold = 0;
@@ -59,6 +63,10 @@ public class Item extends BaseEntity {
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "item_id")
 	private Collection<ItemComponent> itemComponents = new HashSet<ItemComponent>();
+	
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinTable(name = "item_packaging", joinColumns = @JoinColumn(name = "item_id"), inverseJoinColumns = @JoinColumn(name = "packaging_id"))
+	private Collection<Packaging> packagings = new HashSet<Packaging>();
 
 	@JsonIgnoreProperties(value = { "items" }, allowSetters = true)
 	@ManyToOne()
