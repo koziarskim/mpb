@@ -38,6 +38,7 @@ import com.noovitec.mpb.dto.ScheduleEventTreeDto;
 import com.noovitec.mpb.entity.Attachment;
 import com.noovitec.mpb.entity.Item;
 import com.noovitec.mpb.entity.ItemComponent;
+import com.noovitec.mpb.entity.Packaging;
 import com.noovitec.mpb.entity.ScheduleEvent;
 import com.noovitec.mpb.entity.Season;
 import com.noovitec.mpb.repo.ItemRepo;
@@ -262,6 +263,41 @@ class ItemRest {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
+		return ResponseEntity.ok().body("OK");
+	}
+	
+	@GetMapping("/item/migrate")
+	ResponseEntity<?> migrate() {
+		int count = 0;
+		try {
+			List<Item> items = (List<Item>) itemRepo.findAll();
+			for(Item item: items) {
+				Packaging packaging = new Packaging();
+				packaging.setName("Default");
+				packaging.setType("MASTER_CARTON");
+				packaging.setCaseDepth(item.getCaseDepth());
+				packaging.setCaseHeight(item.getCaseHeight());
+				packaging.setCaseWeight(item.getCaseWeight());
+				packaging.setCaseWidth(item.getCaseWidth());
+				packaging.setTi(item.getTi());
+				packaging.setHi(item.getHi());
+				packaging.setPackageCost(item.getPackageCost());
+				packaging.setPalletWeight(item.getPalletWeight());
+				packaging.setCasePack(item.getCasePack());
+				packaging.setWarehouseCost(item.getWarehouseCost());
+				if(item.getPackagings()==null) {
+					item.setPackagings(new ArrayList<Packaging>());
+				}
+				item.getPackagings().add(packaging);
+				itemRepo.save(item);
+				count++;
+				log.info("Updated: ");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		log.info("Done: "+count);
 		return ResponseEntity.ok().body("OK");
 	}
 }
