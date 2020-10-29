@@ -14,5 +14,5 @@ ALTER TABLE item_packaging ADD CONSTRAINT fk_item_packaging_item_id
 run /scheduleEvent/migrate
 --Set saleItem.unitsAssigned
 run /saleItem/migrate
---Set default package for item
+--Set default packages for item, saleItem, scheduleEvent
 item/migrate

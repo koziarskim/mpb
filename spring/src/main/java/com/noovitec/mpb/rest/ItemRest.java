@@ -8,7 +8,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +38,7 @@ import com.noovitec.mpb.entity.Attachment;
 import com.noovitec.mpb.entity.Item;
 import com.noovitec.mpb.entity.ItemComponent;
 import com.noovitec.mpb.entity.Packaging;
+import com.noovitec.mpb.entity.SaleItem;
 import com.noovitec.mpb.entity.ScheduleEvent;
 import com.noovitec.mpb.entity.Season;
 import com.noovitec.mpb.repo.ItemRepo;
@@ -273,7 +273,7 @@ class ItemRest {
 			List<Item> items = (List<Item>) itemRepo.findAll();
 			for(Item item: items) {
 				Packaging packaging = new Packaging();
-				packaging.setName("Default");
+				packaging.setName("Default_"+item.getNumber());
 				packaging.setType("MASTER_CARTON");
 				packaging.setCaseDepth(item.getCaseDepth());
 				packaging.setCaseHeight(item.getCaseHeight());
@@ -289,6 +289,12 @@ class ItemRest {
 					item.setPackagings(new ArrayList<Packaging>());
 				}
 				item.getPackagings().add(packaging);
+				for(SaleItem saleItem: item.getSaleItems()) {
+					saleItem.setPackaging(packaging);
+					for(ScheduleEvent se: saleItem.getScheduleEvents()) {
+						se.setPackaging(packaging);
+					}
+				}
 				itemRepo.save(item);
 				count++;
 				log.info("Updated: ");
