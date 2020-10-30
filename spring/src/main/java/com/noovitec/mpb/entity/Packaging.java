@@ -34,4 +34,11 @@ public class Packaging extends BaseEntity {
 	private BigDecimal warehouseCost = new BigDecimal(12);
 	private BigDecimal packageCost = new BigDecimal(12);
 	
+	@Transient
+	private String label;
+	
+	public String getLabel() {
+		return this.getName() + " ("+this.getType()+")";
+	}
+	
 }

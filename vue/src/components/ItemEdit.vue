@@ -38,10 +38,10 @@
             <label class="top-label">Category:</label>
             <b-select option-value="id" option-text="value" :list="availableItemCategories" v-model="item.category" placeholder="Category"></b-select>
           </b-col>
-          <b-col cols=2>
+          <!-- <b-col cols=2>
             <img style="margin-top: 27px; width: 165px; height: 40px" :src="upcUrl" fluid>
             <img style="margin-top: 5px; width: 165px; height: 64px" :src="caseUrl" fluid>
-          </b-col>
+          </b-col> -->
           <b-col cols=2 style="margin-top: 70px;">
             <label class="top-label">Season:</label>
             <b-select option-value="id" option-text="name" :list="availableSeasons" v-model="item.season" placeholder="Season"></b-select>
@@ -153,6 +153,13 @@
         <b-col cols=1>
           <b-button size="sm" style="margin-top: 30px;" variant="primary" @click="addComponent()">Add &#x25BC;</b-button>
         </b-col>
+        <b-col cols=4>
+          <label class="top-label">Possible Packages:
+            <span style="cursor: pointer; color: blue" @click="editPackaging()">(Edit/New)</span>
+            <span style="cursor: pointer; color: blue" @click="deletePackaging()">(Delete)</span>
+        </label>
+        <b-select option-value="label" option-text="label" :list="item.packagings" v-model="packaging"></b-select>
+      </b-col>
       </b-row>
       <br>
       <b-row>
@@ -178,6 +185,9 @@
         </b-col>
       </b-row>
     </div>
+    <div v-if="packagingModalVisible">
+      <packaging-modal :packaging="packaging" :item-name="item.number+' - '+item.name" v-on:close="closePackagingModal"></packaging-modal>
+    </div>    
   </b-container>
 </template>
 
@@ -189,6 +199,9 @@ import navigation from "../utils/navigation";
 import securite from "../securite";
 
 export default {
+  components: {
+    PackagingModal: () => import("./modals/PackagingModal"),
+  },
   data() {
     return {
       navigation: navigation,
@@ -203,6 +216,7 @@ export default {
         upc:{},
         // caseUpc: {},
         palletWeight: 60,
+        packagings: []
       },
       image: "",
       httpUtils: httpUtils,
@@ -215,8 +229,8 @@ export default {
     availableUpc: [],
     upc: {},
     // caseUpc: {},
-    upcUrl: "",
-    caseUrl: "",
+    // upcUrl: "",
+    // caseUrl: "",
     uploadedFile: null,
     columns: [
         { key: "component", label: "Component", sortable: false },
@@ -227,6 +241,9 @@ export default {
         { key: "component.unitsLocked", label: "Reserved", sortable: false },
         { key: "action", label: "", sortable: false }
       ],
+      packagingModalVisible: false,
+      packaging: {},
+
     };
   },
   computed: {
@@ -279,26 +296,49 @@ export default {
     },
   },
   watch: {
-    upc(newValue, oldValue){
-      this.setUpcUrl(newValue.id);
-      this.setCaseUrl(newValue.id);
-    },
+    // upc(newValue, oldValue){
+      // this.setUpcUrl(newValue.id);
+      // this.setCaseUrl(newValue.id);
+    // },
   },
   methods: {
-    setUpcUrl(upcId){
-      if(upcId){
-        this.upcUrl = httpUtils.getUrl("/upc/image/" + upcId);
-      }else{
-        this.upcUrl = "";
-      }
+    editPackaging(){
+      this.packagingModalVisible = true;
     },
-    setCaseUrl(upcId){
-      if(upcId){
-        this.caseUrl = httpUtils.getUrl("/upc/case/image/" + upcId);
-      }else{
-        this.caseUrl = "";
+    deletePackaging(){
+      var idx = this.item.packagings.findIndex(
+        a => a.label == this.packaging.label
+      );
+      if (idx > -1) {
+        this.item.packagings.splice(idx, 1);
       }
+      this.packaging = {};
     },
+    closePackagingModal(packaging){
+      if (packaging) {
+        var idx = this.item.packagings.findIndex(p => p.label == packaging.label);
+        if (idx > -1) {
+          this.item.packagings.splice(idx, 1);
+        }
+        this.item.packagings.push(packaging);
+      }
+      this.packagingModalVisible = false;
+      this.packaging = {};
+    },
+    // setUpcUrl(upcId){
+    //   if(upcId){
+    //     this.upcUrl = httpUtils.getUrl("/upc/image/" + upcId);
+    //   }else{
+    //     this.upcUrl = "";
+    //   }
+    // },
+    // setCaseUrl(upcId){
+    //   if(upcId){
+    //     this.caseUrl = httpUtils.getUrl("/upc/case/image/" + upcId);
+    //   }else{
+    //     this.caseUrl = "";
+    //   }
+    // },
     allowEdit(){
       return securite.hasRole(["STANDARD_ADMIN"]);
     },
@@ -366,7 +406,7 @@ export default {
         this.item = response.data;
         if(response.data.upc){
           this.upc = {id: response.data.upc.id};
-          this.setUpcUrl(response.data.upc.id);
+          // this.setUpcUrl(response.data.upc.id);
         }
         return response.data;
       }).catch(e => {
