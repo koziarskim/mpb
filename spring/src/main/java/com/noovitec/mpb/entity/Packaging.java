@@ -1,12 +1,14 @@
 package com.noovitec.mpb.entity;
 
 import java.math.BigDecimal;
-import java.time.LocalTime;
+import java.util.Collection;
+import java.util.HashSet;
 
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Transient;
+import javax.persistence.OneToMany;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -34,11 +36,9 @@ public class Packaging extends BaseEntity {
 	private BigDecimal warehouseCost = new BigDecimal(12);
 	private BigDecimal packageCost = new BigDecimal(12);
 	
-	@Transient
-	private String label;
-	
-	public String getLabel() {
-		return this.getName() + " ("+this.getType()+")";
-	}
-	
+	@JsonIgnoreProperties(value = { "packaging" }, allowSetters = true)
+	@OneToMany()
+	@JoinColumn(name = "packaging_id")
+	private Collection<ItemPackaging> itemPackagings = new HashSet<ItemPackaging>();
+
 }

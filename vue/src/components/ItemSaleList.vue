@@ -244,7 +244,9 @@ export default {
       this.scheduleData.units = +saleItem.units - +saleItem.unitsScheduled;
       this.scheduleData.maxUnits = this.scheduleData.units;
       this.scheduleData.saleItem = saleItem;
+      //TODO: This two need to be set by UI.
       this.scheduleData.item = this.item;
+      this.scheduleData.itemPackaging = this.item.itemPackagings[0];
     },
     saveSchedule() {
       var schedule = {

@@ -551,7 +551,9 @@ export default {
           unitsTransferedTo: 0,
           unitsTransferedFrom: 0,
           transfersTo: [],
-          transfersFrom: [] 
+          transfersFrom: [],
+          //TODO: This needs to be set form UI
+          itemPackaging: this.item.itemPackagings[0],
       });
     },
     goToItem(item_id) {

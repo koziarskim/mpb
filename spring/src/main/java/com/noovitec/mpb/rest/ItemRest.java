@@ -37,11 +37,13 @@ import com.noovitec.mpb.dto.ScheduleEventTreeDto;
 import com.noovitec.mpb.entity.Attachment;
 import com.noovitec.mpb.entity.Item;
 import com.noovitec.mpb.entity.ItemComponent;
+import com.noovitec.mpb.entity.ItemPackaging;
 import com.noovitec.mpb.entity.Packaging;
 import com.noovitec.mpb.entity.SaleItem;
 import com.noovitec.mpb.entity.ScheduleEvent;
 import com.noovitec.mpb.entity.Season;
 import com.noovitec.mpb.repo.ItemRepo;
+import com.noovitec.mpb.repo.PackagingRepo;
 import com.noovitec.mpb.repo.ScheduleEventRepo;
 import com.noovitec.mpb.repo.SeasonRepo;
 import com.noovitec.mpb.repo.UpcRepo;
@@ -76,6 +78,8 @@ class ItemRest {
 	private AttachmentService attachmentService;
 	@Autowired
 	private PurchaseService purchaseService;
+	@Autowired
+	private PackagingRepo packagingRepo;
 	
 	private ItemService itemService;
 	private final Logger log = LoggerFactory.getLogger(ItemRest.class);
@@ -212,6 +216,9 @@ class ItemRest {
 		if((item.getId()==null && id !=null) || (item.getId()!=null && id !=null && !item.getId().equals(id))) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Component Number already exists. Please, choose differrent.");
 		}
+		for (ItemPackaging ip : item.getItemPackagings()) {
+			ip.setItem(item);
+		}
 		item = itemService.save(item);
 		if(image!=null) {
 			Attachment attachment = attachmentService.store(image, Item.class.getSimpleName(), item.getId(), item.getAttachment());
@@ -285,14 +292,18 @@ class ItemRest {
 				packaging.setPalletWeight(item.getPalletWeight());
 				packaging.setCasePack(item.getCasePack());
 				packaging.setWarehouseCost(item.getWarehouseCost());
-				if(item.getPackagings()==null) {
-					item.setPackagings(new ArrayList<Packaging>());
+				packagingRepo.save(packaging);
+				ItemPackaging ip = new ItemPackaging();
+				ip.setItem(item);
+				ip.setPackaging(packaging);
+				if(item.getItemPackagings()==null) {
+					item.setItemPackagings(new ArrayList<ItemPackaging>());
 				}
-				item.getPackagings().add(packaging);
+				item.getItemPackagings().add(ip);
 				for(SaleItem saleItem: item.getSaleItems()) {
-					saleItem.setPackaging(packaging);
+					saleItem.setItemPackaging(ip);
 					for(ScheduleEvent se: saleItem.getScheduleEvents()) {
-						se.setPackaging(packaging);
+						se.setItemPackaging(ip);
 					}
 				}
 				itemRepo.save(item);

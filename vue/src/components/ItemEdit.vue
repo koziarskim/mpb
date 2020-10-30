@@ -155,10 +155,10 @@
         </b-col>
         <b-col cols=4>
           <label class="top-label">Possible Packages:
-            <span style="cursor: pointer; color: blue" @click="editPackaging()">(Edit/New)</span>
+            <span style="cursor: pointer; color: blue" @click="addPackaging()">(Add)</span>
             <span style="cursor: pointer; color: blue" @click="deletePackaging()">(Delete)</span>
         </label>
-        <b-select option-value="label" option-text="label" :list="item.packagings" v-model="packaging"></b-select>
+        <b-select option-value="id" option-text="label" :list="item.itemPackagings" v-model="itemPackaging"></b-select>
       </b-col>
       </b-row>
       <br>
@@ -185,9 +185,9 @@
         </b-col>
       </b-row>
     </div>
-    <div v-if="packagingModalVisible">
+    <!-- <div v-if="packagingModalVisible">
       <packaging-modal :packaging="packaging" :item-name="item.number+' - '+item.name" v-on:close="closePackagingModal"></packaging-modal>
-    </div>    
+    </div>     -->
   </b-container>
 </template>
 
@@ -216,7 +216,7 @@ export default {
         upc:{},
         // caseUpc: {},
         palletWeight: 60,
-        packagings: []
+        itemPackagings: []
       },
       image: "",
       httpUtils: httpUtils,
@@ -242,7 +242,7 @@ export default {
         { key: "action", label: "", sortable: false }
       ],
       packagingModalVisible: false,
-      packaging: {},
+      itemPackaging: {},
 
     };
   },
@@ -302,17 +302,17 @@ export default {
     // },
   },
   methods: {
-    editPackaging(){
+    addPackaging(){
       this.packagingModalVisible = true;
     },
     deletePackaging(){
-      var idx = this.item.packagings.findIndex(
-        a => a.label == this.packaging.label
+      var idx = this.item.itemPackagings.findIndex(
+        a => a.id == this.itemPackaging.id
       );
       if (idx > -1) {
-        this.item.packagings.splice(idx, 1);
+        this.item.itemPackagings.splice(idx, 1);
       }
-      this.packaging = {};
+      this.itemPackaging = {};
     },
     closePackagingModal(packaging){
       if (packaging) {

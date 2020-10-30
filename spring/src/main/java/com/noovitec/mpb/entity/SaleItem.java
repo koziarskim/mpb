@@ -57,8 +57,8 @@ public class SaleItem extends BaseEntity {
 	private Item item;
 	
 	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "packaging_id", referencedColumnName = "id")
-	private Packaging packaging;
+	@JoinColumn(name = "item_packaging_id", referencedColumnName = "id")
+	private ItemPackaging itemPackaging;
 
 
 	@JsonIgnoreProperties(value = { "saleItem", "item" }, allowSetters = true)

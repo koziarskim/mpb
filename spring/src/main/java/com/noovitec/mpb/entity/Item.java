@@ -64,9 +64,10 @@ public class Item extends BaseEntity {
 	@JoinColumn(name = "item_id")
 	private Collection<ItemComponent> itemComponents = new HashSet<ItemComponent>();
 	
+	@JsonIgnoreProperties(value = { "item" }, allowSetters = true)
 	@OneToMany(cascade = CascadeType.ALL)
-	@JoinTable(name = "item_packaging", joinColumns = @JoinColumn(name = "item_id"), inverseJoinColumns = @JoinColumn(name = "packaging_id"))
-	private Collection<Packaging> packagings = new HashSet<Packaging>();
+	@JoinColumn(name = "item_id")
+	private Collection<ItemPackaging> itemPackagings = new HashSet<ItemPackaging>();
 
 	@JsonIgnoreProperties(value = { "items" }, allowSetters = true)
 	@ManyToOne()
