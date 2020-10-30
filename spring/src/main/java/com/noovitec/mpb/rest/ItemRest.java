@@ -294,7 +294,6 @@ class ItemRest {
 				packaging.setWarehouseCost(item.getWarehouseCost());
 				packagingRepo.save(packaging);
 				ItemPackaging ip = new ItemPackaging();
-				ip.setItem(item);
 				ip.setPackaging(packaging);
 				if(item.getItemPackagings()==null) {
 					item.setItemPackagings(new ArrayList<ItemPackaging>());
