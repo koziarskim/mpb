@@ -4,6 +4,8 @@
       <b-row>
         <b-col cols=9>
           <div>Item: {{itemName}}</div>
+          <div>Item: {{packagingIds}}</div>
+          <div>Item: {{selectedPackagings}}</div>
         </b-col>
         <b-col cols=3>
           <div style="text-align: right;">
@@ -12,54 +14,13 @@
           </div>
         </b-col>
       </b-row>
-      <b-row>        
-        <b-col cols=6>
-          <label class="top-label">Packaging Name:</label>
-          <input class="form-control" type="text" v-model="updatedPackaging.name">
-        </b-col>
-        <b-col cols=6>
-          <label class="top-label">Packaging Type:</label>
-          <b-select option-value="id" option-text="name" :list="availableTypes" v-model="type"></b-select>
-        </b-col>
-      </b-row>
       <b-row>
-        <b-col cols=6>
-          <label class="top-label">Case Dimension (H x W x D):</label>
-          <div style="display:flex">
-            <input class="form-control" v-model="updatedPackaging.caseHeight"><span style="margin-top: 7px">x</span>
-            <input class="form-control" v-model="updatedPackaging.caseWidth"><span style="margin-top: 7px">x</span>
-            <input class="form-control" v-model="updatedPackaging.caseDepth">
-          </div>
-        </b-col>
-        <b-col cols=2>
-          <label class="top-label">Case Pack:</label>
-          <input class="form-control" type="text" v-model="updatedPackaging.casePack">
-        </b-col>
-      </b-row>
-      <b-row>
-        <b-col cols=4>
-          <label class="top-label">TI x HI (pcs):</label>
-          <div style="display:flex">
-            <input class="form-control" v-model="updatedPackaging.ti" placeholder="0"><span style="margin-top: 7px">x</span>
-            <input class="form-control" v-model="updatedPackaging.hi" placeholder="0">
-          </div>
-        </b-col>
-        <b-col cols=2>
-          <label class="top-label">Pallet Weight:</label>
-          <input class="form-control" v-model="updatedPackaging.palletWeight">
-        </b-col>
-        <b-col cols=3>
-          <label class="top-label">Units p/ pallet: {{unitsPerPallet}}</label><br/>
-          <label class="top-label">Pallet height: {{palletHeight}}</label><br/>
-          <label class="top-label">Cases p/p: {{casesPerPallet}}</label>
-        </b-col>
-      </b-row>
-      <b-row>
-        <b-col cols=3>
-          <label class="top-label">Warehouse Cost ($): {{warehouseCost}}</label>
-        </b-col>
-        <b-col cols=3>
-          <label class="top-label">Packaging Cost ($): {{packageCost}}</label>
+        <b-col>
+          <b-table sticky-header="400px" :items="packagings" :fields="columns">
+            <template v-slot:cell(action)="row">
+              <input type="checkbox" v-model="packagingIds" :value="row.item.id">
+            </template>
+          </b-table>
         </b-col>
       </b-row>
     </b-modal>
@@ -74,53 +35,54 @@ import moment from "moment";
 
 export default {
   props: {
-    packaging: {type: Object, required: true},
+    itemPackagings: {type: Array, required: true},
     itemName: {type: String, required: true},
   },
   data() {
     return {
       visible: true,
-      updatedPackaging: {},
+      columns: [
+        { key: "name", label: "Name", sortable: false },
+        { key: "type", label: "Type", sortable: false },
+        { key: "action", label: "Action", sortable: false },
+      ],
       availableTypes: [
         {id: "MASTER_CARTON", name: "Master Carton"},
         {id: "PDQ", name: "PDQ"}
       ],
-      type: {},
+      packagingIds: [],
+      packagings: [],
+      selectedPackagings: [],
     };
   },
-  computed: {
-    unitsPerPallet() {
-      return +this.updatedPackaging.hi * +this.updatedPackaging.ti * +this.updatedPackaging.casePack;
-    },
-    palletHeight() {
-      return +this.updatedPackaging.caseHeight * +this.updatedPackaging.hi;
-    },   
-    casesPerPallet() {
-      return +this.updatedPackaging.hi * +this.updatedPackaging.ti;
-    }, 
-    warehouseCost() {
-      var cost = 12 / +this.unitsPerPallet;
-      return cost.toFixed(2);
-    },
-    packageCost() {
-      var cost = 12 / +this.unitsPerPallet;
-      return cost.toFixed(2);
-    },        
-  },
+  computed: {},
   watch: {},
   methods: {
+    getPackagings(){
+      http.get("/packaging/").then(r => {
+        this.packagings = r.data;
+      }).catch(e => {
+        console.log("API error: " + e);
+      });
+    },
     save(){
-      this.updatedPackaging.type = this.type.id;
-      this.updatedPackaging.label = this.updatedPackaging.name + " ("+this.updatedPackaging.type+")";
-      this.$emit("close", this.updatedPackaging);
+      var packagings = [];
+      this.packagings.forEach(p => {
+        if(this.packagingIds.includes(p.id)){
+          packagings.push(p);
+        }
+      })
+      this.$emit("close", packagings);
     },
     close(){
       this.$emit("close");
     },
   },
   mounted() {
-    this.updatedPackaging = this.packaging;
-    this.type = {id: this.updatedPackaging.type};
+    this.getPackagings();
+    this.itemPackagings.forEach(ip => {
+      this.packagingIds.push(ip.packaging.id);
+    })
   }
 };
 </script>

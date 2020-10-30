@@ -1,5 +1,7 @@
 package com.noovitec.mpb.rest;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.noovitec.mpb.dto.PackagingListDto;
 import com.noovitec.mpb.entity.Packaging;
 import com.noovitec.mpb.repo.PackagingRepo;
 
@@ -25,6 +28,20 @@ class PackagingRest {
 	
 	public PackagingRest(PackagingRepo packagingRepo) {
 		this.packagingRepo = packagingRepo;
+	}
+
+	@GetMapping("/packaging")
+	ResponseEntity<?> getAll() {
+		List<Packaging> packagings = packagingRepo.findAll();
+		List<PackagingListDto> dtos = new ArrayList<PackagingListDto>();
+		for(Packaging p: packagings) {
+			PackagingListDto dto = new PackagingListDto();
+			dto.setId(p.getId());
+			dto.setName(p.getName());
+			dto.setType(p.getType());
+			dtos.add(dto);
+		}
+		return ResponseEntity.ok().body(dtos);
 	}
 
 	@GetMapping("/packaging/{id}")

@@ -158,7 +158,7 @@
             <span style="cursor: pointer; color: blue" @click="addPackaging()">(Add)</span>
             <span style="cursor: pointer; color: blue" @click="deletePackaging()">(Delete)</span>
         </label>
-        <b-select option-value="id" option-text="label" :list="item.itemPackagings" v-model="itemPackaging"></b-select>
+        <b-select option-value="label" option-text="label" :list="item.itemPackagings" v-model="itemPackaging"></b-select>
       </b-col>
       </b-row>
       <br>
@@ -185,9 +185,9 @@
         </b-col>
       </b-row>
     </div>
-    <!-- <div v-if="packagingModalVisible">
-      <packaging-modal :packaging="packaging" :item-name="item.number+' - '+item.name" v-on:close="closePackagingModal"></packaging-modal>
-    </div>     -->
+    <div v-if="packagingModalVisible">
+      <packaging-modal :itemPackagings="item.itemPackagings" :item-name="item.number+' - '+item.name" v-on:close="closePackagingModal"></packaging-modal>
+    </div>    
   </b-container>
 </template>
 
@@ -314,13 +314,12 @@ export default {
       }
       this.itemPackaging = {};
     },
-    closePackagingModal(packaging){
-      if (packaging) {
-        var idx = this.item.packagings.findIndex(p => p.label == packaging.label);
-        if (idx > -1) {
-          this.item.packagings.splice(idx, 1);
-        }
-        this.item.packagings.push(packaging);
+    closePackagingModal(packagings){
+      this.item.itemPackagings = [];
+      if (packagings) {
+        packagings.forEach(p => {
+          this.item.itemPackagings.push({item: {id: this.item.id}, packaging: {id: p.id}, label: p.name+' ('+p.type+')'});
+        })
       }
       this.packagingModalVisible = false;
       this.packaging = {};
