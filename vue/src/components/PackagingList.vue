@@ -2,13 +2,13 @@
     <b-container fluid>
       <b-row style="font-size: 12px">
         <b-col cols=2>
-          <input class="form-control" style="font-size: 12px" type="tel" v-model="packagingName" @keyup.enter="getPackagings()" placeholder="Name"/>
+          <input class="form-control" style="font-size: 12px" v-model.lazy="packagingName" @keyup.enter="getPackagings()" placeholder="Name"/>
         </b-col>
         <b-col cols=2>
           <b-select option-value="id" option-text="name" :list="availableTypes" v-model="typeKv" placeholder="Type"></b-select>
         </b-col>
-        <b-col cols=2 offset=6>
-          <b-button type="submit" :disabled="true" variant="primary" size="sm" @click="openPackagingModal()">New</b-button>
+        <b-col cols=1 offset=7>
+          <b-button type="submit" variant="primary" size="sm" @click="goToPackagingEdit()">New</b-button>
         </b-col>
       </b-row>
       <b-row>
@@ -48,7 +48,10 @@ export default {
     return {
       packagings: [],
       packagingName: "",
-      availableTypes: [],
+      availableTypes: [
+        {id: "MASTER_CARTON", name: "Master Carton"},
+        {id: "PDQ", name: "PDQ"}
+      ],
       typeKv: {},
       columns: [
         { key: "name", label: "Name", sortable: false },
@@ -64,12 +67,23 @@ export default {
     };
   },
   watch: {
+    typeKv(new_value, old_value){
+      this.getPackagings();      
+    },
   },
   methods: {
-    openPackagingModal(id){
+    goToPackagingEdit(id){
+      router.push('/packagingEdit/'+(id?id:''));
     },
     getPackagings(){
+      console.log(this.packagingName)
       http.get("/packaging/").then(r => {
+        if(this.packagingName){
+          r.data = r.data.filter(p => p.name.includes(this.packagingName))
+        }
+        if(this.typeKv.id){
+          r.data = r.data.filter(p => p.type.includes(this.typeKv.id))
+        }
         this.packagings = r.data;
       }).catch(e => {
         console.log("API error: " + e);
