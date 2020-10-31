@@ -31,14 +31,6 @@
       </template>
       <template v-slot:cell(name)="row">
         <div style="width:200px; overflow: wrap; font-size: 14px"><b-link role="button" @click="updateItem(row.item.id)">{{row.item.number}}</b-link> {{row.item.name}}</div>
-        <!-- <div style="width:200px; overflow: wrap; font-size: 14px"><b-link role="button" :id="'popover-'+row.item.id" @click="getUnits(row.item.id)">{{row.item.number}}</b-link> {{row.item.name}}</div>
-        <b-popover placement="bottomright" :target="'popover-'+row.item.id" triggers="focus" variant="primary">
-          <b-link role="button" style="font-weight: bold" @click="updateItem(row.item.id)">View Details</b-link>
-          <div>Units Sold & Adj: <b-button size="sm" style="padding-bottom: 0px; padding-left:0px; padding-top: 0px" variant="link" @click="goToItemSaleList(row.item.id)">{{+itemDto.unitsSold + +itemDto.unitsAdjusted}}</b-button></div>
-          <div>Units Produced: <b-button size="sm" style="padding-bottom: 0px; padding-left:0px; padding-top: 0px" variant="link" @click="goToItemScheduleList(row.item.id)">{{itemDto.unitsProduced}}</b-button></div>
-          <div>Units Shipped: <b-button size="sm" style="padding-bottom: 0px; padding-left:0px; padding-top: 0px" variant="link" @click="goToItemShippedList(row.item.id)">{{itemDto.unitsShipped}}</b-button></div>
-          <div>Units Returned: {{itemDto.unitsReturned}}</div>
-        </b-popover> -->
       </template>
       <template v-slot:cell(openSales)="row">
         <b-button size="sm" variant="link" @click="goToItemSaleList(row.item.id)">{{row.item.unitsOpenSale}}</b-button>
@@ -72,7 +64,6 @@ export default {
         { key: "category", sortable: true, label: "Category" },
         { key: "unitsOnStock", sortable: false, label: "Stock" },
         { key: "openSales", sortable: false, label: "Sales" },
-        // { key: "unitsReadyProd", sortable: false, label: "RFP" }
       ],
       items: [], //ItemListDto
       availableComponents: [],
@@ -179,7 +170,6 @@ export default {
     this.getAvailableComponents();
     this.getAvailableCategories();
     this.getAvailableBrands();
-    // this.getItems();
   },
   activated(){
     this.getItems();
