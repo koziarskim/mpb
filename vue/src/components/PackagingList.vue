@@ -76,8 +76,11 @@ export default {
       router.push('/packagingEdit/'+(id?id:''));
     },
     getPackagings(){
-      console.log(this.packagingName)
-      http.get("/packaging/").then(r => {
+      http.get("/packaging/", {
+        params: {
+            packagingName: this.packagingName,
+          }
+      }).then(r => {
         if(this.packagingName){
           r.data = r.data.filter(p => p.name.includes(this.packagingName))
         }

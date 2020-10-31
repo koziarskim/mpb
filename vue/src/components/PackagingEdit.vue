@@ -67,7 +67,7 @@ import securite from "../securite"
 import navigation from "../utils/navigation";
 
 export default {
-  name: "PackagingList",
+  name: "PackagingEdit",
   data() {
     return {
       packaging: {},
