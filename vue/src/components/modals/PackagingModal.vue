@@ -15,6 +15,21 @@
       <b-row>
         <b-col>
           <b-table sticky-header="400px" :items="packagings" :fields="columns">
+            <template v-slot:cell(name)="row">
+              <div style="width:200px; overflow: wrap; font-size: 14px">{{row.item.name}}</div>
+            </template>
+            <template v-slot:cell(caseDimension)="row">
+              {{row.item.caseHeight}}x{{row.item.caseWidth}}x{{row.item.caseDepth}}
+            </template>
+            <template v-slot:cell(palletConfig)="row">
+              {{row.item.ti}}x{{row.item.hi}}
+            </template>
+            <template v-slot:cell(warehouseCost)="row">
+              ${{row.item.warehouseCost}}
+            </template>
+            <template v-slot:cell(packageCost)="row">
+              ${{row.item.packageCost}}
+            </template>
             <template v-slot:cell(action)="row">
               <input type="checkbox" v-model="packagingIds" :value="row.item.id">
             </template>
@@ -42,6 +57,12 @@ export default {
       columns: [
         { key: "name", label: "Name", sortable: false },
         { key: "type", label: "Type", sortable: false },
+        { key: "caseDimension", label: "Case Dimension", sortable: false },
+        { key: "casePack", label: "C/P", sortable: false },
+        { key: "palletConfig", label: "TixHi", sortable: false },
+        { key: "palletWeight", label: "Weight", sortable: false },
+        { key: "warehouseCost", label: "Warehouse", sortable: false },
+        { key: "packageCost", label: "Package", sortable: false },
         { key: "action", label: "Action", sortable: false },
       ],
       availableTypes: [
@@ -93,6 +114,6 @@ export default {
 
 <style>
 .modal-lg{
-  max-width: 50%;
+  max-width: 80%;
 }
 </style>

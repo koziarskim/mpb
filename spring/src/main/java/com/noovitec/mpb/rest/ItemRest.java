@@ -1,6 +1,8 @@
 package com.noovitec.mpb.rest;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -288,10 +290,10 @@ class ItemRest {
 				packaging.setCaseWidth(item.getCaseWidth());
 				packaging.setTi(item.getTi());
 				packaging.setHi(item.getHi());
-				packaging.setPackageCost(item.getPackageCost());
+				packaging.setPackageCost(BigDecimal.valueOf(12).divide(BigDecimal.valueOf(item.getHi()).multiply(BigDecimal.valueOf(item.getTi()).multiply(BigDecimal.valueOf(item.getCasePack()))), 2, RoundingMode.CEILING));
 				packaging.setPalletWeight(item.getPalletWeight());
 				packaging.setCasePack(item.getCasePack());
-				packaging.setWarehouseCost(item.getWarehouseCost());
+				packaging.setWarehouseCost(BigDecimal.valueOf(12).divide(BigDecimal.valueOf(item.getHi()).multiply(BigDecimal.valueOf(item.getTi()).multiply(BigDecimal.valueOf(item.getCasePack()))), 2, RoundingMode.CEILING));
 				packagingRepo.save(packaging);
 				ItemPackaging ip = new ItemPackaging();
 				ip.setPackaging(packaging);

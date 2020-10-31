@@ -39,6 +39,15 @@ class PackagingRest {
 			dto.setId(p.getId());
 			dto.setName(p.getName());
 			dto.setType(p.getType());
+			dto.setCaseHeight(p.getCaseHeight());
+			dto.setCaseWidth(p.getCaseWidth());
+			dto.setCaseDepth(p.getCaseDepth());
+			dto.setCasePack(p.getCasePack());
+			dto.setHi(p.getHi());
+			dto.setTi(p.getTi());
+			dto.setPalletWeight(p.getPalletWeight());
+			dto.setWarehouseCost(p.getWarehouseCost());
+			dto.setPackageCost(p.getPackageCost());
 			dtos.add(dto);
 		}
 		return ResponseEntity.ok().body(dtos);
