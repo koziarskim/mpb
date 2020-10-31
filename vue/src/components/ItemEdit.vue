@@ -38,10 +38,6 @@
             <label class="top-label">Category:</label>
             <b-select option-value="id" option-text="value" :list="availableItemCategories" v-model="item.category" placeholder="Category"></b-select>
           </b-col>
-          <!-- <b-col cols=2>
-            <img style="margin-top: 27px; width: 165px; height: 40px" :src="upcUrl" fluid>
-            <img style="margin-top: 5px; width: 165px; height: 64px" :src="caseUrl" fluid>
-          </b-col> -->
           <b-col cols=2 style="margin-top: 70px;">
             <label class="top-label">Season:</label>
             <b-select option-value="id" option-text="name" :list="availableSeasons" v-model="item.season" placeholder="Season"></b-select>
@@ -155,8 +151,7 @@
         </b-col>
         <b-col cols=4>
           <label class="top-label">Possible Packages:
-            <span style="cursor: pointer; color: blue" @click="addPackaging()">(Add)</span>
-            <span style="cursor: pointer; color: blue" @click="deletePackaging()">(Delete)</span>
+            <span style="cursor: pointer; color: blue" @click="editPackaging()">(Add/Delete)</span>
         </label>
         <b-select option-value="label" option-text="label" :list="item.itemPackagings" v-model="itemPackaging"></b-select>
       </b-col>
@@ -214,7 +209,6 @@ export default {
         category: {},
         season: {},
         upc:{},
-        // caseUpc: {},
         palletWeight: 60,
         itemPackagings: []
       },
@@ -228,9 +222,6 @@ export default {
     availableSeasons: [],
     availableUpc: [],
     upc: {},
-    // caseUpc: {},
-    // upcUrl: "",
-    // caseUrl: "",
     uploadedFile: null,
     columns: [
         { key: "component", label: "Component", sortable: false },
@@ -296,23 +287,10 @@ export default {
     },
   },
   watch: {
-    // upc(newValue, oldValue){
-      // this.setUpcUrl(newValue.id);
-      // this.setCaseUrl(newValue.id);
-    // },
   },
   methods: {
-    addPackaging(){
+    editPackaging(){
       this.packagingModalVisible = true;
-    },
-    deletePackaging(){
-      var idx = this.item.itemPackagings.findIndex(
-        a => a.id == this.itemPackaging.id
-      );
-      if (idx > -1) {
-        this.item.itemPackagings.splice(idx, 1);
-      }
-      this.itemPackaging = {};
     },
     closePackagingModal(packagings){
       if (packagings) {
@@ -324,20 +302,6 @@ export default {
       this.packagingModalVisible = false;
       this.packaging = {};
     },
-    // setUpcUrl(upcId){
-    //   if(upcId){
-    //     this.upcUrl = httpUtils.getUrl("/upc/image/" + upcId);
-    //   }else{
-    //     this.upcUrl = "";
-    //   }
-    // },
-    // setCaseUrl(upcId){
-    //   if(upcId){
-    //     this.caseUrl = httpUtils.getUrl("/upc/case/image/" + upcId);
-    //   }else{
-    //     this.caseUrl = "";
-    //   }
-    // },
     allowEdit(){
       return securite.hasRole(["STANDARD_ADMIN"]);
     },
@@ -405,7 +369,6 @@ export default {
         this.item = response.data;
         if(response.data.upc){
           this.upc = {id: response.data.upc.id};
-          // this.setUpcUrl(response.data.upc.id);
         }
         return response.data;
       }).catch(e => {
@@ -458,9 +421,6 @@ export default {
       if(this.upc.id){
         this.item.upc = {id: this.upc.id}
       }
-      // if(this.caseUpc.id){
-      //   this.item.caseUpc = {id: this.caseUpc.id}
-      // }
       var formData = new FormData();
       formData.append("image", this.uploadedFile);
       formData.append("jsonItem", JSON.stringify(this.item));
