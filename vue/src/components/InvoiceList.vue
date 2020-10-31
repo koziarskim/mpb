@@ -101,6 +101,7 @@ export default {
         invoiceFrom: null,
         invoiceTo: null,
       },
+      showTotalsMenu: false,
     };
   },
   watch: {

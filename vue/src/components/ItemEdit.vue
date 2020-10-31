@@ -151,7 +151,7 @@
         </b-col>
         <b-col cols=4>
           <label class="top-label">Possible Packages:
-            <span style="cursor: pointer; color: blue" @click="editPackaging()">(Add/Delete)</span>
+            <span style="cursor: pointer; color: blue" @click="editPackaging()">(Update)</span>
         </label>
         <b-select option-value="label" option-text="label" :list="item.itemPackagings" v-model="itemPackaging"></b-select>
       </b-col>
