@@ -125,7 +125,7 @@ const router = new Router({
       }
     },
     {
-      path: "/packagingList/:item_id?",
+      path: "/packagingList",
       name: "PackagingList",
       component: PackagingList,
       meta: {
@@ -135,7 +135,7 @@ const router = new Router({
       }
     },
     {
-      path: "/packagingEdit",
+      path: "/packagingEdit/:packaging_id?",
       name: "PackagingEdit",
       component: PackagingEdit,
       meta: {

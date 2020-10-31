@@ -1,47 +1,48 @@
 <template>
     <b-container fluid>
       <b-row>
-        <b-col cols=1 offset=11>
+        <b-col cols=2 offset=10>
           <div style="text-align: right;">
             <b-button size="sm" type="reset" variant="success" @click="save()">Save</b-button>
+            <b-button style="margin-left: 3px" size="sm" type="reset" variant="secondary" @click="deletePackaging()">X</b-button>
           </div>
         </b-col>
       </b-row>
       <b-row>        
         <b-col cols=3 offset=1>
           <label class="top-label">Packaging Name:</label>
-          <input class="form-control" type="text" v-model="updatedPackaging.name">
+          <input class="form-control" type="text" v-model="packaging.name">
         </b-col>
         <b-col cols=3>
           <label class="top-label">Packaging Type:</label>
-          <b-select option-value="id" option-text="name" :list="availableTypes" v-model="type"></b-select>
+          <b-select option-value="id" option-text="name" :list="availableTypes" v-model="typeKv"></b-select>
         </b-col>
       </b-row>
       <b-row>
         <b-col cols=3 offset=1>
           <label class="top-label">Case Dimension (H x W x D):</label>
           <div style="display:flex">
-            <input class="form-control" v-model="updatedPackaging.caseHeight"><span style="margin-top: 7px">x</span>
-            <input class="form-control" v-model="updatedPackaging.caseWidth"><span style="margin-top: 7px">x</span>
-            <input class="form-control" v-model="updatedPackaging.caseDepth">
+            <input class="form-control" v-model="packaging.caseHeight"><span style="margin-top: 7px">x</span>
+            <input class="form-control" v-model="packaging.caseWidth"><span style="margin-top: 7px">x</span>
+            <input class="form-control" v-model="packaging.caseDepth">
           </div>
         </b-col>
         <b-col cols=1>
           <label class="top-label">Case Pack:</label>
-          <input class="form-control" type="text" v-model="updatedPackaging.casePack">
+          <input class="form-control" type="text" v-model="packaging.casePack">
         </b-col>
       </b-row>
       <b-row>
         <b-col cols=2 offset=1>
           <label class="top-label">TI x HI (pcs):</label>
           <div style="display:flex">
-            <input class="form-control" v-model="updatedPackaging.ti" placeholder="0"><span style="margin-top: 7px">x</span>
-            <input class="form-control" v-model="updatedPackaging.hi" placeholder="0">
+            <input class="form-control" v-model="packaging.ti" placeholder="0"><span style="margin-top: 7px">x</span>
+            <input class="form-control" v-model="packaging.hi" placeholder="0">
           </div>
         </b-col>
         <b-col cols=1>
           <label class="top-label">Pallet Weight:</label>
-          <input class="form-control" v-model="updatedPackaging.palletWeight">
+          <input class="form-control" v-model="packaging.palletWeight">
         </b-col>
         <b-col cols=2>
           <label class="top-label">Units p/ pallet: {{unitsPerPallet}}</label><br/>
@@ -71,24 +72,24 @@ export default {
     return {
       packaging: {},
       itemName: "",
-      updatedPackaging: {},
+      packaging: {},
       availableTypes: [
         {id: "MASTER_CARTON", name: "Master Carton"},
         {id: "PDQ", name: "PDQ"}
       ],
-      type: {},
+      typeKv: {},
 
     };
   },
   computed: {
     unitsPerPallet() {
-      return +this.updatedPackaging.hi * +this.updatedPackaging.ti * +this.updatedPackaging.casePack;
+      return +this.packaging.hi * +this.packaging.ti * +this.packaging.casePack;
     },
     palletHeight() {
-      return +this.updatedPackaging.caseHeight * +this.updatedPackaging.hi;
+      return +this.packaging.caseHeight * +this.packaging.hi;
     },   
     casesPerPallet() {
-      return +this.updatedPackaging.hi * +this.updatedPackaging.ti;
+      return +this.packaging.hi * +this.packaging.ti;
     }, 
     warehouseCost() {
       var cost = 12 / +this.unitsPerPallet;
@@ -102,18 +103,39 @@ export default {
   watch: {
   },
   methods: {
-    save(){
-      this.updatedPackaging.type = this.type.id;
-      this.updatedPackaging.label = this.updatedPackaging.name + " ("+this.updatedPackaging.type+")";
-      this.$emit("close", this.updatedPackaging);
+    getPackaging(id){
+      http.get("/packaging/"+id).then(r => {
+        this.packaging = r.data;
+        this.typeKv = {id: r.data.type};
+      }).catch(e => {
+        console.log("API error: " + e);
+      });      
     },
-    close(){
-      this.$emit("close");
+    save(){
+      this.packaging.type = this.typeKv.id;
+      http.post("/packaging", this.packaging).then(r => {
+        router.back();
+      }).catch(e => {
+        console.log("API error: " + e);
+      });      
+    },
+    deletePackaging(){
+      this.$bvModal.msgBoxConfirm('Are you sure you want to delete?').then(ok => {
+        if(ok){
+          http.delete("/packaging/"+this.packaging.id).then(r => {
+            router.back();
+          }).catch(e => {
+            console.log("API error: " + e);
+          });
+          }
+      })
     },
   },
   mounted() {
-    this.updatedPackaging = this.packaging;
-    this.type = {id: this.updatedPackaging.type};
+    var id = this.$route.params.packaging_id;
+    if (id) {
+      this.getPackaging(id);
+    }
   },
 };
 </script>

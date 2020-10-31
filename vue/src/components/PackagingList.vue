@@ -15,7 +15,7 @@
         <b-col>
           <b-table :items="packagings" :fields="columns">
             <template v-slot:cell(name)="row">
-              <div style="width:200px; overflow: wrap; font-size: 14px">{{row.item.name}}</div>
+              <div style="width:200px; overflow: wrap; font-size: 14px"><b-link role="button" @click="goToPackagingEdit(row.item.id)">{{row.item.name}}</b-link></div>
             </template>
             <template v-slot:cell(caseDimension)="row">
               {{row.item.caseHeight}}x{{row.item.caseWidth}}x{{row.item.caseDepth}}
