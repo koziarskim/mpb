@@ -94,8 +94,10 @@ export default {
     },
   },
   mounted() {
-    this.getPackagings();
   },
+  activated(){
+    this.getPackagings();
+  }
 };
 </script>
 
