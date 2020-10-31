@@ -4,8 +4,6 @@
       <b-row>
         <b-col cols=9>
           <div>Item: {{itemName}}</div>
-          <div>Item: {{packagingIds}}</div>
-          <div>Item: {{selectedPackagings}}</div>
         </b-col>
         <b-col cols=3>
           <div style="text-align: right;">
@@ -60,6 +58,12 @@ export default {
   methods: {
     getPackagings(){
       http.get("/packaging/").then(r => {
+        r.data.forEach(p => {
+          if(this.packagingIds.includes(p.id)){
+            r.data.splice(r.data.indexOf(p), 1);
+            r.data.unshift(p);
+          }
+        })
         this.packagings = r.data;
       }).catch(e => {
         console.log("API error: " + e);

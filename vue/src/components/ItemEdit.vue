@@ -315,8 +315,8 @@ export default {
       this.itemPackaging = {};
     },
     closePackagingModal(packagings){
-      this.item.itemPackagings = [];
       if (packagings) {
+        this.item.itemPackagings = [];
         packagings.forEach(p => {
           this.item.itemPackagings.push({item: {id: this.item.id}, packaging: {id: p.id}, label: p.name+' ('+p.type+')'});
         })
