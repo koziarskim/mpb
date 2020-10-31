@@ -29,8 +29,6 @@
             <template v-slot:cell(packageCost)="row">
               ${{row.item.packageCost}}
             </template>
-            <template v-slot:cell(action)="row">
-            </template>
           </b-table>
         </b-col>
       </b-row>
@@ -62,7 +60,6 @@ export default {
         { key: "palletWeight", label: "Weight", sortable: false },
         { key: "warehouseCost", label: "Warehouse", sortable: false },
         { key: "packageCost", label: "Package", sortable: false },
-        { key: "action", label: "Action", sortable: false },
       ],
     };
   },
