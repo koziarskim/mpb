@@ -80,14 +80,16 @@
         <label class="top-label">Available Items:</label>
         <b-select :isDisabled="!allowEdit()" option-value="id" option-text="name" :list="availableItems" v-model="itemDto" placeholder="Items"></b-select>
       </b-col>
-      <b-col cols=1 style="padding-top: 30px">
+      <b-col cols=4>
+        <label class="top-label">Available Packaging:</label>
+        <b-select :isDisabled="!allowEdit()" option-value="id" option-text="label" :list="item.itemPackagings" v-model="itemPackaging" placeholder="Packaging"></b-select>
+      </b-col>
+      <b-col cols=1 style="margin-top: 30px">
         <b-button :disabled="!allowEdit()" variant="link" @click="addItem()">(+)</b-button>
       </b-col>
-      <b-col cols=5 offset=1 style="margin-top: 44px; margin-left: 0px;">
-          <span style="font-weight: bold">Items #: </span>{{totalItems}},
-          <span style="font-weight: bold">Units: </span>{{totalUnits}},
-          <span style="font-weight: bold">Cases: </span>{{totalCases}},
-          <span style="font-weight: bold">Total: </span>${{totalPrice}}
+      <b-col cols=3 style="margin-top: 20px;">
+          <span style="font-weight: bold">Items #: </span>{{totalItems}}, <span style="font-weight: bold">Units: </span>{{totalUnits}}<br/>
+          <span style="font-weight: bold">Cases: </span>{{totalCases}}, <span style="font-weight: bold">Total: </span>${{totalPrice}}
       </b-col>
     </b-row>
     <b-row>
@@ -98,6 +100,9 @@
             <b-link role="button" @click.stop="goToItem(row.item.item.id)">{{row.item.item.number}}</b-link>
             <div class="name-sm" :title="row.item.item.name"> ({{row.item.item.name}})</div>
           </template>
+          <template v-slot:cell(packaging)="row">
+            <div style="width:100px; overflow: wrap; font-size: 11px">{{row.item.itemPackaging.packaging.name}}</div>
+          </template>
           <template v-slot:cell(sku)="row">
             <input :disabled="!allowEdit()" class="form-control" style="width:100px" type="tel" v-model="row.item.sku">
           </template>
@@ -105,10 +110,11 @@
             <span>${{row.item.item.totalCost}}</span>
           </template>
           <template v-slot:cell(unitsOnStockRet)="row">
-            <span>{{row.item.unitsOnStock}} </span><b-link @click.stop="goToItemReturnList(row.item)">({{row.item.unitsReturned}})</b-link>
+            <span>{{row.item.unitsOnStock}} </span>
           </template>
           <template v-slot:cell(unitsSchedProd)="row">
             <b-button size="sm" variant="link" @click="goToScheduled(row.item)">{{row.item.unitsScheduled}}/{{row.item.unitsProduced}}</b-button>
+            <b-button size="sm" variant="link" style="margin-top: -20px" @click="openTransferModal(row.item)">{{row.item.unitsTransferedTo}}-{{row.item.unitsTransferedFrom}}</b-button>
           </template>
           <template v-slot:cell(units)="row">
             <input :disabled="!allowEdit()" class="form-control" style="width:80px" type="tel" v-model="row.item.units">
@@ -206,7 +212,9 @@ export default {
       customer: {
         addresses: []
       },
-      item: {},
+      item: {
+        itemPackagings: []
+      },
       shippingAddress: {},
       availableCustomers: [],
       availableItems: [],
@@ -214,13 +222,14 @@ export default {
       sortDesc: false,
       columns: [
         { key: "item", label: "Item", sortable: false },
+        { key: "packaging", label: "Packaging", sortable: false },
         { key: "sku", label: "SKU#", sortable: false },
         { key: "units", label: "Sold", sortable: false },
         { key: "unitsAdjusted", label: "Adjusted", sortable: false },
         // { key: "unitsAssigned", label: "Assigned", sortable: false },
-        { key: "unitsOnStockRet", label: "Stock(R)", sortable: false },
-        { key: "unitsSchedProd", label: "Sched/Prod", sortable: false },
-        { key: "unitsTransfered", label: "Trans", sortable: false },
+        { key: "unitsOnStockRet", label: "Stock", sortable: false },
+        { key: "unitsSchedProd", label: "S/P/T", sortable: false },
+        // { key: "unitsTransfered", label: "Trans", sortable: false },
         { key: "unitsShipped", label: "Ship", sortable: false },
         { key: "cases", label: "Case", sortable: false },
         { key: "cost", label: "Cost", sortable: false },
@@ -245,6 +254,7 @@ export default {
       ],
       availableSales: [],
       saleKv: {},
+      itemPackaging: {},
       availableStatus: [
         {id: 'DRAFT', name: 'Draft'},
         {id: 'PENDING_APPROVAL', name: 'Pending Approval'},
@@ -544,7 +554,7 @@ export default {
       if (item) {
         return;
       }
-      this.sale.saleItems.push({ 
+      this.sale.saleItems.unshift({ 
           units: 0,
           unitPrice: 0.00,
           item: this.item,
@@ -552,9 +562,10 @@ export default {
           unitsTransferedFrom: 0,
           transfersTo: [],
           transfersFrom: [],
-          //TODO: This needs to be set form UI
-          itemPackaging: this.item.itemPackagings[0],
+          itemPackaging: this.itemPackaging,
       });
+      this.itemDto = {},
+      this.itemPackaging = {}
     },
     goToItem(item_id) {
       router.push("/itemEdit/" + item_id);
