@@ -107,7 +107,7 @@
             <input :disabled="!allowEdit()" class="form-control" style="width:100px" type="tel" v-model="row.item.sku">
           </template>
           <template v-slot:cell(cost)="row">
-            <span>${{row.item.item.totalCost}}</span>
+            <span>${{(+row.item.item.totalCost + +row.item.itemPackaging.packaging.warehouseCost + +row.item.itemPackaging.packaging.packageCost).toFixed(2)}}</span>
           </template>
           <template v-slot:cell(unitsOnStockRet)="row">
             <span>{{row.item.unitsOnStock}} </span>
@@ -294,7 +294,7 @@ export default {
           var cases = 0;
           this.sale.saleItems.forEach(si=> {
             var units = si.units?si.units:0;
-            var casePack = si.item.casePack?si.item.casePack:0
+            var casePack = si.itemPackaging.packaging.casePack?si.itemPackaging.packaging.casePack:0
               cases += +units/+casePack.toFixed(0);
           })
           return cases;
@@ -583,7 +583,7 @@ export default {
       this.saveSale();
     },
     getCases(si){
-      return (+si.units / +si.item.casePack).toFixed(0);
+      return Math.ceil(+si.units / +si.itemPackaging.packaging.casePack).toFixed(0);
     }
   },
   mounted() {

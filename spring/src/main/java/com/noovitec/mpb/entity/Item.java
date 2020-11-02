@@ -36,18 +36,6 @@ public class Item extends BaseEntity {
 	private BigDecimal width;
 	private BigDecimal depth;
 	private BigDecimal weight;
-	//Package
-	private int casePack = 1;
-	private BigDecimal caseHeight;
-	private BigDecimal caseWidth;
-	private BigDecimal caseDepth;
-	private BigDecimal caseWeight;
-	private BigDecimal palletWeight;
-	private int ti = 1; // number of cases in single layer on pallet.
-	private int hi = 1; // number of layers on pallet.
-	private BigDecimal warehouseCost = new BigDecimal(12);
-	private BigDecimal packageCost = new BigDecimal(12);
-	//------
 	private BigDecimal totalCost;
 	private long unitsProduced = 0;
 	private long unitsSold = 0;

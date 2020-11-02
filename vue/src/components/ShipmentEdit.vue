@@ -149,7 +149,7 @@
               <span>{{row.item.saleItem.unitsScheduled}}/{{row.item.saleItem.unitsProduced}}</span>
             </template>
             <template v-slot:cell(cases)="row">
-              <span>{{row.item.cases = Math.ceil(+row.item.units / +row.item.saleItem.item.casePack)}}</span>
+              <span>{{row.item.cases = Math.ceil(+row.item.units / +row.item.saleItem.itemPackaging.packaging.casePack)}}</span>
             </template>
             <template v-slot:cell(pallets)="row">
               <span>{{row.item.pallets = getNumberOfPallets(row.item)}}</span>
@@ -227,7 +227,7 @@ export default {
         { key: "unitsTransfered", label: "Trans", sortable: false },
         { key: "saleItem.unitsShipped", label: "Shipped", sortable: false },
         { key: "units", label: "Units", sortable: false },
-        { key: "saleItem.item.casePack", label: "C/P", sortable: false },
+        { key: "saleItem.itemPackaging.packaging.casePack", label: "C/P", sortable: false },
         { key: "cases", label: "Case", sortable: false },
         { key: "pallets", label: "Pallet", sortable: false },
         { key: "action", label: "", sortable: false }
@@ -372,7 +372,7 @@ export default {
     getNumberOfPallets(shipmentItem){
       var number = null;
       if(this.shipment.totalPalletsCustom < 1){
-        number = Math.ceil(+shipmentItem.cases / (+shipmentItem.saleItem.item.ti * +shipmentItem.saleItem.item.hi))
+        number = Math.ceil(+shipmentItem.cases / (+shipmentItem.saleItem.itemPackaging.packaging.ti * +shipmentItem.saleItem.itemPackaging.packaging.hi))
       }
       return number;
     },

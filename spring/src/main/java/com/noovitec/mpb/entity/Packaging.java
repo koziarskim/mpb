@@ -33,8 +33,9 @@ public class Packaging extends BaseEntity {
 	private BigDecimal palletWeight;
 	private int ti = 1; // number of cases in single layer on pallet.
 	private int hi = 1; // number of layers on pallet.
-	private BigDecimal warehouseCost = new BigDecimal(12);
-	private BigDecimal packageCost = new BigDecimal(12);
+	private BigDecimal warehouseCost;
+	private BigDecimal packageCost;
+	private BigDecimal totalPackagingCost;
 	
 	@JsonIgnoreProperties(value = { "packaging" }, allowSetters = true)
 	@OneToMany()

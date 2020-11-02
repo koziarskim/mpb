@@ -226,7 +226,7 @@ public interface InvoiceService {
 					itemQuantity += ii.getUnitsInvoiced() + "\n\n";
 					itemDescription += ii.getSaleItem().getItem().getNumber() + " - " +ii.getSaleItem().getItem().getName()+"\n" 
 							+(ii.getSaleItem().getItem().getUpc()==null?"":"UPC: "+ii.getSaleItem().getItem().getUpc().getCode())+(ii.getSaleItem().getSku()==null?"":", SKU# "+ ii.getSaleItem().getSku()) + "\n";
-					itemCasePack += ii.getSaleItem().getItem().getCasePack() + "\n\n";
+					itemCasePack += ii.getSaleItem().getItemPackaging().getPackaging().getCasePack() + "\n\n";
 					itemPrice += ii.getUnitPrice() + "\n\n";
 					BigDecimal itemTotalPriceBd = ii.getUnitPrice().multiply(new BigDecimal(ii.getUnitsInvoiced())).setScale(2, RoundingMode.CEILING);
 					itemTotalPrice += currencyFormat.format(itemTotalPriceBd)  + "\n\n";
@@ -236,16 +236,16 @@ public interface InvoiceService {
 					itemQuantity2 += ii.getUnitsInvoiced() + "\n\n";
 					itemDescription2 += ii.getSaleItem().getItem().getNumber() + " - " +ii.getSaleItem().getItem().getName()+"\n" 
 							+(ii.getSaleItem().getItem().getUpc()==null?"":"UPC: "+ii.getSaleItem().getItem().getUpc())+(ii.getSaleItem().getSku()==null?"":", SKU# "+ ii.getSaleItem().getSku()) + "\n";
-					itemCasePack2 += ii.getSaleItem().getItem().getCasePack() + "\n\n";
+					itemCasePack2 += ii.getSaleItem().getItemPackaging().getPackaging().getCasePack() + "\n\n";
 					itemPrice2 += ii.getUnitPrice() + "\n\n";
 					BigDecimal itemTotalPriceBd2 = ii.getUnitPrice().multiply(new BigDecimal(ii.getUnitsInvoiced())).setScale(2, RoundingMode.CEILING);
 					itemTotalPrice2 += currencyFormat.format(itemTotalPriceBd2)  + "\n\n";
 					totalAmount = totalAmount.add(itemTotalPriceBd2==null?BigDecimal.ZERO:itemTotalPriceBd2);
 				}
 				totalUnits += ii.getUnitsInvoiced();
-				long casesPerItem = (long) Math.ceil(1.0*(ii.getUnitsInvoiced())/ii.getSaleItem().getItem().getCasePack());
+				long casesPerItem = (long) Math.ceil(1.0*(ii.getUnitsInvoiced())/ii.getSaleItem().getItemPackaging().getPackaging().getCasePack());
 				totalCases += casesPerItem;
-				totalPallets += Math.ceil((1.0*casesPerItem)/(ii.getSaleItem().getItem().getTi() * ii.getSaleItem().getItem().getHi()));
+				totalPallets += Math.ceil((1.0*casesPerItem)/(ii.getSaleItem().getItemPackaging().getPackaging().getTi() * ii.getSaleItem().getItemPackaging().getPackaging().getHi()));
 			}
 			InputStream bolIn = null;
 			if(count <= 20) {

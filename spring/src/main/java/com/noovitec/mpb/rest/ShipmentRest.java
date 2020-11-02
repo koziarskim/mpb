@@ -262,7 +262,7 @@ class ShipmentRest {
 				itemQuantity += si.getUnits() + "\n";
 				itemDescription += si.getSaleItem().getItem().getNumber() + " - " +si.getSaleItem().getItem().getName() 
 						+ (si.getSaleItem().getSku()==null?"":" SKU# "+ si.getSaleItem().getSku()) + "\n";
-				itemCasePack += si.getSaleItem().getItem().getCasePack() + "\n";
+				itemCasePack += si.getSaleItem().getItemPackaging().getPackaging().getCasePack() + "\n";
 				itemCases += si.getCases() + "\n";
 				if(shipment.getTotalPalletsCustom() < 1) {
 					itemPallets += si.getPallets() + "\n";
@@ -274,7 +274,7 @@ class ShipmentRest {
 				itemQuantity2 += si.getUnits() + "\n";
 				itemDescription2 += si.getSaleItem().getItem().getNumber() + " - " +si.getSaleItem().getItem().getName() 
 						+ (si.getSaleItem().getSku()==null?"":" SKU# "+ si.getSaleItem().getSku()) + "\n";
-				itemCasePack2 += si.getSaleItem().getItem().getCasePack() + "\n";
+				itemCasePack2 += si.getSaleItem().getItemPackaging().getPackaging().getCasePack() + "\n";
 				itemCases2 += si.getCases() + "\n";
 				if(shipment.getTotalPalletsCustom() < 1) {
 					itemPallets2 += si.getPallets() + "\n";
@@ -282,7 +282,7 @@ class ShipmentRest {
 					itemPallets2 += "\n";
 				}
 			}
-			totalCasePack += si.getSaleItem().getItem().getCasePack();
+			totalCasePack += si.getSaleItem().getItemPackaging().getPackaging().getCasePack();
 		}
 		InputStream bolIn = null;
 		if(shipmentItems.size() <= 30) {

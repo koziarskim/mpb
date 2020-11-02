@@ -352,8 +352,8 @@ class SaleRest {
 			}
 			int totalPallets = 0;
 			for(SaleItem si: sale.getSaleItems()) {
-				int cases = (int) Math.round(si.getUnits()/si.getItem().getCasePack());
-				int pallets = (int) Math.round(cases/(si.getItem().getHi()*si.getItem().getTi()));
+				int cases = (int) Math.round(si.getUnits()/si.getItemPackaging().getPackaging().getCasePack());
+				int pallets = (int) Math.round(cases/(si.getItemPackaging().getPackaging().getHi()*si.getItemPackaging().getPackaging().getTi()));
 				totalPallets += pallets;
 			}
 			for(SaleItem si: sale.getSaleItems()) {
@@ -379,15 +379,15 @@ class SaleRest {
 				addCell(4, si.getSku(), row);
 				addCell(5, si.getItem().getNumber(), row);
 				addCell(6, si.getItem().getName(), row);
-				addCell(7, String.valueOf(si.getItem().getCasePack()), row);
+				addCell(7, String.valueOf(si.getItemPackaging().getPackaging().getCasePack()), row);
 				addCell(8, String.valueOf(si.getUnits()), row);
 				addCell(9, String.valueOf(si.getTotalUnitPrice()), row);
-				int cases = BigDecimal.valueOf(si.getUnits()).divide(BigDecimal.valueOf(si.getItem().getCasePack()),RoundingMode.CEILING).intValue();
+				int cases = BigDecimal.valueOf(si.getUnits()).divide(BigDecimal.valueOf(si.getItemPackaging().getPackaging().getCasePack()),RoundingMode.CEILING).intValue();
 				cases = cases==0?1:cases;
-				int pallets = (si.getItem().getTi()*si.getItem().getHi())/cases;
+				int pallets = (si.getItemPackaging().getPackaging().getTi()*si.getItemPackaging().getPackaging().getHi())/cases;
 				pallets = pallets==0?1:pallets;
 				BigDecimal unitsWeight = si.getItem().getWeight().multiply(BigDecimal.valueOf(si.getUnits()));
-				BigDecimal palletsWeight = si.getItem().getPalletWeight().multiply(BigDecimal.valueOf(pallets));
+				BigDecimal palletsWeight = si.getItemPackaging().getPackaging().getPalletWeight().multiply(BigDecimal.valueOf(pallets));
 				int totalWeight = unitsWeight.add(palletsWeight).intValue();
 				addCell(10, String.valueOf(cases), row);
 				addCell(11, String.valueOf(pallets), row);
