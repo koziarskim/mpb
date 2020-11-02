@@ -107,7 +107,7 @@
             <input :disabled="!allowEdit()" class="form-control" style="width:100px" type="tel" v-model="row.item.sku">
           </template>
           <template v-slot:cell(cost)="row">
-            <span>${{(+row.item.item.totalCost + +row.item.itemPackaging.packaging.warehouseCost + +row.item.itemPackaging.packaging.packageCost).toFixed(2)}}</span>
+            <span>${{(+row.item.item.totalCost + +row.item.itemPackaging.packaging.totalPackagingCost).toFixed(2)}}</span>
           </template>
           <template v-slot:cell(unitsOnStockRet)="row">
             <span>{{row.item.unitsOnStock}} </span>

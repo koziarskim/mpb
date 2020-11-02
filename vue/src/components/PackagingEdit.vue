@@ -52,10 +52,11 @@
       </b-row>
       <b-row>
         <b-col cols=2 offset=1>
-          <label class="top-label">Warehouse Cost ($): {{warehouseCost}}</label>
+          <label class="top-label">Warehouse Cost ($): {{warehouseCost}}</label><br/>
+          <label class="top-label">Packaging Cost ($): {{packageCost}}</label>
         </b-col>
         <b-col cols=2>
-          <label class="top-label">Packaging Cost ($): {{packageCost}}</label>
+          <label class="top-label">Total Cost ($): {{totalPackagingCost}}</label>
         </b-col>
       </b-row>
     </b-container>
@@ -99,6 +100,10 @@ export default {
       var cost = 12 / +this.unitsPerPallet;
       return cost.toFixed(2);
     },        
+    totalPackagingCost() {
+      var cost = +this.warehouseCost + +this.packageCost;
+      return cost.toFixed(2);
+    },    
   },
   watch: {
   },

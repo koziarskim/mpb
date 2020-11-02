@@ -46,6 +46,19 @@ public class Item extends BaseEntity {
 	private long unitsReturned = 0;
 	private long unitsOnStock = 0;
 	private long unitsAdjusted = 0;
+	
+	//Package to delete after migration.
+	private int casePack = 1;
+	private BigDecimal caseHeight;
+	private BigDecimal caseWidth;
+	private BigDecimal caseDepth;
+	private BigDecimal caseWeight;
+	private BigDecimal palletWeight;
+	private int ti = 1; // number of cases in single layer on pallet.
+	private int hi = 1; // number of layers on pallet.
+	private BigDecimal warehouseCost = new BigDecimal(12);
+	private BigDecimal packageCost = new BigDecimal(12);
+	//------
 
 	@JsonIgnoreProperties(value = { "item" }, allowSetters = true)
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
