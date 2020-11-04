@@ -32,5 +32,6 @@ public class SaleItemDto {
 	private long unitsReadyProd;
 	private BigDecimal invoicedAmount;
 	private String status;
+	private String packagingLabel;
 	
 }

@@ -36,7 +36,7 @@ public class ItemPackaging extends BaseEntity {
 	private String label;
 	
 	public String getLabel() {
-		return this.getPackaging().getName() + " ("+this.getPackaging().getType()+")";
+		return this.getPackaging().getName() + " ("+Packaging.TYPE.valueOf(this.getPackaging().getType()).label()+")";
 	}
 	
 }

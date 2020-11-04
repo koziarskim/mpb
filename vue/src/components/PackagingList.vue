@@ -53,7 +53,7 @@ export default {
       typeKv: {},
       columns: [
         { key: "name", label: "Name", sortable: false },
-        { key: "type", label: "Type", sortable: false },
+        { key: "typeLabel", label: "Type", sortable: false },
         { key: "caseDimension", label: "Case Dimension", sortable: false },
         { key: "casePack", label: "C/P", sortable: false },
         { key: "palletConfig", label: "TixHi", sortable: false },
@@ -82,7 +82,7 @@ export default {
           r.data = r.data.filter(p => p.name.includes(this.packagingName))
         }
         if(this.typeKv.id){
-          r.data = r.data.filter(p => p.type.includes(this.typeKv.id))
+          r.data = r.data.filter(p => p.typeLabel.includes(this.typeKv.name))
         }
         this.packagings = r.data;
       }).catch(e => {

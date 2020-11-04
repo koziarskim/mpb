@@ -160,6 +160,7 @@ class SaleItemRest {
 			dto.setUnitsReadyProd(saleItem.getItem().getUnitsReadyProd());
 //			dto.setInvoicedAmount(saleItem.getInvoicedAmount());
 			dto.setStatus(saleItem.getStatus());
+			dto.setPackagingLabel(saleItem.getItemPackaging().getLabel());
 			return dto;
 		});
 		return all;

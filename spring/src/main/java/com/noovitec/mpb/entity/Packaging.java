@@ -23,6 +23,17 @@ import lombok.NoArgsConstructor;
 public class Packaging extends BaseEntity {
 
 	private static final long serialVersionUID = -6014743735048004494L;
+	public static enum TYPE {
+		MASTER_CARTON("Master Carton"), 
+		PDQ("PDQ");
+		private String label;
+		public String label() { 
+	        return this.label; 
+	    }
+	    private TYPE(String label) { 
+	        this.label = label; 
+	    } 
+	}
 	private String name; //Package name
 	private String type; //PDQ, MasterCarton, etc.
 	private int casePack = 1;

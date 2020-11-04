@@ -15,7 +15,7 @@
         </b-col>
         <b-col cols=3>
           <label class="top-label">Packaging Type:</label>
-          <b-select option-value="id" option-text="name" :list="availableTypes" v-model="typeKv"></b-select>
+          <b-select option-value="id" option-text="name" :list="availablePackagingTypes" v-model="typeKv"></b-select>
         </b-col>
       </b-row>
       <b-row>
@@ -74,7 +74,7 @@ export default {
       packaging: {},
       itemName: "",
       packaging: {},
-      availableTypes: [
+      availablePackagingTypes: [
         {id: "MASTER_CARTON", name: "Master Carton"},
         {id: "PDQ", name: "PDQ"}
       ],

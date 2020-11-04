@@ -38,7 +38,7 @@ class PackagingRest {
 			PackagingListDto dto = new PackagingListDto();
 			dto.setId(p.getId());
 			dto.setName(p.getName());
-			dto.setType(p.getType());
+			dto.setTypeLabel(Packaging.TYPE.valueOf(p.getType()).label());
 			dto.setCaseHeight(p.getCaseHeight());
 			dto.setCaseWidth(p.getCaseWidth());
 			dto.setCaseDepth(p.getCaseDepth());

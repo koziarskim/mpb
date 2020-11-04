@@ -13,7 +13,7 @@ public class PackagingListDto {
 	
 	private Long id;
 	private String name;
-	private String type;
+	private String typeLabel;
 	private BigDecimal caseHeight;
 	private BigDecimal caseWidth;
 	private BigDecimal caseDepth;
