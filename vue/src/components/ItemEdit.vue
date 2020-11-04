@@ -23,7 +23,7 @@
             </div>
             <label class="top-label">Stock: {{item.unitsOnStock}}</label><br/>
             <label class="top-label">Sch/Pro: <b-link role="button" @click="goToItemScheduleList()">{{item.unitsScheduled}}/{{item.unitsProduced}}</b-link></label><br/>
-            <label class="top-label">Sold: <b-link role="button" @click="goToItemSaleList()">{{item.unitsSold}}</b-link>&nbsp;</label><label class="top-label" :class="getReturnClass()"><b-link role="button" @click="goToItemReturnList()">Ret: {{item.unitsReturned}}</b-link></label><br/>
+            <label class="top-label">Sold: <b-link role="button" @click="goToSaleItemList()">{{item.unitsSold}}</b-link>&nbsp;</label><label class="top-label" :class="getReturnClass()"><b-link role="button" @click="goToItemReturnList()">Ret: {{item.unitsReturned}}</b-link></label><br/>
             <label class="top-label">Shipped: <b-link role="button" @click="goToItemShippedList()">{{item.unitsShipped}}</b-link></label>
           </b-col>
         </b-row>
@@ -228,8 +228,8 @@ export default {
         console.log("API error: " + e);
       });
     },
-    goToItemSaleList(){
-        router.push('/itemSaleList/'+this.item.id);
+    goToSaleItemList(){
+      router.push({path: "/saleItemList/", query: {itemId: this.item.id}});
     },
     goToItemScheduleList(){
         router.push('/scheduleEventList/'+this.item.id);

@@ -33,7 +33,7 @@
         <div style="width:200px; overflow: wrap; font-size: 14px"><b-link role="button" @click="updateItem(row.item.id)">{{row.item.number}}</b-link> {{row.item.name}}</div>
       </template>
       <template v-slot:cell(openSales)="row">
-        <b-button size="sm" variant="link" @click="goToItemSaleList(row.item.id)">{{row.item.unitsOpenSale}}</b-button>
+        <b-button size="sm" variant="link" @click="goToSaleItemList(row.item.id)">{{row.item.unitsOpenSale}}</b-button>
       </template>
     </b-table>
     <div style="display: flex">
@@ -155,8 +155,8 @@ export default {
     gotToInventory(item_id) {
       router.push("/itemComponentList/" + item_id);
     },
-    goToItemSaleList(item_id) {
-      router.push("/itemSaleList/" + item_id);
+    goToSaleItemList(itemId) {
+      router.push({path: "/saleItemList/", query: {itemId: itemId, statusId: 'APPROVED'}});
     },
     goToItemScheduleList(item_id) {
       router.push("/scheduleEventList/" + item_id);

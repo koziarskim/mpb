@@ -21,7 +21,6 @@ import ReceivingList from "./components/ReceivingList";
 import ReceivingEdit from "./components/ReceivingEdit";
 import Users from "./components/Users";
 import Login from "./components/Login";
-import ItemSaleList from "./components/ItemSaleList";
 import SaleItemList from "./components/SaleItemList";
 import AccessDenied from "./components/AccessDenied";
 import ShipmentEdit from "./components/ShipmentEdit";
@@ -107,16 +106,6 @@ const router = new Router({
       path: "/itemGraph/:item_id?",
       name: "ItemGraph",
       component: ItemGraph,
-      meta: {
-        roles: ["READ_ONLY"],
-        group: "item",
-        viewClass: "view-item"
-      }
-    },
-    {
-      path: "/itemSaleList/:item_id",
-      name: "ItemSaleList",
-      component: ItemSaleList,
       meta: {
         roles: ["READ_ONLY"],
         group: "item",

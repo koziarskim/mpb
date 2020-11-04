@@ -57,8 +57,8 @@
               <span>{{row.item.unitsScheduled}}/{{row.item.unitsProduced}}</span>
           </template>
           <template v-slot:cell(status)="row">
-              <span v-if="row.item.unitsSold == row.item.unitsScheduled">{{getStatus(row.item.status)}}</span>
-              <b-button v-if="row.item.unitsSold != row.item.unitsScheduled" style="margin-left: -18px" size="sm" @click=openScheduleProductionModal(row.item) variant="link">{{getStatus(row.item.status)}}</b-button>
+              <span v-if="row.item.status != 'APPROVED'">{{getStatus(row.item.status)}}</span>
+              <b-button v-if="row.item.status == 'APPROVED'" style="margin-left: -18px" size="sm" @click=openScheduleProductionModal(row.item) variant="link">{{getStatus(row.item.status)}}</b-button>
           </template>
           <template v-slot:cell(action)="row">
             <input type="checkbox" v-model="selectedSaleItemIds" :value="row.item.id" @change="checkboxSelected(row.item)" :disabled="checkboxDisabled(row.item)">
@@ -242,24 +242,23 @@ export default {
       router.push("/itemEdit/"+itemId);
     },
     goToSale(saleId){
-        if(!saleId){
-            http
-            .post("/sale")
-            .then(response =>{
-                router.push('/saleEdit/'+response.data.id);
-            })
-            .catch(e =>{
-                console.log("API Error: "+e);
-            })
-        }else{
-            router.push('/saleEdit/'+saleId);
-        }
+      router.push('/saleEdit/'+saleId);
+    },
+    goToItem(itemId){
+      router.push('/itemEdit/'+itemId);
     },
   },
   mounted() {
-    //  this.getSaleItems();
-     this.getAvailableCustomers();
-     this.getAvailableItems();
+    var itemId = this.$route.query.itemId;
+    var statusId = this.$route.query.statusId;
+    if(itemId){
+      this.itemKv = {id: itemId};
+    }
+    if(statusId){
+      this.statusKv = {id: statusId}
+    }
+    this.getAvailableCustomers();
+    this.getAvailableItems();
   },
   activated(){
     this.getSaleItems();
