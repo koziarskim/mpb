@@ -21,7 +21,6 @@ import ReceivingList from "./components/ReceivingList";
 import ReceivingEdit from "./components/ReceivingEdit";
 import Users from "./components/Users";
 import Login from "./components/Login";
-import Schedule from "./components/Schedule";
 import ItemSaleList from "./components/ItemSaleList";
 import SaleItemList from "./components/SaleItemList";
 import AccessDenied from "./components/AccessDenied";
@@ -312,16 +311,6 @@ const router = new Router({
         roles: ["READ_ONLY"],
         group: "receiving",
         viewClass: "view-receiving"
-      }
-    },
-    {
-      path: "/Schedule",
-      name: "Schedule",
-      component: Schedule,
-      meta: {
-        roles: ["READ_ONLY"],
-        group: "schedule",
-        viewClass: "view-schedule"
       }
     },
     {

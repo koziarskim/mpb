@@ -3,7 +3,7 @@
     <b-modal centered size="lg" v-model="visible" :hide-header="true" :hide-footer="true">
       <b-row>
         <b-col>
-          <span>Schedule for: {{schedule.date}}</span>
+          <span>Schedule for: {{scheduleEvent.date}}</span>
         </b-col>
         <b-col>
           <div style="text-align: right;">
