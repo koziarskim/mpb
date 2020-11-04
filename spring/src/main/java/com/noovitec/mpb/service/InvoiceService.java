@@ -263,7 +263,7 @@ public interface InvoiceService {
 			Customer customer = shipment.getCustomer();
 			String saleNumber = "Multiple";
 			if(saleIds.size()==1) {
-				saleNumber = shipment.getShipmentItems().iterator().next().getSaleItem().getSale().getNumber();
+				saleNumber = invoice.getInvoiceItems().iterator().next().getSaleItem().getSale().getNumber();
 			}
 			bolStamper.getAcroFields().setField("saleNumber", saleNumber);
 			if(customer.getBillingAddress()!=null) {

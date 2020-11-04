@@ -28,7 +28,7 @@
             <b-dropdown-item @click="goTo('/invoiceItemList')"><span style="color: black">Invoices by Sale/Item</span></b-dropdown-item>
           </b-nav-item-dropdown>
         </b-navbar-nav>
-        <b-navbar-nav v-if="showNav" style="margin-left: 8%">
+        <b-navbar-nav v-if="showNav" style="margin-left: 19%">
           <b-nav-item-dropdown right :text="user.fullName">
             <b-dropdown-item @click="goTo('/Profile')">Profile</b-dropdown-item>
             <b-dropdown-item v-if="securite.hasRole(['ADMIN'])" @click="goTo('/users')">Manage Users</b-dropdown-item>
