@@ -21,18 +21,18 @@ public interface ScheduleEventRepo extends JpaRepository<ScheduleEvent, Long> {
 	@Query("select se from ScheduleEvent se "
 			+ "join se.saleItem.item i "
 			+ "join i.itemComponents ic "
-			+ "where se.schedule.date <= :date "
+			+ "where se.date <= :date "
 			+ "and ic.component.id = :component_id")
 	public Long getByScheduleDateAndComponent(@Param("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date, @Param("component_id") Long component_id);
 
 	@Query("select sum(se.unitsScheduled) from ScheduleEvent se "
-			+ "where se.schedule.date >= :date "
+			+ "where se.date >= :date "
 			+ "and se.saleItem.item.id = :item_id "
 			+ "group by se.saleItem.item.id")
 	public Long getTotalItemScheduled(@Param("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date, @Param("item_id") Long item_id);
 
 	@Query("select sum(se.unitsScheduled) from ScheduleEvent se "
-			+ "where se.schedule.date >= :date "
+			+ "where se.date >= :date "
 			+ "and se.saleItem.item.id = :item_id "
 			+ "and se.saleItem.sale.id = :sale_id "
 			+ "group by se.saleItem.item.id")

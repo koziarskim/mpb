@@ -19,8 +19,7 @@
           <b-nav-item @click="goTo('/receivingList')" :class="navClass('receiving')">Receiving</b-nav-item>
           <b-nav-item @click="goTo('/shipmentList')" :class="navClass('shipment')">Shipment</b-nav-item>
           <b-nav-item @click="goTo('/shipmentSchedule')" :class="navClass('shipmentSchedule')">Schedule</b-nav-item>
-          <b-nav-item @click="goTo('/productionLineList')" :class="navClass('production')">Production/</b-nav-item>
-          <b-nav-item @click="goTo('/schedule')" :class="navClass('schedule')" style="margin-left: -17px">Schedule</b-nav-item>
+          <b-nav-item @click="goTo('/productionLineList')" :class="navClass('production')">Production</b-nav-item>
           <b-nav-item-dropdown text="Accounting" :class="navClass('invoice')">
             <b-dropdown-item @click="goTo('/invoiceList')"><span style="color: black">Invoices (Sales)</span></b-dropdown-item>
             <b-dropdown-item @click="goTo('/billList')"><span style="color: black">Bills (Receivings)</span></b-dropdown-item>

@@ -44,11 +44,6 @@ public class ScheduleEvent extends BaseEntity {
 	@JoinColumn(name = "line_id", referencedColumnName = "id")
 	private Line line;
 
-	@JsonIgnoreProperties(value = { "scheduleEvents" }, allowSetters = true)
-	@ManyToOne()
-	@JoinColumn(name = "schedule_id", referencedColumnName = "id")
-	private Schedule schedule;
-
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "item_packaging_id", referencedColumnName = "id")
 	private ItemPackaging itemPackaging;
