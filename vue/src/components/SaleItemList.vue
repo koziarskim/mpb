@@ -54,7 +54,7 @@
               <b-button size="sm" @click=goToShipment(row.item.itemId,row.item.saleId) variant="link">{{row.item.unitsOnStock}}/{{row.item.unitsShipped}}</b-button>
           </template>
           <template v-slot:cell(unitsSchProd)="row">
-              <span>{{row.item.unitsScheduled}}/{{row.item.unitsProduced}}</span>
+            <b-button size="sm" variant="link" @click="goToScheduled(row.item)">{{row.item.unitsScheduled}}/{{row.item.unitsProduced}}</b-button>
           </template>
           <template v-slot:cell(status)="row">
               <span v-if="row.item.status != 'APPROVED'">{{getStatus(row.item.status)}}</span>
@@ -234,6 +234,9 @@ export default {
     var query = { saleItemIds: this.selectedSaleItemIds.join(",") };
     router.push({ path: "/shipmentEdit/new", query: query })
   },
+    goToScheduled(saleItemDto) {
+      router.push("/scheduleEventList/" + saleItemDto.itemId + "/sale/" + saleItemDto.saleId);
+    },
   goToShipment(itemId, saleId){
     var query = { itemId: itemId, saleId: saleId };
     router.push({path: "/shipmentList", query: query})
