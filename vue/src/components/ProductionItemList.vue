@@ -103,7 +103,7 @@ export default {
     },
     goToProductionLine(seId) {
       var se = this.getScheduleEvent(seId).then(se => {
-        var query = { date: se.schedule.date, seId: se.id };
+        var query = { date: se.date, seId: se.id };
         router.push({ path: "/productionLine/"+se.line.id, query: query } );
       })
       // router.push("/productionLine/" + schedule_event_id);

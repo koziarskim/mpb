@@ -87,7 +87,6 @@ export default {
         { key: "totalTime", label: "Total Time", sortable: true },
         { key: "action", label: "", sortable: false },
     ],
-    schedule: {},
     scheduleEvents: [],
     availableLines: [],
     availableItems: [],
@@ -141,7 +140,6 @@ export default {
         alert("Cannot schedule less than produced");
         return;
       }
-      se.schedule = {id: this.schedule.id}
       http.post("/scheduleEvent", se).then(response => {
         this.getScheduleEvents(this.date)
       }).catch(e => {
@@ -198,14 +196,17 @@ export default {
       })
     },
 	  getScheduleEvents(date){
+      var query = {line_id: this.selectedLine.id};
       http
-        .get("/schedule/single/date/"+date)
+        .get("/scheduleEvent/date/"+date, {params: {
+          line_id: this.selectedLine.id
+        }})
         .then(response => {
           this.scheduleEvents = [];
           this.totalScheduled = 0;
           this.totalProduced = 0;
           if(response.data){
-            response.data.scheduleEvents.forEach(se =>{
+            response.data.forEach(se =>{
               se.edit = false;
               if(this.selectedLine.id && se.line.id != this.selectedLine.id){
                 return;
@@ -217,7 +218,6 @@ export default {
               this.totalProduced += se.unitsProduced;
               this.scheduleEvents.push(se)
             })
-            this.schedule = response.data;
           }
           this.getAvailableItems();
         })
@@ -229,7 +229,7 @@ export default {
       router.push("/itemEdit/" +item_id);
 	  },
     goToProductionLine(se) {
-      var query = { date: this.schedule.date, seId: se.id};
+      var query = { date: this.date, seId: se.id};
       router.push({ path: "/productionLine/"+se.line.id, query: query } );
 	  },
   },

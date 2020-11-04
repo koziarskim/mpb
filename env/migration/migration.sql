@@ -6,6 +6,9 @@ set schema 'shared';
 set schema 'y2020';
 
 alter table packaging add column total_packaging_cost numeric(19,2) default 0;
+
+alter table schedule_event add column date date;
+update schedule_event set date = (select s.date from schedule s where schedule_id = s.id);
 	
 --Set scheduleEvent.item
 run /scheduleEvent/migrate

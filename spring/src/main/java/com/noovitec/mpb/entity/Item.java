@@ -99,7 +99,7 @@ public class Item extends BaseEntity {
 	@JoinColumn(name = "attachment_id", referencedColumnName = "id")
 	private Attachment attachment;
 
-	@JsonIgnoreProperties(value = { "item" }, allowSetters = true)
+	@JsonIgnore
 	@OneToMany()
 	@JoinColumn(name = "item_id")
 	private Collection<SaleItem> saleItems = new HashSet<SaleItem>();

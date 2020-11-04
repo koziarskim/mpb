@@ -2,6 +2,7 @@ package com.noovitec.mpb.entity;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -36,6 +37,7 @@ public class ScheduleEvent extends BaseEntity {
 	LocalTime finishTime;
 	long unitsScheduled = 0;
 	long unitsProduced = 0;
+	private LocalDate date;
 
 	@JsonIgnoreProperties(value = { "scheduleEvents" }, allowSetters = true)
 	@ManyToOne()

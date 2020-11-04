@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.noovitec.mpb.entity.Notification;
@@ -70,9 +71,14 @@ class ScheduleEventRest {
 		return result.map(response -> ResponseEntity.ok().body(response)).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
 	}
 
-	@GetMapping("/scheduleEvent/date/{date}/line/{line_id}")
-	List<ScheduleEvent> getByLine(@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date, @PathVariable Long line_id) {
-		List<ScheduleEvent> result = scheduleEventRepo.findByDateAndLine(date, line_id);
+	@GetMapping("/scheduleEvent/date/{date}")
+	List<ScheduleEvent> getByLine(@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date, @RequestParam(required = false) Long line_id) {
+		List<ScheduleEvent> result = null;
+		if(line_id==null) {
+			result = scheduleEventRepo.findByDate(date);
+		}else {
+			result = scheduleEventRepo.findByDateAndLine(date, line_id);
+		}
 		List<ScheduleEvent> sorted = result.stream().sorted((se1, se2) -> se1.getScheduleTime().compareTo(se2.getScheduleTime())).collect(Collectors.toList());;
 		return sorted;
 	}
@@ -80,7 +86,7 @@ class ScheduleEventRest {
 	@GetMapping("/scheduleEvent/item/{item_id}")
 	List<ScheduleEvent> getByItem(@PathVariable Long item_id) {
 		List<ScheduleEvent> result = scheduleEventRepo.findByItem(item_id);
-		List<ScheduleEvent> sorted = result.stream().sorted((se1, se2) -> se1.getSchedule().getDate().compareTo(se2.getSchedule().getDate())).collect(Collectors.toList());;
+		List<ScheduleEvent> sorted = result.stream().sorted((se1, se2) -> se1.getDate().compareTo(se2.getDate())).collect(Collectors.toList());;
 		return sorted;
 	}
 

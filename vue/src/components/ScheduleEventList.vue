@@ -70,7 +70,7 @@ export default {
       sortDesc: false,
       columns: [
         { key: "sale", label: "Sale (Customer)", sortable: true },
-        { key: "schedule.date", label: "Date", sortable: true },
+        { key: "date", label: "Date", sortable: true },
         { key: "startTime", label: "Started", sortable: false },
         { key: "finishTime", label: "Finished", sortable: false },
         { key: "performance", label: "Perform [u/h]", sortable: true },
@@ -203,7 +203,7 @@ export default {
       router.push("/itemEdit/"+itemId);
     },
     goToProduction(se) {
-      var query = { date: se.schedule.date, seId: se.id };
+      var query = { date: se.date, seId: se.id };
       router.push({ path: "/productionLine/"+se.line.id, query: query } );
     },
     goToGraph() {

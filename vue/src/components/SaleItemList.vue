@@ -5,7 +5,7 @@
               <input style="font-size: 12px" class="form-control" type="tel" v-model="numberName" @keyup.enter="getSaleItems()" placeholder="Sale"/>
             </b-col>
             <b-col cols=2>
-              <b-select option-value="id" option-text="name" :list="availableItems" v-model="item" placeholder="Item"></b-select>
+              <b-select option-value="id" option-text="name" :list="availableItems" v-model="itemKv" placeholder="Item"></b-select>
             </b-col>
             <b-col cols=2>
               <b-select option-value="id" option-text="name" :list="availableCustomers" v-model="customer" placeholder="Customer"></b-select>
@@ -57,7 +57,8 @@
               <span>{{row.item.unitsScheduled}}/{{row.item.unitsProduced}}</span>
           </template>
           <template v-slot:cell(status)="row">
-              <span>{{getStatus(row.item.status)}}</span>
+              <span v-if="row.item.unitsSold == row.item.unitsScheduled">{{getStatus(row.item.status)}}</span>
+              <b-button v-if="row.item.unitsSold != row.item.unitsScheduled" style="margin-left: -18px" size="sm" @click=openScheduleProductionModal(row.item) variant="link">{{getStatus(row.item.status)}}</b-button>
           </template>
           <template v-slot:cell(action)="row">
             <input type="checkbox" v-model="selectedSaleItemIds" :value="row.item.id" @change="checkboxSelected(row.item)" :disabled="checkboxDisabled(row.item)">
@@ -67,6 +68,9 @@
 		      <b-pagination size="sm" v-model="pageable.currentPage" :per-page="pageable.perPage" :total-rows="pageable.totalElements" @change="paginationChange"></b-pagination>
           <span style="margin-top: 5px">Total of {{pageable.totalElements}} Items Sold</span>
         </div>
+        <div v-if="scheduleProductionModalVisible">
+          <schedule-production-modal :saleItemId="this.saleItemId" :itemId="this.itemId" v-on:close="closeScheduleProductionModal"></schedule-production-modal>
+        </div>  
     </b-container>
 </template>
 <script>
@@ -76,6 +80,9 @@ import navigation from "../utils/navigation";
 
 export default {
   name: "SaleItemList",
+	components: {
+	  ScheduleProductionModal: () => import("./modals/ScheduleProductionModal")
+  },  
   data() {
     return {
       navigation: navigation,
@@ -84,9 +91,11 @@ export default {
       searchItem: "",
       selectedSaleItemIds: [],
       saleItems: [], //SaleItemDto
+      saleItemId: null,
+      itemId: null,
       numberName: "",
       availableItems: [],
-      item: {},
+      itemKv: {},
       availableCustomers: [],
       customer: {},
       selectedCustomerId: null,
@@ -123,11 +132,12 @@ export default {
       unitsFilter: {},
       showTotalsMenu: false,
       totalSold: 0,
-      showAll: false
+      showAll: false,
+      scheduleProductionModalVisible: false,
     };
   },
   watch: {
-    item(newValue, oldValue){
+    itemKv(newValue, oldValue){
       this.getSaleItems();
     },
     customer(newValue, oldValue){
@@ -147,6 +157,15 @@ export default {
     },
   },
   methods: {
+    openScheduleProductionModal(saleItemDto){
+      this.saleItemId = saleItemDto.id;
+      this.itemId = saleItemDto.itemId;
+      this.scheduleProductionModalVisible = true;
+    },
+    closeScheduleProductionModal(si){
+      this.scheduleProductionModalVisible = false;
+      this.getSaleItems();
+    },
     toggleShowTotals(){
       this.getSaleItems(true);
       this.showTotalsMenu = !this.showTotalsMenu;
@@ -182,7 +201,7 @@ export default {
         totals: totals, 
         numberName: this.numberName, 
         customerId: this.customer.id, 
-        itemId: this.item.id, 
+        itemId: this.itemKv.id, 
         status: this.statusKv.id,
         unitsFilter: this.unitsFilter.id,
         showAll: this.showAll

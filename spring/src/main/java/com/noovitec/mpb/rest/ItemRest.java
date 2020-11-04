@@ -302,6 +302,8 @@ class ItemRest {
 					item.setItemPackagings(new ArrayList<ItemPackaging>());
 				}
 				item.getItemPackagings().add(ip);
+				item = itemRepo.save(item);
+				ip = item.getItemPackagings().iterator().next();
 				for(SaleItem saleItem: item.getSaleItems()) {
 					saleItem.setItemPackaging(ip);
 					for(ScheduleEvent se: saleItem.getScheduleEvents()) {

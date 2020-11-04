@@ -35,13 +35,13 @@ public interface ScheduleEventService {
 		}
 		
 		public ScheduleEvent save(ScheduleEvent scheduleEvent){
-			scheduleEvent = (ScheduleEvent) crudService.merge(scheduleEvent);
-			if(scheduleEvent.getSchedule().getId()==null) {
-				List<Schedule> schedules = scheduleRepo.findByDate(scheduleEvent.getSchedule().getDate());
-				if(schedules!=null) {
-					scheduleEvent.setSchedule(schedules.get(0));
-				}
-			}
+//			scheduleEvent = (ScheduleEvent) crudService.merge(scheduleEvent);
+//			if(scheduleEvent.getSchedule().getId()==null) {
+//				List<Schedule> schedules = scheduleRepo.findByDate(scheduleEvent.getSchedule().getDate());
+//				if(schedules!=null) {
+//					scheduleEvent.setSchedule(schedules.get(0));
+//				}
+//			}
 			return scheduleEventRepo.save(scheduleEvent);
 		}
 		

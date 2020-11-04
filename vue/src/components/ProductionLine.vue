@@ -112,7 +112,6 @@ export default {
 			date: moment().format("YYYY-MM-DD"),
 			startTime: moment().format("HH:mm:ss"),
 			line_id: "",
-			schedule: {},
 			modalVisible: false,
 			securite: securite,
 			addInProgress: false,
@@ -123,7 +122,6 @@ export default {
 			activeItemEvent: {},
 			scheduleEvents: [],
 			scheduleEvent: {
-				schedule: {},
 				line: {},
 				saleItem: {
 					item: {},
@@ -166,7 +164,6 @@ export default {
   watch: {
 		date(new_value, old_value){
 			this.scheduleEvent = {
-				schedule: {},
 				line: {},
 				saleItem: {
 					item: {},
@@ -242,7 +239,9 @@ export default {
 				});
 		},
     getScheduleEvents() {
-      http.get("/scheduleEvent/date/"+this.date+"/line/" + this.line_id).then(response => {
+      http.get("/scheduleEvent/date/"+this.date, {params: {
+          line_id: this.line_id
+        }}).then(response => {
 				this.itemEvents.splice(0, this.itemEvents.length);
 				this.scheduleEvents = response.data;
 				response.data.forEach(event => {
