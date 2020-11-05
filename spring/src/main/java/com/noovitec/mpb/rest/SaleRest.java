@@ -218,6 +218,7 @@ class SaleRest {
 			si.setUnitPrice(existingSi.getUnitPrice());
 			si.setTotalUnitPrice(existingSi.getTotalUnitPrice());
 			si.setSale(sale);
+			si.setItemPackaging(existingSi.getItemPackaging());
 			saleItems.add(si);
 		}
 		sale.setSaleItems(saleItems);
