@@ -56,7 +56,7 @@ public class SaleItem extends BaseEntity {
 	@JoinColumn(name = "item_id", referencedColumnName = "id")
 	private Item item;
 	
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne()
 	@JoinColumn(name = "item_packaging_id", referencedColumnName = "id")
 	private ItemPackaging itemPackaging;
 

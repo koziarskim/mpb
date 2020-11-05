@@ -201,6 +201,17 @@ public class Item extends BaseEntity {
 			this.unitsAdjusted += sa.getUnitsAdjusted();
 			this.unitsOnStock += sa.getUnitsOnStock();
 		}
+//		for(ItemPackaging ip: this.getItemPackagings()) {
+//			long unitsOnStock = 0;
+//			long unitsProduced = 0;
+//			long unitsAssigned = 0;
+//			for(ScheduleEvent se: ip.getScheduleEvents()) {
+//				unitsProduced += se.getUnitsProduced();
+//				unitsAssigned += se.getSaleItem().getUnitsAssigned();
+//			}
+//			unitsOnStock = unitsProduced;
+//			ip.setUnitsOnStock(unitsOnStock);
+//		}
 		this.updateUnitsReadyProd();
 	}
 }
