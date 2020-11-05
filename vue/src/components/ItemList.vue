@@ -32,6 +32,19 @@
       <template v-slot:cell(name)="row">
         <div style="width:200px; overflow: wrap; font-size: 14px"><b-link role="button" @click="updateItem(row.item.id)">{{row.item.number}}</b-link> {{row.item.name}}</div>
       </template>
+      <template v-slot:cell(unitsOnStock)="row">
+        <div style="display: flex">
+          <b-button :id="'packagings_'+row.item.id" size="sm" @click="showPackagings(row.item.id)" variant="link">{{row.item.unitsOnStock}}</b-button>
+          <b-popover placement="bottom" :target="'packagings_'+row.item.id" variant="secondary">
+            <div style="width: 500px; font-size: 16px">
+              <div v-for="p in packagings" :key="p.id">
+                Package: {{p.name + ' ('+p.typeLabel+')'}}
+                <b-button size="sm" variant="link" @click="openScheduleProductionModal(row.item.id)">{{p.unitsOnStock}}</b-button>
+              </div>
+            </div>
+          </b-popover>
+        </div>        
+      </template>
       <template v-slot:cell(openSales)="row">
         <b-button size="sm" variant="link" @click="goToSaleItemList(row.item.id)">{{row.item.unitsOpenSale}}</b-button>
       </template>
@@ -80,6 +93,8 @@ export default {
       unitsFilter: {},
       itemDto: {
       },
+      showPackagingsMenu: false,
+      packagings: [],
     };
   },
   watch: {
@@ -97,6 +112,12 @@ export default {
     }
   },
   methods: {
+    showPackagings(itemId){
+      http.get("/itemPackaging/item/"+itemId).then(r => {
+        this.packagings = r.data;
+        this.showPackagingsMenu = !this.showPackagingsMenu;
+      }).catch(e => {console.log("API error: "+ e)})
+    },
     getUnits(itemId){
       http.get("/item/"+itemId+"/dto").then(r => {
         r.data.unitsAdjusted = r.data.unitsAdjusted < 0 ? r.data.unitsAdjusted: '+'+r.data.unitsAdjusted;

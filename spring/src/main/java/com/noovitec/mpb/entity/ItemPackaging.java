@@ -1,8 +1,12 @@
 package com.noovitec.mpb.entity;
 
+import java.util.Collection;
+import java.util.HashSet;
+
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -32,6 +36,11 @@ public class ItemPackaging extends BaseEntity {
 	@JoinColumn(name = "packaging_id", referencedColumnName = "id")
 	private Packaging packaging;
 	
+//	@JsonIgnoreProperties(value = { "item", "itemPackaging", "saleItem" }, allowSetters = true)
+//	@OneToMany()
+//	@JoinColumn(name = "item_packaging_id")
+//	private Collection<ScheduleEvent> scheduleEvents = new HashSet<ScheduleEvent>();
+
 	@Transient
 	private String label;
 	
