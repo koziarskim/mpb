@@ -26,7 +26,10 @@
                 <b-popover :show="showTotalsMenu" placement="bottom" target="totalsMenu" variant="secondary">
                   <div style="width: 300px; font-size: 16px">
                     <div>Total of {{pageable.totalElements}} rows</div>
-                    <div>Total sold: {{totalSold}}</div>
+                    <div>Sold: {{totalSold}}</div>
+                    <div>Produced: {{totalProduced}}</div>
+                    <div>Assigned: {{totalAssigned}}</div>
+                    <div>Shipped: {{totalShipped}}</div>
                   </div>
                 </b-popover>
               </div>
@@ -132,6 +135,9 @@ export default {
       unitsFilter: {},
       showTotalsMenu: false,
       totalSold: 0,
+      totalProduced: 0,
+      totalAssigned: 0,
+      totalShipped: 0,
       showAll: false,
       scheduleProductionModalVisible: false,
     };
@@ -208,6 +214,9 @@ export default {
       }}).then(r => {
       if(totals){
         this.totalSold = r.data.content[0][0].toLocaleString();
+        this.totalProduced = r.data.content[0][1].toLocaleString();
+        this.totalAssigned = r.data.content[0][2].toLocaleString();
+        this.totalShipped = r.data.content[0][3].toLocaleString();
       }else{
         this.saleItems = r.data.content;
         this.pageable.totalElements = r.data.totalElements;

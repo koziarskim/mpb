@@ -84,7 +84,7 @@ public interface CustomSaleItemRepo {
 				ids.add(0L);
 			}
 			
-			q = "select sum(si.units), sum(si.unitsProduced) from SaleItem si where si.id in :ids ";
+			q = "select sum(si.units), sum(si.unitsProduced), sum(si.unitsAssigned), sum(si.unitsShipped) from SaleItem si where si.id in :ids ";
 			query = entityManager.createQuery(q);
 			query.setParameter("ids", ids);
 			long total = query.getResultStream().count();
