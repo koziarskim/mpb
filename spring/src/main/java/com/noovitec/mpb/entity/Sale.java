@@ -119,9 +119,9 @@ public class Sale extends BaseEntity {
 		if(this.approved) {
 			this.status = STATUS.APPROVED.name();
 		}
-		if(this.unitsScheduled > 0 && this.unitsProduced < this.unitsScheduled) {
-			this.status = STATUS.PENDING_PROD.name();
-		}
+//		if(this.unitsScheduled > 0 && this.unitsProduced < this.unitsScheduled) {
+//			this.status = STATUS.PENDING_PROD.name();
+//		}
 		if(this.getUnitsOnStock() > 0 && this.getUnitsOnStock() >= (this.unitsSold + this.unitsAdjusted)) {
 			this.status = STATUS.PENDING_SHIPMENT.name();
 		}

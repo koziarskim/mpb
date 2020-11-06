@@ -137,9 +137,9 @@ public class SaleItem extends BaseEntity {
 		if(this.getSale().isApproved()) {
 			this.status = Sale.STATUS.APPROVED.name();
 		}
-		if(this.unitsScheduled > 0 && this.unitsProduced < this.unitsScheduled) {
-			this.status = Sale.STATUS.PENDING_PROD.name();
-		}
+//		if(this.unitsScheduled > 0 && this.unitsProduced < this.unitsScheduled) {
+//			this.status = Sale.STATUS.PENDING_PROD.name();
+//		}
 		if(this.getUnitsOnStock() > 0 && this.unitsOnStock >= (this.units + this.unitsAdjusted)) {
 			this.status = Sale.STATUS.PENDING_SHIPMENT.name();
 		}
