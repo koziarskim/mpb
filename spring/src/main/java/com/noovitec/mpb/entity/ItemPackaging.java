@@ -26,6 +26,8 @@ public class ItemPackaging extends BaseEntity {
 
 	private static final long serialVersionUID = -6345762674113542595L;
 	private long unitsOnStock;
+	private long unitsProduced;
+	private long unitsAssigned;
 	
 	@JsonIgnoreProperties(value = { "itemPackagings", "saleItems", "scheduleEvents" }, allowSetters = true)
 	@ManyToOne()
@@ -41,6 +43,11 @@ public class ItemPackaging extends BaseEntity {
 	@OneToMany()
 	@JoinColumn(name = "item_packaging_id")
 	private Collection<ScheduleEvent> scheduleEvents = new HashSet<ScheduleEvent>();
+
+	@JsonIgnore
+	@OneToMany()
+	@JoinColumn(name = "item_packaging_id")
+	private Collection<SaleItem> saleItems = new HashSet<SaleItem>();
 
 	@Transient
 	private String label;

@@ -42,7 +42,7 @@
       </b-collapse>
     </b-navbar>
     <div class="center pagebase" :class="getViewClass()">
-      <keep-alive :max="1" :include="/List/">
+      <keep-alive :max="2" :include="/List/">
       <!-- <keep-alive :max="1" :include="['SupplierList', 'ComponentList', 'ItemList', 'CustomerList', 'SaleList', 'SaleItemList',
       'PurchaseList', 'ReceivingList', 'ShipmentList', 'InvoiceList', 'BillList', 'InvoiceItemList']"> -->
         <router-view :key="$route.fullPath"></router-view>

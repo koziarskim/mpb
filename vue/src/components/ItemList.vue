@@ -38,8 +38,9 @@
           <b-popover placement="bottom" :target="'packagings_'+row.item.id" variant="secondary">
             <div style="width: 500px; font-size: 16px">
               <div v-for="p in packagings" :key="p.id">
-                Package: {{p.name + ' ('+p.typeLabel+')'}}
-                <b-button size="sm" variant="link" @click="openScheduleProductionModal(row.item.id)">{{p.unitsOnStock}}</b-button>
+                Package: {{p.name + ' ('+p.typeLabel+')'}}<br/>
+                <div style="margin-left: 50px">Produced: {{p.unitsProduced}}, Assigned: {{p.unitsAssigned}}, Stock: {{p.unitsOnStock}}</div>
+                <!-- <b-button size="sm" variant="link" @click="openScheduleProductionModal(row.item.id)">{{p.unitsOnStock}}</b-button> -->
               </div>
             </div>
           </b-popover>

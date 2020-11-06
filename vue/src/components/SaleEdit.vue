@@ -102,6 +102,7 @@
           </template>
           <template v-slot:cell(packaging)="row">
             <div style="width:100px; overflow: wrap; font-size: 11px">{{row.item.itemPackaging.packaging.name}}</div>
+            <div>{{row.item.unitsAssigned}}</div>
           </template>
           <template v-slot:cell(sku)="row">
             <input :disabled="!allowEdit()" class="form-control" style="width:100px" type="tel" v-model="row.item.sku">

@@ -26,7 +26,8 @@ public class ItemPackagingListDto {
 	private int hi;
 	private BigDecimal warehouseCost = new BigDecimal(12);
 	private BigDecimal packageCost = new BigDecimal(12);
-	
+	private long unitsProduced = 0;
+	private long unitsAssigned = 0;
 	private long unitsOnStock = 0;
 	
 }
