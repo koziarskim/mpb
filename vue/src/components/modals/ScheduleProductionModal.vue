@@ -101,6 +101,9 @@ export default {
     getItem(){
       http.get("/item/"+this.itemId).then(r => {
         this.item = r.data;
+        if(!this.scheduleEvent.item.id){
+          this.scheduleEvent.item = r.data;
+        }
       }).catch(e => {console.log("API error: "+e);});
     },
     getSaleItem(){
@@ -130,6 +133,7 @@ export default {
         return false;
       }
       this.scheduleEvent.saleItem = this.saleItem;
+      this.scheduleEvent.item = this.item;
       http
         .post("/scheduleEvent", this.scheduleEvent)
         .then(response => {

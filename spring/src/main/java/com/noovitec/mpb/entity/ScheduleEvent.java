@@ -44,7 +44,7 @@ public class ScheduleEvent extends BaseEntity {
 	@JoinColumn(name = "line_id", referencedColumnName = "id")
 	private Line line;
 
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne()
 	@JoinColumn(name = "item_packaging_id", referencedColumnName = "id")
 	private ItemPackaging itemPackaging;
 

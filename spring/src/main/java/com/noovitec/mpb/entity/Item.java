@@ -199,7 +199,7 @@ public class Item extends BaseEntity {
 			this.unitsProduced += sa.getUnitsProduced();
 			this.unitsShipped += sa.getUnitsShipped();
 			this.unitsAdjusted += sa.getUnitsAdjusted();
-			this.unitsOnStock += sa.getUnitsOnStock();
+//			this.unitsOnStock += sa.getUnitsOnStock();
 		}
 		for(ItemPackaging ip: this.getItemPackagings()) {
 			long unitsOnStock = 0;
@@ -215,6 +215,7 @@ public class Item extends BaseEntity {
 			ip.setUnitsProduced(unitsProduced);
 			ip.setUnitsAssigned(unitsAssigned);
 			ip.setUnitsOnStock(unitsOnStock);
+			this.unitsOnStock += unitsOnStock;
 		}
 		this.updateUnitsReadyProd();
 	}
