@@ -205,14 +205,17 @@ public class Item extends BaseEntity {
 			long unitsOnStock = 0;
 			long unitsProduced = 0;
 			long unitsAssigned = 0;
+			long unitsScheduled = 0;
 			for(SaleItem si: ip.getSaleItems()) {
 				unitsAssigned += si.getUnitsAssigned();
 			}
 			for(ScheduleEvent se: ip.getScheduleEvents()) {
 				unitsProduced += se.getUnitsProduced();
+				unitsScheduled += se.getUnitsScheduled();
 			}
 			unitsOnStock = unitsProduced - unitsAssigned;
 			ip.setUnitsProduced(unitsProduced);
+			ip.setUnitsScheduled(unitsScheduled);
 			ip.setUnitsAssigned(unitsAssigned);
 			ip.setUnitsOnStock(unitsOnStock);
 			this.unitsOnStock += unitsOnStock;

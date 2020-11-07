@@ -28,6 +28,7 @@ public class ItemPackaging extends BaseEntity {
 	private long unitsOnStock;
 	private long unitsProduced;
 	private long unitsAssigned;
+	private long unitsScheduled;
 	
 	@JsonIgnoreProperties(value = { "itemPackagings", "saleItems", "scheduleEvents" }, allowSetters = true)
 	@ManyToOne()

@@ -60,6 +60,7 @@ class ItemPackagingRest {
 			dto.setWarehouseCost(ip.getPackaging().getWarehouseCost());
 			dto.setPackageCost(ip.getPackaging().getPackageCost());
 			dto.setUnitsProduced(ip.getUnitsProduced());
+			dto.setUnitsScheduled(ip.getUnitsScheduled() - ip.getUnitsProduced());
 			dto.setUnitsAssigned(ip.getUnitsAssigned());
 			dto.setUnitsOnStock(ip.getUnitsOnStock());
 			dtos.add(dto);

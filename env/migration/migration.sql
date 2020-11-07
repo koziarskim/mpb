@@ -7,6 +7,7 @@ set schema 'y2020';
 
 alter table item_packaging add column units_produced bigint default 0;
 alter table item_packaging add column units_assigned bigint default 0;
+alter table item_packaging add column units_scheduled bigint default 0;
 
 --Set scheduleEvent.item
 run /scheduleEvent/migrate

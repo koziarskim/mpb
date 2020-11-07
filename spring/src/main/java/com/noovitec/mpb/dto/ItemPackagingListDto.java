@@ -29,5 +29,6 @@ public class ItemPackagingListDto {
 	private long unitsProduced = 0;
 	private long unitsAssigned = 0;
 	private long unitsOnStock = 0;
+	private long unitsScheduled = 0;
 	
 }
