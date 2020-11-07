@@ -167,8 +167,9 @@ class ScheduleEventRest {
 		try {
 			List<ScheduleEvent> scheduleEvents = scheduleEventRepo.findAll();
 			for(ScheduleEvent se: scheduleEvents) {
-				SaleItem si = se.getSaleItem();
-				se.setItem(si.getItem());
+				if(se.getSaleItem()!=null) {
+					se.setItem(se.getSaleItem().getItem());
+				}
 				scheduleEventRepo.save(se);
 				log.info("Updated: "+se.getId());
 			}

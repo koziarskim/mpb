@@ -20,14 +20,14 @@
         <b-link role="button" @click="goToProductionLine(row.item)">{{row.item.line.id}}</b-link>
       </template>
       <template v-slot:cell(item)="row">
-        <b-link role="button" @click="goToItem(row.item.saleItem.item.id)">{{row.item.saleItem.item.number}}</b-link>
-		    <span> ({{row.item.saleItem.item.name}})</span>
+        <b-link role="button" @click="goToItem(row.item.item.id)">{{row.item.item.number}}</b-link>
+		    <span> ({{row.item.item.name}})</span>
       </template>
       <template v-slot:cell(sale)="row">
-		    <span>{{row.item.saleItem.sale.number}} - {{row.item.saleItem.sale.customer.name}}</span>
+		    <span v-if="row.item.saleItem">{{row.item.saleItem.sale.number}} - {{row.item.saleItem.sale.customer.name}}</span>
       </template>
       <template v-slot:cell(dc)="row">
-		    <span>{{getAddress(row.item.saleItem.sale)}}</span>
+		    <span v-if="row.item.saleItem">{{getAddress(row.item.saleItem.sale)}}</span>
       </template>
       <template v-slot:cell(totalTime)="row">
 		  <span>{{formatter.secondsToTime(row.item.totalTime)}}</span>
@@ -185,13 +185,13 @@ export default {
       this.scheduleEvents.forEach(event => {
         //Remove duplicates.
         if(this.availableItems.find(item => 
-          item.id == event.saleItem.item.id
+          item.id == event.item.id
         )){
           return;
         }
         this.availableItems.push({
-          id: event.saleItem.item.id,
-          name: event.saleItem.item.name
+          id: event.item.id,
+          name: event.item.name
         })
       })
     },
@@ -211,7 +211,7 @@ export default {
               if(this.selectedLine.id && se.line.id != this.selectedLine.id){
                 return;
               }
-              if(this.selectedItem.id && se.saleItem.item.id != this.selectedItem.id){
+              if(this.selectedItem.id && se.item.id != this.selectedItem.id){
                 return;
               }
               this.totalScheduled += se.unitsScheduled;

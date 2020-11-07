@@ -115,7 +115,11 @@ export default {
       return (((high - low) / ((high + low)/2)) * 100).toFixed(0)+"%";
     },
     percOut(high, low){
-      return ((high / low) * 100).toFixed(0)+"%";
+      var number = 0;
+      if(low || low != 0){
+        number = ((high / low) * 100);
+      }
+      return number.toFixed(0)+"%";
     }
 
   },

@@ -175,15 +175,15 @@ class ItemRest {
 		List<ItemTreeDto> dtos = new ArrayList<ItemTreeDto>();
 		List<ScheduleEvent> events = scheduleEventRepo.findByDate(date);
 		for (ScheduleEvent se : events) {
-			ItemTreeDto itemDto = dtos.stream().filter(existingDto -> existingDto.getId().equals(se.getSaleItem().getItem().getId())).findAny().orElse(null);
+			ItemTreeDto itemDto = dtos.stream().filter(existingDto -> existingDto.getId().equals(se.getItem().getId())).findAny().orElse(null);
 			if (itemDto == null) {
 				itemDto = new ItemTreeDto();
-				itemDto.setId(se.getSaleItem().getItem().getId());
-				itemDto.setName(se.getSaleItem().getItem().getName());
-				itemDto.setUnitsOnStock(se.getSaleItem().getItem().getUnitsOnStock());
-				itemDto.setTotalSold(se.getSaleItem().getItem().getUnitsSold());
-				itemDto.setTotalProduced(se.getSaleItem().getItem().getUnitsProduced());
-				itemDto.setTotalSeconds(se.getSaleItem().getItem().getDurationSeconds());
+				itemDto.setId(se.getItem().getId());
+				itemDto.setName(se.getItem().getName());
+				itemDto.setUnitsOnStock(se.getItem().getUnitsOnStock());
+				itemDto.setTotalSold(se.getItem().getUnitsSold());
+				itemDto.setTotalProduced(se.getItem().getUnitsProduced());
+				itemDto.setTotalSeconds(se.getItem().getDurationSeconds());
 				dtos.add(itemDto);
 			}
 			itemDto.setDailyScheduled(itemDto.getDailyScheduled() + se.getUnitsScheduled());
@@ -191,11 +191,13 @@ class ItemRest {
 			itemDto.setDailySeconds(itemDto.getDailySeconds() + se.getDurationSeconds());
 			ScheduleEventTreeDto eventDto = new ScheduleEventTreeDto();
 			eventDto.setId(se.getId());
-			eventDto.setCustomerName(se.getSaleItem().getSale().getCustomer().getName());
-			eventDto.setSaleNumber(se.getSaleItem().getSale().getNumber());
+			if(se.getSaleItem()!=null) {
+				eventDto.setCustomerName(se.getSaleItem().getSale().getCustomer().getName());
+				eventDto.setSaleNumber(se.getSaleItem().getSale().getNumber());
+				eventDto.setUnitsSold(se.getSaleItem().getSale().getUnitsSold());
+				eventDto.setSaleTotalProduced(se.getSaleItem().getSale().getUnitsProduced());
+			}
 			eventDto.setLineNumber(String.valueOf(se.getLine().getNumber()));
-			eventDto.setUnitsSold(se.getSaleItem().getSale().getUnitsSold());
-			eventDto.setSaleTotalProduced(se.getSaleItem().getSale().getUnitsProduced());
 			eventDto.setDailyScheduled(se.getUnitsScheduled());
 			eventDto.setDailyProduced(se.getUnitsProduced());
 			eventDto.setDailySeconds(se.getDurationSeconds());
