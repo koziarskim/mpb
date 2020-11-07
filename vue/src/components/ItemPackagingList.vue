@@ -15,6 +15,18 @@
       <template v-slot:cell(name)="row">
         <div style="width:200px; overflow: wrap; font-size: 14px"><b-link role="button" @click="goToPackaging(row.item.packagingId)">{{row.item.name}}</b-link></div>
       </template>
+      <template v-slot:cell(caseDimension)="row">
+        {{row.item.caseHeight}}x{{row.item.caseWidth}}x{{row.item.caseDepth}}
+      </template>
+      <template v-slot:cell(palletConfig)="row">
+        {{row.item.ti}}x{{row.item.hi}}
+      </template>
+      <template v-slot:cell(warehouseCost)="row">
+        ${{row.item.warehouseCost}}
+      </template>
+      <template v-slot:cell(packageCost)="row">
+        ${{row.item.packageCost}}
+      </template>
     </b-table>
     <div style="display: flex">
       <b-pagination size="sm" v-model="pageable.currentPage" :per-page="pageable.perPage" :total-rows="pageable.totalElements" @change="paginationChange"></b-pagination>
@@ -40,6 +52,13 @@ export default {
       fields: [
         { key: "itemNameNumber", sortable: true, label: "Item" },
         { key: "name", sortable: true, label: "Packaging" },
+        { key: "typeLabel", label: "Type", sortable: false },
+        { key: "caseDimension", label: "Case Dimension", sortable: false },
+        { key: "casePack", label: "C/P", sortable: false },
+        { key: "palletConfig", label: "TixHi", sortable: false },
+        { key: "palletWeight", label: "Weight", sortable: false },
+        { key: "warehouseCost", label: "Warehouse", sortable: false },
+        { key: "packageCost", label: "Package", sortable: false },
       ],
       itemPackagings: [], //ItemPackagingListDto
       availableItems: [],

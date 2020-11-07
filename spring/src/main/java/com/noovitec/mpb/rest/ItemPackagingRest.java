@@ -41,10 +41,23 @@ class ItemPackagingRest {
 	}
 	
 	@GetMapping("/itemPackaging/pageable")
-	Page<?> getAllPageable(@RequestParam(name = "pageable", required = false) Pageable pageable,
+	Page<?> getAllPageable(@RequestParam(required = false) Pageable pageable,
 			@RequestParam(required = false) Long itemId,
 			@RequestParam(required = false) Long packagingId) {
 		Page<ItemPackaging> itemPackagings = itemPackagingRepo.findPageable(pageable, itemId, packagingId);
+		Page<ItemPackagingListDto> dtos = this.mapToDto(itemPackagings);
+		return dtos;
+	}
+
+	@GetMapping("/itemPackaging/item/{itemId}")
+	ResponseEntity<?> getAllForItem(@RequestParam(required = false) Pageable pageable,
+			@PathVariable Long itemId) {
+		Page<ItemPackaging> itemPackagings = itemPackagingRepo.findAllByItem(pageable, itemId);
+		Page<ItemPackagingListDto> dtos = this.mapToDto(itemPackagings);
+		return ResponseEntity.ok().body(dtos);
+	}
+
+	private Page<ItemPackagingListDto> mapToDto(Page<ItemPackaging> itemPackagings){
 		Page<ItemPackagingListDto> dtos = itemPackagings.map(ip -> {
 			ItemPackagingListDto dto = new ItemPackagingListDto();
 			dto.setId(ip.getPackaging().getId());
@@ -71,38 +84,6 @@ class ItemPackagingRest {
 		});
 		return dtos;
 	}
-
-	@GetMapping("/itemPackaging/item/{itemId}")
-	ResponseEntity<?> getAllForItem(@PathVariable Long itemId) {
-		List<ItemPackaging> itemPackagings = itemPackagingRepo.findAllByItem(itemId);
-		List<ItemPackagingListDto> dtos = new ArrayList<ItemPackagingListDto>();
-		for(ItemPackaging ip: itemPackagings) {
-			ItemPackagingListDto dto = new ItemPackagingListDto();
-			dto.setId(ip.getPackaging().getId());
-			dto.setItemId(ip.getItem().getId());
-			dto.setPackagingId(ip.getPackaging().getId());
-			dto.setItemName(ip.getItem().getName());
-			dto.setItemNumber(ip.getItem().getNumber());
-			dto.setName(ip.getPackaging().getName());
-			dto.setTypeLabel(Packaging.TYPE.valueOf(ip.getPackaging().getType()).label());
-			dto.setCaseHeight(ip.getPackaging().getCaseHeight());
-			dto.setCaseWidth(ip.getPackaging().getCaseWidth());
-			dto.setCaseDepth(ip.getPackaging().getCaseDepth());
-			dto.setCasePack(ip.getPackaging().getCasePack());
-			dto.setHi(ip.getPackaging().getHi());
-			dto.setTi(ip.getPackaging().getTi());
-			dto.setPalletWeight(ip.getPackaging().getPalletWeight());
-			dto.setWarehouseCost(ip.getPackaging().getWarehouseCost());
-			dto.setPackageCost(ip.getPackaging().getPackageCost());
-			dto.setUnitsProduced(ip.getUnitsProduced());
-			dto.setUnitsScheduled(ip.getUnitsScheduled() - ip.getUnitsProduced());
-			dto.setUnitsAssigned(ip.getUnitsAssigned());
-			dto.setUnitsOnStock(ip.getUnitsOnStock());
-			dtos.add(dto);
-		}
-		return ResponseEntity.ok().body(dtos);
-	}
-
 
 	@PostMapping("/itemPackaging")
 	ResponseEntity<?> post(@RequestBody ItemPackaging itemPackaging) {
