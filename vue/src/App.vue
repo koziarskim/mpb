@@ -9,6 +9,7 @@
           <b-nav-item-dropdown text="Item" :class="navClass('item')">
             <b-dropdown-item @click="goTo('/itemList')"><span style="color: black">Item List</span></b-dropdown-item>
             <b-dropdown-item @click="goTo('/packagingList')"><span style="color: black">Packaging List</span></b-dropdown-item>
+            <b-dropdown-item @click="goTo('/itemPackagingList')"><span style="color: black">Packages by Item</span></b-dropdown-item>
           </b-nav-item-dropdown>
           <b-nav-item @click="goTo('/customerList')" :class="navClass('customer')">Customer</b-nav-item>
           <b-nav-item-dropdown text="Sale" :class="navClass('sale')">

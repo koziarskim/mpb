@@ -41,6 +41,7 @@ import InvoiceEdit from "./components/InvoiceEdit";
 import BillList from "./components/BillList";
 import PackagingList from "./components/PackagingList";
 import PackagingEdit from "./components/PackagingEdit";
+import ItemPackagingList from "./components/ItemPackagingList";
 
 Vue.use(Router);
 
@@ -116,6 +117,16 @@ const router = new Router({
       path: "/packagingList",
       name: "PackagingList",
       component: PackagingList,
+      meta: {
+        roles: ["READ_ONLY"],
+        group: "item",
+        viewClass: "view-item"
+      }
+    },
+    {
+      path: "/ItemPackagingList",
+      name: "ItemPackagingList",
+      component: ItemPackagingList,
       meta: {
         roles: ["READ_ONLY"],
         group: "item",
