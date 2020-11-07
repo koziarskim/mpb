@@ -6,8 +6,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import com.noovitec.mpb.entity.ItemPackaging;
+import com.noovitec.mpb.repo.custom.CustomItemPackagingRepo;
 
-public interface ItemPackagingRepo extends JpaRepository<ItemPackaging, Long> {
+public interface ItemPackagingRepo extends JpaRepository<ItemPackaging, Long>, CustomItemPackagingRepo {
 
 	@Query("select distinct ip from ItemPackaging ip "
 			+ "join ip.item i "

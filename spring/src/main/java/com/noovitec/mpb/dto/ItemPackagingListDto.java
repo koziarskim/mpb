@@ -13,6 +13,7 @@ public class ItemPackagingListDto {
 	
 	private Long id;
 	private Long itemId;
+	private Long packagingId;
 	private String itemName;
 	private String itemNumber;
 	private String name;

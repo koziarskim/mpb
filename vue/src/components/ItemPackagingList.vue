@@ -2,53 +2,18 @@
   <b-container fluid>
     <b-row style="padding-bottom: 4px; font-size: 12px">
       <b-col cols=2>
-        <input class="form-control" style="font-size: 12px" type="tel" v-model="numberName" @keyup.enter="getItems()" placeholder="Number or Name" />
+        <b-select option-value="id" option-text="name" :list="availableItems" v-model="itemKv" placeholder="Item"></b-select>
       </b-col>
       <b-col cols=2>
-        <b-select option-value="id" option-text="name" :list="availableComponents" v-model="componentKv" placeholder="Component"></b-select>
-      </b-col>
-      <b-col cols=2>
-        <b-select option-value="id" option-text="name" :list="availableBrands" v-model="brandKv" placeholder="Brand"></b-select>
-      </b-col>
-      <b-col cols=2>
-        <b-select option-value="id" option-text="name" :list="availableCategories" v-model="categoryKv" placeholder="Category"></b-select>
-      </b-col>
-      <b-col cols=2>
-        <b-select option-value="id" option-text="name" :list="availableUnitFilters" v-model="unitsFilter" placeholder="Units"></b-select>
-      </b-col>
-      <b-col>
-        <div style="text-align: right;">
-          <b-button size="sm" variant="primary" @click="createNewItem('')">New</b-button>
-        </div>
+        <b-select option-value="id" option-text="name" :list="availablePackagings" v-model="packagingKv" placeholder="Packaging"></b-select>
       </b-col>
     </b-row>
-    <b-table :items="items" :fields="fields" no-local-sorting @sort-changed="sorted">
-      <template v-slot:head(unitsOnStock)="row">
-        <div>Stock</div><div class="mpb-head-line">Including Overstock</div>
-      </template>
-      <template v-slot:head(openSales)="row">
-        <div>Sales</div><div class="mpb-head-line">Open only</div>
+    <b-table :items="itemPackagings" :fields="fields">
+      <template v-slot:cell(itemNameNumber)="row">
+        <div style="width:200px; overflow: wrap; font-size: 14px"><b-link role="button" @click="goToItem(row.item.itemId)">{{row.item.itemNumber}}</b-link> {{row.item.itemName}}</div>
       </template>
       <template v-slot:cell(name)="row">
-        <div style="width:200px; overflow: wrap; font-size: 14px"><b-link role="button" @click="updateItem(row.item.id)">{{row.item.number}}</b-link> {{row.item.name}}</div>
-      </template>
-      <template v-slot:cell(unitsOnStock)="row">
-        <div style="display: flex">
-          <b-button :id="'packagings_'+row.item.id" size="sm" @click="showPackagings(row.item.id)" variant="link">{{row.item.unitsOnStock}}</b-button>
-          <b-popover placement="bottom" :target="'packagings_'+row.item.id" variant="secondary">
-            <div style="width: 500px; font-size: 16px">
-              <div v-for="p in packagings" :key="p.id">
-                Package: {{p.name + ' ('+p.typeLabel+')'}}<br/>
-                  <div style="margin-left: 50px">Stock: {{p.unitsOnStock}},
-                  Scheduled:<b-button style="margin-top: -4px" size="md" variant="link" @click="openScheduleProductionModal(row.item.id)">{{p.unitsScheduled}}</b-button>
-                  </div>
-              </div>
-            </div>
-          </b-popover>
-        </div>        
-      </template>
-      <template v-slot:cell(openSales)="row">
-        <b-button size="sm" variant="link" @click="goToSaleItemList(row.item.id)">{{row.item.unitsOpenSale}}</b-button>
+        <div style="width:200px; overflow: wrap; font-size: 14px"><b-link role="button" @click="goToPackaging(row.item.packagingId)">{{row.item.name}}</b-link></div>
       </template>
     </b-table>
     <div style="display: flex">
@@ -72,130 +37,65 @@ export default {
         sortBy: "updated",
         sortDesc: true
       },
-      numberName: "",
       fields: [
-        { key: "name", sortable: true, label: "Item # (Name)" },
-        { key: "brand", sortable: true, label: "Brand" },
-        { key: "category", sortable: true, label: "Category" },
-        { key: "unitsOnStock", sortable: false, label: "Stock" },
-        { key: "openSales", sortable: false, label: "Sales" },
+        { key: "itemNameNumber", sortable: true, label: "Item" },
+        { key: "name", sortable: true, label: "Packaging" },
       ],
-      items: [], //ItemListDto
-      availableComponents: [],
-      componentKv: {},
-      availableBrands: [],
-      brandKv: {},
-      availableCategories: [],
-      categoryKv: {},
-      availableUnitFilters: [
-        {id: "ON_STOCK", name: "On Stock"},
-        {id: "OPEN_SALES", name: "Open Sales"},
-        {id: "RFP", name: "RFP"}
-      ],
-      unitsFilter: {},
-      itemDto: {
-      },
-      showPackagingsMenu: false,
-      packagings: [], //ItemPackagingListDto
+      itemPackagings: [], //ItemPackagingListDto
+      availableItems: [],
+      itemKv: {},
+      availablePackagings: [],
+      packagingKv: {},
     };
   },
   watch: {
-    componentKv(newValue, oldValue) {
-      this.getItems();
+    itemKv(newValue, oldValue) {
+      this.getItemPackagings();
     },
-    brandKv(newValue, oldValue) {
-      this.getItems();
+    packagingKv(newValue, oldValue) {
+      this.getItemPackagings();
     },
-    categoryKv(newValue, oldValue) {
-      this.getItems();
-    },
-    unitsFilter(newValue, oldValue) {
-      this.getItems();
-    }
   },
   methods: {
-    showPackagings(itemId){
-      http.get("/itemPackaging/item/"+itemId).then(r => {
-        this.packagings = r.data;
-        this.showPackagingsMenu = !this.showPackagingsMenu;
-      }).catch(e => {console.log("API error: "+ e)})
-    },
-    getUnits(itemId){
-      http.get("/item/"+itemId+"/dto").then(r => {
-        r.data.unitsAdjusted = r.data.unitsAdjusted < 0 ? r.data.unitsAdjusted: '+'+r.data.unitsAdjusted;
-        this.itemDto = r.data;
-      }).catch(e => {console.log("API error: "+ e)})
-    },
-    sorted(e) {
-      if (!e.sortBy) {
-        return;
-      }
-      this.pageable.sortBy = e.sortBy;
-      this.pageable.sortDesc = e.sortDesc;
-      this.getItems();
-    },
     paginationChange(page) {
       this.pageable.currentPage = page;
-      this.getItems();
-    },
-    getItems() {
-      http.get("/item/pageable", {
+      this.getItemPackagings();
+    },    
+    getItemPackagings() {
+      http.get("/itemPackaging/pageable", {
           params: {
             pageable: this.pageable,
-            numberName: this.numberName,
-            componentId: this.componentKv.id,
-            brandId: this.brandKv.id,
-            categoryId: this.categoryKv.id,
-            unitsFilter: this.unitsFilter.id
+            itemId: this.itemKv.id,
+            packagingId: this.packagingKv.id,
           }
         }).then(response => {
-          //ItemListDto
-          this.items = response.data.content;
+          this.itemPackagings = response.data.content;
           this.pageable.totalElements = response.data.totalElements;
         }).catch(e => {console.log("API error: " + e);});
     },
-    getAvailableComponents(){
-      http.get("component/kv").then(r => {
-        this.availableComponents = r.data;
+    getAvailableItems(){
+      http.get("item/kv").then(r => {
+        this.availableItems = r.data;
       }).catch(e => {console.log("API error: "+ e)})
     },
-    getAvailableBrands(){
-      http.get("brand/kv").then(r => {
-        this.availableBrands = r.data;
+    getAvailablePackagings(){
+      http.get("packaging/kv").then(r => {
+        this.availablePackagings = r.data;
       }).catch(e => {console.log("API error: "+ e)})
     },
-    getAvailableCategories(){
-      http.get("category/item/kv").then(r => {
-        this.availableCategories = r.data;
-      }).catch(e => {console.log("API error: "+ e)})
+    goToItem(itemId) {
+      router.push("/itemEdit/" + itemId);
     },
-    createNewItem() {
-      router.push("/itemEdit");
+    goToPackaging(packagingId) {
+      router.push("/packagingEdit/" + packagingId);
     },
-    updateItem(item_id) {
-      router.push("/itemEdit/" + item_id);
-    },
-    gotToInventory(item_id) {
-      router.push("/itemComponentList/" + item_id);
-    },
-    goToSaleItemList(itemId) {
-      router.push({path: "/saleItemList/", query: {itemId: itemId, statusId: 'APPROVED'}});
-    },
-    goToItemScheduleList(item_id) {
-      router.push("/scheduleEventList/" + item_id);
-    },
-    goToItemShippedList(itemId) {
-      var query = { itemId: itemId };
-      router.push({ path: "/shipmentList", query: query });
-    }
   },
   mounted() {
-    this.getAvailableComponents();
-    this.getAvailableCategories();
-    this.getAvailableBrands();
+    this.getAvailableItems();
+    this.getAvailablePackagings();
   },
   activated(){
-    this.getItems();
+    this.getItemPackagings();
   }
 };
 </script>
