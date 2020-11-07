@@ -79,7 +79,9 @@ export default {
       },
       scheduleEvent: {
         itemPackaging: {},
-        line: {}
+        line: {},
+        item: {},
+        saleItem: {},
       },
       availableLines: [
         { id: 1, number: 1 },
@@ -132,7 +134,11 @@ export default {
       if(!this.validate()){
         return false;
       }
-      this.scheduleEvent.saleItem = this.saleItem;
+      if(this.saleItem.id){
+        this.scheduleEvent.saleItem = this.saleItem;
+      }else{
+        this.scheduleEvent.saleItem = null;
+      }
       this.scheduleEvent.item = this.item;
       http
         .post("/scheduleEvent", this.scheduleEvent)
@@ -142,7 +148,6 @@ export default {
         .catch(e => {
           console.log("API error: " + e);
         });
-      this.modalShow = !this.modalShow;
     },
     closeModal(){
       this.$emit("close");

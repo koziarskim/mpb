@@ -27,11 +27,17 @@
       <template v-slot:cell(packageCost)="row">
         ${{row.item.packageCost}}
       </template>
+      <template v-slot:cell(unitsScheduled)="row">
+        <b-link role="button" @click="openScheduleProductionModal(row.item)">{{row.item.unitsScheduled}}</b-link>
+      </template>
     </b-table>
     <div style="display: flex">
       <b-pagination size="sm" v-model="pageable.currentPage" :per-page="pageable.perPage" :total-rows="pageable.totalElements" @change="paginationChange"></b-pagination>
       <span style="margin-top: 5px">Total of {{pageable.totalElements}} rows</span>
     </div>
+    <div v-if="scheduleProductionModalVisible">
+      <schedule-production-modal :saleItemId="this.saleItemId" :itemId="this.itemId" v-on:close="closeScheduleProductionModal"></schedule-production-modal>
+    </div>  
   </b-container>
 </template>
 <script>
@@ -39,7 +45,10 @@ import http from "../http-common";
 import router from "../router";
 
 export default {
-  name: "ItemList",
+  name: "ItemPackagingList",
+	components: {
+	  ScheduleProductionModal: () => import("./modals/ScheduleProductionModal")
+  },  
   data() {
     return {
       pageable: {
@@ -59,12 +68,17 @@ export default {
         { key: "palletWeight", label: "Weight", sortable: false },
         { key: "warehouseCost", label: "Warehouse", sortable: false },
         { key: "packageCost", label: "Package", sortable: false },
+        { key: "unitsOnStock", label: "Stock", sortable: false },
+        { key: "unitsScheduled", label: "Scheduled", sortable: false },
       ],
       itemPackagings: [], //ItemPackagingListDto
       availableItems: [],
       itemKv: {},
       availablePackagings: [],
       packagingKv: {},
+      scheduleProductionModalVisible: false,
+      itemId: null,
+      saleItemId: null,
     };
   },
   watch: {
@@ -76,6 +90,14 @@ export default {
     },
   },
   methods: {
+    openScheduleProductionModal(itemPackagingListDto){
+      this.itemId = itemPackagingListDto.itemId;
+      this.scheduleProductionModalVisible = true;
+    },
+    closeScheduleProductionModal(){
+      this.scheduleProductionModalVisible = false;
+      this.getItemPackagings();
+    },
     paginationChange(page) {
       this.pageable.currentPage = page;
       this.getItemPackagings();

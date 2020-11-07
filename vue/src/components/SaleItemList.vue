@@ -168,7 +168,7 @@ export default {
       this.itemId = saleItemDto.itemId;
       this.scheduleProductionModalVisible = true;
     },
-    closeScheduleProductionModal(si){
+    closeScheduleProductionModal(){
       this.scheduleProductionModalVisible = false;
       this.getSaleItems();
     },

@@ -99,10 +99,16 @@ class ScheduleEventRest {
 			emails.add("dramirez@marketplacebrands.com");
 			emails.add("evazquez@marketplacebrands.com");
 			Map<String, String> model = new HashMap<String, String>();
-			String itemNumber = scheduleEvent.getSaleItem().getItem().getNumber() + " " + scheduleEvent.getSaleItem().getItem().getName();
-			String saleNumber = scheduleEvent.getSaleItem().getSale().getNumber();
-			String customerName = scheduleEvent.getSaleItem().getSale().getCustomer().getName();
+			String itemNumber = scheduleEvent.getItem().getNumber() + " " + scheduleEvent.getItem().getName();
+			String packagingLabel = scheduleEvent.getItemPackaging().getLabel();
+			String saleNumber = "None";
+			String customerName = "None";
+			if(scheduleEvent.getSaleItem()!=null) {
+				saleNumber = scheduleEvent.getSaleItem().getSale().getNumber();
+				customerName = scheduleEvent.getSaleItem().getSale().getCustomer().getName();
+			}
 			model.put("itemNumber", itemNumber);
+			model.put("packagingLabel", packagingLabel);
 			model.put("saleNumber", saleNumber);
 			model.put("customerName", customerName);
 			notificationService.sendMail(emails, model, Notification.TYPE.SCHEDULE_CREATED);
@@ -111,8 +117,11 @@ class ScheduleEventRest {
 			List<String> emails = new ArrayList<String>();
 			emails.add("kzygulska@marketplacebrands.com");
 			Map<String, String> model = new HashMap<String, String>();
-			String itemNumber = scheduleEvent.getSaleItem().getItem().getNumber()+" "+scheduleEvent.getSaleItem().getItem().getName();
-			String saleNumber = scheduleEvent.getSaleItem().getSale().getNumber();
+			String itemNumber = scheduleEvent.getItem().getNumber()+" "+scheduleEvent.getItem().getName();
+			String saleNumber = "None";
+			if(scheduleEvent.getSaleItem() != null) {
+				saleNumber = scheduleEvent.getSaleItem().getSale().getNumber();
+			}
 			model.put("itemNumber", itemNumber);
 			model.put("saleNumber", saleNumber);
 			notificationService.sendMail(emails, model, Notification.TYPE.PRODUCTION_COMPLETED);
@@ -123,10 +132,12 @@ class ScheduleEventRest {
 			componentService.updateUnitsOnStockByProduction(production.getId(), unitsDiff);
 		}
 		scheduleEvent = scheduleEventService.save(scheduleEvent);
-		itemService.updateUnits(Arrays.asList(scheduleEvent.getSaleItem().getItem().getId()));
-		saleService.updateUnits(Arrays.asList(scheduleEvent.getSaleItem().getSale().getId()));
-		componentService.updateUnitsLockedByItem(scheduleEvent.getSaleItem().getItem().getId());
-		itemService.updateUnitsReadyProd(Arrays.asList(scheduleEvent.getSaleItem().getItem().getId()));
+		itemService.updateUnits(Arrays.asList(scheduleEvent.getItem().getId()));
+		if(scheduleEvent.getSaleItem()!=null) {
+			saleService.updateUnits(Arrays.asList(scheduleEvent.getSaleItem().getSale().getId()));
+		}
+		componentService.updateUnitsLockedByItem(scheduleEvent.getItem().getId());
+		itemService.updateUnitsReadyProd(Arrays.asList(scheduleEvent.getItem().getId()));
 		return ResponseEntity.ok(scheduleEvent);
 	}
 
@@ -137,8 +148,11 @@ class ScheduleEventRest {
 			Long unitsDiff = production.getUnitsProduced() - production.getPreUnitsProduced();
 			componentService.updateUnitsOnStockByProduction(production.getId(), unitsDiff * (-1));
 		}
-		Long itemId = scheduleEvent.getSaleItem().getItem().getId();
-		Long saleId = scheduleEvent.getSaleItem().getSale().getId();
+		Long itemId = scheduleEvent.getItem().getId();
+		Long saleId = null;
+		if(scheduleEvent.getSaleItem() != null) {
+			saleId = scheduleEvent.getSaleItem().getSale().getId();
+		}
 		scheduleEventService.delete(id);
 		itemService.updateUnits(Arrays.asList(itemId));
 		saleService.updateUnits(Arrays.asList(saleId));
