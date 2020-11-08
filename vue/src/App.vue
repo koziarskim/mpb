@@ -390,4 +390,10 @@ export default {
   margin-bottom: -7px;
   margin-top: -7px;
 }
+.mpb-page-info {
+  font-size: 10px; 
+  font-weight: bold; 
+  text-align: left; 
+  color: darkred;
+}
 </style>

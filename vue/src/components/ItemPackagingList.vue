@@ -1,5 +1,6 @@
 <template>
   <b-container fluid>
+    <div class="mpb-page-info">Item > Packages by Item</div>
     <b-row style="padding-bottom: 4px; font-size: 12px">
       <b-col cols=2>
         <b-select option-value="id" option-text="name" :list="availableItems" v-model="itemKv" placeholder="Item"></b-select>

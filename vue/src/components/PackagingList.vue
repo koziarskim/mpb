@@ -1,5 +1,6 @@
 <template>
     <b-container fluid>
+      <div class="mpb-page-info">Item > Packaging List</div>
       <b-row style="font-size: 12px">
         <b-col cols=2>
           <input class="form-control" style="font-size: 12px" v-model.lazy="packagingName" @keyup.enter="getPackagings()" placeholder="Name"/>

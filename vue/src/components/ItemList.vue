@@ -1,5 +1,6 @@
 <template>
   <b-container fluid>
+    <div class="mpb-page-info">Item > Item List</div>
     <b-row style="padding-bottom: 4px; font-size: 12px">
       <b-col cols=2>
         <input class="form-control" style="font-size: 12px" type="tel" v-model="numberName" @keyup.enter="getItems()" placeholder="Number or Name" />
