@@ -41,17 +41,18 @@ public class Sale extends BaseEntity {
 	private String paymentTerms;
 	private String freightTerms;
 	private LocalDate expectedDate;
-	private BigDecimal totalPrice = BigDecimal.ZERO;
+	private BigDecimal totalPrice;
 	private BigDecimal invoicedAmount;
-	private long unitsProduced = 0 ;
-	private long unitsSold = 0 ;
-	private long unitsScheduled = 0;
-	private long unitsTransferedTo = 0;
-	private long unitsTransferedFrom = 0;
-	private long unitsShipped = 0;
-	private long unitsAdjusted = 0;
-	private long unitsOnStock = 0;
-	private long unitsReturned = 0;
+	private long unitsProduced;
+	private long unitsSold;
+	private long unitsScheduled;
+	private long unitsTransferedTo;
+	private long unitsTransferedFrom;
+	private long unitsShipped;
+	private long unitsAdjusted;
+	private long unitsOnStock;
+	private long unitsReturned;
+	private long unitsAssigned;
 	private String status;
 	private boolean approved;
 	private boolean pendingApproval;
@@ -82,15 +83,16 @@ public class Sale extends BaseEntity {
 	private Collection<Attachment> attachments = new HashSet<Attachment>();
 
 	public void updateUnits() {
-		this.unitsSold = 0L;
-		this.unitsScheduled = 0L;
-		this.unitsProduced = 0L;
-		this.unitsShipped = 0L;
-		this.unitsTransferedTo = 0L;
-		this.unitsTransferedFrom = 0L;
-		this.unitsAdjusted = 0L;
-		this.unitsReturned = 0L;
-		this.unitsOnStock = 0L;
+		this.unitsSold = 0;
+		this.unitsScheduled = 0;
+		this.unitsProduced = 0;
+		this.unitsShipped = 0;
+		this.unitsTransferedTo = 0;
+		this.unitsTransferedFrom = 0;
+		this.unitsAdjusted = 0;
+		this.unitsReturned = 0;
+		this.unitsOnStock = 0;
+		this.unitsAssigned = 0;
 		this.invoicedAmount = BigDecimal.ZERO;
 		for (SaleItem si : this.getSaleItems()) {
 			si.updateUnits();
@@ -103,6 +105,7 @@ public class Sale extends BaseEntity {
 			this.unitsAdjusted += si.getUnitsAdjusted();
 			this.unitsReturned += si.getUnitsReturned();
 			this.unitsOnStock += si.getUnitsOnStock();
+			this.unitsAssigned += si.getUnitsAssigned();
 			if(si.getInvoicedAmount()!=null) {
 				this.invoicedAmount = this.invoicedAmount.add(si.getInvoicedAmount());
 			}

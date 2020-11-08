@@ -28,19 +28,19 @@ import lombok.NoArgsConstructor;
 public class SaleItem extends BaseEntity {
 
 	private static final long serialVersionUID = -6345762674113542595L;
-	private BigDecimal unitPrice = BigDecimal.ZERO;
-	private BigDecimal totalUnitPrice = BigDecimal.ZERO;
-	private long units = 0; // unitsSold.
-	private long unitsAssigned = 0;
+	private BigDecimal unitPrice;
+	private BigDecimal totalUnitPrice;
+	private long units; // unitsSold.
+	private long unitsAssigned;
 	
-	private long unitsOnStock = 0;
-	private long unitsProduced = 0;
-	private long unitsScheduled = 0;
-	private long unitsShipped = 0;
-	private long unitsTransferedTo = 0;
-	private long unitsTransferedFrom = 0;
-	private long unitsReturned = 0;
-	private long unitsAdjusted = 0;
+	private long unitsOnStock;
+	private long unitsProduced;
+	private long unitsScheduled;
+	private long unitsShipped;
+	private long unitsTransferedTo;
+	private long unitsTransferedFrom;
+	private long unitsReturned;
+	private long unitsAdjusted;
 
 	private BigDecimal invoicedAmount;
 	private String sku;
@@ -99,6 +99,7 @@ public class SaleItem extends BaseEntity {
 		this.unitsTransferedFrom = 0;
 		this.unitsReturned = 0;
 		this.unitsOnStock = 0;
+		this.unitsAssigned = 0;
 		this.invoicedAmount = BigDecimal.ZERO;
 		
 		for(SaleItemReturn sir: this.getSaleItemReturns()) {
@@ -125,6 +126,7 @@ public class SaleItem extends BaseEntity {
 				this.invoicedAmount = this.invoicedAmount.add(ii.getTotalUnitPrice());
 			}
 		}
+		unitsAssigned += this.getUnitsProduced() + (this.getUnitsTransferedTo() - this.getUnitsTransferedFrom());
 		this.unitsOnStock = this.unitsProduced + this.unitsTransferedTo - this.unitsTransferedFrom - this.unitsShipped + this.unitsReturned;
 		this.updateStatus();
 	}

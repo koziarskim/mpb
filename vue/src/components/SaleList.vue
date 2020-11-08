@@ -125,6 +125,7 @@ export default {
         { key: "dc", label: "DC (State)", sortable: false },
         { key: "shippingWindow", label: "Ship Window", sortable: false },
         { key: "unitsSold", label: "Sold", sortable: false },
+        { key: "unitsAssigned", label: "Assigned", sortable: false },
         { key: "unitsSchProd", label: "Sch/Prod", sortable: false },
         { key: "unitsTransfered", label: "Transf", sortable: false },
         { key: "unitsStockShip", label: "Stock/Ship", sortable: false },

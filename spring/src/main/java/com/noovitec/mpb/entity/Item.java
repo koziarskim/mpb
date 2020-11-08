@@ -66,7 +66,7 @@ public class Item extends BaseEntity {
 	private Collection<ItemComponent> itemComponents = new HashSet<ItemComponent>();
 	
 	@JsonIgnoreProperties(value = { "item" }, allowSetters = true)
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.MERGE)
 	@JoinColumn(name = "item_id")
 	private Collection<ItemPackaging> itemPackagings = new HashSet<ItemPackaging>();
 
@@ -186,19 +186,19 @@ public class Item extends BaseEntity {
 		for(ItemReturn ir: this.getItemReturns()) {
 			ir.updateUnits();
 		}
-		for (SaleItem sa : this.getSaleItems()) {
-			sa.updateUnits();
-			this.unitsReturned += sa.getUnitsReturned();
-			if(!sa.getSale().isCancelled()) {
-				this.unitsSold += sa.getUnits();
+		for (SaleItem si : this.getSaleItems()) {
+			si.updateUnits();
+			this.unitsReturned += si.getUnitsReturned();
+			if(!si.getSale().isCancelled()) {
+				this.unitsSold += si.getUnits();
 			}
-			if(!sa.getSale().isCancelled() && !sa.getSale().isPaidInFull()) {
+			if(!si.getSale().isCancelled() && !si.getSale().isPaidInFull()) {
 				this.unitsOpenSale += 1;
 			}
-			this.unitsScheduled += sa.getUnitsScheduled();
-			this.unitsProduced += sa.getUnitsProduced();
-			this.unitsShipped += sa.getUnitsShipped();
-			this.unitsAdjusted += sa.getUnitsAdjusted();
+			this.unitsScheduled += si.getUnitsScheduled();
+			this.unitsProduced += si.getUnitsProduced();
+			this.unitsShipped += si.getUnitsShipped();
+			this.unitsAdjusted += si.getUnitsAdjusted();
 //			this.unitsOnStock += sa.getUnitsOnStock();
 		}
 		for(ItemPackaging ip: this.getItemPackagings()) {

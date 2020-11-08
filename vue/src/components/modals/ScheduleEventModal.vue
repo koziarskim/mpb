@@ -3,7 +3,8 @@
     <b-modal centered size="md" v-model="visible" :hide-header="true" :hide-footer="true">
       <b-row>
         <b-col cols=6>
-          <div>Sale: {{scheduleEvent.saleItem.sale.number}}</div>
+          <div>Sale: {{scheduleEvent.saleItem?scheduleEvent.saleItem.sale.number:'None'}}</div>
+          <div>Package: {{scheduleEvent.itemPackaging.label}}</div>
         </b-col>
         <b-col cols=6>
           <div style="text-align: right;">
@@ -51,7 +52,8 @@ export default {
     return {
       visible: true,
       scheduleEvent: {
-        line: {}
+        line: {},
+        itemPackaging: {},
       },
     };
   },
