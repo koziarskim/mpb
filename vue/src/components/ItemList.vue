@@ -116,7 +116,7 @@ export default {
   methods: {
     showPackagings(itemId){
       http.get("/itemPackaging/item/"+itemId).then(r => {
-        this.packagings = r.data;
+        this.packagings = r.data.content;
         this.showPackagingsMenu = !this.showPackagingsMenu;
       }).catch(e => {console.log("API error: "+ e)})
     },
