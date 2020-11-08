@@ -210,6 +210,7 @@ public class Item extends BaseEntity {
 				unitsAssigned += si.getUnitsAssigned();
 			}
 			for(ScheduleEvent se: ip.getScheduleEvents()) {
+				se.updateUnits();
 				unitsProduced += se.getUnitsProduced();
 				unitsScheduled += se.getUnitsScheduled();
 			}
