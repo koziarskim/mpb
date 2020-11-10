@@ -213,9 +213,11 @@ class ItemRest {
 	@PostMapping("/item")
 	ResponseEntity<?> postItemAndAttachment(@RequestParam(required = false) MultipartFile image, @RequestParam String jsonItem) throws JsonParseException, JsonMappingException, IOException, URISyntaxException {
 		Item item = objectMapper.readValue(jsonItem, Item.class);
-		Item i = itemRepo.findById(item.getId()).get();
-		item.setSaleItems(i.getSaleItems());
-		item.setItemPackagings(i.getItemPackagings());
+		if(item.getId()!=null) {
+			Item i = itemRepo.findById(item.getId()).get();
+			item.setSaleItems(i.getSaleItems());
+			item.setItemPackagings(i.getItemPackagings());
+		}
 		if(!item.getNumber().matches("^[a-zA-Z0-9\\-]{1,15}$")) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Component Number is invalid. Alphanumeric and hyphen only allowed. Maximum 15 characters.");
 		}
