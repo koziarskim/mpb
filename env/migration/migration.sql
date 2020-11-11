@@ -5,6 +5,8 @@ set schema 'shared';
 --End SHARED
 set schema 'y2020';
 
+run /item/update/units
+
 
 
 ---------------------------------

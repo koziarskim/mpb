@@ -192,7 +192,7 @@ public class Item extends BaseEntity {
 			if(!si.getSale().isCancelled()) {
 				this.unitsSold += si.getUnits();
 			}
-			if(!si.getSale().isCancelled() && !si.getSale().isPaidInFull()) {
+			if(si.getSale().getStatus().equalsIgnoreCase(Sale.STATUS.APPROVED.name())) {
 				this.unitsOpenSale += 1;
 			}
 			this.unitsScheduled += si.getUnitsScheduled();
