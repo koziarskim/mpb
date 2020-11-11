@@ -23,7 +23,7 @@ import com.noovitec.mpb.repo.custom.CustomInvoiceRepo.CustomInvoiceRepoImpl;
 
 public interface CustomInvoiceItemRepo {
 	public Page<?> findPagable(Pageable pageable, boolean totals, String invoiceNumer, Long itemId, Long saleId, Long customerId, Long shipmentId,
-			LocalDate invoiceFrom, LocalDate invoiceTo);
+			LocalDate invoiceFrom, LocalDate invoiceTo, Long brandId);
 	
 	@Repository
 	public class CustomInvoiceItemRepoImpl implements CustomInvoiceItemRepo {
@@ -35,8 +35,8 @@ public interface CustomInvoiceItemRepo {
 
 		@Override
 		public Page<?> findPagable(Pageable pageable, boolean totals, String invoiceNumber, Long itemId, Long saleId, Long customerId, Long shipmentId,
-				LocalDate invoiceFrom, LocalDate invoiceTo) {
-			List<Long> ids = this.getIds(pageable, totals, invoiceNumber, itemId, saleId, customerId, shipmentId, invoiceFrom, invoiceTo);
+				LocalDate invoiceFrom, LocalDate invoiceTo, Long brandId) {
+			List<Long> ids = this.getIds(pageable, totals, invoiceNumber, itemId, saleId, customerId, shipmentId, invoiceFrom, invoiceTo, brandId);
 			Query query = entityManager.createQuery("select count(*) from InvoiceItem invItem where invItem.id in :ids");
 			query.setParameter("ids", ids);
 			long total = (long) query.getSingleResult();
@@ -66,7 +66,7 @@ public interface CustomInvoiceItemRepo {
 		}
 		
 		private List<Long> getIds(Pageable pageable, boolean totals, String invoiceNumber, Long itemId, Long saleId, Long customerId, Long shipmentId,
-				LocalDate invoiceFrom, LocalDate invoiceTo) {
+				LocalDate invoiceFrom, LocalDate invoiceTo, Long brandId) {
 			String q = "select distinct invItem.id from InvoiceItem invItem "
 					+ "join invItem.invoice inv "
 					+ "join inv.shipment ship "
@@ -74,6 +74,7 @@ public interface CustomInvoiceItemRepo {
 					+ "join si.sale s "
 					+ "join si.item i "
 					+ "join ship.customer cu "
+					+ "join i.brand brand "
 					+ "where invItem.id is not null ";
 			if (invoiceNumber != null && !invoiceNumber.isEmpty()) {
 				q += "and upper(inv.number) = upper(:invoiceNumber) ";
@@ -96,6 +97,9 @@ public interface CustomInvoiceItemRepo {
 			if(invoiceTo !=null) {
 				q += "and inv.date <= :invoiceTo ";
 			}
+			if (brandId != null) {
+				q += "and brand.id = :brandId ";
+			}
 			Query query = entityManager.createQuery(q);
 			if (invoiceNumber != null && !invoiceNumber.isEmpty()) {
 				query.setParameter("invoiceNumber", invoiceNumber);
@@ -117,6 +121,9 @@ public interface CustomInvoiceItemRepo {
 			}
 			if(invoiceTo !=null) {
 				query.setParameter("invoiceTo", invoiceTo);
+			}
+			if (brandId != null) {
+				query.setParameter("brandId", brandId);
 			}
 			@SuppressWarnings("unchecked")
 			List<Long> ids = query.getResultList();

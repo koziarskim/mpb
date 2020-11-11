@@ -41,12 +41,15 @@ class InvoiceItemRest {
 			@RequestParam(required=false) Long customerId,
 			@RequestParam(required=false) Long shipmentId,
 			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate invoiceFrom,
-			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate invoiceTo) {
+			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate invoiceTo,
+			@RequestParam(required=false) Long brandId) {
 		@SuppressWarnings("unchecked")
-		Page<InvoiceItem> invoiceItems = (Page<InvoiceItem>) invoiceItemRepo.findPagable(pageable, totals, invoiceNumber, itemId, saleId, customerId, shipmentId, invoiceFrom, invoiceTo);
+		Page<InvoiceItem> invoiceItems = (Page<InvoiceItem>) invoiceItemRepo.findPagable(pageable, totals, invoiceNumber, itemId, saleId, customerId, 
+				shipmentId, invoiceFrom, invoiceTo, brandId);
 		if(totals) {
 			@SuppressWarnings("unchecked")
-			Page<?> result = (Page<InvoiceItem>) invoiceItemRepo.findPagable(pageable, totals, invoiceNumber, itemId, saleId, customerId, shipmentId, invoiceFrom, invoiceTo);
+			Page<?> result = (Page<InvoiceItem>) invoiceItemRepo.findPagable(pageable, totals, invoiceNumber, itemId, saleId, customerId, 
+					shipmentId, invoiceFrom, invoiceTo, brandId);
 			return result;
 		} else {
 			Page<InvoiceItemListDto> dtos = invoiceItems.map(invoiceItem -> {
@@ -65,6 +68,7 @@ class InvoiceItemRest {
 				dto.setUnitsInvoiced(invoiceItem.getUnitsInvoiced());
 				dto.setUnitPrice(invoiceItem.getUnitPrice());
 				dto.setTotalUnitPrice(invoiceItem.getTotalUnitPrice());
+				dto.setBrandName(invoiceItem.getSaleItem().getItem().getBrand() == null ? "" : invoiceItem.getSaleItem().getItem().getBrand().getName());
 				return dto;
 			});
 			return dtos;

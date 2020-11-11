@@ -20,6 +20,12 @@
                     <input class="form-control" type="date" v-model="filter.invoiceTo">
                   </b-col>
                 </b-row>
+                <b-row>
+                  <b-col cols=6>
+                    <label class="top-label">Brand:</label>
+                    <b-select option-value="id" option-text="name" :list="availableBrands" v-model="brandKv" placeholder="Brand"></b-select>
+                  </b-col>
+                </b-row>
             </div>
           </b-popover>
         </b-col>      
@@ -87,6 +93,7 @@ export default {
         { key: "number", label: "Invoice #", sortable: false },
         { key: "saleNumber", label: "Sale #", sortable: false },
         { key: "itemNumber", label: "Item #", sortable: false },
+        { key: "brandName", label: "Brand", sortable: false },
         { key: "date", label: "Date", sortable: false },
         { key: "customerName", label: "Customer", sortable: false },
         { key: "shipmentNumber", label: "Shipment", sortable: false },
@@ -115,6 +122,8 @@ export default {
       totalUnitsPrice: 0,
       totalUnits: 0,
       showTotalsMenu: false,
+      availableBrands: [],
+      brandKv: {}
     };
   },
   watch: {
@@ -132,6 +141,11 @@ export default {
     },
   },
   methods: {
+    getAvailableBrands(){
+      http.get("brand/kv").then(r => {
+        this.availableBrands = r.data;
+      }).catch(e => {console.log("API error: "+ e)})
+    },
     getTotalUnitPrice(ii){
       return parseFloat(ii.totalUnitPrice).toLocaleString('en-US',{minimumFractionDigits: 2})
     },
@@ -165,7 +179,8 @@ export default {
         customerId: this.customerKv.id,
         shipmentId: this.shipmentKv.id,
         invoiceFrom: this.filter.invoiceFrom,
-        invoiceTo: this.filter.invoiceTo
+        invoiceTo: this.filter.invoiceTo,
+        brandId: this.brandKv.id,
       }}
       http.get("/invoiceItem/pageable", query).then(r => {
         if(totals){
@@ -207,11 +222,11 @@ export default {
     },
   },
   mounted() {
-    // this.getInvoiceItems();
     this.getAvailableItems();
     this.getAvailableSales();
     this.getAvailableCustomers();
     this.getAvailableShipments();
+    this.getAvailableBrands();
   },
   activated(){
     this.getInvoiceItems();
