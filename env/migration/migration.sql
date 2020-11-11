@@ -5,6 +5,9 @@ set schema 'shared';
 --End SHARED
 set schema 'y2020';
 
+
+
+---------------------------------
 --Set scheduleEvent.item
 run /scheduleEvent/migrate
 

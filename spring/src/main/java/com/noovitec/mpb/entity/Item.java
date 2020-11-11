@@ -66,7 +66,7 @@ public class Item extends BaseEntity {
 	private Collection<ItemComponent> itemComponents = new HashSet<ItemComponent>();
 	
 	@JsonIgnoreProperties(value = { "item" }, allowSetters = true)
-	@OneToMany(cascade = CascadeType.MERGE)
+	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "item_id")
 	private Collection<ItemPackaging> itemPackagings = new HashSet<ItemPackaging>();
 

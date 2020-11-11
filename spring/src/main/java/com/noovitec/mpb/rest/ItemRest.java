@@ -216,7 +216,6 @@ class ItemRest {
 		if(item.getId()!=null) {
 			Item i = itemRepo.findById(item.getId()).get();
 			item.setSaleItems(i.getSaleItems());
-			item.setItemPackagings(i.getItemPackagings());
 		}
 		if(!item.getNumber().matches("^[a-zA-Z0-9\\-]{1,15}$")) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Component Number is invalid. Alphanumeric and hyphen only allowed. Maximum 15 characters.");
@@ -227,6 +226,9 @@ class ItemRest {
 		}
 		for (ItemPackaging ip : item.getItemPackagings()) {
 			ip.setItem(item);
+			for(ScheduleEvent se: ip.getScheduleEvents()) {
+				se.setItem(item);
+			}
 		}
 		item = itemService.save(item);
 		if(image!=null) {
