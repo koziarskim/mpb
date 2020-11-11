@@ -148,9 +148,9 @@ public class SaleItem extends BaseEntity {
 		if((this.units + this.unitsAdjusted) > 0 && this.unitsShipped >= (this.units + this.unitsAdjusted)) {
 			status = Sale.STATUS.SHIPPED.name();
 		}
-		if(!this.totalUnitPrice.equals(BigDecimal.ZERO) && !this.invoicedAmount.equals(BigDecimal.ZERO) && this.invoicedAmount.compareTo(this.totalUnitPrice) >= 0) {
-			status = STATUS.INVOICED_FULL.name();
-		}
+//		if(!this.totalUnitPrice.equals(BigDecimal.ZERO) && !this.invoicedAmount.equals(BigDecimal.ZERO) && this.invoicedAmount.compareTo(this.totalUnitPrice) >= 0) {
+//			status = STATUS.INVOICED_FULL.name();
+//		}
 		if(this.getSale().isCancelled()) {
 			status = Sale.STATUS.CANCELLED.name();
 		}
