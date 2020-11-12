@@ -56,6 +56,7 @@ public class SaleItem extends BaseEntity {
 	@JoinColumn(name = "item_id", referencedColumnName = "id")
 	private Item item;
 	
+	@JsonIgnoreProperties(value = { "saleItems", "scheduleEvents" }, allowSetters = true)
 	@ManyToOne()
 	@JoinColumn(name = "item_packaging_id", referencedColumnName = "id")
 	private ItemPackaging itemPackaging;

@@ -18,6 +18,7 @@ import com.noovitec.mpb.dto.PoComponentDto;
 import com.noovitec.mpb.dto.SearchDto;
 import com.noovitec.mpb.entity.Component;
 import com.noovitec.mpb.entity.ItemComponent;
+import com.noovitec.mpb.entity.ItemPackaging;
 import com.noovitec.mpb.entity.SaleItem;
 
 public interface CustomSearchRepo {
@@ -299,17 +300,19 @@ public interface CustomSearchRepo {
 				//TODO: Do we still need this?
 				for (ItemComponent ic : c.getItemComponents()) {
 					BigDecimal unitsInItem = ic.getUnits();
-					for (SaleItem si : ic.getItem().getSaleItems()) {
-						if (searchDto.getItems().isEmpty() || searchDto.getItems().contains(ic.getItem().getId())) {
-							if (searchDto.getCustomers().isEmpty() || searchDto.getCustomers().contains(si.getSale().getCustomer().getId())) {
-								if (searchDto.getSales().isEmpty() || searchDto.getSales().contains(si.getId())) {
-									unitsSold += (unitsInItem.multiply(new BigDecimal(si.getUnits())).setScale(0, RoundingMode.CEILING).longValue());
-									unitsProduced += (unitsInItem.multiply(new BigDecimal(si.getUnitsProduced())).setScale(0, RoundingMode.CEILING).longValue());
+					for(ItemPackaging ip: ic.getItem().getItemPackagings()) {
+						for (SaleItem si : ip.getSaleItems()) {
+							if (searchDto.getItems().isEmpty() || searchDto.getItems().contains(ic.getItem().getId())) {
+								if (searchDto.getCustomers().isEmpty() || searchDto.getCustomers().contains(si.getSale().getCustomer().getId())) {
+									if (searchDto.getSales().isEmpty() || searchDto.getSales().contains(si.getId())) {
+										unitsSold += (unitsInItem.multiply(new BigDecimal(si.getUnits())).setScale(0, RoundingMode.CEILING).longValue());
+										unitsProduced += (unitsInItem.multiply(new BigDecimal(si.getUnitsProduced())).setScale(0, RoundingMode.CEILING).longValue());
+									}
 								}
 							}
+							totalSold += (unitsInItem.multiply(new BigDecimal(si.getUnits())).setScale(0, RoundingMode.CEILING).longValue());
+							totalProduced += (unitsInItem.multiply(new BigDecimal(si.getUnitsProduced())).setScale(0, RoundingMode.CEILING).longValue());
 						}
-						totalSold += (unitsInItem.multiply(new BigDecimal(si.getUnits())).setScale(0, RoundingMode.CEILING).longValue());
-						totalProduced += (unitsInItem.multiply(new BigDecimal(si.getUnitsProduced())).setScale(0, RoundingMode.CEILING).longValue());
 					}
 				}
 				dto.setUnitsSold(unitsSold);

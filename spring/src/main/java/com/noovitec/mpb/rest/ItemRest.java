@@ -1,8 +1,6 @@
 package com.noovitec.mpb.rest;
 
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -40,10 +38,10 @@ import com.noovitec.mpb.entity.Attachment;
 import com.noovitec.mpb.entity.Item;
 import com.noovitec.mpb.entity.ItemComponent;
 import com.noovitec.mpb.entity.ItemPackaging;
-import com.noovitec.mpb.entity.Packaging;
 import com.noovitec.mpb.entity.SaleItem;
 import com.noovitec.mpb.entity.ScheduleEvent;
 import com.noovitec.mpb.entity.Season;
+import com.noovitec.mpb.repo.ItemPackagingRepo;
 import com.noovitec.mpb.repo.ItemRepo;
 import com.noovitec.mpb.repo.PackagingRepo;
 import com.noovitec.mpb.repo.ScheduleEventRepo;
@@ -51,6 +49,7 @@ import com.noovitec.mpb.repo.SeasonRepo;
 import com.noovitec.mpb.repo.UpcRepo;
 import com.noovitec.mpb.service.AttachmentService;
 import com.noovitec.mpb.service.ComponentService;
+import com.noovitec.mpb.service.CrudService;
 import com.noovitec.mpb.service.CustomerService;
 import com.noovitec.mpb.service.ItemService;
 import com.noovitec.mpb.service.PurchaseService;
@@ -82,6 +81,10 @@ class ItemRest {
 	private PurchaseService purchaseService;
 	@Autowired
 	private PackagingRepo packagingRepo;
+	@Autowired
+	private CrudService crudService;
+	@Autowired
+	private ItemPackagingRepo itemPackagingRepo;
 	
 	private ItemService itemService;
 	private final Logger log = LoggerFactory.getLogger(ItemRest.class);
@@ -213,10 +216,13 @@ class ItemRest {
 	@PostMapping("/item")
 	ResponseEntity<?> postItemAndAttachment(@RequestParam(required = false) MultipartFile image, @RequestParam String jsonItem) throws JsonParseException, JsonMappingException, IOException, URISyntaxException {
 		Item item = objectMapper.readValue(jsonItem, Item.class);
-		if(item.getId()!=null) {
-			Item i = itemRepo.findById(item.getId()).get();
-			item.setSaleItems(i.getSaleItems());
+		for(ItemComponent ic: item.getItemComponents()) {
+			ic.setItem(item);
 		}
+		for(ItemPackaging ip: item.getItemPackagings()) {
+			ip.setItem(item);
+		}
+		
 		if(!item.getNumber().matches("^[a-zA-Z0-9\\-]{1,15}$")) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Component Number is invalid. Alphanumeric and hyphen only allowed. Maximum 15 characters.");
 		}
@@ -224,13 +230,7 @@ class ItemRest {
 		if((item.getId()==null && id !=null) || (item.getId()!=null && id !=null && !item.getId().equals(id))) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Component Number already exists. Please, choose differrent.");
 		}
-		for (ItemPackaging ip : item.getItemPackagings()) {
-			ip.setItem(item);
-			for(ScheduleEvent se: ip.getScheduleEvents()) {
-				se.setItem(item);
-			}
-		}
-		item = itemService.save(item);
+		item = itemRepo.save(item);
 		if(image!=null) {
 			Attachment attachment = attachmentService.store(image, Item.class.getSimpleName(), item.getId(), item.getAttachment());
 			item.setAttachment(attachment);
@@ -249,12 +249,12 @@ class ItemRest {
 	@DeleteMapping("/item/{id}")
 	public ResponseEntity<?> delete(@PathVariable Long id) {
 		Item item = itemRepo.findById(id).get();
-		if(item.getSaleItems().size()>0) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("There are existing Sales!");
-		}
-		if(item.getItemReturns().size()>0) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("There are existing Returns!");
-		}
+//		if(item.getSaleItems().size()>0) {
+//			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("There are existing Sales!");
+//		}
+//		if(item.getItemReturns().size()>0) {
+//			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("There are existing Returns!");
+//		}
 		itemService.delete(id);
 		return ResponseEntity.ok().build();
 	}
@@ -284,50 +284,50 @@ class ItemRest {
 		return ResponseEntity.ok().body("OK");
 	}
 	
-	@GetMapping("/item/migrate")
-	ResponseEntity<?> migrate() {
-		int count = 0;
-		try {
-			List<Item> items = (List<Item>) itemRepo.findAll();
-			for(Item item: items) {
-				Packaging packaging = new Packaging();
-				packaging.setName("Default_"+item.getNumber());
-				packaging.setType("MASTER_CARTON");
-				packaging.setCaseDepth(item.getCaseDepth());
-				packaging.setCaseHeight(item.getCaseHeight());
-				packaging.setCaseWeight(item.getCaseWeight());
-				packaging.setCaseWidth(item.getCaseWidth());
-				packaging.setTi(item.getTi());
-				packaging.setHi(item.getHi());
-				packaging.setPackageCost(BigDecimal.valueOf(12).divide(BigDecimal.valueOf(item.getHi()).multiply(BigDecimal.valueOf(item.getTi()).multiply(BigDecimal.valueOf(item.getCasePack()))), 2, RoundingMode.CEILING));
-				packaging.setPalletWeight(item.getPalletWeight());
-				packaging.setCasePack(item.getCasePack());
-				packaging.setWarehouseCost(BigDecimal.valueOf(12).divide(BigDecimal.valueOf(item.getHi()).multiply(BigDecimal.valueOf(item.getTi()).multiply(BigDecimal.valueOf(item.getCasePack()))), 2, RoundingMode.CEILING));
-				packaging.setTotalPackagingCost(packaging.getWarehouseCost().add(packaging.getPackageCost()));
-				packagingRepo.save(packaging);
-				ItemPackaging ip = new ItemPackaging();
-				ip.setPackaging(packaging);
-				if(item.getItemPackagings()==null) {
-					item.setItemPackagings(new ArrayList<ItemPackaging>());
-				}
-				item.getItemPackagings().add(ip);
-				item = itemRepo.save(item);
-				ip = item.getItemPackagings().iterator().next();
-				for(SaleItem saleItem: item.getSaleItems()) {
-					saleItem.setItemPackaging(ip);
-					for(ScheduleEvent se: saleItem.getScheduleEvents()) {
-						se.setItemPackaging(ip);
-					}
-				}
-				itemRepo.save(item);
-				count++;
-				log.info("Updated: ");
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-		}
-		log.info("Done: "+count);
-		return ResponseEntity.ok().body("OK");
-	}
+//	@GetMapping("/item/migrate")
+//	ResponseEntity<?> migrate() {
+//		int count = 0;
+//		try {
+//			List<Item> items = (List<Item>) itemRepo.findAll();
+//			for(Item item: items) {
+//				Packaging packaging = new Packaging();
+//				packaging.setName("Default_"+item.getNumber());
+//				packaging.setType("MASTER_CARTON");
+//				packaging.setCaseDepth(item.getCaseDepth());
+//				packaging.setCaseHeight(item.getCaseHeight());
+//				packaging.setCaseWeight(item.getCaseWeight());
+//				packaging.setCaseWidth(item.getCaseWidth());
+//				packaging.setTi(item.getTi());
+//				packaging.setHi(item.getHi());
+//				packaging.setPackageCost(BigDecimal.valueOf(12).divide(BigDecimal.valueOf(item.getHi()).multiply(BigDecimal.valueOf(item.getTi()).multiply(BigDecimal.valueOf(item.getCasePack()))), 2, RoundingMode.CEILING));
+//				packaging.setPalletWeight(item.getPalletWeight());
+//				packaging.setCasePack(item.getCasePack());
+//				packaging.setWarehouseCost(BigDecimal.valueOf(12).divide(BigDecimal.valueOf(item.getHi()).multiply(BigDecimal.valueOf(item.getTi()).multiply(BigDecimal.valueOf(item.getCasePack()))), 2, RoundingMode.CEILING));
+//				packaging.setTotalPackagingCost(packaging.getWarehouseCost().add(packaging.getPackageCost()));
+//				packagingRepo.save(packaging);
+//				ItemPackaging ip = new ItemPackaging();
+//				ip.setPackaging(packaging);
+//				if(item.getItemPackagings()==null) {
+//					item.setItemPackagings(new ArrayList<ItemPackaging>());
+//				}
+//				item.getItemPackagings().add(ip);
+//				item = itemRepo.save(item);
+//				ip = item.getItemPackagings().iterator().next();
+//				for(SaleItem saleItem: item.getSaleItems()) {
+//					saleItem.setItemPackaging(ip);
+//					for(ScheduleEvent se: saleItem.getScheduleEvents()) {
+//						se.setItemPackaging(ip);
+//					}
+//				}
+//				itemRepo.save(item);
+//				count++;
+//				log.info("Updated: ");
+//			}
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+//		}
+//		log.info("Done: "+count);
+//		return ResponseEntity.ok().body("OK");
+//	}
 }

@@ -61,13 +61,11 @@ public class Item extends BaseEntity {
 	//------
 
 	@JsonIgnoreProperties(value = { "item" }, allowSetters = true)
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn(name = "item_id")
+	@OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Collection<ItemComponent> itemComponents = new HashSet<ItemComponent>();
 	
-	@JsonIgnoreProperties(value = { "item" }, allowSetters = true)
-	@OneToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name = "item_id")
+	@JsonIgnoreProperties(value = { "item", "scheduleEvents", "saleItems" }, allowSetters = true)
+	@OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Collection<ItemPackaging> itemPackagings = new HashSet<ItemPackaging>();
 
 	@JsonIgnoreProperties(value = { "items" }, allowSetters = true)
@@ -99,26 +97,28 @@ public class Item extends BaseEntity {
 	@JoinColumn(name = "attachment_id", referencedColumnName = "id")
 	private Attachment attachment;
 
-	@JsonIgnore
-	@OneToMany()
-	@JoinColumn(name = "item_id")
-	private Collection<SaleItem> saleItems = new HashSet<SaleItem>();
+//	@JsonIgnore
+//	@OneToMany()
+//	@JoinColumn(name = "item_id")
+//	private Collection<SaleItem> saleItems = new HashSet<SaleItem>();
 
-	@JsonIgnoreProperties(value = { "item", "saleItemReturns" }, allowSetters = true)
-	@OneToMany()
-	@JoinColumn(name = "item_id")
-	private Collection<ItemReturn> itemReturns = new HashSet<ItemReturn>();
+//	@JsonIgnoreProperties(value = { "item", "saleItemReturns" }, allowSetters = true)
+//	@OneToMany()
+//	@JoinColumn(name = "item_id")
+//	private Collection<ItemReturn> itemReturns = new HashSet<ItemReturn>();
 
-	@JsonIgnore
-	@OneToMany()
-	@JoinColumn(name = "item_id")
-	private Collection<ScheduleEvent> scheduleEvents = new HashSet<ScheduleEvent>();
+//	@JsonIgnore
+//	@OneToMany()
+//	@JoinColumn(name = "item_id")
+//	private Collection<ScheduleEvent> scheduleEvents = new HashSet<ScheduleEvent>();
 
 	public Long getDurationSeconds() {
 		Long secs = 0L;
-		for (SaleItem si : this.getSaleItems()) {
-			for (ScheduleEvent se : si.getScheduleEvents()) {
-				secs += se.getDurationSeconds();
+		for(ItemPackaging ip: this.getItemPackagings()) {
+			for (SaleItem si : ip.getSaleItems()) {
+				for (ScheduleEvent se : si.getScheduleEvents()) {
+					secs += se.getDurationSeconds();
+				}
 			}
 		}
 		return secs;
@@ -129,9 +129,9 @@ public class Item extends BaseEntity {
 	
 	public Long getUnitsReceived() {
 		Long units = 0L;
-		for(ItemReturn ir: this.getItemReturns()) {
-			units += ir.getUnitsReceived();
-		}
+//		for(ItemReturn ir: this.getItemReturns()) {
+//			units += ir.getUnitsReceived();
+//		}
 		return units;
 	}
 	
@@ -142,11 +142,13 @@ public class Item extends BaseEntity {
 		Long average = 0L;
 		Long schedules = 0L;
 		BigDecimal perf = BigDecimal.ZERO;
-		for(SaleItem si: this.getSaleItems()) {
-			for(ScheduleEvent se: si.getScheduleEvents()) {
-				if(se.getFinishTime()!=null) {
-					average += se.getPerformance();
-					schedules++;
+		for(ItemPackaging ip: this.getItemPackagings()) {
+			for(SaleItem si: ip.getSaleItems()) {
+				for(ScheduleEvent se: si.getScheduleEvents()) {
+					if(se.getFinishTime()!=null) {
+						average += se.getPerformance();
+						schedules++;
+					}
 				}
 			}
 		}
@@ -183,30 +185,25 @@ public class Item extends BaseEntity {
 		this.unitsReturned = 0;
 		this.unitsAdjusted = 0;
 		this.unitsOnStock = 0;
-		for(ItemReturn ir: this.getItemReturns()) {
-			ir.updateUnits();
-		}
-		for (SaleItem si : this.getSaleItems()) {
-			si.updateUnits();
-			this.unitsReturned += si.getUnitsReturned();
-			if(!si.getSale().isCancelled()) {
-				this.unitsSold += si.getUnits();
-			}
-			if(si.getSale().getStatus().equalsIgnoreCase(Sale.STATUS.APPROVED.name())) {
-				this.unitsOpenSale += 1;
-			}
-			this.unitsScheduled += si.getUnitsScheduled();
-			this.unitsProduced += si.getUnitsProduced();
-			this.unitsShipped += si.getUnitsShipped();
-			this.unitsAdjusted += si.getUnitsAdjusted();
-//			this.unitsOnStock += sa.getUnitsOnStock();
-		}
+//		for(ItemReturn ir: this.getItemReturns()) {
+//			ir.updateUnits();
+//		}
 		for(ItemPackaging ip: this.getItemPackagings()) {
 			long unitsOnStock = 0;
 			long unitsProduced = 0;
 			long unitsAssigned = 0;
 			long unitsScheduled = 0;
-			for(SaleItem si: ip.getSaleItems()) {
+			for (SaleItem si : ip.getSaleItems()) {
+				si.updateUnits();
+				this.unitsReturned += si.getUnitsReturned();
+				if(!si.getSale().isCancelled()) {
+					this.unitsSold += si.getUnits();
+				}
+				if(si.getSale().getStatus().equalsIgnoreCase(Sale.STATUS.APPROVED.name())) {
+					this.unitsOpenSale += 1;
+				}
+				this.unitsShipped += si.getUnitsShipped();
+				this.unitsAdjusted += si.getUnitsAdjusted();
 				unitsAssigned += si.getUnitsAssigned();
 			}
 			for(ScheduleEvent se: ip.getScheduleEvents()) {
@@ -219,6 +216,8 @@ public class Item extends BaseEntity {
 			ip.setUnitsScheduled(unitsScheduled);
 			ip.setUnitsAssigned(unitsAssigned);
 			ip.setUnitsOnStock(unitsOnStock);
+			this.unitsScheduled += unitsScheduled;
+			this.unitsProduced += unitsProduced;
 			this.unitsOnStock += unitsOnStock;
 		}
 		this.updateUnitsReadyProd();

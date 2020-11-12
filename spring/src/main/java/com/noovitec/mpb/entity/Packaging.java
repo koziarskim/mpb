@@ -48,9 +48,9 @@ public class Packaging extends BaseEntity {
 	private BigDecimal packageCost;
 	private BigDecimal totalPackagingCost;
 	
-	@JsonIgnoreProperties(value = { "packaging" }, allowSetters = true)
-	@OneToMany()
-	@JoinColumn(name = "packaging_id")
-	private Collection<ItemPackaging> itemPackagings = new HashSet<ItemPackaging>();
+//	@JsonIgnoreProperties(value = { "packaging" }, allowSetters = true)
+//	@OneToMany()
+//	@JoinColumn(name = "packaging_id")
+//	private Collection<ItemPackaging> itemPackagings = new HashSet<ItemPackaging>();
 
 }

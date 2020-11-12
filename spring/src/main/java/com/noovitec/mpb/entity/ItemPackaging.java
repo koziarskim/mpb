@@ -40,14 +40,12 @@ public class ItemPackaging extends BaseEntity {
 	@JoinColumn(name = "packaging_id", referencedColumnName = "id")
 	private Packaging packaging;
 	
-	@JsonIgnore
-	@OneToMany()
-	@JoinColumn(name = "item_packaging_id")
+	@JsonIgnoreProperties(value = { "itemPackaging", "saleItem", "item" }, allowSetters = true)
+	@OneToMany(mappedBy = "itemPackaging")
 	private Collection<ScheduleEvent> scheduleEvents = new HashSet<ScheduleEvent>();
 
-	@JsonIgnore
-	@OneToMany()
-	@JoinColumn(name = "item_packaging_id")
+	@JsonIgnoreProperties(value = { "scheduleEvents", "itemPackaging", "item" }, allowSetters = true)
+	@OneToMany(mappedBy = "itemPackaging")
 	private Collection<SaleItem> saleItems = new HashSet<SaleItem>();
 
 	@Transient

@@ -189,10 +189,16 @@ export default {
     },
     closePackagingModal(packagings){
       if (packagings) {
-        this.item.itemPackagings = [];
+        var itemPackagings = [];
         packagings.forEach(p => {
-          this.item.itemPackagings.push({item: {id: this.item.id}, packaging: {id: p.id}, label: p.name+' ('+p.type+')'});
+          var idx = this.item.itemPackagings.findIndex(ip =>  ip.packaging.id == p.id);
+          if(idx == -1){
+            itemPackagings.push({item: {id: this.item.id}, packaging: p, label: p.name+' ('+p.typeLabel+')'});
+          } else {
+            itemPackagings.push(this.item.itemPackagings[idx]);
+          }
         })
+        this.item.itemPackagings = itemPackagings;
       }
       this.packagingModalVisible = false;
       this.packaging = {};
