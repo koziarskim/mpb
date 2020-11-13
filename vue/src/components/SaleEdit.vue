@@ -102,10 +102,12 @@
           </template>
           <template v-slot:cell(packaging)="row">
             <div style="width:100px; overflow: wrap; font-size: 11px">{{row.item.itemPackaging.packaging.name}}</div>
-            <div>{{row.item.unitsAssigned}}</div>
+          </template>
+          <template v-slot:cell(unitsAssigned)="row">
+            <input :disabled="!allowEdit()" class="form-control" style="width:80px" type="tel" v-model="row.item.unitsAssigned">
           </template>
           <template v-slot:cell(sku)="row">
-            <input :disabled="!allowEdit()" class="form-control" style="width:100px" type="tel" v-model="row.item.sku">
+            <input :disabled="!allowEdit()" class="form-control" style="width:80px" type="tel" v-model="row.item.sku">
           </template>
           <template v-slot:cell(cost)="row">
             <span>${{(+row.item.itemPackaging.item.totalCost + +row.item.itemPackaging.packaging.totalPackagingCost).toFixed(2)}}</span>
@@ -114,8 +116,8 @@
             <span>{{row.item.unitsOnStock}} </span>
           </template>
           <template v-slot:cell(unitsSchedProd)="row">
-            <b-button size="sm" variant="link" @click="goToScheduled(row.item)">{{row.item.unitsScheduled}}/{{row.item.unitsProduced}}</b-button>
-            <b-button size="sm" variant="link" style="margin-top: -20px" @click="openTransferModal(row.item)">{{row.item.unitsTransferedTo}}-{{row.item.unitsTransferedFrom}}</b-button>
+            <b-button size="sm" variant="link" @click="goToScheduled(row.item)">{{row.item.unitsProduced}}</b-button>
+            <!-- <b-button size="sm" variant="link" style="margin-top: -20px" @click="openTransferModal(row.item)">{{row.item.unitsTransferedTo}}-{{row.item.unitsTransferedFrom}}</b-button> -->
           </template>
           <template v-slot:cell(units)="row">
             <input :disabled="!allowEdit()" class="form-control" style="width:80px" type="tel" v-model="row.item.units">
@@ -223,20 +225,20 @@ export default {
       sortDesc: false,
       columns: [
         { key: "item", label: "Item", sortable: false },
-        { key: "packaging", label: "Packaging", sortable: false },
+        { key: "packaging", label: "Package", sortable: false },
         { key: "sku", label: "SKU#", sortable: false },
         { key: "units", label: "Sold", sortable: false },
         { key: "unitsAdjusted", label: "Adjusted", sortable: false },
-        // { key: "unitsAssigned", label: "Assigned", sortable: false },
+        { key: "unitsAssigned", label: "Assigned", sortable: false },
         { key: "unitsOnStockRet", label: "Stock", sortable: false },
-        { key: "unitsSchedProd", label: "S/P/T", sortable: false },
+        { key: "unitsSchedProd", label: "Prod", sortable: false },
         // { key: "unitsTransfered", label: "Trans", sortable: false },
         { key: "unitsShipped", label: "Ship", sortable: false },
         { key: "cases", label: "Case", sortable: false },
         { key: "cost", label: "Cost", sortable: false },
         { key: "unitPrice", label: "Unit Price", sortable: false },
         { key: "totalUnitPrice", label: "Total", sortable: false },
-        { key: "invoicedAmount", label: "Invoiced", sortable: false },
+        // { key: "invoicedAmount", label: "Invoiced", sortable: false },
         { key: "action", label: "", sortable: false }
       ],
       customerDto: {},
