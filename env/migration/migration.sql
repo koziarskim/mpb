@@ -5,15 +5,11 @@ set schema 'shared';
 --End SHARED
 set schema 'y2020';
 
-ALTER TABLE sale_item ALTER COLUMN item_id DROP NOT NULL;
 
-ALTER TABLE schedule_event ALTER COLUMN item_id DROP NOT NULL;
+---------------------------------
 
 run /item/update/units
 
-
-
----------------------------------
 --Set scheduleEvent.item
 run /scheduleEvent/migrate
 
