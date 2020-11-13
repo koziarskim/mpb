@@ -37,7 +37,7 @@
 			<b-col cols=8>
 				<div v-if="!scheduleEvent.id" style="margin-top: 120px; font-weight: bold">Please select sale order (SO) on the left (red)</div>
 				<div id="1234" :style="chartVisibility">
-					<div style="font-size: 12px; margin-left: 260px">{{scheduleEvent.item.number}}, {{scheduleEvent.itemPackaging.label}}, {{scheduleEvent.saleItem?scheduleEvent.saleItem.sale.number:'None'}}</div>
+					<div style="font-size: 12px; margin-left: 260px">{{scheduleEvent.itemPackaging.item.number}}, {{scheduleEvent.itemPackaging.label}}, {{scheduleEvent.saleItem?scheduleEvent.saleItem.sale.number:'None'}}</div>
 					<chart :chartdata="chartData" :options="chartOptions" :width="600" :height="300"></chart>
 				</div>
 			</b-col>
@@ -123,8 +123,9 @@ export default {
 			scheduleEvents: [],
 			scheduleEvent: {
 				line: {},
-				item: {},
-				itemPackaging: {},
+				itemPackaging: {
+					item: {}
+				},
 				saleItem: {
 					item: {},
 					sale: {
@@ -246,29 +247,29 @@ export default {
       http.get("/scheduleEvent/date/"+this.date, {params: {line_id: this.line_id}}).then(response => {
 				this.items.splice(0, this.items.length);
 				this.scheduleEvents = response.data;
-				response.data.forEach(event => {
-					var item = this.items.find(ie => ie.id == event.item.id);
+				response.data.forEach(se => {
+					var item = this.items.find(ie => ie.id == se.itemPackaging.item.id);
 					if(!item){
 						item = {
-							id: event.item.id,
-							name: event.item.number +" ("+event.item.name+")",
-							active: this.scheduleEvent.item.id == event.item.id?true:false,
+							id: se.itemPackaging.item.id,
+							name: se.itemPackaging.item.number +" ("+se.itemPackaging.item.name+")",
+							active: this.scheduleEvent.itemPackaging.item.id == se.itemPackaging.item.id?true:false,
 							packagings: [],
 						}
 						this.items.push(item);
 					}
-					var packaging = item.packagings.find(ip => ip.id == event.itemPackaging.packaging.id);
+					var packaging = item.packagings.find(ip => ip.id == se.itemPackaging.packaging.id);
 					if(!packaging){
 						packaging = {
-							id: event.itemPackaging.packaging.id,
-							name: event.itemPackaging.label,
+							id: se.itemPackaging.packaging.id,
+							name: se.itemPackaging.label,
 							// active: this.scheduleEvent.saleItem.sale.customer.id == event.saleItem.sale.customer.id?true:false,
 							events: []
 						}
 						item.packagings.push(packaging);
 					}
-					event.active = this.scheduleEvent.id == event.id?true:false;
-					packaging.events.push(event);
+					se.active = this.scheduleEvent.id == se.id?true:false;
+					packaging.events.push(se);
 				})
       }).catch(e => {
         console.log("API error: " + e);

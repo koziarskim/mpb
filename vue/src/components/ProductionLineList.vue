@@ -9,10 +9,10 @@
         <input class="form-control" type="date" v-model="date" placeholder="Date">
       </b-col>
       <b-col cols=1>
-        <b-select option-value="id" option-text="number" :list="availableLines" v-model="selectedLine" placeholder="Line"></b-select>
+        <b-select option-value="id" option-text="number" :list="availableLines" v-model="lineKv" placeholder="Line"></b-select>
       </b-col>
       <b-col cols=3>
-        <b-select option-value="id" option-text="name" :list="availableItems" v-model="selectedItem" placeholder="Pick Item"></b-select>
+        <b-select option-value="id" option-text="name" :list="availableItems" v-model="itemkv" placeholder="Pick Item"></b-select>
       </b-col>
     </b-row>
     <b-table :sticky-header="browserHeight()" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="scheduleEvents" :fields="fields">
@@ -20,8 +20,8 @@
         <b-link role="button" @click="goToProductionLine(row.item)">{{row.item.line.id}}</b-link>
       </template>
       <template v-slot:cell(item)="row">
-        <b-link role="button" @click="goToItem(row.item.item.id)">{{row.item.item.number}}</b-link>
-		    <span> ({{row.item.item.name}})</span>
+        <b-link role="button" @click="goToItem(row.item.itemPackaging.item.id)">{{row.item.itemPackaging.item.number}}</b-link>
+		    <span> ({{row.item.itemPackaging.item.name}})</span>
       </template>
       <template v-slot:cell(sale)="row">
 		    <span v-if="row.item.saleItem">{{row.item.saleItem.sale.number}} - {{row.item.saleItem.sale.customer.name}}</span>
@@ -90,8 +90,8 @@ export default {
     scheduleEvents: [],
     availableLines: [],
     availableItems: [],
-    selectedLine: {},
-    selectedItem: {},
+    lineKv: {},
+    itemkv: {},
     totalScheduled: 0,
     totalProduced: 0,
     itemView: false,
@@ -101,10 +101,10 @@ export default {
     date(newValue, oldValue) {
       this.getScheduleEvents(newValue);
     },
-    selectedLine(newValue, oldValue){
+    lineKv(newValue, oldValue){
       this.getScheduleEvents(this.date);
     },
-    selectedItem(newValue, oldValue){
+    itemkv(newValue, oldValue){
       this.getScheduleEvents(this.date);
     },
     itemView(newValue, oldValue){
@@ -178,28 +178,28 @@ export default {
       ];
     },
     getAvailableItems(){
-      if(this.selectedItem.id){
+      if(this.itemkv.id){
         return;
       }
       this.availableItems = [];
-      this.scheduleEvents.forEach(event => {
+      this.scheduleEvents.forEach(se => {
         //Remove duplicates.
         if(this.availableItems.find(item => 
-          item.id == event.item.id
+          item.id == se.itemPackaging.item.id
         )){
           return;
         }
         this.availableItems.push({
-          id: event.item.id,
-          name: event.item.name
+          id: se.itemPackaging.item.id,
+          name: se.itemPackaging.item.name
         })
       })
     },
 	  getScheduleEvents(date){
-      var query = {line_id: this.selectedLine.id};
+      var query = {line_id: this.lineKv.id};
       http
         .get("/scheduleEvent/date/"+date, {params: {
-          line_id: this.selectedLine.id
+          line_id: this.lineKv.id
         }})
         .then(response => {
           this.scheduleEvents = [];
@@ -208,10 +208,10 @@ export default {
           if(response.data){
             response.data.forEach(se =>{
               se.edit = false;
-              if(this.selectedLine.id && se.line.id != this.selectedLine.id){
+              if(this.lineKv.id && se.line.id != this.lineKv.id){
                 return;
               }
-              if(this.selectedItem.id && se.item.id != this.selectedItem.id){
+              if(this.itemkv.id && se.itemPackaging.item.id != this.itemkv.id){
                 return;
               }
               this.totalScheduled += se.unitsScheduled;

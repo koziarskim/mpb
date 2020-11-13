@@ -51,7 +51,6 @@ public class Sale extends BaseEntity {
 	private long unitsShipped;
 	private long unitsAdjusted;
 	private long unitsOnStock;
-	private long unitsReturned;
 	private long unitsAssigned;
 	private String status;
 	private boolean approved;
@@ -89,7 +88,6 @@ public class Sale extends BaseEntity {
 		this.unitsTransferedTo = 0;
 		this.unitsTransferedFrom = 0;
 		this.unitsAdjusted = 0;
-		this.unitsReturned = 0;
 		this.unitsOnStock = 0;
 		this.unitsAssigned = 0;
 		this.invoicedAmount = BigDecimal.ZERO;
@@ -102,7 +100,6 @@ public class Sale extends BaseEntity {
 			this.unitsTransferedTo += si.getUnitsTransferedTo();
 			this.unitsTransferedFrom += si.getUnitsTransferedFrom();
 			this.unitsAdjusted += si.getUnitsAdjusted();
-			this.unitsReturned += si.getUnitsReturned();
 			this.unitsOnStock += si.getUnitsOnStock();
 			this.unitsAssigned += si.getUnitsAssigned();
 			if(si.getInvoicedAmount()!=null) {

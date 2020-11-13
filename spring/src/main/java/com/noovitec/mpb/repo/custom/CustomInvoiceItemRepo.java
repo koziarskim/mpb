@@ -72,7 +72,8 @@ public interface CustomInvoiceItemRepo {
 					+ "join inv.shipment ship "
 					+ "join invItem.saleItem si "
 					+ "join si.sale s "
-					+ "join si.item i "
+					+ "join si.itemPackaging ip "
+					+ "join ip.item i "
 					+ "join ship.customer cu "
 					+ "join i.brand brand "
 					+ "where invItem.id is not null ";

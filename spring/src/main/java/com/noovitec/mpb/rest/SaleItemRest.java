@@ -141,9 +141,9 @@ class SaleItemRest {
 			dto.setSaleId(saleItem.getSale().getId());
 			dto.setSaleNumber(saleItem.getSale().getNumber());
 			dto.setSaleName(saleItem.getSale().getName());
-			dto.setItemId(saleItem.getItem().getId());
-			dto.setItemNumber(saleItem.getItem().getNumber());
-			dto.setItemName(saleItem.getItem().getName());
+			dto.setItemId(saleItem.getItemPackaging().getItem().getId());
+			dto.setItemNumber(saleItem.getItemPackaging().getItem().getNumber());
+			dto.setItemName(saleItem.getItemPackaging().getItem().getName());
 			dto.setCustomerId(saleItem.getSale().getCustomer().getId());
 			dto.setCustomerName(saleItem.getSale().getCustomer().getName());
 			dto.setDc(saleItem.getSale().getShippingAddress() != null

@@ -213,7 +213,7 @@ class SaleRest {
 		List<SaleItem> saleItems = new ArrayList<SaleItem>();
 		for(SaleItem existingSi: existingSale.getSaleItems()) {
 			SaleItem si = new SaleItem();
-			si.setItem(existingSi.getItem());
+			si.getItemPackaging().setItem(existingSi.getItemPackaging().getItem());
 			si.setSku(existingSi.getSku());
 			si.setUnits(existingSi.getUnits());
 			si.setUnitPrice(existingSi.getUnitPrice());
@@ -266,11 +266,11 @@ class SaleRest {
 		sale.updateUnits();
 		for (SaleItem sa : sale.getSaleItems()) {
 			List<Long> componentIds = new ArrayList<Long>();
-			for (ItemComponent ic : sa.getItem().getItemComponents()) {
+			for (ItemComponent ic : sa.getItemPackaging().getItem().getItemComponents()) {
 				componentIds.add(ic.getComponent().getId());
 			}
 			componentService.updateUnits(componentIds);
-			sa.getItem().updateUnits();
+			sa.getItemPackaging().getItem().updateUnits();
 		}
 		Sale result = (Sale) crudService.save(sale);
 		return ResponseEntity.ok().body(result);
@@ -284,7 +284,7 @@ class SaleRest {
 		}
 		List<Item> items = new ArrayList<Item>();
 		for (SaleItem sa : sale.getSaleItems()) {
-			items.add(sa.getItem());
+			items.add(sa.getItemPackaging().getItem());
 		}
 		saleRepo.deleteById(id);
 		for (Item item : items) {
@@ -379,8 +379,8 @@ class SaleRest {
 				addCell(3, windowDate, row);
 				addCell(3, sale.getDate().format(windowFormat), row);
 				addCell(4, si.getSku(), row);
-				addCell(5, si.getItem().getNumber(), row);
-				addCell(6, si.getItem().getName(), row);
+				addCell(5, si.getItemPackaging().getItem().getNumber(), row);
+				addCell(6, si.getItemPackaging().getItem().getName(), row);
 				addCell(7, String.valueOf(si.getItemPackaging().getPackaging().getCasePack()), row);
 				addCell(8, String.valueOf(si.getUnits()), row);
 				addCell(9, String.valueOf(si.getTotalUnitPrice()), row);
@@ -388,7 +388,7 @@ class SaleRest {
 				cases = cases==0?1:cases;
 				int pallets = (si.getItemPackaging().getPackaging().getTi()*si.getItemPackaging().getPackaging().getHi())/cases;
 				pallets = pallets==0?1:pallets;
-				BigDecimal unitsWeight = si.getItem().getWeight().multiply(BigDecimal.valueOf(si.getUnits()));
+				BigDecimal unitsWeight = si.getItemPackaging().getItem().getWeight().multiply(BigDecimal.valueOf(si.getUnits()));
 				BigDecimal palletsWeight = si.getItemPackaging().getPackaging().getPalletWeight().multiply(BigDecimal.valueOf(pallets));
 				int totalWeight = unitsWeight.add(palletsWeight).intValue();
 				addCell(10, String.valueOf(cases), row);

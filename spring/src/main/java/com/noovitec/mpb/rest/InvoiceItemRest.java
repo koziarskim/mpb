@@ -56,8 +56,8 @@ class InvoiceItemRest {
 				InvoiceItemListDto dto = new InvoiceItemListDto();
 				dto.setId(invoiceItem.getInvoice().getId());
 				dto.setNumber(invoiceItem.getInvoice().getNumber());
-				dto.setItemNumber(invoiceItem.getSaleItem().getItem().getNumber());
-				dto.setItemName(invoiceItem.getSaleItem().getItem().getName());
+				dto.setItemNumber(invoiceItem.getSaleItem().getItemPackaging().getItem().getNumber());
+				dto.setItemName(invoiceItem.getSaleItem().getItemPackaging().getItem().getName());
 				dto.setSaleNumber(invoiceItem.getSaleItem().getSale().getNumber());
 				dto.setDate(invoiceItem.getInvoice().getDate());
 				dto.setShippingDate(invoiceItem.getInvoice().getShippingDate());
@@ -68,7 +68,7 @@ class InvoiceItemRest {
 				dto.setUnitsInvoiced(invoiceItem.getUnitsInvoiced());
 				dto.setUnitPrice(invoiceItem.getUnitPrice());
 				dto.setTotalUnitPrice(invoiceItem.getTotalUnitPrice());
-				dto.setBrandName(invoiceItem.getSaleItem().getItem().getBrand() == null ? "" : invoiceItem.getSaleItem().getItem().getBrand().getName());
+				dto.setBrandName(invoiceItem.getSaleItem().getItemPackaging().getItem().getBrand() == null ? "" : invoiceItem.getSaleItem().getItemPackaging().getItem().getBrand().getName());
 				return dto;
 			});
 			return dtos;

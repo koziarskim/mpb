@@ -38,7 +38,8 @@ public interface CustomShipmentRepo {
 					+ "left join ship.shipmentItems shipItem " 
 					+ "left join shipItem.saleItem si "
 					+ "left join si.sale s "
-					+ "left join si.item i " 
+					+ "left join si.itemPackaging ip "
+					+ "left join ip.item i " 
 					+ "left join ship.customer cu " 
 					+ "where ship.id is not null ";
 			if (number != null && !number.isEmpty()) {

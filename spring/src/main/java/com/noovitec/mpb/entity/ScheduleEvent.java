@@ -58,10 +58,10 @@ public class ScheduleEvent extends BaseEntity {
 	@JoinColumn(name = "sale_item_id", referencedColumnName = "id")
 	private SaleItem saleItem;
 
-	@JsonIgnoreProperties(value = { "scheduleEvents" }, allowSetters = true)
-	@ManyToOne()
-	@JoinColumn(name = "item_id", referencedColumnName = "id")
-	private Item item;
+//	@JsonIgnoreProperties(value = { "scheduleEvents" }, allowSetters = true)
+//	@ManyToOne()
+//	@JoinColumn(name = "item_id", referencedColumnName = "id")
+//	private Item item;
 
 	@Transient
 	boolean completed = false;
@@ -87,10 +87,10 @@ public class ScheduleEvent extends BaseEntity {
 	
 	public BigDecimal getEfficiency() {
 		BigDecimal eff = BigDecimal.ZERO;
-		Long perf = this.getItem().getPerformance();
+		Long perf = this.getItemPackaging().getItem().getPerformance();
 		if(perf > 0L) {
 			eff = BigDecimal.valueOf(this.getPerformance())
-					.divide(BigDecimal.valueOf(this.getItem().getPerformance()), 6, RoundingMode.HALF_UP)
+					.divide(BigDecimal.valueOf(this.getItemPackaging().getItem().getPerformance()), 6, RoundingMode.HALF_UP)
 					.multiply(BigDecimal.valueOf(100));
 		}
 		return eff.setScale(1, RoundingMode.HALF_UP);

@@ -69,7 +69,8 @@ public interface CustomInvoiceRepo {
 					+ "join inv.invoiceItems invItem "
 					+ "join invItem.saleItem si "
 					+ "join si.sale s "
-					+ "join si.item i "
+					+ "join si.itemPackaging ip "
+					+ "join ip.item i "
 					+ "join ship.customer cu "
 					+ "where inv.id is not null ";
 			if (invoiceNumber != null && !invoiceNumber.isEmpty()) {

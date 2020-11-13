@@ -18,7 +18,8 @@ public interface CustomerRepo extends JpaRepository<Customer, Long> {
 	@Query(value = "select distinct new com.noovitec.mpb.dto.KeyValueDto(c.id, c.name) from Customer c "
 			+ "join Sale s on s.customer.id = c.id "
 			+ "join s.saleItems si "
-			+ "where si.item.id = :itemId")
+			+ "join si.itemPackaging ip "
+			+ "where ip.item.id = :itemId")
 	public List<KeyValueDto> findByItem(Long itemId);
 
 	@Query("select cu from Customer cu")

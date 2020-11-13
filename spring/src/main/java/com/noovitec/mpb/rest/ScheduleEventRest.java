@@ -99,7 +99,7 @@ class ScheduleEventRest {
 			emails.add("dramirez@marketplacebrands.com");
 			emails.add("evazquez@marketplacebrands.com");
 			Map<String, String> model = new HashMap<String, String>();
-			String itemNumber = scheduleEvent.getItem().getNumber() + " " + scheduleEvent.getItem().getName();
+			String itemNumber = scheduleEvent.getItemPackaging().getItem().getNumber() + " " + scheduleEvent.getItemPackaging().getItem().getName();
 			String packagingLabel = scheduleEvent.getItemPackaging().getLabel();
 			String saleNumber = "None";
 			String customerName = "None";
@@ -117,7 +117,7 @@ class ScheduleEventRest {
 			List<String> emails = new ArrayList<String>();
 			emails.add("kzygulska@marketplacebrands.com");
 			Map<String, String> model = new HashMap<String, String>();
-			String itemNumber = scheduleEvent.getItem().getNumber()+" "+scheduleEvent.getItem().getName();
+			String itemNumber = scheduleEvent.getItemPackaging().getItem().getNumber()+" "+scheduleEvent.getItemPackaging().getItem().getName();
 			String saleNumber = "None";
 			if(scheduleEvent.getSaleItem() != null) {
 				saleNumber = scheduleEvent.getSaleItem().getSale().getNumber();
@@ -132,12 +132,12 @@ class ScheduleEventRest {
 			componentService.updateUnitsOnStockByProduction(production.getId(), unitsDiff);
 		}
 		scheduleEvent = scheduleEventService.save(scheduleEvent);
-		itemService.updateUnits(Arrays.asList(scheduleEvent.getItem().getId()));
+		itemService.updateUnits(Arrays.asList(scheduleEvent.getItemPackaging().getItem().getId()));
 		if(scheduleEvent.getSaleItem()!=null) {
 			saleService.updateUnits(Arrays.asList(scheduleEvent.getSaleItem().getSale().getId()));
 		}
-		componentService.updateUnitsLockedByItem(scheduleEvent.getItem().getId());
-		itemService.updateUnitsReadyProd(Arrays.asList(scheduleEvent.getItem().getId()));
+		componentService.updateUnitsLockedByItem(scheduleEvent.getItemPackaging().getItem().getId());
+		itemService.updateUnitsReadyProd(Arrays.asList(scheduleEvent.getItemPackaging().getItem().getId()));
 		return ResponseEntity.ok(scheduleEvent);
 	}
 
@@ -148,7 +148,7 @@ class ScheduleEventRest {
 			Long unitsDiff = production.getUnitsProduced() - production.getPreUnitsProduced();
 			componentService.updateUnitsOnStockByProduction(production.getId(), unitsDiff * (-1));
 		}
-		Long itemId = scheduleEvent.getItem().getId();
+		Long itemId = scheduleEvent.getItemPackaging().getItem().getId();
 		Long saleId = null;
 		if(scheduleEvent.getSaleItem() != null) {
 			saleId = scheduleEvent.getSaleItem().getSale().getId();
@@ -168,7 +168,7 @@ class ScheduleEventRest {
 			List<ScheduleEvent> scheduleEvents = scheduleEventRepo.findAll();
 			for(ScheduleEvent se: scheduleEvents) {
 				if(se.getSaleItem()!=null) {
-					se.setItem(se.getSaleItem().getItem());
+					se.getItemPackaging().setItem(se.getSaleItem().getItemPackaging().getItem());
 				}
 				scheduleEventRepo.save(se);
 				log.info("Updated: "+se.getId());

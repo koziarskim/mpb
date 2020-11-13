@@ -33,8 +33,9 @@ public interface CustomSaleItemRepo {
 		@Override
 		public Page<?> getTotals(Pageable pageable, String numberName, Long saleId, Long customerId, Long itemId, 
 				String status, String unitsFilter, boolean showAll) {
-			String q = "select distinct si.id from SaleItem si " 
-					+ "join si.item i " 
+			String q = "select distinct si.id from SaleItem si "
+					+ "join si.itemPackaging ip " 
+					+ "join ip.item i " 
 					+ "join si.sale s " 
 					+ "join s.customer cu " 
 					+ "where si.id is not null ";
@@ -96,11 +97,12 @@ public interface CustomSaleItemRepo {
 		@Override
 		public Page<SaleItem> findPageable(Pageable pageable, String numberName, Long saleId, Long customerId, Long itemId, 
 				String status, String unitsFilter, boolean showAll) {
-			String q = "select distinct si from SaleItem si " 
-				+ "join si.item i " 
-				+ "join si.sale s " 
-				+ "join s.customer cu " 
-				+ "where si.id is not null ";
+			String q = "select distinct si from SaleItem si "
+					+ "join si.itemPackaging ip " 
+					+ "join ip.item i " 
+					+ "join si.sale s " 
+					+ "join s.customer cu " 
+					+ "where si.id is not null ";
 			if (numberName != null && !numberName.isEmpty()) {
 				q += "and (upper(s.number) like concat('%',upper(:numberName),'%') ";
 				q += "or upper(s.name) like concat('%',upper(:numberName),'%')) ";

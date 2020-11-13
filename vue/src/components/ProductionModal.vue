@@ -3,7 +3,7 @@
     <b-modal centered size="lg" v-model="visible" :hide-header="true" :hide-footer="true">
       <b-row>
         <b-col cols=9>
-          <span>Production output for {{scheduleEvent.item.name}}</span>
+          <span>Production output for {{scheduleEvent.itemPackaging.item.name}}</span>
         </b-col>
         <b-col>
           <div style="text-align: right;">

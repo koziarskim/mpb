@@ -97,8 +97,8 @@
         <label class="top-label"></label>
         <b-table v-if="sale.saleItems.length>0" :tbody-tr-class="rowClass" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="sale.saleItems" :fields="columns">
           <template v-slot:cell(item)="row">
-            <b-link role="button" @click.stop="goToItem(row.item.item.id)">{{row.item.item.number}}</b-link>
-            <div class="name-sm" :title="row.item.item.name"> ({{row.item.item.name}})</div>
+            <b-link role="button" @click.stop="goToItem(row.item.itemPackaging.item.id)">{{row.item.itemPackaging.item.number}}</b-link>
+            <div class="name-sm" :title="row.item.itemPackaging.item.name"> ({{row.item.itemPackaging.item.name}})</div>
           </template>
           <template v-slot:cell(packaging)="row">
             <div style="width:100px; overflow: wrap; font-size: 11px">{{row.item.itemPackaging.packaging.name}}</div>
@@ -108,7 +108,7 @@
             <input :disabled="!allowEdit()" class="form-control" style="width:100px" type="tel" v-model="row.item.sku">
           </template>
           <template v-slot:cell(cost)="row">
-            <span>${{(+row.item.item.totalCost + +row.item.itemPackaging.packaging.totalPackagingCost).toFixed(2)}}</span>
+            <span>${{(+row.item.itemPackaging.item.totalCost + +row.item.itemPackaging.packaging.totalPackagingCost).toFixed(2)}}</span>
           </template>
           <template v-slot:cell(unitsOnStockRet)="row">
             <span>{{row.item.unitsOnStock}} </span>
@@ -255,7 +255,9 @@ export default {
       ],
       availableSales: [],
       saleKv: {},
-      itemPackaging: {},
+      itemPackaging: {
+        item: {},
+      },
       availableStatus: [
         {id: 'DRAFT', name: 'Draft'},
         {id: 'PENDING_APPROVAL', name: 'Pending Approval'},
@@ -551,14 +553,14 @@ export default {
       if (!this.item.id) {
         return;
       }
-      var item = this.sale.saleItems.find(it => it.item.id == this.item.id);
+      var item = this.sale.saleItems.find(si => si.itemPackaging.item.id == this.item.id);
       if (item) {
         return;
       }
+      this.itemPackaging.item = {id: this.item.id, name: this.item.name};
       this.sale.saleItems.unshift({ 
           units: 0,
           unitPrice: 0.00,
-          item: this.item,
           unitsTransferedTo: 0,
           unitsTransferedFrom: 0,
           transfersTo: [],

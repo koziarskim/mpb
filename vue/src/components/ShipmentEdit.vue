@@ -127,8 +127,8 @@
         <b-col>
           <b-table v-if="shipment.shipmentItems.length>0" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="shipment.shipmentItems" :fields="columns">
             <template v-slot:cell(item)="row">
-              <b-link role="button" @click.stop="goToItem(row.item.saleItem.item.id)">{{row.item.saleItem.item.number}}</b-link>
-              <div class="name-md" :title="row.item.name"> {{row.item.saleItem.item.name}}</div>
+              <b-link role="button" @click.stop="goToItem(row.item.saleItem.itemPackaging.item.id)">{{row.item.saleItem.itemPackaging.item.number}}</b-link>
+              <div class="name-md"> {{row.item.saleItem.itemPackaging.item.name}}</div>
             </template>
             <template v-slot:cell(sale)="row">
               <b-link @click.stop="goToSale(row.item.saleItem.sale.id)">{{row.item.saleItem.sale.number}}</b-link>
@@ -269,8 +269,8 @@ export default {
     totalWeight() {
       var total = 0;
       this.shipment.shipmentItems.forEach(si => {
-        var totalPaletWeight = +si.saleItem.item.palletWeight * +si.pallets
-        total += (+si.saleItem.item.weight * +si.units) + +totalPaletWeight;
+        var totalPaletWeight = +si.saleItem.itemPackaging.packaging.palletWeight * +si.pallets
+        total += (+si.saleItem.itemPackaging.item.weight * +si.units) + +totalPaletWeight;
       });
       return total.toFixed();
     },
@@ -366,7 +366,7 @@ export default {
       })
     },
     goToItemReturnList(saleItem){
-      var query = { saleId: saleItem.sale.id, itemId: saleItem.item.id };
+      var query = { saleId: saleItem.sale.id, itemId: saleItem.itemPackaging.item.id };
       router.push({path: "/itemReturnList", query: query});
     },
     getNumberOfPallets(shipmentItem){

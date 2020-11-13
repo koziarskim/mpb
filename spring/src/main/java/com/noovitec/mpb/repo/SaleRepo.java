@@ -34,7 +34,8 @@ public interface SaleRepo extends JpaRepository<Sale, Long>, CustomSaleRepo {
 
 	@Query(value="select s from Sale s "
 			+ "join s.saleItems si "
-			+ "join si.item i "
+			+ "join si.itemPackaging ip "
+			+ "join ip.item i "
 			+ "where i.id in :itemIds")
 	public List<Sale> findByItems(List<Long> itemIds);
 

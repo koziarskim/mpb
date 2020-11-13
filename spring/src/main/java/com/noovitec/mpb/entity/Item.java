@@ -43,7 +43,6 @@ public class Item extends BaseEntity {
 	private long unitsScheduled = 0;
 	private long unitsShipped = 0;
 	private long unitsReadyProd = 0;
-	private long unitsReturned = 0;
 	private long unitsOnStock = 0;
 	private long unitsAdjusted = 0;
 	
@@ -182,12 +181,8 @@ public class Item extends BaseEntity {
 		this.unitsScheduled = 0;
 		this.unitsProduced = 0;
 		this.unitsShipped = 0;
-		this.unitsReturned = 0;
 		this.unitsAdjusted = 0;
 		this.unitsOnStock = 0;
-//		for(ItemReturn ir: this.getItemReturns()) {
-//			ir.updateUnits();
-//		}
 		for(ItemPackaging ip: this.getItemPackagings()) {
 			long unitsOnStock = 0;
 			long unitsProduced = 0;
@@ -195,7 +190,6 @@ public class Item extends BaseEntity {
 			long unitsScheduled = 0;
 			for (SaleItem si : ip.getSaleItems()) {
 				si.updateUnits();
-				this.unitsReturned += si.getUnitsReturned();
 				if(!si.getSale().isCancelled()) {
 					this.unitsSold += si.getUnits();
 				}

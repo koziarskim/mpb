@@ -201,10 +201,10 @@ class ShipmentRest {
 		shipment.setStatus(status);
 		shipment = shipmentRepo.save(shipment);
 		for(ShipmentItem si: shipment.getShipmentItems()) {
-			si.getSaleItem().getItem().updateUnits();
+			si.getSaleItem().getItemPackaging().getItem().updateUnits();
 			si.getSaleItem().getSale().updateUnits();
 			crudService.save(si.getSaleItem().getSale());
-			crudService.save(si.getSaleItem().getItem());
+			crudService.save(si.getSaleItem().getItemPackaging().getItem());
 		}
 		return ResponseEntity.ok().body(shipment);
 	}
@@ -216,7 +216,7 @@ class ShipmentRest {
 		List<Sale> sales = new ArrayList<Sale>();
 		for(ShipmentItem si: shipment.getShipmentItems()) {
 			if(si.getSaleItem()!=null) {
-				items.add(si.getSaleItem().getItem());
+				items.add(si.getSaleItem().getItemPackaging().getItem());
 				sales.add(si.getSaleItem().getSale());
 			}
 		}
@@ -260,7 +260,7 @@ class ShipmentRest {
 			if(count <= 30) {
 				saleNumber += si.getSaleItem().getSale().getNumber() +"\n";
 				itemQuantity += si.getUnits() + "\n";
-				itemDescription += si.getSaleItem().getItem().getNumber() + " - " +si.getSaleItem().getItem().getName() 
+				itemDescription += si.getSaleItem().getItemPackaging().getItem().getNumber() + " - " +si.getSaleItem().getItemPackaging().getItem().getName() 
 						+ (si.getSaleItem().getSku()==null?"":" SKU# "+ si.getSaleItem().getSku()) + "\n";
 				itemCasePack += si.getSaleItem().getItemPackaging().getPackaging().getCasePack() + "\n";
 				itemCases += si.getCases() + "\n";
@@ -272,7 +272,7 @@ class ShipmentRest {
 			}else {
 				saleNumber2 += si.getSaleItem().getSale().getNumber() +"\n";
 				itemQuantity2 += si.getUnits() + "\n";
-				itemDescription2 += si.getSaleItem().getItem().getNumber() + " - " +si.getSaleItem().getItem().getName() 
+				itemDescription2 += si.getSaleItem().getItemPackaging().getItem().getNumber() + " - " +si.getSaleItem().getItemPackaging().getItem().getName() 
 						+ (si.getSaleItem().getSku()==null?"":" SKU# "+ si.getSaleItem().getSku()) + "\n";
 				itemCasePack2 += si.getSaleItem().getItemPackaging().getPackaging().getCasePack() + "\n";
 				itemCases2 += si.getCases() + "\n";

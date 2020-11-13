@@ -224,8 +224,8 @@ public interface InvoiceService {
 				if(count <= 20) {
 					itemSaleNumber += ii.getSaleItem().getSale().getNumber() +"\n\n";
 					itemQuantity += ii.getUnitsInvoiced() + "\n\n";
-					itemDescription += ii.getSaleItem().getItem().getNumber() + " - " +ii.getSaleItem().getItem().getName()+"\n" 
-							+(ii.getSaleItem().getItem().getUpc()==null?"":"UPC: "+ii.getSaleItem().getItem().getUpc().getCode())+(ii.getSaleItem().getSku()==null?"":", SKU# "+ ii.getSaleItem().getSku()) + "\n";
+					itemDescription += ii.getSaleItem().getItemPackaging().getItem().getNumber() + " - " +ii.getSaleItem().getItemPackaging().getItem().getName()+"\n" 
+							+(ii.getSaleItem().getItemPackaging().getItem().getUpc()==null?"":"UPC: "+ii.getSaleItem().getItemPackaging().getItem().getUpc().getCode())+(ii.getSaleItem().getSku()==null?"":", SKU# "+ ii.getSaleItem().getSku()) + "\n";
 					itemCasePack += ii.getSaleItem().getItemPackaging().getPackaging().getCasePack() + "\n\n";
 					itemPrice += ii.getUnitPrice() + "\n\n";
 					BigDecimal itemTotalPriceBd = ii.getUnitPrice().multiply(new BigDecimal(ii.getUnitsInvoiced())).setScale(2, RoundingMode.CEILING);
@@ -234,8 +234,8 @@ public interface InvoiceService {
 				}else {
 					itemSaleNumber2 += ii.getSaleItem().getSale().getNumber() +"\n\n";
 					itemQuantity2 += ii.getUnitsInvoiced() + "\n\n";
-					itemDescription2 += ii.getSaleItem().getItem().getNumber() + " - " +ii.getSaleItem().getItem().getName()+"\n" 
-							+(ii.getSaleItem().getItem().getUpc()==null?"":"UPC: "+ii.getSaleItem().getItem().getUpc())+(ii.getSaleItem().getSku()==null?"":", SKU# "+ ii.getSaleItem().getSku()) + "\n";
+					itemDescription2 += ii.getSaleItem().getItemPackaging().getItem().getNumber() + " - " +ii.getSaleItem().getItemPackaging().getItem().getName()+"\n" 
+							+(ii.getSaleItem().getItemPackaging().getItem().getUpc()==null?"":"UPC: "+ii.getSaleItem().getItemPackaging().getItem().getUpc())+(ii.getSaleItem().getSku()==null?"":", SKU# "+ ii.getSaleItem().getSku()) + "\n";
 					itemCasePack2 += ii.getSaleItem().getItemPackaging().getPackaging().getCasePack() + "\n\n";
 					itemPrice2 += ii.getUnitPrice() + "\n\n";
 					BigDecimal itemTotalPriceBd2 = ii.getUnitPrice().multiply(new BigDecimal(ii.getUnitsInvoiced())).setScale(2, RoundingMode.CEILING);

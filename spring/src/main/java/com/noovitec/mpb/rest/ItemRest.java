@@ -110,7 +110,6 @@ class ItemRest {
 		dto.setUnitsAdjusted(item.getUnitsAdjusted());
 		dto.setUnitsOnStock(item.getUnitsOnStock());
 		dto.setUnitsProduced(item.getUnitsProduced());
-		dto.setUnitsReturned(item.getUnitsReturned());
 		dto.setUnitsScheduled(item.getUnitsScheduled());
 		dto.setUnitsShipped(item.getUnitsShipped());
 		dto.setUnitsSold(item.getUnitsSold());
@@ -178,15 +177,15 @@ class ItemRest {
 		List<ItemTreeDto> dtos = new ArrayList<ItemTreeDto>();
 		List<ScheduleEvent> events = scheduleEventRepo.findByDate(date);
 		for (ScheduleEvent se : events) {
-			ItemTreeDto itemDto = dtos.stream().filter(existingDto -> existingDto.getId().equals(se.getItem().getId())).findAny().orElse(null);
+			ItemTreeDto itemDto = dtos.stream().filter(existingDto -> existingDto.getId().equals(se.getItemPackaging().getItem().getId())).findAny().orElse(null);
 			if (itemDto == null) {
 				itemDto = new ItemTreeDto();
-				itemDto.setId(se.getItem().getId());
-				itemDto.setName(se.getItem().getName());
-				itemDto.setUnitsOnStock(se.getItem().getUnitsOnStock());
-				itemDto.setTotalSold(se.getItem().getUnitsSold());
-				itemDto.setTotalProduced(se.getItem().getUnitsProduced());
-				itemDto.setTotalSeconds(se.getItem().getDurationSeconds());
+				itemDto.setId(se.getItemPackaging().getItem().getId());
+				itemDto.setName(se.getItemPackaging().getItem().getName());
+				itemDto.setUnitsOnStock(se.getItemPackaging().getItem().getUnitsOnStock());
+				itemDto.setTotalSold(se.getItemPackaging().getItem().getUnitsSold());
+				itemDto.setTotalProduced(se.getItemPackaging().getItem().getUnitsProduced());
+				itemDto.setTotalSeconds(se.getItemPackaging().getItem().getDurationSeconds());
 				dtos.add(itemDto);
 			}
 			itemDto.setDailyScheduled(itemDto.getDailyScheduled() + se.getUnitsScheduled());

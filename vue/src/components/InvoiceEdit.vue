@@ -126,7 +126,7 @@
             <b-link role="button" @click="goToSale(row.item.saleItem.sale)">{{row.item.saleItem.sale.number}}</b-link>
           </template>
           <template v-slot:cell(item)="row">
-            <b-link role="button" @click="goToItem(row.item.saleItem.item)">{{row.item.saleItem.item.number}}</b-link>
+            <b-link role="button" @click="goToItem(row.item.saleItem.itemPackaging.item)">{{row.item.saleItem.itemPackaging.item.number}}</b-link>
           </template>
           <template v-slot:cell(unitsInvoiced)="row">
             <input class="form-control" style="width:100px" type="tel" v-model="row.item.unitsInvoiced">
