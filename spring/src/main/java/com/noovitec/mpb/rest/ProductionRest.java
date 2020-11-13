@@ -73,6 +73,10 @@ class ProductionRest {
 		if(production.getScheduleEvent().getSaleItem() != null) {
 			long unitsAssigned = production.getScheduleEvent().getSaleItem().getUnitsAssigned();
 			unitsAssigned += unitsDiff;
+			long unitsNeeded = production.getScheduleEvent().getSaleItem().getUnits() + production.getScheduleEvent().getSaleItem().getUnitsAdjusted();
+			if(unitsAssigned > unitsNeeded){
+				unitsAssigned = unitsNeeded;
+			}
 			production.getScheduleEvent().getSaleItem().setUnitsAssigned(unitsAssigned);
 		}
 		production = productionService.save(production);
@@ -98,6 +102,10 @@ class ProductionRest {
 		if(production.getScheduleEvent().getSaleItem() != null) {
 			long unitsAssigned = production.getScheduleEvent().getSaleItem().getUnitsAssigned();
 			unitsAssigned += unitsDiff;
+			long unitsNeeded = production.getScheduleEvent().getSaleItem().getUnits() + production.getScheduleEvent().getSaleItem().getUnitsAdjusted();
+			if(unitsAssigned > unitsNeeded){
+				unitsAssigned = unitsNeeded;
+			}
 			production.getScheduleEvent().getSaleItem().setUnitsAssigned(unitsAssigned);
 		}
 		production = productionService.save(production);

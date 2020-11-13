@@ -103,6 +103,9 @@
           <template v-slot:cell(packaging)="row">
             <div style="width:100px; overflow: wrap; font-size: 11px">{{row.item.itemPackaging.packaging.name}}</div>
           </template>
+          <template v-slot:cell(unitsOnStockRet)="row">
+            <span>{{getUnitsOnStock(row.item)}} </span>
+          </template>
           <template v-slot:cell(unitsAssigned)="row">
             <input :disabled="!allowEdit()" class="form-control" style="width:80px" type="tel" v-model="row.item.unitsAssigned">
           </template>
@@ -111,9 +114,6 @@
           </template>
           <template v-slot:cell(cost)="row">
             <span>${{(+row.item.itemPackaging.item.totalCost + +row.item.itemPackaging.packaging.totalPackagingCost).toFixed(2)}}</span>
-          </template>
-          <template v-slot:cell(unitsOnStockRet)="row">
-            <span>{{row.item.unitsOnStock}} </span>
           </template>
           <template v-slot:cell(unitsSchedProd)="row">
             <b-button size="sm" variant="link" @click="goToScheduled(row.item)">{{row.item.unitsProduced}}</b-button>
@@ -226,11 +226,11 @@ export default {
       columns: [
         { key: "item", label: "Item", sortable: false },
         { key: "packaging", label: "Package", sortable: false },
+        { key: "unitsOnStockRet", label: "Stock", sortable: false },
         { key: "sku", label: "SKU#", sortable: false },
         { key: "units", label: "Sold", sortable: false },
         { key: "unitsAdjusted", label: "Adjusted", sortable: false },
         { key: "unitsAssigned", label: "Assigned", sortable: false },
-        { key: "unitsOnStockRet", label: "Stock", sortable: false },
         { key: "unitsSchedProd", label: "Prod", sortable: false },
         // { key: "unitsTransfered", label: "Trans", sortable: false },
         { key: "unitsShipped", label: "Ship", sortable: false },
@@ -419,6 +419,10 @@ export default {
     getSaleData(id) {
       return http.get("/sale/" + id).then(response => {
         this.sale = response.data;
+        response.data.saleItems.forEach(si => {
+          si.prevUnitsAssigned = si.unitsAssigned;
+          si.unitsOnStock = 0;
+        })
         this.setSaleFromIds();
         if (response.data.customer) {
           this.customerDto = {
@@ -470,10 +474,6 @@ export default {
       if(!this.validate()){
         return Promise.reject();
       }
-      this.sale.saleItems.forEach(si=>{
-        si.unitsAdjusted = si.unitsAdjusted || 0;
-        si.units == si.units || 0;
-      })
       this.sale.totalPrice = this.totalPrice;
       if(!this.sale.shippingAddress || !this.sale.shippingAddress.id){
         this.sale.shippingAddress = null;
@@ -496,6 +496,18 @@ export default {
     validate(){
       if(!this.sale.number || !this.sale.customer.id){
         alert("Number, Customer required");
+        return false;
+      }
+      var tooManyAssignedItem = null;
+      this.sale.saleItems.forEach(si=>{
+        si.unitsAdjusted = si.unitsAdjusted || 0;
+        si.units == si.units || 0;
+        if(((si.unitsOnStock) < 0) || (si.unitsAssigned > (+si.units + +si.unitsAdjusted))){
+          tooManyAssignedItem = si.itemPackaging.item.number;
+        }
+      })
+      if(tooManyAssignedItem){
+        alert("Item: "+tooManyAssignedItem+" - Units Assigned cannot be more that Stock");
         return false;
       }
       return true;
@@ -589,6 +601,11 @@ export default {
     },
     getCases(si){
       return Math.ceil(+si.units / +si.itemPackaging.packaging.casePack).toFixed(0);
+    },
+    getUnitsOnStock(si){
+      var diff = +si.prevUnitsAssigned - +si.unitsAssigned;
+      si.unitsOnStock = +si.itemPackaging.unitsOnStock + +diff;
+      return si.unitsOnStock;
     }
   },
   mounted() {
