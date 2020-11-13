@@ -226,7 +226,12 @@ export default {
 		},
 		updateProduction(production){
 			production.scheduleEvent = {id: this.scheduleEvent.id};
-				this.saveScheduleEvent();
+			http.post("/production", production).then(response => {
+						this.getScheduleEvents();
+						this.getScheduleEvent(this.scheduleEvent.id);
+			}).catch(e => {
+				console.log("API error: " + e);
+			});
 		},
 		deleteProduction(production_id){
 			http.delete("/production/"+production_id).then(response => {

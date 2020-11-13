@@ -69,6 +69,12 @@ class ProductionRest {
 	@PostMapping("/production")
 	ResponseEntity<Production> post(@RequestBody Production production) {
 		Long unitsDiff = production.getUnitsProduced() - production.getPreUnitsProduced();
+		production = (Production) crudService.merge(production);
+		if(production.getScheduleEvent().getSaleItem() != null) {
+			long unitsAssigned = production.getScheduleEvent().getSaleItem().getUnitsAssigned();
+			unitsAssigned += unitsDiff;
+			production.getScheduleEvent().getSaleItem().setUnitsAssigned(unitsAssigned);
+		}
 		production = productionService.save(production);
 		componentService.updateUnitsOnStockByProduction(production.getId(), unitsDiff);
 		itemService.updateUnits(Arrays.asList(production.getScheduleEvent().getItemPackaging().getItem().getId()));
@@ -88,6 +94,13 @@ class ProductionRest {
 	ResponseEntity<?> delete(@PathVariable Long id) {
 		Production production = productionRepo.getOne(id);
 		Long unitsDiff = production.getUnitsProduced() * (-1);
+		production = (Production) crudService.merge(production);
+		if(production.getScheduleEvent().getSaleItem() != null) {
+			long unitsAssigned = production.getScheduleEvent().getSaleItem().getUnitsAssigned();
+			unitsAssigned += unitsDiff;
+			production.getScheduleEvent().getSaleItem().setUnitsAssigned(unitsAssigned);
+		}
+		production = productionService.save(production);
 		componentService.updateUnitsOnStockByProduction(production.getId(), unitsDiff);
 		Long itemId = production.getScheduleEvent().getItemPackaging().getItem().getId();
 		Long saleId = null;

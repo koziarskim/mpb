@@ -39,7 +39,6 @@ public class SaleItem extends BaseEntity {
 	private long unitsShipped;
 	private long unitsTransferedTo;
 	private long unitsTransferedFrom;
-//	private long unitsReturned;
 	private long unitsAdjusted;
 
 	private BigDecimal invoicedAmount;
@@ -51,11 +50,6 @@ public class SaleItem extends BaseEntity {
 	@JoinColumn(name = "sale_id", referencedColumnName = "id")
 	private Sale sale;
 
-//	@JsonIgnoreProperties(value = { "saleItems", "itemComponents" }, allowSetters = true)
-//	@ManyToOne()
-//	@JoinColumn(name = "item_id", referencedColumnName = "id")
-//	private Item item;
-	
 	@JsonIgnoreProperties(value = { "saleItems", "scheduleEvents" }, allowSetters = true)
 	@ManyToOne()
 	@JoinColumn(name = "item_packaging_id", referencedColumnName = "id")
@@ -77,11 +71,6 @@ public class SaleItem extends BaseEntity {
 	@JoinColumn(name = "sale_item_id")
 	private Collection<InvoiceItem> invoiceItems = new HashSet<InvoiceItem>();
 
-//	@JsonIgnoreProperties(value = { "saleItem", "itemReturn" }, allowSetters = true)
-//	@OneToMany()
-//	@JoinColumn(name = "sale_item_id")
-//	private Collection<SaleItemReturn> saleItemReturns = new HashSet<SaleItemReturn>();
-
 	@JsonIgnoreProperties(value = { "saleItemTo", "saleItemFrom" }, allowSetters = true)
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "sale_item_from_id")
@@ -98,14 +87,9 @@ public class SaleItem extends BaseEntity {
 		this.unitsShipped = 0;
 		this.unitsTransferedTo = 0;
 		this.unitsTransferedFrom = 0;
-//		this.unitsReturned = 0;
 		this.unitsOnStock = 0;
-		this.unitsAssigned = 0;
 		this.invoicedAmount = BigDecimal.ZERO;
 		
-//		for(SaleItemReturn sir: this.getSaleItemReturns()) {
-//			this.unitsReturned += sir.getUnitsReturned();
-//		}
 		for (ScheduleEvent se : this.getScheduleEvents()) {
 			se.updateUnits();
 			this.unitsScheduled += se.getUnitsScheduled();
@@ -127,7 +111,7 @@ public class SaleItem extends BaseEntity {
 				this.invoicedAmount = this.invoicedAmount.add(ii.getTotalUnitPrice());
 			}
 		}
-		unitsAssigned += this.getUnitsProduced() + (this.getUnitsTransferedTo() - this.getUnitsTransferedFrom());
+//		unitsAssigned += this.getUnitsProduced() + (this.getUnitsTransferedTo() - this.getUnitsTransferedFrom());
 		this.unitsOnStock = this.unitsProduced + this.unitsTransferedTo - this.unitsTransferedFrom - this.unitsShipped;
 		this.updateStatus();
 	}
