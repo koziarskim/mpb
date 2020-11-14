@@ -316,11 +316,15 @@ export default {
       return saleItem.totalUnitPrice.toLocaleString('en-US',{minimumFractionDigits: 2});
     },
     rowClass(item, type) {
-        if(item.status == 'SHIPPED'){
-          return 'fully-shipped'
-        }
-        return;
-      },
+      var klass = "";
+      if(item.status == 'SHIPPED'){
+        klass = 'fully-shipped'
+      }
+      if((+item.units + +item.unitsAdjusted) != +item.unitsShipped){
+        klass = 'over-shipped';
+      }
+      return klass;
+    },
     goToItemReturnList(saleItem){
       var query = { saleId: this.sale.id, itemId: saleItem.item.id };
       router.push({path: "/itemReturnList", query: query});
@@ -352,7 +356,7 @@ export default {
       // return securite.hasRole(["SALE_ADMIN"]);
     },
     goToScheduled(si) {
-      router.push("/scheduleEventList/" + si.item.id + "/sale/" + this.sale.id);
+      router.push("/scheduleEventList/" + si.itemPackaging.item.id + "/sale/" + this.sale.id);
     },
     goToShipment(si){
       var query = { saleId: this.sale.id };
@@ -595,5 +599,8 @@ export default {
 <style>
 .fully-shipped {
   background-color: #b6e6c9;
+}
+.over-shipped {
+  background-color: #cea0a0;
 }
 </style>

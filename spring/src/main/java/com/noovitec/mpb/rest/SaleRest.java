@@ -123,7 +123,7 @@ class SaleRest {
 			dto.setStatus(sale.getStatus());
 			String shippingFrom = sale.getShippingFrom()==null?"":sale.getShippingFrom().format(windowFormat);
 			String shippingTo = sale.getShippingTo()==null?"":sale.getShippingTo().format(windowFormat);
-			dto.setShippingWindow(shippingFrom +" - "+shippingTo);
+			dto.setShippingWindow(shippingFrom +"-"+shippingTo);
 			return dto;
 		});
 		return all;

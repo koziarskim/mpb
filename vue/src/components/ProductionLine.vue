@@ -37,7 +37,7 @@
 			<b-col cols=8>
 				<div v-if="!scheduleEvent.id" style="margin-top: 120px; font-weight: bold">Please select sale order (SO) on the left (red)</div>
 				<div id="1234" :style="chartVisibility">
-					<div style="font-size: 12px; margin-left: 260px">{{scheduleEvent.itemPackaging.item.number}}, {{scheduleEvent.itemPackaging.label}}, {{scheduleEvent.saleItem?scheduleEvent.saleItem.sale.number:'None'}}</div>
+					<div style="font-size: 12px; margin-left: 260px">{{scheduleEvent.itemPackaging.item?scheduleEvent.itemPackaging.item.number:""}}, {{scheduleEvent.itemPackaging.label}}, {{scheduleEvent.saleItem?scheduleEvent.saleItem.sale.number:'None'}}</div>
 					<chart :chartdata="chartData" :options="chartOptions" :width="600" :height="300"></chart>
 				</div>
 			</b-col>
@@ -255,10 +255,14 @@ export default {
 				response.data.forEach(se => {
 					var item = this.items.find(ie => ie.id == se.itemPackaging.item.id);
 					if(!item){
+						var isActive = false;
+						if(this.scheduleEvent.id){
+							isActive = this.scheduleEvent.itemPackaging.item.id == se.itemPackaging.item.id?true:false;
+						}						
 						item = {
 							id: se.itemPackaging.item.id,
 							name: se.itemPackaging.item.number +" ("+se.itemPackaging.item.name+")",
-							active: this.scheduleEvent.itemPackaging.item.id == se.itemPackaging.item.id?true:false,
+							active: isActive,
 							packagings: [],
 						}
 						this.items.push(item);

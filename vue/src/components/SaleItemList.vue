@@ -26,7 +26,7 @@
                 <b-popover :show="showTotalsMenu" placement="bottom" target="totalsMenu" variant="secondary">
                   <div style="width: 300px; font-size: 16px">
                     <div>Total of {{pageable.totalElements}} rows</div>
-                    <div>Sold: {{totalSold}}</div>
+                    <div>Sold & Adj: {{totalSold}}</div>
                     <div>Produced: {{totalProduced}}</div>
                     <div>Assigned: {{totalAssigned}}</div>
                     <div>Shipped: {{totalShipped}}</div>
@@ -45,7 +45,10 @@
               <b-link role="button" @click=goToSale(row.item.saleId)>{{row.item.saleNumber}}</b-link>
           </template>
           <template v-slot:cell(itemNumber)="row">
-            <div style="width:200px; overflow: wrap; font-size: 14px"><b-link role="button" @click="goToItem(row.item.itemId)">{{row.item.itemNumber}}</b-link> {{row.item.itemName}}</div>
+            <div><b-link role="button" @click="goToItem(row.item.itemId)">{{row.item.itemNumber}}</b-link><span style="width:200px; overflow: wrap; font-size: 12px"> {{row.item.itemName}}</span></div>
+          </template>
+          <template v-slot:cell(packagingLabel)="row">
+            <div style="width:150px; overflow: wrap; font-size: 12px">{{row.item.packagingLabel}}</div>
           </template>
           <template v-slot:cell(unitsSoldAdj)="row">
               <span>{{+row.item.unitsSold + +row.item.unitsAdjusted}}</span>
@@ -104,7 +107,7 @@ export default {
         { key: "itemNumber", label: "Item", sortable: false },
         { key: "packagingLabel", label: "Packaging", sortable: false },
         { key: "customerName", label: "Customer", sortable: false },
-        { key: "unitsSoldAdj", label: "Sold", sortable: false },
+        { key: "unitsSoldAdj", label: "Sold&Adj", sortable: false },
         { key: "unitsAssigned", label: "Assigned", sortable: false },
         { key: "unitsSchProd", label: "Sch/Prod", sortable: false },
         { key: "unitsShipped", label: "Ship", sortable: false },

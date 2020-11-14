@@ -23,7 +23,7 @@
             <b-popover :show="showTotalsMenu" placement="bottom" target="totalsMenu" variant="secondary">
               <div style="width: 300px; font-size: 16px">
                 <div>Total of {{pageable.totalElements}} rows</div>
-                <div>Total sold: {{totalSold}}</div>
+                <div>Total Sold & Adj: {{totalSold}}</div>
                 <div>Total amount: ${{totalAmount.toLocaleString('en-US',{minimumFractionDigits: 2})}}</div>
               </div>
             </b-popover>
@@ -55,8 +55,11 @@
         <template v-slot:cell(number)="row">
           <b-button size="sm" @click="goToSale(row.item.id)" variant="link">{{row.item.number}}</b-button>
         </template>
-        <template v-slot:cell(unitsSold)="row">
-            <span>{{row.item.unitsSold}}</span>
+        <template v-slot:cell(dc)="row">
+          <div style="width:150px; overflow: wrap; font-size: 12px">{{row.item.dc}}</div>
+        </template>
+        <template v-slot:cell(unitsSoldAdj)="row">
+            <span>{{+row.item.unitsSold + +row.item.unitsAdjusted}}</span>
         </template>
         <template v-slot:cell(unitsSchProd)="row">
             <span>{{row.item.unitsScheduled}}/{{row.item.unitsProduced}}</span>
@@ -109,11 +112,11 @@ export default {
         { key: "number", label: "Sale #", sortable: false },
         { key: "customerName", label: "Customer", sortable: true },
         { key: "dc", label: "DC (State)", sortable: false },
-        { key: "shippingWindow", label: "Ship Window", sortable: false },
-        { key: "unitsSold", label: "Sold", sortable: false },
+        { key: "shippingWindow", label: "Ship", sortable: false },
+        { key: "unitsSoldAdj", label: "Sold&Adj", sortable: false },
         { key: "unitsAssigned", label: "Assigned", sortable: false },
         { key: "unitsSchProd", label: "Sch/Prod", sortable: false },
-        { key: "unitsShipped", label: "Ship", sortable: false },
+        { key: "unitsShipped", label: "Shipped", sortable: false },
         { key: "status", label: "Status", sortable: false },
         { key: "action", label: "", sortable: false}
       ],

@@ -71,7 +71,7 @@ public interface CustomSaleRepo {
 			if(ids.size()==0) {
 				ids.add(0L);
 			}
-			q = "select sum(s.unitsSold), sum(s.totalPrice) from Sale s where s.id in :ids ";
+			q = "select (sum(s.unitsSold)+sum(s.unitsAdjusted)), sum(s.totalPrice) from Sale s where s.id in :ids ";
 			query = entityManager.createQuery(q);
 			query.setParameter("ids", ids);
 			long total = query.getResultStream().count();
