@@ -320,7 +320,7 @@ export default {
       if(item.status == 'SHIPPED'){
         klass = 'fully-shipped'
       }
-      if((+item.units + +item.unitsAdjusted) != +item.unitsShipped){
+      if((+item.units + +item.unitsAdjusted) < +item.unitsShipped){
         klass = 'over-shipped';
       }
       return klass;
