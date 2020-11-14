@@ -50,11 +50,8 @@
           <template v-slot:cell(unitsSoldAdj)="row">
               <span>{{+row.item.unitsSold + +row.item.unitsAdjusted}}</span>
           </template>
-          <template v-slot:cell(unitsTrasfered)="row">
-              <span>{{row.item.unitsTransferedTo}}-{{row.item.unitsTranferedFrom}}</span>
-          </template>
-          <template v-slot:cell(unitsStockShip)="row">
-              <b-button size="sm" @click=goToShipment(row.item.itemId,row.item.saleId) variant="link">{{row.item.unitsOnStock}}/{{row.item.unitsShipped}}</b-button>
+          <template v-slot:cell(unitsShipped)="row">
+              <b-button size="sm" @click=goToShipment(row.item.itemId,row.item.saleId) variant="link">{{row.item.unitsShipped}}</b-button>
           </template>
           <template v-slot:cell(unitsSchProd)="row">
             <b-button size="sm" variant="link" @click="goToScheduled(row.item)">{{row.item.unitsScheduled}}/{{row.item.unitsProduced}}</b-button>
@@ -110,8 +107,7 @@ export default {
         { key: "unitsSoldAdj", label: "Sold", sortable: false },
         { key: "unitsAssigned", label: "Assigned", sortable: false },
         { key: "unitsSchProd", label: "Sch/Prod", sortable: false },
-        { key: "unitsTrasfered", label: "Transf", sortable: false },
-        { key: "unitsStockShip", label: "Stock/Ship", sortable: false },
+        { key: "unitsShipped", label: "Ship", sortable: false },
         { key: "status", label: "Status", sortable: false },
         { key: "action", label: "", sortable: false}
       ],

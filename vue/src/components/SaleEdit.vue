@@ -89,7 +89,7 @@
       </b-col>
       <b-col cols=3 style="margin-top: 20px;">
           <span style="font-weight: bold">Items #: </span>{{totalItems}}, <span style="font-weight: bold">Units: </span>{{totalUnits}}<br/>
-          <span style="font-weight: bold">Cases: </span>{{totalCases}}, <span style="font-weight: bold">Total: </span>${{totalPrice}}
+          <span style="font-weight: bold">Cases: </span>{{Math.ceil(totalCases)}}, <span style="font-weight: bold">Total: </span>${{totalPrice}}
       </b-col>
     </b-row>
     <b-row>
@@ -117,7 +117,6 @@
           </template>
           <template v-slot:cell(unitsSchedProd)="row">
             <b-button size="sm" variant="link" @click="goToScheduled(row.item)">{{row.item.unitsProduced}}</b-button>
-            <!-- <b-button size="sm" variant="link" style="margin-top: -20px" @click="openTransferModal(row.item)">{{row.item.unitsTransferedTo}}-{{row.item.unitsTransferedFrom}}</b-button> -->
           </template>
           <template v-slot:cell(units)="row">
             <input :disabled="!allowEdit()" class="form-control" style="width:80px" type="tel" v-model="row.item.units">
@@ -138,9 +137,6 @@
           </template>
           <template v-slot:cell(invoicedAmount)="row">
             <span>${{parseFloat(row.item.invoicedAmount).toLocaleString('en-US',{minimumFractionDigits: 2})}}</span>
-          </template>
-          <template v-slot:cell(unitsTransfered)="row">
-            <b-button size="sm" variant="link" @click="openTransferModal(row.item)">{{row.item.unitsTransferedTo}}-{{row.item.unitsTransferedFrom}}</b-button>
           </template>
           <template v-slot:cell(unitsShipped)="row">
             <b-button size="sm" variant="link" @click="goToShipment(row.item)">{{row.item.unitsShipped}}</b-button>
@@ -181,9 +177,6 @@
         </b-col>
       </b-row>
     </b-modal>
-    <div v-if="transferModalVisible">
-			<transfer-modal :sale-item-to="saleItem" v-on:saveModal="saveTransferModal"></transfer-modal>
-		</div>
   </b-container>
 </template>
 
@@ -195,14 +188,12 @@ import moment from "moment";
 
 export default {
   components: {
-    TransferModal: () => import("./TransferModal"),
     UploadFile: () => import("../directives/UploadFile"),
   },
   data() {
     return {
       securite: securite,
       modalVisible: false,
-      transferModalVisible: false,
       locked: false,
       sale: {
         saleItems: [],
@@ -232,13 +223,11 @@ export default {
         { key: "unitsAdjusted", label: "Adjusted", sortable: false },
         { key: "unitsAssigned", label: "Assigned", sortable: false },
         { key: "unitsSchedProd", label: "Prod", sortable: false },
-        // { key: "unitsTransfered", label: "Trans", sortable: false },
         { key: "unitsShipped", label: "Ship", sortable: false },
         { key: "cases", label: "Case", sortable: false },
         { key: "cost", label: "Cost", sortable: false },
         { key: "unitPrice", label: "Unit Price", sortable: false },
         { key: "totalUnitPrice", label: "Total", sortable: false },
-        // { key: "invoicedAmount", label: "Invoiced", sortable: false },
         { key: "action", label: "", sortable: false }
       ],
       customerDto: {},
@@ -246,7 +235,6 @@ export default {
       unitsForSale: null,
       unitPrice: null,
       saleItem: {},
-      saleFromIds: [],
       availableFreightTerms: [
         {id: "TPB", name: "TP Bill"},
         {id: "PRP", name: "Pre Paid"},
@@ -373,19 +361,6 @@ export default {
       }
       router.push({path: "/shipmentList", query: query})
     },
-    openTransferModal(saleItem){
-      if(!this.sale.id){
-        alert("Please, save sale before adding transfer");
-        return;
-      }
-      this.saleItem = saleItem;
-      this.saleItem.saleNumber = this.sale.number
-      this.transferModalVisible = true;
-    },
-    saveTransferModal(saleItem){
-      this.saleItem = {},
-      this.transferModalVisible = false;
-    },
     saveModal(){
       this.closeModal();
     },
@@ -423,7 +398,6 @@ export default {
           si.prevUnitsAssigned = si.unitsAssigned;
           si.unitsOnStock = 0;
         })
-        this.setSaleFromIds();
         if (response.data.customer) {
           this.customerDto = {
             id: response.data.customer.id,
@@ -438,13 +412,6 @@ export default {
       }).catch(e => {
         console.log("API error: " + e);
       });
-    },
-    setSaleFromIds(){
-      this.sale.saleItems.forEach(si => {
-        si.transfersTo.forEach(sit => {
-          this.saleFromIds.push(sit.saleFromId);
-        })
-      })
     },
     readySale(){
       this.sale.pendingApproval = true;
@@ -583,12 +550,8 @@ export default {
       this.sale.saleItems.unshift({ 
           units: 0,
           unitPrice: 0.00,
-          unitsTransferedTo: 0,
-          unitsTransferedFrom: 0,
           prevUnitsAssigned: 0,
           unitsAssigned: 0,
-          transfersTo: [],
-          transfersFrom: [],
           itemPackaging: this.itemPackaging,
       });
       this.itemDto = {},

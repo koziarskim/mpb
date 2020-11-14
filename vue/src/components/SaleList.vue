@@ -54,15 +54,6 @@
         </template>
         <template v-slot:cell(number)="row">
           <b-button size="sm" @click="goToSale(row.item.id)" variant="link">{{row.item.number}}</b-button>
-            <!-- <b-button variant="link" :id="'popover-button-variant'+row.item.id" @click="showPopover(row.item)">{{row.item.number}}</b-button>
-            <b-popover placement="bottomright" :target="'popover-button-variant'+row.item.id" triggers="focus" variant="primary">
-              <template v-slot:title>
-                <b-button size="sm" @click="goToSale(row.item.id)" variant="link">View/Edit Details</b-button>
-              </template>
-              <div v-for="si in row.item.saleItems" :key="si.id">
-                <div>{{si.item.number}} - {{si.item.name}}, Sold: {{si.units}}, Produced: {{si.unitsProduced}}, Price: ${{si.unitPrice}}</div>
-              </div>
-            </b-popover> -->
         </template>
         <template v-slot:cell(unitsSold)="row">
             <span>{{row.item.unitsSold}}</span>
@@ -70,11 +61,8 @@
         <template v-slot:cell(unitsSchProd)="row">
             <span>{{row.item.unitsScheduled}}/{{row.item.unitsProduced}}</span>
         </template>
-        <template v-slot:cell(unitsTransfered)="row">
-            <span>{{row.item.unitsTransferedTo}}-{{row.item.unitsTransferedFrom}}</span>
-        </template>
-        <template v-slot:cell(unitsStockShip)="row">
-            <b-button size="sm" @click=goToShipment(row.item.id) variant="link">{{row.item.unitsOnStock}}/{{row.item.unitsShipped}}</b-button>
+        <template v-slot:cell(unitsShipped)="row">
+            <b-button size="sm" @click=goToShipment(row.item.id) variant="link">{{row.item.unitsShipped}}</b-button>
         </template>
         <template v-slot:cell(status)="row">
             <b :class="getStatusClass(row.item.status)">{{getStatus(row.item.status)}}</b>
@@ -111,10 +99,8 @@ export default {
         {id: 'DRAFT', name: 'Draft'},
         {id: 'PENDING_APPROVAL', name: 'Pending Approval'},
         {id: 'APPROVED', name: 'Pending Sch/Prod'},
-        // {id: 'PENDING_PROD', name: 'Pending Prod'},
         {id: 'PENDING_SHIPMENT', name: 'Pending Shipment'},
         {id: 'SHIPPED', name: 'Fully Shipped'},
-        // {id: 'INVOICED_FULL', name: 'Fully Invoiced'},
         {id: 'CANCELLED', name: 'Cancelled'},
         {id: 'PAID', name: 'Paid In Full'},
       ],
@@ -127,8 +113,7 @@ export default {
         { key: "unitsSold", label: "Sold", sortable: false },
         { key: "unitsAssigned", label: "Assigned", sortable: false },
         { key: "unitsSchProd", label: "Sch/Prod", sortable: false },
-        { key: "unitsTransfered", label: "Transf", sortable: false },
-        { key: "unitsStockShip", label: "Stock/Ship", sortable: false },
+        { key: "unitsShipped", label: "Ship", sortable: false },
         { key: "status", label: "Status", sortable: false },
         { key: "action", label: "", sortable: false}
       ],
@@ -294,10 +279,6 @@ export default {
     deleteSale(sale) {
       if(!securite.hasRole(["ADMIN"])){
         alert("Don't have permission to delete sale");
-        return;
-      }
-      if(sale.unitsTransferedTo != 0 || sale.unitsTransferedFrom != 0){
-        alert("There are Transfered Sale(s). Please, remove any transfers.");
         return;
       }
       this.$bvModal.msgBoxConfirm('Are you sure you want to delete this Sale? '+
