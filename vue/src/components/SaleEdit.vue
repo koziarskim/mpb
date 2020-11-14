@@ -579,12 +579,14 @@ export default {
       if (item) {
         return;
       }
-      this.itemPackaging.item = {id: this.item.id, name: this.item.name};
+      this.itemPackaging.item = {id: this.item.id, name: this.item.name, number: this.item.number, totalCost: this.item.totalCost};
       this.sale.saleItems.unshift({ 
           units: 0,
           unitPrice: 0.00,
           unitsTransferedTo: 0,
           unitsTransferedFrom: 0,
+          prevUnitsAssigned: 0,
+          unitsAssigned: 0,
           transfersTo: [],
           transfersFrom: [],
           itemPackaging: this.itemPackaging,
@@ -599,8 +601,8 @@ export default {
         router.push('/itemComponentList/'+item_id);
     },
     deleteItem(si) {
-      if(si.unitsScheduled>0 || si.unitsProduced>0 || si.unitsTransferedTo>0 || si.unitsTransferedFrom>0 || si.unitsShipped>0){
-        alert("Make sure there is no Schedule, Production, Transfers or Shipment for this item!");
+      if((+si.unitsScheduled - +si.unitsProduced > 0) || si.unitsShipped>0){
+        alert("Make sure there is no Schedule or Shipment for this item!");
         return false;
       }
       var idx = this.sale.saleItems.findIndex(it => it.id == si.id);

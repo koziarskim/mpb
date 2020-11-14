@@ -43,7 +43,6 @@ import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.dto.SaleListDto;
 import com.noovitec.mpb.entity.Address;
 import com.noovitec.mpb.entity.Item;
-import com.noovitec.mpb.entity.ItemComponent;
 import com.noovitec.mpb.entity.Sale;
 import com.noovitec.mpb.entity.SaleItem;
 import com.noovitec.mpb.entity.SaleItemTransfer;
@@ -53,6 +52,7 @@ import com.noovitec.mpb.repo.ScheduleEventRepo;
 import com.noovitec.mpb.service.ComponentService;
 import com.noovitec.mpb.service.CrudService;
 import com.noovitec.mpb.service.CustomerService;
+import com.noovitec.mpb.service.ItemService;
 import com.noovitec.mpb.service.SaleService;
 
 @RestController
@@ -71,6 +71,8 @@ class SaleRest {
 	CustomerService customerService;
 	@Autowired
 	ComponentService componentService;
+	@Autowired
+	private ItemService itemService;
 	
 	private final Logger log = LoggerFactory.getLogger(SaleRest.class);
 	private SaleService saleService;
@@ -228,6 +230,13 @@ class SaleRest {
 	
 	@PostMapping("/sale")
 	ResponseEntity<?> post(@RequestBody Sale sale) {
+		List<Long> itemIds = new ArrayList<Long>();
+		if(sale.getId()!=null) {
+			Sale prevSale = saleRepo.getOne(sale.getId());
+			for(SaleItem si: prevSale.getSaleItems()) {
+				itemIds.add(si.getItemPackaging().getItem().getId());
+			}
+		}
 		if(!sale.getNumber().matches("^[a-zA-Z0-9\\-]{1,25}$")) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Sale Number is invalid. Alphanumeric and hyphen only allowed. Maximum 25 characters.");
 		}
@@ -264,14 +273,16 @@ class SaleRest {
 		}
 		sale = (Sale) crudService.merge(sale);
 		sale.updateUnits();
-		for (SaleItem sa : sale.getSaleItems()) {
-			List<Long> componentIds = new ArrayList<Long>();
-			for (ItemComponent ic : sa.getItemPackaging().getItem().getItemComponents()) {
-				componentIds.add(ic.getComponent().getId());
-			}
-			componentService.updateUnits(componentIds);
-			sa.getItemPackaging().getItem().updateUnits();
+		for (SaleItem si : sale.getSaleItems()) {
+			itemIds.add(si.getItemPackaging().getItem().getId());
+//			List<Long> componentIds = new ArrayList<Long>();
+//			for (ItemComponent ic : sa.getItemPackaging().getItem().getItemComponents()) {
+//				componentIds.add(ic.getComponent().getId());
+//			}
+//			componentService.updateUnits(componentIds);
+//			sa.getItemPackaging().getItem().updateUnits();
 		}
+		itemService.updateUnits(itemIds);
 		Sale result = (Sale) crudService.save(sale);
 		return ResponseEntity.ok().body(result);
 	}
