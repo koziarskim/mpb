@@ -133,17 +133,11 @@
             <template v-slot:cell(sale)="row">
               <b-link @click.stop="goToSale(row.item.saleItem.sale.id)">{{row.item.saleItem.sale.number}}</b-link>
             </template>
-            <template v-slot:cell(unitsOnStockRet)="row">
-              <span>{{row.item.saleItem.unitsOnStock}} </span><b-link @click.stop="goToItemReturnList(row.item.saleItem)">({{row.item.saleItem.unitsReturned}})</b-link>
-            </template>
             <template v-slot:cell(units)="row">
               <input class="form-control" style="width:100px" type="tel" v-model="row.item.units">
             </template>
             <template v-slot:cell(unitsSoldAdj)="row">
               <span>{{row.item.saleItem.units}} {{row.item.saleItem.unitsAdjusted >= 0?'+':''}}{{row.item.saleItem.unitsAdjusted}}</span>
-            </template>
-            <template v-slot:cell(unitsTransfered)="row">
-              <b-button size="sm" variant="link" @click="openTransferModal(row.item.saleItem)">{{row.item.saleItem.unitsTransferedTo}}-{{row.item.saleItem.unitsTransferedFrom}}</b-button>
             </template>
             <template v-slot:cell(unitsSchedProd)="row">
               <span>{{row.item.saleItem.unitsScheduled}}/{{row.item.saleItem.unitsProduced}}</span>
@@ -167,9 +161,6 @@
     <div v-if="saleItemPickerVisible">
 			<sale-item-picker :customer-id="customer.id" :added-sale-item-ids="getAddedSaleItemsIds()" v-on:closeModal="closeSaleItemPicker"></sale-item-picker>
 		</div>
-    <div v-if="transferModalVisible">
-			<transfer-modal :read-only="true" :sale-item-to="saleItemTransfer" v-on:saveModal="saveTransferModal"></transfer-modal>
-		</div>    
   </b-container>
 </template>
 
@@ -185,13 +176,10 @@ export default {
     AddressModal: () => import("./AddressModal"),
     SaleItemPicker: () => import("./SaleItemPicker"),
     UploadFile: () => import("../directives/UploadFile"),
-    TransferModal: () => import("./TransferModal"),
   },
   data() {
     return {
       securite: securite,
-      transferModalVisible: false,
-      saleItemTransfer: {},
       selectionVisible: false,
       saleItemPickerVisible: false,
       selected: [],
@@ -222,9 +210,8 @@ export default {
         { key: "item", label: "Item", sortable: false },
         { key: "sale", label: "Sale", sortable: false },
         { key: "unitsSoldAdj", label: "Sold (+/-Adj)", sortable: false },
-        { key: "unitsOnStockRet", label: "Stock (R)", sortable: false },
-        { key: "unitsSchedProd", label: "Sched/Prod", sortable: false },
-        { key: "unitsTransfered", label: "Trans", sortable: false },
+        { key: "saleItem.unitsAssigned", label: "Assigned", sortable: false },
+        // { key: "unitsSchedProd", label: "Sched/Prod", sortable: false },
         { key: "saleItem.unitsShipped", label: "Shipped", sortable: false },
         { key: "units", label: "Units", sortable: false },
         { key: "saleItem.itemPackaging.packaging.casePack", label: "C/P", sortable: false },
@@ -300,15 +287,6 @@ export default {
           this.saveShipment();
         }
       })
-    },
-    openTransferModal(saleItem){
-      this.saleItemTransfer = saleItem;
-      this.saleItemTransfer.saleNumber = saleItem.sale.number
-      this.transferModalVisible = true;
-    },    
-    saveTransferModal(saleItem){
-      this.saleItemTransfer = {},
-      this.transferModalVisible = false;
     },
     changeShippedDate(e){
       if(!this.shipment.ready){
@@ -443,14 +421,14 @@ export default {
         alert("Shipping Number required.")
         return false;
       }
-      var overStock = false;
+      var overShipped = false;
       this.shipment.shipmentItems.forEach(si=> {
-        if(((+si.units - +si.prevUnits) > +si.saleItem.unitsOnStock)){
-          overStock = true;
+        if(((+si.units - +si.prevUnits) > +si.saleItem.unitsAssigned)){
+          overShipped = true;
         }
       })
-      if(overStock){
-        alert("Cannot ship more that on stock")
+      if(overShipped){
+        alert("Cannot ship more that on units Assigned")
         return false;
       }
       return true;
@@ -552,7 +530,7 @@ export default {
         {
           shipment: {id: this.shipment.id},
           saleItem: saleItem,
-          units: saleItem.unitsOnStock,
+          units: saleItem.unitsAssigned,
           cases: 0,
           pallets: 0
         }
