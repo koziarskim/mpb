@@ -34,8 +34,9 @@ public interface CustomSaleRepo {
 		@Override
 		public Page<?> getTotals(Pageable pageable, String saleNumber, Long itemId, Long customerId, String status, boolean showAll) {
 			String q = "select distinct s.id from Sale s " 
-					+ "left join s.saleItems si " 
-					+ "left join si.item i "
+					+ "left join s.saleItems si "
+					+ "left join si.itemPackaging ip " 
+					+ "left join ip.item i "
 					+ "left join s.customer c " 
 					+ "where s.id is not null ";
 			if (saleNumber !=null && !saleNumber.isBlank()) {
