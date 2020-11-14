@@ -499,15 +499,23 @@ export default {
         return false;
       }
       var tooManyAssignedItem = null;
+      var tooManyShippedItem = null;
       this.sale.saleItems.forEach(si=>{
         si.unitsAdjusted = si.unitsAdjusted || 0;
         si.units == si.units || 0;
         if(((si.unitsOnStock) < 0) || (si.unitsAssigned > (+si.units + +si.unitsAdjusted))){
           tooManyAssignedItem = si.itemPackaging.item.number;
         }
+        if(si.unitsShipped > (+si.units + si.unitsAdjusted)){
+          tooManyShippedItem = si.itemPackaging.item.number;
+        }
       })
       if(tooManyAssignedItem){
         alert("Item: "+tooManyAssignedItem+" - Units Assigned cannot be more that Stock");
+        return false;
+      }
+      if(tooManyShippedItem){
+        alert("Item: "+tooManyShippedItem+" - Units Shipped more that (Sold + Adjusted)");
         return false;
       }
       return true;
