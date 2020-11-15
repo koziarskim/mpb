@@ -9,8 +9,9 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.noovitec.mpb.entity.ScheduleEvent;
+import com.noovitec.mpb.repo.custom.CustomScheduleEventRepo;
 
-public interface ScheduleEventRepo extends JpaRepository<ScheduleEvent, Long> {
+public interface ScheduleEventRepo extends JpaRepository<ScheduleEvent, Long>, CustomScheduleEventRepo {
 
 	@Query(value = "select unitsScheduled from ScheduleEvent where id = :schedule_event_id")
 	public Long getScheduledUnits(@Param("schedule_event_id") Long schedule_event_id);

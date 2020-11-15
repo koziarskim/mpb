@@ -13,6 +13,8 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,9 +27,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.noovitec.mpb.dto.ScheduleEventListDto;
 import com.noovitec.mpb.entity.Notification;
 import com.noovitec.mpb.entity.Production;
-import com.noovitec.mpb.entity.SaleItem;
 import com.noovitec.mpb.entity.ScheduleEvent;
 import com.noovitec.mpb.repo.ScheduleEventRepo;
 import com.noovitec.mpb.service.ComponentService;
@@ -70,6 +72,43 @@ class ScheduleEventRest {
 		Optional<ScheduleEvent> result = scheduleEventRepo.findById(id);
 		return result.map(response -> ResponseEntity.ok().body(response)).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
 	}
+	
+	@GetMapping("/scheduleEvent/pageable")
+	Page<?> getAllPageable(
+			@RequestParam(required = true) Pageable pageable, 
+			@RequestParam(required = false) boolean totals,
+			@RequestParam(required = false) Long saleId,
+			@RequestParam(required = false) Long itemId,
+			@RequestParam(required = false) Long packagingId) {
+		if(totals) {
+			//TODO: Need to implement
+			Page<?> resultTotals = null;
+			return resultTotals;
+		}
+		@SuppressWarnings("unchecked")
+		Page<ScheduleEvent> scheduleEvents = (Page<ScheduleEvent>) scheduleEventRepo.findPageable(pageable, saleId, itemId, packagingId);
+		Page<ScheduleEventListDto> all = scheduleEvents.map(se -> {
+			ScheduleEventListDto dto = new ScheduleEventListDto();
+			dto.setId(se.getId());
+			dto.setSaleId(se.getSaleItem()!=null?se.getSaleItem().getSale().getId():null);
+			dto.setSaleNumber(se.getSaleItem()!=null?se.getSaleItem().getSale().getNumber():"---");
+			dto.setItemId(se.getItemPackaging().getItem().getId());
+			dto.setItemName(se.getItemPackaging().getItem().getName());
+			dto.setItemNumber(se.getItemPackaging().getItem().getNumber());
+			dto.setLineId(se.getLine().getId());
+			dto.setPackagingId(se.getItemPackaging().getPackaging().getId());
+			dto.setPackagingLabel(se.getItemPackaging().getLabel());
+			dto.setScheduleDate(se.getDate());
+			dto.setStartTime(se.getStartTime());
+			dto.setFinishTime(se.getFinishTime());
+			dto.setUnitsSoldAdj(se.getSaleItem()!=null?(se.getSaleItem().getUnits() + se.getSaleItem().getUnitsAdjusted()):0);
+			dto.setUnitsScheduled(se.getUnitsScheduled());
+			dto.setUnitsProduced(se.getUnitsProduced());
+			return dto;
+		});
+		return all;
+	}
+
 
 	@GetMapping("/scheduleEvent/date/{date}")
 	List<ScheduleEvent> getByLine(@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date, @RequestParam(required = false) Long line_id) {

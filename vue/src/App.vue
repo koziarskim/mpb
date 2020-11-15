@@ -22,7 +22,10 @@
             <b-dropdown-item @click="goTo('/shipmentList')"><span style="color: black">Shipment List</span></b-dropdown-item>
             <b-dropdown-item @click="goTo('/shipmentSchedule')"><span style="color: black">Shipment Schedule</span></b-dropdown-item>
           </b-nav-item-dropdown>
-          <b-nav-item @click="goTo('/productionLineList')" :class="navClass('production')">Production</b-nav-item>
+          <b-nav-item-dropdown text="Production" :class="navClass('production')">
+            <b-dropdown-item @click="goTo('/productionLineList')"><span style="color: black">Daily Status</span></b-dropdown-item>
+            <b-dropdown-item @click="goTo('/scheduleEventList')"><span style="color: black">Schedule List</span></b-dropdown-item>
+          </b-nav-item-dropdown>
           <b-nav-item-dropdown text="Accounting" :class="navClass('invoice')">
             <b-dropdown-item @click="goTo('/invoiceList')"><span style="color: black">Invoices (Sales)</span></b-dropdown-item>
             <b-dropdown-item @click="goTo('/billList')"><span style="color: black">Bills (Receivings)</span></b-dropdown-item>
