@@ -25,7 +25,6 @@ import SaleItemList from "./components/SaleItemList";
 import AccessDenied from "./components/AccessDenied";
 import ShipmentEdit from "./components/ShipmentEdit";
 import ShipmentList from "./components/ShipmentList";
-import ItemScheduleEventList from "./components/ItemScheduleEventList";
 import ScheduleEventList from "./components/ScheduleEventList";
 import ProductionLine from "./components/ProductionLine";
 import ProductionLineList from "./components/ProductionLineList";
@@ -312,16 +311,6 @@ const router = new Router({
         roles: ["READ_ONLY"],
         group: "receiving",
         viewClass: "view-receiving"
-      }
-    },
-    {
-      path: "/ItemScheduleEventList/:item_id?/:sale?/:sale_id?",
-      name: "ItemScheduleEventList",
-      component: ItemScheduleEventList,
-      meta: {
-        roles: ["READ_ONLY"],
-        group: "schedule",
-        viewClass: "view-schedule"
       }
     },
     {

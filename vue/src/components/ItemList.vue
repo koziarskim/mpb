@@ -182,9 +182,6 @@ export default {
     goToSaleItemList(itemId) {
       router.push({path: "/saleItemList/", query: {itemId: itemId, statusId: 'APPROVED'}});
     },
-    goToItemScheduleList(item_id) {
-      router.push("/itemScheduleEventList/" + item_id);
-    },
     goToItemShippedList(itemId) {
       var query = { itemId: itemId };
       router.push({ path: "/shipmentList", query: query });

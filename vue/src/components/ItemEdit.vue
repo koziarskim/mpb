@@ -238,7 +238,7 @@ export default {
       router.push({path: "/saleItemList/", query: {itemId: this.item.id}});
     },
     goToItemScheduleList(){
-        router.push('/itemScheduleEventList/'+this.item.id);
+        router.push({path: "/ScheduleEventList", query: {itemId: this.item.id}});
     },
     goToItemShippedList(){
       var query = { itemId: this.item.id};
