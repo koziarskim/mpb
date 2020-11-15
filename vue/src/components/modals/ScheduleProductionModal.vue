@@ -96,7 +96,6 @@ export default {
         { id: 7, number: 7 },
         { id: 8, number: 8 }
       ],
-      unitsMax: 0,
     };
 
   },
@@ -105,6 +104,7 @@ export default {
   watch: {},
   methods: {
     getScheduleEvent(){
+      if(!this.scheduleEvent.id) {return}
       http.get("/scheduleEvent/"+this.scheduleEventId).then(r => {
         this.scheduleEvent = r.data;
       }).catch(e => {console.log("API error: "+e);});
@@ -125,7 +125,6 @@ export default {
           this.scheduleEvent.itemPackaging = r.data.itemPackaging;
         }
         this.scheduleEvent.unitsScheduled = +r.data.units - +r.data.unitsScheduled;
-        this.maxUnits = this.scheduleEvent.unitsScheduled;
       }).catch(e => {console.log("API error: "+e);});
     },
     validate(){
@@ -133,7 +132,7 @@ export default {
         alert("Please enter all the fields");
         return false;
       }
-      if(this.scheduleEvent.unitsScheduled > this.maxUnits){
+      if(this.saleItem && this.scheduleEvent.unitsScheduled > this.saleItem.units){
         alert("Cannot schedule more that sold");
         return false;
       }
