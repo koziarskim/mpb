@@ -215,7 +215,7 @@ class SaleRest {
 		List<SaleItem> saleItems = new ArrayList<SaleItem>();
 		for(SaleItem existingSi: existingSale.getSaleItems()) {
 			SaleItem si = new SaleItem();
-			si.getItemPackaging().setItem(existingSi.getItemPackaging().getItem());
+			si.setItemPackaging(existingSi.getItemPackaging());
 			si.setSku(existingSi.getSku());
 			si.setUnits(existingSi.getUnits());
 			si.setUnitPrice(existingSi.getUnitPrice());
