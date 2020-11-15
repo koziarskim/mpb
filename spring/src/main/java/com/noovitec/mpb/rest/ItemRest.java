@@ -145,6 +145,8 @@ class ItemRest {
 			dto.setUnitsReadyProd(item.getUnitsReadyProd());
 			dto.setPerformance(item.getPerformance());
 			dto.setUnitsAdjusted(item.getUnitsAdjusted());
+			dto.setUnitsOnFloor(item.getUnitsProduced() - item.getUnitsShipped());
+			dto.setUnitsShort((item.getUnitsSold() + item.getUnitsAdjusted()) - item.getUnitsAssigned());
 			return dto;
 		});
 		return dtos;

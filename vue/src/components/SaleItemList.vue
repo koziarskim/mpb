@@ -26,10 +26,11 @@
                 <b-popover :show="showTotalsMenu" placement="bottom" target="totalsMenu" variant="secondary">
                   <div style="width: 300px; font-size: 16px">
                     <div>Total of {{pageable.totalElements}} rows</div>
-                    <div>Sold & Adj: {{totalSold}}</div>
-                    <div>Produced: {{totalProduced}}</div>
-                    <div>Assigned: {{totalAssigned}}</div>
-                    <div>Shipped: {{totalShipped}}</div>
+                    <div>Sold & Adj: {{totalSoldAdj.toLocaleString()}}</div>
+                    <div>Produced: {{totalProduced.toLocaleString()}}</div>
+                    <div>Assigned: {{totalAssigned.toLocaleString()}}</div>
+                    <div>Shipped: {{totalShipped.toLocaleString()}}</div>
+                    <div>Short: {{(+totalSoldAdj - +totalAssigned).toLocaleString()}}</div>
                   </div>
                 </b-popover>
               </div>
@@ -133,7 +134,7 @@ export default {
       ],
       unitsFilter: {},
       showTotalsMenu: false,
-      totalSold: 0,
+      totalSoldAdj: 0,
       totalProduced: 0,
       totalAssigned: 0,
       totalShipped: 0,
@@ -212,10 +213,10 @@ export default {
         showAll: this.showAll
       }}).then(r => {
       if(totals){
-        this.totalSold = r.data.content[0][0].toLocaleString();
-        this.totalProduced = r.data.content[0][1].toLocaleString();
-        this.totalAssigned = r.data.content[0][2].toLocaleString();
-        this.totalShipped = r.data.content[0][3].toLocaleString();
+        this.totalSoldAdj = r.data.content[0][0];
+        this.totalProduced = r.data.content[0][1];
+        this.totalAssigned = r.data.content[0][2];
+        this.totalShipped = r.data.content[0][3];
       }else{
         this.saleItems = r.data.content;
         this.pageable.totalElements = r.data.totalElements;

@@ -25,10 +25,13 @@
     </b-row>
     <b-table :items="items" :fields="fields" no-local-sorting @sort-changed="sorted">
       <template v-slot:head(unitsOnStock)="row">
-        <div>Stock</div><div class="mpb-head-line">Including Overstock</div>
+        <div>Stock</div><div class="mpb-head-line">Units Available</div>
       </template>
-      <template v-slot:head(openSales)="row">
-        <div>Sales</div><div class="mpb-head-line">Open only</div>
+      <template v-slot:head(unitsOnFloor)="row">
+        <div>Floor</div><div class="mpb-head-line">Units On Floor</div>
+      </template>
+      <template v-slot:head(unitsShort)="row">
+        <div>Short</div><div class="mpb-head-line">Not Assigned</div>
       </template>
       <template v-slot:cell(name)="row">
         <div style="width:200px; overflow: wrap; font-size: 14px"><b-link role="button" @click="updateItem(row.item.id)">{{row.item.number}}</b-link> {{row.item.name}}</div>
@@ -50,6 +53,9 @@
       </template>
       <template v-slot:cell(openSales)="row">
         <b-button size="sm" variant="link" @click="goToSaleItemList(row.item.id)">{{row.item.unitsOpenSale}}</b-button>
+      </template>
+      <template v-slot:cell(unitsShort)="row">
+        <div>{{row.item.unitsShort}}</div>
       </template>
     </b-table>
     <div style="display: flex">
@@ -78,7 +84,9 @@ export default {
         { key: "name", sortable: true, label: "Item # (Name)" },
         { key: "brand", sortable: true, label: "Brand" },
         { key: "category", sortable: true, label: "Category" },
-        { key: "unitsOnStock", sortable: false, label: "Stock" },
+        { key: "unitsOnFloor", sortable: false, label: "Floor" },
+        { key: "unitsOnStock", sortable: false, label: "Available" },
+        { key: "unitsShort", sortable: false, label: "Short" },
         { key: "openSales", sortable: false, label: "Sales" },
       ],
       items: [], //ItemListDto

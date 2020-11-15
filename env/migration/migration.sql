@@ -5,6 +5,9 @@ set schema 'shared';
 --End SHARED
 set schema 'y2020';
 
+alter table item add column units_assigned bigint default 0;
+run /item/update/units
+
 Adjust production, assigned, sold from UI.
 
 --select sale_id, item_id units, units_adjusted, units_assigned, units_shipped, status from sale_item where units_assigned <> units_shipped and status in ('SHIPPED', 'PAID');

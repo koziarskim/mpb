@@ -45,6 +45,7 @@ public class Item extends BaseEntity {
 	private long unitsReadyProd = 0;
 	private long unitsOnStock = 0;
 	private long unitsAdjusted = 0;
+	private long unitsAssigned = 0;
 	
 	//Package to delete after migration.
 	private int casePack = 1;
@@ -183,36 +184,38 @@ public class Item extends BaseEntity {
 		this.unitsShipped = 0;
 		this.unitsAdjusted = 0;
 		this.unitsOnStock = 0;
+		this.unitsAssigned = 0;
 		for(ItemPackaging ip: this.getItemPackagings()) {
-			long unitsOnStock = 0;
-			long unitsProduced = 0;
-			long unitsAssigned = 0;
-			long unitsScheduled = 0;
+			long ipUnitsOnStock = 0;
+			long ipUnitsProduced = 0;
+			long ipUnitsAssigned = 0;
+			long ipUnitsScheduled = 0;
 			for (SaleItem si : ip.getSaleItems()) {
 				si.updateUnits();
 				if(!si.getSale().isCancelled()) {
 					this.unitsSold += si.getUnits();
+					this.unitsAdjusted += si.getUnitsAdjusted();
 				}
 				if(Sale.STATUS.APPROVED.name().equalsIgnoreCase(si.getSale().getStatus())) {
 					this.unitsOpenSale += 1;
 				}
 				this.unitsShipped += si.getUnitsShipped();
-				this.unitsAdjusted += si.getUnitsAdjusted();
-				unitsAssigned += si.getUnitsAssigned();
+				this.unitsAssigned += si.getUnitsAssigned();
+				ipUnitsAssigned += si.getUnitsAssigned();
 			}
 			for(ScheduleEvent se: ip.getScheduleEvents()) {
 				se.updateUnits();
-				unitsProduced += se.getUnitsProduced();
-				unitsScheduled += se.getUnitsScheduled();
+				ipUnitsProduced += se.getUnitsProduced();
+				ipUnitsScheduled += se.getUnitsScheduled();
 			}
-			unitsOnStock = unitsProduced - unitsAssigned;
-			ip.setUnitsProduced(unitsProduced);
-			ip.setUnitsScheduled(unitsScheduled);
-			ip.setUnitsAssigned(unitsAssigned);
-			ip.setUnitsOnStock(unitsOnStock);
-			this.unitsScheduled += unitsScheduled;
-			this.unitsProduced += unitsProduced;
-			this.unitsOnStock += unitsOnStock;
+			ipUnitsOnStock = ipUnitsProduced - ipUnitsAssigned;
+			ip.setUnitsProduced(ipUnitsProduced);
+			ip.setUnitsScheduled(ipUnitsScheduled);
+			ip.setUnitsAssigned(ipUnitsAssigned);
+			ip.setUnitsOnStock(ipUnitsOnStock);
+			this.unitsScheduled += ipUnitsScheduled;
+			this.unitsProduced += ipUnitsProduced;
+			this.unitsOnStock += ipUnitsOnStock;
 		}
 		this.updateUnitsReadyProd();
 	}
