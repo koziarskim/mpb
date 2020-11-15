@@ -245,7 +245,7 @@ export default {
       router.push({ path: "/receivingList", query: query });
     },
     goToItemScheduleList(itemId) {
-      router.push("/scheduleEventList/" + itemId);
+      router.push("/itemScheduleEventList/" + itemId);
     },
     addItem() {
       if (!this.item.id) {

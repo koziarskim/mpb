@@ -243,7 +243,7 @@ export default {
     router.push({ path: "/shipmentEdit/new", query: query })
   },
     goToScheduled(saleItemDto) {
-      router.push("/scheduleEventList/" + saleItemDto.itemId + "/sale/" + saleItemDto.saleId);
+      router.push("/itemScheduleEventList/" + saleItemDto.itemId + "/sale/" + saleItemDto.saleId);
     },
   goToShipment(itemId, saleId){
     var query = { itemId: itemId, saleId: saleId };

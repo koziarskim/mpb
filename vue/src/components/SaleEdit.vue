@@ -356,7 +356,7 @@ export default {
       // return securite.hasRole(["SALE_ADMIN"]);
     },
     goToScheduled(si) {
-      router.push("/scheduleEventList/" + si.itemPackaging.item.id + "/sale/" + this.sale.id);
+      router.push("/itemSheduleEventList/" + si.itemPackaging.item.id + "/sale/" + this.sale.id);
     },
     goToShipment(si){
       var query = { saleId: this.sale.id };
