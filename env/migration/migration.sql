@@ -5,7 +5,8 @@ set schema 'shared';
 --End SHARED
 set schema 'y2020';
 
-Adjust production, assigned, sold.
+Adjust production, assigned, sold from UI.
+
 --select sale_id, item_id units, units_adjusted, units_assigned, units_shipped, status from sale_item where units_assigned <> units_shipped and status in ('SHIPPED', 'PAID');
 --select sale_id, units, units_adjusted, units_assigned, units_shipped from sale_item where (units + units_adjusted) < units_shipped and status in ('SHIPPED', 'PAID');
 

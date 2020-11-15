@@ -18,19 +18,19 @@
       <b-row>
         <b-col cols=5>
           <label class="top-label">Packaging:</label>
-          <b-select option-value="id" option-text="label" :list="item.itemPackagings" v-model="scheduleEvent.itemPackaging"></b-select>
+          <b-select :isDisabled="scheduleEvent.unitsProduced > 0" option-value="id" option-text="label" :list="item.itemPackagings" v-model="scheduleEvent.itemPackaging"></b-select>
         </b-col>
         <b-col cols=5>
           <b-row>
             <b-col cols=12>
               <label class="top-label">Schedule Date:</label>
-              <input class="form-control" type="date" v-model="scheduleEvent.date">
+              <input :disabled="scheduleEvent.unitsProduced > 0" class="form-control" type="date" v-model="scheduleEvent.date">
             </b-col>
           </b-row>
           <b-row>
             <b-col cols=10>
               <label class="top-label">Start Time:</label>
-              <input class="form-control" type="time" v-model="scheduleEvent.scheduleTime">
+              <input :disabled="scheduleEvent.unitsProduced > 0" class="form-control" type="time" v-model="scheduleEvent.scheduleTime">
             </b-col>
           </b-row>
         </b-col>
@@ -38,7 +38,7 @@
       <b-row>
         <b-col cols=3>
           <label class="top-label">Line:</label>
-          <b-select option-value="id" option-text="number" :list="availableLines" v-model="scheduleEvent.line"></b-select>
+          <b-select :isDisabled="scheduleEvent.unitsProduced > 0" option-value="id" option-text="number" :list="availableLines" v-model="scheduleEvent.line"></b-select>
         </b-col>
         <b-col cols=4>
           <label class="top-label">Units to Schedule:</label>
@@ -64,6 +64,9 @@ export default {
     saleItemId: {
       type: Number,
     },
+    scheduleEventId: {
+      type: Number,
+    }
   },
   data() {
     return {
@@ -93,6 +96,7 @@ export default {
         { id: 7, number: 7 },
         { id: 8, number: 8 }
       ],
+      unitsMax: 0,
     };
 
   },
@@ -100,6 +104,11 @@ export default {
   },
   watch: {},
   methods: {
+    getScheduleEvent(){
+      http.get("/scheduleEvent/"+this.scheduleEventId).then(r => {
+        this.scheduleEvent = r.data;
+      }).catch(e => {console.log("API error: "+e);});
+    },
     getItem(){
       http.get("/item/"+this.itemId).then(r => {
         this.item = r.data;
@@ -116,7 +125,7 @@ export default {
           this.scheduleEvent.itemPackaging = r.data.itemPackaging;
         }
         this.scheduleEvent.unitsScheduled = +r.data.units - +r.data.unitsScheduled;
-        this.scheduleEvent.maxUnits = this.scheduleEvent.unitsScheduled;
+        this.maxUnits = this.scheduleEvent.unitsScheduled;
       }).catch(e => {console.log("API error: "+e);});
     },
     validate(){
@@ -124,8 +133,12 @@ export default {
         alert("Please enter all the fields");
         return false;
       }
-      if(this.scheduleEvent.unitsScheduled > this.scheduleEvent.maxUnits){
+      if(this.scheduleEvent.unitsScheduled > this.maxUnits){
         alert("Cannot schedule more that sold");
+        return false;
+      }
+      if(this.scheduleEvent.unitsScheduled < this.scheduleEvent.unitsProduced){
+        alert("Cannot schedule less than produced");
         return false;
       }
       return true;
@@ -154,8 +167,9 @@ export default {
     },
   },
   mounted() {
-    this.getItem();
+    this.getScheduleEvent();
     this.getSaleItem();
+    this.getItem();
   }
 };
 </script>

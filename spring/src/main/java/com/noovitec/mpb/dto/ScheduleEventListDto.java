@@ -18,6 +18,7 @@ public class ScheduleEventListDto {
 	private Long itemId;
 	private String itemNumber;
 	private String itemName;
+	private Long saleItemId;
 	private Long lineId;
 	private Long packagingId;
 	private String packagingLabel;

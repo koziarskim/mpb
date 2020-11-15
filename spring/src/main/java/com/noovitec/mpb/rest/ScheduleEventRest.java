@@ -92,6 +92,7 @@ class ScheduleEventRest {
 			dto.setId(se.getId());
 			dto.setSaleId(se.getSaleItem()!=null?se.getSaleItem().getSale().getId():null);
 			dto.setSaleNumber(se.getSaleItem()!=null?se.getSaleItem().getSale().getNumber():"---");
+			dto.setSaleItemId(se.getSaleItem()!=null?se.getSaleItem().getId():null);
 			dto.setItemId(se.getItemPackaging().getItem().getId());
 			dto.setItemName(se.getItemPackaging().getItem().getName());
 			dto.setItemNumber(se.getItemPackaging().getItem().getNumber());

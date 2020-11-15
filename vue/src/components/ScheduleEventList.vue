@@ -14,9 +14,9 @@
       <b-col cols=2>
         <b-select option-value="id" option-text="name" :list="availableItems" v-model="itemKv" placeholder="Pick Item"></b-select>
       </b-col>
-      <!-- <b-col cols=3>
-        <b-select option-value="id" option-text="number" :list="availableSales" v-model="selectedSale" placeholder="Pick Sale"></b-select>
-      </b-col> -->
+      <b-col cols=2>
+        <b-select option-value="id" option-text="name" :list="availableSales" v-model="saleKv" placeholder="Pick Sale"></b-select>
+      </b-col>
       <!-- <b-col cols=1 offset=4>
         <div style="display: flex; text-align: right; margin-left: 20px">
           <b-button style="margin: 3px" type="reset" variant="success" @click="goToGraph()" :disabled="false">Graph</b-button>
@@ -28,6 +28,12 @@
       <b-table :items="scheduleEvents" :fields="columns">
         <template v-slot:cell(scheduleDate)="row">
           <span>{{row.item.scheduleDate | formatDate}}</span>
+        </template>
+        <template v-slot:cell(unitsProduced)="row">
+          <b-button size="sm" @click="goToProduction(row.item)" variant="link">{{row.item.unitsProduced}}</b-button>
+        </template>
+        <template v-slot:cell(unitsScheduled)="row">
+          <b-button size="sm" @click=openScheduleProductionModal(row.item) variant="link">{{row.item.unitsScheduled}}</b-button>
         </template>
         <!-- <template v-slot:cell(sale)="row">
           <b-link role="button" @click.stop="goToSale(row.item.saleItem.sale.id)">{{row.item.saleItem.sale.number}}</b-link>
@@ -59,6 +65,10 @@
         <span style="margin-top: 5px">Total of {{pageable.totalElements}} rows</span>
       </div>
     </b-row>
+    <div v-if="scheduleProductionModalVisible">
+      <schedule-production-modal :scheduleEventId="this.scheduleEventId" :saleItemId="this.saleItemId" :itemId="this.itemId" v-on:close="closeScheduleProductionModal"></schedule-production-modal>
+    </div>  
+
   </b-container>
 </template>
 
@@ -67,8 +77,16 @@ import http from "../http-common";
 import router from "../router";
 
 export default {
+  name: "ScheduleEventList",
+	components: {
+	  ScheduleProductionModal: () => import("./modals/ScheduleProductionModal")
+  },  
   data() {
     return {
+      scheduleProductionModalVisible: false,
+      scheduleEventId: null,
+      saleItemId: null,
+      itemId: null,
       pageable: {totalElements: 100, currentPage: 1, perPage: 25, sortBy: 'updated', sortDesc: false},
       scheduleEvents: [], //ScheduleEventListDto
       availableSales: [],
@@ -98,9 +116,26 @@ export default {
   watch: {
     itemKv(newValue, oldValue){
       this.getScheduleEvents();
+    },
+    saleKv(newValue, oldValue){
+      this.getScheduleEvents();
     }
   },
   methods: {
+    openScheduleProductionModal(se){
+      this.scheduleEventId = se.id;
+      this.saleItemId = se.saleItemId;
+      this.itemId = se.itemId;
+      this.scheduleProductionModalVisible = true;
+    },
+    closeScheduleProductionModal(){
+      this.scheduleProductionModalVisible = false;
+      this.getScheduleEvents();
+    },    
+    goToProduction(se) {
+      var query = { date: se.scheduleDate, seId: se.id };
+      router.push({ path: "/productionLine/"+se.lineId, query: query } );
+    },    
     paginationChange(page){
       this.pageable.currentPage = page;
       this.getScheduleEvents();
@@ -164,7 +199,7 @@ export default {
       var query = {params: {
         pageable: this.pageable,
         totals: totals, 
-        saleId: this.saleKv.Id, 
+        saleId: this.saleKv.id, 
         itemId: this.itemKv.id,
         packagingId: this.packagingKv.id,
       }}
@@ -181,6 +216,13 @@ export default {
     getAvailableItems() {
       http.get("/item/kv").then(r => {
         this.availableItems = r.data;
+      }).catch(e => {
+        console.log("API error: "+e);
+      });
+    },
+    getAvailableSales() {
+      http.get("/sale/kv").then(r => {
+        this.availableSales = r.data;
       }).catch(e => {
         console.log("API error: "+e);
       });
@@ -211,18 +253,23 @@ export default {
     goToItem(itemId){
       router.push("/itemEdit/"+itemId);
     },
-    goToProduction(se) {
-      var query = { date: se.date, seId: se.id };
-      router.push({ path: "/productionLine/"+se.line.id, query: query } );
-    },
     goToGraph() {
       router.push("/itemGraph/" + this.item.id);
     },
   },
   mounted() {
-    var item_id = this.$route.params.item_id;
-    var sale_id = this.$route.params.sale_id;
+    var itemId = this.$route.query.itemId;
+    var saleId = this.$route.query.saleId;
+    if(itemId){
+      this.itemKv = {id: itemId}
+    }
+    if(saleId){
+      this.saleKv = {id: saleId}
+    }
+    this.getAvailableSales();
     this.getAvailableItems();
+  },
+  activated(){
     this.getScheduleEvents();
   }
 };
