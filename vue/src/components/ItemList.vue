@@ -43,14 +43,14 @@
         <div style="display: flex">
           <b-button :id="'itemPackagings_'+row.item.id" size="sm" @click="showItemPackagings(row.item.id)" variant="link">{{row.item.numPackagings}}</b-button>
           <b-popover placement="bottom" :target="'itemPackagings_'+row.item.id" variant="secondary">
-            <div style="width: 600px; font-size: 14px">
+            <div style="width: 700px; font-size: 14px">
               <div v-for="ip in itemPackagings" :key="ip.id">
                 Package: {{ip.label}}<br/>
                   <div style="margin-left: 20px">
                     <b>Floor: </b>{{ip.unitsOnFloor}}, 
                     <b>Stock: </b>{{ip.unitsOnStock}}, 
                     <b>Not Assigned: </b>{{ip.salesNotAssigned}} ({{ip.unitsNotAssigned}}), 
-                    <b>Short: </b><b-button style="margin-top: -4px" size="md" variant="link" @click="openScheduleEventModal(row.item.id)">{{ip.unitsShort}}</b-button>
+                    <b>Short:</b><b-button style="margin-top: -4px" size="md" variant="link" @click="openScheduleEventModal(row.item.id)">{{ip.unitsShort}},</b-button>
                     <b>Pending Ship: </b>{{ip.unitsPenShip}},
                     <b>Open: </b>{{ip.salesOpen}} ({{ip.unitsOpen}}),
                   </div>

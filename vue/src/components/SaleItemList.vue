@@ -1,45 +1,29 @@
 <template>
     <b-container fluid>
-        <b-row style="padding-bottom: 4px; font-size: 12px">
-            <b-col cols=2>
-              <input style="font-size: 12px" class="form-control" type="tel" v-model="numberName" @keyup.enter="getSaleItems()" placeholder="Sale"/>
-            </b-col>
-            <b-col cols=2>
-              <b-select option-value="id" option-text="name" :list="availableItems" v-model="itemKv" placeholder="Item"></b-select>
-            </b-col>
-            <b-col cols=2>
-              <b-select option-value="id" option-text="name" :list="availableCustomers" v-model="customer" placeholder="Customer"></b-select>
-            </b-col>
-            <b-col cols=2>
-              <b-select option-value="id" option-text="name" :list="availableStatus" v-model="statusKv" placeholder="Status"></b-select>
-            </b-col>
-            <b-col cols=1>
-              <b-select option-value="id" option-text="name" :list="availableUnitsFilters" v-model="unitsFilter" placeholder="Units"></b-select>
-            </b-col>
-            <b-col cols=1>
-              <label class="top-label">Show All</label><br/>
-              <input type="checkbox" style="margin-left: 20px" v-model="showAll">
-            </b-col>
-            <b-col cols=1>
-              <div style="display: flex">
-                <b-button id="totalsMenu" size="sm" @click="toggleShowTotals()">Totals</b-button>
-                <b-popover :show="showTotalsMenu" placement="bottom" target="totalsMenu" variant="secondary">
-                  <div style="width: 300px; font-size: 16px">
-                    <div>Total of {{pageable.totalElements}} rows</div>
-                    <div>Sold & Adj: {{totalSoldAdj.toLocaleString()}}</div>
-                    <div>Produced: {{totalProduced.toLocaleString()}}</div>
-                    <div>Assigned: {{totalAssigned.toLocaleString()}}</div>
-                    <div>Shipped: {{totalShipped.toLocaleString()}}</div>
-                    <div>Short: {{(+totalSoldAdj - +totalAssigned).toLocaleString()}}</div>
-                  </div>
-                </b-popover>
+        <b-row style="font-size: 12px">
+          <input style="width: 150px; margin-left: 15px; font-size: 12px" class="form-control" type="tel" v-model="numberName" @keyup.enter="getSaleItems()" placeholder="Sale"/>
+          <b-select style="width: 150px; margin-left: 15px" option-value="id" option-text="name" :list="availableItems" v-model="itemKv" placeholder="Item"></b-select>
+          <b-select style="width: 150px; margin-left: 15px" option-value="id" option-text="name" :list="availableCustomers" v-model="customer" placeholder="Customer"></b-select>
+          <b-select style="width: 150px; margin-left: 15px" option-value="id" option-text="name" :list="availableStatus" v-model="statusKv" placeholder="Status"></b-select>
+          <b-select style="width: 150px; margin-left: 15px" option-value="id" option-text="name" :list="availableUnitsFilters" v-model="unitsFilter" placeholder="Units"></b-select>
+          <div style="margin-left: 15px">
+            <label class="top-label">Show All</label><br/>
+            <input type="checkbox" style="margin-left: 20px" v-model="showAll">
+          </div>
+          <div style="margin-left: 220px">
+            <b-button id="totalsMenu" size="sm" @click="toggleShowTotals()">Totals</b-button>
+            <b-popover :show="showTotalsMenu" placement="bottom" target="totalsMenu" variant="secondary">
+              <div style="width: 300px; font-size: 16px">
+                <div>Total of {{pageable.totalElements}} rows</div>
+                <div>Sold & Adj: {{totalSoldAdj.toLocaleString()}}</div>
+                <div>Produced: {{totalProduced.toLocaleString()}}</div>
+                <div>Assigned: {{totalAssigned.toLocaleString()}}</div>
+                <div>Shipped: {{totalShipped.toLocaleString()}}</div>
+                <div>Short: {{(+totalSoldAdj - +totalAssigned).toLocaleString()}}</div>
               </div>
-            </b-col>  
-            <b-col cols=1>
-                <div style="text-align: right;">
-                <b-button type="submit" size="sm" variant="primary" @click="newShipment()">Ship ({{selectedSaleItemIds.length}})</b-button>
-                </div>
-            </b-col>
+            </b-popover>
+            <b-button style="margin-left: 15px" size="sm" variant="primary" @click="newShipment()">Ship ({{selectedSaleItemIds.length}})</b-button>
+          </div>
         </b-row>
         <b-table :items="saleItems" :fields="fields" no-local-sorting @sort-changed="sorted">
           <template v-slot:cell(number)="row">
