@@ -101,7 +101,7 @@ import securite from "../securite";
 
 export default {
 	components: {
-	ProductionModal: () => import("./ProductionModal"),
+	ProductionModal: () => import("./modals/ProductionModal"),
 	ProductionLineModal: () => import("./modals/ProductionLineModal")
   },
   data() {
