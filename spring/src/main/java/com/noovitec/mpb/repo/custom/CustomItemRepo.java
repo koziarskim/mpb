@@ -49,14 +49,19 @@ public interface CustomItemRepo {
 			if(categoryId != null) {
 				q += "and cat.id = :categoryId ";
 			}
-			if(unitsFilter != null && unitsFilter.equalsIgnoreCase("ON_STOCK")) {
-				q += "and i.unitsOnStock > 0 ";
-			}
-			if(unitsFilter != null && unitsFilter.equalsIgnoreCase("OPEN_SALES")) {
-				q += "and i.salesNotAssigned > 0 ";
-			}
-			if(unitsFilter != null && unitsFilter.equalsIgnoreCase("RFP")) {
-				q += "and i.unitsReadyProd > 0 ";
+			if(unitsFilter != null) {
+				if(unitsFilter.equalsIgnoreCase("ON_FLOOR")) {
+					q += "and (i.unitsProduced - i.unitsShipped) != 0 ";
+				}
+				if(unitsFilter.equalsIgnoreCase("ON_STOCK")) {
+					q += "and i.unitsOnStock != 0 ";
+				}
+				if(unitsFilter.equalsIgnoreCase("NOT_ASSIGNED")) {
+					q += "and i.salesNotAssigned != 0 ";
+				}
+				if(unitsFilter.equalsIgnoreCase("SHORT")) {
+					q += "and i.unitsShort != 0 ";
+				}
 			}
 			q += "order by i.salesNotAssigned desc";
 			Query query = entityManager.createQuery(q);

@@ -55,11 +55,19 @@ public interface CustomSaleItemRepo {
 				if (status !=null && !status.isBlank()) {
 					q += "and si.status = :status ";
 				}
-				if ("ON_STOCK".equalsIgnoreCase(unitsFilter)) {
-					q += "and si.unitsOnStock > 0 ";
-				}
-				if ("RFP_ONLY".equalsIgnoreCase(unitsFilter)) {
-					q += "and i.unitsReadyProd > 0 ";
+				if(unitsFilter != null) {
+					if(unitsFilter.equalsIgnoreCase("ON_FLOOR")) {
+						q += "and (si.unitsProduced - si.unitsShipped) != 0 ";
+					}
+					if(unitsFilter.equalsIgnoreCase("ON_STOCK")) {
+						q += "and si.unitsOnStock != 0 ";
+					}
+					if(unitsFilter.equalsIgnoreCase("NOT_ASSIGNED")) {
+						q += "and ((si.units + si.unitsAdjusted) - si.unitsAssigned) != 0 ";
+					}
+					if(unitsFilter.equalsIgnoreCase("SHORT")) {
+						q += "and si.unitsShort != 0 ";
+					}
 				}
 				if (!showAll) {
 					q += "and s.cancelled = false and s.paidInFull = false ";

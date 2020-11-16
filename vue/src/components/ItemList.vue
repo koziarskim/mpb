@@ -97,9 +97,10 @@ export default {
       availableCategories: [],
       categoryKv: {},
       availableUnitFilters: [
+        {id: "ON_FLOOR", name: "On Floor"},
         {id: "ON_STOCK", name: "On Stock"},
-        {id: "OPEN_SALES", name: "Open Sales"},
-        {id: "RFP", name: "RFP"}
+        {id: "NOT_ASSIGNED", name: "Not Assigned"},
+        {id: "SHORT", name: "Units Short"},
       ],
       unitsFilter: {},
       itemDto: {

@@ -129,8 +129,10 @@ export default {
       ],
       statusKv: {},
       availableUnitsFilters: [
+        {id: "ON_FLOOR", name: "On Floor"},
         {id: "ON_STOCK", name: "On Stock"},
-        {id: "RFP_ONLY", name: "RFP Only"}
+        {id: "NOT_ASSIGNED", name: "Not Assigned"},
+        {id: "SHORT", name: "Units Short"},
       ],
       unitsFilter: {},
       showTotalsMenu: false,
