@@ -33,14 +33,14 @@ public class SaleItem extends BaseEntity {
 	private long units; // unitsSold.
 	private long unitsAssigned;
 	private long unitsShort;
-	
-	private long unitsOnStock;
+//	private long unitsOnStock;
 	private long unitsProduced;
 	private long unitsScheduled;
 	private long unitsShipped;
-	private long unitsTransferedTo;
-	private long unitsTransferedFrom;
+//	private long unitsTransferedTo;
+//	private long unitsTransferedFrom;
 	private long unitsAdjusted;
+	private long unitsNotAssigned;
 
 	private BigDecimal invoicedAmount;
 	private String sku;
@@ -86,9 +86,9 @@ public class SaleItem extends BaseEntity {
 		this.unitsScheduled = 0;
 		this.unitsProduced = 0;
 		this.unitsShipped = 0;
-		this.unitsTransferedTo = 0;
-		this.unitsTransferedFrom = 0;
-		this.unitsOnStock = 0;
+//		this.unitsTransferedTo = 0;
+//		this.unitsTransferedFrom = 0;
+//		this.unitsOnStock = 0;
 		this.unitsShort = 0;
 		this.invoicedAmount = BigDecimal.ZERO;
 		
@@ -102,19 +102,20 @@ public class SaleItem extends BaseEntity {
 				this.unitsShipped += si.getUnits();
 			}
 		}
-		for (SaleItemTransfer sit: this.getTransfersFrom()) {
-			this.unitsTransferedFrom += sit.getUnitsTransfered();
-		}
-		for (SaleItemTransfer sit: this.getTransfersTo()) {
-			this.unitsTransferedTo += sit.getUnitsTransfered();
-		}
+//		for (SaleItemTransfer sit: this.getTransfersFrom()) {
+//			this.unitsTransferedFrom += sit.getUnitsTransfered();
+//		}
+//		for (SaleItemTransfer sit: this.getTransfersTo()) {
+//			this.unitsTransferedTo += sit.getUnitsTransfered();
+//		}
 		for(InvoiceItem ii : this.invoiceItems) {
 			if(ii.getTotalUnitPrice()!=null && ii.getInvoice().isSent()) {
 				this.invoicedAmount = this.invoicedAmount.add(ii.getTotalUnitPrice());
 			}
 		}
-		this.unitsOnStock = this.unitsProduced + this.unitsTransferedTo - this.unitsTransferedFrom - this.unitsShipped;
-		this.unitsShort += ((this.units + this.unitsAdjusted) - this.unitsAssigned + this.unitsOnStock);
+		this.unitsNotAssigned = ((this.units + this.unitsAdjusted) - this.unitsAssigned);
+//		this.unitsOnStock = this.unitsProduced - this.unitsAssigned;
+		this.unitsShort = ((this.units + this.unitsAdjusted) - this.unitsAssigned);
 		this.updateStatus();
 	}
 	

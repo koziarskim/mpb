@@ -113,10 +113,8 @@ class SaleRest {
 			dto.setUnitsSold(sale.getUnitsSold());
 			dto.setUnitsScheduled(sale.getUnitsScheduled());
 			dto.setUnitsProduced(sale.getUnitsProduced());
-			dto.setUnitsTransferedTo(sale.getUnitsTransferedTo());
-			dto.setUnitsTransferedFrom(sale.getUnitsTransferedFrom());
 			dto.setUnitsShipped(sale.getUnitsShipped());
-			dto.setUnitsOnStock(sale.getUnitsOnStock());
+//			dto.setUnitsOnStock(sale.getUnitsOnStock());
 			dto.setUnitsAdjusted(sale.getUnitsAdjusted());
 			dto.setUnitsAssigned(sale.getUnitsAssigned());
 //			dto.setInvoicedAmount(sale.getInvoicedAmount());

@@ -94,7 +94,7 @@ class SaleItemRest {
 		for(SaleItem saleItem: saleItems) {
 			KeyValueDto dto = new KeyValueDto();
 			dto.setId(saleItem.getId());
-			dto.setName(saleItem.getSale().getNumber() + "("+saleItem.getSale().getCustomer().getName()+"), Stock: "+saleItem.getUnitsOnStock());
+			dto.setName(saleItem.getSale().getNumber() + "("+saleItem.getSale().getCustomer().getName()+"), Assigned: "+saleItem.getUnitsAssigned());
 			dtos.add(dto);
 		}		
 
@@ -153,9 +153,9 @@ class SaleItemRest {
 			dto.setUnitsScheduled(saleItem.getUnitsScheduled());
 			dto.setUnitsProduced(saleItem.getUnitsProduced());
 			dto.setUnitsShipped(saleItem.getUnitsShipped());
-			dto.setUnitsOnStock(saleItem.getUnitsOnStock());
-			dto.setUnitsTransferedTo(saleItem.getUnitsTransferedTo());
-			dto.setUnitsTranferedFrom(saleItem.getUnitsTransferedFrom());
+//			dto.setUnitsOnStock(saleItem.getUnitsOnStock());
+//			dto.setUnitsTransferedTo(saleItem.getUnitsTransferedTo());
+//			dto.setUnitsTranferedFrom(saleItem.getUnitsTransferedFrom());
 			dto.setUnitsAdjusted(saleItem.getUnitsAdjusted());
 			dto.setUnitsAssigned(saleItem.getUnitsAssigned());
 //			dto.setInvoicedAmount(saleItem.getInvoicedAmount());
@@ -164,27 +164,6 @@ class SaleItemRest {
 			return dto;
 		});
 		return all;
-	}
-	
-	@GetMapping("/saleItem/migrate")
-	ResponseEntity<?> migrate() {
-		int count = 0;
-		try {
-			List<SaleItem> saleItems = (List<SaleItem>) saleItemRepo.findAll();
-			for(SaleItem si: saleItems) {
-				long unitsAssigned = 0;
-				unitsAssigned += si.getUnitsProduced() + (si.getUnitsTransferedTo() - si.getUnitsTransferedFrom());
-				si.setUnitsAssigned(unitsAssigned);
-				saleItemRepo.save(si);
-				log.info("Updated: "+si.getId());
-				count++;
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-		}
-		log.info("Done: "+count);
-		return ResponseEntity.ok().body("OK");
 	}
 
 }

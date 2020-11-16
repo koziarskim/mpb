@@ -39,15 +39,20 @@
       <template v-slot:cell(name)="row">
         <div style="width:200px; overflow: wrap; font-size: 14px"><b-link role="button" @click="updateItem(row.item.id)">{{row.item.number}}</b-link> {{row.item.name}}</div>
       </template>
-      <template v-slot:cell(unitsOnStock)="row">
+      <template v-slot:cell(numPackagings)="row">
         <div style="display: flex">
-          <b-button :id="'packagings_'+row.item.id" size="sm" @click="showPackagings(row.item.id)" variant="link">{{row.item.unitsOnStock}}</b-button>
-          <b-popover placement="bottom" :target="'packagings_'+row.item.id" variant="secondary">
-            <div style="width: 500px; font-size: 16px">
-              <div v-for="p in packagings" :key="p.id">
-                Package: {{p.name + ' ('+p.typeLabel+')'}}<br/>
-                  <div style="margin-left: 50px">Stock: {{p.unitsOnStock}},
-                  Scheduled:<b-button style="margin-top: -4px" size="md" variant="link" @click="openScheduleProductionModal(row.item.id)">{{p.unitsScheduled}}</b-button>
+          <b-button :id="'itemPackagings_'+row.item.id" size="sm" @click="showItemPackagings(row.item.id)" variant="link">{{row.item.numPackagings}}</b-button>
+          <b-popover placement="bottom" :target="'itemPackagings_'+row.item.id" variant="secondary">
+            <div style="width: 600px; font-size: 14px">
+              <div v-for="ip in itemPackagings" :key="ip.id">
+                Package: {{ip.label}}<br/>
+                  <div style="margin-left: 20px">
+                    <b>Floor: </b>{{ip.unitsOnFloor}}, 
+                    <b>Stock: </b>{{ip.unitsOnStock}}, 
+                    <b>Not Assigned: </b>{{ip.salesNotAssigned}} ({{ip.unitsNotAssigned}}), 
+                    <b>Short: </b><b-button style="margin-top: -4px" size="md" variant="link" @click="openScheduleProductionModal(row.item.id)">{{ip.unitsShort}}</b-button>
+                    <b>Pending Ship: </b>{{ip.unitsPenShip}},
+                    <b>Open: </b>{{ip.salesOpen}} ({{ip.unitsOpen}}),
                   </div>
               </div>
             </div>
@@ -81,9 +86,10 @@ export default {
       },
       numberName: "",
       fields: [
-        { key: "name", sortable: true, label: "Item # (Name)" },
-        { key: "brand", sortable: true, label: "Brand" },
-        { key: "category", sortable: true, label: "Category" },
+        { key: "name", sortable: false, label: "Item # (Name)" },
+        { key: "brand", sortable: false, label: "Brand" },
+        { key: "category", sortable: false, label: "Category" },
+        { key: "numPackagings", sortable: false, label: "Pkgs" },
         { key: "unitsOnFloor", sortable: false, label: "Floor" },
         { key: "unitsOnStock", sortable: false, label: "Available" },
         { key: "notAssigned", sortable: false, label: "Not Assigned" },
@@ -105,8 +111,8 @@ export default {
       unitsFilter: {},
       itemDto: {
       },
-      showPackagingsMenu: false,
-      packagings: [], //ItemPackagingListDto
+      showItemPackagingsMenu: false,
+      itemPackagings: [], //ItemPackagingListDto
     };
   },
   watch: {
@@ -124,10 +130,10 @@ export default {
     }
   },
   methods: {
-    showPackagings(itemId){
+    showItemPackagings(itemId){
       http.get("/itemPackaging/item/"+itemId).then(r => {
-        this.packagings = r.data.content;
-        this.showPackagingsMenu = !this.showPackagingsMenu;
+        this.itemPackagings = r.data.content;
+        this.showItemPackagingsMenu = !this.showItemPackagingsMenu;
       }).catch(e => {console.log("API error: "+ e)})
     },
     getUnits(itemId){

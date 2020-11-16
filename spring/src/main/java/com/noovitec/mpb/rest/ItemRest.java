@@ -142,12 +142,13 @@ class ItemRest {
 			dto.setUnitsScheduled(item.getUnitsScheduled());
 			dto.setUnitsProduced(item.getUnitsProduced());
 			dto.setUnitsShipped(item.getUnitsShipped());
-			dto.setUnitsReadyProd(item.getUnitsReadyProd());
+//			dto.setUnitsReadyProd(item.getUnitsReadyProd());
 			dto.setPerformance(item.getPerformance());
 			dto.setUnitsAdjusted(item.getUnitsAdjusted());
 			dto.setUnitsOnFloor(item.getUnitsProduced() - item.getUnitsShipped());
 			dto.setUnitsNotAssigned(item.getUnitsNotAssigned());
 			dto.setUnitsShort(item.getUnitsShort());
+			dto.setNumPackagings(item.getItemPackagings().size());
 			return dto;
 		});
 		return dtos;

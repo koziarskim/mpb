@@ -46,11 +46,11 @@ public class Sale extends BaseEntity {
 	private long unitsProduced;
 	private long unitsSold;
 	private long unitsScheduled;
-	private long unitsTransferedTo;
-	private long unitsTransferedFrom;
+//	private long unitsTransferedTo;
+//	private long unitsTransferedFrom;
 	private long unitsShipped;
 	private long unitsAdjusted;
-	private long unitsOnStock;
+//	private long unitsOnStock;
 	private long unitsAssigned;
 	private String status;
 	private boolean approved;
@@ -85,10 +85,10 @@ public class Sale extends BaseEntity {
 		this.unitsScheduled = 0;
 		this.unitsProduced = 0;
 		this.unitsShipped = 0;
-		this.unitsTransferedTo = 0;
-		this.unitsTransferedFrom = 0;
+//		this.unitsTransferedTo = 0;
+//		this.unitsTransferedFrom = 0;
 		this.unitsAdjusted = 0;
-		this.unitsOnStock = 0;
+//		this.unitsOnStock = 0;
 		this.unitsAssigned = 0;
 		this.invoicedAmount = BigDecimal.ZERO;
 		for (SaleItem si : this.getSaleItems()) {
@@ -97,16 +97,16 @@ public class Sale extends BaseEntity {
 			this.unitsScheduled += si.getUnitsScheduled();
 			this.unitsProduced += si.getUnitsProduced();
 			this.unitsShipped += si.getUnitsShipped();
-			this.unitsTransferedTo += si.getUnitsTransferedTo();
-			this.unitsTransferedFrom += si.getUnitsTransferedFrom();
+//			this.unitsTransferedTo += si.getUnitsTransferedTo();
+//			this.unitsTransferedFrom += si.getUnitsTransferedFrom();
 			this.unitsAdjusted += si.getUnitsAdjusted();
-			this.unitsOnStock += si.getUnitsOnStock();
+//			this.unitsOnStock += si.getUnitsOnStock();
 			this.unitsAssigned += si.getUnitsAssigned();
 			if(si.getInvoicedAmount()!=null) {
 				this.invoicedAmount = this.invoicedAmount.add(si.getInvoicedAmount());
 			}
 		}
-//		this.unitsOnStock = this.unitsProduced + this.unitsTransferedTo - this.unitsTransferedFrom - this.unitsShipped + this.unitsReturned;
+//		this.unitsOnStock = ;
 		this.updateStatus();
 	}
 	

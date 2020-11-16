@@ -41,12 +41,13 @@ public class Item extends BaseEntity {
 	private long unitsSold = 0;
 	private long unitsScheduled = 0;
 	private long unitsShipped = 0;
-	private long unitsReadyProd = 0;
 	private long unitsOnStock = 0;
 	private long unitsAdjusted = 0;
 	private long salesNotAssigned = 0;
 	private long unitsNotAssigned = 0;
 	private long unitsShort = 0;
+	private long unitsOnFloor = 0;
+//	private long unitsReadyProd = 0;	
 	
 	//Package to delete after migration.
 	private int casePack = 1;
@@ -98,21 +99,6 @@ public class Item extends BaseEntity {
 	@JoinColumn(name = "attachment_id", referencedColumnName = "id")
 	private Attachment attachment;
 
-//	@JsonIgnore
-//	@OneToMany()
-//	@JoinColumn(name = "item_id")
-//	private Collection<SaleItem> saleItems = new HashSet<SaleItem>();
-
-//	@JsonIgnoreProperties(value = { "item", "saleItemReturns" }, allowSetters = true)
-//	@OneToMany()
-//	@JoinColumn(name = "item_id")
-//	private Collection<ItemReturn> itemReturns = new HashSet<ItemReturn>();
-
-//	@JsonIgnore
-//	@OneToMany()
-//	@JoinColumn(name = "item_id")
-//	private Collection<ScheduleEvent> scheduleEvents = new HashSet<ScheduleEvent>();
-
 	public Long getDurationSeconds() {
 		Long secs = 0L;
 		for(ItemPackaging ip: this.getItemPackagings()) {
@@ -159,66 +145,48 @@ public class Item extends BaseEntity {
 		return perf.longValue();
 	}
 
-	public void updateUnitsReadyProd() {
-		this.unitsReadyProd = 1000000000;
-		if(this.getItemComponents().size()==0) {
-			this.unitsReadyProd = 0;
-			return;
-		}
-		for (ItemComponent ic: this.getItemComponents()) {
-			long unitsLocked = this.getUnitsScheduled()-this.getUnitsProduced();
-			if(unitsLocked < 0) {
-				unitsLocked = 0;
-			}
-			long units = BigDecimal.valueOf(ic.getComponent().getUnitsOnStock() - unitsLocked).divide(ic.getUnits(),0, RoundingMode.CEILING).longValue();
-			if(units < this.unitsReadyProd) {
-				this.unitsReadyProd = units<0?0:units;
-			}
-		}
-	}
+//	public void updateUnitsReadyProd() {
+//		this.unitsReadyProd = 1000000000;
+//		if(this.getItemComponents().size()==0) {
+//			this.unitsReadyProd = 0;
+//			return;
+//		}
+//		for (ItemComponent ic: this.getItemComponents()) {
+//			long unitsLocked = this.getUnitsScheduled()-this.getUnitsProduced();
+//			if(unitsLocked < 0) {
+//				unitsLocked = 0;
+//			}
+//			long units = BigDecimal.valueOf(ic.getComponent().getUnitsOnStock() - unitsLocked).divide(ic.getUnits(),0, RoundingMode.CEILING).longValue();
+//			if(units < this.unitsReadyProd) {
+//				this.unitsReadyProd = units<0?0:units;
+//			}
+//		}
+//	}
 	
 	public void updateUnits() {
 		this.unitsSold = 0;
+		this.unitsAdjusted = 0;
 		this.salesNotAssigned = 0;
+		this.unitsNotAssigned = 0;		
 		this.unitsScheduled = 0;
 		this.unitsProduced = 0;
 		this.unitsShipped = 0;
-		this.unitsAdjusted = 0;
 		this.unitsOnStock = 0;
-		this.unitsNotAssigned = 0;
+		this.unitsOnFloor = 0;
+		this.unitsShort = 0;
 		for(ItemPackaging ip: this.getItemPackagings()) {
-			long ipUnitsOnStock = 0;
-			long ipUnitsProduced = 0;
-			long ipUnitsAssigned = 0;
-			long ipUnitsScheduled = 0;
-			for (SaleItem si : ip.getSaleItems()) {
-				si.updateUnits();
-				if(!si.getSale().isCancelled()) {
-					this.unitsSold += si.getUnits();
-					this.unitsAdjusted += si.getUnitsAdjusted();
-				}
-				if(((si.getUnits() + si.getUnitsAdjusted()) - si.getUnitsAssigned()) != 0) {
-					this.salesNotAssigned += 1;
-				}
-				this.unitsNotAssigned += ((si.getUnits() + si.getUnitsAdjusted()) - si.getUnitsAssigned());
-				this.unitsShort += si.getUnitsShort();
-				this.unitsShipped += si.getUnitsShipped();
-				ipUnitsAssigned += si.getUnitsAssigned();
-			}
-			for(ScheduleEvent se: ip.getScheduleEvents()) {
-				se.updateUnits();
-				ipUnitsProduced += se.getUnitsProduced();
-				ipUnitsScheduled += se.getUnitsScheduled();
-			}
-			ipUnitsOnStock = ipUnitsProduced - ipUnitsAssigned;
-			ip.setUnitsProduced(ipUnitsProduced);
-			ip.setUnitsScheduled(ipUnitsScheduled);
-			ip.setUnitsAssigned(ipUnitsAssigned);
-			ip.setUnitsOnStock(ipUnitsOnStock);
-			this.unitsScheduled += ipUnitsScheduled;
-			this.unitsProduced += ipUnitsProduced;
-			this.unitsOnStock += ipUnitsOnStock;
+			ip.updateUnits();
+			this.unitsSold += ip.getUnitsSold();
+			this.unitsAdjusted += ip.getUnitsAdjusted();
+			this.salesNotAssigned += ip.getSalesNotAssigned();
+			this.unitsNotAssigned += ip.getUnitsNotAssigned();
+			this.unitsScheduled += ip.getUnitsScheduled();
+			this.unitsProduced += ip.getUnitsProduced();
+			this.unitsShipped += ip.getUnitsShipped();
+			this.unitsOnStock += ip.getUnitsOnStock();
+			this.unitsOnFloor += ip.getUnitsOnFloor();
+			this.unitsShort += ip.getUnitsShort();
 		}
-		this.updateUnitsReadyProd();
+//		this.updateUnitsReadyProd();
 	}
 }

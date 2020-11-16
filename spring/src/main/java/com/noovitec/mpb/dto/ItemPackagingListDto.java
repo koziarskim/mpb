@@ -16,8 +16,7 @@ public class ItemPackagingListDto {
 	private Long packagingId;
 	private String itemName;
 	private String itemNumber;
-	private String name;
-	private String typeLabel;
+	private String label;
 	private BigDecimal caseHeight;
 	private BigDecimal caseWidth;
 	private BigDecimal caseDepth;
@@ -27,9 +26,16 @@ public class ItemPackagingListDto {
 	private int hi;
 	private BigDecimal warehouseCost = new BigDecimal(12);
 	private BigDecimal packageCost = new BigDecimal(12);
-	private long unitsProduced = 0;
-	private long unitsAssigned = 0;
-	private long unitsOnStock = 0;
-	private long unitsScheduled = 0;
+	private long unitsOnFloor;
+	private long unitsOnStock;
+	private long salesNotAssigned;
+	private long unitsNotAssigned;
+	private long unitsShort;
+	private long unitsPenShip;
+	private long salesOpen;
+	private long unitsOpen;
+	private long unitsProduced;
+	private long unitsAssigned;
+	private long unitsScheduled;
 	
 }

@@ -170,7 +170,7 @@ class ComponentRest {
 		}
 		itemService.updateUnitsByComponent(component.getId());
 		componentService.updateUnits(Arrays.asList(component.getId()));
-		itemService.updateUnitsReadyProdByComponent(component.getId());
+//		itemService.updateUnitsReadyProdByComponent(component.getId());
 		return ResponseEntity.ok(component);
 	}
 

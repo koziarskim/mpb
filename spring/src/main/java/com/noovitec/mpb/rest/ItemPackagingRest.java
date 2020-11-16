@@ -65,8 +65,7 @@ class ItemPackagingRest {
 			dto.setPackagingId(ip.getPackaging().getId());
 			dto.setItemName(ip.getItem().getName());
 			dto.setItemNumber(ip.getItem().getNumber());
-			dto.setName(ip.getPackaging().getName());
-			dto.setTypeLabel(Packaging.TYPE.valueOf(ip.getPackaging().getType()).label());
+			dto.setLabel(ip.getLabel());
 			dto.setCaseHeight(ip.getPackaging().getCaseHeight());
 			dto.setCaseWidth(ip.getPackaging().getCaseWidth());
 			dto.setCaseDepth(ip.getPackaging().getCaseDepth());
@@ -76,10 +75,17 @@ class ItemPackagingRest {
 			dto.setPalletWeight(ip.getPackaging().getPalletWeight());
 			dto.setWarehouseCost(ip.getPackaging().getWarehouseCost());
 			dto.setPackageCost(ip.getPackaging().getPackageCost());
+			dto.setUnitsOnFloor(ip.getUnitsOnFloor());
+			dto.setUnitsOnStock(ip.getUnitsOnStock());
+			dto.setSalesNotAssigned(ip.getSalesNotAssigned());
+			dto.setUnitsNotAssigned(ip.getUnitsNotAssigned());
+			dto.setUnitsShort(ip.getUnitsShort());
+			dto.setUnitsPenShip(ip.getUnitsPenShip());
+			dto.setSalesOpen(ip.getSalesOpen());
+			dto.setUnitsOpen(ip.getUnitsOpen());
 			dto.setUnitsProduced(ip.getUnitsProduced());
 			dto.setUnitsScheduled(ip.getUnitsScheduled() - ip.getUnitsProduced());
 			dto.setUnitsAssigned(ip.getUnitsAssigned());
-			dto.setUnitsOnStock(ip.getUnitsOnStock());
 			return dto;
 		});
 		return dtos;

@@ -14,6 +14,7 @@ public class ItemListDto {
 	private String name;
 	private String brand;
 	private String category;
+	private long numPackagings;
 	private long unitsOnStock = 0;
 	private long unitsSold = 0;
 	private long salesNotAssigned = 0;

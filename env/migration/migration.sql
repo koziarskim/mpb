@@ -10,6 +10,18 @@ alter table item add column units_not_assigned bigint default 0;
 alter table item add column sales_not_assigned bigint default 0;
 alter table item add column units_short bigint default 0;
 alter table sale_item add column units_short bigint default 0;
+alter table item_packaging add column units_not_assigned bigint default 0;
+alter table item_packaging add column units_on_floor bigint default 0;
+alter table item_packaging add column units_short bigint default 0;
+alter table item_packaging add column sales_not_assigned bigint default 0;
+alter table item_packaging add column units_pen_ship bigint default 0;
+alter table item_packaging add column sales_open bigint default 0;
+alter table item_packaging add column units_open bigint default 0;
+alter table item_packaging add column units_sold bigint default 0;
+alter table item_packaging add column units_adjusted bigint default 0;
+alter table item_packaging add column units_shipped bigint default 0;
+alter table item add column units_on_floor bigint default 0;
+alter table sale_item add column units_not_assigned bigint default 0;
 
 run /item/update/units
 
