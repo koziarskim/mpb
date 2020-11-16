@@ -104,7 +104,7 @@ export default {
   watch: {},
   methods: {
     getScheduleEvent(){
-      if(!this.scheduleEvent.id) {return}
+      if(!this.scheduleEventId) {return}
       http.get("/scheduleEvent/"+this.scheduleEventId).then(r => {
         this.scheduleEvent = r.data;
       }).catch(e => {console.log("API error: "+e);});
