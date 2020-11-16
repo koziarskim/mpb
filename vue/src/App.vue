@@ -8,13 +8,13 @@
           <b-nav-item @click="goTo('/componentList')" :class="navClass('component')">Component</b-nav-item>
           <b-nav-item-dropdown text="Item" :class="navClass('item')">
             <b-dropdown-item @click="goTo('/itemList')"><span style="color: black">Item List</span></b-dropdown-item>
+            <b-dropdown-item @click="goTo('/itemPackagingList')"><span style="color: black">Items by Package</span></b-dropdown-item>
             <b-dropdown-item @click="goTo('/packagingList')"><span style="color: black">Packaging List</span></b-dropdown-item>
-            <b-dropdown-item @click="goTo('/itemPackagingList')"><span style="color: black">Packages by Item</span></b-dropdown-item>
           </b-nav-item-dropdown>
           <b-nav-item @click="goTo('/customerList')" :class="navClass('customer')">Customer</b-nav-item>
           <b-nav-item-dropdown text="Sale" :class="navClass('sale')">
             <b-dropdown-item @click="goTo('/saleList')"><span style="color: black">Sale List</span></b-dropdown-item>
-            <b-dropdown-item @click="goTo('/saleItemList')"><span style="color: black">Items by Sale</span></b-dropdown-item>
+            <b-dropdown-item @click="goTo('/saleItemList')"><span style="color: black">Sales by Item</span></b-dropdown-item>
           </b-nav-item-dropdown>
           <b-nav-item @click="goTo('/purchaseList')" :class="navClass('purchase')">Purchase</b-nav-item>
           <b-nav-item @click="goTo('/receivingList')" :class="navClass('receiving')">Receiving</b-nav-item>
@@ -28,8 +28,8 @@
           </b-nav-item-dropdown>
           <b-nav-item-dropdown text="Accounting" :class="navClass('invoice')">
             <b-dropdown-item @click="goTo('/invoiceList')"><span style="color: black">Invoices (Sales)</span></b-dropdown-item>
+            <b-dropdown-item @click="goTo('/invoiceItemList')"><span style="color: black">Invoices by Item</span></b-dropdown-item>
             <b-dropdown-item @click="goTo('/billList')"><span style="color: black">Bills (Receivings)</span></b-dropdown-item>
-            <b-dropdown-item @click="goTo('/invoiceItemList')"><span style="color: black">Items by Invoice</span></b-dropdown-item>
           </b-nav-item-dropdown>
         </b-navbar-nav>
         <b-navbar-nav v-if="showNav" style="margin-left: 19%">
