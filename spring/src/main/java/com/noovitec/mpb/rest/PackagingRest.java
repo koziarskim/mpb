@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.noovitec.mpb.dto.KeyValueDto;
@@ -33,8 +34,13 @@ class PackagingRest {
 	}
 
 	@GetMapping("/packaging/kv")
-	Collection<KeyValueDto> getAllKv() {
-		return packagingRepo.getAllKv();
+	Collection<KeyValueDto> getAllKv(
+			@RequestParam(required = false) Long itemId) {
+		if(itemId == null) {
+			return packagingRepo.getAllKv();
+		} else {
+			return packagingRepo.findKvsByItem(itemId);
+		}
 	}
 
 	@GetMapping("/packaging")

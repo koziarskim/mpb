@@ -2,15 +2,16 @@
     <b-container fluid>
         <b-row style="font-size: 12px">
           <input style="width: 150px; margin-left: 15px; font-size: 12px" class="form-control" type="tel" v-model="numberName" @keyup.enter="getSaleItems()" placeholder="Sale"/>
-          <b-select style="width: 150px; margin-left: 15px" option-value="id" option-text="name" :list="availableItems" v-model="itemKv" placeholder="Item"></b-select>
-          <b-select style="width: 150px; margin-left: 15px" option-value="id" option-text="name" :list="availableCustomers" v-model="customer" placeholder="Customer"></b-select>
+          <b-select style="width: 250px; margin-left: 15px" option-value="id" option-text="name" :list="availableItems" v-model="itemKv" placeholder="Item"></b-select>
+          <b-select style="width: 200px; margin-left: 15px" option-value="id" option-text="name" :list="availablePackagings" v-model="packagingKv" placeholder="Package"></b-select>
+          <b-select style="width: 200px; margin-left: 15px" option-value="id" option-text="name" :list="availableCustomers" v-model="customer" placeholder="Customer"></b-select>
           <b-select style="width: 150px; margin-left: 15px" option-value="id" option-text="name" :list="availableStatus" v-model="statusKv" placeholder="Status"></b-select>
-          <b-select style="width: 150px; margin-left: 15px" option-value="id" option-text="name" :list="availableUnitsFilters" v-model="unitsFilter" placeholder="Units"></b-select>
+          <!-- <b-select style="width: 150px; margin-left: 15px" option-value="id" option-text="name" :list="availableUnitsFilters" v-model="unitsFilter" placeholder="Units"></b-select> -->
           <div style="margin-left: 15px">
             <label class="top-label">Show All</label><br/>
             <input type="checkbox" style="margin-left: 20px" v-model="showAll">
           </div>
-          <div style="margin-left: 220px">
+          <div style="margin-left: 15px">
             <b-button id="totalsMenu" size="sm" @click="toggleShowTotals()">Totals</b-button>
             <b-popover :show="showTotalsMenu" placement="bottom" target="totalsMenu" variant="secondary">
               <div style="width: 300px; font-size: 16px">
@@ -19,7 +20,7 @@
                 <div>Produced: {{totalProduced.toLocaleString()}}</div>
                 <div>Assigned: {{totalAssigned.toLocaleString()}}</div>
                 <div>Shipped: {{totalShipped.toLocaleString()}}</div>
-                <div>Short: {{(+totalSoldAdj - +totalAssigned).toLocaleString()}}</div>
+                <div>Pending Ship: {{(+totalSoldAdj - +totalShipped).toLocaleString()}}</div>
               </div>
             </b-popover>
             <b-button style="margin-left: 15px" size="sm" variant="primary" @click="newShipment()">Ship ({{selectedSaleItemIds.length}})</b-button>
@@ -84,6 +85,8 @@ export default {
       numberName: "",
       availableItems: [],
       itemKv: {},
+      availablePackagings: [],
+      packagingKv: {},
       availableCustomers: [],
       customer: {},
       selectedCustomerId: null,
@@ -112,13 +115,13 @@ export default {
         {id: 'PAID', name: 'Paid In Full'},
       ],
       statusKv: {},
-      availableUnitsFilters: [
-        {id: "ON_FLOOR", name: "On Floor"},
-        {id: "ON_STOCK", name: "On Stock"},
-        {id: "NOT_ASSIGNED", name: "Not Assigned"},
-        {id: "SHORT", name: "Units Short"},
-      ],
-      unitsFilter: {},
+      // availableUnitsFilters: [
+      //   {id: "ON_FLOOR", name: "On Floor"},
+      //   {id: "ON_STOCK", name: "On Stock"},
+      //   {id: "NOT_ASSIGNED", name: "Not Assigned"},
+      //   {id: "SHORT", name: "Units Short"},
+      // ],
+      // unitsFilter: {},
       showTotalsMenu: false,
       totalSoldAdj: 0,
       totalProduced: 0,
@@ -130,6 +133,10 @@ export default {
   },
   watch: {
     itemKv(newValue, oldValue){
+      this.getAvailablePackagings();
+      this.getSaleItems();
+    },
+    packagingKv(newValue, oldValue){
       this.getSaleItems();
     },
     customer(newValue, oldValue){
@@ -141,9 +148,9 @@ export default {
       }
       this.getSaleItems();      
     },
-    unitsFilter(new_value, old_value){
-      this.getSaleItems();      
-    },
+    // unitsFilter(new_value, old_value){
+    //   this.getSaleItems();      
+    // },
     showAll(new_value, old_value){
       this.getSaleItems();      
     },
@@ -194,8 +201,9 @@ export default {
         numberName: this.numberName, 
         customerId: this.customer.id, 
         itemId: this.itemKv.id, 
+        packagingId: this.packagingKv.id,
         status: this.statusKv.id,
-        unitsFilter: this.unitsFilter.id,
+        // unitsFilter: this.unitsFilter.id,
         showAll: this.showAll
       }}).then(r => {
       if(totals){
@@ -225,6 +233,13 @@ export default {
       console.log("API error: "+e);
     });
   },
+  getAvailablePackagings() {
+    http.get("/packaging/kv", {params: {itemId: this.itemKv.id}}).then(r => {
+      this.availablePackagings = r.data;
+    }).catch(e => {
+      console.log("API error: "+e);
+    });
+  },
   newShipment(){
     var query = { saleItemIds: this.selectedSaleItemIds.join(",") };
     router.push({ path: "/shipmentEdit/new", query: query })
@@ -248,9 +263,13 @@ export default {
   },
   mounted() {
     var itemId = this.$route.query.itemId;
+    var packagingId = this.$route.query.packagingId;
     var statusId = this.$route.query.statusId;
     if(itemId){
       this.itemKv = {id: itemId};
+    }
+    if(packagingId){
+      this.packagingKv = {id: packagingId};
     }
     if(statusId){
       this.statusKv = {id: statusId}
@@ -260,15 +279,11 @@ export default {
     // router.replace({'query': null});
     this.getAvailableCustomers();
     this.getAvailableItems();
-    console.log("Mounted")
+    this.getAvailablePackagings();
   },
   activated(){
-    console.log("Activated")
     this.getSaleItems();
   },
-  deactivated(){
-    console.log("Deactivated")
-  }
 };
 </script>
 

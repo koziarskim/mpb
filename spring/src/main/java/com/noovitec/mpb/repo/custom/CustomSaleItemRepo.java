@@ -18,9 +18,9 @@ import com.noovitec.mpb.entity.SaleItem;
 
 public interface CustomSaleItemRepo {
 	public Page<?> getTotals(Pageable pageable, String numberName, Long saleId, Long customerId, Long itemId, 
-			String status, String unitsFilter, boolean showAll);
-	Page<SaleItem> findPageable(Pageable pageable, String numberName, Long saleId, Long customerId, Long itemId, String status,
-			String unitsFilter, boolean showAll);
+			Long packagingId, String status, String unitsFilter, boolean showAll);
+	Page<SaleItem> findPageable(Pageable pageable, String numberName, Long saleId, Long customerId, Long itemId, 
+			Long packagingId, String status, String unitsFilter, boolean showAll);
 
 	@Repository
 	public class SaleItemRepoImpl implements CustomSaleItemRepo {
@@ -32,12 +32,13 @@ public interface CustomSaleItemRepo {
 
 		@Override
 		public Page<?> getTotals(Pageable pageable, String numberName, Long saleId, Long customerId, Long itemId, 
-				String status, String unitsFilter, boolean showAll) {
+				Long packagingId, String status, String unitsFilter, boolean showAll) {
 			String q = "select distinct si.id from SaleItem si "
 					+ "join si.itemPackaging ip " 
 					+ "join ip.item i " 
 					+ "join si.sale s " 
-					+ "join s.customer cu " 
+					+ "join s.customer cu "
+					+ "join ip.packaging p " 
 					+ "where si.id is not null ";
 				if (numberName != null && !numberName.isEmpty()) {
 					q += "and (upper(s.number) like concat('%',upper(:numberName),'%') ";
@@ -52,6 +53,9 @@ public interface CustomSaleItemRepo {
 				if (itemId != null) {
 					q += "and i.id = :itemId ";
 				}
+				if (packagingId != null) {
+					q += "and p.id = :packagingId ";
+				}
 				if (status !=null && !status.isBlank()) {
 					q += "and si.status = :status ";
 				}
@@ -64,9 +68,6 @@ public interface CustomSaleItemRepo {
 					}
 					if(unitsFilter.equalsIgnoreCase("NOT_ASSIGNED")) {
 						q += "and ((si.units + si.unitsAdjusted) - si.unitsAssigned) != 0 ";
-					}
-					if(unitsFilter.equalsIgnoreCase("SHORT")) {
-						q += "and si.unitsShort != 0 ";
 					}
 				}
 				if (!showAll) {
@@ -84,6 +85,9 @@ public interface CustomSaleItemRepo {
 				}
 				if (itemId != null) {
 					query.setParameter("itemId", itemId);
+				}
+				if (packagingId != null) {
+					query.setParameter("packagingId", packagingId);
 				}
 				if (status != null && !status.isBlank()) {
 					query.setParameter("status", status);
@@ -104,12 +108,13 @@ public interface CustomSaleItemRepo {
 		
 		@Override
 		public Page<SaleItem> findPageable(Pageable pageable, String numberName, Long saleId, Long customerId, Long itemId, 
-				String status, String unitsFilter, boolean showAll) {
+				Long packagingId, String status, String unitsFilter, boolean showAll) {
 			String q = "select distinct si from SaleItem si "
 					+ "join si.itemPackaging ip " 
 					+ "join ip.item i " 
 					+ "join si.sale s " 
-					+ "join s.customer cu " 
+					+ "join s.customer cu "
+					+ "join ip.packaging p " 
 					+ "where si.id is not null ";
 			if (numberName != null && !numberName.isEmpty()) {
 				q += "and (upper(s.number) like concat('%',upper(:numberName),'%') ";
@@ -124,15 +129,23 @@ public interface CustomSaleItemRepo {
 			if (itemId != null) {
 				q += "and i.id = :itemId ";
 			}
+			if (packagingId != null) {
+				q += "and p.id = :packagingId ";
+			}
 			if (status !=null && !status.isBlank()) {
 				q += "and si.status = :status ";
 			}
-			if ("ON_STOCK".equalsIgnoreCase(unitsFilter)) {
-				q += "and si.unitsOnStock > 0 ";
-			}
-			if ("RFP_ONLY".equalsIgnoreCase(unitsFilter)) {
-				q += "and i.unitsReadyProd > 0 ";
-			}
+//			if(unitsFilter != null) {
+//				if(unitsFilter.equalsIgnoreCase("ON_FLOOR")) {
+//					q += "and (si.unitsProduced - si.unitsShipped) != 0 ";
+//				}
+//				if(unitsFilter.equalsIgnoreCase("ON_STOCK")) {
+//					q += "and si.unitsOnStock != 0 ";
+//				}
+//				if(unitsFilter.equalsIgnoreCase("NOT_ASSIGNED")) {
+//					q += "and ((si.units + si.unitsAdjusted) - si.unitsAssigned) != 0 ";
+//				}
+//			}
 			if (!showAll) {
 				q += "and s.cancelled = false and s.paidInFull = false ";
 			}
@@ -149,6 +162,9 @@ public interface CustomSaleItemRepo {
 			}
 			if (itemId != null) {
 				query.setParameter("itemId", itemId);
+			}
+			if (packagingId != null) {
+				query.setParameter("packagingId", packagingId);
 			}
 			if (status != null && !status.isBlank()) {
 				query.setParameter("status", status);

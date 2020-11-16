@@ -49,9 +49,9 @@
                   <div style="margin-left: 20px">
                     <b>Floor: </b>{{ip.unitsOnFloor}}, 
                     <b>Stock: </b>{{ip.unitsOnStock}}, 
-                    <b>Not Assigned: </b>{{ip.salesNotAssigned}} ({{ip.unitsNotAssigned}}), 
-                    <b>Short:</b><b-button style="margin-top: -4px" size="md" variant="link" @click="openScheduleEventModal(row.item.id)">{{ip.unitsShort}},</b-button>
-                    <b>Pending Ship: </b>{{ip.unitsPenShip}},
+                    <b>Not Assigned:</b><b-button style="margin-top: -4px" size="md" variant="link" @click="goToSaleItemList(row.item.id, ip.packagingId, 'APPROVED')">{{ip.salesNotAssigned}} ({{ip.unitsNotAssigned}}),</b-button>
+                    <b>Short: </b>{{ip.unitsShort}}, 
+                    <b>Pending Ship:</b><b-button style="margin-top: -4px" size="md" variant="link" @click="goToSaleItemList(row.item.id, ip.packagingId, null)">{{ip.unitsPenShip}},</b-button>
                     <b>Open: </b>{{ip.salesOpen}} ({{ip.unitsOpen}}),
                   </div>
               </div>
@@ -60,7 +60,7 @@
         </div>        
       </template>
       <template v-slot:cell(notAssigned)="row">
-        <b-button size="sm" variant="link" @click="goToSaleItemList(row.item.id)">{{row.item.salesNotAssigned}} ({{row.item.unitsNotAssigned}})</b-button>
+        <b-button size="sm" variant="link" @click="goToSaleItemList(row.item.id, null, 'APPROVED')">{{row.item.salesNotAssigned}} ({{row.item.unitsNotAssigned}})</b-button>
       </template>
     </b-table>
     <div style="display: flex">
@@ -191,8 +191,11 @@ export default {
     updateItem(item_id) {
       router.push("/itemEdit/" + item_id);
     },
-    goToSaleItemList(itemId) {
-      router.push({path: "/saleItemList/", query: {itemId: itemId, statusId: 'APPROVED'}});
+    goToSaleItemList(itemId, packagingId, statusId) {
+      router.push({path: "/saleItemList/", query: {
+        itemId: itemId,
+        packagingId: packagingId, 
+        statusId: statusId}});
     },
     goToItemShippedList(itemId) {
       var query = { itemId: itemId };
