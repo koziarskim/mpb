@@ -255,11 +255,19 @@ export default {
     if(statusId){
       this.statusKv = {id: statusId}
     }
+    // window.history.replaceState({}, document.title, window.location.pathname);
+    // this.$router.push(this.$route.path)
+    // router.replace({'query': null});
     this.getAvailableCustomers();
     this.getAvailableItems();
+    console.log("Mounted")
   },
   activated(){
+    console.log("Activated")
     this.getSaleItems();
+  },
+  deactivated(){
+    console.log("Deactivated")
   }
 };
 </script>

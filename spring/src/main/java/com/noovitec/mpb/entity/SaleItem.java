@@ -113,9 +113,9 @@ public class SaleItem extends BaseEntity {
 				this.invoicedAmount = this.invoicedAmount.add(ii.getTotalUnitPrice());
 			}
 		}
-		this.unitsNotAssigned = ((this.units + this.unitsAdjusted) - this.unitsAssigned);
+		this.unitsNotAssigned = (this.units + this.unitsAdjusted) - this.unitsAssigned;
 //		this.unitsOnStock = this.unitsProduced - this.unitsAssigned;
-		this.unitsShort = ((this.units + this.unitsAdjusted) - this.unitsAssigned);
+		this.unitsShort = this.unitsNotAssigned - this.getItemPackaging().getUnitsShort();
 		this.updateStatus();
 	}
 	

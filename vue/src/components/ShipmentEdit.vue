@@ -567,7 +567,7 @@ export default {
   mounted() {
     var id = this.$route.params.shipment_id;
     var saleItemIds = this.$route.query.saleItemIds;
-    window.history.replaceState({}, document.title, window.location.pathname);
+    // window.history.replaceState({}, document.title, window.location.pathname);
     if(id!="new"){
       this.getShipment(id);
     }else{

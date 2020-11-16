@@ -312,7 +312,7 @@ export default {
     this.getAvailablePurchases();
     this.getAvailableComponents();
     // this.getReceivings();
-    window.history.replaceState({}, document.title, window.location.pathname);
+    // window.history.replaceState({}, document.title, window.location.pathname);
   },
   activated(){
     this.getReceivings();

@@ -362,7 +362,7 @@ export default {
 		if(scheduleEventId){
 			this.getScheduleEvent(scheduleEventId);
 		}
-		window.history.replaceState({}, document.title, window.location.pathname);
+		// window.history.replaceState({}, document.title, window.location.pathname);
   }
 };
 </script>
