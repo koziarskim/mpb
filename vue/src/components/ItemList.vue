@@ -191,9 +191,6 @@ export default {
     updateItem(item_id) {
       router.push("/itemEdit/" + item_id);
     },
-    gotToInventory(item_id) {
-      router.push("/itemComponentList/" + item_id);
-    },
     goToSaleItemList(itemId) {
       router.push({path: "/saleItemList/", query: {itemId: itemId, statusId: 'APPROVED'}});
     },

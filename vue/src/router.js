@@ -5,7 +5,6 @@ import Home from "./components/Home.vue";
 import ItemEdit from "./components/ItemEdit.vue";
 import ComponentEdit from "./components/ComponentEdit.vue";
 import ItemList from "./components/ItemList";
-import ItemComponentList from "./components/ItemComponentList";
 import ComponentList from "./components/ComponentList";
 import SupplierList from "./components/SupplierList";
 import SupplierEdit from "./components/SupplierEdit";
@@ -15,8 +14,6 @@ import SaleList from "./components/SaleList";
 import SaleEdit from "./components/SaleEdit";
 import PurchaseList from "./components/PurchaseList";
 import PurchaseEdit from "./components/PurchaseEdit";
-import PurchaseItem from "./components/PurchaseItem";
-import PurchaseComponent from "./components/PurchaseComponent";
 import ReceivingList from "./components/ReceivingList";
 import ReceivingEdit from "./components/ReceivingEdit";
 import Users from "./components/Users";
@@ -31,7 +28,6 @@ import ProductionLineList from "./components/ProductionLineList";
 import ProductionItemList from "./components/ProductionItemList";
 import Profile from "./components/Profile";
 import DailyStatus from "./components/public/DailyStatus";
-import PurchaseNew from "./components/PurchaseNew";
 import ItemGraph from "./components/ItemGraph";
 import ItemReturnList from "./components/ItemReturnList";
 import ShipmentSchedule from "./components/ShipmentSchedule";
@@ -77,16 +73,6 @@ const router = new Router({
       path: "/itemList",
       name: "itemList",
       component: ItemList,
-      meta: {
-        roles: ["READ_ONLY"],
-        group: "item",
-        viewClass: "view-item"
-      }
-    },
-    {
-      path: "/itemComponentList/:item_id",
-      name: "ItemComponentList",
-      component: ItemComponentList,
       meta: {
         roles: ["READ_ONLY"],
         group: "item",
@@ -247,36 +233,6 @@ const router = new Router({
       path: "/purchaseEdit/:purchase_id?",
       name: "PurchaseEdit",
       component: PurchaseEdit,
-      meta: {
-        roles: ["READ_ONLY"],
-        group: "purchase",
-        viewClass: "view-purchase"
-      }
-    },
-    {
-      path: "/purchaseNew",
-      name: "PurchaseNew",
-      component: PurchaseNew,
-      meta: {
-        roles: ["READ_ONLY"],
-        group: "purchase",
-        viewClass: "view-purchase"
-      }
-    },
-    {
-      path: "/PurchaseComponent/:purchase_id",
-      name: "PurchaseComponent",
-      component: PurchaseComponent,
-      meta: {
-        roles: ["READ_ONLY"],
-        group: "purchase",
-        viewClass: "view-purchase"
-      }
-    },
-    {
-      path: "/PurchaseItem/:purchase_id",
-      name: "PurchaseItem",
-      component: PurchaseItem,
       meta: {
         roles: ["READ_ONLY"],
         group: "purchase",

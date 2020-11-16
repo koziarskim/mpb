@@ -260,7 +260,7 @@ import state from "../data/state";
 
 export default {
   components: {
-    AddressModal: () => import("./AddressModal"),
+    AddressModal: () => import("./modals/AddressModal"),
     UploadFile: () => import("../directives/UploadFile"),
   },
   data() {

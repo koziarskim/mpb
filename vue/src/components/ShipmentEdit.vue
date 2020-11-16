@@ -173,7 +173,7 @@ import securite from "../securite";
 
 export default {
   components: {
-    AddressModal: () => import("./AddressModal"),
+    AddressModal: () => import("./modals/AddressModal"),
     SaleItemPicker: () => import("./modals/SaleItemPicker"),
     UploadFile: () => import("../directives/UploadFile"),
   },

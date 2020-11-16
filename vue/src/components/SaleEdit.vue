@@ -559,9 +559,6 @@ export default {
     goToItem(item_id) {
       router.push("/itemEdit/" + item_id);
     },
-    gotToItemComponentList(item_id){
-        router.push('/itemComponentList/'+item_id);
-    },
     deleteItem(si) {
       if((+si.unitsScheduled - +si.unitsProduced > 0) || si.unitsShipped>0){
         alert("Make sure there is no Schedule or Shipment for this item!");

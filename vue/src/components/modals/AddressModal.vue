@@ -60,8 +60,8 @@
 </template>
 
 <script>
-import http from "../http-common";
-import router from "../router";
+import http from "../../http-common";
+import router from "../../router";
 import moment from "moment";
 
 export default {

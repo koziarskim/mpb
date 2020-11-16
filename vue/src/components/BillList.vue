@@ -48,7 +48,6 @@
               <div>Total received: ${{totalUnitsPrice}}</div>
               <div>Units ordered: {{unitsOrdered}}</div>
               <div>Units received: {{unitsReceived}}</div>
-              <!-- <div>Total inventory value:</div> -->
             </div>
           </b-popover>
           <b-button size="sm" style="margin-left:3px" variant="primary" @click="editReceivings()">Edit ({{selectedReceivings.length}})</b-button>
