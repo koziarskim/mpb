@@ -5,7 +5,12 @@ set schema 'shared';
 --End SHARED
 set schema 'y2020';
 
-alter table item add column units_assigned bigint default 0;
+alter table item drop column units_open_sale;
+alter table item add column units_not_assigned bigint default 0;
+alter table item add column sales_not_assigned bigint default 0;
+alter table item add column units_short bigint default 0;
+alter table sale_item add column units_short bigint default 0;
+
 run /item/update/units
 
 Adjust production, assigned, sold from UI.

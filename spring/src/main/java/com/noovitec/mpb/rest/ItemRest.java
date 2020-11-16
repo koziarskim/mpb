@@ -138,7 +138,7 @@ class ItemRest {
 			dto.setCategory(item.getCategory() == null ? "" : item.getCategory().getName());
 			dto.setUnitsOnStock(item.getUnitsOnStock());
 			dto.setUnitsSold(item.getUnitsSold());
-			dto.setUnitsOpenSale(item.getUnitsOpenSale());
+			dto.setSalesNotAssigned(item.getSalesNotAssigned());
 			dto.setUnitsScheduled(item.getUnitsScheduled());
 			dto.setUnitsProduced(item.getUnitsProduced());
 			dto.setUnitsShipped(item.getUnitsShipped());
@@ -146,7 +146,8 @@ class ItemRest {
 			dto.setPerformance(item.getPerformance());
 			dto.setUnitsAdjusted(item.getUnitsAdjusted());
 			dto.setUnitsOnFloor(item.getUnitsProduced() - item.getUnitsShipped());
-			dto.setUnitsShort((item.getUnitsSold() + item.getUnitsAdjusted()) - item.getUnitsAssigned());
+			dto.setUnitsNotAssigned(item.getUnitsNotAssigned());
+			dto.setUnitsShort(item.getUnitsShort());
 			return dto;
 		});
 		return dtos;

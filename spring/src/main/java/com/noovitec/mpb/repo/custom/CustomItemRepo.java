@@ -53,12 +53,12 @@ public interface CustomItemRepo {
 				q += "and i.unitsOnStock > 0 ";
 			}
 			if(unitsFilter != null && unitsFilter.equalsIgnoreCase("OPEN_SALES")) {
-				q += "and i.unitsOpenSale > 0 ";
+				q += "and i.salesNotAssigned > 0 ";
 			}
 			if(unitsFilter != null && unitsFilter.equalsIgnoreCase("RFP")) {
 				q += "and i.unitsReadyProd > 0 ";
 			}
-			q += "order by i.unitsOpenSale desc";
+			q += "order by i.salesNotAssigned desc";
 			Query query = entityManager.createQuery(q);
 			if(numberName!=null && !numberName.isBlank()) {
 				query.setParameter("numberName", numberName);

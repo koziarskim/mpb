@@ -39,13 +39,14 @@ public class Item extends BaseEntity {
 	private BigDecimal totalCost;
 	private long unitsProduced = 0;
 	private long unitsSold = 0;
-	private long unitsOpenSale = 0;
 	private long unitsScheduled = 0;
 	private long unitsShipped = 0;
 	private long unitsReadyProd = 0;
 	private long unitsOnStock = 0;
 	private long unitsAdjusted = 0;
-	private long unitsAssigned = 0;
+	private long salesNotAssigned = 0;
+	private long unitsNotAssigned = 0;
+	private long unitsShort = 0;
 	
 	//Package to delete after migration.
 	private int casePack = 1;
@@ -178,13 +179,13 @@ public class Item extends BaseEntity {
 	
 	public void updateUnits() {
 		this.unitsSold = 0;
-		this.unitsOpenSale = 0;
+		this.salesNotAssigned = 0;
 		this.unitsScheduled = 0;
 		this.unitsProduced = 0;
 		this.unitsShipped = 0;
 		this.unitsAdjusted = 0;
 		this.unitsOnStock = 0;
-		this.unitsAssigned = 0;
+		this.unitsNotAssigned = 0;
 		for(ItemPackaging ip: this.getItemPackagings()) {
 			long ipUnitsOnStock = 0;
 			long ipUnitsProduced = 0;
@@ -196,11 +197,12 @@ public class Item extends BaseEntity {
 					this.unitsSold += si.getUnits();
 					this.unitsAdjusted += si.getUnitsAdjusted();
 				}
-				if(Sale.STATUS.APPROVED.name().equalsIgnoreCase(si.getSale().getStatus())) {
-					this.unitsOpenSale += 1;
+				if(((si.getUnits() + si.getUnitsAdjusted()) - si.getUnitsAssigned()) != 0) {
+					this.salesNotAssigned += 1;
 				}
+				this.unitsNotAssigned += ((si.getUnits() + si.getUnitsAdjusted()) - si.getUnitsAssigned());
+				this.unitsShort += si.getUnitsShort();
 				this.unitsShipped += si.getUnitsShipped();
-				this.unitsAssigned += si.getUnitsAssigned();
 				ipUnitsAssigned += si.getUnitsAssigned();
 			}
 			for(ScheduleEvent se: ip.getScheduleEvents()) {

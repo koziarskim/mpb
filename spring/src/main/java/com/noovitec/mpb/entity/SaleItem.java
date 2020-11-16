@@ -32,6 +32,7 @@ public class SaleItem extends BaseEntity {
 	private BigDecimal totalUnitPrice;
 	private long units; // unitsSold.
 	private long unitsAssigned;
+	private long unitsShort;
 	
 	private long unitsOnStock;
 	private long unitsProduced;
@@ -88,6 +89,7 @@ public class SaleItem extends BaseEntity {
 		this.unitsTransferedTo = 0;
 		this.unitsTransferedFrom = 0;
 		this.unitsOnStock = 0;
+		this.unitsShort = 0;
 		this.invoicedAmount = BigDecimal.ZERO;
 		
 		for (ScheduleEvent se : this.getScheduleEvents()) {
@@ -111,8 +113,8 @@ public class SaleItem extends BaseEntity {
 				this.invoicedAmount = this.invoicedAmount.add(ii.getTotalUnitPrice());
 			}
 		}
-//		unitsAssigned += this.getUnitsProduced() + (this.getUnitsTransferedTo() - this.getUnitsTransferedFrom());
 		this.unitsOnStock = this.unitsProduced + this.unitsTransferedTo - this.unitsTransferedFrom - this.unitsShipped;
+		this.unitsShort += ((this.units + this.unitsAdjusted) - this.unitsAssigned + this.unitsOnStock);
 		this.updateStatus();
 	}
 	
