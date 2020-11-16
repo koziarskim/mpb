@@ -42,9 +42,6 @@
 				</div>
 			</b-col>
 		</b-row>
-		<div v-if="modalVisible">
-			<production-modal :schedule-event="scheduleEvent" v-on:closeModal="closeModals()"></production-modal>
-		</div>
 		<br/>
 		<div v-if="securite.hasRole(['PRODUCTION_ADMIN'])">
 		<b-row>
@@ -86,8 +83,11 @@
 			</b-col>
 		</b-row>
 	</b-modal>
-	<div v-if="productionLineModalVisible">
-		<production-line-modal :scheduleEventId="this.scheduleEvent.id" v-on:close="closeProductionLineModal"></production-line-modal>
+	<div v-if="modalVisible">
+		<production-line-add-modal :schedule-event="scheduleEvent" v-on:closeModal="closeModals()"></production-line-add-modal>
+	</div>
+	<div v-if="productionLineEditModalVisible">
+		<production-line-edit-modal :scheduleEventId="this.scheduleEvent.id" v-on:close="closeProductionLineEditModal"></production-line-edit-modal>
 	</div>  
   </b-container>
 </template>
@@ -101,13 +101,13 @@ import securite from "../securite";
 
 export default {
 	components: {
-	ProductionModal: () => import("./modals/ProductionModal"),
-	ProductionLineModal: () => import("./modals/ProductionLineModal")
+	ProductionLineAddModal: () => import("./modals/ProductionLineAddModal"),
+	ProductionLineEditModal: () => import("./modals/ProductionLineEditModal")
   },
   data() {
     return {
 			chartVisibility: "visibility: hidden",
-			productionLineModalVisible: false,
+			productionLineEditModalVisible: false,
 			startModalVisible: false,
 			date: moment().format("YYYY-MM-DD"),
 			startTime: moment().format("HH:mm:ss"),
@@ -183,13 +183,13 @@ export default {
 		}
 	},
   methods: {
-	    closeProductionLineModal(){
-			this.productionLineModalVisible = false;
+	    closeProductionLineEditModal(){
+			this.productionLineEditModalVisible = false;
 			this.getScheduleEvents();
 			this.getScheduleEvent(this.scheduleEvent.id);
 		},
 		editScheduleEvent(){
-			this.productionLineModalVisible = true;
+			this.productionLineEditModalVisible = true;
 		},
 		startProduction(){
 			this.startModalVisible = true;
