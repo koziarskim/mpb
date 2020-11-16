@@ -19,6 +19,7 @@
                 <div>Sold & Adj: {{totalSoldAdj.toLocaleString()}}</div>
                 <div>Produced: {{totalProduced.toLocaleString()}}</div>
                 <div>Assigned: {{totalAssigned.toLocaleString()}}</div>
+                <div>Not Assigned: {{(+totalSoldAdj - +totalAssigned).toLocaleString()}}</div>
                 <div>Shipped: {{totalShipped.toLocaleString()}}</div>
                 <div>Pending Ship: {{(+totalSoldAdj - +totalShipped).toLocaleString()}}</div>
               </div>

@@ -88,7 +88,7 @@ public class ItemPackaging extends BaseEntity {
 				this.unitsSold += si.getUnits();
 				this.unitsAdjusted += si.getUnitsAdjusted();
 				this.unitsNotAssigned += si.getUnitsNotAssigned();
-				if(this.unitsNotAssigned != 0) {
+				if(si.getUnitsNotAssigned() != 0) {
 					this.salesNotAssigned += 1;
 				}
 				this.unitsPenShip += (si.getUnits() + si.getUnitsAdjusted()) - si.getUnitsShipped();
