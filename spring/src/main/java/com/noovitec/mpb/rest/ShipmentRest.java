@@ -49,6 +49,8 @@ import com.noovitec.mpb.entity.Shipment;
 import com.noovitec.mpb.entity.ShipmentItem;
 import com.noovitec.mpb.repo.ShipmentRepo;
 import com.noovitec.mpb.service.CrudService;
+import com.noovitec.mpb.service.ItemService;
+import com.noovitec.mpb.service.SaleService;
 import com.noovitec.mpb.service.ShipmentService;
 
 @RestController
@@ -61,6 +63,10 @@ class ShipmentRest {
 	private ShipmentRepo shipmentRepo;
 	@Autowired
 	private CrudService crudService;
+	@Autowired
+	private ItemService itemService;
+	@Autowired
+	private SaleService saleService;
 	
 	public ShipmentRest(ShipmentService shipmentService) {
 		this.shipmentService = shipmentService;
@@ -200,12 +206,14 @@ class ShipmentRest {
 		}
 		shipment.setStatus(status);
 		shipment = shipmentRepo.save(shipment);
+		List<Long> itemIds = new ArrayList<Long>();
+		List<Long> saleIds = new ArrayList<Long>();
 		for(ShipmentItem si: shipment.getShipmentItems()) {
-			si.getSaleItem().getItemPackaging().getItem().updateUnits();
-			si.getSaleItem().getSale().updateUnits();
-			crudService.save(si.getSaleItem().getSale());
-			crudService.save(si.getSaleItem().getItemPackaging().getItem());
+			itemIds.add(si.getSaleItem().getItemPackaging().getItem().getId());
+			saleIds.add(si.getSaleItem().getSale().getId());
 		}
+		itemService.updateUnits(itemIds);
+		saleService.updateUnits(saleIds);
 		return ResponseEntity.ok().body(shipment);
 	}
 

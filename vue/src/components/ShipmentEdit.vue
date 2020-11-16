@@ -137,7 +137,7 @@
               <input class="form-control" style="width:100px" type="tel" v-model="row.item.units">
             </template>
             <template v-slot:cell(unitsSoldAdj)="row">
-              <span>{{row.item.saleItem.units}} {{row.item.saleItem.unitsAdjusted >= 0?'+':''}}{{row.item.saleItem.unitsAdjusted}}</span>
+              <span>{{+row.item.saleItem.units + +row.item.saleItem.unitsAdjusted}}</span>
             </template>
             <template v-slot:cell(unitsSchedProd)="row">
               <span>{{row.item.saleItem.unitsScheduled}}/{{row.item.saleItem.unitsProduced}}</span>
@@ -209,7 +209,7 @@ export default {
       columns: [
         { key: "item", label: "Item", sortable: false },
         { key: "sale", label: "Sale", sortable: false },
-        { key: "unitsSoldAdj", label: "Sold (+/-Adj)", sortable: false },
+        { key: "unitsSoldAdj", label: "Sold", sortable: false },
         { key: "saleItem.unitsAssigned", label: "Assigned", sortable: false },
         // { key: "unitsSchedProd", label: "Sched/Prod", sortable: false },
         { key: "saleItem.unitsShipped", label: "Shipped", sortable: false },
@@ -421,14 +421,18 @@ export default {
         alert("Shipping Number required.")
         return false;
       }
-      var overShipped = false;
-      this.shipment.shipmentItems.forEach(si=> {
-        if(((+si.units - +si.prevUnits) > +si.saleItem.unitsAssigned)){
-          overShipped = true;
+      var overShippedItem = null;
+      this.shipment.shipmentItems.forEach(shipItem=> {
+        var shippedUnits = shipItem.saleItem.unitsShipped;
+        if(this.shipment.shippedDate){
+          shippedUnits -= shipItem.units;
+        }
+        if(((+shipItem.saleItem.units + +shipItem.saleItem.unitsAdjusted) - +shippedUnits - +shipItem.units < 0)){
+          overShippedItem = shipItem.saleItem.itemPackaging.item.number;
         }
       })
-      if(overShipped){
-        alert("Cannot ship more that on units Assigned")
+      if(overShippedItem){
+        alert("Item: "+overShippedItem +" - Cannot ship more that on units Assigned")
         return false;
       }
       return true;
