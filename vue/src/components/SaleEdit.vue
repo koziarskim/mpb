@@ -49,7 +49,6 @@
         <input type="checkbox" style="margin-top: 10px" v-model="sale.paidInFull"><span style="font-size: 14px"> Paid in Full</span>
         <br/>
         <span style="font-weight: bold">{{getStatus(sale.status)}}</span><br/>
-        <label class="top-label">Stock: {{sale.unitsOnStock}},&nbsp;&nbsp;</label>
         <label class="top-label">Shed/Prod: {{sale.unitsScheduled}}/{{sale.unitsProduced}}</label><br/>
         <label class="top-label">Sold: {{sale.unitsSold}},&nbsp;&nbsp;</label>
         <label class="top-label">Shipped: <b-link role="button" @click="goToShipment()">{{sale.unitsShipped}}</b-link></label>
@@ -102,9 +101,6 @@
           </template>
           <template v-slot:cell(packaging)="row">
             <div style="width:100px; overflow: wrap; font-size: 11px">{{row.item.itemPackaging.packaging.name}}</div>
-          </template>
-          <template v-slot:cell(unitsOnStockRet)="row">
-            <span>{{getUnitsOnStock(row.item)}} </span>
           </template>
           <template v-slot:cell(unitsAssigned)="row">
             <input :disabled="!allowEdit()" class="form-control" style="width:80px" type="tel" v-model="row.item.unitsAssigned">
@@ -217,7 +213,6 @@ export default {
       columns: [
         { key: "item", label: "Item", sortable: false },
         { key: "packaging", label: "Package", sortable: false },
-        { key: "unitsOnStockRet", label: "Stock", sortable: false },
         { key: "sku", label: "SKU#", sortable: false },
         { key: "units", label: "Sold", sortable: false },
         { key: "unitsAdjusted", label: "Adjusted", sortable: false },
@@ -579,11 +574,6 @@ export default {
     getCases(si){
       return Math.ceil(+si.units / +si.itemPackaging.packaging.casePack).toFixed(0);
     },
-    getUnitsOnStock(si){
-      var diff = +si.prevUnitsAssigned - +si.unitsAssigned;
-      si.unitsOnStock = +si.itemPackaging.unitsOnStock + +diff;
-      return si.unitsOnStock;
-    }
   },
   mounted() {
     var id = this.$route.params.sale_id;
