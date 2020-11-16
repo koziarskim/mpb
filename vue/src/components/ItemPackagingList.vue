@@ -13,8 +13,8 @@
       <template v-slot:cell(itemNameNumber)="row">
         <div style="width:200px; overflow: wrap; font-size: 14px"><b-link role="button" @click="goToItem(row.item.itemId)">{{row.item.itemNumber}}</b-link> {{row.item.itemName}}</div>
       </template>
-      <template v-slot:cell(name)="row">
-        <div style="width:200px; overflow: wrap; font-size: 14px"><b-link role="button" @click="goToPackaging(row.item.packagingId)">{{row.item.name}}</b-link></div>
+      <template v-slot:cell(label)="row">
+        <div style="width:200px; overflow: wrap; font-size: 14px"><b-link role="button" @click="goToPackaging(row.item.packagingId)">{{row.item.label}}</b-link></div>
       </template>
       <template v-slot:cell(caseDimension)="row">
         {{row.item.caseHeight}}x{{row.item.caseWidth}}x{{row.item.caseDepth}}
@@ -61,7 +61,7 @@ export default {
       },
       fields: [
         { key: "itemNameNumber", sortable: true, label: "Item" },
-        { key: "name", sortable: true, label: "Packaging" },
+        { key: "label", sortable: true, label: "Packaging" },
         { key: "typeLabel", label: "Type", sortable: false },
         { key: "caseDimension", label: "Case Dimension", sortable: false },
         { key: "casePack", label: "C/P", sortable: false },
