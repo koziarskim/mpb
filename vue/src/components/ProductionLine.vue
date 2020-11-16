@@ -86,8 +86,8 @@
 			</b-col>
 		</b-row>
 	</b-modal>
-	<div v-if="scheduleEventModalVisible">
-		<schedule-event-modal :scheduleEventId="this.scheduleEvent.id" v-on:close="closeScheduleEventModal"></schedule-event-modal>
+	<div v-if="productionLineModalVisible">
+		<production-line-modal :scheduleEventId="this.scheduleEvent.id" v-on:close="closeProductionLineModal"></production-line-modal>
 	</div>  
   </b-container>
 </template>
@@ -102,12 +102,12 @@ import securite from "../securite";
 export default {
 	components: {
 	ProductionModal: () => import("./ProductionModal"),
-	ScheduleEventModal: () => import("./modals/ScheduleEventModal")
+	ProductionLineModal: () => import("./modals/ProductionLineModal")
   },
   data() {
     return {
 			chartVisibility: "visibility: hidden",
-			scheduleEventModalVisible: false,
+			productionLineModalVisible: false,
 			startModalVisible: false,
 			date: moment().format("YYYY-MM-DD"),
 			startTime: moment().format("HH:mm:ss"),
@@ -183,13 +183,13 @@ export default {
 		}
 	},
   methods: {
-	    closeScheduleEventModal(){
-			this.scheduleEventModalVisible = false;
+	    closeProductionLineModal(){
+			this.productionLineModalVisible = false;
 			this.getScheduleEvents();
 			this.getScheduleEvent(this.scheduleEvent.id);
 		},
 		editScheduleEvent(){
-			this.scheduleEventModalVisible = true;
+			this.productionLineModalVisible = true;
 		},
 		startProduction(){
 			this.startModalVisible = true;

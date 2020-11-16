@@ -29,15 +29,15 @@
         ${{row.item.packageCost}}
       </template>
       <template v-slot:cell(unitsScheduled)="row">
-        <b-link role="button" @click="openScheduleProductionModal(row.item)">{{row.item.unitsScheduled}}</b-link>
+        <b-link role="button" @click="openScheduleEventModal(row.item)">{{row.item.unitsScheduled}}</b-link>
       </template>
     </b-table>
     <div style="display: flex">
       <b-pagination size="sm" v-model="pageable.currentPage" :per-page="pageable.perPage" :total-rows="pageable.totalElements" @change="paginationChange"></b-pagination>
       <span style="margin-top: 5px">Total of {{pageable.totalElements}} rows</span>
     </div>
-    <div v-if="scheduleProductionModalVisible">
-      <schedule-production-modal :saleItemId="this.saleItemId" :itemId="this.itemId" v-on:close="closeScheduleProductionModal"></schedule-production-modal>
+    <div v-if="scheduleEventModalVisible">
+      <schedule-event-modal :saleItemId="this.saleItemId" :itemId="this.itemId" v-on:close="closeScheduleEventModal"></schedule-event-modal>
     </div>  
   </b-container>
 </template>
@@ -48,7 +48,7 @@ import router from "../router";
 export default {
   name: "ItemPackagingList",
 	components: {
-	  ScheduleProductionModal: () => import("./modals/ScheduleProductionModal")
+	  ScheduleEventModal: () => import("./modals/ScheduleEventModal")
   },  
   data() {
     return {
@@ -77,7 +77,7 @@ export default {
       itemKv: {},
       availablePackagings: [],
       packagingKv: {},
-      scheduleProductionModalVisible: false,
+      scheduleEventModalVisible: false,
       itemId: null,
       saleItemId: null,
     };
@@ -91,12 +91,12 @@ export default {
     },
   },
   methods: {
-    openScheduleProductionModal(itemPackagingListDto){
+    openScheduleEventModal(itemPackagingListDto){
       this.itemId = itemPackagingListDto.itemId;
-      this.scheduleProductionModalVisible = true;
+      this.scheduleEventModalVisible = true;
     },
-    closeScheduleProductionModal(){
-      this.scheduleProductionModalVisible = false;
+    closeScheduleEventModal(){
+      this.scheduleEventModalVisible = false;
       this.getItemPackagings();
     },
     paginationChange(page) {

@@ -33,40 +33,16 @@
           <b-button size="sm" @click="goToProduction(row.item)" variant="link">{{row.item.unitsProduced}}</b-button>
         </template>
         <template v-slot:cell(unitsScheduled)="row">
-          <b-button size="sm" @click=openScheduleProductionModal(row.item) variant="link">{{row.item.unitsScheduled}}</b-button>
+          <b-button size="sm" @click=openScheduleEventModal(row.item) variant="link">{{row.item.unitsScheduled}}</b-button>
         </template>
-        <!-- <template v-slot:cell(sale)="row">
-          <b-link role="button" @click.stop="goToSale(row.item.saleItem.sale.id)">{{row.item.saleItem.sale.number}}</b-link>
-          <span style="font-size: 11px"> ({{row.item.saleItem.sale.customer.name}})</span>
-        </template>
-        <template v-slot:cell(unitsProduced)="row">
-          <b-button size="sm" @click.stop="goToProduction(row.item)" variant="link">{{row.item.unitsProduced}}</b-button>
-        </template>
-        <template v-slot:cell(performance)="row">
-          <span :style="getEfficiencyStyle(row.item.efficiency)">{{row.item.performance}} ({{row.item.efficiency}}%)</span>
-        </template>
-        <template v-slot:cell(unitsScheduled)="row">
-          <b-button :class="getScheduledClass(row.item)" v-if="!row.item.edit" @click="editScheduleEvent(row.item)" variant="light">{{row.item.unitsScheduled}}</b-button>
-          <b-input-group>
-            <b-form-input style="width:100px" v-if="row.item.edit" class="form-control" type="tel" v-model="row.item.unitsScheduled">
-            </b-form-input>
-            <b-input-group-append>
-              <b-button v-if="row.item.edit" style="margin-left: 5px" variant="link" @click="saveScheduleEvent(row.item)">save</b-button>
-            </b-input-group-append>
-          </b-input-group>
-        </template>
-        <template v-slot:cell(action)="row">
-          <span v-if="row.item.eventCompleted">Done</span>
-          <b-button v-if="!row.item.eventCompleted" :disabled="deleteDisabled(row.item)" size="sm" type="submit" variant="primary" @click="deleteScheduleEvent(row.item.id)">X</b-button>
-        </template> -->
       </b-table>
       <div style="display: flex">
         <b-pagination size="sm" v-model="pageable.currentPage" :per-page="pageable.perPage" :total-rows="pageable.totalElements" @change="paginationChange"></b-pagination>
         <span style="margin-top: 5px">Total of {{pageable.totalElements}} rows</span>
       </div>
     </b-row>
-    <div v-if="scheduleProductionModalVisible">
-      <schedule-production-modal :scheduleEventId="this.scheduleEventId" :saleItemId="this.saleItemId" :itemId="this.itemId" v-on:close="closeScheduleProductionModal"></schedule-production-modal>
+    <div v-if="scheduleEventModalVisible">
+      <schedule-event-modal :scheduleEventId="this.scheduleEventId" :saleItemId="this.saleItemId" :itemId="this.itemId" v-on:close="closeScheduleEventModal"></schedule-event-modal>
     </div>  
 
   </b-container>
@@ -79,11 +55,11 @@ import router from "../router";
 export default {
   name: "ScheduleEventList",
 	components: {
-	  ScheduleProductionModal: () => import("./modals/ScheduleProductionModal")
+	  ScheduleEventModal: () => import("./modals/ScheduleEventModal")
   },  
   data() {
     return {
-      scheduleProductionModalVisible: false,
+      scheduleEventModalVisible: false,
       scheduleEventId: null,
       saleItemId: null,
       itemId: null,
@@ -122,14 +98,14 @@ export default {
     }
   },
   methods: {
-    openScheduleProductionModal(se){
+    openScheduleEventModal(se){
       this.scheduleEventId = se.id;
       this.saleItemId = se.saleItemId;
       this.itemId = se.itemId;
-      this.scheduleProductionModalVisible = true;
+      this.scheduleEventModalVisible = true;
     },
-    closeScheduleProductionModal(){
-      this.scheduleProductionModalVisible = false;
+    closeScheduleEventModal(){
+      this.scheduleEventModalVisible = false;
       this.getScheduleEvents();
     },    
     goToProduction(se) {

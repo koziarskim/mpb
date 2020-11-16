@@ -62,7 +62,7 @@
           </template>
           <template v-slot:cell(status)="row">
               <span v-if="row.item.status != 'APPROVED'">{{getStatus(row.item.status)}}</span>
-              <b-button v-if="row.item.status == 'APPROVED'" style="margin-left: -18px" size="sm" @click=openScheduleProductionModal(row.item) variant="link">{{getStatus(row.item.status)}}</b-button>
+              <b-button v-if="row.item.status == 'APPROVED'" style="margin-left: -18px" size="sm" @click=openScheduleEventModal(row.item) variant="link">{{getStatus(row.item.status)}}</b-button>
           </template>
           <template v-slot:cell(action)="row">
             <input type="checkbox" v-model="selectedSaleItemIds" :value="row.item.id" @change="checkboxSelected(row.item)" :disabled="checkboxDisabled(row.item)">
@@ -72,8 +72,8 @@
 		      <b-pagination size="sm" v-model="pageable.currentPage" :per-page="pageable.perPage" :total-rows="pageable.totalElements" @change="paginationChange"></b-pagination>
           <span style="margin-top: 5px">Total of {{pageable.totalElements}} Items Sold</span>
         </div>
-        <div v-if="scheduleProductionModalVisible">
-          <schedule-production-modal :saleItemId="this.saleItemId" :itemId="this.itemId" v-on:close="closeScheduleProductionModal"></schedule-production-modal>
+        <div v-if="scheduleEventModalVisible">
+          <schedule-event-modal :saleItemId="this.saleItemId" :itemId="this.itemId" v-on:close="closeScheduleEventModal"></schedule-event-modal>
         </div>  
     </b-container>
 </template>
@@ -85,7 +85,7 @@ import navigation from "../utils/navigation";
 export default {
   name: "SaleItemList",
 	components: {
-	  ScheduleProductionModal: () => import("./modals/ScheduleProductionModal")
+	  ScheduleEventModal: () => import("./modals/ScheduleEventModal")
   },  
   data() {
     return {
@@ -141,7 +141,7 @@ export default {
       totalAssigned: 0,
       totalShipped: 0,
       showAll: false,
-      scheduleProductionModalVisible: false,
+      scheduleEventModalVisible: false,
     };
   },
   watch: {
@@ -165,13 +165,13 @@ export default {
     },
   },
   methods: {
-    openScheduleProductionModal(saleItemDto){
+    openScheduleEventModal(saleItemDto){
       this.saleItemId = saleItemDto.id;
       this.itemId = saleItemDto.itemId;
-      this.scheduleProductionModalVisible = true;
+      this.scheduleEventModalVisible = true;
     },
-    closeScheduleProductionModal(){
-      this.scheduleProductionModalVisible = false;
+    closeScheduleEventModal(){
+      this.scheduleEventModalVisible = false;
       this.getSaleItems();
     },
     toggleShowTotals(){

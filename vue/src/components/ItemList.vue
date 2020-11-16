@@ -50,7 +50,7 @@
                     <b>Floor: </b>{{ip.unitsOnFloor}}, 
                     <b>Stock: </b>{{ip.unitsOnStock}}, 
                     <b>Not Assigned: </b>{{ip.salesNotAssigned}} ({{ip.unitsNotAssigned}}), 
-                    <b>Short: </b><b-button style="margin-top: -4px" size="md" variant="link" @click="openScheduleProductionModal(row.item.id)">{{ip.unitsShort}}</b-button>
+                    <b>Short: </b><b-button style="margin-top: -4px" size="md" variant="link" @click="openScheduleEventModal(row.item.id)">{{ip.unitsShort}}</b-button>
                     <b>Pending Ship: </b>{{ip.unitsPenShip}},
                     <b>Open: </b>{{ip.salesOpen}} ({{ip.unitsOpen}}),
                   </div>
