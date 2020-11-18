@@ -96,22 +96,22 @@ public interface CustomSaleItemRepo {
 				q += "and si.status = :status ";
 			}
 			if(unitsFilter != null) {
-				if(Sale.UNITS.PENDING_APPROVAL.name().equalsIgnoreCase(unitsFilter)) {
+				if(Sale.UNITS.NOT_APPROVED.name().equalsIgnoreCase(unitsFilter)) {
 					q += "and s.approved = false ";
 				}
-				if(Sale.UNITS.PENDING_SCHEDULE.name().equalsIgnoreCase(unitsFilter)) {
+				if(Sale.UNITS.NOT_SCHEDULED.name().equalsIgnoreCase(unitsFilter)) {
 					q += "and ((si.units + si.unitsAdjusted) < si.unitsScheduled) and ((si.units + si.unitsAdjusted) != si.unitsAssigned) ";
 				}
-				if(Sale.UNITS.PENDING_PRODUCTION.name().equalsIgnoreCase(unitsFilter)) {
+				if(Sale.UNITS.NOT_PRODUCED.name().equalsIgnoreCase(unitsFilter)) {
 					q += "and ((si.units + si.unitsAdjusted) < si.unitsProduced) and ((si.units + si.unitsAdjusted) != si.unitsAssigned) ";
 				}
-				if(Sale.UNITS.PENDING_ASSIGNMENT.name().equalsIgnoreCase(unitsFilter)) {
+				if(Sale.UNITS.NOT_ASSIGNED.name().equalsIgnoreCase(unitsFilter)) {
 					q += "and ((si.units + si.unitsAdjusted) != si.unitsAssigned) ";
 				}
-				if(Sale.UNITS.PENDING_SHIPMENT.name().equalsIgnoreCase(unitsFilter)) {
+				if(Sale.UNITS.NOT_SHIPPED.name().equalsIgnoreCase(unitsFilter)) {
 					q += "and ((si.units + si.unitsAdjusted) != si.unitsShipped) ";
 				}
-				if(Sale.UNITS.PENDING_PAYMENT.name().equalsIgnoreCase(unitsFilter)) {
+				if(Sale.UNITS.NOT_PAID.name().equalsIgnoreCase(unitsFilter)) {
 					q += "and s.paidInFull = false and si.unitsAssigned = si.unitsShipped ";
 				}
 			}

@@ -6,7 +6,7 @@
           <b-select style="width: 150px; margin-left: 15px" option-value="id" option-text="name" :list="availablePackagings" v-model="packagingKv" placeholder="Package"></b-select>
           <b-select style="width: 150px; margin-left: 15px" option-value="id" option-text="name" :list="availableCustomers" v-model="customer" placeholder="Customer"></b-select>
           <b-select style="width: 150px; margin-left: 15px" option-value="id" option-text="name" :list="availableStatus" v-model="statusKv" placeholder="Status"></b-select>
-          <b-select style="width: 150px; margin-left: 15px" option-value="id" option-text="name" :list="availableUnitsFilters" v-model="unitsFilter" placeholder="Units"></b-select>
+          <b-select style="width: 150px; margin-left: 15px" option-value="id" option-text="name" :list="availableUnitsFilters" v-model="unitsFilterKv" placeholder="Units"></b-select>
           <div style="margin-left: 15px">
             <label class="top-label">Show All</label><br/>
             <input type="checkbox" style="margin-left: 20px" v-model="showAll">
@@ -117,14 +117,14 @@ export default {
       ],
       statusKv: {},
       availableUnitsFilters: [
-        {id: "PENDING_APPROVAL", name: "Not Approved"},
-        {id: "PENDING_SCHEDULE", name: "Not Scheduled"},
-        {id: "PENDING_PRODUCTION", name: "Not Produced"},
-        {id: "PENDING_ASSIGNMENT", name: "Not Assigned"},
-        {id: "PENDING_SHIPMENT", name: "Not Shipped"},
-        {id: "PENDING_PAYMENT", name: "Not Paid"},
+        {id: "NOT_APPROVED", name: "Not Approved"},
+        {id: "NOT_SCHEDULED", name: "Not Scheduled"},
+        {id: "NOT_PRODUCED", name: "Not Produced"},
+        {id: "NOT_ASSIGNED", name: "Not Assigned"},
+        {id: "NOT_SHIPPED", name: "Not Shipped"},
+        {id: "NOT_PAID", name: "Not Paid"},
       ],
-      unitsFilter: {},
+      unitsFilterKv: {},
       showTotalsMenu: false,
       totalSoldAdj: 0,
       totalProduced: 0,
@@ -151,7 +151,7 @@ export default {
       }
       this.getSaleItems();      
     },
-    unitsFilter(new_value, old_value){
+    unitsFilterKv(new_value, old_value){
       this.getSaleItems();      
     },
     showAll(new_value, old_value){
@@ -209,7 +209,7 @@ export default {
         itemId: this.itemKv.id, 
         packagingId: this.packagingKv.id,
         status: this.statusKv.id,
-        unitsFilter: this.unitsFilter.id,
+        unitsFilter: this.unitsFilterKv.id,
         showAll: this.showAll
       }}).then(r => {
       if(totals){
@@ -271,6 +271,7 @@ export default {
     var itemId = this.$route.query.itemId;
     var packagingId = this.$route.query.packagingId;
     var statusId = this.$route.query.statusId;
+    var unitsFilterId = this.$route.query.unitsFilterId;
     if(itemId){
       this.itemKv = {id: itemId};
     }
@@ -279,6 +280,9 @@ export default {
     }
     if(statusId){
       this.statusKv = {id: statusId}
+    }
+    if(unitsFilterId){
+      this.unitsFilterKv = {id: unitsFilterId}
     }
     // window.history.replaceState({}, document.title, window.location.pathname);
     // this.$router.push(this.$route.path)

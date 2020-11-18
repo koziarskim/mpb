@@ -49,7 +49,7 @@
                   <div style="margin-left: 20px">
                     <b>Floor: </b>{{ip.unitsOnFloor}}, 
                     <b>Stock: </b>{{ip.unitsOnStock}}, 
-                    <b>Not Assigned:</b><b-button style="margin-top: -4px" size="md" variant="link" @click="goToSaleItemList(row.item.id, ip.packagingId, 'APPROVED')">{{ip.salesNotAssigned}} ({{ip.unitsNotAssigned}}),</b-button>
+                    <b>Not Assigned:</b><b-button style="margin-top: -4px" size="md" variant="link" @click="goToSaleItemList(row.item.id, ip.packagingId, 'NOT_ASSIGNED')">{{ip.salesNotAssigned}} ({{ip.unitsNotAssigned}}),</b-button>
                     <b>Short: </b>{{ip.unitsShort}}, 
                     <!-- <b>Pending Ship:</b><b-button style="margin-top: -4px" size="md" variant="link" @click="goToSaleItemList(row.item.id, ip.packagingId, null)">{{ip.unitsPenShip}},</b-button> -->
                     <!-- <b>Open: </b>{{ip.salesOpen}} ({{ip.unitsOpen}}), -->
@@ -60,7 +60,7 @@
         </div>        
       </template>
       <template v-slot:cell(notAssigned)="row">
-        <b-button size="sm" variant="link" @click="goToSaleItemList(row.item.id, null, 'APPROVED')">{{row.item.salesNotAssigned}} ({{row.item.unitsNotAssigned}})</b-button>
+        <b-button size="sm" variant="link" @click="goToSaleItemList(row.item.id, null, 'NOT_ASSIGNED')">{{row.item.salesNotAssigned}} ({{row.item.unitsNotAssigned}})</b-button>
       </template>
     </b-table>
     <div style="display: flex">
@@ -191,11 +191,11 @@ export default {
     updateItem(item_id) {
       router.push("/itemEdit/" + item_id);
     },
-    goToSaleItemList(itemId, packagingId, statusId) {
+    goToSaleItemList(itemId, packagingId, unitsFilterId) {
       router.push({path: "/saleItemList/", query: {
         itemId: itemId,
         packagingId: packagingId, 
-        statusId: statusId}});
+        unitsFilterId: unitsFilterId}});
     },
     goToItemShippedList(itemId) {
       var query = { itemId: itemId };
