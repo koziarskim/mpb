@@ -30,9 +30,8 @@ public class Sale extends BaseEntity {
 
 	private static final long serialVersionUID = 3963121563435423199L;
 
-	public enum STATUS {
-		DRAFT, READY, APPROVED, SCHEDULED, PRODUCED, ASSIGNED, SHIPPED, CANCELLED, PAID
-	}
+	public enum STATUS {DRAFT, READY, APPROVED, SCHEDULED, PRODUCED, ASSIGNED, SHIPPED, CANCELED, PAID}
+	public enum UNITS {PENDING_APPROVAL, PENDING_SCHEDULE, PENDING_PRODUCTION, PENDING_ASSIGNMENT, PENDING_SHIPMENT, PENDING_PAYMENT}
 
 	private LocalDate date;
 	private String number;
@@ -126,7 +125,7 @@ public class Sale extends BaseEntity {
 			status = STATUS.PAID.name();
 		}
 		if(this.isCancelled()) {
-			status = Sale.STATUS.CANCELLED.name();
+			status = Sale.STATUS.CANCELED.name();
 		}
 
 	}

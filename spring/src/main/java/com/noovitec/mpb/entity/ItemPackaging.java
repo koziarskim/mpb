@@ -100,7 +100,6 @@ public class ItemPackaging extends BaseEntity {
 
 			this.unitsShipped += si.getUnitsShipped();
 			this.unitsAssigned += si.getUnitsAssigned();
-			this.unitsShort += si.getUnitsShort();
 		}
 		for(ScheduleEvent se: this.getScheduleEvents()) {
 			se.updateUnits();
@@ -109,5 +108,6 @@ public class ItemPackaging extends BaseEntity {
 		}
 		this.unitsOnFloor = this.unitsProduced - this.unitsShipped;
 		this.unitsOnStock = this.unitsProduced - this.unitsAssigned;
+		this.unitsShort = (this.unitsSold + this.unitsAdjusted) - this.unitsOnStock - this.unitsAssigned;
 	}
 }

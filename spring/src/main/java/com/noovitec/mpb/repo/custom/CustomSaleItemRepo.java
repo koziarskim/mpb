@@ -18,6 +18,7 @@ import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Repository;
 
 import com.noovitec.mpb.entity.InvoiceItem;
+import com.noovitec.mpb.entity.Sale;
 import com.noovitec.mpb.entity.SaleItem;
 
 public interface CustomSaleItemRepo {
@@ -94,17 +95,26 @@ public interface CustomSaleItemRepo {
 			if (status !=null && !status.isBlank()) {
 				q += "and si.status = :status ";
 			}
-//			if(unitsFilter != null) {
-//				if(unitsFilter.equalsIgnoreCase("ON_FLOOR")) {
-//					q += "and (si.unitsProduced - si.unitsShipped) != 0 ";
-//				}
-//				if(unitsFilter.equalsIgnoreCase("ON_STOCK")) {
-//					q += "and si.unitsOnStock != 0 ";
-//				}
-//				if(unitsFilter.equalsIgnoreCase("NOT_ASSIGNED")) {
-//					q += "and ((si.units + si.unitsAdjusted) - si.unitsAssigned) != 0 ";
-//				}
-//			}
+			if(unitsFilter != null) {
+				if(Sale.UNITS.PENDING_APPROVAL.name().equalsIgnoreCase(unitsFilter)) {
+					q += "and s.approved = false ";
+				}
+				if(Sale.UNITS.PENDING_SCHEDULE.name().equalsIgnoreCase(unitsFilter)) {
+					q += "and ((si.units + si.unitsAdjusted) != si.unitsScheduled) and ((si.units + si.unitsAdjusted) != si.unitsAssigned) ";
+				}
+				if(Sale.UNITS.PENDING_PRODUCTION.name().equalsIgnoreCase(unitsFilter)) {
+					q += "and (si.unitsScheduled != si.unitsProduced) and ((si.units + si.unitsAdjusted) != si.unitsAssigned) ";
+				}
+				if(Sale.UNITS.PENDING_ASSIGNMENT.name().equalsIgnoreCase(unitsFilter)) {
+					q += "and ((si.units + si.unitsAdjusted) != si.unitsAssigned) ";
+				}
+				if(Sale.UNITS.PENDING_SHIPMENT.name().equalsIgnoreCase(unitsFilter)) {
+					q += "and ((si.units + si.unitsAdjusted) != si.unitsShipped) ";
+				}
+				if(Sale.UNITS.PENDING_PAYMENT.name().equalsIgnoreCase(unitsFilter)) {
+					q += "and s.paidInFull = false ";
+				}
+			}
 			if (!showAll) {
 				q += "and s.cancelled = false and s.paidInFull = false ";
 			}

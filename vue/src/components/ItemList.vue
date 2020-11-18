@@ -43,7 +43,7 @@
         <div style="display: flex">
           <b-button :id="'itemPackagings_'+row.item.id" size="sm" @click="showItemPackagings(row.item.id)" variant="link">{{row.item.numPackagings}}</b-button>
           <b-popover placement="bottom" :target="'itemPackagings_'+row.item.id" variant="secondary">
-            <div style="width: 700px; font-size: 14px">
+            <div style="width: 500px; font-size: 14px">
               <div v-for="ip in itemPackagings" :key="ip.id">
                 Package: {{ip.label}}<br/>
                   <div style="margin-left: 20px">
@@ -51,8 +51,8 @@
                     <b>Stock: </b>{{ip.unitsOnStock}}, 
                     <b>Not Assigned:</b><b-button style="margin-top: -4px" size="md" variant="link" @click="goToSaleItemList(row.item.id, ip.packagingId, 'APPROVED')">{{ip.salesNotAssigned}} ({{ip.unitsNotAssigned}}),</b-button>
                     <b>Short: </b>{{ip.unitsShort}}, 
-                    <b>Pending Ship:</b><b-button style="margin-top: -4px" size="md" variant="link" @click="goToSaleItemList(row.item.id, ip.packagingId, null)">{{ip.unitsPenShip}},</b-button>
-                    <b>Open: </b>{{ip.salesOpen}} ({{ip.unitsOpen}}),
+                    <!-- <b>Pending Ship:</b><b-button style="margin-top: -4px" size="md" variant="link" @click="goToSaleItemList(row.item.id, ip.packagingId, null)">{{ip.unitsPenShip}},</b-button> -->
+                    <!-- <b>Open: </b>{{ip.salesOpen}} ({{ip.unitsOpen}}), -->
                   </div>
               </div>
             </div>

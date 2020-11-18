@@ -30,7 +30,7 @@ public class SaleItem extends BaseEntity {
 	private BigDecimal totalUnitPrice;
 	private long units; // unitsSold.
 	private long unitsAssigned;
-	private long unitsShort;
+//	private long unitsShort;
 	private long unitsProduced;
 	private long unitsScheduled;
 	private long unitsShipped;
@@ -81,7 +81,7 @@ public class SaleItem extends BaseEntity {
 		this.unitsScheduled = 0;
 		this.unitsProduced = 0;
 		this.unitsShipped = 0;
-		this.unitsShort = 0;
+//		this.unitsShort = 0;
 		this.invoicedAmount = BigDecimal.ZERO;
 		
 		for (ScheduleEvent se : this.getScheduleEvents()) {
@@ -100,7 +100,7 @@ public class SaleItem extends BaseEntity {
 			}
 		}
 		this.unitsNotAssigned = (this.units + this.unitsAdjusted) - this.unitsAssigned;
-		this.unitsShort = this.unitsNotAssigned - this.getItemPackaging().getUnitsShort();
+//		this.unitsShort = this.unitsNotAssigned - this.getItemPackaging().getUnitsShort();
 		this.updateStatus();
 	}
 	
@@ -128,7 +128,7 @@ public class SaleItem extends BaseEntity {
 			status = STATUS.PAID.name();
 		}
 		if(this.getSale().isCancelled()) {
-			status = Sale.STATUS.CANCELLED.name();
+			status = Sale.STATUS.CANCELED.name();
 		}
 	}
 }

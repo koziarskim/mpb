@@ -146,7 +146,7 @@ export default {
       this.getSaleItems();
     },
     statusKv(new_value, old_value){
-      if(new_value.id == "PAID" || new_value.id == "CANCELLED"){
+      if(new_value.id == "PAID" || new_value.id == "CANCELED"){
         this.showAll = true;
       }
       this.getSaleItems();      
@@ -174,6 +174,9 @@ export default {
     },    
     getStatus(statusId){
       var statusKv = this.availableStatus.find(stat => stat.id == statusId)
+      if(!statusKv){
+        console.log("Status not found: " +status)
+      }
       return statusKv.name
     },
     checkboxSelected(saleItem){
