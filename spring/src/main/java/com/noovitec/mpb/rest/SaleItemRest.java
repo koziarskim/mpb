@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.dto.SaleItemDto;
+import com.noovitec.mpb.entity.InvoiceItem;
 import com.noovitec.mpb.entity.Item;
 import com.noovitec.mpb.entity.SaleItem;
 import com.noovitec.mpb.repo.SaleItemRepo;
@@ -61,13 +62,43 @@ class SaleItemRest {
 			@RequestParam(required = false) String status,
 			@RequestParam(required = false) String unitsFilter,
 			@RequestParam(required = false) boolean showAll) {
+		@SuppressWarnings("unchecked")
+		Page<SaleItem> saleItems = (Page<SaleItem>) saleItemRepo.findPageable(pageable, totals, numberName, saleId, customerId, itemId, packagingId, status, unitsFilter, showAll);
 		if(totals) {
-			Page<?> resultTotals = saleItemRepo.getTotals(pageable, numberName, saleId, customerId, itemId, packagingId, status, unitsFilter, showAll);
-			return resultTotals;
-			
+			@SuppressWarnings("unchecked")
+			Page<?> result = (Page<SaleItem>) saleItemRepo.findPageable(pageable, totals, numberName, saleId, customerId, itemId, packagingId, status, unitsFilter, showAll);
+			return result;
+		}else {
+			Page<SaleItemDto> all = saleItems.map(saleItem -> {
+				SaleItemDto dto = new SaleItemDto();
+				dto.setId(saleItem.getId());
+				dto.setSaleId(saleItem.getSale().getId());
+				dto.setSaleNumber(saleItem.getSale().getNumber());
+				dto.setSaleName(saleItem.getSale().getName());
+				dto.setItemId(saleItem.getItemPackaging().getItem().getId());
+				dto.setItemNumber(saleItem.getItemPackaging().getItem().getNumber());
+				dto.setItemName(saleItem.getItemPackaging().getItem().getName());
+				dto.setCustomerId(saleItem.getSale().getCustomer().getId());
+				dto.setCustomerName(saleItem.getSale().getCustomer().getName());
+				dto.setDc(saleItem.getSale().getShippingAddress() != null
+						? saleItem.getSale().getShippingAddress().getDc() + " (" + saleItem.getSale().getShippingAddress().getState()
+						: "");
+				dto.setUnitsSold(Long.valueOf(saleItem.getUnits()));
+				dto.setUnitsScheduled(saleItem.getUnitsScheduled());
+				dto.setUnitsProduced(saleItem.getUnitsProduced());
+				dto.setUnitsShipped(saleItem.getUnitsShipped());
+	//			dto.setUnitsOnStock(saleItem.getUnitsOnStock());
+	//			dto.setUnitsTransferedTo(saleItem.getUnitsTransferedTo());
+	//			dto.setUnitsTranferedFrom(saleItem.getUnitsTransferedFrom());
+				dto.setUnitsAdjusted(saleItem.getUnitsAdjusted());
+				dto.setUnitsAssigned(saleItem.getUnitsAssigned());
+	//			dto.setInvoicedAmount(saleItem.getInvoicedAmount());
+				dto.setStatus(saleItem.getStatus());
+				dto.setPackagingLabel(saleItem.getItemPackaging().getLabel());
+				return dto;
+			});
+			return all;
 		}
-		Page<SaleItem> saleItems = saleItemRepo.findPageable(pageable, numberName, saleId, customerId, itemId, packagingId, status, unitsFilter, showAll);
-		return this.mapToDto(saleItems);
 	}
 
 	@GetMapping("/saleItem/{id}")

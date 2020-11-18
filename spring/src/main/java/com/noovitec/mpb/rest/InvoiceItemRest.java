@@ -44,11 +44,11 @@ class InvoiceItemRest {
 			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate invoiceTo,
 			@RequestParam(required=false) Long brandId) {
 		@SuppressWarnings("unchecked")
-		Page<InvoiceItem> invoiceItems = (Page<InvoiceItem>) invoiceItemRepo.findPagable(pageable, totals, invoiceNumber, itemId, saleId, customerId, 
+		Page<InvoiceItem> invoiceItems = (Page<InvoiceItem>) invoiceItemRepo.findPageable(pageable, totals, invoiceNumber, itemId, saleId, customerId, 
 				shipmentId, invoiceFrom, invoiceTo, brandId);
 		if(totals) {
 			@SuppressWarnings("unchecked")
-			Page<?> result = (Page<InvoiceItem>) invoiceItemRepo.findPagable(pageable, totals, invoiceNumber, itemId, saleId, customerId, 
+			Page<?> result = (Page<InvoiceItem>) invoiceItemRepo.findPageable(pageable, totals, invoiceNumber, itemId, saleId, customerId, 
 					shipmentId, invoiceFrom, invoiceTo, brandId);
 			return result;
 		} else {

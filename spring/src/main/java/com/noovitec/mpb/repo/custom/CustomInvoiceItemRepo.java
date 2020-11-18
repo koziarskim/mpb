@@ -22,7 +22,7 @@ import com.noovitec.mpb.entity.Receiving;
 import com.noovitec.mpb.repo.custom.CustomInvoiceRepo.CustomInvoiceRepoImpl;
 
 public interface CustomInvoiceItemRepo {
-	public Page<?> findPagable(Pageable pageable, boolean totals, String invoiceNumer, Long itemId, Long saleId, Long customerId, Long shipmentId,
+	public Page<?> findPageable(Pageable pageable, boolean totals, String invoiceNumer, Long itemId, Long saleId, Long customerId, Long shipmentId,
 			LocalDate invoiceFrom, LocalDate invoiceTo, Long brandId);
 	
 	@Repository
@@ -34,7 +34,7 @@ public interface CustomInvoiceItemRepo {
 		EntityManager entityManager;
 
 		@Override
-		public Page<?> findPagable(Pageable pageable, boolean totals, String invoiceNumber, Long itemId, Long saleId, Long customerId, Long shipmentId,
+		public Page<?> findPageable(Pageable pageable, boolean totals, String invoiceNumber, Long itemId, Long saleId, Long customerId, Long shipmentId,
 				LocalDate invoiceFrom, LocalDate invoiceTo, Long brandId) {
 			List<Long> ids = this.getIds(pageable, totals, invoiceNumber, itemId, saleId, customerId, shipmentId, invoiceFrom, invoiceTo, brandId);
 			Query query = entityManager.createQuery("select count(*) from InvoiceItem invItem where invItem.id in :ids");

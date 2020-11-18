@@ -2,11 +2,11 @@
     <b-container fluid>
         <b-row style="font-size: 12px">
           <input style="width: 150px; margin-left: 15px; font-size: 12px" class="form-control" type="tel" v-model="numberName" @keyup.enter="getSaleItems()" placeholder="Sale"/>
-          <b-select style="width: 250px; margin-left: 15px" option-value="id" option-text="name" :list="availableItems" v-model="itemKv" placeholder="Item"></b-select>
-          <b-select style="width: 200px; margin-left: 15px" option-value="id" option-text="name" :list="availablePackagings" v-model="packagingKv" placeholder="Package"></b-select>
-          <b-select style="width: 200px; margin-left: 15px" option-value="id" option-text="name" :list="availableCustomers" v-model="customer" placeholder="Customer"></b-select>
+          <b-select style="width: 200px; margin-left: 15px" option-value="id" option-text="name" :list="availableItems" v-model="itemKv" placeholder="Item"></b-select>
+          <b-select style="width: 150px; margin-left: 15px" option-value="id" option-text="name" :list="availablePackagings" v-model="packagingKv" placeholder="Package"></b-select>
+          <b-select style="width: 150px; margin-left: 15px" option-value="id" option-text="name" :list="availableCustomers" v-model="customer" placeholder="Customer"></b-select>
           <b-select style="width: 150px; margin-left: 15px" option-value="id" option-text="name" :list="availableStatus" v-model="statusKv" placeholder="Status"></b-select>
-          <!-- <b-select style="width: 150px; margin-left: 15px" option-value="id" option-text="name" :list="availableUnitsFilters" v-model="unitsFilter" placeholder="Units"></b-select> -->
+          <b-select style="width: 150px; margin-left: 15px" option-value="id" option-text="name" :list="availableUnitsFilters" v-model="unitsFilter" placeholder="Units"></b-select>
           <div style="margin-left: 15px">
             <label class="top-label">Show All</label><br/>
             <input type="checkbox" style="margin-left: 20px" v-model="showAll">
@@ -116,13 +116,14 @@ export default {
         {id: 'PAID', name: 'Paid In Full'},
       ],
       statusKv: {},
-      // availableUnitsFilters: [
-      //   {id: "ON_FLOOR", name: "On Floor"},
-      //   {id: "ON_STOCK", name: "On Stock"},
-      //   {id: "NOT_ASSIGNED", name: "Not Assigned"},
-      //   {id: "SHORT", name: "Units Short"},
-      // ],
-      // unitsFilter: {},
+      availableUnitsFilters: [
+        {id: "PENDING_APPROVAL", name: "Pending Approval"},
+        {id: "PENDING_SCHEDULE", name: "Pending Schedule"},
+        {id: "PENDING_PRODUCTION", name: "Pending Production"},
+        {id: "PENDING_ASSIGNMENT", name: "Pending Assignment"},
+        {id: "PENDING_SHIPMENT", name: "Pending Shipment"},
+      ],
+      unitsFilter: {},
       showTotalsMenu: false,
       totalSoldAdj: 0,
       totalProduced: 0,
@@ -149,9 +150,9 @@ export default {
       }
       this.getSaleItems();      
     },
-    // unitsFilter(new_value, old_value){
-    //   this.getSaleItems();      
-    // },
+    unitsFilter(new_value, old_value){
+      this.getSaleItems();      
+    },
     showAll(new_value, old_value){
       this.getSaleItems();      
     },
@@ -204,7 +205,7 @@ export default {
         itemId: this.itemKv.id, 
         packagingId: this.packagingKv.id,
         status: this.statusKv.id,
-        // unitsFilter: this.unitsFilter.id,
+        unitsFilter: this.unitsFilter.id,
         showAll: this.showAll
       }}).then(r => {
       if(totals){
