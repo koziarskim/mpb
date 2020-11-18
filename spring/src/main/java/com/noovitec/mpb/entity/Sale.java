@@ -13,7 +13,6 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
-import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -32,7 +31,7 @@ public class Sale extends BaseEntity {
 	private static final long serialVersionUID = 3963121563435423199L;
 
 	public enum STATUS {
-		DRAFT, PENDING_APPROVAL, APPROVED, PENDING_PROD, PENDING_SHIPMENT, SHIPPED, INVOICED_FULL, CANCELLED, PAID
+		DRAFT, READY, APPROVED, SCHEDULED, PRODUCED, ASSIGNED, SHIPPED, CANCELLED, PAID
 	}
 
 	private LocalDate date;
@@ -85,10 +84,7 @@ public class Sale extends BaseEntity {
 		this.unitsScheduled = 0;
 		this.unitsProduced = 0;
 		this.unitsShipped = 0;
-//		this.unitsTransferedTo = 0;
-//		this.unitsTransferedFrom = 0;
 		this.unitsAdjusted = 0;
-//		this.unitsOnStock = 0;
 		this.unitsAssigned = 0;
 		this.invoicedAmount = BigDecimal.ZERO;
 		for (SaleItem si : this.getSaleItems()) {
@@ -97,44 +93,41 @@ public class Sale extends BaseEntity {
 			this.unitsScheduled += si.getUnitsScheduled();
 			this.unitsProduced += si.getUnitsProduced();
 			this.unitsShipped += si.getUnitsShipped();
-//			this.unitsTransferedTo += si.getUnitsTransferedTo();
-//			this.unitsTransferedFrom += si.getUnitsTransferedFrom();
 			this.unitsAdjusted += si.getUnitsAdjusted();
-//			this.unitsOnStock += si.getUnitsOnStock();
 			this.unitsAssigned += si.getUnitsAssigned();
 			if(si.getInvoicedAmount()!=null) {
 				this.invoicedAmount = this.invoicedAmount.add(si.getInvoicedAmount());
 			}
 		}
-//		this.unitsOnStock = ;
 		this.updateStatus();
 	}
 	
 	private void updateStatus() {
 		this.status = STATUS.DRAFT.name();
-		if(this.pendingApproval) {
-			status = STATUS.PENDING_APPROVAL.name();
+		if(this.isPendingApproval()) {
+			status = STATUS.READY.name();
 		}
-		if(this.approved) {
-			this.status = STATUS.APPROVED.name();
+		if(this.isApproved()) {
+			this.status = Sale.STATUS.APPROVED.name();
 		}
-//		if(this.unitsScheduled > 0 && this.unitsProduced < this.unitsScheduled) {
-//			this.status = STATUS.PENDING_PROD.name();
-//		}
-		if((this.unitsSold + this.unitsAdjusted) > 0 && this.getUnitsAssigned() == (this.unitsSold + this.unitsAdjusted)) {
-			this.status = STATUS.PENDING_SHIPMENT.name();
+		if((this.unitsSold + this.unitsAdjusted) > 0 && (this.unitsSold + this.unitsAdjusted) == this.unitsScheduled) {
+			this.status = Sale.STATUS.SCHEDULED.name();
 		}
-		if((this.unitsSold + this.unitsAdjusted) > 0 && this.unitsShipped >= (this.unitsSold + this.unitsAdjusted)) {
-			status = STATUS.SHIPPED.name();
+		if((this.unitsSold + this.unitsAdjusted) > 0 && (this.unitsSold + this.unitsAdjusted) == this.unitsProduced ) {
+			this.status = Sale.STATUS.PRODUCED.name();
 		}
-//		if(!this.totalPrice.equals(BigDecimal.ZERO) && !this.invoicedAmount.equals(BigDecimal.ZERO) && this.invoicedAmount.compareTo(this.totalPrice) >= 0) {
-//			status = STATUS.INVOICED_FULL.name();
-//		}
-		if(this.cancelled) {
-			status = STATUS.CANCELLED.name();
+		if((this.unitsSold + this.unitsAdjusted) > 0 && (this.unitsSold + this.unitsAdjusted) == this.unitsAssigned ) {
+			this.status = Sale.STATUS.ASSIGNED.name();
 		}
-		if(this.paidInFull) {
+		if((this.unitsSold + this.unitsAdjusted) > 0 && (this.unitsSold + this.unitsAdjusted) == this.unitsShipped) {
+			status = Sale.STATUS.SHIPPED.name();
+		}
+		if(this.isPaidInFull()) {
 			status = STATUS.PAID.name();
 		}
+		if(this.isCancelled()) {
+			status = Sale.STATUS.CANCELLED.name();
+		}
+
 	}
 }

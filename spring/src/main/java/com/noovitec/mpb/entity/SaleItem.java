@@ -9,12 +9,10 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.noovitec.mpb.entity.Sale.STATUS;
 
-import jdk.internal.jline.internal.Log;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -33,12 +31,9 @@ public class SaleItem extends BaseEntity {
 	private long units; // unitsSold.
 	private long unitsAssigned;
 	private long unitsShort;
-//	private long unitsOnStock;
 	private long unitsProduced;
 	private long unitsScheduled;
 	private long unitsShipped;
-//	private long unitsTransferedTo;
-//	private long unitsTransferedFrom;
 	private long unitsAdjusted;
 	private long unitsNotAssigned;
 
@@ -86,9 +81,6 @@ public class SaleItem extends BaseEntity {
 		this.unitsScheduled = 0;
 		this.unitsProduced = 0;
 		this.unitsShipped = 0;
-//		this.unitsTransferedTo = 0;
-//		this.unitsTransferedFrom = 0;
-//		this.unitsOnStock = 0;
 		this.unitsShort = 0;
 		this.invoicedAmount = BigDecimal.ZERO;
 		
@@ -102,19 +94,12 @@ public class SaleItem extends BaseEntity {
 				this.unitsShipped += si.getUnits();
 			}
 		}
-//		for (SaleItemTransfer sit: this.getTransfersFrom()) {
-//			this.unitsTransferedFrom += sit.getUnitsTransfered();
-//		}
-//		for (SaleItemTransfer sit: this.getTransfersTo()) {
-//			this.unitsTransferedTo += sit.getUnitsTransfered();
-//		}
 		for(InvoiceItem ii : this.invoiceItems) {
 			if(ii.getTotalUnitPrice()!=null && ii.getInvoice().isSent()) {
 				this.invoicedAmount = this.invoicedAmount.add(ii.getTotalUnitPrice());
 			}
 		}
 		this.unitsNotAssigned = (this.units + this.unitsAdjusted) - this.unitsAssigned;
-//		this.unitsOnStock = this.unitsProduced - this.unitsAssigned;
 		this.unitsShort = this.unitsNotAssigned - this.getItemPackaging().getUnitsShort();
 		this.updateStatus();
 	}
@@ -122,28 +107,28 @@ public class SaleItem extends BaseEntity {
 	private void updateStatus() {
 		this.status = STATUS.DRAFT.name();
 		if(this.getSale().isPendingApproval()) {
-			status = STATUS.PENDING_APPROVAL.name();
+			status = STATUS.READY.name();
 		}
 		if(this.getSale().isApproved()) {
 			this.status = Sale.STATUS.APPROVED.name();
 		}
-//		if(this.unitsScheduled > 0 && this.unitsProduced < this.unitsScheduled) {
-//			this.status = Sale.STATUS.PENDING_PROD.name();
-//		}
-		if((this.units + this.unitsAdjusted) > 0 && this.unitsAssigned == (this.units + this.unitsAdjusted)) {
-			this.status = Sale.STATUS.PENDING_SHIPMENT.name();
+		if((this.units + this.unitsAdjusted) > 0 && (this.units + this.unitsAdjusted) == this.unitsScheduled) {
+			this.status = Sale.STATUS.SCHEDULED.name();
 		}
-		if((this.units + this.unitsAdjusted) > 0 && this.unitsShipped >= (this.units + this.unitsAdjusted)) {
+		if((this.units + this.unitsAdjusted) > 0 && (this.units + this.unitsAdjusted) == this.unitsProduced ) {
+			this.status = Sale.STATUS.PRODUCED.name();
+		}
+		if((this.units + this.unitsAdjusted) > 0 && (this.units + this.unitsAdjusted) == this.unitsAssigned ) {
+			this.status = Sale.STATUS.ASSIGNED.name();
+		}
+		if((this.units + this.unitsAdjusted) > 0 && (this.units + this.unitsAdjusted) == this.unitsShipped) {
 			status = Sale.STATUS.SHIPPED.name();
-		}
-//		if(!this.totalUnitPrice.equals(BigDecimal.ZERO) && !this.invoicedAmount.equals(BigDecimal.ZERO) && this.invoicedAmount.compareTo(this.totalUnitPrice) >= 0) {
-//			status = STATUS.INVOICED_FULL.name();
-//		}
-		if(this.getSale().isCancelled()) {
-			status = Sale.STATUS.CANCELLED.name();
 		}
 		if(this.getSale().isPaidInFull()) {
 			status = STATUS.PAID.name();
+		}
+		if(this.getSale().isCancelled()) {
+			status = Sale.STATUS.CANCELLED.name();
 		}
 	}
 }
