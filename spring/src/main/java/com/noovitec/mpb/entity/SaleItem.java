@@ -67,16 +67,6 @@ public class SaleItem extends BaseEntity {
 	@JoinColumn(name = "sale_item_id")
 	private Collection<InvoiceItem> invoiceItems = new HashSet<InvoiceItem>();
 
-	@JsonIgnoreProperties(value = { "saleItemTo", "saleItemFrom" }, allowSetters = true)
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn(name = "sale_item_from_id")
-	private Collection<SaleItemTransfer> transfersFrom = new HashSet<SaleItemTransfer>();
-
-	@JsonIgnoreProperties(value = { "saleItemTo", "saleItemFrom" }, allowSetters = true)
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn(name = "sale_item_to_id")
-	private Collection<SaleItemTransfer> transfersTo = new HashSet<SaleItemTransfer>();
-
 	public void updateUnits() {
 		this.unitsScheduled = 0;
 		this.unitsProduced = 0;

@@ -244,41 +244,11 @@ class SaleRest {
 		}
 		for (SaleItem sa : sale.getSaleItems()) {
 			sa.setSale(sale);
-			for (SaleItemTransfer t : sa.getTransfersTo()) {
-				if (t.getSaleItemTo() == null) {
-					SaleItem saTo = new SaleItem();
-					saTo.setId(t.getSaleItemToId());
-					t.setSaleItemTo(saTo);
-				}
-				if (t.getSaleItemFrom() == null) {
-					SaleItem saFrom = new SaleItem();
-					saFrom.setId(t.getSaleItemFromId());
-					t.setSaleItemFrom(saFrom);
-				}
-			}
-			for (SaleItemTransfer t : sa.getTransfersFrom()) {
-				if (t.getSaleItemTo() == null) {
-					SaleItem saTo = new SaleItem();
-					saTo.setId(t.getSaleItemToId());
-					t.setSaleItemTo(saTo);
-				}
-				if (t.getSaleItemFrom() == null) {
-					SaleItem saFrom = new SaleItem();
-					saFrom.setId(t.getSaleItemFromId());
-					t.setSaleItemFrom(saFrom);
-				}
-			}
 		}
 		sale = (Sale) crudService.merge(sale);
 		sale.updateUnits();
 		for (SaleItem si : sale.getSaleItems()) {
 			itemIds.add(si.getItemPackaging().getItem().getId());
-//			List<Long> componentIds = new ArrayList<Long>();
-//			for (ItemComponent ic : sa.getItemPackaging().getItem().getItemComponents()) {
-//				componentIds.add(ic.getComponent().getId());
-//			}
-//			componentService.updateUnits(componentIds);
-//			sa.getItemPackaging().getItem().updateUnits();
 		}
 		itemService.updateUnits(itemIds);
 		Sale result = (Sale) crudService.save(sale);

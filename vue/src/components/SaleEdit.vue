@@ -487,6 +487,10 @@ export default {
       return true;
     },
     cancelSale(){
+      if(this.sale.unitsShipped > 0){
+        alert("This sale was already shipped! Cannot cancel.");
+        return;
+      }
       this.sale.cancelled = !this.sale.cancelled;
       this.saveSale();
     },

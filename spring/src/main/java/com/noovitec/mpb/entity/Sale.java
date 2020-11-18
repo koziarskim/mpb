@@ -44,11 +44,8 @@ public class Sale extends BaseEntity {
 	private long unitsProduced;
 	private long unitsSold;
 	private long unitsScheduled;
-//	private long unitsTransferedTo;
-//	private long unitsTransferedFrom;
 	private long unitsShipped;
 	private long unitsAdjusted;
-//	private long unitsOnStock;
 	private long unitsAssigned;
 	private String status;
 	private boolean approved;

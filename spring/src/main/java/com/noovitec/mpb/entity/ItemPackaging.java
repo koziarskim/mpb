@@ -96,10 +96,9 @@ public class ItemPackaging extends BaseEntity {
 					this.salesOpen += 1;
 					this.unitsOpen += (si.getUnits() + si.getUnitsAdjusted());
 				}
+				this.unitsShipped += si.getUnitsShipped();
+				this.unitsAssigned += si.getUnitsAssigned();
 			}
-
-			this.unitsShipped += si.getUnitsShipped();
-			this.unitsAssigned += si.getUnitsAssigned();
 		}
 		for(ScheduleEvent se: this.getScheduleEvents()) {
 			se.updateUnits();
