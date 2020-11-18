@@ -97,8 +97,8 @@ export default {
         { key: "packagingLabel", label: "Packaging", sortable: false },
         { key: "customerName", label: "Customer", sortable: false },
         { key: "unitsSoldAdj", label: "Sold&Adj", sortable: false },
-        { key: "unitsAssigned", label: "Assigned", sortable: false },
         { key: "unitsSchProd", label: "Sch/Prod", sortable: false },
+        { key: "unitsAssigned", label: "Assigned", sortable: false },
         { key: "unitsShipped", label: "Ship", sortable: false },
         { key: "status", label: "Status", sortable: false },
         { key: "action", label: "", sortable: false}

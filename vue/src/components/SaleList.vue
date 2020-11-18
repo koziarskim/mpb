@@ -116,8 +116,8 @@ export default {
         { key: "dc", label: "DC (State)", sortable: false },
         { key: "shippingWindow", label: "Ship", sortable: false },
         { key: "unitsSoldAdj", label: "Sold&Adj", sortable: false },
-        { key: "unitsAssigned", label: "Assigned", sortable: false },
         { key: "unitsSchProd", label: "Sch/Prod", sortable: false },
+        { key: "unitsAssigned", label: "Assigned", sortable: false },
         { key: "unitsShipped", label: "Shipped", sortable: false },
         { key: "status", label: "Status", sortable: false },
         { key: "action", label: "", sortable: false}

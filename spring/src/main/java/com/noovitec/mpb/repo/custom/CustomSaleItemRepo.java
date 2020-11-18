@@ -109,10 +109,10 @@ public interface CustomSaleItemRepo {
 					q += "and ((si.units + si.unitsAdjusted) != si.unitsAssigned) ";
 				}
 				if(Sale.UNITS.PENDING_SHIPMENT.name().equalsIgnoreCase(unitsFilter)) {
-					q += "and ((si.units + si.unitsAdjusted) != si.unitsShipped) ";
+					q += "and (si.unitsAssigned != si.unitsShipped) ";
 				}
 				if(Sale.UNITS.PENDING_PAYMENT.name().equalsIgnoreCase(unitsFilter)) {
-					q += "and s.paidInFull = false ";
+					q += "and s.paidInFull = false && si.unitsAssigned == si.unitsShipped";
 				}
 			}
 			if (!showAll) {
