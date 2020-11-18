@@ -100,23 +100,23 @@ public interface CustomSaleItemRepo {
 					q += "and s.approved = false ";
 				}
 				if(Sale.UNITS.PENDING_SCHEDULE.name().equalsIgnoreCase(unitsFilter)) {
-					q += "and ((si.units + si.unitsAdjusted) != si.unitsScheduled) and ((si.units + si.unitsAdjusted) != si.unitsAssigned) ";
+					q += "and ((si.units + si.unitsAdjusted) < si.unitsScheduled) and ((si.units + si.unitsAdjusted) != si.unitsAssigned) ";
 				}
 				if(Sale.UNITS.PENDING_PRODUCTION.name().equalsIgnoreCase(unitsFilter)) {
-					q += "and (si.unitsScheduled != si.unitsProduced) and ((si.units + si.unitsAdjusted) != si.unitsAssigned) ";
+					q += "and ((si.units + si.unitsAdjusted) < si.unitsProduced) and ((si.units + si.unitsAdjusted) != si.unitsAssigned) ";
 				}
 				if(Sale.UNITS.PENDING_ASSIGNMENT.name().equalsIgnoreCase(unitsFilter)) {
 					q += "and ((si.units + si.unitsAdjusted) != si.unitsAssigned) ";
 				}
 				if(Sale.UNITS.PENDING_SHIPMENT.name().equalsIgnoreCase(unitsFilter)) {
-					q += "and (si.unitsAssigned != si.unitsShipped) ";
+					q += "and ((si.units + si.unitsAdjusted) != si.unitsShipped) ";
 				}
 				if(Sale.UNITS.PENDING_PAYMENT.name().equalsIgnoreCase(unitsFilter)) {
-					q += "and s.paidInFull = false && si.unitsAssigned == si.unitsShipped";
+					q += "and s.paidInFull = false and si.unitsAssigned = si.unitsShipped ";
 				}
 			}
 			if (!showAll) {
-				q += "and s.cancelled = false and s.paidInFull = false ";
+				q += "and s.cancelled = false ";
 			}
 			Query query = entityManager.createQuery(q);
 			if (numberName != null && !numberName.isEmpty()) {
