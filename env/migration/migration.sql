@@ -22,6 +22,7 @@ alter table item_packaging add column units_adjusted bigint default 0;
 alter table item_packaging add column units_shipped bigint default 0;
 alter table item add column units_on_floor bigint default 0;
 alter table sale_item add column units_not_assigned bigint default 0;
+drop table sale_item_transfer;
 
 run /item/update/units
 

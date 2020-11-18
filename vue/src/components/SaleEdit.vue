@@ -564,7 +564,7 @@ export default {
       router.push("/itemEdit/" + item_id);
     },
     deleteItem(si) {
-      if((+si.unitsScheduled - +si.unitsProduced > 0) || si.unitsShipped>0){
+      if(si.unitsShipped>0){
         alert("Make sure there is no Schedule or Shipment for this item!");
         return false;
       }
