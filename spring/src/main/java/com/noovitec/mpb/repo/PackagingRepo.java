@@ -12,10 +12,10 @@ import com.noovitec.mpb.entity.Packaging;
 
 public interface PackagingRepo extends JpaRepository<Packaging, Long> {
 
-	@Query(value = "select new com.noovitec.mpb.dto.KeyValueDto(p.id, concat(p.name)) from Packaging p")
+	@Query(value = "select new com.noovitec.mpb.dto.KeyValueDto(p.id, concat(p.name, ' (', p.type,')')) from Packaging p")
 	public List<KeyValueDto> getAllKv();
 	
-	@Query("select distinct new com.noovitec.mpb.dto.KeyValueDto(p.id, concat(p.name)) from ItemPackaging ip "
+	@Query("select distinct new com.noovitec.mpb.dto.KeyValueDto(p.id, concat(p.name, ' (', p.type,')')) from ItemPackaging ip "
 			+ "join ip.item i "
 			+ "join ip.packaging p "
 			+ "where i.id = :itemId")

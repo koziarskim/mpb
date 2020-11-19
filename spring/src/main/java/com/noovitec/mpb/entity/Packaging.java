@@ -7,6 +7,7 @@ import java.util.HashSet;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -47,6 +48,13 @@ public class Packaging extends BaseEntity {
 	private BigDecimal warehouseCost;
 	private BigDecimal packageCost;
 	private BigDecimal totalPackagingCost;
+	
+	@Transient
+	private String label;
+	
+	public String getLabel() {
+		return this.getName() + " ("+Packaging.TYPE.valueOf(this.getType()).label()+")";
+	}
 	
 //	@JsonIgnoreProperties(value = { "packaging" }, allowSetters = true)
 //	@OneToMany()

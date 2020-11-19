@@ -114,6 +114,7 @@ export default {
   watch: {
     itemKv(newValue, oldValue){
       this.getScheduleEvents();
+      this.getAvailablePackagins();
     },
     packagingKv(newValue, oldValue){
       this.getScheduleEvents();
@@ -227,7 +228,7 @@ export default {
       });
     },
     getAvailablePackagins() {
-      http.get("/packaging/kv").then(r => {
+      http.get("/packaging/kv", {params: {itemId: this.itemKv.id}}).then(r => {
         this.availablePackagings = r.data;
       }).catch(e => {
         console.log("API error: "+e);

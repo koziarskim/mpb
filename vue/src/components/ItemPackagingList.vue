@@ -6,7 +6,7 @@
         <b-select option-value="id" option-text="name" :list="availableItems" v-model="itemKv" placeholder="Item"></b-select>
       </b-col>
       <b-col cols=2>
-        <b-select option-value="id" option-text="name" :list="availablePackagings" v-model="packagingKv" placeholder="Packaging"></b-select>
+        <b-select option-value="id" option-text="name" :list="availablePackagings" v-model="packagingKv" placeholder="Package"></b-select>
       </b-col>
     </b-row>
     <b-table :items="itemPackagings" :fields="fields">
@@ -88,6 +88,7 @@ export default {
   watch: {
     itemKv(newValue, oldValue) {
       this.getItemPackagings();
+      this.getAvailablePackagings();
     },
     packagingKv(newValue, oldValue) {
       this.getItemPackagings();
@@ -124,12 +125,12 @@ export default {
         }).catch(e => {console.log("API error: " + e);});
     },
     getAvailableItems(){
-      http.get("item/kv").then(r => {
+      http.get("/item/kv").then(r => {
         this.availableItems = r.data;
       }).catch(e => {console.log("API error: "+ e)})
     },
     getAvailablePackagings(){
-      http.get("packaging/kv").then(r => {
+      http.get("/packaging/kv", {params: {itemId: this.itemKv.id}}).then(r => {
         this.availablePackagings = r.data;
       }).catch(e => {console.log("API error: "+ e)})
     },
