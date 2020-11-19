@@ -40,7 +40,7 @@ public class ItemPackaging extends BaseEntity {
 	private long unitsAdjusted;
 	private long unitsShipped;
 	
-	@JsonIgnoreProperties(value = { "itemPackagings", "saleItems", "scheduleEvents" }, allowSetters = true)
+	@JsonIgnoreProperties(value = { "itemComponents", "itemPackagings", "saleItems", "scheduleEvents" }, allowSetters = true)
 	@ManyToOne()
 	@JoinColumn(name = "item_id", referencedColumnName = "id")
 	private Item item;
