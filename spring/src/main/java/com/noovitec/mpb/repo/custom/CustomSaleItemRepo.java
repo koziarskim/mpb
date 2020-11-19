@@ -100,10 +100,10 @@ public interface CustomSaleItemRepo {
 					q += "and s.approved = false ";
 				}
 				if(Sale.UNITS.NOT_SCHEDULED.name().equalsIgnoreCase(unitsFilter)) {
-					q += "and ((si.units + si.unitsAdjusted) < si.unitsScheduled) and ((si.units + si.unitsAdjusted) != si.unitsAssigned) ";
+					q += "and ((si.units + si.unitsAdjusted) > si.unitsScheduled) and ((si.units + si.unitsAdjusted) != si.unitsAssigned) ";
 				}
 				if(Sale.UNITS.NOT_PRODUCED.name().equalsIgnoreCase(unitsFilter)) {
-					q += "and ((si.units + si.unitsAdjusted) < si.unitsProduced) and ((si.units + si.unitsAdjusted) != si.unitsAssigned) ";
+					q += "and ((si.units + si.unitsAdjusted) > si.unitsProduced) and ((si.units + si.unitsAdjusted) != si.unitsAssigned) ";
 				}
 				if(Sale.UNITS.NOT_ASSIGNED.name().equalsIgnoreCase(unitsFilter)) {
 					q += "and ((si.units + si.unitsAdjusted) != si.unitsAssigned) ";
