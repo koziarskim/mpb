@@ -213,7 +213,7 @@ export default {
       columns: [
         { key: "item", label: "Item", sortable: false },
         { key: "packaging", label: "Package", sortable: false },
-        { key: "itemPackaging.unitsOnStock", label: "Available", sortable: false },
+        { key: "itemPackaging.unitsOnStock", label: "Stock", sortable: false },
         { key: "sku", label: "SKU#", sortable: false },
         { key: "units", label: "Sold", sortable: false },
         { key: "unitsAdjusted", label: "Adjusted", sortable: false },
@@ -470,7 +470,8 @@ export default {
       this.sale.saleItems.forEach(si=>{
         si.unitsAdjusted = si.unitsAdjusted || 0;
         si.units == si.units || 0;
-        if((si.itemPackaging.unitsOnStock < si.unitsAssigned) || (si.unitsAssigned > (+si.units + +si.unitsAdjusted))){
+        var unitsAssignedDiff = +si.unitsAssigned - +si.prevUnitsAssigned;
+        if(si.unitsAssigned < 0 || ((+si.itemPackaging.unitsOnStock - +unitsAssignedDiff) < 0) || (si.unitsAssigned > (+si.units + +si.unitsAdjusted))){
           tooManyAssignedItem = si.itemPackaging.item.number;
         }
         if(si.unitsShipped > (+si.units + si.unitsAdjusted)){
@@ -493,6 +494,11 @@ export default {
         return;
       }
       this.sale.cancelled = !this.sale.cancelled;
+      if(this.sale.cancelled){
+        this.sale.saleItems.forEach(si => {
+          si.unitsAssigned = 0;
+        })
+      }
       this.saveSale();
     },
     deleteSale() {
