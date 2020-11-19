@@ -36,7 +36,11 @@ public interface CustomScheduleEventRepo {
 					+ "join ip.item i " 
 					+ "where se.id is not null ";
 			if (saleId != null) {
-				q += "and s.id = :saleId ";
+				if(saleId == 0) {
+					q += "and s.id is null ";
+				} else {
+					q += "and s.id = :saleId ";
+				}
 			}
 			if (itemId != null) {
 				q += "and i.id = :itemId ";
@@ -46,7 +50,7 @@ public interface CustomScheduleEventRepo {
 			}
 			q += "order by se.date desc, se.line.id asc ";
 			Query query = entityManager.createQuery(q);
-			if (saleId != null) {
+			if (saleId != null && saleId != 0) {
 				query.setParameter("saleId", saleId);
 			}
 			if (itemId != null) {

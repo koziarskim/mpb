@@ -213,6 +213,7 @@ export default {
       columns: [
         { key: "item", label: "Item", sortable: false },
         { key: "packaging", label: "Package", sortable: false },
+        { key: "itemPackaging.unitsOnStock", label: "Available", sortable: false },
         { key: "sku", label: "SKU#", sortable: false },
         { key: "units", label: "Sold", sortable: false },
         { key: "unitsAdjusted", label: "Adjusted", sortable: false },
@@ -469,7 +470,7 @@ export default {
       this.sale.saleItems.forEach(si=>{
         si.unitsAdjusted = si.unitsAdjusted || 0;
         si.units == si.units || 0;
-        if(((si.unitsOnStock) < 0) || (si.unitsAssigned > (+si.units + +si.unitsAdjusted))){
+        if((si.itemPackaging.unitsOnStock < si.unitsAssigned) || (si.unitsAssigned > (+si.units + +si.unitsAdjusted))){
           tooManyAssignedItem = si.itemPackaging.item.number;
         }
         if(si.unitsShipped > (+si.units + si.unitsAdjusted)){
@@ -477,7 +478,7 @@ export default {
         }
       })
       if(tooManyAssignedItem){
-        alert("Item: "+tooManyAssignedItem+" - Units Assigned cannot be more that Stock");
+        alert("Item: "+tooManyAssignedItem+" - Units Assigned more that Stock or (Sold + Adjusted)");
         return false;
       }
       if(tooManyShippedItem){

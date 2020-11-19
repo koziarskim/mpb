@@ -270,16 +270,6 @@ const router = new Router({
       }
     },
     {
-      path: "/ScheduleEventList",
-      name: "ScheduleEventList",
-      component: ScheduleEventList,
-      meta: {
-        roles: ["READ_ONLY"],
-        group: "schedule",
-        viewClass: "view-schedule"
-      }
-    },
-    {
       path: "/ShipmentEdit/:shipment_id?",
       name: "ShipmentEdit",
       component: ShipmentEdit,
@@ -337,6 +327,16 @@ const router = new Router({
         roles: ["READ_ONLY", "PRODUCTION_ADMIN", "PRODUCTION_EDIT"],
         group: "production",
         viewClass: "view-production"
+      }
+    },
+    {
+      path: "/ScheduleEventList",
+      name: "ScheduleEventList",
+      component: ScheduleEventList,
+      meta: {
+        roles: ["READ_ONLY"],
+        group: "production",
+        viewClass: "view-schedule"
       }
     },
     {

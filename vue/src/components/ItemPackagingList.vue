@@ -29,7 +29,10 @@
         ${{row.item.packageCost}}
       </template>
       <template v-slot:cell(unitsScheduled)="row">
-        <b-link role="button" @click="openScheduleEventModal(row.item)">{{row.item.unitsScheduled}}</b-link>
+        <div style="display: flex">
+          <b-button size="sm" variant="link" @click="goToScheduleEventList(row.item)">{{row.item.unitsScheduled}}</b-button>
+          <b-button size="sm" style="margin-left:-15px" variant="link" @click="openScheduleEventModal(row.item)">+</b-button>
+        </div>
       </template>
     </b-table>
     <div style="display: flex">
@@ -91,6 +94,12 @@ export default {
     },
   },
   methods: {
+    goToScheduleEventList(itemPackagingListDto) {
+      router.push({path: "/ScheduleEventList", query: {
+        itemId: itemPackagingListDto.itemId,
+        saleId: 0, 
+        packagingId: itemPackagingListDto.packagingId}});
+    },
     openScheduleEventModal(itemPackagingListDto){
       this.itemId = itemPackagingListDto.itemId;
       this.scheduleEventModalVisible = true;

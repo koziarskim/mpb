@@ -44,11 +44,13 @@
               <b-button size="sm" @click=goToShipment(row.item.itemId,row.item.saleId) variant="link">{{row.item.unitsShipped}}</b-button>
           </template>
           <template v-slot:cell(unitsSchProd)="row">
-            <b-button size="sm" variant="link" @click="goToScheduleEventList(row.item)">{{row.item.unitsScheduled}}/{{row.item.unitsProduced}}</b-button>
+            <div style="display:flex">
+              <b-button size="sm" variant="link" @click="goToScheduleEventList(row.item)">{{row.item.unitsScheduled}}/{{row.item.unitsProduced}}</b-button>
+              <b-button size="sm" style="margin-left:-15px" variant="link" @click="openScheduleEventModal(row.item)">+</b-button>
+            </div>
           </template>
           <template v-slot:cell(status)="row">
-              <span v-if="row.item.status != 'APPROVED'">{{getStatus(row.item.status)}}</span>
-              <b-button v-if="row.item.status == 'APPROVED'" style="margin-left: -18px" size="sm" @click=openScheduleEventModal(row.item) variant="link">{{getStatus(row.item.status)}}</b-button>
+              <span>{{getStatus(row.item.status)}}</span>
           </template>
           <template v-slot:cell(action)="row">
             <input type="checkbox" v-model="selectedSaleItemIds" :value="row.item.id" @change="checkboxSelected(row.item)" :disabled="checkboxDisabled(row.item)">

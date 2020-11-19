@@ -198,6 +198,7 @@ export default {
     },
     getAvailableSales() {
       http.get("/sale/kv").then(r => {
+        r.data.unshift({id: 0, name: '----'})
         this.availableSales = r.data;
       }).catch(e => {
         console.log("API error: "+e);
@@ -236,11 +237,15 @@ export default {
   mounted() {
     var itemId = this.$route.query.itemId;
     var saleId = this.$route.query.saleId;
+    var packagingId = this.$route.query.packagingId;
     if(itemId){
       this.itemKv = {id: itemId}
     }
-    if(saleId){
+    if(saleId != null){
       this.saleKv = {id: saleId}
+    }
+    if(packagingId){
+      this.packagingKv = {id: packagingId}
     }
     this.getAvailableSales();
     this.getAvailableItems();
