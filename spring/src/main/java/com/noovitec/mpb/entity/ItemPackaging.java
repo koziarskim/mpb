@@ -84,7 +84,7 @@ public class ItemPackaging extends BaseEntity {
 		
 		for (SaleItem si : this.getSaleItems()) {
 			si.updateUnits();
-//			if(!si.getSale().isCancelled()) {
+			if(!si.getSale().isCancelled()) {
 				this.unitsSold += si.getUnits();
 				this.unitsAdjusted += si.getUnitsAdjusted();
 				this.unitsNotAssigned += si.getUnitsNotAssigned();
@@ -98,7 +98,7 @@ public class ItemPackaging extends BaseEntity {
 				}
 				this.unitsShipped += si.getUnitsShipped();
 				this.unitsAssigned += si.getUnitsAssigned();
-//			}
+			}
 		}
 		for(ScheduleEvent se: this.getScheduleEvents()) {
 			se.updateUnits();
