@@ -41,7 +41,14 @@ public interface CustomSaleItemRepo {
 			query.setParameter("ids", ids);
 			long total = (long) query.getSingleResult();
 			if(totals) {
-				query = entityManager.createQuery("select (sum(si.units)+sum(si.unitsAdjusted)), sum(si.unitsProduced), sum(si.unitsAssigned), sum(si.unitsShipped) from SaleItem si where si.id in :ids ");
+				query = entityManager.createQuery("select "
+						+ "(sum(si.units)+sum(si.unitsAdjusted)), "
+						+ "sum(si.unitsScheduled), "
+						+ "sum(si.unitsProduced), "
+						+ "sum(si.unitsAssigned), "
+						+ "sum(si.unitsShipped) "
+						+ "from SaleItem si "
+						+ "where si.id in :ids ");
 				query.setParameter("ids", ids);
 				Object result = query.getSingleResult();
 				Page<Object> page = new PageImpl<Object>(Arrays.asList(result), pageable, total);
@@ -103,7 +110,7 @@ public interface CustomSaleItemRepo {
 					q += "and ((si.units + si.unitsAdjusted) > si.unitsScheduled) ";
 				}
 				if(Sale.UNITS.NOT_PRODUCED.name().equalsIgnoreCase(unitsFilter)) {
-					q += "and ((si.units + si.unitsAdjusted) > si.unitsProduced) ";
+					q += "and (si.unitsScheduled > si.unitsProduced) ";
 				}
 				if(Sale.UNITS.NOT_ASSIGNED.name().equalsIgnoreCase(unitsFilter)) {
 					q += "and ((si.units + si.unitsAdjusted) != si.unitsAssigned) ";

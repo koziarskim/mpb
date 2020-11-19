@@ -16,13 +16,15 @@
             <b-button id="totalsMenu" size="sm" @click="toggleShowTotals()">Totals</b-button>
             <b-popover :show="showTotalsMenu" placement="bottom" target="totalsMenu" variant="secondary">
               <div style="width: 300px; font-size: 16px">
-                <div>Total of {{pageable.totalElements}} rows</div>
-                <div>Sold & Adj: {{totalSoldAdj.toLocaleString()}}</div>
-                <div>Produced: {{totalProduced.toLocaleString()}}</div>
-                <div>Assigned: {{totalAssigned.toLocaleString()}}</div>
-                <div>Not Assigned: {{(+totalSoldAdj - +totalAssigned).toLocaleString()}}</div>
-                <div>Shipped: {{totalShipped.toLocaleString()}}</div>
-                <div>Pending Ship: {{(+totalSoldAdj - +totalShipped).toLocaleString()}}</div>
+                <div>Total of {{pageable.totalElements.toLocaleString()}} rows</div>
+                <div><b>Sold & Adj:</b> {{totalSoldAdj.toLocaleString()}}</div>
+                <div><b>Scheduled:</b> {{totalScheduled.toLocaleString()}}</div>
+                <div><b>Produced:</b> {{totalProduced.toLocaleString()}}</div>
+                <div><b>Pending Prod:</b> {{(+totalScheduled - +totalProduced).toLocaleString()}}</div>
+                <div><b>Assigned:</b> {{totalAssigned.toLocaleString()}}</div>
+                <div><b>Not Assigned:</b> {{(+totalSoldAdj - +totalAssigned).toLocaleString()}}</div>
+                <div><b>Shipped:</b> {{totalShipped.toLocaleString()}}</div>
+                <div><b>Pending Ship:</b> {{(+totalSoldAdj - +totalShipped).toLocaleString()}}</div>
               </div>
             </b-popover>
             <b-button style="margin-left: 15px" size="sm" variant="primary" @click="newShipment()">Ship ({{selectedSaleItemIds.length}})</b-button>
@@ -130,6 +132,7 @@ export default {
       unitsFilterKv: {},
       showTotalsMenu: false,
       totalSoldAdj: 0,
+      totalScheduled: 0,
       totalProduced: 0,
       totalAssigned: 0,
       totalShipped: 0,
@@ -217,9 +220,10 @@ export default {
       }}).then(r => {
       if(totals){
         this.totalSoldAdj = r.data.content[0][0];
-        this.totalProduced = r.data.content[0][1];
-        this.totalAssigned = r.data.content[0][2];
-        this.totalShipped = r.data.content[0][3];
+        this.totalScheduled = r.data.content[0][1];
+        this.totalProduced = r.data.content[0][2];
+        this.totalAssigned = r.data.content[0][3];
+        this.totalShipped = r.data.content[0][4];
       }else{
         this.saleItems = r.data.content;
         this.pageable.totalElements = r.data.totalElements;
