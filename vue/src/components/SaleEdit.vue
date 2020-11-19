@@ -138,16 +138,7 @@
             <b-button size="sm" variant="link" @click="goToShipment(row.item)">{{row.item.unitsShipped}}</b-button>
           </template>
           <template v-slot:cell(action)="row">
-            <b-button size="sm" :id="'popover-'+row.item.id">...</b-button>
-            <b-popover placement="left" :target="'popover-'+row.item.id" variant="light">
-              <div style="width: 340px">
-                <b-button :disabled="!allowEdit()" size="sm" @click="deleteItem(row.item)" variant="link">Delete Item</b-button><br/>
-                <div style="display:flex;">
-                  <b-button :disabled="!allowSave()" size="sm" @click="moveItem(row.item)" variant="link">Move Item</b-button>
-                  <b-select style="width: 250px" option-value="id" option-text="name" :list="availableSales" v-model="saleKv"></b-select>
-                </div>
-              </div>
-            </b-popover>
+            <b-button size="sm" @click="deleteItem(row.item)">X</b-button>
           </template>
         </b-table>
       </b-col>
@@ -549,6 +540,7 @@ export default {
       http.post("/saleItem/"+saleItem.id+"/move/to/sale/"+this.saleKv.id).then(r => {
         this.saleKv = {};
         this.getSaleData(this.sale.id);
+        this.showItemMenu = false;
       }).catch(e => {
         console.log("API error: " + e);
       });
@@ -582,7 +574,7 @@ export default {
       }
       var idx = this.sale.saleItems.findIndex(it => it.id == si.id);
       this.sale.saleItems.splice(idx, 1);
-      this.saveSale();
+      // this.saveSale();
     },
     getCases(si){
       return Math.ceil(+si.units / +si.itemPackaging.packaging.casePack).toFixed(0);
@@ -600,6 +592,10 @@ export default {
 </script>
 
 <style>
+.table th, .table td {
+  padding-right: 0px !important;
+  padding-left: 0px !important;
+}
 .fully-shipped {
   background-color: #b6e6c9;
 }
