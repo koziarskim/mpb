@@ -502,12 +502,17 @@ export default {
       this.saveSale();
     },
     deleteSale() {
-      if(this.sale.saleItems.length > 0 ){
-        alert("There are existing items. Please, move or delete items first");
+      if(this.sale.unitsShipped > 0){
+        alert("This sale was already shipped! Cannot cancel.");
         return;
       }
+      // if(this.sale.saleItems.length > 0 ){
+      //   alert("There are existing items. Please, move or delete items first");
+      //   return;
+      // }
       this.$bvModal.msgBoxConfirm("Are you sure you want to delete this Sale?").then(ok => {
         if(ok){
+          this.sale.saleItems = [];
           http.delete("/sale/"+this.sale.id).then(r => {
             router.push('/saleList/');
           }).catch(e => {

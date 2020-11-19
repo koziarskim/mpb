@@ -14,7 +14,7 @@ import com.noovitec.mpb.repo.SaleItemRepo;
 import com.noovitec.mpb.repo.SaleRepo;
 
 public interface SaleService {
-	public void updateUnits(List<Long> salIds);
+	public void updateUnits(List<Long> saleIds);
 	public Sale save(Sale sale);
 
 	@Transactional
@@ -50,12 +50,12 @@ public interface SaleService {
 			log.info("Total sales: " + counter);
 		}
 
-		public void updateUnits(List<Long> salIds) {
-			if(salIds != null && salIds.size()==0) {
+		public void updateUnits(List<Long> saleIds) {
+			if(saleIds != null && saleIds.size()==0) {
 				return;
 			}
 			Long counter = 0L;
-			Iterable<Sale> sales = salIds==null?saleRepo.findAll():saleRepo.findByIds(salIds);
+			Iterable<Sale> sales = saleIds==null?saleRepo.findAll():saleRepo.findByIds(saleIds);
 			for (Sale sale : sales) {
 				sale.updateUnits();
 				saleRepo.save(sale);

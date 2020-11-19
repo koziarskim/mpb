@@ -42,11 +42,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.dto.SaleListDto;
 import com.noovitec.mpb.entity.Address;
-import com.noovitec.mpb.entity.Item;
 import com.noovitec.mpb.entity.Sale;
 import com.noovitec.mpb.entity.SaleItem;
-import com.noovitec.mpb.entity.SaleItemTransfer;
 import com.noovitec.mpb.repo.ItemRepo;
+import com.noovitec.mpb.repo.SaleItemRepo;
 import com.noovitec.mpb.repo.SaleRepo;
 import com.noovitec.mpb.repo.ScheduleEventRepo;
 import com.noovitec.mpb.service.ComponentService;
@@ -73,6 +72,8 @@ class SaleRest {
 	ComponentService componentService;
 	@Autowired
 	private ItemService itemService;
+	@Autowired
+	private SaleItemRepo saleItemRepo;
 	
 	private final Logger log = LoggerFactory.getLogger(SaleRest.class);
 	private SaleService saleService;
@@ -258,18 +259,23 @@ class SaleRest {
 	@DeleteMapping("/sale/{id}")
 	public ResponseEntity<?> delete(@PathVariable Long id) {
 		Sale sale = saleRepo.getOne(id);
-		if(sale.getSaleItems().size()>0) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("There are existing Sale Items!");
+//		if(sale.getSaleItems().size()>0) {
+//			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("There are existing Sale Items!");
+//		}
+		List<Long> itemIds = new ArrayList<Long>();
+		List<Long> saleIds = new ArrayList<Long>();
+		for (SaleItem si : sale.getSaleItems()) {
+//			if(si.getShipmentItems().size() > 0) {
+//				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Sale has been shipped already. Cannot delete!");
+//			}
+//			saleItemRepo.deleteById(si.getId());
+			itemIds.add(si.getItemPackaging().getItem().getId());
+			saleIds.add(si.getSale().getId());
 		}
-		List<Item> items = new ArrayList<Item>();
-		for (SaleItem sa : sale.getSaleItems()) {
-			items.add(sa.getItemPackaging().getItem());
-		}
+//		sale.setSaleItems(null);
 		saleRepo.deleteById(id);
-		for (Item item : items) {
-			item.updateUnits();
-			crudService.save(item);
-		}
+		saleService.updateUnits(saleIds);
+		itemService.updateUnits(itemIds);
 		return ResponseEntity.ok().build();
 	}
 	
