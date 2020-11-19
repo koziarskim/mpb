@@ -28,4 +28,5 @@ public class ScheduleEventListDto {
 	private long unitsSoldAdj;
 	private long unitsScheduled;
 	private long unitsProduced;
+	private long unitsAssigned;
 }

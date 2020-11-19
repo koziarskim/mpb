@@ -1,5 +1,6 @@
 <template>
     <b-container fluid>
+      <div class="mpb-page-info">Sale > Sales by Item</div>
         <b-row style="font-size: 12px">
           <input style="width: 150px; margin-left: 15px; font-size: 12px" class="form-control" type="tel" v-model="numberName" @keyup.enter="getSaleItems()" placeholder="Sale"/>
           <b-select style="width: 200px; margin-left: 15px" option-value="id" option-text="name" :list="availableItems" v-model="itemKv" placeholder="Item"></b-select>

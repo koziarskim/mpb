@@ -132,7 +132,7 @@ export default {
         alert("Please enter all the fields");
         return false;
       }
-      if(this.saleItem && this.scheduleEvent.unitsScheduled > this.saleItem.units){
+      if(this.saleItem && this.scheduleEvent.unitsScheduled > (+this.saleItem.units + +this.saleItem.unitsAdjusted)){
         alert("Cannot schedule more that sold");
         return false;
       }

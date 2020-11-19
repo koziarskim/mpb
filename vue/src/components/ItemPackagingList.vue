@@ -30,7 +30,7 @@
       </template>
       <template v-slot:cell(unitsScheduled)="row">
         <div style="display: flex">
-          <b-button size="sm" variant="link" @click="goToScheduleEventList(row.item)">{{row.item.unitsScheduled}}</b-button>
+          <b-button size="sm" variant="link" @click="goToScheduleEventList(row.item)">{{+row.item.unitsScheduled - +row.item.unitsProduced}}</b-button>
           <b-button size="sm" style="margin-left:-15px" variant="link" @click="openScheduleEventModal(row.item)">+</b-button>
         </div>
       </template>
@@ -63,17 +63,17 @@ export default {
         sortDesc: true
       },
       fields: [
-        { key: "itemNameNumber", sortable: true, label: "Item" },
-        { key: "label", sortable: true, label: "Packaging" },
-        { key: "typeLabel", label: "Type", sortable: false },
+        { key: "itemNameNumber", sortable: false, label: "Item" },
+        { key: "label", sortable: false, label: "Packaging" },
         { key: "caseDimension", label: "Case Dimension", sortable: false },
         { key: "casePack", label: "C/P", sortable: false },
         { key: "palletConfig", label: "TixHi", sortable: false },
         { key: "palletWeight", label: "Weight", sortable: false },
         { key: "warehouseCost", label: "Warehouse", sortable: false },
         { key: "packageCost", label: "Package", sortable: false },
+        { key: "unitsOnFloor", label: "Floor", sortable: false },
         { key: "unitsOnStock", label: "Stock", sortable: false },
-        { key: "unitsScheduled", label: "Scheduled", sortable: false },
+        { key: "unitsScheduled", label: "Pen Prod", sortable: false },
       ],
       itemPackagings: [], //ItemPackagingListDto
       availableItems: [],
@@ -97,7 +97,6 @@ export default {
     goToScheduleEventList(itemPackagingListDto) {
       router.push({path: "/ScheduleEventList", query: {
         itemId: itemPackagingListDto.itemId,
-        saleId: 0, 
         packagingId: itemPackagingListDto.packagingId}});
     },
     openScheduleEventModal(itemPackagingListDto){

@@ -1,5 +1,6 @@
 <template>
   <b-container fluid>
+    <div class="mpb-page-info">Production > Schedule List</div>
     <b-row style="padding-bottom: 4px; font-size: 12px">
       <!-- <b-col cols=3 style="margin-top: -7px">
         <span style="font-size: 18px; font-weight: bold;">Schedule for Item:</span>
@@ -83,6 +84,7 @@ export default {
         { key: "unitsSoldAdj", label: "Sold&Adj", sortable: false },
         { key: "unitsScheduled", label: "Scheduled", sortable: false },
         { key: "unitsProduced", label: "Produced", sortable: false },
+        { key: "unitsAssigned", label: "Assigned", sortable: false },
         { key: "action", label: "", sortable: false },
       ]
     };

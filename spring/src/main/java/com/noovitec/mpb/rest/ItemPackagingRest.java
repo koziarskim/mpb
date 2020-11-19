@@ -84,7 +84,7 @@ class ItemPackagingRest {
 			dto.setSalesOpen(ip.getSalesOpen());
 			dto.setUnitsOpen(ip.getUnitsOpen());
 			dto.setUnitsProduced(ip.getUnitsProduced());
-			dto.setUnitsScheduled(ip.getUnitsScheduled() - ip.getUnitsProduced());
+			dto.setUnitsScheduled(ip.getUnitsScheduled());
 			dto.setUnitsAssigned(ip.getUnitsAssigned());
 			return dto;
 		});
