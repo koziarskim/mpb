@@ -24,6 +24,21 @@
           <b-button style="margin: 3px" type="reset" variant="success" @click="close()">Close</b-button>
         </div>
       </b-col> -->
+      <b-col cols=1>
+        <div style="margin-left: 15px">
+          <b-button id="totalsMenu" size="sm" @click="toggleShowTotals()">Totals</b-button>
+          <b-popover :show="showTotalsMenu" placement="bottom" target="totalsMenu" variant="secondary">
+            <div style="width: 300px; font-size: 16px">
+              <div>Total of {{pageable.totalElements}} rows</div>
+              <div>Sold & Adj: {{totalSoldAdj.toLocaleString()}}</div>
+              <div>Scheduled: {{totalScheduled.toLocaleString()}}</div>
+              <div>Produced: {{totalProduced.toLocaleString()}}</div>
+              <div>Assigned: {{totalAssigned.toLocaleString()}}</div>
+              <div>Stock: {{(+totalProduced - +totalAssigned).toLocaleString()}}</div>
+            </div>
+          </b-popover>
+        </div>
+      </b-col>
     </b-row>
     <b-row>
       <b-table :items="scheduleEvents" :fields="columns">
@@ -86,7 +101,12 @@ export default {
         { key: "unitsProduced", label: "Produced", sortable: false },
         { key: "unitsAssigned", label: "Assigned", sortable: false },
         { key: "action", label: "", sortable: false },
-      ]
+      ],
+      showTotalsMenu: false,
+      totalSoldAdj: 0,
+      totalScheduled: 0,
+      totalProduced: 0,
+      totalAssigned: 0,
     };
   },
 
@@ -100,6 +120,10 @@ export default {
     }
   },
   methods: {
+    toggleShowTotals(){
+      this.getScheduleEvents(true);
+      this.showTotalsMenu = !this.showTotalsMenu;
+    },      
     openScheduleEventModal(se){
       this.scheduleEventId = se.id;
       this.saleItemId = se.saleItemId;
@@ -183,8 +207,10 @@ export default {
       }}
       http.get("/scheduleEvent/pageable", query).then(r => {
         if(totals){
-          // this.totalSold = r.data.content[0][0].toLocaleString();
-          // this.totalAmount = parseFloat(r.data.content[0][1]);
+          this.totalSoldAdj = parseFloat(r.data.content[0][0]);
+          this.totalScheduled = parseFloat(r.data.content[0][1]);
+          this.totalProduced = parseFloat(r.data.content[0][2]);
+          this.totalAssigned = parseFloat(r.data.content[0][3]);
         }else{
          this.scheduleEvents = r.data.content;
         }

@@ -1,5 +1,7 @@
 package com.noovitec.mpb.repo.custom;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -13,10 +15,12 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import com.noovitec.mpb.entity.Sale;
+import com.noovitec.mpb.entity.SaleItem;
 import com.noovitec.mpb.entity.ScheduleEvent;
 
 public interface CustomScheduleEventRepo {
-	Page<?> findPageable(Pageable pageable, Long saleId, Long itemId, Long packagingId);
+	Page<?> findPageable(Pageable pageable, boolean totals, Long saleId, Long itemId, Long packagingId);
 
 	@Repository
 	public class CustomScheduleEventRepoImpl implements CustomScheduleEventRepo {
@@ -27,8 +31,39 @@ public interface CustomScheduleEventRepo {
 		EntityManager entityManager;
 
 		@Override
-		public Page<?> findPageable(Pageable pageable, Long saleId, Long itemId, Long packagingId) {
-			String q = "select distinct se from ScheduleEvent se "
+		public Page<?> findPageable(Pageable pageable, boolean totals, Long saleId, Long itemId, Long packagingId) {
+			List<Long> ids = this.getIds(pageable, totals, saleId, itemId, packagingId);
+			Query query = entityManager.createQuery("select count(*) from ScheduleEvent se where se.id in :ids");
+			query.setParameter("ids", ids);
+			long total = (long) query.getSingleResult();
+			if(totals) {
+				query = entityManager.createQuery("select (sum(si.units)+sum(si.unitsAdjusted)), sum(se.unitsScheduled), sum(se.unitsProduced), sum(si.unitsAssigned), sum(si.unitsShipped) "
+						+ "from ScheduleEvent se "
+						+ "left join se.saleItem si "
+						+ "where se.id in :ids ");
+				query.setParameter("ids", ids);
+				Object result = query.getSingleResult();
+				Page<Object> page = new PageImpl<Object>(Arrays.asList(result), pageable, total);
+				return page;
+			}else {
+				String q = "select distinct se, line from ScheduleEvent se "
+						+ "join se.line line "
+						+ "where se.id in :ids ";
+				q += "order by se.date desc, line.id asc ";
+				query = entityManager.createQuery(q);
+				query.setParameter("ids", ids);
+				@SuppressWarnings("unchecked")
+				List<Object[]> result = query.setFirstResult(pageable.getPageNumber()*pageable.getPageSize())
+					.setMaxResults(pageable.getPageSize()).getResultList();
+				List<ScheduleEvent> entities = new ArrayList<ScheduleEvent>();
+				result.forEach(o -> entities.add((ScheduleEvent) o[0]));
+				Page<ScheduleEvent> page = new PageImpl<ScheduleEvent>(entities, pageable, total);
+				return page;
+			}			
+		}
+		
+		private List<Long> getIds(Pageable pageable, boolean totals, Long saleId, Long itemId, Long packagingId) {
+			String q = "select distinct se.id from ScheduleEvent se "
 					+ "left join se.saleItem si "
 					+ "left join si.sale s "
 					+ "join se.itemPackaging ip "
@@ -48,7 +83,6 @@ public interface CustomScheduleEventRepo {
 			if (packagingId != null) {
 				q += "and p.id = :packagingId ";
 			}
-			q += "order by se.date desc, se.line.id asc ";
 			Query query = entityManager.createQuery(q);
 			if (saleId != null && saleId != 0) {
 				query.setParameter("saleId", saleId);
@@ -59,12 +93,12 @@ public interface CustomScheduleEventRepo {
 			if (packagingId != null) {
 				query.setParameter("packagingId", packagingId);
 			}
-			long total = query.getResultStream().count();
 			@SuppressWarnings("unchecked")
-			List<ScheduleEvent> result = query.setFirstResult(pageable.getPageNumber() * pageable.getPageSize())
-				.setMaxResults(pageable.getPageSize()).getResultList();
-			Page<ScheduleEvent> page = new PageImpl<ScheduleEvent>(result, pageable, total);
-			return page;
+			List<Long> ids = query.getResultList();
+			if(ids.size()==0) {
+				ids.add(0L);
+			}
+			return ids;
 		}
 	}
 }

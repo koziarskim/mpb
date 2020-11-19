@@ -81,12 +81,11 @@ class ScheduleEventRest {
 			@RequestParam(required = false) Long itemId,
 			@RequestParam(required = false) Long packagingId) {
 		if(totals) {
-			//TODO: Need to implement
-			Page<?> resultTotals = null;
+			Page<?> resultTotals = scheduleEventRepo.findPageable(pageable, totals, saleId, itemId, packagingId);
 			return resultTotals;
 		}
 		@SuppressWarnings("unchecked")
-		Page<ScheduleEvent> scheduleEvents = (Page<ScheduleEvent>) scheduleEventRepo.findPageable(pageable, saleId, itemId, packagingId);
+		Page<ScheduleEvent> scheduleEvents = (Page<ScheduleEvent>) scheduleEventRepo.findPageable(pageable, totals, saleId, itemId, packagingId);
 		Page<ScheduleEventListDto> all = scheduleEvents.map(se -> {
 			ScheduleEventListDto dto = new ScheduleEventListDto();
 			dto.setId(se.getId());

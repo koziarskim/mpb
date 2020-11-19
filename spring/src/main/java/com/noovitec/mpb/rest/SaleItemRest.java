@@ -65,8 +65,7 @@ class SaleItemRest {
 		@SuppressWarnings("unchecked")
 		Page<SaleItem> saleItems = (Page<SaleItem>) saleItemRepo.findPageable(pageable, totals, numberName, saleId, customerId, itemId, packagingId, status, unitsFilter, showAll);
 		if(totals) {
-			@SuppressWarnings("unchecked")
-			Page<?> result = (Page<SaleItem>) saleItemRepo.findPageable(pageable, totals, numberName, saleId, customerId, itemId, packagingId, status, unitsFilter, showAll);
+			Page<?> result = saleItemRepo.findPageable(pageable, totals, numberName, saleId, customerId, itemId, packagingId, status, unitsFilter, showAll);
 			return result;
 		}else {
 			Page<SaleItemDto> all = saleItems.map(saleItem -> {
