@@ -25,8 +25,8 @@ public class ScheduleEventListDto {
 	private LocalDate scheduleDate;
 	private LocalTime startTime;
 	private LocalTime finishTime;
-	private long unitsSoldAdj;
+//	private long unitsSoldAdj;
 	private long unitsScheduled;
 	private long unitsProduced;
-	private long unitsAssigned;
+//	private long unitsAssigned;
 }

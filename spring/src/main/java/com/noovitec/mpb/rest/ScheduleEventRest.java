@@ -101,10 +101,10 @@ class ScheduleEventRest {
 			dto.setScheduleDate(se.getDate());
 			dto.setStartTime(se.getStartTime());
 			dto.setFinishTime(se.getFinishTime());
-			dto.setUnitsSoldAdj(se.getSaleItem()!=null?(se.getSaleItem().getUnits() + se.getSaleItem().getUnitsAdjusted()):0);
+//			dto.setUnitsSoldAdj(se.getSaleItem()!=null?(se.getSaleItem().getUnits() + se.getSaleItem().getUnitsAdjusted()):0);
 			dto.setUnitsScheduled(se.getUnitsScheduled());
 			dto.setUnitsProduced(se.getUnitsProduced());
-			dto.setUnitsAssigned(se.getSaleItem()!=null?se.getSaleItem().getUnitsAssigned():0);
+//			dto.setUnitsAssigned(se.getSaleItem()!=null?se.getSaleItem().getUnitsAssigned():0);
 			return dto;
 		});
 		return all;

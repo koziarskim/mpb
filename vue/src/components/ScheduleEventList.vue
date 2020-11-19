@@ -16,6 +16,9 @@
         <b-select option-value="id" option-text="name" :list="availableItems" v-model="itemKv" placeholder="Pick Item"></b-select>
       </b-col>
       <b-col cols=2>
+        <b-select option-value="id" option-text="name" :list="availablePackagings" v-model="packagingKv" placeholder="Pick Package"></b-select>
+      </b-col>
+      <b-col cols=2>
         <b-select option-value="id" option-text="name" :list="availableSales" v-model="saleKv" placeholder="Pick Sale"></b-select>
       </b-col>
       <!-- <b-col cols=1 offset=4>
@@ -30,11 +33,9 @@
           <b-popover :show="showTotalsMenu" placement="bottom" target="totalsMenu" variant="secondary">
             <div style="width: 300px; font-size: 16px">
               <div>Total of {{pageable.totalElements}} rows</div>
-              <div>Sold & Adj: {{totalSoldAdj.toLocaleString()}}</div>
               <div>Scheduled: {{totalScheduled.toLocaleString()}}</div>
               <div>Produced: {{totalProduced.toLocaleString()}}</div>
-              <div>Assigned: {{totalAssigned.toLocaleString()}}</div>
-              <div>Stock: {{(+totalProduced - +totalAssigned).toLocaleString()}}</div>
+              <div>Pending Prod: {{(+totalScheduled - +totalProduced).toLocaleString()}}</div>
             </div>
           </b-popover>
         </div>
@@ -96,10 +97,8 @@ export default {
         { key: "startTime", label: "Started", sortable: false },
         { key: "finishTime", label: "Finished", sortable: false },
         // { key: "performance", label: "Perform [u/h]", sortable: true },
-        { key: "unitsSoldAdj", label: "Sold&Adj", sortable: false },
         { key: "unitsScheduled", label: "Scheduled", sortable: false },
         { key: "unitsProduced", label: "Produced", sortable: false },
-        { key: "unitsAssigned", label: "Assigned", sortable: false },
         { key: "action", label: "", sortable: false },
       ],
       showTotalsMenu: false,
@@ -107,12 +106,16 @@ export default {
       totalScheduled: 0,
       totalProduced: 0,
       totalAssigned: 0,
+      item: {},
     };
   },
 
   computed: {},
   watch: {
     itemKv(newValue, oldValue){
+      this.getScheduleEvents();
+    },
+    packagingKv(newValue, oldValue){
       this.getScheduleEvents();
     },
     saleKv(newValue, oldValue){
@@ -125,6 +128,7 @@ export default {
       this.showTotalsMenu = !this.showTotalsMenu;
     },      
     openScheduleEventModal(se){
+      console.log(se.id);
       this.scheduleEventId = se.id;
       this.saleItemId = se.saleItemId;
       this.itemId = se.itemId;
@@ -207,10 +211,8 @@ export default {
       }}
       http.get("/scheduleEvent/pageable", query).then(r => {
         if(totals){
-          this.totalSoldAdj = parseFloat(r.data.content[0][0]);
-          this.totalScheduled = parseFloat(r.data.content[0][1]);
-          this.totalProduced = parseFloat(r.data.content[0][2]);
-          this.totalAssigned = parseFloat(r.data.content[0][3]);
+          this.totalScheduled = parseFloat(r.data.content[0][0]);
+          this.totalProduced = parseFloat(r.data.content[0][1]);
         }else{
          this.scheduleEvents = r.data.content;
         }
@@ -224,6 +226,13 @@ export default {
         console.log("API error: "+e);
       });
     },
+    getAvailablePackagins() {
+      http.get("/packaging/kv").then(r => {
+        this.availablePackagings = r.data;
+      }).catch(e => {
+        console.log("API error: "+e);
+      });
+    },
     getAvailableSales() {
       http.get("/sale/kv").then(r => {
         r.data.unshift({id: 0, name: '----'})
@@ -231,26 +240,6 @@ export default {
       }).catch(e => {
         console.log("API error: "+e);
       });
-    },
-    getItem(item_id) {
-      http
-        .get("/item/" + item_id)
-        .then(response => {
-          this.item = response.data;
-        })
-        .catch(e => {
-          console.log("API error: " + e);
-        });
-    },
-    getSale(sale_id) {
-      http
-        .get("/sale/" + sale_id)
-        .then(response => {
-          this.selectedSale = response.data;
-        })
-        .catch(e => {
-          console.log("API error: " + e);
-        });
     },
     goToSale(sale_id) {
       router.push("/saleEdit/" + sale_id);
@@ -275,8 +264,9 @@ export default {
     if(packagingId){
       this.packagingKv = {id: packagingId}
     }
-    this.getAvailableSales();
     this.getAvailableItems();
+    this.getAvailablePackagins();
+    this.getAvailableSales();
   },
   activated(){
     this.getScheduleEvents();

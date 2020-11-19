@@ -37,10 +37,7 @@ public interface CustomScheduleEventRepo {
 			query.setParameter("ids", ids);
 			long total = (long) query.getSingleResult();
 			if(totals) {
-				query = entityManager.createQuery("select (sum(si.units)+sum(si.unitsAdjusted)), sum(se.unitsScheduled), sum(se.unitsProduced), sum(si.unitsAssigned), sum(si.unitsShipped) "
-						+ "from ScheduleEvent se "
-						+ "left join se.saleItem si "
-						+ "where se.id in :ids ");
+				query = entityManager.createQuery("select sum(se.unitsScheduled), sum(se.unitsProduced) from ScheduleEvent se where se.id in :ids ");
 				query.setParameter("ids", ids);
 				Object result = query.getSingleResult();
 				Page<Object> page = new PageImpl<Object>(Arrays.asList(result), pageable, total);
