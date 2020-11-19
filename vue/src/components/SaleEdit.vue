@@ -345,7 +345,7 @@ export default {
       // return securite.hasRole(["SALE_ADMIN"]);
     },
     allowSave(){
-      return securite.hasRole(["SALE_ADMIN"]);
+      return securite.hasRole(["SALE_ADMIN"]) && !this.sale.cancelled;
     },
     allowApprove(){
       return !this.sale.approved && securite.hasRole(["SALE_ADMIN"]);
