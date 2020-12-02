@@ -6,6 +6,10 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -16,15 +20,12 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -62,7 +63,15 @@ class InvoiceItemRest {
 		@SuppressWarnings("unchecked")
 		Page<InvoiceItem> invoiceItems = (Page<InvoiceItem>) invoiceItemRepo.findPageable(pageable, totals, invoiceNumber, itemId, saleId, customerId, 
 				shipmentId, invoiceFrom, invoiceTo, brandId);
-		byte[] data = generateXls(invoiceItems);
+		Map<Long, List<InvoiceItem>> customers = new HashMap<Long, List<InvoiceItem>>();
+		for(InvoiceItem ii : invoiceItems) {
+			Long cuId = ii.getInvoice().getShipment().getCustomer().getId();
+			if(customers.get(cuId) == null) {
+				customers.put(cuId, new ArrayList<InvoiceItem>());
+			}
+			customers.get(cuId).add(ii);
+		}
+		byte[] data = generateXls(customers);
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 		String fileName = "Invoices" + "-" + sdf.format(timestamp) +".xlsx";
@@ -117,8 +126,8 @@ class InvoiceItemRest {
 		}
 	}
 
-	private byte[] generateXls(Page<InvoiceItem> invoiceItems) throws IOException {
-		DateTimeFormatter windowFormat = DateTimeFormatter.ofPattern("MM/dd");
+	private byte[] generateXls(Map<Long, List<InvoiceItem>> customers) throws IOException {
+		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MM/dd/YYYY");
 		XSSFWorkbook workbook = new XSSFWorkbook();
 		Sheet sheet = workbook.createSheet("Persons");
 //		sheet.setColumnWidth(0, 6000);
@@ -130,35 +139,48 @@ class InvoiceItemRest {
 		headerFont.setFontName("Arial");
 		headerFont.setBold(true);
 		headerStyle.setFont(headerFont);
-		addCell(0, "ED", rowHeader);
-		addCell(1, "PO#", rowHeader);
-		addCell(2, "Ship Address", rowHeader);
-//		addCell(3, "Expected", rowHeader);
-//		addCell(4, "SKU", rowHeader);
-//		addCell(5, "Items", rowHeader);
-//		addCell(6, "Description", rowHeader);
-//		addCell(7, "C/P", rowHeader);
-//		addCell(8, "Units", rowHeader);
-//		addCell(9, "Total", rowHeader);
-//		addCell(10, "Cases", rowHeader);
-//		addCell(11, "Pallets", rowHeader);
-//		addCell(12, "Total Weight", rowHeader);
-//		addCell(13, "Total Pallets", rowHeader);
+		addCell(0, "Customer", rowHeader);
+		addCell(1, "Invoice #", rowHeader);
+		addCell(2, "Date", rowHeader);
+		addCell(3, "Sale #", rowHeader);
+		addCell(4, "Item # (Name)", rowHeader);
+		addCell(5, "Qty", rowHeader);
+		addCell(6, "Unit Price", rowHeader);
+		addCell(7, "Amount", rowHeader);
 		
 		XSSFFont cellFont = ((XSSFWorkbook) workbook).createFont();
 		cellFont.setFontName("Arial");
 		cellFont.setBold(false);
 		CellStyle cellStyle = workbook.createCellStyle();
-		int invoiceItemCount = 0;
-		for(InvoiceItem ii: invoiceItems) {
-			invoiceItemCount++;
-			log.info("Generating XLS: "+invoiceItemCount);
-			Row row = sheet.createRow(invoiceItemCount);
-			cellStyle.setFont(cellFont);
-			addCell(0, String.valueOf(invoiceItemCount), row);
-			addCell(1, String.valueOf(ii.getSaleItem().getItemPackaging().getItem().getNumber()), row);
-			addCell(2, String.valueOf(ii.getSaleItem().getItemPackaging().getItem().getName()), row);
-		}
+		int rowCount = 1;
+		for (Map.Entry<Long, List<InvoiceItem>> entry : customers.entrySet()) {
+			List<InvoiceItem> invoiceItems = entry.getValue();
+			int invoiceItemCount = 0;
+			String customerName = "";
+			for(InvoiceItem ii: invoiceItems) {
+				if(invoiceItemCount == 0) {
+					customerName = ii.getInvoice().getShipment().getCustomer().getName();
+				} else {
+					customerName = "";
+				}
+				log.info("Customer: "+customerName);
+				log.info("II: "+ii.getId());
+				Row row = sheet.createRow(rowCount);
+				cellStyle.setFont(cellFont);
+				addCell(0, customerName, row);
+				addCell(1, String.valueOf(ii.getInvoice().getNumber()), row);
+				addCell(2, ii.getInvoice().getDate().format(dateFormat), row);
+				addCell(3, String.valueOf(ii.getSaleItem().getSale().getNumber()), row);
+				addCell(4, String.valueOf(ii.getSaleItem().getItemPackaging().getItem().getNumber()) + " (" + ii.getSaleItem().getItemPackaging().getItem().getName() + ")", row);
+				addCell(5, String.valueOf(ii.getUnitsInvoiced()), row);
+				addCell(6, String.valueOf(ii.getUnitPrice()), row);
+				addCell(7, String.valueOf(ii.getTotalUnitPrice()), row);
+
+				invoiceItemCount++;
+				rowCount++;
+			}
+		};
+
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		workbook.write(baos);
 		workbook.close();

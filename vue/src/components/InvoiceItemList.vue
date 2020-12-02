@@ -1,8 +1,8 @@
 <template>
     <b-container fluid>
       <b-row style="font-size: 12px">
-        <b-col cols=1 style="margin-right: -45px;">
-          <b-button id="filterMenu" size="sm" @click="showFilterMenu = true">Filter</b-button>
+        <div style="display:flex">
+          <b-button style="margin-left: 3px;" id="filterMenu" size="sm" @click="showFilterMenu = true">Filter</b-button>
           <b-popover :show="showFilterMenu" placement="bottom" target="filterMenu" variant="secondary">
             <template v-slot:title>
               <span>Advanced Filters</span>
@@ -28,24 +28,12 @@
                 </b-row>
             </div>
           </b-popover>
-        </b-col>      
-        <b-col cols=2>
-          <input class="form-control" style="font-size: 12px" type="tel" v-model="invoiceNumber" @keyup.enter="getInvoiceItems()" placeholder="Invoice"/>
-        </b-col>
-        <b-col cols=2>
-          <b-select option-value="id" option-text="name" :list="availableSales" v-model="saleKv" placeholder="Sale"></b-select>
-        </b-col>
-        <b-col cols=2>
-          <b-select option-value="id" option-text="name" :list="availableItems" v-model="itemKv" placeholder="Item"></b-select>
-        </b-col>
-        <b-col cols=2>
-          <b-select option-value="id" option-text="name" :list="availableCustomers" v-model="customerKv" placeholder="Customer"></b-select>
-        </b-col>
-        <b-col cols=2>
-          <b-select option-value="id" option-text="name" :list="availableShipments" v-model="shipmentKv" placeholder="Shipment"></b-select>
-        </b-col>
-      <b-col cols=1 style="margin-right: -45px;">
-        <b-button id="totalsMenu" size="sm" @click="toggleShowTotals()">Totals</b-button>
+          <input style="font-size: 12px; width: 180px; margin-left: 3px;" class="form-control" type="tel" v-model="invoiceNumber" @keyup.enter="getInvoiceItems()" placeholder="Invoice"/>
+          <b-select style="width: 200px; margin-left: 3px;" option-value="id" option-text="name" :list="availableSales" v-model="saleKv" placeholder="Sale"></b-select>
+          <b-select style="width: 200px; margin-left: 3px;" option-value="id" option-text="name" :list="availableItems" v-model="itemKv" placeholder="Item"></b-select>
+          <b-select style="width: 200px; margin-left: 3px;" option-value="id" option-text="name" :list="availableCustomers" v-model="customerKv" placeholder="Customer"></b-select>
+          <b-select style="width: 200px; margin-left: 3px;" option-value="id" option-text="name" :list="availableShipments" v-model="shipmentKv" placeholder="Shipment"></b-select>
+        <b-button style="margin-left: 3px;" id="totalsMenu" size="sm" @click="toggleShowTotals()">Totals</b-button>
         <b-popover :show="showTotalsMenu" placement="bottom" target="totalsMenu" variant="secondary">
           <div style="width: 300px; font-size: 16px">
             <div>Total items: {{pageable.totalElements}}</div>
@@ -53,9 +41,8 @@
             <div>Total units: {{parseFloat(totalUnits).toLocaleString()}}</div>
           </div>
         </b-popover>
-        <b-button size="sm" @click="exportXls()">Export</b-button>
-      </b-col>      
-
+        <b-button style="margin-left: 3px;" variant="primary" size="sm" @click="exportXls()">Export</b-button>
+      </div>
       </b-row>
       <b-table :items="invoiceItems" :fields="fields" no-local-sorting>
         <template v-slot:cell(number)="row">
@@ -143,9 +130,12 @@ export default {
   },
   methods: {
     exportXls(){
+      var pageable = this.pageable;
+      pageable.currentPage = 1;
+      pageable.perPage = pageable.totalElements;
       var params = {
         totals: false,
-        pageable: this.pageable,
+        pageable: pageable,
         invoiceNumber: this.invoiceNumber,
         itemId: this.itemKv.id,
         saleId: this.saleKv.id,
