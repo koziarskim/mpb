@@ -132,7 +132,7 @@ class InvoiceItemRest {
 	private byte[] generateXls(Map<Long, List<InvoiceItem>> customers) throws IOException {
 		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MM/dd/YYYY");
 		XSSFWorkbook workbook = new XSSFWorkbook();
-		Sheet sheet = workbook.createSheet("Persons");
+		Sheet sheet = workbook.createSheet("Invoices");
 		sheet.setColumnWidth(0, 6000);
 		sheet.setColumnWidth(1, 4000);
 		sheet.setColumnWidth(2, 3000);
@@ -174,8 +174,6 @@ class InvoiceItemRest {
 				} else {
 					customerName = "";
 				}
-				log.info("Customer: "+customerName);
-				log.info("II: "+ii.getId());
 				Row row = sheet.createRow(rowCount);
 				cellStyle.setFont(cellFont);
 				addCell(0, customerName, row, headerStyle);
