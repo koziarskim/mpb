@@ -130,8 +130,14 @@ class InvoiceItemRest {
 		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MM/dd/YYYY");
 		XSSFWorkbook workbook = new XSSFWorkbook();
 		Sheet sheet = workbook.createSheet("Persons");
-//		sheet.setColumnWidth(0, 6000);
-//		sheet.setColumnWidth(1, 6000);
+		sheet.setColumnWidth(0, 6000);
+		sheet.setColumnWidth(1, 2000);
+		sheet.setColumnWidth(2, 3000);
+		sheet.setColumnWidth(3, 2000);
+		sheet.setColumnWidth(4, 10000);
+		sheet.setColumnWidth(5, 2000);
+		sheet.setColumnWidth(6, 3000);
+		sheet.setColumnWidth(7, 4000);
 		 
 		Row rowHeader = sheet.createRow(0);	 
 		CellStyle headerStyle = workbook.createCellStyle();
