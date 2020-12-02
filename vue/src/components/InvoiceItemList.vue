@@ -53,6 +53,7 @@
             <div>Total units: {{parseFloat(totalUnits).toLocaleString()}}</div>
           </div>
         </b-popover>
+        <b-button size="sm" @click="exportXls()">Export</b-button>
       </b-col>      
 
       </b-row>
@@ -141,6 +142,30 @@ export default {
     },
   },
   methods: {
+    exportXls(){
+      var params = {
+        totals: false,
+        pageable: this.pageable,
+        invoiceNumber: this.invoiceNumber,
+        itemId: this.itemKv.id,
+        saleId: this.saleKv.id,
+        customerId: this.customerKv.id,
+        shipmentId: this.shipmentKv.id,
+        invoiceFrom: this.filter.invoiceFrom,
+        invoiceTo: this.filter.invoiceTo,
+        brandId: this.brandKv.id,
+      }
+      http.get("/invoiceItem/xls", {responseType: 'blob', params: params}).then(r => {
+        const url = URL.createObjectURL(new Blob([r.data], { type: r.headers['content-type']}))
+        const link = document.createElement('a')
+        link.href = url
+        link.setAttribute("download", r.headers['file-name'])
+        document.body.appendChild(link)
+        link.click()
+      }).catch(e => {
+        console.log("API error: "+e);
+      });
+    },    
     getAvailableBrands(){
       http.get("brand/kv").then(r => {
         this.availableBrands = r.data;
