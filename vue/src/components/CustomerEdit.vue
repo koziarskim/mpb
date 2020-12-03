@@ -43,7 +43,7 @@
       </b-col>
       <b-col cols=6>
         <label class="top-label">Address Line:</label>
-        <input class="form-control" type="search" v-model="billingAddress.line" />
+        <input class="form-control" type="search" v-model="customer.billingAddress.line" />
       </b-col>
     </b-row>
     <b-row>
@@ -57,7 +57,7 @@
       </b-col>
       <b-col cols=6>
         <label class="top-label">Billing Address:</label>
-        <input class="form-control" type="search" v-model="billingAddress.street" />
+        <input class="form-control" type="search" v-model="customer.billingAddress.street" />
       </b-col>
     </b-row>
     <b-row>
@@ -71,15 +71,15 @@
       </b-col>
       <b-col cols=2>
         <label class="top-label">City:</label>
-        <input class="form-control" type="tel" v-model="billingAddress.city" placeholder="City" />
+        <input class="form-control" type="tel" v-model="customer.billingAddress.city" placeholder="City" />
       </b-col>
       <b-col cols=2>
         <label class="top-label">State:</label>
-        <input class="form-control" type="tel" v-model="billingAddress.state" placeholder />
+        <input class="form-control" type="tel" v-model="customer.billingAddress.state" placeholder />
       </b-col>
       <b-col cols=2>
         <label class="top-label">Zip Code:</label>
-        <input class="form-control" type="tel" v-model="billingAddress.zip" placeholder="Zip" />
+        <input class="form-control" type="tel" v-model="customer.billingAddress.zip" placeholder="Zip" />
       </b-col>
     </b-row>
     <br/><b-link role="button" @click="showCompliance = !showCompliance" style="margin-top: 20px; margin-bottom: 5px;">
@@ -281,7 +281,6 @@ export default {
         addresses: []
       },
       shipAddress: {},
-      billingAddress: {},
       freightTerms: {},
       availableStates: state.states,
       availableFreightTerms: [
@@ -295,9 +294,9 @@ export default {
       availableInvoiceTypes: [
         { id: "PER_SHIPMENT_ITEM", name: "Per Shipment BOL" },
         { id: "PER_SHIPMENT_SALE", name: "Per Shipment Sale" },
-        { id: "PER_FIRST_SHIPMENT", name: "Per First Shipment" },
-        { id: "PER_LAST_SHIPMENT", name: "Per Last Shipment" },
-        { id: "NO_INVOICE", name: "No Invoice" }
+        // { id: "PER_FIRST_SHIPMENT", name: "Per First Shipment" },
+        // { id: "PER_LAST_SHIPMENT", name: "Per Last Shipment" },
+        // { id: "NO_INVOICE", name: "No Invoice" }
       ],
       availableShipTo: [
         { id: "CROSS_DOCK", name: "Cross Dock" },
@@ -328,12 +327,6 @@ export default {
     freightTerms(newValue, oldValue) {
       this.customer.freightTerms = newValue.id;
     },
-    billingAddress: {
-      handler: function(newValue, oldValue) {
-        this.customer.billingAddress = this.billingAddress;
-      },
-      deep: true
-    }
   },
   methods: {
     closeUpload(attachments){
@@ -347,9 +340,6 @@ export default {
           this.customer = response.data;
           this.invoiceTypeKv = { id: response.data.invoiceType };
           this.freightTerms = this.getFreightById(response.data.freightTerms);
-          if (response.data.billingAddress) {
-            this.billingAddress = response.data.billingAddress;
-          }
         })
         .catch(e => {
           console.log("API error: " + e);
@@ -358,6 +348,14 @@ export default {
     validate() {
       if (this.customer.addresses.length < 1) {
         alert("At least one shipping address is required");
+        return false;
+      }
+      if (!this.invoiceTypeKv.id) {
+        alert("Invoice type is required.");
+        return false;
+      }
+      if (!this.customer.billingAddress.line || !this.customer.billingAddress.street || !this.customer.billingAddress.city || !this.customer.billingAddress.state || !this.customer.billingAddress.zip) {
+        alert("Full billing address required.");
         return false;
       }
       return true;
