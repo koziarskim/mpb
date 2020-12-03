@@ -1,5 +1,6 @@
 <template>
     <b-container fluid>
+      <div class="mpb-page-info">Accounting > Invoice List</div>
       <b-row style="font-size: 12px">
           <b-button id="filterMenu" size="sm" @click="showFilterMenu = true">Filter</b-button>
           <b-popover :show="showFilterMenu" placement="bottom" target="filterMenu" variant="secondary">

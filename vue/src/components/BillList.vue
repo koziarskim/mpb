@@ -1,5 +1,6 @@
 <template>
   <b-container fluid>
+    <div class="mpb-page-info">Accounting > Bill List</div>
     <b-row style="padding-bottom: 4px; font-size: 12px">
       <b-col cols=1 style="margin-right: -45px;">
         <b-button id="filterMenu" size="sm" @click="showFilterMenu = true">Filter</b-button>
