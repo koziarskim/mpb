@@ -299,19 +299,19 @@ public interface CustomSearchRepo {
 				Long totalProduced = 0L;
 				//TODO: Do we still need this?
 				for (ItemComponent ic : c.getItemComponents()) {
-					BigDecimal unitsInItem = ic.getUnits();
+					double unitsInItem = ic.getUnits();
 					for(ItemPackaging ip: ic.getItem().getItemPackagings()) {
 						for (SaleItem si : ip.getSaleItems()) {
 							if (searchDto.getItems().isEmpty() || searchDto.getItems().contains(ic.getItem().getId())) {
 								if (searchDto.getCustomers().isEmpty() || searchDto.getCustomers().contains(si.getSale().getCustomer().getId())) {
 									if (searchDto.getSales().isEmpty() || searchDto.getSales().contains(si.getId())) {
-										unitsSold += (unitsInItem.multiply(new BigDecimal(si.getUnits())).setScale(0, RoundingMode.CEILING).longValue());
-										unitsProduced += (unitsInItem.multiply(new BigDecimal(si.getUnitsProduced())).setScale(0, RoundingMode.CEILING).longValue());
+										unitsSold += (long) Math.ceil(unitsInItem/si.getUnits());
+										unitsProduced += (long) Math.ceil(unitsInItem/si.getUnitsProduced());
 									}
 								}
 							}
-							totalSold += (unitsInItem.multiply(new BigDecimal(si.getUnits())).setScale(0, RoundingMode.CEILING).longValue());
-							totalProduced += (unitsInItem.multiply(new BigDecimal(si.getUnitsProduced())).setScale(0, RoundingMode.CEILING).longValue());
+							totalSold += (long) unitsInItem/si.getUnits();
+							totalProduced += (long) unitsInItem/si.getUnitsProduced();
 						}
 					}
 				}

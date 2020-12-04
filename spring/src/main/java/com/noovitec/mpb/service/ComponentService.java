@@ -68,7 +68,7 @@ public interface ComponentService {
 			List<ItemComponent> itemComponents = itemComponentRepo.findByProduction(productionId);
 			for(ItemComponent ic: itemComponents) {
 				Component c = ic.getComponent();
-				c.setUnitsOnStock(c.getUnitsOnStock() - (new BigDecimal(units).multiply(ic.getUnits()).setScale(0, RoundingMode.CEILING).longValue()));
+				c.setUnitsOnStock((long) Math.ceil(c.getUnitsOnStock() - (units/ic.getUnits())));
 				componentRepo.save(c);
 			};
 		}
@@ -114,9 +114,6 @@ public interface ComponentService {
 			Iterable<Component> components = componentIds==null?componentRepo.findAll():componentRepo.findByIds(componentIds);
 			for (Component component : components) {
 				Long unitsReceived = 0L;
-				BigDecimal unitsScheduledBD = BigDecimal.ZERO;
-				BigDecimal unitsForProductionBD = BigDecimal.ZERO;
-				BigDecimal unitsForSaleBD = BigDecimal.ZERO;
 				Long unitsOrdered = 0L;
 				BigDecimal totalPrice = BigDecimal.ZERO;
 				long receivingsCount = 1;
@@ -137,14 +134,14 @@ public interface ComponentService {
 						}
 					}
 				}
+				long unitsScheduled = 0;
+				long unitsForProduction = 0;
+				long unitsForSale = 0;
 				for(ItemComponent ic: component.getItemComponents()) {
-					unitsScheduledBD = unitsScheduledBD.add(ic.getUnits().multiply(new BigDecimal(ic.getItem().getUnitsScheduled())));
-					unitsForProductionBD = unitsForProductionBD.add(ic.getUnits().multiply(new BigDecimal(ic.getItem().getUnitsProduced())));
-					unitsForSaleBD = unitsForSaleBD.add(ic.getUnits().multiply(new BigDecimal(ic.getItem().getUnitsSold())));
+					unitsScheduled += (long) Math.ceil(ic.getUnits()/ic.getItem().getUnitsScheduled());
+					unitsForProduction += (long) Math.ceil(ic.getUnits()/ic.getItem().getUnitsProduced());
+					unitsForSale += (long) Math.ceil(ic.getUnits()/ic.getItem().getUnitsSold());
 				}
-				long unitsScheduled = unitsScheduledBD.setScale(0, RoundingMode.CEILING).longValue();
-				long unitsForProduction = unitsForProductionBD.setScale(0, RoundingMode.CEILING).longValue();
-				long unitsForSale = unitsForSaleBD.setScale(0, RoundingMode.CEILING).longValue();
 				component.setUnitsOnStock(unitsReceived - unitsForProduction);
 				component.setUnitsLocked(unitsScheduled - unitsForProduction);
 				component.setUnitsSoldNotProd(unitsForSale - unitsForProduction);

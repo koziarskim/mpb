@@ -22,7 +22,7 @@ public class ItemComponent extends BaseEntity {
 
 	private static final long serialVersionUID = 1769855029579272138L;
 
-	private BigDecimal units = BigDecimal.ZERO;
+	private double units;
 
 	@JsonIgnoreProperties(value = { "itemComponents" }, allowSetters = true)
 	@ManyToOne()
