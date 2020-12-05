@@ -1,6 +1,7 @@
 package com.noovitec.mpb.rest;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -13,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -28,6 +30,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.noovitec.mpb.dto.ComponentDto;
+import com.noovitec.mpb.dto.ComponentInventoryListDto;
 import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.entity.Attachment;
 import com.noovitec.mpb.entity.Category;
@@ -65,35 +68,23 @@ class ComponentRest {
 		return componentRepo.findAll();
 	}
 	@GetMapping("/component/inventory/pageable")
-	Page<ComponentDto> getAllInventoryPageable(@RequestParam Pageable pageable, 
+	Page<ComponentInventoryListDto> getAllInventoryPageable(@RequestParam Pageable pageable, 
 			@RequestParam(required = false) String nameSearch, 
 			@RequestParam(required = false) Long supplierId,
 			@RequestParam(required = false) Long itemId,
-			@RequestParam(required = false) String unitFilter,
 			@RequestParam(required = false) Long categoryId,
-			@RequestParam(required = false) Long componentTypeId) {
-		Page<Component> components = componentRepo.findInventoryPage(pageable, nameSearch, supplierId, itemId,unitFilter, categoryId, componentTypeId);
-		Page<ComponentDto> dtos = components.map(component -> {
-			ComponentDto dto = new ComponentDto();
-			dto.setId(component.getId());
-			dto.setNumber(component.getNumber());
-			dto.setName(component.getName());
-			dto.setCategoryName(component.getCategory()==null?"":component.getCategory().getName());
-			dto.setComponentTypeName(component.getComponentType()==null?null:component.getComponentType().getName());
-			dto.setSupplierName(component.getSupplier()==null?"":component.getSupplier().getName());
-			dto.setSupplierId(component.getSupplier()==null?null:component.getSupplier().getId());
-			dto.setUnitsSoldNotProd(component.getUnitsSoldNotProd());
-			dto.setUnitsOnStock(component.getUnitsOnStock());
-			dto.setUnitsOrdered(component.getUnitsOrdered());
-			dto.setUnitsLocked(component.getUnitsLocked());
-			dto.setUnitsShort(component.getUnitsShort());
-			dto.setUnitCost(component.getUnitCost());
-			dto.setUnitsForProduction(component.getUnitsForProduction());
-			dto.setUnitsForSale(component.getUnitsForSale());
-			dto.setUnitsReceived(component.getUnitsReceived());
-		    return dto;
-		});
-		return dtos;
+			@RequestParam(required = false) Long componentTypeId,
+			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dateTo) {
+		Page<ComponentInventoryListDto> components = componentRepo.findInventoryPage(pageable, nameSearch, supplierId, itemId, categoryId, componentTypeId, dateTo);
+//		Page<ComponentInventoryListDto> dtos = components.map(component -> {
+//			ComponentInventoryListDto dto = new ComponentInventoryListDto();
+//			dto.setId(component.getId());
+//			dto.setNumber(component.getNumber());
+//			dto.setName(component.getName());
+//			dto.setUnitsReceived(component.getUnitsReceived());
+//		    return dtos;
+//		});
+		return components;
 	}
 
 	@GetMapping("/component/pageable")

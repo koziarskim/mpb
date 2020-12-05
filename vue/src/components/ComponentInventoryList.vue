@@ -1,7 +1,7 @@
 <template>
   <b-container fluid>
     <b-row style="padding-bottom: 4px; font-size: 12px">
-      <b-col cols=1 style="margin-right: -45px;">
+      <!-- <b-col cols=1 style="margin-right: -45px;">
         <b-button id="filterMenu" size="sm" @click="showFilterMenu = true">Filter</b-button>
         <b-popover :show="showFilterMenu" placement="bottom" target="filterMenu" variant="secondary">
           <template v-slot:title>
@@ -11,16 +11,10 @@
           </template>
           <div style="width: 400px">
             <b-row>
-              <b-col cols=6>
-                <b-select option-value="id" option-text="name" :list="availableCategories" v-model="category" placeholder="Category"></b-select>
-              </b-col>
-              <b-col cols=6>
-                <b-select option-value="id" option-text="name" :list="availableComponentTypes" v-model="componentType" placeholder="Type"></b-select>
-              </b-col>
             </b-row>
           </div>
         </b-popover>
-      </b-col>
+      </b-col> -->
       <b-col cols=2>
         <input class="form-control" style="font-size: 12px" type="tel" v-model="nameSearch" @keyup.enter="getComponents()" placeholder="Number or Name"/>
       </b-col>
@@ -31,13 +25,13 @@
         <b-select option-value="id" option-text="name" :list="availableItems" v-model="itemKv" placeholder="Item"></b-select>
       </b-col>
       <b-col cols=2>
-        <b-select option-value="id" option-text="name" :list="availableUnitFilters" v-model="unitFilter" placeholder="Units"></b-select>
+        <b-select option-value="id" option-text="name" :list="availableCategories" v-model="categoryKv" placeholder="Category"></b-select>
       </b-col>
-      <b-col>
-        <div style="text-align: right;">
-          <b-button size="sm" variant="primary" @click="goToComponent('')">New</b-button>
-          <b-button size="sm" style="margin-left:3px" variant="primary" @click="createNewPurchase()">New P.O.({{selectedComponents.length}})</b-button>&nbsp;
-        </div>
+      <b-col cols=2>
+        <b-select option-value="id" option-text="name" :list="availableComponentTypes" v-model="componentTypeKv" placeholder="Type"></b-select>
+      </b-col>
+      <b-col cols=2>
+        <input style="height: 33px" class="form-control" type="date" v-model="dateTo" @change="dateToUpdated()">
       </b-col>
     </b-row>
     <b-table no-local-sorting @sort-changed="sorted" :items="components" :fields="fields">
@@ -55,12 +49,6 @@
       </template>
       <template v-slot:cell(unitsSchedProd)="row">
         <span>{{row.item.unitsLocked + row.item.unitsForProduction}} / {{row.item.unitsForProduction}}</span>
-      </template>
-      <template v-slot:cell(action)="row">
-        <input type="checkbox" v-model="selectedComponents" :value="row.item">
-      </template>
-      <template v-slot:head(action)="row">
-          <b-button style="margin-left:-10px; margin-bottom:-10px" size="sm" @click="triggerAll(false)" variant="link">(-)</b-button><br/><b-button style="margin-left: -10px; margin-bottom: -10px" size="sm" @click="triggerAll(true)" variant="link">(+)</b-button>
       </template>
     </b-table>
     <div style="display: flex">
@@ -89,29 +77,22 @@ export default {
         { key: "categoryName", label: "Category", sortable: false },
         { key: "componentTypeName", label: "Type", sortable: false },
         { key: "supplierName", label: "Supplier", sortable: false },
-        { key: "unitsOnStock", label: "Stock", sortable: false },
-        { key: "unitsForSale", label: "Sales", sortable: false },
-        { key: "unitsSchedProd", label: "Sched/Prod", sortable: false },
-        { key: "unitsOrderedRec", label: "PO/Received", sortable: false },
-        { key: "unitsShort", label: "Short", sortable: false },
-        { key: "action", label: "", sortable: false }
+        { key: "unitsReceived", label: "Received", sortable: false },
+        { key: "unitsShipped", label: "Shipped", sortable: false },
+        { key: "unitsOnFloor", label: "Floor", sortable: false },
+        { key: "averageUnitPrice", label: "Unit Price", sortable: false },
+        { key: "floorPrice", label: "Total Floor", sortable: false },
       ],
       components: [],
       availableSuppliers: [],
       supplierKv: {},
       availableItems: [],
       itemKv: {},
-      selectedComponents: [],
-      availableUnitFilters: [
-        {id: "ONLY_SHORT", name: "Units Short"},
-        {id: "ON_STOCK", name: "On Stock"},
-        {id: "OPEN_SALE", name: "Open Sales"},
-      ],
-      unitFilter: {},
       availableComponentTypes: [],
-      componentType: {},
+      componentTypeKv: {},
       availableCategories: [],
-      category: {},
+      categoryKv: {},
+      dateTo: moment().format("YYYY-MM-DD"),
       showFilterMenu: false,
     };
   },
@@ -122,21 +103,23 @@ export default {
     itemKv(new_value, old_value){
       this.getComponents();
     },
-    unitFilter(new_value, old_value){
+    categoryKv(new_value, old_value){
+      this.getAvailableComponentTypes();
       this.getComponents();
     },
-    category(new_value, old_value){
-      this.getAvailableComponentTypes();
+    componentTypeKv(new_value, old_value){
+      this.getComponents();
     },
   },
   methods: {
+    dateToUpdated(){
+      this.getComponents();
+    },
     searchFilterMenu(){
       this.getComponents();
       this.showFilterMenu = false;
     },
     clearFilterMenu(){
-      this.category = {};
-      this.componentType = {};
       this.getComponents();
       this.showFilterMenu = false;
     },    
@@ -145,36 +128,6 @@ export default {
     },
     getUnitsOnStock(component){
       return component.unitsOnStock<0?0:component.unitsOnStock;
-    },
-    triggerAll(add){
-      this.components.forEach(c=> {
-        if(add){
-          var idx = this.selectedComponents.findIndex(sc => sc.id == c.id);
-          if(idx == -1){
-            this.selectedComponents.push(c);
-          }
-        }else{
-          this.selectedComponents = [];
-          // var idx = this.selectedComponents.findIndex(sc => sc.id == c.id);
-          // if(idx > -1){
-          //   this.selectedComponents.splice(idx, 1);
-          // }
-        }
-      })
-    },
-    createNewPurchase(){
-      if(this.selectedComponents.length>50){
-        alert("Maximum 50 components per P.O.");
-        return;
-      }
-      var supplierId = this.selectedComponents[0].supplierId;
-      var supplierIds = this.selectedComponents.filter(c=> c.supplierId != this.selectedComponents[0].supplierId);
-      if(supplierIds.length>0){
-        alert("Supplier missmatch! Only components to single supplier are allowed!");
-        return false;
-      }
-      var query = { componentIds: this.selectedComponents.map(c=> c.id).join(",") };
-      router.push({ path: "/purchaseEdit", query: query })
     },
     sorted(e){
         if(!e.sortBy){ return }
@@ -190,8 +143,14 @@ export default {
       (this.alertSecs = 3), (this.alertMessage = message);
     },
     getComponents() {
-      var query = {params: {pageable: this.pageable, nameSearch: this.nameSearch, supplierId: this.supplierKv.id,
-          itemId: this.itemKv.id, unitFilter: this.unitFilter.id, categoryId: this.category.id, componentTypeId: this.componentType.id}};
+      var query = {params: {
+        pageable: this.pageable, 
+        nameSearch: this.nameSearch, 
+        supplierId: this.supplierKv.id,
+        itemId: this.itemKv.id, 
+        categoryId: this.categoryKv.id, 
+        componentTypeId: this.componentTypeKv.id,
+        dateTo: this.dateTo}};
       http.get("/component/inventory/pageable", query).then(response => {
         this.components = response.data.content;
         this.pageable.totalElements = response.data.totalElements;
@@ -205,7 +164,7 @@ export default {
       }).catch(e => {console.log("API error: " + e);});
     },
     getAvailableComponentTypes() {
-      var query = {params: {categoryId: this.category.id}}
+      var query = {params: {categoryId: this.categoryKv.id}}
       http.get("/registery/componentType/kv", query).then(r => {
         this.availableComponentTypes = r.data;
       }).catch(e => {console.log("API error: " + e);});

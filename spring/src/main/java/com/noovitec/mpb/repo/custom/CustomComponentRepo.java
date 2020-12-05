@@ -1,5 +1,6 @@
 package com.noovitec.mpb.repo.custom;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -14,11 +15,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Repository;
 
+import com.noovitec.mpb.dto.ComponentInventoryListDto;
 import com.noovitec.mpb.entity.Component;
 
 public interface CustomComponentRepo {
-	Page<Component> findInventoryPage(Pageable pageable, String nameSearch, Long supplierId, Long itemId, String unitFilter,
-			Long categoryId, Long componentTypeId);
+	Page<ComponentInventoryListDto> findInventoryPage(Pageable pageable, String nameSearch, Long supplierId, Long itemId,
+			Long categoryId, Long componentTypeId, LocalDate dateTo);
 	Page<Component> findPage(Pageable pageable, String nameSearch, Long supplierId, Long itemId, String unitFilter,
 			Long categoryId, Long componentTypeId);
 
@@ -31,9 +33,25 @@ public interface CustomComponentRepo {
 		EntityManager entityManager;
 
 		@Override
-		public Page<Component> findInventoryPage(Pageable pageable, String nameSearch, Long supplierId, Long itemId, String unitFilter,
-				Long categoryId, Long componentTypeId) {
-			String q = "select distinct c from Component c "
+		public Page<ComponentInventoryListDto> findInventoryPage(Pageable pageable, String nameSearch, Long supplierId, Long itemId,
+				Long categoryId, Long componentTypeId, LocalDate dateTo) {
+			String q = "select distinct new com.noovitec.mpb.dto.ComponentInventoryListDto(c.id as id, c.number as number, "
+					+ "c.name as name, cat.name, ct.name, supplier.name, 0L, "
+					+ "(select sum(si2.units) from Component c2 "
+						+ "join c2.itemComponents ic2 "
+						+ "join ic2.item i2 "
+						+ "join i2.itemPackagings ip2 "
+						+ "join ip2.saleItems si2 "
+						+ "join si2.shipmentItems shipItem2 "
+						+ "join shipItem2.shipment ship2 "
+						+ "where c.id = c2.id "
+						+ "and ship2.shippedDate <= :dateTo), "
+					+ "(select sum(r3.units) from Component c3 "
+						+ "join c3.purchaseComponents pc3 "
+						+ "join pc3.receivings r3 "
+						+ "where c.id = c3.id "
+						+ "and r3.receivingDate <= :dateTo), 0L, c.averagePrice, 0L) "
+					+ "from Component c "
 					+ "left join c.supplier supplier "
 					+ "left join c.itemComponents ic "
 					+ "left join c.category cat "
@@ -55,18 +73,9 @@ public interface CustomComponentRepo {
 			if (supplierId != null) {
 				q += "and supplier.id = :supplierId ";
 			}
-			if (unitFilter !=null && unitFilter.equalsIgnoreCase("ONLY_SHORT")) {
-				q += "and c.unitsShort > 0";
-			}
-			if (unitFilter !=null && unitFilter.equalsIgnoreCase("ON_STOCK")) {
-				q += "and c.unitsOnStock > 0";
-			}
-			if (unitFilter !=null && unitFilter.equalsIgnoreCase("OPEN_SALE")) {
-				q += "and c.unitsSoldNotProd > 0";
-			}
-			Order order = pageable.getSort().iterator().next();
-			q += "order by c."+order.getProperty() + " "+order.getDirection();
+			q += "order by c.number asc ";
 			Query query = entityManager.createQuery(q);
+			query.setParameter("dateTo", dateTo);
 			if (nameSearch != null && !nameSearch.isEmpty()) {
 				query.setParameter("nameSearch", nameSearch);
 			}
@@ -84,9 +93,9 @@ public interface CustomComponentRepo {
 			}
 			long total = query.getResultStream().count();
 			@SuppressWarnings("unchecked")
-			List<Component> result = query.setFirstResult(pageable.getPageNumber()*pageable.getPageSize())
+			List<ComponentInventoryListDto> result = query.setFirstResult(pageable.getPageNumber()*pageable.getPageSize())
 				.setMaxResults(pageable.getPageSize()).getResultList();
-			Page<Component> page = new PageImpl<Component>(result, pageable, total);
+			Page<ComponentInventoryListDto> page = new PageImpl<ComponentInventoryListDto>(result, pageable, total);
 			return page;
 		}
 
