@@ -12,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -57,7 +58,7 @@ public class Component extends BaseEntity {
 	private BigDecimal averagePrice =BigDecimal.ZERO;
 	private String shelf;
 	private LocalDate expiration;
-
+	
 	@JsonIgnoreProperties(value = { "component" }, allowSetters = true)
 	@OneToMany()
 	@JoinColumn(name = "component_id")
@@ -95,5 +96,23 @@ public class Component extends BaseEntity {
 		}
 //		this.unitsLocked = units.setScale(0, RoundingMode.CEILING).longValue();
 		this.unitsLocked = (long) Math.ceil(units);
+	}
+	
+	public long getUnitsOnFloor() {
+		long ucReceived = 0;
+		long ucShipped = 0;
+		for(ItemComponent ic: this.getItemComponents()) {
+			for(PurchaseComponent pc: ic.getComponent().getPurchaseComponents()) {
+				for(Receiving r: pc.getReceivings()) {
+					ucReceived += r.getUnits();
+				}
+			}
+			for(ItemPackaging ip: ic.getItem().getItemPackagings()) {
+				for(SaleItem si: ip.getSaleItems()) {
+					ucShipped += (si.getUnitsShipped()/ic.getUnits());
+				}
+			}
+		}
+		return ucReceived - ucShipped;
 	}
 }

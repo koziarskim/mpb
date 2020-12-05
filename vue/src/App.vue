@@ -5,7 +5,10 @@
         <b-navbar-nav v-if="showNav">
           <b-nav-item @click="goTo('/home')" :class="navClass('home')">Home</b-nav-item>
           <b-nav-item @click="goTo('/supplierList')" :class="navClass('supplier')">Supplier</b-nav-item>
-          <b-nav-item @click="goTo('/componentList')" :class="navClass('component')">Component</b-nav-item>
+          <b-nav-item-dropdown text="Component" :class="navClass('component')">
+            <b-dropdown-item @click="goTo('/componentList')"><span style="color: black">Component List</span></b-dropdown-item>
+            <b-dropdown-item @click="goTo('/componentInventoryList')"><span style="color: black">Inventory List</span></b-dropdown-item>
+          </b-nav-item-dropdown>
           <b-nav-item-dropdown text="Item" :class="navClass('item')">
             <b-dropdown-item @click="goTo('/itemList')"><span style="color: black">Item List</span></b-dropdown-item>
             <b-dropdown-item @click="goTo('/itemPackagingList')"><span style="color: black">Items by Package</span></b-dropdown-item>
