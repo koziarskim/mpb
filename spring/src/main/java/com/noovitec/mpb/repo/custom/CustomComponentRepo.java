@@ -37,7 +37,7 @@ public interface CustomComponentRepo {
 				Long categoryId, Long componentTypeId, LocalDate dateTo) {
 			String q = "select distinct new com.noovitec.mpb.dto.ComponentInventoryListDto(c.id as id, c.number as number, "
 					+ "c.name as name, cat.name, ct.name, supplier.name, 0L, "
-					+ "(select sum(si2.units) from Component c2 "
+					+ "(select ceil(sum(si2.unitsShipped)*max(ic2.units)) from Component c2 "
 						+ "join c2.itemComponents ic2 "
 						+ "join ic2.item i2 "
 						+ "join i2.itemPackagings ip2 "

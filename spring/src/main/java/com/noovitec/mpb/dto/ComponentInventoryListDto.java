@@ -18,7 +18,7 @@ public class ComponentInventoryListDto {
 	private String componentTypeName;
 	private String supplierName;
 	private Long supplierId;
-	private Long unitsShipped;
+	private Double unitsShipped;
 	private Long unitsReceived;
 	private Long unitsOnFloor;
 	private BigDecimal averageUnitPrice;
