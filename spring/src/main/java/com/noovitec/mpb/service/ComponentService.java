@@ -138,12 +138,12 @@ public interface ComponentService {
 				long unitsForProduction = 0;
 				long unitsForSale = 0;
 				for(ItemComponent ic: component.getItemComponents()) {
-					unitsScheduled += (long) Math.ceil(ic.getUnits()/ic.getItem().getUnitsScheduled());
-					unitsForProduction += (long) Math.ceil(ic.getUnits()/ic.getItem().getUnitsProduced());
-					unitsForSale += (long) Math.ceil(ic.getUnits()/ic.getItem().getUnitsSold());
+					unitsScheduled += (long) Math.ceil(ic.getItem().getUnitsScheduled()*ic.getUnits());
+					unitsForProduction += (long) Math.ceil(ic.getItem().getUnitsProduced()*ic.getUnits());
+					unitsForSale += (long) Math.ceil(ic.getItem().getUnitsSold()*ic.getUnits());
 				}
-//				component.setUnitsOnStock(unitsReceived - unitsForProduction);
-				component.setUnitsOnStock(0);
+				component.setUnitsOnStock(unitsReceived - unitsForProduction);
+//				component.setUnitsOnStock(0);
 				component.setUnitsLocked(unitsScheduled - unitsForProduction);
 				component.setUnitsSoldNotProd(unitsForSale - unitsForProduction);
 				component.setUnitsOrdered(unitsOrdered);

@@ -27,7 +27,7 @@
         </div>
         <br />
         <label class="top-label">
-          Stock:
+          Floor:
           <b-link role="button" @click="goToReceiving(component.id)">{{component.unitsOnStock}}</b-link>
         </label>
         <br />

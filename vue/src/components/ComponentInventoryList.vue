@@ -38,17 +38,9 @@
       <template v-slot:cell(name)="row">
         <div style="width:200px; overflow: wrap; font-size: 14px"><b-link role="button" @click.stop="goToComponent(row.item.id)">{{row.item.number}}</b-link> {{row.item.name}}</div>
       </template>
-      <template v-slot:cell(unitsOnStock)="row">
-        <span>{{getUnitsOnStock(row.item)}}</span>
-      </template>
-      <template v-slot:cell(unitsOrderedRec)="row">
-        <b-button size="sm" @click.stop="goToPurchaseList(row.item.id)" variant="link">{{row.item.unitsOrdered}}</b-button>/<b-button size="sm" @click.stop="goToReceiving(row.item.id)" variant="link">{{row.item.unitsReceived}}</b-button>
-      </template>
-      <template v-slot:cell(unitsShort)="row">
-        <span>{{getUnitsShort(row.item)}}</span>
-      </template>
-      <template v-slot:cell(unitsSchedProd)="row">
-        <span>{{row.item.unitsLocked + row.item.unitsForProduction}} / {{row.item.unitsForProduction}}</span>
+      <template v-slot:cell(supplierName)="row">
+        <div style="font-size: 12px">{{row.item.supplierName}}</div>
+        <div style="font-size: 12px">{{row.item.categoryName}} - {{row.item.componentTypeName}}</div>
       </template>
     </b-table>
     <div style="display: flex">
@@ -74,12 +66,10 @@ export default {
       sortDesc: false,
       fields: [
         { key: "name", label: "Component # (Name)", sortable: false },
-        { key: "categoryName", label: "Category", sortable: false },
-        { key: "componentTypeName", label: "Type", sortable: false },
         { key: "supplierName", label: "Supplier", sortable: false },
-        { key: "unitsReceived", label: "Received,", sortable: false },
-        { key: "unitsShipped", label: "Shipped,", sortable: false },
-        { key: "unitsProduced", label: "Produced,", sortable: false },
+        { key: "unitsReceived", label: "Rec,", sortable: false },
+        { key: "unitsShipped", label: "Shipp,", sortable: false },
+        { key: "unitsProduced", label: "Prod,", sortable: false },
         { key: "compOnFloor", label: "Comp Floor,", sortable: false },
         { key: "prodOnFloor", label: "Asbly Floor,", sortable: false },
         { key: "unitsOnFloor", label: "All Floor,", sortable: false },
