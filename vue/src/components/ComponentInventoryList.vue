@@ -37,12 +37,60 @@
       </b-col>
     </b-row>
     <b-table no-local-sorting @sort-changed="sorted" :items="components" :fields="fields">
+      <template v-slot:head(unitsReceived)="row">
+        <div>Received</div><div class="mpb-head-line">Units Received</div>
+      </template>
+      <template v-slot:head(unitsProduced)="row">
+        <div>Produced</div><div class="mpb-head-line">Used For Prod</div>
+      </template>
+      <template v-slot:head(unitsShipped)="row">
+        <div>Shipped</div><div class="mpb-head-line">Units Shipped</div>
+      </template>
+      <template v-slot:head(compOnFloor)="row">
+        <div>Units Floor</div><div class="mpb-head-line">Received-Produced</div>
+      </template>
+      <template v-slot:head(prodOnFloor)="row">
+        <div>Asmbly Floor</div><div class="mpb-head-line">Produced-Shipped</div>
+      </template>
+      <template v-slot:head(unitsOnFloor)="row">
+        <div>All Floor</div><div class="mpb-head-line">Units + Asmbly</div>
+      </template>
+      <template v-slot:head(averageUnitPrice)="row">
+        <div>Unit Price</div><div class="mpb-head-line">Average Price</div>
+      </template>
+      <template v-slot:head(totalFloorPrice)="row">
+        <div>Total Price</div><div class="mpb-head-line">All Floor * Price</div>
+      </template>
       <template v-slot:cell(name)="row">
         <div style="width:200px; overflow: wrap; font-size: 14px"><b-link role="button" @click.stop="goToComponent(row.item.id)">{{row.item.number}}</b-link> {{row.item.name}}</div>
       </template>
       <template v-slot:cell(supplierName)="row">
         <div style="font-size: 12px">{{row.item.supplierName}}</div>
         <div style="font-size: 12px">{{row.item.categoryName}} - {{row.item.componentTypeName}}</div>
+      </template>
+      <template v-slot:cell(unitsReceived)="row">
+        {{row.item.unitsReceived.toLocaleString()}}
+      </template>
+      <template v-slot:cell(unitsProduced)="row">
+        {{row.item.unitsProduced.toLocaleString()}}
+      </template>
+      <template v-slot:cell(unitsShipped)="row">
+        {{row.item.unitsShipped.toLocaleString()}}
+      </template>
+      <template v-slot:cell(compOnFloor)="row">
+        {{row.item.compOnFloor.toLocaleString()}}
+      </template>
+      <template v-slot:cell(prodOnFloor)="row">
+        {{row.item.prodOnFloor.toLocaleString()}}
+      </template>
+      <template v-slot:cell(unitsOnFloor)="row">
+        {{row.item.unitsOnFloor.toLocaleString()}}
+      </template>
+      <template v-slot:cell(averageUnitPrice)="row">
+        ${{row.item.averageUnitPrice.toLocaleString('en-US',{minimumFractionDigits: 2})}}
+      </template>
+      <template v-slot:cell(totalFloorPrice)="row">
+        ${{row.item.totalFloorPrice.toLocaleString('en-US',{minimumFractionDigits: 2})}}
       </template>
     </b-table>
     <div style="display: flex">
@@ -69,14 +117,14 @@ export default {
       fields: [
         { key: "name", label: "Component # (Name)", sortable: false },
         { key: "supplierName", label: "Supplier", sortable: false },
-        { key: "unitsReceived", label: "Rec,", sortable: false },
-        { key: "unitsProduced", label: "Prod,", sortable: false },
-        { key: "unitsShipped", label: "Shipp,", sortable: false },
-        { key: "compOnFloor", label: "Comp Floor,", sortable: false },
-        { key: "prodOnFloor", label: "Asbly Floor,", sortable: false },
-        { key: "unitsOnFloor", label: "All Floor,", sortable: false },
-        { key: "averageUnitPrice", label: "Unit Price,", sortable: false },
-        { key: "totalFloorPrice", label: "Total Floor,", sortable: false },
+        { key: "unitsReceived", label: "Rec", sortable: false },
+        { key: "unitsProduced", label: "Prod", sortable: false },
+        { key: "unitsShipped", label: "Shipp", sortable: false },
+        { key: "compOnFloor", label: "Comp Floor", sortable: false },
+        { key: "prodOnFloor", label: "Asbly Floor", sortable: false },
+        { key: "unitsOnFloor", label: "All Floor", sortable: false },
+        { key: "averageUnitPrice", label: "Unit Price", sortable: false },
+        { key: "totalFloorPrice", label: "Total Floor", sortable: false },
       ],
       components: [],
       availableSuppliers: [],
