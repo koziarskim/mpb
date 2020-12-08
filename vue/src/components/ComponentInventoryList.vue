@@ -81,7 +81,7 @@ export default {
         { key: "unitsShipped", label: "Shipped", sortable: false },
         { key: "unitsOnFloor", label: "Floor", sortable: false },
         { key: "averageUnitPrice", label: "Unit Price", sortable: false },
-        { key: "floorPrice", label: "Total Floor", sortable: false },
+        { key: "totalFloorPrice", label: "Total Floor", sortable: false },
       ],
       components: [],
       availableSuppliers: [],

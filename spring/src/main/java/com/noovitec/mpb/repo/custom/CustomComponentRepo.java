@@ -36,7 +36,9 @@ public interface CustomComponentRepo {
 		@Override
 		public Page<ComponentInventoryListDto> findInventoryPage(Pageable pageable, String nameSearch, Long supplierId, Long itemId,
 				Long categoryId, Long componentTypeId, LocalDate dateTo) {
-			String q = "select distinct c.id as id, c.number as number, c.name as name, '' as a, '' as b, '' as c, null as d, sold.units_shipped, rec.units_received, "
+			String q = "select distinct c.id as id, c.number as number, c.name as name, cat.name as categoryName,"
+					+ "ct.name as componentTypeName, su.name as supplierName, su.id as supplierId, "
+					+ "sold.units_shipped, rec.units_received, "
 					+ "(sold.units_shipped-rec.units_received) as units_on_floor, "
 					+ "c.average_price as unit_price, c.average_price*(sold.units_shipped-rec.units_received) as total " 
 					+ "from Component c "
@@ -53,17 +55,21 @@ public interface CustomComponentRepo {
 						+ "from purchase_component pc "
 						+ "join receiving r on r.purchase_component_id = pc.id " 
 						+ "where r.receiving_date <= :dateTo "
-						+ "group by pc.component_id) rec on rec.cid = c.id " 
+						+ "group by pc.component_id) rec on rec.cid = c.id "
+					+ "left join item_component ic on ic.component_id = c.id "
+					+ "left join item i on i.id = ic.item_id "
+					+ "left join supplier su on su.id = c.supplier_id "
+					+ "left join shared.category cat on cat.id = c.category_id "
+					+ "left join shared.component_type ct on ct.id = c.component_type_id "
 					+ "where c.id is not null "
 					+ "and (sold.units_shipped-rec.units_received) is not null " 
-					+ "and (sold.units_shipped-rec.units_received) <> 0 "
-					+ "order by units_on_floor desc ";
+					+ "and (sold.units_shipped-rec.units_received) <> 0 ";
 			if (nameSearch != null && !nameSearch.isEmpty()) {
 				q += "and (upper(c.number) like concat('%',upper(:nameSearch),'%') ";
 				q += "or upper(c.name) like concat('%',upper(:nameSearch),'%')) ";
 			}
 			if (itemId != null) {
-				q += "and ic.item.id = :itemId ";
+				q += "and i.id = :itemId ";
 			}
 			if (categoryId != null) {
 				q += "and cat.id = :categoryId ";
@@ -72,9 +78,9 @@ public interface CustomComponentRepo {
 				q += "and ct.id = :componentTypeId ";
 			}
 			if (supplierId != null) {
-				q += "and supplier.id = :supplierId ";
+				q += "and su.id = :supplierId ";
 			}
-//			q += "order by c.number asc ";
+			q += "order by units_on_floor desc ";
 			Query query = entityManager.createNativeQuery(q);
 			query.setParameter("dateTo", dateTo);
 			if (nameSearch != null && !nameSearch.isEmpty()) {
