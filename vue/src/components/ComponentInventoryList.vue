@@ -1,20 +1,25 @@
 <template>
   <b-container fluid>
     <b-row style="padding-bottom: 4px; font-size: 12px">
-      <!-- <b-col cols=1 style="margin-right: -45px;">
-        <b-button id="filterMenu" size="sm" @click="showFilterMenu = true">Filter</b-button>
+        <div style="position: flex">
+          <b-button style="margin-left: 3px" id="filterMenu" size="sm" @click="showFilterMenu = true">Filter</b-button>
+          <b-button style="margin-left: 3px" size="sm" @click="clearFilterMenu()">Clear</b-button>
+        </div>
         <b-popover :show="showFilterMenu" placement="bottom" target="filterMenu" variant="secondary">
           <template v-slot:title>
             <span>Advanced Filters</span>
-            <b-button style="margin-left: 185px" size="sm" @click="searchFilterMenu()">Search</b-button>
-            <b-button style="margin-left: 10px" size="sm" @click="clearFilterMenu()">Clear</b-button>
           </template>
           <div style="width: 400px">
             <b-row>
+              <b-col cols=6>
+                <b-select option-value="id" option-text="name" :list="availableCategories" v-model="categoryKv" placeholder="Category"></b-select>
+              </b-col>
+              <b-col cols=6>
+                <b-select option-value="id" option-text="name" :list="availableComponentTypes" v-model="componentTypeKv" placeholder="Type"></b-select>
+              </b-col>
             </b-row>
           </div>
         </b-popover>
-      </b-col> -->
       <b-col cols=2>
         <input class="form-control" style="font-size: 12px" type="tel" v-model="nameSearch" @keyup.enter="getComponents()" placeholder="Number or Name"/>
       </b-col>
@@ -25,10 +30,7 @@
         <b-select option-value="id" option-text="name" :list="availableItems" v-model="itemKv" placeholder="Item"></b-select>
       </b-col>
       <b-col cols=2>
-        <b-select option-value="id" option-text="name" :list="availableCategories" v-model="categoryKv" placeholder="Category"></b-select>
-      </b-col>
-      <b-col cols=2>
-        <b-select option-value="id" option-text="name" :list="availableComponentTypes" v-model="componentTypeKv" placeholder="Type"></b-select>
+        <input style="height: 33px" class="form-control" type="date" v-model="dateFrom" @change="dateToUpdated()">
       </b-col>
       <b-col cols=2>
         <input style="height: 33px" class="form-control" type="date" v-model="dateTo" @change="dateToUpdated()">
@@ -85,6 +87,7 @@ export default {
       componentTypeKv: {},
       availableCategories: [],
       categoryKv: {},
+      dateFrom:moment().startOf('year').format("YYYY-MM-DD"),
       dateTo: moment().format("YYYY-MM-DD"),
       showFilterMenu: false,
     };
@@ -113,8 +116,7 @@ export default {
       this.showFilterMenu = false;
     },
     clearFilterMenu(){
-      this.getComponents();
-      this.showFilterMenu = false;
+      router.go();
     },    
     getUnitsShort(component){
       return component.unitsShort<0?0:component.unitsShort;
@@ -143,6 +145,7 @@ export default {
         itemId: this.itemKv.id, 
         categoryId: this.categoryKv.id, 
         componentTypeId: this.componentTypeKv.id,
+        dateFrom: this.dateFrom,
         dateTo: this.dateTo}};
       http.get("/component/inventory/pageable", query).then(response => {
         this.components = response.data.content;

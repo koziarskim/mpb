@@ -74,8 +74,10 @@ class ComponentRest {
 			@RequestParam(required = false) Long itemId,
 			@RequestParam(required = false) Long categoryId,
 			@RequestParam(required = false) Long componentTypeId,
+			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dateFrom,
 			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dateTo) {
-		Page<ComponentInventoryListDto> components = componentRepo.findInventoryPage(pageable, nameSearch, supplierId, itemId, categoryId, componentTypeId, dateTo);
+		Page<ComponentInventoryListDto> components = componentRepo.findInventoryPage(pageable, nameSearch, supplierId, itemId, categoryId, componentTypeId, 
+				dateFrom, dateTo);
 //		Page<ComponentInventoryListDto> dtos = components.map(component -> {
 //			ComponentInventoryListDto dto = new ComponentInventoryListDto();
 //			dto.setId(component.getId());

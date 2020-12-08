@@ -176,10 +176,7 @@ export default {
       this.showFilterMenu = false;
     },
     clearFilterMenu(){
-      this.filter.invoiceFrom = null;
-      this.filter.invoiceTo = null;
-      this.getInvoiceItems();
-      this.showFilterMenu = false;
+      router.go();
     },      
     paginationChange(page){
         this.pageable.currentPage = page;

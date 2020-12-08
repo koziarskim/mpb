@@ -21,7 +21,7 @@ import com.noovitec.mpb.entity.Component;
 
 public interface CustomComponentRepo {
 	Page<ComponentInventoryListDto> findInventoryPage(Pageable pageable, String nameSearch, Long supplierId, Long itemId,
-			Long categoryId, Long componentTypeId, LocalDate dateTo);
+			Long categoryId, Long componentTypeId, LocalDate dateFrom, LocalDate dateTo);
 	Page<Component> findPage(Pageable pageable, String nameSearch, Long supplierId, Long itemId, String unitFilter,
 			Long categoryId, Long componentTypeId);
 
@@ -35,15 +35,17 @@ public interface CustomComponentRepo {
 
 		@Override
 		public Page<ComponentInventoryListDto> findInventoryPage(Pageable pageable, String nameSearch, Long supplierId, Long itemId,
-				Long categoryId, Long componentTypeId, LocalDate dateTo) {
+				Long categoryId, Long componentTypeId, LocalDate dateFrom, LocalDate dateTo) {
 			String q = "select distinct c.id as id, c.number as number, c.name as name, cat.name as categoryName,"
 					+ "ct.name as componentTypeName, su.name as supplierName, su.id as supplierId, "
-					+ "sold.units_shipped, rec.units_received, prod.units_produced, "
-					+ "(rec.units_received-prod.units_produced) as comp_on_floor, "
-					+ "(prod.units_produced-sold.units_shipped) as prod_on_floor, "
-					+ "(rec.units_received-sold.units_shipped) as units_on_floor, "
+					+ "coalesce(sold.units_shipped,0) as units_shipped, "
+					+ "coalesce(rec.units_received,0) as units_received, "
+					+ "coalesce(prod.units_produced,0) as units_produced, "
+					+ "(coalesce(rec.units_received,0)-coalesce(prod.units_produced,0)) as comp_on_floor, "
+					+ "(coalesce(prod.units_produced,0)-coalesce(sold.units_shipped,0)) as prod_on_floor, "
+					+ "(coalesce(rec.units_received,0)-coalesce(sold.units_shipped,0)) as units_on_floor, "
 					+ "c.average_price as unit_price, "
-					+ "c.average_price*(rec.units_received-sold.units_shipped) as total " 
+					+ "c.average_price*(coalesce(rec.units_received,0)-coalesce(sold.units_shipped,0)) as total " 
 					+ "from Component c "
 					+ "left join (select ic.component_id as cid, ceil(sum(si.units_shipped*ic.units)) as units_shipped " 
 						+ "from item_component ic " 
@@ -52,29 +54,32 @@ public interface CustomComponentRepo {
 						+ "join sale_item si on si.item_packaging_id = ip.id " 
 						+ "join shipment_item ship_item on ship_item.sale_item_id = si.id " 
 						+ "join shipment ship on ship.id = ship_item.shipment_id "
-						+ "where ship.shipped_date <= :dateTo "
+						+ "where ship.shipped_date >= :dateFrom "
+						+ "and ship.shipped_date <= :dateTo "
 						+ "group by ic.component_id) sold on sold.cid = c.id " 
 					+ "left join (select pc.component_id as cid, sum(r.units) as units_received " 
 						+ "from purchase_component pc "
 						+ "join receiving r on r.purchase_component_id = pc.id " 
-						+ "where r.receiving_date <= :dateTo "
+						+ "where r.receiving_date >= :dateFrom "
+						+ "and r.receiving_date <= :dateTo "
 						+ "group by pc.component_id) rec on rec.cid = c.id "
-					+ "join (select ic.component_id as cid, ceil(sum(p.units_produced*ic.units)) as units_produced " 
+					+ "left join (select ic.component_id as cid, ceil(sum(p.units_produced*ic.units)) as units_produced " 
 						+ "from item_component ic " 
 						+ "join item i on i.id = ic.item_id " 
 						+ "join item_packaging ip on ip.item_id = i.id "
 						+ "join schedule_event se on se.item_packaging_id = ip.id "
 						+ "join production p on p.schedule_event_id = se.id "
-//						+ "where p.updated <= :dateTo "
+						+ "where p.updated >= :dateFrom "
+						+ "and p.updated <= :dateTo "
 						+ "group by ic.component_id) prod on prod.cid = c.id "
 					+ "left join item_component ic on ic.component_id = c.id "
 					+ "left join item i on i.id = ic.item_id "
 					+ "left join supplier su on su.id = c.supplier_id "
 					+ "left join shared.category cat on cat.id = c.category_id "
 					+ "left join shared.component_type ct on ct.id = c.component_type_id "
-					+ "where c.id is not null "
-					+ "and (rec.units_received-sold.units_shipped) is not null " 
-					+ "and (rec.units_received-sold.units_shipped) <> 0 ";
+					+ "where c.id is not null ";
+//					+ "and (rec.units_received-sold.units_shipped) is not null " 
+//					+ "and (rec.units_received-sold.units_shipped) <> 0 ";
 			if (nameSearch != null && !nameSearch.isEmpty()) {
 				q += "and (upper(c.number) like concat('%',upper(:nameSearch),'%') ";
 				q += "or upper(c.name) like concat('%',upper(:nameSearch),'%')) ";
@@ -93,6 +98,7 @@ public interface CustomComponentRepo {
 			}
 			q += "order by units_on_floor desc ";
 			Query query = entityManager.createNativeQuery(q);
+			query.setParameter("dateFrom", dateFrom);
 			query.setParameter("dateTo", dateTo);
 			if (nameSearch != null && !nameSearch.isEmpty()) {
 				query.setParameter("nameSearch", nameSearch);
