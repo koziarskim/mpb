@@ -2,6 +2,7 @@ package com.noovitec.mpb.repo.custom;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -35,28 +36,28 @@ public interface CustomComponentRepo {
 		@Override
 		public Page<ComponentInventoryListDto> findInventoryPage(Pageable pageable, String nameSearch, Long supplierId, Long itemId,
 				Long categoryId, Long componentTypeId, LocalDate dateTo) {
-			String q = "select distinct new com.noovitec.mpb.dto.ComponentInventoryListDto(c.id as id, c.number as number, "
-					+ "c.name as name, cat.name, ct.name, supplier.name, 0L, "
-					+ "(select ceil(sum(si2.unitsShipped)*max(ic2.units)) from Component c2 "
-						+ "join c2.itemComponents ic2 "
-						+ "join ic2.item i2 "
-						+ "join i2.itemPackagings ip2 "
-						+ "join ip2.saleItems si2 "
-						+ "join si2.shipmentItems shipItem2 "
-						+ "join shipItem2.shipment ship2 "
-						+ "where c.id = c2.id "
-						+ "and ship2.shippedDate <= :dateTo), "
-					+ "(select sum(r3.units) from Component c3 "
-						+ "join c3.purchaseComponents pc3 "
-						+ "join pc3.receivings r3 "
-						+ "where c.id = c3.id "
-						+ "and r3.receivingDate <= :dateTo), 0L, c.averagePrice, 0L) "
+			String q = "select distinct c.id as id, c.number as number, c.name as name, '' as a, '' as b, '' as c, null as d, sold.units_shipped, rec.units_received, "
+					+ "(sold.units_shipped-rec.units_received) as units_on_floor, "
+					+ "c.average_price as unit_price, c.average_price*(sold.units_shipped-rec.units_received) as total " 
 					+ "from Component c "
-					+ "left join c.supplier supplier "
-					+ "left join c.itemComponents ic "
-					+ "left join c.category cat "
-					+ "left join c.componentType ct "
-					+ "where c.id is not null ";
+					+ "left join (select ic.component_id as cid, ceil(sum(si.units_shipped)*max(ic.units)) as units_shipped " 
+						+ "from item_component ic " 
+						+ "join item i on i.id = ic.item_id " 
+						+ "join item_packaging ip on ip.item_id = i.id "
+						+ "join sale_item si on si.item_packaging_id = ip.id " 
+						+ "join shipment_item ship_item on ship_item.sale_item_id = si.id " 
+						+ "join shipment ship on ship.id = ship_item.shipment_id "
+						+ "where ship.shipped_date <= :dateTo "
+						+ "group by ic.component_id) sold on sold.cid = c.id " 
+					+ "left join (select pc.component_id as cid, sum(r.units) as units_received " 
+						+ "from purchase_component pc "
+						+ "join receiving r on r.purchase_component_id = pc.id " 
+						+ "where r.receiving_date <= :dateTo "
+						+ "group by pc.component_id) rec on rec.cid = c.id " 
+					+ "where c.id is not null "
+					+ "and (sold.units_shipped-rec.units_received) is not null " 
+					+ "and (sold.units_shipped-rec.units_received) <> 0 "
+					+ "order by units_on_floor desc ";
 			if (nameSearch != null && !nameSearch.isEmpty()) {
 				q += "and (upper(c.number) like concat('%',upper(:nameSearch),'%') ";
 				q += "or upper(c.name) like concat('%',upper(:nameSearch),'%')) ";
@@ -73,8 +74,8 @@ public interface CustomComponentRepo {
 			if (supplierId != null) {
 				q += "and supplier.id = :supplierId ";
 			}
-			q += "order by c.number asc ";
-			Query query = entityManager.createQuery(q);
+//			q += "order by c.number asc ";
+			Query query = entityManager.createNativeQuery(q);
 			query.setParameter("dateTo", dateTo);
 			if (nameSearch != null && !nameSearch.isEmpty()) {
 				query.setParameter("nameSearch", nameSearch);
@@ -93,8 +94,9 @@ public interface CustomComponentRepo {
 			}
 			long total = query.getResultStream().count();
 			@SuppressWarnings("unchecked")
-			List<ComponentInventoryListDto> result = query.setFirstResult(pageable.getPageNumber()*pageable.getPageSize())
+			List<Object[]> res = query.setFirstResult(pageable.getPageNumber()*pageable.getPageSize())
 				.setMaxResults(pageable.getPageSize()).getResultList();
+			List<ComponentInventoryListDto> result = res.stream().map(ComponentInventoryListDto::new).collect(Collectors.toList());
 			Page<ComponentInventoryListDto> page = new PageImpl<ComponentInventoryListDto>(result, pageable, total);
 			return page;
 		}
