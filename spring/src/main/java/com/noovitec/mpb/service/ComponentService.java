@@ -116,7 +116,7 @@ public interface ComponentService {
 				Long unitsReceived = 0L;
 				Long unitsOrdered = 0L;
 				BigDecimal totalPrice = BigDecimal.ZERO;
-				long receivingsCount = 1;
+				long receivingsCount = 0;
 				LocalDateTime lastDate = LocalDateTime.parse("2000-01-01T01:01:01");
 				for(PurchaseComponent pc: component.getPurchaseComponents()) {
 					unitsOrdered += pc.getUnits();
@@ -142,7 +142,8 @@ public interface ComponentService {
 					unitsForProduction += (long) Math.ceil(ic.getUnits()/ic.getItem().getUnitsProduced());
 					unitsForSale += (long) Math.ceil(ic.getUnits()/ic.getItem().getUnitsSold());
 				}
-				component.setUnitsOnStock(unitsReceived - unitsForProduction);
+//				component.setUnitsOnStock(unitsReceived - unitsForProduction);
+				component.setUnitsOnStock(0);
 				component.setUnitsLocked(unitsScheduled - unitsForProduction);
 				component.setUnitsSoldNotProd(unitsForSale - unitsForProduction);
 				component.setUnitsOrdered(unitsOrdered);

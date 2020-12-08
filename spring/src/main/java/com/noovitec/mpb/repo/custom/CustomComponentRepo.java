@@ -38,9 +38,12 @@ public interface CustomComponentRepo {
 				Long categoryId, Long componentTypeId, LocalDate dateTo) {
 			String q = "select distinct c.id as id, c.number as number, c.name as name, cat.name as categoryName,"
 					+ "ct.name as componentTypeName, su.name as supplierName, su.id as supplierId, "
-					+ "sold.units_shipped, rec.units_received, "
-					+ "(sold.units_shipped-rec.units_received) as units_on_floor, "
-					+ "c.average_price as unit_price, c.average_price*(sold.units_shipped-rec.units_received) as total " 
+					+ "sold.units_shipped, rec.units_received, prod.units_produced, "
+					+ "(sold.units_shipped-rec.units_received-prod.units_produced) as comp_on_floor, "
+					+ "(sold.units_shipped-prod.units_produced) as prod_on_floor, "
+					+ "(sold.units_shipped-rec.units_received-prod.units_produced)+(sold.units_shipped-prod.units_produced) as units_on_floor, "
+					+ "c.average_price as unit_price, "
+					+ "c.average_price*((sold.units_shipped-rec.units_received-prod.units_produced)+(sold.units_shipped-prod.units_produced)) as total " 
 					+ "from Component c "
 					+ "left join (select ic.component_id as cid, ceil(sum(si.units_shipped)*max(ic.units)) as units_shipped " 
 						+ "from item_component ic " 
@@ -56,14 +59,22 @@ public interface CustomComponentRepo {
 						+ "join receiving r on r.purchase_component_id = pc.id " 
 						+ "where r.receiving_date <= :dateTo "
 						+ "group by pc.component_id) rec on rec.cid = c.id "
+					+ "left join (select ic.component_id as cid, ceil(sum(p.units_produced)*max(ic.units)) as units_produced " 
+						+ "from item_component ic " 
+						+ "join item i on i.id = ic.item_id " 
+						+ "join item_packaging ip on ip.item_id = i.id "
+						+ "join schedule_event se on se.item_packaging_id = ip.id "
+						+ "join production p on p.schedule_event_id = se.id "
+						+ "where p.updated <= :dateTo "
+						+ "group by ic.component_id) prod on prod.cid = c.id "
 					+ "left join item_component ic on ic.component_id = c.id "
 					+ "left join item i on i.id = ic.item_id "
 					+ "left join supplier su on su.id = c.supplier_id "
 					+ "left join shared.category cat on cat.id = c.category_id "
 					+ "left join shared.component_type ct on ct.id = c.component_type_id "
 					+ "where c.id is not null "
-					+ "and (sold.units_shipped-rec.units_received) is not null " 
-					+ "and (sold.units_shipped-rec.units_received) <> 0 ";
+					+ "and (sold.units_shipped-rec.units_received-prod.units_produced)+(sold.units_shipped-prod.units_produced) is not null " 
+					+ "and (sold.units_shipped-rec.units_received-prod.units_produced)+(sold.units_shipped-prod.units_produced) <> 0 ";
 			if (nameSearch != null && !nameSearch.isEmpty()) {
 				q += "and (upper(c.number) like concat('%',upper(:nameSearch),'%') ";
 				q += "or upper(c.name) like concat('%',upper(:nameSearch),'%')) ";

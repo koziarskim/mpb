@@ -101,7 +101,7 @@
       <b-col cols="2">
         <br />
         <label class="top-label">Recent unit price: ${{component.unitCost}}</label>
-        <label class="top-label">Average price: ${{component.unitCost}}</label>
+        <label class="top-label">Average price: ${{component.averagePrice}}</label>
         <br />
       </b-col>
       <b-col cols="2">

@@ -21,6 +21,9 @@ public class ComponentInventoryListDto {
 	private Long supplierId;
 	private Double unitsShipped;
 	private Long unitsReceived;
+	private Long unitsProduced;
+	private Long compOnFloor;
+	private Long prodOnFloor;
 	private Long unitsOnFloor;
 	private BigDecimal averageUnitPrice;
 	private Long totalFloorPrice;
@@ -34,11 +37,14 @@ public class ComponentInventoryListDto {
 	        this.componentTypeName = (String) fields[4];
 	        this.supplierName = (String) fields[5];
 	        this.supplierId = ((BigInteger) fields[6]).longValue();
-	        this.unitsShipped = ((BigDecimal) fields[7]).doubleValue();
-	        this.unitsReceived = ((BigDecimal) fields[8]).longValue();
-	        this.unitsOnFloor = ((BigDecimal) fields[9]).longValue();
-	        this.averageUnitPrice = (BigDecimal) fields[10];
-	        this.totalFloorPrice = ((BigDecimal) fields[11]).longValue();
+	        this.unitsShipped = fields[7]==null?null:((BigDecimal) fields[7]).doubleValue();
+	        this.unitsReceived = fields[8]==null?null:((BigDecimal) fields[8]).longValue();
+	        this.unitsProduced = fields[9]==null?null:((BigDecimal) fields[9]).longValue();
+	        this.compOnFloor = fields[10]==null?null:((BigDecimal) fields[10]).longValue();
+	        this.prodOnFloor = fields[11]==null?null:((BigDecimal) fields[11]).longValue();
+	        this.unitsOnFloor = fields[12]==null?null:((BigDecimal) fields[12]).longValue();
+	        this.averageUnitPrice = (BigDecimal) fields[13];
+	        this.totalFloorPrice = fields[14]==null?null:((BigDecimal) fields[14]).longValue();
 
 	    }
 }
