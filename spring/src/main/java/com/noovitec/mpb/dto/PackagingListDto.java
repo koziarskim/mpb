@@ -15,8 +15,8 @@ public class PackagingListDto {
 	private String name;
 	private String typeLabel;
 	private BigDecimal caseHeight;
+	private BigDecimal caseLength;
 	private BigDecimal caseWidth;
-	private BigDecimal caseDepth;
 	private int casePack;
 	private BigDecimal palletWeight;
 	private int ti;

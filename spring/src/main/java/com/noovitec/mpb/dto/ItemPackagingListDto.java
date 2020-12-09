@@ -18,8 +18,8 @@ public class ItemPackagingListDto {
 	private String itemNumber;
 	private String label;
 	private BigDecimal caseHeight;
+	private BigDecimal caseLength;
 	private BigDecimal caseWidth;
-	private BigDecimal caseDepth;
 	private int casePack;
 	private BigDecimal palletWeight;
 	private int ti;

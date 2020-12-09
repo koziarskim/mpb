@@ -19,7 +19,7 @@
               <div style="width:200px; overflow: wrap; font-size: 14px"><b-link role="button" @click="goToPackagingEdit(row.item.id)">{{row.item.name}}</b-link></div>
             </template>
             <template v-slot:cell(caseDimension)="row">
-              {{row.item.caseHeight}}x{{row.item.caseWidth}}x{{row.item.caseDepth}}
+              {{row.item.caseLength}}x{{row.item.caseWidth}}x{{row.item.caseHeight}}
             </template>
             <template v-slot:cell(palletConfig)="row">
               {{row.item.ti}}x{{row.item.hi}}

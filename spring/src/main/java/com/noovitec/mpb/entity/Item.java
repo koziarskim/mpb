@@ -29,12 +29,13 @@ import lombok.NoArgsConstructor;
 @Entity
 public class Item extends BaseEntity {
 
+	private static final long serialVersionUID = -1613201559035575793L;
 	private String name;
 	private String number;
 	private String description;
 	private BigDecimal height;
+	private BigDecimal length;
 	private BigDecimal width;
-	private BigDecimal depth;
 	private BigDecimal weight;
 	private BigDecimal totalCost;
 	private long unitsProduced = 0;
@@ -49,19 +50,6 @@ public class Item extends BaseEntity {
 	private long unitsOnFloor = 0;
 //	private long unitsReadyProd = 0;	
 	
-	//Package to delete after migration.
-	private int casePack = 1;
-	private BigDecimal caseHeight;
-	private BigDecimal caseWidth;
-	private BigDecimal caseDepth;
-	private BigDecimal caseWeight;
-	private BigDecimal palletWeight;
-	private int ti = 1; // number of cases in single layer on pallet.
-	private int hi = 1; // number of layers on pallet.
-	private BigDecimal warehouseCost = new BigDecimal(12);
-	private BigDecimal packageCost = new BigDecimal(12);
-	//------
-
 	@JsonIgnoreProperties(value = { "item" }, allowSetters = true)
 	@OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Collection<ItemComponent> itemComponents = new HashSet<ItemComponent>();

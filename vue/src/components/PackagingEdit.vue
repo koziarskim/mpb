@@ -20,11 +20,11 @@
       </b-row>
       <b-row>
         <b-col cols=3 offset=1>
-          <label class="top-label">Case Dimension (H x W x D):</label>
+          <label class="top-label">Case Dimension (L x W x H):</label>
           <div style="display:flex">
-            <input class="form-control" v-model="packaging.caseHeight"><span style="margin-top: 7px">x</span>
+            <input class="form-control" v-model="packaging.caseLength"><span style="margin-top: 7px">x</span>
             <input class="form-control" v-model="packaging.caseWidth"><span style="margin-top: 7px">x</span>
-            <input class="form-control" v-model="packaging.caseDepth">
+            <input class="form-control" v-model="packaging.caseHeight">
           </div>
         </b-col>
         <b-col cols=1>

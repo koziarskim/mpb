@@ -24,11 +24,11 @@
       </b-row>
       <b-row>
         <b-col cols=6>
-          <label class="top-label">Case Dimension (H x W x D):</label>
+          <label class="top-label">Case Dimension (L x W x H):</label>
           <div style="display:flex">
-            <input class="form-control" v-model="updatedPackaging.caseHeight"><span style="margin-top: 7px">x</span>
+            <input class="form-control" v-model="updatedPackaging.caseLength"><span style="margin-top: 7px">x</span>
             <input class="form-control" v-model="updatedPackaging.caseWidth"><span style="margin-top: 7px">x</span>
-            <input class="form-control" v-model="updatedPackaging.caseDepth">
+            <input class="form-control" v-model="updatedPackaging.caseHeight">
           </div>
         </b-col>
         <b-col cols=2>

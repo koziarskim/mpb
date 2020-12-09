@@ -46,13 +46,13 @@
             <input class="form-control" type="text" v-model="component.supplierStockNumber" />
           </b-col>
           <b-col cols=3>
-            <label class="top-label">Dimension (H x W x D):</label>
+            <label class="top-label">Dimension (L x W x H):</label>
             <div style="display:flex">
-              <input class="form-control" type="number" v-model="component.height" />
+              <input class="form-control" type="number" v-model="component.length" />
               <span style="padding:7px">x</span>
               <input class="form-control" type="number" v-model="component.width" />
               <span style="padding:7px">x</span>
-              <input class="form-control" type="number" v-model="component.depth" />
+              <input class="form-control" type="number" v-model="component.height" />
             </div>
           </b-col>
           <b-col cols=1>

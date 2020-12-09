@@ -51,11 +51,11 @@
         <hr class="hr-text" data-content="Unit dimenstion">
         <b-row>
           <b-col cols=3>
-            <label class="top-label">Item Dimension (H x W x D):</label>
+            <label class="top-label">Item Dimension (L x W x H):</label>
             <div style="display:flex">
-              <input class="form-control" v-model="item.height"><span style="margin-top: 7px">x</span>
+              <input class="form-control" v-model="item.length"><span style="margin-top: 7px">x</span>
               <input class="form-control" v-model="item.width"><span style="margin-top: 7px">x</span>
-              <input class="form-control" v-model="item.depth">
+              <input class="form-control" v-model="item.height">
             </div>
           </b-col>
           <b-col cols=2>
@@ -176,7 +176,7 @@ export default {
     },
     itemCubic() {
       return (
-        (+this.item.height * +this.item.width * +this.item.depth) /
+        (+this.item.length * +this.item.width * +this.item.height) /
         1728
       ).toFixed(2);
     },

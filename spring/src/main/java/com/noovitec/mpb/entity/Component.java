@@ -37,8 +37,8 @@ public class Component extends BaseEntity {
 	private String description;
 	private long caseWeight;
 	private BigDecimal height;
+	private BigDecimal length;
 	private BigDecimal width;
-	private BigDecimal depth;
 	private BigDecimal weight;
 	private int casePack = 1;
 	private BigDecimal unitCost;

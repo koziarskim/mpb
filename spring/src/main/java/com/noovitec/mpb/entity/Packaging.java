@@ -39,8 +39,8 @@ public class Packaging extends BaseEntity {
 	private String type; //PDQ, MasterCarton, etc.
 	private int casePack = 1;
 	private BigDecimal caseHeight;
+	private BigDecimal caseLength;
 	private BigDecimal caseWidth;
-	private BigDecimal caseDepth;
 	private BigDecimal caseWeight;
 	private BigDecimal palletWeight;
 	private int ti = 1; // number of cases in single layer on pallet.

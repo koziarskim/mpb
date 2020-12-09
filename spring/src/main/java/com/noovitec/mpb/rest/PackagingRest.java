@@ -53,8 +53,8 @@ class PackagingRest {
 			dto.setName(p.getName());
 			dto.setTypeLabel(Packaging.TYPE.valueOf(p.getType()).label());
 			dto.setCaseHeight(p.getCaseHeight());
+			dto.setCaseLength(p.getCaseLength());
 			dto.setCaseWidth(p.getCaseWidth());
-			dto.setCaseDepth(p.getCaseDepth());
 			dto.setCasePack(p.getCasePack());
 			dto.setHi(p.getHi());
 			dto.setTi(p.getTi());

@@ -67,8 +67,8 @@ class ItemPackagingRest {
 			dto.setItemNumber(ip.getItem().getNumber());
 			dto.setLabel(ip.getLabel());
 			dto.setCaseHeight(ip.getPackaging().getCaseHeight());
+			dto.setCaseLength(ip.getPackaging().getCaseLength());
 			dto.setCaseWidth(ip.getPackaging().getCaseWidth());
-			dto.setCaseDepth(ip.getPackaging().getCaseDepth());
 			dto.setCasePack(ip.getPackaging().getCasePack());
 			dto.setHi(ip.getPackaging().getHi());
 			dto.setTi(ip.getPackaging().getTi());
