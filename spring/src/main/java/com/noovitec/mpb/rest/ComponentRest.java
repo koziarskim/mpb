@@ -68,7 +68,8 @@ class ComponentRest {
 		return componentRepo.findAll();
 	}
 	@GetMapping("/component/inventory/pageable")
-	Page<ComponentInventoryListDto> getAllInventoryPageable(@RequestParam Pageable pageable, 
+	Page<?> getAllInventoryPageable(@RequestParam Pageable pageable, 
+			@RequestParam(required = false) boolean totals, 
 			@RequestParam(required = false) String nameSearch, 
 			@RequestParam(required = false) Long supplierId,
 			@RequestParam(required = false) Long itemId,
@@ -76,17 +77,9 @@ class ComponentRest {
 			@RequestParam(required = false) Long componentTypeId,
 			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dateFrom,
 			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dateTo) {
-		Page<ComponentInventoryListDto> components = componentRepo.findInventoryPage(pageable, nameSearch, supplierId, itemId, categoryId, componentTypeId, 
-				dateFrom, dateTo);
-//		Page<ComponentInventoryListDto> dtos = components.map(component -> {
-//			ComponentInventoryListDto dto = new ComponentInventoryListDto();
-//			dto.setId(component.getId());
-//			dto.setNumber(component.getNumber());
-//			dto.setName(component.getName());
-//			dto.setUnitsReceived(component.getUnitsReceived());
-//		    return dtos;
-//		});
-		return components;
+		Page<?> dtos = componentRepo.findInventoryPage(pageable, totals, nameSearch, supplierId, itemId, 
+			categoryId, componentTypeId, dateFrom, dateTo);
+		return dtos;
 	}
 
 	@GetMapping("/component/pageable")

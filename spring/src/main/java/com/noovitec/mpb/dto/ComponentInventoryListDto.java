@@ -37,9 +37,9 @@ public class ComponentInventoryListDto {
 	        this.componentTypeName = (String) fields[4];
 	        this.supplierName = (String) fields[5];
 	        this.supplierId = fields[6]==null?null:((BigInteger) fields[6]).longValue();
-	        this.unitsShipped = fields[7]==null?null:((BigDecimal) fields[7]).doubleValue();
-	        this.unitsReceived = fields[8]==null?null:((BigDecimal) fields[8]).longValue();
-	        this.unitsProduced = fields[9]==null?null:((BigDecimal) fields[9]).longValue();
+	        this.unitsReceived = fields[7]==null?null:((BigDecimal) fields[7]).longValue();
+	        this.unitsProduced = fields[8]==null?null:((BigDecimal) fields[8]).longValue();
+	        this.unitsShipped = fields[9]==null?null:((BigDecimal) fields[9]).doubleValue();
 	        this.compOnFloor = fields[10]==null?null:((BigDecimal) fields[10]).longValue();
 	        this.prodOnFloor = fields[11]==null?null:((BigDecimal) fields[11]).longValue();
 	        this.unitsOnFloor = fields[12]==null?null:((BigDecimal) fields[12]).longValue();

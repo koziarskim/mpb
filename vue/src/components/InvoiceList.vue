@@ -29,7 +29,7 @@
           <b-select style="width: 150px; margin-left: 15px" option-value="id" option-text="name" :list="availableShipments" v-model="shipmentKv" placeholder="Shipment"></b-select>
           <b-select style="width: 100px; margin-left: 15px" option-value="id" option-text="name" :list="availableSent" v-model="filterSent" placeholder="Sent"></b-select>
           <div style="margin-left: 15px">
-            <b-button id="totalsMenu" size="sm" @click="toggleShowTotals()">Totals</b-button>
+            <b-button id="totalsMenu" size="sm" @click="toggleTotals()">Totals</b-button>
             <b-popover :show="showTotalsMenu" placement="bottom" target="totalsMenu" variant="secondary">
               <div style="width: 300px; font-size: 16px">
                 <div>Total invoices: {{pageable.totalElements}}</div>
@@ -123,7 +123,7 @@ export default {
     },
   },
   methods: {
-    toggleShowTotals(){
+    toggleTotals(){
       if(!this.showTotalsMenu){
         this.getInvoices(true);
       }

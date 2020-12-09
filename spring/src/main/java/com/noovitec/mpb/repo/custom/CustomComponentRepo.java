@@ -1,6 +1,7 @@
 package com.noovitec.mpb.repo.custom;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,8 +21,8 @@ import com.noovitec.mpb.dto.ComponentInventoryListDto;
 import com.noovitec.mpb.entity.Component;
 
 public interface CustomComponentRepo {
-	Page<ComponentInventoryListDto> findInventoryPage(Pageable pageable, String nameSearch, Long supplierId, Long itemId,
-			Long categoryId, Long componentTypeId, LocalDate dateFrom, LocalDate dateTo);
+	Page<?> findInventoryPage(Pageable pageable, boolean totals, String nameSearch, Long supplierId, 
+			Long itemId, Long categoryId, Long componentTypeId, LocalDate dateFrom, LocalDate dateTo);
 	Page<Component> findPage(Pageable pageable, String nameSearch, Long supplierId, Long itemId, String unitFilter,
 			Long categoryId, Long componentTypeId);
 
@@ -34,20 +35,31 @@ public interface CustomComponentRepo {
 		EntityManager entityManager;
 
 		@Override
-		public Page<ComponentInventoryListDto> findInventoryPage(Pageable pageable, String nameSearch, Long supplierId, Long itemId,
-				Long categoryId, Long componentTypeId, LocalDate dateFrom, LocalDate dateTo) {
-			String q = "select distinct c.id as id, c.number as number, c.name as name, cat.name as categoryName,"
-					+ "ct.name as componentTypeName, su.name as supplierName, su.id as supplierId, "
-					+ "coalesce(sold.units_shipped,0) as units_shipped, "
-					+ "coalesce(rec.units_received,0) as units_received, "
-					+ "coalesce(prod.units_produced,0) as units_produced, "
-					+ "(coalesce(rec.units_received,0)-coalesce(prod.units_produced,0)) as comp_on_floor, "
-					+ "(coalesce(prod.units_produced,0)-coalesce(sold.units_shipped,0)) as prod_on_floor, "
-					+ "(coalesce(rec.units_received,0)-coalesce(sold.units_shipped,0)) as units_on_floor, "
-					+ "c.average_price as unit_price, "
-					+ "c.average_price*(coalesce(rec.units_received,0)-coalesce(sold.units_shipped,0)) as total " 
-					+ "from Component c "
-					+ "left join (select ic.component_id as cid, ceil(sum(si.units_shipped*ic.units)) as units_shipped " 
+		public Page<?> findInventoryPage(Pageable pageable, boolean totals, String nameSearch, Long supplierId,
+				Long itemId, Long categoryId, Long componentTypeId, LocalDate dateFrom, LocalDate dateTo) {
+			String q = "";
+			if(totals) {
+				q += "select sum(coalesce(rec.units_received,0)) as units_received, "
+						+ "sum(coalesce(prod.units_produced,0)) as units_produced, "
+						+ "sum(coalesce(sold.units_shipped,0)) as units_shipped, "
+						+ "sum(coalesce(rec.units_received,0)-coalesce(prod.units_produced,0)) as comp_on_floor, "
+						+ "sum(coalesce(prod.units_produced,0)-coalesce(sold.units_shipped,0)) as prod_on_floor, "
+						+ "sum(coalesce(rec.units_received,0)-coalesce(sold.units_shipped,0)) as units_on_floor, "
+						+ "sum(c.average_price*(coalesce(rec.units_received,0)-coalesce(sold.units_shipped,0))) as total ";
+			} else {
+				q += "select distinct c.id as id, c.number as number, c.name as name, other.cat_name as categoryName,"
+						+ "other.ct_name as componentTypeName, other.su_name as supplierName, other.su_id as supplierId, "
+						+ "coalesce(rec.units_received,0) as units_received, "
+						+ "coalesce(prod.units_produced,0) as units_produced, "
+						+ "coalesce(sold.units_shipped,0) as units_shipped, "
+						+ "(coalesce(rec.units_received,0)-coalesce(prod.units_produced,0)) as comp_on_floor, "
+						+ "(coalesce(prod.units_produced,0)-coalesce(sold.units_shipped,0)) as prod_on_floor, "
+						+ "(coalesce(rec.units_received,0)-coalesce(sold.units_shipped,0)) as units_on_floor, "
+						+ "c.average_price as unit_price, "
+						+ "c.average_price*(coalesce(rec.units_received,0)-coalesce(sold.units_shipped,0)) as total ";
+			}
+				q += "from Component c "
+					+ "left join (select distinct ic.component_id as cid, ceil(sum(si.units_shipped*ic.units)) as units_shipped " 
 						+ "from item_component ic " 
 						+ "join item i on i.id = ic.item_id " 
 						+ "join item_packaging ip on ip.item_id = i.id "
@@ -57,13 +69,13 @@ public interface CustomComponentRepo {
 						+ "where ship.shipped_date >= :dateFrom "
 						+ "and ship.shipped_date <= :dateTo "
 						+ "group by ic.component_id) sold on sold.cid = c.id " 
-					+ "left join (select pc.component_id as cid, sum(r.units) as units_received " 
+					+ "left join (select distinct pc.component_id as cid, sum(r.units) as units_received " 
 						+ "from purchase_component pc "
 						+ "join receiving r on r.purchase_component_id = pc.id " 
 						+ "where r.receiving_date >= :dateFrom "
 						+ "and r.receiving_date <= :dateTo "
 						+ "group by pc.component_id) rec on rec.cid = c.id "
-					+ "left join (select ic.component_id as cid, ceil(sum(p.units_produced*ic.units)) as units_produced " 
+					+ "left join (select distinct ic.component_id as cid, ceil(sum(p.units_produced*ic.units)) as units_produced " 
 						+ "from item_component ic " 
 						+ "join item i on i.id = ic.item_id " 
 						+ "join item_packaging ip on ip.item_id = i.id "
@@ -72,29 +84,32 @@ public interface CustomComponentRepo {
 						+ "where p.updated >= :dateFrom "
 						+ "and p.updated <= :dateTo "
 						+ "group by ic.component_id) prod on prod.cid = c.id "
-					+ "left join item_component ic on ic.component_id = c.id "
-					+ "left join item i on i.id = ic.item_id "
-					+ "left join supplier su on su.id = c.supplier_id "
-					+ "left join shared.category cat on cat.id = c.category_id "
-					+ "left join shared.component_type ct on ct.id = c.component_type_id "
+					+ "left join (select c.id as cid, max(cat.id) as cat_id, max(cat.name) as cat_name, max(ct.id) as ct_id, max(ct.name) as ct_name,"
+						+ "max(su.id) as su_id, max(su.name) as su_name, max(i.id) as i_id "
+						+ "from component c "
+						+ "left join item_component ic on ic.component_id = c.id "
+						+ "left join item i on i.id = ic.item_id "
+						+ "left join supplier su on su.id = c.supplier_id "
+						+ "left join shared.category cat on cat.id = c.category_id "
+						+ "left join shared.component_type ct on ct.id = c.component_type_id "
+						+ "where c.id is not null "
+						+ "group by c.id ) other on other.cid = c.id "
 					+ "where c.id is not null ";
-//					+ "and (rec.units_received-sold.units_shipped) is not null " 
-//					+ "and (rec.units_received-sold.units_shipped) <> 0 ";
 			if (nameSearch != null && !nameSearch.isEmpty()) {
 				q += "and (upper(c.number) like concat('%',upper(:nameSearch),'%') ";
 				q += "or upper(c.name) like concat('%',upper(:nameSearch),'%')) ";
 			}
 			if (itemId != null) {
-				q += "and i.id = :itemId ";
+				q += "and other.i_id = :itemId ";
 			}
 			if (categoryId != null) {
-				q += "and cat.id = :categoryId ";
+				q += "and other.cat_id = :categoryId ";
 			}
 			if (componentTypeId != null) {
-				q += "and ct.id = :componentTypeId ";
+				q += "and other.ct_id = :componentTypeId ";
 			}
 			if (supplierId != null) {
-				q += "and su.id = :supplierId ";
+				q += "and other.su_id = :supplierId ";
 			}
 			q += "order by units_on_floor desc ";
 			Query query = entityManager.createNativeQuery(q);
@@ -116,12 +131,18 @@ public interface CustomComponentRepo {
 				query.setParameter("componentTypeId", componentTypeId);
 			}
 			long total = query.getResultStream().count();
-			@SuppressWarnings("unchecked")
-			List<Object[]> res = query.setFirstResult(pageable.getPageNumber()*pageable.getPageSize())
-				.setMaxResults(pageable.getPageSize()).getResultList();
-			List<ComponentInventoryListDto> result = res.stream().map(ComponentInventoryListDto::new).collect(Collectors.toList());
-			Page<ComponentInventoryListDto> page = new PageImpl<ComponentInventoryListDto>(result, pageable, total);
-			return page;
+			if(totals) {
+				Object result = query.getSingleResult();
+				Page<Object> page = new PageImpl<Object>(Arrays.asList(result), pageable, total);
+				return page;
+			} else {
+				@SuppressWarnings("unchecked")
+				List<Object[]> res = query.setFirstResult(pageable.getPageNumber()*pageable.getPageSize())
+					.setMaxResults(pageable.getPageSize()).getResultList();
+				List<ComponentInventoryListDto> result = res.stream().map(ComponentInventoryListDto::new).collect(Collectors.toList());
+				Page<ComponentInventoryListDto> page = new PageImpl<ComponentInventoryListDto>(result, pageable, total);
+				return page;
+			}
 		}
 
 		@Override

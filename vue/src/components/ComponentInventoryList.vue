@@ -35,6 +35,23 @@
       <b-col cols=2>
         <input style="height: 33px" class="form-control" type="date" v-model="dateTo" @change="dateToUpdated()">
       </b-col>
+      <b-col cols=1>
+        <div style="margin-left: 15px">
+          <b-button id="totalsMenu" size="sm" @click="toggleTotals()">Totals</b-button>
+          <b-popover :show="showTotalsMenu" placement="bottom" target="totalsMenu" variant="secondary">
+            <div style="width: 300px; font-size: 16px">
+              <div><b>Total Components:</b> {{pageable.totalElements.toLocaleString()}}</div>
+              <div><b>Total Received:</b> {{totals.received.toLocaleString()}}</div>
+              <div><b>Total Produced:</b> {{totals.produced.toLocaleString()}}</div>
+              <div><b>Total Shipped:</b> {{totals.shipped.toLocaleString()}}</div>
+              <div><b>Total Units Floor:</b> {{totals.floor.toLocaleString()}}</div>
+              <div><b>Total Asmbly Floor:</b> {{totals.asmbly.toLocaleString()}}</div>
+              <div><b>Total All Floor:</b> {{totals.all.toLocaleString()}}</div>
+              <div><b>Total Price:</b> ${{totals.price.toLocaleString('en-US',{minimumFractionDigits: 2})}}</div>
+            </div>
+          </b-popover>
+        </div>
+      </b-col>
     </b-row>
     <b-table no-local-sorting @sort-changed="sorted" :items="components" :fields="fields">
       <template v-slot:head(unitsReceived)="row">
@@ -138,6 +155,16 @@ export default {
       dateFrom:moment().startOf('year').format("YYYY-MM-DD"),
       dateTo: moment().format("YYYY-MM-DD"),
       showFilterMenu: false,
+      showTotalsMenu: false,
+      totals: {
+        received: 0,
+        produced: 0,
+        shipped: 0,
+        floor: 0,
+        asmbly: 0,
+        all: 0,
+        price: 0,
+      }
     };
   },
   watch: {
@@ -156,6 +183,12 @@ export default {
     },
   },
   methods: {
+    toggleTotals(){
+      if(!this.showTotalsMenu){
+        this.getComponents(true);
+      }
+      this.showTotalsMenu = !this.showTotalsMenu;
+    },    
     dateToUpdated(){
       this.getComponents();
     },
@@ -185,9 +218,10 @@ export default {
     showAlert(message) {
       (this.alertSecs = 3), (this.alertMessage = message);
     },
-    getComponents() {
+    getComponents(totals) {
       var query = {params: {
-        pageable: this.pageable, 
+        pageable: this.pageable,
+        totals: totals, 
         nameSearch: this.nameSearch, 
         supplierId: this.supplierKv.id,
         itemId: this.itemKv.id, 
@@ -195,9 +229,19 @@ export default {
         componentTypeId: this.componentTypeKv.id,
         dateFrom: this.dateFrom,
         dateTo: this.dateTo}};
-      http.get("/component/inventory/pageable", query).then(response => {
-        this.components = response.data.content;
-        this.pageable.totalElements = response.data.totalElements;
+      http.get("/component/inventory/pageable", query).then(r => {
+        if(totals){
+          this.totals.received = parseFloat(r.data.content[0][0]);
+          this.totals.produced = parseFloat(r.data.content[0][1]);
+          this.totals.shipped = parseFloat(r.data.content[0][2]);
+          this.totals.floor = parseFloat(r.data.content[0][3]);
+          this.totals.asmbly = parseFloat(r.data.content[0][4]);
+          this.totals.all = parseFloat(r.data.content[0][5]);
+          this.totals.price = parseFloat(r.data.content[0][6]);
+        } else {
+          this.components = r.data.content;
+          this.pageable.totalElements = r.data.totalElements;
+        }
       }).catch(e => {
         console.log("API error: " + e);
       });
