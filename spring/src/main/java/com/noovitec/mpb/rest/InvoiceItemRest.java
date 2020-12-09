@@ -15,7 +15,7 @@ import java.util.Map;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.FontUnderline;
+import org.apache.poi.ss.usermodel.DataFormat;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFFont;
@@ -143,24 +143,15 @@ class InvoiceItemRest {
 		sheet.setColumnWidth(7, 4000);
 		 
 		Row rowHeader = sheet.createRow(0);	 
-		CellStyle headerStyle = workbook.createCellStyle();
-		XSSFFont headerFont = workbook.createFont();
-		headerFont.setFontName("Arial");
-		headerFont.setBold(true);
-		headerStyle.setFont(headerFont);
-		addCell(0, "Customer", rowHeader, headerStyle);
-		addCell(1, "Invoice #", rowHeader, headerStyle);
-		addCell(2, "Date", rowHeader, headerStyle);
-		addCell(3, "Sale #", rowHeader, headerStyle);
-		addCell(4, "Item # (Name)", rowHeader, headerStyle);
-		addCell(5, "Qty", rowHeader, headerStyle);
-		addCell(6, "Unit Price", rowHeader, headerStyle);
-		addCell(7, "Amount", rowHeader, headerStyle);
+		addCell(0, "Customer", rowHeader, workbook, true);
+		addCell(1, "Invoice #", rowHeader, workbook, true);
+		addCell(2, "Date", rowHeader, workbook, true);
+		addCell(3, "Sale #", rowHeader, workbook, true);
+		addCell(4, "Item # (Name)", rowHeader, workbook, true);
+		addCell(5, "Qty", rowHeader, workbook, true);
+		addCell(6, "Unit Price", rowHeader, workbook, true);
+		addCell(7, "Amount", rowHeader, workbook, true);
 		
-		XSSFFont cellFont = ((XSSFWorkbook) workbook).createFont();
-		cellFont.setFontName("Arial");
-		cellFont.setBold(false);
-		CellStyle cellStyle = workbook.createCellStyle();
 		int rowCount = 1;
 		for (Map.Entry<Long, List<InvoiceItem>> entry : customers.entrySet()) {
 			List<InvoiceItem> invoiceItems = entry.getValue();
@@ -175,25 +166,22 @@ class InvoiceItemRest {
 					customerName = "";
 				}
 				Row row = sheet.createRow(rowCount);
-				cellStyle.setFont(cellFont);
-				addCell(0, customerName, row, headerStyle);
-				addCell(1, String.valueOf(ii.getInvoice().getNumber()), row, cellStyle);
-				addCell(2, ii.getInvoice().getDate().format(dateFormat), row, cellStyle);
-				addCell(3, String.valueOf(ii.getSaleItem().getSale().getNumber()), row, cellStyle);
-				addCell(4, String.valueOf(ii.getSaleItem().getItemPackaging().getItem().getNumber()) + " (" + ii.getSaleItem().getItemPackaging().getItem().getName() + ")", row, cellStyle);
-				addCell(5, String.valueOf(ii.getUnitsInvoiced()), row, cellStyle);
-				addCell(6, String.valueOf(ii.getUnitPrice()), row, cellStyle);
-				addCell(7, String.valueOf(ii.getTotalUnitPrice()), row, cellStyle);
+				addCell(0, customerName, row, workbook, true);
+				addCell(1, String.valueOf(ii.getInvoice().getNumber()), row, workbook, false);
+				addCell(2, ii.getInvoice().getDate().format(dateFormat), row, workbook, false);
+				addCell(3, String.valueOf(ii.getSaleItem().getSale().getNumber()), row, workbook, false);
+				addCell(4, String.valueOf(ii.getSaleItem().getItemPackaging().getItem().getNumber()) + " (" + ii.getSaleItem().getItemPackaging().getItem().getName() + ")", row, workbook, false);
+				addCellLong(5, ii.getUnitsInvoiced(), row, workbook, false, false);
+				addCellBigDecimal(6, ii.getUnitPrice(), row, workbook, false, false);
+				addCellBigDecimal(7, ii.getTotalUnitPrice(), row, workbook, false, false);
 				totalAmount = totalAmount.add(ii.getTotalUnitPrice());
 				totalUnits += ii.getUnitsInvoiced();
 				invoiceItemCount++;
 				rowCount++;
 			}
 			Row totalAmountRow = sheet.createRow(rowCount);
-			cellStyle.setFont(cellFont);
-			headerStyle.setBorderTop(BorderStyle.THIN);
-			addCell(5, String.valueOf(totalUnits), totalAmountRow, headerStyle);
-			addCell(7, String.valueOf(totalAmount), totalAmountRow, headerStyle);
+			addCellLong(5, totalUnits, totalAmountRow, workbook, true, true);
+			addCellBigDecimal(7, totalAmount, totalAmountRow, workbook, true, true);
 			rowCount++;
 			
 		};
@@ -204,9 +192,41 @@ class InvoiceItemRest {
 		return baos.toByteArray();
 	}
 
-	private void addCell(int column, String value, Row row, CellStyle style) {
+	private void addCell(int column, String value, Row row, XSSFWorkbook workbook, boolean bold) {
+		CellStyle style = workbook.createCellStyle();
+		XSSFFont font = workbook.createFont();
+		font.setBold(bold);
+		style.setFont(font);
 		Cell cell = row.createCell(column);
 		cell.setCellValue(value);
+		cell.setCellStyle(style);
+	}
+	
+	private void addCellLong(int column, long value, Row row, XSSFWorkbook workbook, boolean bold, boolean border) {
+		CellStyle style = workbook.createCellStyle();
+		if(border) {
+			style.setBorderTop(BorderStyle.THIN);
+		}
+		XSSFFont font = workbook.createFont();
+		font.setBold(bold);
+		style.setFont(font);
+		style.setDataFormat(workbook.createDataFormat().getFormat("#,##0"));
+		Cell cell = row.createCell(column);
+		cell.setCellValue(value);
+		cell.setCellStyle(style);
+	}
+	
+	private void addCellBigDecimal(int column, BigDecimal value, Row row, XSSFWorkbook workbook, boolean bold, boolean border) {
+		CellStyle style = workbook.createCellStyle();
+		if(border) {
+			style.setBorderTop(BorderStyle.THIN);
+		}
+		XSSFFont font = workbook.createFont();
+		font.setBold(bold);
+		style.setFont(font);
+		style.setDataFormat(workbook.createDataFormat().getFormat("$#,##0.00"));
+		Cell cell = row.createCell(column);
+		cell.setCellValue(value.doubleValue());
 		cell.setCellStyle(style);
 	}
 }
