@@ -18,23 +18,22 @@
                 <b-select option-value="id" option-text="name" :list="availableComponentTypes" v-model="componentTypeKv" placeholder="Type"></b-select>
               </b-col>
             </b-row>
+            <br/>
+            <b-row>
+              <b-col cols=12>
+                Include All Floor is > 0:<input type="checkbox" style="margin-left: 3px" v-model="positiveFloor">
+                , is = 0:<input type="checkbox" style="margin-left: 3px" v-model="zeroFloor">
+                , is < 0:<input type="checkbox" style="margin-left: 3px" v-model="negativeFloor">
+              </b-col>
+            </b-row>
+            <br/>
           </div>
         </b-popover>
-      <b-col cols=2>
-        <input class="form-control" style="font-size: 12px" type="tel" v-model="nameSearch" @keyup.enter="getComponents()" placeholder="Number or Name"/>
-      </b-col>
-      <b-col cols=2>
-        <b-select option-value="id" option-text="name" :list="availableSuppliers" v-model="supplierKv" placeholder="Supplier"></b-select>
-      </b-col>
-      <b-col cols=2>
-        <b-select option-value="id" option-text="name" :list="availableItems" v-model="itemKv" placeholder="Item"></b-select>
-      </b-col>
-      <b-col cols=2>
-        <input style="height: 33px" class="form-control" type="date" v-model="dateFrom" @change="dateToUpdated()">
-      </b-col>
-      <b-col cols=2>
-        <input style="height: 33px" class="form-control" type="date" v-model="dateTo" @change="dateToUpdated()">
-      </b-col>
+        <input class="form-control" style="width: 200px; margin-left: 3px; font-size: 12px" type="tel" v-model="nameSearch" @keyup.enter="getComponents()" placeholder="Number or Name"/>
+        <b-select style="width: 200px; margin-left: 3px;" option-value="id" option-text="name" :list="availableSuppliers" v-model="supplierKv" placeholder="Supplier"></b-select>
+        <b-select style="width: 200px; margin-left: 3px;" option-value="id" option-text="name" :list="availableItems" v-model="itemKv" placeholder="Item"></b-select>
+        <input style="width: 165px; margin-left: 3px; height: 33px" class="form-control" type="date" v-model="dateFrom" @change="dateToUpdated()">
+        <input style="width: 165px; margin-left: 3px; height: 33px" class="form-control" type="date" v-model="dateTo" @change="dateToUpdated()">
       <b-col cols=1>
         <div style="margin-left: 15px">
           <b-button id="totalsMenu" size="sm" @click="toggleTotals()">Totals</b-button>
@@ -154,6 +153,9 @@ export default {
       categoryKv: {},
       dateFrom:moment().startOf('year').format("YYYY-MM-DD"),
       dateTo: moment().format("YYYY-MM-DD"),
+      positiveFloor: true,
+      zeroFloor: false,
+      negativeFloor: false,
       showFilterMenu: false,
       showTotalsMenu: false,
       totals: {
@@ -179,6 +181,15 @@ export default {
       this.getComponents();
     },
     componentTypeKv(new_value, old_value){
+      this.getComponents();
+    },
+    positiveFloor(new_value, old_value){
+      this.getComponents();
+    },
+    zeroFloor(new_value, old_value){
+      this.getComponents();
+    },
+    negativeFloor(new_value, old_value){
       this.getComponents();
     },
   },
@@ -228,7 +239,10 @@ export default {
         categoryId: this.categoryKv.id, 
         componentTypeId: this.componentTypeKv.id,
         dateFrom: this.dateFrom,
-        dateTo: this.dateTo}};
+        dateTo: this.dateTo,
+        positiveFloor: this.positiveFloor,
+        zeroFloor: this.zeroFloor,
+        negativeFloor: this.negativeFloor}};
       http.get("/component/inventory/pageable", query).then(r => {
         if(totals){
           this.totals.received = parseFloat(r.data.content[0][0]);
