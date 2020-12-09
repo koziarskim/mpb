@@ -143,7 +143,6 @@ public interface ComponentService {
 					unitsForSale += (long) Math.ceil(ic.getItem().getUnitsSold()*ic.getUnits());
 				}
 				component.setUnitsOnStock(unitsReceived - unitsForProduction);
-//				component.setUnitsOnStock(0);
 				component.setUnitsLocked(unitsScheduled - unitsForProduction);
 				component.setUnitsSoldNotProd(unitsForSale - unitsForProduction);
 				component.setUnitsOrdered(unitsOrdered);
@@ -151,7 +150,11 @@ public interface ComponentService {
 				component.setUnitsForProduction(unitsForProduction);
 				component.setUnitsForSale(unitsForSale);
 				component.setUnitsShort((unitsForSale - unitsForProduction) - (unitsReceived - unitsForProduction) - (unitsOrdered - unitsReceived));
-				component.setAveragePrice(totalPrice.divide(BigDecimal.valueOf(receivingsCount), 4, RoundingMode.CEILING).setScale(4, RoundingMode.CEILING));
+				BigDecimal averagePrice = BigDecimal.ZERO;
+				if(receivingsCount > 0) {
+					averagePrice = totalPrice.divide(BigDecimal.valueOf(receivingsCount), 4, RoundingMode.CEILING).setScale(4, RoundingMode.CEILING);
+				}
+				component.setAveragePrice(averagePrice);
 				componentRepo.save(component);
 				counter++;
 				log.info("Updated Component: " + component.getId());
