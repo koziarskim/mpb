@@ -89,7 +89,7 @@ export default {
         { key: "categoryName", label: "Category", sortable: false },
         { key: "componentTypeName", label: "Type", sortable: false },
         { key: "supplierName", label: "Supplier", sortable: false },
-        { key: "unitsOnStock", label: "Stock", sortable: false },
+        { key: "unitsOnStock", label: "Floor", sortable: false },
         { key: "unitsForSale", label: "Sales", sortable: false },
         { key: "unitsSchedProd", label: "Sched/Prod", sortable: false },
         { key: "unitsOrderedRec", label: "PO/Received", sortable: false },
