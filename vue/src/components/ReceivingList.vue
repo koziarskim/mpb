@@ -74,7 +74,6 @@ export default {
         { key: "purchase", label: "Purchase", sortable: false },
         { key: "component", label: "Component", sortable: false },
         { key: "supplierName", label: "Supplier", sortable: false },
-        { key: "containerNumber", label: "Container", sortable: false },
         { key: "receivedDate", label: "Received", sortable: false },
         { key: "unitsReceived", label: "Units", sortable: false },
         { key: "action", label: "", sortable: false }
