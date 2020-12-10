@@ -146,6 +146,7 @@ export default {
         this.getInvoices();
     },
 	  getInvoices(totals) {
+      this.showTotalsMenu = false;
       var query = {params: {
         pageable: this.pageable,
         totals: totals,

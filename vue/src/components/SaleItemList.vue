@@ -13,7 +13,7 @@
             <input type="checkbox" style="margin-left: 20px" v-model="showAll">
           </div>
           <div style="margin-left: 15px">
-            <b-button id="totalsMenu" size="sm" @click="toggleShowTotals()">Totals</b-button>
+            <b-button id="totalsMenu" size="sm" @click="toggleTotals()">Totals</b-button>
             <b-popover :show="showTotalsMenu" placement="bottom" target="totalsMenu" variant="secondary">
               <div style="width: 300px; font-size: 16px">
                 <div>Total of {{pageable.totalElements.toLocaleString()}} rows</div>
@@ -174,7 +174,7 @@ export default {
       this.scheduleEventModalVisible = false;
       this.getSaleItems();
     },
-    toggleShowTotals(){
+    toggleTotals(){
       this.getSaleItems(true);
       this.showTotalsMenu = !this.showTotalsMenu;
     },    
@@ -207,6 +207,7 @@ export default {
         this.getSaleItems();
     },
   getSaleItems(totals){
+    this.showTotalsMenu = false;
     http.get("/saleItem/pageable", {params: {
         pageable: this.pageable,  
         totals: totals, 

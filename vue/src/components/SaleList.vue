@@ -20,7 +20,7 @@
         </b-col>
         <b-col cols=1>
           <div style="display: flex">
-            <b-button id="totalsMenu" size="sm" @click="toggleShowTotals()">Totals</b-button>
+            <b-button id="totalsMenu" size="sm" @click="toggleTotals()">Totals</b-button>
             <b-popover :show="showTotalsMenu" placement="bottom" target="totalsMenu" variant="secondary">
               <div style="width: 300px; font-size: 16px">
                 <div>Total of {{pageable.totalElements}} rows</div>
@@ -167,7 +167,7 @@ export default {
         }
       })
     },
-    toggleShowTotals(){
+    toggleTotals(){
       this.getSales(true);
       this.showTotalsMenu = !this.showTotalsMenu;
     },
@@ -233,6 +233,7 @@ export default {
         this.getSales();
     },
 	getSales(totals) {
+    this.showTotalsMenu = false;
     var query = {params: {
       pageable: this.pageable,
       totals: totals, 

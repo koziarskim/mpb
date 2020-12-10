@@ -230,6 +230,7 @@ export default {
       (this.alertSecs = 3), (this.alertMessage = message);
     },
     getComponents(totals) {
+      this.showTotalsMenu = false;
       var query = {params: {
         pageable: this.pageable,
         totals: totals, 

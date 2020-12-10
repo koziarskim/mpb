@@ -41,7 +41,7 @@
       </b-col>
       <b-col cols=2>
         <div style="display: flex">
-          <b-button id="totalsMenu" size="sm" @click="toggleShowTotals()">Totals</b-button>
+          <b-button id="totalsMenu" size="sm" @click="toggleTotals()">Totals</b-button>
           <b-popover :show="showTotalsMenu" placement="bottom" target="totalsMenu" variant="secondary">
             <div style="width: 300px; font-size: 16px">
               <div>Total of {{pageable.totalElements}} rows</div>
@@ -204,7 +204,7 @@ export default {
       this.receivingIds = [];
       this.getReceivings();
     },
-    toggleShowTotals(){
+    toggleTotals(){
       if(!this.showTotalsMenu){
         this.getReceivings(true);
         this.getTotalPo();
@@ -249,6 +249,7 @@ export default {
         return date? moment(date).utc().format("MM/DD/YYYY"):"";
     },
     getReceivings(totals) {
+      this.showTotalsMenu = false;
       http.get("/receiving/pageable", {params: {pageable: this.pageable,
         totals: totals, 
         purchaseId: this.purchaseKv.id, 

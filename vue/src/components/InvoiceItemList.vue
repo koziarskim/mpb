@@ -34,7 +34,7 @@
           <b-select style="width: 200px; margin-left: 3px;" option-value="id" option-text="name" :list="availableItems" v-model="itemKv" placeholder="Item"></b-select>
           <b-select style="width: 200px; margin-left: 3px;" option-value="id" option-text="name" :list="availableCustomers" v-model="customerKv" placeholder="Customer"></b-select>
           <b-select style="width: 200px; margin-left: 3px;" option-value="id" option-text="name" :list="availableShipments" v-model="shipmentKv" placeholder="Shipment"></b-select>
-        <b-button style="margin-left: 3px;" id="totalsMenu" size="sm" @click="toggleShowTotals()">Totals</b-button>
+        <b-button style="margin-left: 3px;" id="totalsMenu" size="sm" @click="toggleTotals()">Totals</b-button>
         <b-popover :show="showTotalsMenu" placement="bottom" target="totalsMenu" variant="secondary">
           <div style="width: 300px; font-size: 16px">
             <div>Total items: {{pageable.totalElements}}</div>
@@ -165,7 +165,7 @@ export default {
     getTotalUnitPrice(ii){
       return parseFloat(ii.totalUnitPrice).toLocaleString('en-US',{minimumFractionDigits: 2})
     },
-    toggleShowTotals(){
+    toggleTotals(){
       if(!this.showTotalsMenu){
         this.getInvoiceItems(true);
       }
@@ -183,6 +183,7 @@ export default {
         this.getInvoiceItems();
     },
 	  getInvoiceItems(totals) {
+      this.showTotalsMenu = false;
       var query = {params: {
         totals: totals,
         pageable: this.pageable,
