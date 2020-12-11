@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashSet;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Index;
@@ -12,7 +13,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -58,7 +58,11 @@ public class Component extends BaseEntity {
 	private BigDecimal averagePrice =BigDecimal.ZERO;
 	private String shelf;
 	private LocalDate expiration;
-	
+
+	@JsonIgnoreProperties(value = { "component" }, allowSetters = true)
+	@OneToMany(mappedBy = "component", cascade = CascadeType.ALL, orphanRemoval = true)
+	private Collection<ComponentAdjustment> componentAdjustments = new HashSet<ComponentAdjustment>();
+
 	@JsonIgnoreProperties(value = { "component" }, allowSetters = true)
 	@OneToMany()
 	@JoinColumn(name = "component_id")
