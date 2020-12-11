@@ -151,7 +151,7 @@ export default {
       componentTypeKv: {},
       availableCategories: [],
       categoryKv: {},
-      dateFrom:moment().startOf('year').format("YYYY-MM-DD"),
+      dateFrom:moment('2019-01-01').format("YYYY-MM-DD"),
       dateTo: moment().format("YYYY-MM-DD"),
       positiveFloor: true,
       zeroFloor: false,

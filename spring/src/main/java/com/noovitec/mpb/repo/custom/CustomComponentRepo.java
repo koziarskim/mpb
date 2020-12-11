@@ -97,6 +97,7 @@ public interface CustomComponentRepo {
 						+ "where c.id is not null "
 						+ "group by c.id ) other on other.cid = c.id "
 					+ "where c.id is not null "
+					+ "and other.cat_name != 'Non Inventory' "
 					+ "and ((coalesce(rec.units_received,0)-coalesce(sold.units_shipped,0)) = 0.1 ";
 			if(positiveFloor) {
 				q += "or (coalesce(rec.units_received,0)-coalesce(sold.units_shipped,0)) > 0 ";
