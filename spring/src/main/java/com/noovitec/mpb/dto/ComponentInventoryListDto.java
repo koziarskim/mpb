@@ -27,6 +27,7 @@ public class ComponentInventoryListDto {
 	private Long unitsOnFloor;
 	private BigDecimal averageUnitPrice;
 	private Long totalFloorPrice;
+	private Long unitsAdjusted;
 	
 	 public ComponentInventoryListDto(Object...fields) {
 	        super();
@@ -45,6 +46,7 @@ public class ComponentInventoryListDto {
 	        this.unitsOnFloor = fields[12]==null?null:((BigDecimal) fields[12]).longValue();
 	        this.averageUnitPrice = (BigDecimal) fields[13];
 	        this.totalFloorPrice = fields[14]==null?null:((BigDecimal) fields[14]).longValue();
+	        this.unitsAdjusted = fields[15]==null?null:((BigDecimal) fields[15]).longValue();
 
 	    }
 }

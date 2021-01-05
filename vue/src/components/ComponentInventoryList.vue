@@ -41,6 +41,7 @@
             <div style="width: 300px; font-size: 16px">
               <div><b>Total Components:</b> {{pageable.totalElements.toLocaleString()}}</div>
               <div><b>Total Received:</b> {{totals.received.toLocaleString()}}</div>
+              <div><b>Total Adjusted:</b> {{totals.adjusted.toLocaleString()}}</div>
               <div><b>Total Produced:</b> {{totals.produced.toLocaleString()}}</div>
               <div><b>Total Shipped:</b> {{totals.shipped.toLocaleString()}}</div>
               <div><b>Total Units Floor:</b> {{totals.floor.toLocaleString()}}</div>
@@ -55,6 +56,9 @@
     <b-table no-local-sorting @sort-changed="sorted" :items="components" :fields="fields">
       <template v-slot:head(unitsReceived)="row">
         <div>Received</div><div class="mpb-head-line">Units Received</div>
+      </template>
+      <template v-slot:head(unitsAdjusted)="row">
+        <div>Adjusted</div><div class="mpb-head-line">Units Adjusted</div>
       </template>
       <template v-slot:head(unitsProduced)="row">
         <div>Produced</div><div class="mpb-head-line">Used For Prod</div>
@@ -134,6 +138,7 @@ export default {
         { key: "name", label: "Component # (Name)", sortable: false },
         { key: "supplierName", label: "Supplier", sortable: false },
         { key: "unitsReceived", label: "Rec", sortable: false },
+        { key: "unitsAdjusted", label: "Adjusted", sortable: false },
         { key: "unitsProduced", label: "Prod", sortable: false },
         { key: "unitsShipped", label: "Shipp", sortable: false },
         { key: "compOnFloor", label: "Comp Floor", sortable: false },
@@ -154,12 +159,13 @@ export default {
       dateFrom:moment('2019-01-01').format("YYYY-MM-DD"),
       dateTo: moment().format("YYYY-MM-DD"),
       positiveFloor: true,
-      zeroFloor: false,
-      negativeFloor: false,
+      zeroFloor: true,
+      negativeFloor: true,
       showFilterMenu: false,
       showTotalsMenu: false,
       totals: {
         received: 0,
+        adjusted: 0,
         produced: 0,
         shipped: 0,
         floor: 0,
@@ -253,6 +259,7 @@ export default {
           this.totals.asmbly = parseFloat(r.data.content[0][4]);
           this.totals.all = parseFloat(r.data.content[0][5]);
           this.totals.price = parseFloat(r.data.content[0][6]);
+          this.totals.adjusted = parseFloat(r.data.content[0][7]);
         } else {
           this.components = r.data.content;
           this.pageable.totalElements = r.data.totalElements;
