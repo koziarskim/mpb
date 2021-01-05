@@ -14,6 +14,9 @@
       <template v-slot:cell(component)="row">
         {{row.item.componentNumber + " - " + row.item.componentName}}
       </template>
+      <template v-slot:cell(unitsAdjusted)="row">
+          <b-button size="sm" @click="adjustStock(row.item.id)" variant="link">{{row.item.unitsAdjusted}}</b-button>
+      </template>
     </b-table>
     <div style="display: flex">
       <b-pagination size="sm" v-model="pageable.currentPage" :per-page="pageable.perPage" :total-rows="pageable.totalElements" @change="paginationChange"></b-pagination>
@@ -56,11 +59,12 @@ export default {
     },
   },
   methods: {
-    adjustStock(){
-      if(!this.componentKv.id){
+    adjustStock(componentAdjustmentId){
+      if(!componentAdjustmentId && !this.componentKv.id){
         alert("Please, select component to adjust");
         return false;
       }
+      this.componentAdjustmentId = componentAdjustmentId;
       this.componentAdjustmentModalVisible = true;
     },
     closeComponentAdjustmentModal(){

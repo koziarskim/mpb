@@ -2,11 +2,35 @@
   <b-container fluid>
     <b-modal centered size="lg" v-model="visible" :hide-header="true" :hide-footer="true">
       	<b-row>
+			<b-col cols=8>
+				<label class="top-label">Component:</label>
+				<div>{{componentAdjustment.component.number + " - "+componentAdjustment.component.name}}</div>				
+			</b-col>
 			<b-col>
 				<div style="text-align: right;">
 					<b-button style="margin: 0 2px 0 2px" @click="closeModal()">Close</b-button>
 					<b-button style="margin: 0 2px 0 2px" @click="saveModal()" variant="success">Save</b-button>
 				</div>
+			</b-col>
+		</b-row>
+		<b-row>
+			<b-col cols=3>
+				<label class="top-label">Date:</label>
+				<input class="form-control"  type="date" v-model="componentAdjustment.date" placeholder="0">				
+			</b-col>
+			<b-col cols=2>
+				<label class="top-label">Units:</label>
+				<input class="form-control"  type="tel" v-model="componentAdjustment.unitsAdjusted" placeholder="0">				
+			</b-col>
+			<b-col cols=3>
+				<label class="top-label">Reason:</label>
+				<b-select option-value="id" option-text="name" :list="availableReasons" v-model="reasonKv" placeholder="Component"></b-select>
+			</b-col>
+		</b-row>
+		<b-row>
+			<b-col cols=8>
+				<label class="top-label">Notes:</label>
+				<b-form-textarea type="text" :rows="3" v-model="componentAdjustment.notes"></b-form-textarea>
 			</b-col>
 		</b-row>
     </b-modal>
@@ -20,7 +44,7 @@ import moment from "moment";
 
 export default {
   props: {
-	  componentId: {type: Number, required: true},
+	  componentId: {type: Number, required: false},
 	  componentAdjustmentId: {type: Number, required: false},
   },
   data() {
@@ -28,19 +52,25 @@ export default {
 		componentAdjustment: {
 			component: {}
 		},
-	    visible: true,
+		visible: true,
+		availableReasons: [
+			{id: "DAMAGED", name: "Damaged"},
+			{id: "LOST", name: "Lost"},
+		],
+		reasonKv: {},
     };
   },
   computed: {},
   watch:{},
   methods: {
-		getAddress(){
-			http.get("/address/"+this.addressId).then(r => {
-				this.address = r.data;
-			}).catch(e => {
-				console.log("API error: " + e)
-			})
-		},
+	getComponentAdjustment(id) {
+      http.get("/componentAdjustment/" + id).then(r => {
+		this.componentAdjustment = r.data;
+		this.reasonKv = {id: r.data.reason};
+    	}).catch(e => {
+			console.log("API error: " + e);
+		});
+    },
     validate() {
 			// if(!this.address.dc || !this.address.street || !this.address.city || !this.address.state || !this.address.zip){
 			// 	alert("Required: DC Name, Street, City, Zip, State");
@@ -50,7 +80,10 @@ export default {
     },
     saveModal() {
 	  if (!this.validate()) {return;}
-	  this.componentAdjustment.component.id = this.componentId;
+	  if(!this.componentAdjustment.component.id){
+	  	this.componentAdjustment.component.id = this.componentId;
+	  }
+	  this.componentAdjustment.reason = this.reasonKv.id;
       http.post("/componentAdjustment", this.componentAdjustment).then(response => {
         this.closeModal(response.data);
 			}).catch(e => {
@@ -63,7 +96,7 @@ export default {
   },
   mounted() {
 		if(this.componentAdjustmentId){
-			this.getComponentAdjustment();
+			this.getComponentAdjustment(this.componentAdjustmentId);
 		}
   }
 };
