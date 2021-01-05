@@ -4,13 +4,24 @@
       <b-col cols=2>
         <b-select option-value="id" option-text="name" :list="availableComponents" v-model="componentKv" placeholder="Component"></b-select>
       </b-col>
+      <b-col cols=1 offset=9>
+        <div>
+          <b-button size="sm" variant="primary" @click="adjustStock()">Adjust</b-button>
+        </div>
+      </b-col>
     </b-row>
     <b-table no-local-sorting @sort-changed="sorted" :items="componentAdjustments" :fields="fields">
+      <template v-slot:cell(component)="row">
+        {{row.item.componentNumber + " - " + row.item.componentName}}
+      </template>
     </b-table>
     <div style="display: flex">
       <b-pagination size="sm" v-model="pageable.currentPage" :per-page="pageable.perPage" :total-rows="pageable.totalElements" @change="paginationChange"></b-pagination>
       <span style="margin-top: 5px">Total of {{pageable.totalElements}} rows</span>
     </div>
+    <div v-if="componentAdjustmentModalVisible">
+      <component-adjustment-modal :component-id="componentKv.id" :component-adjustment-id="componentAdjustmentId" v-on:close="closeComponentAdjustmentModal"></component-adjustment-modal>
+    </div>    
   </b-container>
 </template>
 <script>
@@ -20,16 +31,23 @@ import moment from "moment";
 
 export default {
   name: "ComponentList",
+  components: {
+    ComponentAdjustmentModal: () => import("./modals/ComponentAdjustmentModal"),
+  },
   data() {
     return {
       pageable: {totalElements: 100, currentPage: 1, perPage: 25, sortBy: 'date', sortDesc: true},
       fields: [
-        { key: "id", label: "ID", sortable: false },
-        { key: "action", label: "", sortable: false }
+        { key: "component", label: "Component", sortable: false },
+        { key: "unitsAdjusted", label: "Units", sortable: false },
+        { key: "date", label: "Date", sortable: false },
+        { key: "reason", label: "Reason", sortable: false },
       ],
       componentAdjustments: [],
       availableComponents: [],
       componentKv: {},
+      componentAdjustmentModalVisible: false,
+      componentAdjustmentId: null,
     };
   },
   watch: {
@@ -38,6 +56,17 @@ export default {
     },
   },
   methods: {
+    adjustStock(){
+      if(!this.componentKv.id){
+        alert("Please, select component to adjust");
+        return false;
+      }
+      this.componentAdjustmentModalVisible = true;
+    },
+    closeComponentAdjustmentModal(){
+      this.componentAdjustmentModalVisible = false;
+      this.getComponentAdjustments();
+    },
     sorted(e){
         if(!e.sortBy){ return }
         this.pageable.sortBy = e.sortBy;

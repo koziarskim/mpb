@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.noovitec.mpb.dto.ComponentAdjustmentListDto;
 import com.noovitec.mpb.dto.ComponentDto;
-import com.noovitec.mpb.entity.Component;
 import com.noovitec.mpb.entity.ComponentAdjustment;
 import com.noovitec.mpb.repo.ComponentAdjustmentRepo;
 
@@ -47,12 +47,19 @@ class ComponentAdjustmentRest {
 	}
 
 	@GetMapping("/componentAdjustment/pageable")
-	Page<ComponentDto> getAllPageable(@RequestParam Pageable pageable, 
+	Page<ComponentAdjustmentListDto> getAllPageable(@RequestParam Pageable pageable, 
 			@RequestParam(required = false) Long componentId) {
-		Page<ComponentAdjustment> components = componentAdjustmentRepo.findPage(pageable, componentId);
-		Page<ComponentDto> dtos = components.map(component -> {
-			ComponentDto dto = new ComponentDto();
-			dto.setId(component.getId());
+		Page<ComponentAdjustment> caList = componentAdjustmentRepo.findPage(pageable, componentId);
+		Page<ComponentAdjustmentListDto> dtos = caList.map(ca -> {
+			ComponentAdjustmentListDto dto = new ComponentAdjustmentListDto();
+			dto.setId(ca.getId());
+			dto.setDate(ca.getDate());
+			dto.setNotes(ca.getNotes());
+			dto.setReason(ca.getReason());
+			dto.setUnitsAdjusted(ca.getUnitsAdjusted());
+			dto.setComponentId(ca.getComponent().getId());
+			dto.setComponentNumber(ca.getComponent().getNumber());
+			dto.setComponentName(ca.getComponent().getName());
 		    return dto;
 		});
 		return dtos;
