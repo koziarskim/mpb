@@ -8,6 +8,7 @@
 			</b-col>
 			<b-col>
 				<div style="text-align: right;">
+					<b-button style="margin: 0 2px 0 2px" @click="deleteModal()">Delete</b-button>
 					<b-button style="margin: 0 2px 0 2px" @click="closeModal()">Close</b-button>
 					<b-button style="margin: 0 2px 0 2px" @click="saveModal()" variant="success">Save</b-button>
 				</div>
@@ -50,7 +51,8 @@ export default {
   data() {
     return {
 		componentAdjustment: {
-			component: {}
+			component: {},
+			date: moment().format("YYYY-MM-DD"),
 		},
 		visible: true,
 		availableReasons: [
@@ -72,10 +74,10 @@ export default {
 		});
     },
     validate() {
-			// if(!this.address.dc || !this.address.street || !this.address.city || !this.address.state || !this.address.zip){
-			// 	alert("Required: DC Name, Street, City, Zip, State");
-			// 	return false;
-			// }
+			if(!this.componentAdjustment.date || !this.reasonKv.id || !this.componentAdjustment.unitsAdjusted){
+				alert("Date, Reason and Units are required");
+				return false;
+			}
       return true;
     },
     saveModal() {
@@ -89,6 +91,17 @@ export default {
 			}).catch(e => {
 				console.log("API error: " + e);
 			});
+    },
+    deleteModal() {
+      this.$bvModal.msgBoxConfirm("Are you sure you want to delete this Adjustment?").then(ok => {
+        if(ok){
+          http.delete("/componentAdjustment/"+this.componentAdjustment.id).then(r => {
+            this.closeModal();
+          }).catch(e => {
+            console.log("API Error: "+e);
+          });
+            }
+        })
     },
     closeModal() {
       this.$emit("close");
