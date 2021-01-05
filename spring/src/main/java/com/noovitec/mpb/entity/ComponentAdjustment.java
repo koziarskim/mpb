@@ -20,8 +20,7 @@ import lombok.NoArgsConstructor;
 @Entity
 public class ComponentAdjustment extends BaseEntity {
 	
-	private static final long serialVersionUID = 2292278437462733745L;
-
+	private static final long serialVersionUID = -2143229024849030526L;
 	private long unitsAdjusted;
 	private LocalDate date;
 	private String reason;

@@ -39,6 +39,7 @@ import BillList from "./components/BillList";
 import PackagingList from "./components/PackagingList";
 import PackagingEdit from "./components/PackagingEdit";
 import ItemPackagingList from "./components/ItemPackagingList";
+import ComponentAdjustmentList from "./components/ComponentAdjustmentList";
 
 Vue.use(Router);
 
@@ -144,6 +145,16 @@ const router = new Router({
       path: "/componentInventoryList",
       name: "ComponentInventoryList",
       component: ComponentInventoryList,
+      meta: {
+        roles: ["READ_ONLY"],
+        group: "component",
+        viewClass: "view-component"
+      }
+    },
+    {
+      path: "/componentAdjustmentList",
+      name: "ComponentAdjustmentList",
+      component: ComponentAdjustmentList,
       meta: {
         roles: ["READ_ONLY"],
         group: "component",
