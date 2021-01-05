@@ -33,7 +33,7 @@ import router from "../router";
 import moment from "moment";
 
 export default {
-  name: "ComponentList",
+  name: "ComponentAdjustmentList",
   components: {
     ComponentAdjustmentModal: () => import("./modals/ComponentAdjustmentModal"),
   },
@@ -104,6 +104,10 @@ export default {
     },
   },
   mounted() {
+    var componentId = this.$route.query.componentId;
+    if(componentId){
+      this.componentKv = {id: componentId}
+    }
     this.getAvailableComponents();
   },
   activated(){

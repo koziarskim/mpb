@@ -21,9 +21,9 @@
             <br/>
             <b-row>
               <b-col cols=12>
-                Include All Floor is > 0:<input type="checkbox" style="margin-left: 3px" v-model="positiveFloor">
-                , is = 0:<input type="checkbox" style="margin-left: 3px" v-model="zeroFloor">
-                , is < 0:<input type="checkbox" style="margin-left: 3px" v-model="negativeFloor">
+                Include All Floor is &#62; 0:<input type="checkbox" style="margin-left: 3px" v-model="positiveFloor">
+                , is &#61; 0:<input type="checkbox" style="margin-left: 3px" v-model="zeroFloor">
+                , is &#60; 0:<input type="checkbox" style="margin-left: 3px" v-model="negativeFloor">
               </b-col>
             </b-row>
             <br/>
@@ -82,7 +82,7 @@
         <div>Total Price</div><div class="mpb-head-line">All Floor * Price</div>
       </template>
       <template v-slot:cell(name)="row">
-        <div style="width:200px; overflow: wrap; font-size: 14px"><b-link role="button" @click.stop="goToComponent(row.item.id)">{{row.item.number}}</b-link> {{row.item.name}}</div>
+        <div style="width:200px; overflow: wrap; font-size: 14px"><b-link role="button" @click="goToComponent(row.item.id)">{{row.item.number}}</b-link> {{row.item.name}}</div>
       </template>
       <template v-slot:cell(supplierName)="row">
         <div style="font-size: 12px">{{row.item.supplierName}}</div>
@@ -90,6 +90,9 @@
       </template>
       <template v-slot:cell(unitsReceived)="row">
         {{row.item.unitsReceived.toLocaleString()}}
+      </template>
+      <template v-slot:cell(unitsAdjusted)="row">
+        <b-link role="button" @click="goToComponentAdjustment(row.item.id)">{{row.item.unitsAdjusted.toLocaleString()}}</b-link>
       </template>
       <template v-slot:cell(unitsProduced)="row">
         {{row.item.unitsProduced.toLocaleString()}}
@@ -306,6 +309,10 @@ export default {
       } else {
         router.push("/componentEdit/" + component_id);
       }
+    },
+    goToComponentAdjustment(componentId) {
+      var query = { componentId: componentId };
+      router.push({ path: "/componentAdjustmentList", query: query });
     },
     goToReceiving(component_id){
       var query = { component_id: component_id };

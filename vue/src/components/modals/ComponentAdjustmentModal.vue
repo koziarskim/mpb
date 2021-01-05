@@ -73,6 +73,13 @@ export default {
 			console.log("API error: " + e);
 		});
     },
+	getComponent(id) {
+      http.get("/component/" + id).then(r => {
+		this.componentAdjustment.component = r.data;
+    	}).catch(e => {
+			console.log("API error: " + e);
+		});
+    },
     validate() {
 			if(!this.componentAdjustment.date || !this.reasonKv.id || !this.componentAdjustment.unitsAdjusted){
 				alert("Date, Reason and Units are required");
@@ -110,6 +117,8 @@ export default {
   mounted() {
 		if(this.componentAdjustmentId){
 			this.getComponentAdjustment(this.componentAdjustmentId);
+		}else{
+			this.getComponent(this.componentId);
 		}
   }
 };
