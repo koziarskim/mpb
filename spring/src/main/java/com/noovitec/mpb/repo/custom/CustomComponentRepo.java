@@ -104,15 +104,15 @@ public interface CustomComponentRepo {
 						+ "and ca.date <= :dateTo "
 						+ "group by ca.component_id) adjusted on adjusted.cid = c.id "
 					+ "where c.id is not null "
-					+ "and ((coalesce(rec.units_received,0)-coalesce(sold.units_shipped,0)) = 0.1 ";
+					+ "and ((coalesce(rec.units_received,0)+coalesce(adjusted.units_adjusted,0)-coalesce(sold.units_shipped,0)) = 0.1 ";
 			if(positiveFloor) {
-				q += "or (coalesce(rec.units_received,0)-coalesce(sold.units_shipped,0)) > 0 ";
+				q += "or (coalesce(rec.units_received,0)+coalesce(adjusted.units_adjusted,0)-coalesce(sold.units_shipped,0)) > 0 ";
 			}
 			if(zeroFloor) {
-				q += "or (coalesce(rec.units_received,0)-coalesce(sold.units_shipped,0)) = 0 ";
+				q += "or (coalesce(rec.units_received,0)+coalesce(adjusted.units_adjusted,0)-coalesce(sold.units_shipped,0)) = 0 ";
 			}
 			if(negativeFloor) {
-				q += "or (coalesce(rec.units_received,0)-coalesce(sold.units_shipped,0)) < 0 ";
+				q += "or (coalesce(rec.units_received,0)+coalesce(adjusted.units_adjusted,0)-coalesce(sold.units_shipped,0)) < 0 ";
 			}
 				q += ")";
 			if(!nonInventory) {

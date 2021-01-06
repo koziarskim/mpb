@@ -29,6 +29,7 @@
         <label class="top-label">Floor:
           <b-link role="button" @click="goToReceiving(component.id)">{{component.unitsOnStock}}</b-link>
         </label>
+        <br/>
         <label class="top-label">
           <b-link role="button" @click="adjustStock()">Adjust</b-link>
         </label>
@@ -196,7 +197,8 @@ export default {
   },
   computed: {
     adjustStock(){
-
+      var query = { componentId: this.component.id };
+      router.push({ path: "/componentAdjustmentList", query: query });
     },
     totalLandedCost() {
       return (

@@ -26,4 +26,5 @@ CREATE TABLE component_adjustment
         REFERENCES component (id)
 );
 
+ALTER TABLE component_adjustment ALTER COLUMN component_id SET NOT NULL;
 ---------------------------------

@@ -55,6 +55,9 @@ public interface ComponentService {
 			for(ItemComponent ic: component.getItemComponents()) {
 				ic.setComponent(component);
 			}
+			for(ComponentAdjustment ca: component.getComponentAdjustments()) {
+				ca.setComponent(component);
+			}
 			return componentRepo.save(component);
 		}
 		
