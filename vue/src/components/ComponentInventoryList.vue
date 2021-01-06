@@ -27,6 +27,11 @@
               </b-col>
             </b-row>
             <br/>
+            <b-row>
+              <b-col cols=12>
+                Include Non Inventory:<input type="checkbox" style="margin-left: 3px" v-model="nonInventory">
+              </b-col>
+            </b-row>
           </div>
         </b-popover>
         <input class="form-control" style="width: 200px; margin-left: 3px; font-size: 12px" type="tel" v-model="nameSearch" @keyup.enter="getComponents()" placeholder="Number or Name"/>
@@ -164,6 +169,7 @@ export default {
       positiveFloor: true,
       zeroFloor: true,
       negativeFloor: true,
+      nonInventory: false,
       showFilterMenu: false,
       showTotalsMenu: false,
       totals: {
@@ -199,6 +205,9 @@ export default {
       this.getComponents();
     },
     negativeFloor(new_value, old_value){
+      this.getComponents();
+    },
+    nonInventory(new_value, old_value){
       this.getComponents();
     },
   },
@@ -252,7 +261,8 @@ export default {
         dateTo: this.dateTo,
         positiveFloor: this.positiveFloor,
         zeroFloor: this.zeroFloor,
-        negativeFloor: this.negativeFloor}};
+        negativeFloor: this.negativeFloor,
+        nonInventory: this.nonInventory}};
       http.get("/component/inventory/pageable", query).then(r => {
         if(totals){
           this.totals.received = parseFloat(r.data.content[0][0]);

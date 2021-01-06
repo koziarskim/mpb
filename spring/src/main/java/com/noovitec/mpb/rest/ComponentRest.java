@@ -79,9 +79,10 @@ class ComponentRest {
 			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dateTo,
 			@RequestParam(required = false) boolean positiveFloor,
 			@RequestParam(required = false) boolean zeroFloor,
-			@RequestParam(required = false) boolean negativeFloor) {
+			@RequestParam(required = false) boolean negativeFloor,
+			@RequestParam(required = false) boolean nonInventory) {
 		Page<?> dtos = componentRepo.findInventoryPage(pageable, totals, nameSearch, supplierId, itemId, 
-			categoryId, componentTypeId, dateFrom, dateTo, positiveFloor, zeroFloor, negativeFloor);
+			categoryId, componentTypeId, dateFrom, dateTo, positiveFloor, zeroFloor, negativeFloor, nonInventory);
 		return dtos;
 	}
 

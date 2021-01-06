@@ -23,7 +23,7 @@ import com.noovitec.mpb.entity.Component;
 public interface CustomComponentRepo {
 	Page<?> findInventoryPage(Pageable pageable, boolean totals, String nameSearch, Long supplierId, 
 			Long itemId, Long categoryId, Long componentTypeId, LocalDate dateFrom, LocalDate dateTo,
-			boolean positiveFloor, boolean zeroFloor, boolean negativeFloor);
+			boolean positiveFloor, boolean zeroFloor, boolean negativeFloor, boolean nonInventory);
 	Page<Component> findPage(Pageable pageable, String nameSearch, Long supplierId, Long itemId, String unitFilter,
 			Long categoryId, Long componentTypeId);
 
@@ -38,7 +38,7 @@ public interface CustomComponentRepo {
 		@Override
 		public Page<?> findInventoryPage(Pageable pageable, boolean totals, String nameSearch, Long supplierId,
 				Long itemId, Long categoryId, Long componentTypeId, LocalDate dateFrom, LocalDate dateTo,
-				boolean positiveFloor, boolean zeroFloor, boolean negativeFloor) {
+				boolean positiveFloor, boolean zeroFloor, boolean negativeFloor, boolean nonInventory) {
 			String q = "";
 			if(totals) {
 				q += "select sum(coalesce(rec.units_received,0)) as units_received, "
@@ -104,7 +104,6 @@ public interface CustomComponentRepo {
 						+ "and ca.date <= :dateTo "
 						+ "group by ca.component_id) adjusted on adjusted.cid = c.id "
 					+ "where c.id is not null "
-					+ "and other.cat_name != 'Non Inventory' "
 					+ "and ((coalesce(rec.units_received,0)-coalesce(sold.units_shipped,0)) = 0.1 ";
 			if(positiveFloor) {
 				q += "or (coalesce(rec.units_received,0)-coalesce(sold.units_shipped,0)) > 0 ";
@@ -116,6 +115,9 @@ public interface CustomComponentRepo {
 				q += "or (coalesce(rec.units_received,0)-coalesce(sold.units_shipped,0)) < 0 ";
 			}
 				q += ")";
+			if(!nonInventory) {
+				q += "and other.cat_name != 'Non Inventory' ";
+			}
 			if (nameSearch != null && !nameSearch.isEmpty()) {
 				q += "and (upper(c.number) like concat('%',upper(:nameSearch),'%') ";
 				q += "or upper(c.name) like concat('%',upper(:nameSearch),'%')) ";
