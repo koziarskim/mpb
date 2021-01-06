@@ -44,10 +44,10 @@ public interface CustomComponentRepo {
 				q += "select sum(coalesce(rec.units_received,0)) as units_received, "
 						+ "sum(coalesce(prod.units_produced,0)) as units_produced, "
 						+ "sum(coalesce(sold.units_shipped,0)) as units_shipped, "
-						+ "sum(coalesce(rec.units_received,0)-coalesce(adjusted.units_adjusted,0)-coalesce(prod.units_produced,0)) as comp_on_floor, "
+						+ "sum(coalesce(rec.units_received,0)+coalesce(adjusted.units_adjusted,0)-coalesce(prod.units_produced,0)) as comp_on_floor, "
 						+ "sum(coalesce(prod.units_produced,0)-coalesce(sold.units_shipped,0)) as prod_on_floor, "
-						+ "sum(coalesce(rec.units_received,0)-coalesce(adjusted.units_adjusted,0)-coalesce(sold.units_shipped,0)) as units_on_floor, "
-						+ "sum(c.average_price*(coalesce(rec.units_received,0)-coalesce(adjusted.units_adjusted,0)-coalesce(sold.units_shipped,0))) as total,"
+						+ "sum(coalesce(rec.units_received,0)+coalesce(adjusted.units_adjusted,0)-coalesce(sold.units_shipped,0)) as units_on_floor, "
+						+ "sum(c.average_price*(coalesce(rec.units_received,0)+coalesce(adjusted.units_adjusted,0)-coalesce(sold.units_shipped,0))) as total,"
 						+ "sum(coalesce(adjusted.units_adjusted,0)) as units_adjusted ";
 			} else {
 				q += "select distinct c.id as id, c.number as number, c.name as name, other.cat_name as categoryName,"
@@ -55,9 +55,9 @@ public interface CustomComponentRepo {
 						+ "coalesce(rec.units_received,0) as units_received, "
 						+ "coalesce(prod.units_produced,0) as units_produced, "
 						+ "coalesce(sold.units_shipped,0) as units_shipped, "
-						+ "(coalesce(rec.units_received,0)-coalesce(adjusted.units_adjusted,0)-coalesce(prod.units_produced,0)) as comp_on_floor, "
+						+ "(coalesce(rec.units_received,0)+coalesce(adjusted.units_adjusted,0)-coalesce(prod.units_produced,0)) as comp_on_floor, "
 						+ "(coalesce(prod.units_produced,0)-coalesce(sold.units_shipped,0)) as prod_on_floor, "
-						+ "(coalesce(rec.units_received,0)-coalesce(adjusted.units_adjusted,0)-coalesce(sold.units_shipped,0)) as units_on_floor, "
+						+ "(coalesce(rec.units_received,0)+coalesce(adjusted.units_adjusted,0)-coalesce(sold.units_shipped,0)) as units_on_floor, "
 						+ "c.average_price as unit_price, "
 						+ "c.average_price*(coalesce(rec.units_received,0)-coalesce(sold.units_shipped,0)) as total, "
 						+ "coalesce(adjusted.units_adjusted,0) as units_adjusted ";

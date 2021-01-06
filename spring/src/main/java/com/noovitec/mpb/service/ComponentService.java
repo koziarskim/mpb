@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.noovitec.mpb.entity.Component;
+import com.noovitec.mpb.entity.ComponentAdjustment;
 import com.noovitec.mpb.entity.ItemComponent;
 import com.noovitec.mpb.entity.PurchaseComponent;
 import com.noovitec.mpb.entity.Receiving;
@@ -113,11 +114,15 @@ public interface ComponentService {
 			Long counter = 0L;
 			Iterable<Component> components = componentIds==null?componentRepo.findAll():componentRepo.findByIds(componentIds);
 			for (Component component : components) {
-				Long unitsReceived = 0L;
-				Long unitsOrdered = 0L;
+				long unitsReceived = 0;
+				long unitsOrdered = 0;
+				long unitsAdjusted = 0;
 				BigDecimal totalPrice = BigDecimal.ZERO;
 				long receivingsCount = 0;
 				LocalDateTime lastDate = LocalDateTime.parse("2000-01-01T01:01:01");
+				for(ComponentAdjustment ca: component.getComponentAdjustments()) {
+					unitsAdjusted += ca.getUnitsAdjusted();
+				}
 				for(PurchaseComponent pc: component.getPurchaseComponents()) {
 					unitsOrdered += pc.getUnits();
 					for(Receiving r: pc.getReceivings()) {
@@ -142,14 +147,14 @@ public interface ComponentService {
 					unitsForProduction += (long) Math.ceil(ic.getItem().getUnitsProduced()*ic.getUnits());
 					unitsForSale += (long) Math.ceil(ic.getItem().getUnitsSold()*ic.getUnits());
 				}
-				component.setUnitsOnStock(unitsReceived - unitsForProduction);
+				component.setUnitsOnStock(unitsReceived + unitsAdjusted - unitsForProduction);
 				component.setUnitsLocked(unitsScheduled - unitsForProduction);
 				component.setUnitsSoldNotProd(unitsForSale - unitsForProduction);
 				component.setUnitsOrdered(unitsOrdered);
 				component.setUnitsReceived(unitsReceived);
 				component.setUnitsForProduction(unitsForProduction);
 				component.setUnitsForSale(unitsForSale);
-				component.setUnitsShort((unitsForSale - unitsForProduction) - (unitsReceived - unitsForProduction) - (unitsOrdered - unitsReceived));
+				component.setUnitsShort((unitsForSale - unitsForProduction) - (unitsReceived + unitsAdjusted - unitsForProduction) - (unitsOrdered - unitsReceived));
 				BigDecimal averagePrice = BigDecimal.ZERO;
 				if(receivingsCount > 0) {
 					averagePrice = totalPrice.divide(BigDecimal.valueOf(receivingsCount), 4, RoundingMode.CEILING).setScale(4, RoundingMode.CEILING);

@@ -102,21 +102,4 @@ public class Component extends BaseEntity {
 		this.unitsLocked = (long) Math.ceil(units);
 	}
 	
-	public long getUnitsOnFloor() {
-		long ucReceived = 0;
-		long ucShipped = 0;
-		for(ItemComponent ic: this.getItemComponents()) {
-			for(PurchaseComponent pc: ic.getComponent().getPurchaseComponents()) {
-				for(Receiving r: pc.getReceivings()) {
-					ucReceived += r.getUnits();
-				}
-			}
-			for(ItemPackaging ip: ic.getItem().getItemPackagings()) {
-				for(SaleItem si: ip.getSaleItems()) {
-					ucShipped += (si.getUnitsShipped()/ic.getUnits());
-				}
-			}
-		}
-		return ucReceived - ucShipped;
-	}
 }
