@@ -58,6 +58,7 @@ export default {
 		availableReasons: [
 			{id: "DAMAGED", name: "Damaged"},
 			{id: "LOST", name: "Lost"},
+			{id: "WEARHOUSE_SALE", name: "Wearhouse Sale"},
 		],
 		reasonKv: {},
     };
