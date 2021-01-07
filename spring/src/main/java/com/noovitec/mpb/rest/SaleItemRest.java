@@ -1,5 +1,8 @@
 package com.noovitec.mpb.rest;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -11,7 +14,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,10 +26,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.pdf.AcroFields;
+import com.itextpdf.text.pdf.PdfCopy;
+import com.itextpdf.text.pdf.PdfImportedPage;
+import com.itextpdf.text.pdf.PdfReader;
+import com.itextpdf.text.pdf.PdfSmartCopy;
+import com.itextpdf.text.pdf.PdfStamper;
 import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.dto.SaleItemDto;
-import com.noovitec.mpb.entity.InvoiceItem;
-import com.noovitec.mpb.entity.Item;
 import com.noovitec.mpb.entity.SaleItem;
 import com.noovitec.mpb.repo.SaleItemRepo;
 import com.noovitec.mpb.service.CrudService;
@@ -86,12 +98,8 @@ class SaleItemRest {
 				dto.setUnitsScheduled(saleItem.getUnitsScheduled());
 				dto.setUnitsProduced(saleItem.getUnitsProduced());
 				dto.setUnitsShipped(saleItem.getUnitsShipped());
-	//			dto.setUnitsOnStock(saleItem.getUnitsOnStock());
-	//			dto.setUnitsTransferedTo(saleItem.getUnitsTransferedTo());
-	//			dto.setUnitsTranferedFrom(saleItem.getUnitsTransferedFrom());
 				dto.setUnitsAdjusted(saleItem.getUnitsAdjusted());
 				dto.setUnitsAssigned(saleItem.getUnitsAssigned());
-	//			dto.setInvoicedAmount(saleItem.getInvoicedAmount());
 				dto.setStatus(saleItem.getStatus());
 				dto.setPackagingLabel(saleItem.getItemPackaging().getLabel());
 				return dto;
@@ -165,36 +173,74 @@ class SaleItemRest {
 		return ResponseEntity.ok().build();
 	}
 	
-	private Page<SaleItemDto> mapToDto(Page<SaleItem> saleItems) {
-		Page<SaleItemDto> all = saleItems.map(saleItem -> {
-			SaleItemDto dto = new SaleItemDto();
-			dto.setId(saleItem.getId());
-			dto.setSaleId(saleItem.getSale().getId());
-			dto.setSaleNumber(saleItem.getSale().getNumber());
-			dto.setSaleName(saleItem.getSale().getName());
-			dto.setItemId(saleItem.getItemPackaging().getItem().getId());
-			dto.setItemNumber(saleItem.getItemPackaging().getItem().getNumber());
-			dto.setItemName(saleItem.getItemPackaging().getItem().getName());
-			dto.setCustomerId(saleItem.getSale().getCustomer().getId());
-			dto.setCustomerName(saleItem.getSale().getCustomer().getName());
-			dto.setDc(saleItem.getSale().getShippingAddress() != null
-					? saleItem.getSale().getShippingAddress().getDc() + " (" + saleItem.getSale().getShippingAddress().getState()
-					: "");
-			dto.setUnitsSold(Long.valueOf(saleItem.getUnits()));
-			dto.setUnitsScheduled(saleItem.getUnitsScheduled());
-			dto.setUnitsProduced(saleItem.getUnitsProduced());
-			dto.setUnitsShipped(saleItem.getUnitsShipped());
-//			dto.setUnitsOnStock(saleItem.getUnitsOnStock());
-//			dto.setUnitsTransferedTo(saleItem.getUnitsTransferedTo());
-//			dto.setUnitsTranferedFrom(saleItem.getUnitsTransferedFrom());
-			dto.setUnitsAdjusted(saleItem.getUnitsAdjusted());
-			dto.setUnitsAssigned(saleItem.getUnitsAssigned());
-//			dto.setInvoicedAmount(saleItem.getInvoicedAmount());
-			dto.setStatus(saleItem.getStatus());
-			dto.setPackagingLabel(saleItem.getItemPackaging().getLabel());
-			return dto;
-		});
-		return all;
+	@GetMapping("/saleItem/{id}/pdf")
+	HttpEntity<byte[]> getPdf(@PathVariable Long id) throws DocumentException, IOException {
+		SaleItem saleItem = saleItemRepo.findById(id).get();
+		String fileName = "PO_"+saleItem.getSale().getNumber()+"_"+saleItem.getSale().getName() +".pdf";
+		byte[] data = this.generatePdf(saleItem);
+		HttpHeaders header = new HttpHeaders();
+		header.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+		header.set("Content-Disposition", "inline; filename=" + fileName);
+		header.setContentLength(data.length);
+		return new HttpEntity<byte[]>(data, header);
 	}
 
+	private byte[] generatePdf(SaleItem saleItem) throws IOException, DocumentException {
+	    Document doc = new Document();
+	    ByteArrayOutputStream mainBaos = new ByteArrayOutputStream();
+	    PdfSmartCopy copy = new PdfSmartCopy(doc, mainBaos);
+	    doc.open();
+	    
+		InputStream in = this.getClass().getClassLoader().getResourceAsStream("pdf/Carton-Label.pdf");
+		PdfReader mainReader = new PdfReader(in);
+	    
+	    PdfReader reader;
+	    ByteArrayOutputStream baos;
+	    PdfStamper stamper;
+	    AcroFields form;
+	    int totalPages = 500;
+	    for(int i = 1; i <= totalPages; i++) {
+	        
+	        reader = new PdfReader(mainReader);
+	        baos = new ByteArrayOutputStream();
+	        stamper = new PdfStamper(reader, baos);
+	        form = stamper.getAcroFields();
+	        
+	        //methods to fill forms
+	        String page = "Page "+String.valueOf(i)+" of "+totalPages;
+	        stamper.getAcroFields().setField("page", page);
+	        stamper.setFormFlattening(true);
+	        stamper.close();
+	        
+	        reader = new PdfReader(baos.toByteArray());
+	        copy.addPage(copy.getImportedPage(reader, 1));
+	    }
+
+	    doc.close();
+	    return mainBaos.toByteArray();
+	}
+		
+		
+		
+		
+//		Document document = new Document();
+//		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//		PdfCopy copy = new PdfSmartCopy(document, baos);
+//		document.open();
+//
+//		InputStream in = this.getClass().getClassLoader().getResourceAsStream("pdf/Carton-Label.pdf");
+//		PdfReader pdfTemplate = new PdfReader(in);
+//
+//	    
+//
+//		PdfStamper stamper = new PdfStamper(pdfTemplate, baos);
+//		stamper.setFormFlattening(true);
+//		stamper.getAcroFields().setField("page", "1");
+//		PdfImportedPage importedPage = copy.getImportedPage(pdfTemplate, 1);
+//		copy.addPage(importedPage);
+//		stamper.close();
+//		pdfTemplate.close();
+//		return baos.toByteArray();
+//	}
+	
 }
