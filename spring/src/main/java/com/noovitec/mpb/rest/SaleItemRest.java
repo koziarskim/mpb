@@ -190,28 +190,17 @@ class SaleItemRest {
 	    ByteArrayOutputStream mainBaos = new ByteArrayOutputStream();
 	    PdfSmartCopy copy = new PdfSmartCopy(doc, mainBaos);
 	    doc.open();
-	    
 		InputStream in = this.getClass().getClassLoader().getResourceAsStream("pdf/Carton-Label.pdf");
 		PdfReader mainReader = new PdfReader(in);
-	    
-	    PdfReader reader;
-	    ByteArrayOutputStream baos;
-	    PdfStamper stamper;
-	    AcroFields form;
-	    int totalPages = 500;
+	    int totalPages = 5;
 	    for(int i = 1; i <= totalPages; i++) {
-	        
-	        reader = new PdfReader(mainReader);
-	        baos = new ByteArrayOutputStream();
-	        stamper = new PdfStamper(reader, baos);
-	        form = stamper.getAcroFields();
-	        
-	        //methods to fill forms
+	    	PdfReader reader = new PdfReader(mainReader);
+	        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+	        PdfStamper stamper = new PdfStamper(reader, baos);
 	        String page = "Page "+String.valueOf(i)+" of "+totalPages;
 	        stamper.getAcroFields().setField("page", page);
 	        stamper.setFormFlattening(true);
 	        stamper.close();
-	        
 	        reader = new PdfReader(baos.toByteArray());
 	        copy.addPage(copy.getImportedPage(reader, 1));
 	    }
@@ -219,28 +208,4 @@ class SaleItemRest {
 	    doc.close();
 	    return mainBaos.toByteArray();
 	}
-		
-		
-		
-		
-//		Document document = new Document();
-//		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//		PdfCopy copy = new PdfSmartCopy(document, baos);
-//		document.open();
-//
-//		InputStream in = this.getClass().getClassLoader().getResourceAsStream("pdf/Carton-Label.pdf");
-//		PdfReader pdfTemplate = new PdfReader(in);
-//
-//	    
-//
-//		PdfStamper stamper = new PdfStamper(pdfTemplate, baos);
-//		stamper.setFormFlattening(true);
-//		stamper.getAcroFields().setField("page", "1");
-//		PdfImportedPage importedPage = copy.getImportedPage(pdfTemplate, 1);
-//		copy.addPage(importedPage);
-//		stamper.close();
-//		pdfTemplate.close();
-//		return baos.toByteArray();
-//	}
-	
 }
