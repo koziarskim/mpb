@@ -555,11 +555,11 @@ export default {
       if(this.allowEdit()){
         this.saveShipment().then(shipment => {
           this.shipment.id = shipment.id;
-          var url = httpUtils.getUrl("/shipment/" + this.shipment.id + "/pdf");
+          var url = httpUtils.getUrl("/shipment/" + this.shipment.id + "/pdf", "");
           window.open(url, "_blank","")
         })
       }else{
-        var url = httpUtils.getUrl("/shipment/" + this.shipment.id + "/pdf");
+        var url = httpUtils.getUrl("/shipment/" + this.shipment.id + "/pdf", "");
         window.open(url, "_blank","")
       }
     },

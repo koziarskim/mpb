@@ -221,7 +221,7 @@ export default {
       router.push({ path: "/receivingList", query: query });
     },
     rowPdfUrl: function(purchase_id) {
-      return httpUtils.getUrl("/purchase/" + purchase_id + "/pdf");
+      return httpUtils.getUrl("/purchase/" + purchase_id + "/pdf", "");
     }
   },
   mounted() {

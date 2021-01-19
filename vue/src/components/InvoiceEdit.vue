@@ -242,7 +242,7 @@ export default {
       "847-258-3558\n"
     },
     getPdfUrl(invoiceId) {
-      return httpUtils.getUrl("/invoice/" + invoiceId + "/pdf");
+      return httpUtils.getUrl("/invoice/" + invoiceId + "/pdf", "");
     },
     getTotalUnitPrice(invoiceItem){
       invoiceItem.totalUnitPrice = +invoiceItem.unitPrice * +invoiceItem.unitsInvoiced;

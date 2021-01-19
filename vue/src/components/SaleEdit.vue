@@ -105,9 +105,6 @@
           <template v-slot:cell(unitsAssigned)="row">
             <input :disabled="!allowEdit()" class="form-control" style="width:80px" type="tel" v-model="row.item.unitsAssigned">
           </template>
-          <template v-slot:cell(sku)="row">
-            <input :disabled="!allowEdit()" class="form-control" style="width:80px" type="tel" v-model="row.item.sku">
-          </template>
           <template v-slot:cell(cost)="row">
             <span>${{(+row.item.itemPackaging.item.totalCost + +row.item.itemPackaging.packaging.totalPackagingCost).toFixed(2)}}</span>
           </template>
@@ -138,7 +135,36 @@
             <b-button size="sm" variant="link" @click="goToShipment(row.item)">{{row.item.unitsShipped}}</b-button>
           </template>
           <template v-slot:cell(action)="row">
-            <b-button size="sm" @click="deleteItem(row.item)">X</b-button>
+            <b-button size="sm" :id="'popover-menu'+row.item.id" @click="openActionMenu(row.item)">...</b-button>
+            <b-popover placement="bottomleft" :target="'popover-menu'+row.item.id" variant="secondary">
+                <b-row>
+                  <b-col cols=4>
+                    <label class="top-label">SKU: </label>
+                    <input class="form-control" type="tel" v-model="row.item.sku">
+                  </b-col>
+                  <b-col cols=4>
+                    <label class="top-label">DEPT: </label>
+                    <input class="form-control" type="tel" v-model="row.item.department">
+                  </b-col>
+                  <b-col cols=4>
+                    <label class="top-label">Best By: </label>
+                    <input class="form-control" type="date" v-model="row.item.expiration">
+                  </b-col>
+                </b-row>
+                <br/>
+                <b-row>
+                  <b-col cols=6>
+                    <div style="display: flex">
+                      <b-button style="" size="sm" variant="link" @click="downloadCarton(row.item.id)">Download Carton Label</b-button>
+                      <input class="form-control" style="font-size: 12px; width: 60px; height: 30px" type="tel" v-model="pageFrom">-
+                      <input class="form-control" style="font-size: 12px; width: 60px; height: 30px" type="tel" v-model="pageTo">
+                    </div>
+                  </b-col>
+                  <b-col cols=6 style="text-align: right;">
+                    <b-button size="sm" variant="link" @click="deleteItem(row.item)">Delete Item</b-button>
+                  </b-col>
+                </b-row>
+            </b-popover>
           </template>
         </b-table>
       </b-col>
@@ -172,6 +198,7 @@ import http from "../http-common";
 import router from "../router";
 import securite from "../securite";
 import moment from "moment";
+import httpUtils from "../httpUtils";
 
 export default {
   components: {
@@ -205,7 +232,6 @@ export default {
         { key: "item", label: "Item", sortable: false },
         { key: "packaging", label: "Package", sortable: false },
         { key: "itemPackaging.unitsOnStock", label: "Stock", sortable: false },
-        { key: "sku", label: "SKU#", sortable: false },
         { key: "units", label: "Sold", sortable: false },
         { key: "unitsAdjusted", label: "Adjusted", sortable: false },
         { key: "unitsAssigned", label: "Assigned", sortable: false },
@@ -235,6 +261,8 @@ export default {
       itemPackaging: {
         item: {},
       },
+      pageFrom: 1,
+      pageTo: 1,
       availableStatus: [
         {id: 'DRAFT', name: 'Draft'},
         {id: 'READY', name: 'Ready'},
@@ -298,6 +326,14 @@ export default {
     }
   },
   methods: {
+    openActionMenu(saleItem){
+      this.pageFrom = 1;
+      this.pageTo = this.getCases(saleItem);
+    },
+    downloadCarton(saleItemId){
+      var url = httpUtils.getUrl("/saleItem/" + saleItemId + "/pdf", "&pageFrom="+this.pageFrom+"&pageTo="+this.pageTo);
+      window.open(url, "_blank","")
+    },
     getTotalUnitPrice(saleItem){
       saleItem.totalUnitPrice = saleItem.totalUnitPrice = (+saleItem.unitPrice * +saleItem.units);
       return saleItem.totalUnitPrice.toLocaleString('en-US',{minimumFractionDigits: 2});

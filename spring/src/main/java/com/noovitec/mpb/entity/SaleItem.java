@@ -1,10 +1,10 @@
 package com.noovitec.mpb.entity;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashSet;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -39,6 +39,8 @@ public class SaleItem extends BaseEntity {
 
 	private BigDecimal invoicedAmount;
 	private String sku;
+	private String department;
+	private LocalDate expiration;
 	private String status;
 	
 	@JsonIgnoreProperties(value = { "saleItems", "purchaseSales" }, allowSetters = true)

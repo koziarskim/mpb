@@ -174,10 +174,13 @@ class SaleItemRest {
 	}
 	
 	@GetMapping("/saleItem/{id}/pdf")
-	HttpEntity<byte[]> getPdf(@PathVariable Long id) throws DocumentException, IOException {
+	HttpEntity<byte[]> getPdf(
+			@PathVariable Long id,
+			@RequestParam int pageFrom,
+			@RequestParam int pageTo) throws DocumentException, IOException {
 		SaleItem saleItem = saleItemRepo.findById(id).get();
-		String fileName = "PO_"+saleItem.getSale().getNumber()+"_"+saleItem.getSale().getName() +".pdf";
-		byte[] data = this.generatePdf(saleItem);
+		String fileName = "Carton_"+saleItem.getSale().getNumber()+"_"+saleItem.getItemPackaging().getItem().getNumber()+".pdf";
+		byte[] data = this.generatePdf(saleItem, pageFrom, pageTo);
 		HttpHeaders header = new HttpHeaders();
 		header.setContentType(MediaType.APPLICATION_OCTET_STREAM);
 		header.set("Content-Disposition", "inline; filename=" + fileName);
@@ -185,19 +188,18 @@ class SaleItemRest {
 		return new HttpEntity<byte[]>(data, header);
 	}
 
-	private byte[] generatePdf(SaleItem saleItem) throws IOException, DocumentException {
+	private byte[] generatePdf(SaleItem saleItem, int pageFrom, int pageTo) throws IOException, DocumentException {
 	    Document doc = new Document();
 	    ByteArrayOutputStream mainBaos = new ByteArrayOutputStream();
 	    PdfSmartCopy copy = new PdfSmartCopy(doc, mainBaos);
 	    doc.open();
 		InputStream in = this.getClass().getClassLoader().getResourceAsStream("pdf/Carton-Label.pdf");
 		PdfReader mainReader = new PdfReader(in);
-	    int totalPages = 5;
-	    for(int i = 1; i <= totalPages; i++) {
+	    for(int i = pageFrom; i <= pageTo; i++) {
 	    	PdfReader reader = new PdfReader(mainReader);
 	        ByteArrayOutputStream baos = new ByteArrayOutputStream();
 	        PdfStamper stamper = new PdfStamper(reader, baos);
-	        String page = "Page "+String.valueOf(i)+" of "+totalPages;
+	        String page = "Page "+String.valueOf(i)+" of "+pageTo;
 	        stamper.getAcroFields().setField("page", page);
 	        stamper.setFormFlattening(true);
 	        stamper.close();
