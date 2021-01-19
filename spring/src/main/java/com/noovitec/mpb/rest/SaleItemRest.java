@@ -3,6 +3,10 @@ package com.noovitec.mpb.rest;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -28,14 +32,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.pdf.AcroFields;
-import com.itextpdf.text.pdf.PdfCopy;
-import com.itextpdf.text.pdf.PdfImportedPage;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfSmartCopy;
 import com.itextpdf.text.pdf.PdfStamper;
 import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.dto.SaleItemDto;
+import com.noovitec.mpb.entity.Packaging;
 import com.noovitec.mpb.entity.SaleItem;
 import com.noovitec.mpb.repo.SaleItemRepo;
 import com.noovitec.mpb.service.CrudService;
@@ -195,10 +197,38 @@ class SaleItemRest {
 	    doc.open();
 		InputStream in = this.getClass().getClassLoader().getResourceAsStream("pdf/Carton-Label.pdf");
 		PdfReader mainReader = new PdfReader(in);
+		DecimalFormat df = new DecimalFormat();
+		df.setMaximumFractionDigits(2);
+		df.setMinimumFractionDigits(2);
+		df.setGroupingUsed(false);
 	    for(int i = pageFrom; i <= pageTo; i++) {
 	    	PdfReader reader = new PdfReader(mainReader);
 	        ByteArrayOutputStream baos = new ByteArrayOutputStream();
 	        PdfStamper stamper = new PdfStamper(reader, baos);
+	        stamper.getAcroFields().setField("dc", saleItem.getSale().getShippingAddress().getDc());
+	        String shipToAddress = saleItem.getSale().getShippingAddress().getLine()+"\n"
+	        		+saleItem.getSale().getShippingAddress().getStreet()+"\n"
+	        		+saleItem.getSale().getShippingAddress().getCity()+", "
+	        		+saleItem.getSale().getShippingAddress().getState()+" "
+	        		+saleItem.getSale().getShippingAddress().getZip();
+	        stamper.getAcroFields().setField("shipToAddress", shipToAddress);
+	        stamper.getAcroFields().setField("saleNumber", "PO# "+saleItem.getSale().getNumber());
+	        stamper.getAcroFields().setField("department", "DEPT. "+saleItem.getDepartment());
+	        stamper.getAcroFields().setField("itemNumber", saleItem.getItemPackaging().getItem().getNumber()+"-"+saleItem.getItemPackaging().getItem().getName());
+	        stamper.getAcroFields().setField("sku", "SKU: "+saleItem.getSku());
+	        stamper.getAcroFields().setField("upc", "UPC: "+String.valueOf(saleItem.getItemPackaging().getItem().getUpc().getCode()));
+	        stamper.getAcroFields().setField("casePack", "Case Pack: "+String.valueOf(saleItem.getItemPackaging().getPackaging().getCasePack()));
+	        BigDecimal weight = saleItem.getItemPackaging().getItem().getWeight().multiply(BigDecimal.valueOf(saleItem.getUnits())).round(new MathContext(0, RoundingMode.CEILING));
+	        weight = weight.add(saleItem.getItemPackaging().getPackaging().getPalletWeight());
+	        stamper.getAcroFields().setField("grossWeight", weight.intValue()+" LBS");
+	        Packaging p = saleItem.getItemPackaging().getPackaging();
+	        BigDecimal caseCube = saleItem.getItemPackaging().getPackaging().getCaseHeight().multiply(saleItem.getItemPackaging().getPackaging().getCaseLength())
+	        		.multiply(saleItem.getItemPackaging().getPackaging().getCaseWidth());
+	        caseCube = caseCube.divide(BigDecimal.valueOf(1728),2, RoundingMode.CEILING).round(new MathContext(2, RoundingMode.CEILING));
+	        stamper.getAcroFields().setField("caseCube", df.format(caseCube)+" FT3");
+	        stamper.getAcroFields().setField("totalCases", saleItem.getSale().getNumber());
+	        stamper.getAcroFields().setField("totalUnits", saleItem.getSale().getNumber());
+	        stamper.getAcroFields().setField("expiration", saleItem.getSale().getNumber());
 	        String page = "Page "+String.valueOf(i)+" of "+pageTo;
 	        stamper.getAcroFields().setField("page", page);
 	        stamper.setFormFlattening(true);
