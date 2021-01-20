@@ -219,16 +219,14 @@ class SaleItemRest {
 	        stamper.getAcroFields().setField("sku", "SKU: "+saleItem.getSku());
 	        stamper.getAcroFields().setField("upc", "UPC: "+String.valueOf(saleItem.getItemPackaging().getItem().getUpc().getCode()));
 	        stamper.getAcroFields().setField("casePack", "Case Pack: "+String.valueOf(saleItem.getItemPackaging().getPackaging().getCasePack()));
-	        BigDecimal weight = saleItem.getItemPackaging().getItem().getWeight().multiply(BigDecimal.valueOf(saleItem.getUnits())).round(new MathContext(0, RoundingMode.CEILING));
-	        weight = weight.add(saleItem.getItemPackaging().getPackaging().getPalletWeight());
-	        stamper.getAcroFields().setField("grossWeight", weight.intValue()+" LBS");
-	        Packaging p = saleItem.getItemPackaging().getPackaging();
+	        BigDecimal grossWeight = saleItem.getItemPackaging().getItem().getWeight().multiply(BigDecimal.valueOf(saleItem.getItemPackaging().getPackaging().getCasePack()));
+	        stamper.getAcroFields().setField("grossWeight", grossWeight.round(new MathContext(0, RoundingMode.CEILING)).intValue()+" LBS");
 	        BigDecimal caseCube = saleItem.getItemPackaging().getPackaging().getCaseHeight().multiply(saleItem.getItemPackaging().getPackaging().getCaseLength())
-	        		.multiply(saleItem.getItemPackaging().getPackaging().getCaseWidth());
-	        caseCube = caseCube.divide(BigDecimal.valueOf(1728),2, RoundingMode.CEILING).round(new MathContext(2, RoundingMode.CEILING));
-	        stamper.getAcroFields().setField("caseCube", df.format(caseCube)+" FT3");
-	        stamper.getAcroFields().setField("totalCases", saleItem.getSale().getNumber());
-	        stamper.getAcroFields().setField("totalUnits", saleItem.getSale().getNumber());
+	        		.multiply(saleItem.getItemPackaging().getPackaging().getCaseWidth()).divide(BigDecimal.valueOf(1728),2, RoundingMode.CEILING);
+	        stamper.getAcroFields().setField("caseCube", df.format(caseCube.round(new MathContext(2, RoundingMode.CEILING)))+" FT3");
+	        BigDecimal totalCases = BigDecimal.valueOf(saleItem.getUnits()).divide(BigDecimal.valueOf(saleItem.getItemPackaging().getPackaging().getCasePack()),2, RoundingMode.CEILING);
+	        stamper.getAcroFields().setField("totalCases", String.valueOf(totalCases.round(new MathContext(0, RoundingMode.CEILING)).intValue()));
+	        stamper.getAcroFields().setField("totalUnits", String.valueOf(saleItem.getUnits()));
 	        stamper.getAcroFields().setField("expiration", "Best By: "+saleItem.getExpiration().format(DateTimeFormatter.ofPattern("MM/dd/yyy")));
 	        String page = String.valueOf(i)+" of "+pageTo;
 	        stamper.getAcroFields().setField("page", page);
