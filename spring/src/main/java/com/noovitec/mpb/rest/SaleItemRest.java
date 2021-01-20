@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -228,16 +229,19 @@ class SaleItemRest {
 	        stamper.getAcroFields().setField("caseCube", df.format(caseCube)+" FT3");
 	        stamper.getAcroFields().setField("totalCases", saleItem.getSale().getNumber());
 	        stamper.getAcroFields().setField("totalUnits", saleItem.getSale().getNumber());
-	        stamper.getAcroFields().setField("expiration", saleItem.getSale().getNumber());
-	        String page = "Page "+String.valueOf(i)+" of "+pageTo;
+	        stamper.getAcroFields().setField("expiration", "Best By: "+saleItem.getExpiration().format(DateTimeFormatter.ofPattern("MM/dd/yyy")));
+	        String page = String.valueOf(i)+" of "+pageTo;
 	        stamper.getAcroFields().setField("page", page);
 	        stamper.setFormFlattening(true);
 	        stamper.close();
 	        reader = new PdfReader(baos.toByteArray());
+	        log.info("Created Page...");
 	        copy.addPage(copy.getImportedPage(reader, 1));
+	        log.info("Copied Page...");
 	    }
 
 	    doc.close();
+	    log.info("Done....");
 	    return mainBaos.toByteArray();
 	}
 }
