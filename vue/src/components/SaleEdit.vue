@@ -155,7 +155,7 @@
                 <b-row>
                   <b-col cols=6>
                     <div style="display: flex">
-                      <b-button style="" size="sm" variant="link" @click="downloadCarton(row.item.id)">Download Carton Label</b-button>
+                      <b-button style="" size="sm" variant="link" @click="downloadCarton(row.item)">Download Carton Label</b-button>
                       <input class="form-control" style="font-size: 12px; width: 60px; height: 30px" type="tel" v-model="pageFrom">-
                       <input class="form-control" style="font-size: 12px; width: 60px; height: 30px" type="tel" v-model="pageTo">
                     </div>
@@ -330,9 +330,15 @@ export default {
       this.pageFrom = 1;
       this.pageTo = this.getCases(saleItem);
     },
-    downloadCarton(saleItemId){
-      var url = httpUtils.getUrl("/saleItem/" + saleItemId + "/pdf", "&pageFrom="+this.pageFrom+"&pageTo="+this.pageTo);
-      window.open(url, "_blank","")
+    downloadCarton(saleItem){
+      this.saveSale().then(r=> {
+        if(!saleItem.expiration){
+          alert("Best By is not set");
+          return false;
+        }
+        var url = httpUtils.getUrl("/saleItem/" + saleItem.id + "/pdf", "&pageFrom="+this.pageFrom+"&pageTo="+this.pageTo);
+        window.open(url, "_blank","")
+      })
     },
     getTotalUnitPrice(saleItem){
       saleItem.totalUnitPrice = saleItem.totalUnitPrice = (+saleItem.unitPrice * +saleItem.units);
