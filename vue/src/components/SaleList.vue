@@ -31,8 +31,8 @@
             <b-button id="sortMenu" size="sm" style="margin-left:3px">Sort</b-button>
             <b-popover :show="showSortMenu" @click="showSortMenu = !showSortMenu" placement="bottom" target="sortMenu" variant="secondary">
               <div style="width: 300px; font-size: 16px">
-                <b-button variant="link" @click="toggleSortTotals('shippingFrom', false)">Ship From A-Z</b-button><br/>
-                <b-button variant="link" @click="toggleSortTotals('shippingFrom', true)">Ship From Z-A</b-button>
+                <b-button variant="link" @click="toggleSortTotals('shippingFrom', false)">Ship latest first</b-button><br/>
+                <b-button variant="link" @click="toggleSortTotals('shippingFrom', true)">Ship earliest first</b-button>
               </div>
             </b-popover>
           </div>
