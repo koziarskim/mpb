@@ -25,6 +25,13 @@
             <label class="top-label">Pay Terms:</label>
             <input :disabled="!allowEdit()" class="form-control" type="tel" v-model="sale.paymentTerms">
           </b-col>
+          <b-col cols=2>
+            <label class="top-label">Prod. Compl.</label><br/>
+            <div style="display: flex">
+              <label class="top-label" style="margin-top:7px">Ready: </label>
+              <input style="width: 20px; height: 20px; margin-top:7px; margin-left: 5px" type="checkbox" v-model="sale.prodComplReady">
+            </div>
+          </b-col>
         </b-row>
       </b-col>
       <b-col cols=4>
