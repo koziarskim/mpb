@@ -206,6 +206,7 @@ class SaleItemRest {
 	    	PdfReader reader = new PdfReader(mainReader);
 	        ByteArrayOutputStream baos = new ByteArrayOutputStream();
 	        PdfStamper stamper = new PdfStamper(reader, baos);
+	        stamper.getAcroFields().setField("customerName", saleItem.getSale().getCustomer().getName());
 	        stamper.getAcroFields().setField("dc", saleItem.getSale().getShippingAddress().getDc());
 	        String shipToAddress = saleItem.getSale().getShippingAddress().getLine()+"\n"
 	        		+saleItem.getSale().getShippingAddress().getStreet()+"\n"
