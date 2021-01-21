@@ -123,7 +123,7 @@ public interface CustomSaleItemRepo {
 				}
 			}
 			if (!showAll) {
-				q += "and s.cancelled = false ";
+				q += "and s.cancelled = false and s.paidInFull = false";
 			}
 			Query query = entityManager.createQuery(q);
 			if (numberName != null && !numberName.isEmpty()) {

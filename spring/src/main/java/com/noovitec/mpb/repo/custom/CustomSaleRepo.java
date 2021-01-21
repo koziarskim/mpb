@@ -101,7 +101,7 @@ public interface CustomSaleRepo {
 				q += "and s.status = :status ";
 			}
 			if (!showAll) {
-				q += "and s.cancelled = false ";
+				q += "and s.cancelled = false and s.paidInFull = false ";
 			}
 			Order order = pageable.getSort().iterator().next();
 			q += "order by s."+order.getProperty() + " "+order.getDirection();
