@@ -72,7 +72,7 @@
             <b :class="getStatusClass(row.item.status)">{{getStatus(row.item.status)}}</b>
         </template>
         <template v-slot:cell(action)="row">
-          <input type="checkbox" v-model="selectedSales" :value="row.item">
+          <input type="checkbox" v-model="selectedSales" @input="toggleSaleSelected($event, row.item)" :value="row.item">
         </template>
       </b-table>
       <div style="display: flex">
@@ -150,6 +150,11 @@ export default {
     },
   },
   methods: {
+    toggleSaleSelected(e, sale){
+      if(sale.status != "SHIPPED"){
+        e.target.checked = false;
+      }
+    },
     setFullyPaid(){
       if(this.selectedSales.length == 0){
         return;
