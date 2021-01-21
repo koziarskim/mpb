@@ -214,6 +214,7 @@ export default {
         link.setAttribute("download", r.headers['file-name'])
         document.body.appendChild(link)
         link.click()
+        this.pageable.perPage = 25;
       }).catch(e => {
         console.log("API error: "+e);
       });
