@@ -41,7 +41,7 @@
           <div style="text-align: right;">
           <b-button type="submit" variant="primary" size="sm" @click="goToSale('')">New</b-button>
           <b-dropdown style="width:50px; margin-left:3px" right size="sm" :text="selectedSales.length.toString()">
-            <b-dropdown-item-button @click="exportSelected()">Export/Download</b-dropdown-item-button>
+            <b-dropdown-item-button @click="exportXls()">Export All Pages</b-dropdown-item-button>
             <b-dropdown-item-button @click="setFullyPaid()">Set Fully Paid</b-dropdown-item-button>
           </b-dropdown>
           </div>
@@ -189,19 +189,31 @@ export default {
         }
       })
     },
-    exportSelected(){
-      var saleIds = [];
-      this.selectedSales.forEach(sale=> {
-        saleIds.push(sale.id);
-      })
-      http.put("/sale/xls", saleIds, { responseType: 'blob'}).then(r => {
+    getFilterParams(totals){
+      var params = {
+        pageable: this.pageable,
+        totals: totals, 
+        saleNumber: this.saleNumber, 
+        itemId: this.itemKv.id,
+        customerId: this.customerKv.id,
+        status: this.statusKv.id,
+        showAll: this.showAll
+      }
+      return params;
+    },
+    exportXls(){
+      var pageable = this.pageable;
+      pageable.currentPage = 1;
+      pageable.perPage = pageable.totalElements;
+      var params = this.getFilterParams(false);
+      params.pageable = pageable;
+      http.get("/sale/xls", { responseType: 'blob', params: params}).then(r => {
         const url = URL.createObjectURL(new Blob([r.data], { type: r.headers['content-type']}))
         const link = document.createElement('a')
         link.href = url
         link.setAttribute("download", r.headers['file-name'])
         document.body.appendChild(link)
         link.click()
-        this.selectedSales = [];
       }).catch(e => {
         console.log("API error: "+e);
       });
@@ -234,15 +246,8 @@ export default {
     },
 	getSales(totals) {
     this.showTotalsMenu = false;
-    var query = {params: {
-      pageable: this.pageable,
-      totals: totals, 
-      saleNumber: this.saleNumber, 
-      itemId: this.itemKv.id,
-      customerId: this.customerKv.id,
-      status: this.statusKv.id,
-      showAll: this.showAll
-    }}
+    var params = this.getFilterParams(totals);
+    var query = {params: params}
     http.get("/sale/pageable", query).then(r => {
       if(totals){
         this.totalSold = r.data.content[0][0].toLocaleString();

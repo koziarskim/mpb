@@ -88,8 +88,7 @@ class SaleRest {
 	}
 
 	@GetMapping("/sale/pageable")
-	Page<?> getAllPageable(
-			@RequestParam(required = false) Pageable pageable, 
+	Page<?> getAllPageable(@RequestParam(required = false) Pageable pageable, 
 			@RequestParam(required = false) boolean totals,
 			@RequestParam(required = false) String saleNumber,
 			@RequestParam(required = false) Long itemId,
@@ -99,7 +98,6 @@ class SaleRest {
 		if(totals) {
 			Page<?> resultTotals = saleRepo.getTotals(pageable, saleNumber, itemId, customerId, status, showAll);
 			return resultTotals;
-			
 		}
 		Page<Sale> sales = saleRepo.findPagable(pageable, saleNumber, itemId, customerId, status, showAll);
 		DateTimeFormatter windowFormat = DateTimeFormatter.ofPattern("MM/dd");
@@ -126,6 +124,31 @@ class SaleRest {
 			return dto;
 		});
 		return all;
+	}
+
+	@GetMapping("/sale/xls")
+	HttpEntity<byte[]> getXls(@RequestParam(required = false) Pageable pageable, 
+			@RequestParam(required = false) boolean totals,
+			@RequestParam(required = false) String saleNumber,
+			@RequestParam(required = false) Long itemId,
+			@RequestParam(required = false) Long customerId,
+			@RequestParam(required = false) String status,
+			@RequestParam(required = false) boolean showAll) throws IOException {
+		Page<Sale> sales = saleRepo.findPagable(pageable, saleNumber, itemId, customerId, status, showAll);
+		List<Long> saleIds = new ArrayList<Long>();
+		for(Sale sale: sales) {
+			saleIds.add(sale.getId());
+		}
+		byte[] data = generateXls(saleIds);
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+		String fileName = "Sales_" + "-" + sdf.format(timestamp) +".xlsx";
+		HttpHeaders header = new HttpHeaders();
+		header.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+		header.set("Content-Disposition", "inline; filename=" + fileName);
+		header.set("File-Name", fileName);
+		header.setContentLength(data.length);
+		return new HttpEntity<byte[]>(data, header);
 	}
 
 	@GetMapping("/sale/kv/customer/{customer_id}")
@@ -167,20 +190,6 @@ class SaleRest {
 		}else {
 			return ResponseEntity.ok().body("Duplicate");
 		}
-	}
-	
-	@PutMapping("/sale/xls")
-	HttpEntity<byte[]> getXls(@RequestBody List<Long> saleIds) throws IOException {
-		byte[] data = generateXls(saleIds);
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
-		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-		String fileName = "Sales_" + "-" + sdf.format(timestamp) +".xlsx";
-		HttpHeaders header = new HttpHeaders();
-		header.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-		header.set("Content-Disposition", "inline; filename=" + fileName);
-		header.set("File-Name", fileName);
-		header.setContentLength(data.length);
-		return new HttpEntity<byte[]>(data, header);
 	}
 	
 	@PutMapping("/sale/paid")
@@ -362,7 +371,7 @@ class SaleRest {
 					windowDate += sale.getShippingTo().format(windowFormat);
 				}
 				addCell(3, windowDate, row);
-				addCell(3, sale.getDate().format(windowFormat), row);
+				addCell(3, sale.getDate()==null?"":sale.getDate().format(windowFormat), row);
 				addCell(4, si.getSku(), row);
 				addCell(5, si.getItemPackaging().getItem().getNumber(), row);
 				addCell(6, si.getItemPackaging().getItem().getName(), row);
