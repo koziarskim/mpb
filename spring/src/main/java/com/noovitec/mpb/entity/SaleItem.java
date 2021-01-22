@@ -42,6 +42,7 @@ public class SaleItem extends BaseEntity {
 	private String department;
 	private LocalDate expiration;
 	private String status;
+	private boolean pcr;
 	
 	@JsonIgnoreProperties(value = { "saleItems", "purchaseSales" }, allowSetters = true)
 	@ManyToOne()

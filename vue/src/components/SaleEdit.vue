@@ -26,11 +26,8 @@
             <input :disabled="!allowEdit()" class="form-control" type="tel" v-model="sale.paymentTerms">
           </b-col>
           <b-col cols=2>
-            <label class="top-label">Prod. Compl.</label><br/>
-            <div style="display: flex">
-              <label class="top-label" style="margin-top:7px">Ready: </label>
-              <input style="width: 20px; height: 20px; margin-top:7px; margin-left: 5px" type="checkbox" v-model="sale.prodComplReady">
-            </div>
+            <label class="top-label">PCR:</label><br/>
+            <span>{{pcr==true?'Ready':'Not Ready'}}</span>
           </b-col>
         </b-row>
       </b-col>
@@ -160,14 +157,25 @@
                 </b-row>
                 <br/>
                 <b-row>
-                  <b-col cols=6>
+                  <b-col cols=5>
                     <div style="display: flex">
-                      <b-button style="" size="sm" variant="link" @click="downloadCarton(row.item)">Download Carton Label</b-button>
+                      <b-button style="" size="sm" variant="link" @click="downloadCarton(row.item)">Carton Label</b-button>
                       <input class="form-control" style="font-size: 12px; width: 60px; height: 30px" type="tel" v-model="pageFrom">-
                       <input class="form-control" style="font-size: 12px; width: 60px; height: 30px" type="tel" v-model="pageTo">
                     </div>
                   </b-col>
-                  <b-col cols=6 style="text-align: right;">
+                  <b-col cols=2>
+                    <b-button style="" size="sm" variant="link" @click="downloadTag(row.item)">Pallet Tag</b-button>
+                  </b-col>
+                  <b-col cols=2>
+                    <div style="display: flex">
+                      <label class="top-label" style="margin-top:7px">PCR: </label>
+                      <input style="width: 20px; height: 20px; margin-top:7px; margin-left: 5px" type="checkbox" v-model="row.item.pcr">
+                    </div>
+                  </b-col>
+                </b-row>
+                <b-row>
+                  <b-col cols=12 style="text-align: right;">
                     <b-button size="sm" variant="link" @click="deleteItem(row.item)">Delete Item</b-button>
                   </b-col>
                 </b-row>
@@ -314,6 +322,9 @@ export default {
           })
           return cases;
       },
+      pcr(){
+        return this.sale.saleItems.find(si=> si.pcr == false) == null;
+      },
   },
   watch: {
     shippingAddress(new_value, old_value) {
@@ -336,6 +347,9 @@ export default {
     openActionMenu(saleItem){
       this.pageFrom = 1;
       this.pageTo = this.getCases(saleItem);
+    },
+    downloadTag(saleItem){
+
     },
     downloadCarton(saleItem){
       this.saveSale().then(r=> {
@@ -485,6 +499,7 @@ export default {
       if(!this.sale.shippingAddress || !this.sale.shippingAddress.id){
         this.sale.shippingAddress = null;
       }
+      this.sale.pcr = this.pcr;
       return http.post("/sale", this.sale).then(r => {
         this.getSaleData(r.data.id);
         return r;
