@@ -27,6 +27,7 @@ public class Address extends BaseEntity {
 	private boolean visible;
 	private String notes;
 	private String phone;
+	private String locationName;
 	
 	@Transient
 	private String label;

@@ -44,9 +44,13 @@
 				</b-col>
 			</b-row>
 			<b-row>
-				<b-col cols=10>
+				<b-col cols=5>
 					<label class="top-label">Phone:</label>
 					<input class="form-control" type="tel" v-model="address.phone"/>
+				</b-col>
+				<b-col cols=5>
+					<label class="top-label">Location ID:</label>
+					<input class="form-control" type="tel" v-model="address.locationName"/>
 				</b-col>
 			</b-row>
 			<b-row>
