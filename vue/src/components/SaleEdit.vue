@@ -480,6 +480,10 @@ export default {
         alert("Don't have permission");
         return;
       }
+      if(!this.pcr){
+        alert("Production Compliance is Not Ready!");
+        return;
+      }
       this.sale.approved = true;
       this.saveSale().then(r=> {
         this.getSaleData(r.data.id);
