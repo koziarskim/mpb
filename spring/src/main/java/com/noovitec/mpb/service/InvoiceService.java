@@ -280,6 +280,7 @@ public interface InvoiceService {
 					+ shipment.getShippingAddress().getStreet() + "\n" 
 					+ shipment.getShippingAddress().getCity() + ", " + shipment.getShippingAddress().getState() + " "+shipment.getShippingAddress().getZip() + "\n"
 					+ (phone==null?"":("Phone: "+phone + "\n"))
+					+ (shipment.getShippingAddress().getLocationName()==null?"":("Location ID: "+shipment.getShippingAddress().getLocationName() + "\n"))
 					+ (shipment.getShippingAddress().getNotes()==null?"":shipment.getShippingAddress().getNotes());
 				bolStamper.getAcroFields().setField("shippingAddress", shippingAddress);
 			}

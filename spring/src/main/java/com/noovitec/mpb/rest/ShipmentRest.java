@@ -330,6 +330,7 @@ class ShipmentRest {
 				+ shipment.getShippingAddress().getStreet() + "\n" 
 				+ shipment.getShippingAddress().getCity() + ", " + shipment.getShippingAddress().getState() + " "+shipment.getShippingAddress().getZip() + "\n"
 				+ (phone==null?"":("Phone: "+phone + "\n"))
+				+ (shipment.getShippingAddress().getLocationName()==null?"":("Location ID: "+shipment.getShippingAddress().getLocationName() + "\n"))
 				+ (shipment.getShippingAddress().getNotes()==null?"":shipment.getShippingAddress().getNotes());
 			bolStamper.getAcroFields().setField("shippingAddress", shippingAddress);
 		}
@@ -339,6 +340,7 @@ class ShipmentRest {
 				+ shipment.getFreightAddress().getStreet() + "\n" 
 				+ shipment.getFreightAddress().getCity() + ", "+ shipment.getFreightAddress().getState() + " "+shipment.getFreightAddress().getZip() + "\n"		
 				+ (shipment.getFreightAddress().getPhone()==null?"":("Phone: "+shipment.getFreightAddress().getPhone() + "\n"))
+				+ (shipment.getFreightAddress().getLocationName()==null?"":("Location ID: "+shipment.getFreightAddress().getLocationName() + "\n"))
 				+ (shipment.getFreightAddress().getNotes()==null?"":shipment.getFreightAddress().getNotes());
 			bolStamper.getAcroFields().setField("freightAddress", freightAddress);
 		}
