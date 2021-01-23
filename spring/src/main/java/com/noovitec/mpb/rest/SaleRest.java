@@ -97,34 +97,36 @@ class SaleRest {
 			@RequestParam(required = false) String customFilter,
 			@RequestParam(required = false) boolean showAll) {
 		if(totals) {
-			Page<?> resultTotals = saleRepo.getTotals(pageable, saleNumber, itemId, customerId, status, customFilter, showAll);
+			Page<?> resultTotals = saleRepo.findPageable(pageable, totals, saleNumber, itemId, customerId, status, customFilter, showAll);
 			return resultTotals;
+		} else {
+			@SuppressWarnings("unchecked")
+			Page<Sale> sales = (Page<Sale>) saleRepo.findPageable(pageable, totals, saleNumber, itemId, customerId, status, customFilter, showAll);
+			DateTimeFormatter windowFormat = DateTimeFormatter.ofPattern("MM/dd");
+			Page<SaleListDto> all = sales.map(sale -> {
+				SaleListDto dto = new SaleListDto();
+				dto.setId(sale.getId());
+				dto.setNumber(sale.getNumber());
+				dto.setName(sale.getName());
+				dto.setDc(sale.getShippingAddress() == null ? "" : sale.getShippingAddress().getDc() + " (" + sale.getShippingAddress().getState() + ")");
+				dto.setDate(sale.getDate());
+				dto.setCustomerName(sale.getCustomer() == null ? "" : sale.getCustomer().getName());
+				dto.setUnitsSold(sale.getUnitsSold());
+				dto.setUnitsScheduled(sale.getUnitsScheduled());
+				dto.setUnitsProduced(sale.getUnitsProduced());
+				dto.setUnitsShipped(sale.getUnitsShipped());
+	//			dto.setUnitsOnStock(sale.getUnitsOnStock());
+				dto.setUnitsAdjusted(sale.getUnitsAdjusted());
+				dto.setUnitsAssigned(sale.getUnitsAssigned());
+	//			dto.setInvoicedAmount(sale.getInvoicedAmount());
+				dto.setStatus(sale.getStatus());
+				String shippingFrom = sale.getShippingFrom()==null?"":sale.getShippingFrom().format(windowFormat);
+				String shippingTo = sale.getShippingTo()==null?"":sale.getShippingTo().format(windowFormat);
+				dto.setShippingWindow(shippingFrom +"-"+shippingTo);
+				return dto;
+			});
+			return all;
 		}
-		Page<Sale> sales = saleRepo.findPagable(pageable, saleNumber, itemId, customerId, status, customFilter, showAll);
-		DateTimeFormatter windowFormat = DateTimeFormatter.ofPattern("MM/dd");
-		Page<SaleListDto> all = sales.map(sale -> {
-			SaleListDto dto = new SaleListDto();
-			dto.setId(sale.getId());
-			dto.setNumber(sale.getNumber());
-			dto.setName(sale.getName());
-			dto.setDc(sale.getShippingAddress() == null ? "" : sale.getShippingAddress().getDc() + " (" + sale.getShippingAddress().getState() + ")");
-			dto.setDate(sale.getDate());
-			dto.setCustomerName(sale.getCustomer() == null ? "" : sale.getCustomer().getName());
-			dto.setUnitsSold(sale.getUnitsSold());
-			dto.setUnitsScheduled(sale.getUnitsScheduled());
-			dto.setUnitsProduced(sale.getUnitsProduced());
-			dto.setUnitsShipped(sale.getUnitsShipped());
-//			dto.setUnitsOnStock(sale.getUnitsOnStock());
-			dto.setUnitsAdjusted(sale.getUnitsAdjusted());
-			dto.setUnitsAssigned(sale.getUnitsAssigned());
-//			dto.setInvoicedAmount(sale.getInvoicedAmount());
-			dto.setStatus(sale.getStatus());
-			String shippingFrom = sale.getShippingFrom()==null?"":sale.getShippingFrom().format(windowFormat);
-			String shippingTo = sale.getShippingTo()==null?"":sale.getShippingTo().format(windowFormat);
-			dto.setShippingWindow(shippingFrom +"-"+shippingTo);
-			return dto;
-		});
-		return all;
 	}
 
 	@GetMapping("/sale/xls")
@@ -136,7 +138,8 @@ class SaleRest {
 			@RequestParam(required = false) String status,
 			@RequestParam(required = false) String customFilter,
 			@RequestParam(required = false) boolean showAll) throws IOException {
-		Page<Sale> sales = saleRepo.findPagable(pageable, saleNumber, itemId, customerId, status, customFilter, showAll);
+		@SuppressWarnings("unchecked")
+		Page<Sale> sales = (Page<Sale>) saleRepo.findPageable(pageable, totals, saleNumber, itemId, customerId, status, customFilter, showAll);
 		List<Long> saleIds = new ArrayList<Long>();
 		for(Sale sale: sales) {
 			saleIds.add(sale.getId());

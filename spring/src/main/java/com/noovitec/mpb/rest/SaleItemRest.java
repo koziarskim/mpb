@@ -77,12 +77,12 @@ class SaleItemRest {
 			@RequestParam(required = false) String status,
 			@RequestParam(required = false) String customFilter,
 			@RequestParam(required = false) boolean showAll) {
-		@SuppressWarnings("unchecked")
-		Page<SaleItem> saleItems = (Page<SaleItem>) saleItemRepo.findPageable(pageable, totals, numberName, saleId, customerId, itemId, packagingId, status, customFilter, showAll);
 		if(totals) {
 			Page<?> result = saleItemRepo.findPageable(pageable, totals, numberName, saleId, customerId, itemId, packagingId, status, customFilter, showAll);
 			return result;
 		}else {
+			@SuppressWarnings("unchecked")
+			Page<SaleItem> saleItems = (Page<SaleItem>) saleItemRepo.findPageable(pageable, totals, numberName, saleId, customerId, itemId, packagingId, status, customFilter, showAll);
 			Page<SaleItemDto> all = saleItems.map(saleItem -> {
 				SaleItemDto dto = new SaleItemDto();
 				dto.setId(saleItem.getId());
