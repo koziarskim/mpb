@@ -7,7 +7,7 @@
           <b-select style="width: 150px; margin-left: 15px" option-value="id" option-text="name" :list="availablePackagings" v-model="packagingKv" placeholder="Package"></b-select>
           <b-select style="width: 150px; margin-left: 15px" option-value="id" option-text="name" :list="availableCustomers" v-model="customer" placeholder="Customer"></b-select>
           <b-select style="width: 150px; margin-left: 15px" option-value="id" option-text="name" :list="availableStatus" v-model="statusKv" placeholder="Status"></b-select>
-          <b-select style="width: 150px; margin-left: 15px" option-value="id" option-text="name" :list="availableUnitsFilters" v-model="unitsFilterKv" placeholder="Units"></b-select>
+          <b-select style="width: 150px; margin-left: 15px" option-value="id" option-text="name" :list="availableCustomFilters" v-model="customFilterKv" placeholder="Custom Filter"></b-select>
           <div style="margin-left: 15px">
             <label class="top-label">Show All</label><br/>
             <input type="checkbox" style="margin-left: 20px" v-model="showAll">
@@ -121,15 +121,11 @@ export default {
         {id: 'CANCELED', name: 'Canceled'},
       ],
       statusKv: {},
-      availableUnitsFilters: [
-        {id: "NOT_APPROVED", name: "Not Approved"},
-        {id: "NOT_SCHEDULED", name: "Not Scheduled"},
-        {id: "NOT_PRODUCED", name: "Not Produced"},
-        {id: "NOT_ASSIGNED", name: "Not Assigned"},
-        {id: "NOT_SHIPPED", name: "Not Shipped"},
+      availableCustomFilters: [
         {id: "NOT_PAID", name: "Not Paid"},
+        {id: "PC_NOT_READY", name: "PC Not Ready"},
       ],
-      unitsFilterKv: {},
+      customFilterKv: {},
       showTotalsMenu: false,
       totalSoldAdj: 0,
       totalScheduled: 0,
@@ -157,7 +153,7 @@ export default {
       }
       this.getSaleItems();      
     },
-    unitsFilterKv(new_value, old_value){
+    customFilterKv(new_value, old_value){
       this.getSaleItems();      
     },
     showAll(new_value, old_value){
@@ -216,7 +212,7 @@ export default {
         itemId: this.itemKv.id, 
         packagingId: this.packagingKv.id,
         status: this.statusKv.id,
-        unitsFilter: this.unitsFilterKv.id,
+        customFilter: this.customFilterKv.id,
         showAll: this.showAll
       }}).then(r => {
       if(totals){
@@ -290,7 +286,7 @@ export default {
       this.statusKv = {id: statusId}
     }
     if(unitsFilterId){
-      this.unitsFilterKv = {id: unitsFilterId}
+      this.customFilterKv = {id: unitsFilterId}
     }
     // window.history.replaceState({}, document.title, window.location.pathname);
     // this.$router.push(this.$route.path)

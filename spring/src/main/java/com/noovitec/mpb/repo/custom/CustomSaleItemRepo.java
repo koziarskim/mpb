@@ -23,7 +23,7 @@ import com.noovitec.mpb.entity.SaleItem;
 
 public interface CustomSaleItemRepo {
 	Page<?> findPageable(Pageable pageable, boolean totals, String numberName, Long saleId, Long customerId, Long itemId, 
-			Long packagingId, String status, String unitsFilter, boolean showAll);
+			Long packagingId, String status, String customFilter, boolean showAll);
 
 	@Repository
 	public class SaleItemRepoImpl implements CustomSaleItemRepo {
@@ -35,8 +35,8 @@ public interface CustomSaleItemRepo {
 
 		
 		public Page<?> findPageable(Pageable pageable, boolean totals, String numberName, Long saleId, Long customerId, Long itemId, 
-				Long packagingId, String status, String unitsFilter, boolean showAll) {
-			List<Long> ids = this.getIds(pageable, numberName, saleId, customerId, itemId, packagingId, status, unitsFilter, showAll);
+				Long packagingId, String status, String customFilter, boolean showAll) {
+			List<Long> ids = this.getIds(pageable, numberName, saleId, customerId, itemId, packagingId, status, customFilter, showAll);
 			Query query = entityManager.createQuery("select count(*) from SaleItem si where si.id in :ids");
 			query.setParameter("ids", ids);
 			long total = (long) query.getSingleResult();
@@ -75,7 +75,7 @@ public interface CustomSaleItemRepo {
 		
 		
 		private List<Long> getIds(Pageable pageable, String numberName, Long saleId, Long customerId, Long itemId, 
-				Long packagingId, String status, String unitsFilter, boolean showAll) {
+				Long packagingId, String status, String customFilter, boolean showAll) {
 			String q = "select distinct si.id from SaleItem si "
 					+ "join si.itemPackaging ip " 
 					+ "join ip.item i " 
@@ -102,25 +102,11 @@ public interface CustomSaleItemRepo {
 			if (status !=null && !status.isBlank()) {
 				q += "and si.status = :status ";
 			}
-			if(unitsFilter != null) {
-				if(Sale.UNITS.NOT_APPROVED.name().equalsIgnoreCase(unitsFilter)) {
-					q += "and s.approved = false ";
-				}
-				if(Sale.UNITS.NOT_SCHEDULED.name().equalsIgnoreCase(unitsFilter)) {
-					q += "and ((si.units + si.unitsAdjusted) > si.unitsScheduled) ";
-				}
-				if(Sale.UNITS.NOT_PRODUCED.name().equalsIgnoreCase(unitsFilter)) {
-					q += "and (si.unitsScheduled > si.unitsProduced) ";
-				}
-				if(Sale.UNITS.NOT_ASSIGNED.name().equalsIgnoreCase(unitsFilter)) {
-					q += "and ((si.units + si.unitsAdjusted) != si.unitsAssigned) ";
-				}
-				if(Sale.UNITS.NOT_SHIPPED.name().equalsIgnoreCase(unitsFilter)) {
-					q += "and ((si.units + si.unitsAdjusted) != si.unitsShipped) ";
-				}
-				if(Sale.UNITS.NOT_PAID.name().equalsIgnoreCase(unitsFilter)) {
-					q += "and s.paidInFull = false and si.unitsAssigned = si.unitsShipped ";
-				}
+			if (Sale.CUSTOM_FILTER.NOT_PAID.name().equalsIgnoreCase(customFilter)) {
+				q += "and s.paidInFull = false ";
+			}
+			if (Sale.CUSTOM_FILTER.PC_NOT_READY.name().equalsIgnoreCase(customFilter)) {
+				q += "and si.pcr = false ";
 			}
 			if (!showAll) {
 				q += "and s.cancelled = false and s.paidInFull = false";
