@@ -39,11 +39,11 @@
           </div>
       </b-row>
       <b-table :items="sales" :fields="fields" no-local-sorting @sort-changed="sorted">
-        <template v-slot:head(action)="row">
+        <!-- <template v-slot:head(action)="row">
           <div style="display: flex; width: 20px; margin-left: -25px">
             <b-button size="sm" @click="triggerAll(false)" variant="link">(-)</b-button><b-button size="sm" @click="triggerAll(true)" variant="link">(+)</b-button>
           </div>
-        </template>
+        </template> -->
         <template v-slot:cell(number)="row">
           <b-button size="sm" @click="goToSale(row.item.id)" variant="link">{{row.item.number}}</b-button>
         </template>
