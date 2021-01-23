@@ -54,6 +54,9 @@ public interface CustomSaleRepo {
 			if (Sale.CUSTOM_FILTER.NOT_PAID.name().equalsIgnoreCase(customFilter)) {
 				q += "and s.paidInFull = false ";
 			}
+			if (Sale.CUSTOM_FILTER.PC_NOT_READY.name().equalsIgnoreCase(customFilter)) {
+				q += "and s.pcr = false ";
+			}
 			Query query = entityManager.createQuery(q);
 			if (saleNumber !=null && !saleNumber.isBlank()) {
 				query.setParameter("saleNumber", saleNumber);
@@ -105,6 +108,9 @@ public interface CustomSaleRepo {
 			}
 			if (Sale.CUSTOM_FILTER.NOT_PAID.name().equalsIgnoreCase(customFilter)) {
 				q += "and s.paidInFull = false ";
+			}
+			if (Sale.CUSTOM_FILTER.PC_NOT_READY.name().equalsIgnoreCase(customFilter)) {
+				q += "and s.pcr = false ";
 			}
 			if (!showAll) {
 				q += "and s.cancelled = false and s.paidInFull = false ";

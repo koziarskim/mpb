@@ -104,6 +104,7 @@ export default {
       statusKv: {},
       availableCustomFilters: [
         {id: 'NOT_PAID', name: 'Not Paid'},
+        {id: 'PC_NOT_READY', name: 'PC Not Ready'},
       ],
       customFilterKv: {},
       fields: [

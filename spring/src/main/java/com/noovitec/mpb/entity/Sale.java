@@ -32,7 +32,7 @@ public class Sale extends BaseEntity {
 
 	public enum STATUS {DRAFT, READY, APPROVED, SCHEDULED, PRODUCED, ASSIGNED, SHIPPED, CANCELED, PAID}
 	public enum UNITS {NOT_APPROVED, NOT_SCHEDULED, NOT_PRODUCED, NOT_ASSIGNED, NOT_SHIPPED, NOT_PAID}
-	public enum CUSTOM_FILTER {NOT_PAID}
+	public enum CUSTOM_FILTER {NOT_PAID, PC_NOT_READY}
 
 	private LocalDate date;
 	private String number;
