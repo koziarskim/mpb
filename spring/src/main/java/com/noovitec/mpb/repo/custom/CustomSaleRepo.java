@@ -18,8 +18,8 @@ import org.springframework.stereotype.Repository;
 import com.noovitec.mpb.entity.Sale;
 
 public interface CustomSaleRepo {
-	public Page<?> getTotals(Pageable pageable, String saleNumber, Long itemId, Long customerId, String status, boolean showAll);
-	Page<Sale> findPagable(Pageable pageable, String saleNumber, Long itemId, Long customerId, String status, boolean showAll);
+	public Page<?> getTotals(Pageable pageable, String saleNumber, Long itemId, Long customerId, String status, String customFilter, boolean showAll);
+	Page<Sale> findPagable(Pageable pageable, String saleNumber, Long itemId, Long customerId, String status, String customFilter, boolean showAll);
 	public Sale getFirstByCustomer(Long customerId);
 	public Sale getLastByCustomer(Long customerId);
 
@@ -32,7 +32,7 @@ public interface CustomSaleRepo {
 		EntityManager entityManager;
 
 		@Override
-		public Page<?> getTotals(Pageable pageable, String saleNumber, Long itemId, Long customerId, String status, boolean showAll) {
+		public Page<?> getTotals(Pageable pageable, String saleNumber, Long itemId, Long customerId, String status, String customFilter, boolean showAll) {
 			String q = "select distinct s.id from Sale s " 
 					+ "left join s.saleItems si "
 					+ "left join si.itemPackaging ip " 
@@ -50,6 +50,9 @@ public interface CustomSaleRepo {
 			}
 			if (status != null && !status.isBlank()) {
 				q += "and s.status = :status ";
+			}
+			if (Sale.CUSTOM_FILTER.NOT_PAID.name().equalsIgnoreCase(customFilter)) {
+				q += "and s.paidInFull = false ";
 			}
 			Query query = entityManager.createQuery(q);
 			if (saleNumber !=null && !saleNumber.isBlank()) {
@@ -81,7 +84,7 @@ public interface CustomSaleRepo {
 		}
 		
 		@Override
-		public Page<Sale> findPagable(Pageable pageable, String saleNumber, Long itemId, Long customerId, String status, boolean showAll) {
+		public Page<Sale> findPagable(Pageable pageable, String saleNumber, Long itemId, Long customerId, String status, String customFilter, boolean showAll) {
 			String q = "select distinct s from Sale s " 
 					+ "left join s.saleItems si "
 					+ "left join si.itemPackaging ip " 
@@ -99,6 +102,9 @@ public interface CustomSaleRepo {
 			}
 			if (status != null && !status.isBlank()) {
 				q += "and s.status = :status ";
+			}
+			if (Sale.CUSTOM_FILTER.NOT_PAID.name().equalsIgnoreCase(customFilter)) {
+				q += "and s.paidInFull = false ";
 			}
 			if (!showAll) {
 				q += "and s.cancelled = false and s.paidInFull = false ";

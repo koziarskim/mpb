@@ -94,12 +94,13 @@ class SaleRest {
 			@RequestParam(required = false) Long itemId,
 			@RequestParam(required = false) Long customerId,
 			@RequestParam(required = false) String status,
+			@RequestParam(required = false) String customFilter,
 			@RequestParam(required = false) boolean showAll) {
 		if(totals) {
-			Page<?> resultTotals = saleRepo.getTotals(pageable, saleNumber, itemId, customerId, status, showAll);
+			Page<?> resultTotals = saleRepo.getTotals(pageable, saleNumber, itemId, customerId, status, customFilter, showAll);
 			return resultTotals;
 		}
-		Page<Sale> sales = saleRepo.findPagable(pageable, saleNumber, itemId, customerId, status, showAll);
+		Page<Sale> sales = saleRepo.findPagable(pageable, saleNumber, itemId, customerId, status, customFilter, showAll);
 		DateTimeFormatter windowFormat = DateTimeFormatter.ofPattern("MM/dd");
 		Page<SaleListDto> all = sales.map(sale -> {
 			SaleListDto dto = new SaleListDto();
@@ -133,8 +134,9 @@ class SaleRest {
 			@RequestParam(required = false) Long itemId,
 			@RequestParam(required = false) Long customerId,
 			@RequestParam(required = false) String status,
+			@RequestParam(required = false) String customFilter,
 			@RequestParam(required = false) boolean showAll) throws IOException {
-		Page<Sale> sales = saleRepo.findPagable(pageable, saleNumber, itemId, customerId, status, showAll);
+		Page<Sale> sales = saleRepo.findPagable(pageable, saleNumber, itemId, customerId, status, customFilter, showAll);
 		List<Long> saleIds = new ArrayList<Long>();
 		for(Sale sale: sales) {
 			saleIds.add(sale.getId());

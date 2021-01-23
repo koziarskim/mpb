@@ -6,7 +6,7 @@
           <b-select style="width: 200px; margin-left: 7px" option-value="id" option-text="name" :list="availableItems" v-model="itemKv" placeholder="Item"></b-select>
           <b-select style="width: 200px; margin-left: 7px" option-value="id" option-text="name" :list="availableCustomers" v-model="customerKv" placeholder="Customer"></b-select>
           <b-select style="width: 150px; margin-left: 7px" option-value="id" option-text="name" :list="availableStatus" v-model="statusKv" placeholder="Status"></b-select>
-          <b-select style="width: 150px; margin-left: 7px" option-value="id" option-text="name" :list="availableNotStatus" v-model="notStatusKv" placeholder="Not Status"></b-select>
+          <b-select style="width: 150px; margin-left: 7px" option-value="id" option-text="name" :list="availableCustomFilters" v-model="customFilterKv" placeholder="Custom Filter"></b-select>
           <div style="margin-left: 7px">
             <label class="top-label">Show All</label><br/>
             <input type="checkbox" style="margin-left: 20px" v-model="showAll">
@@ -102,18 +102,10 @@ export default {
         {id: 'CANCELED', name: 'Canceled'},
       ],
       statusKv: {},
-      availableNotStatus: [
-        {id: 'DRAFT', name: 'Not Draft'},
-        {id: 'READY', name: 'Not Ready'},
-        {id: 'APPROVED', name: 'Not Approved'},
-        {id: 'SCHEDULED', name: 'Not Scheduled'},
-        {id: 'PRODUCED', name: 'Not Produced'},
-        {id: 'ASSIGNED', name: 'Not Assigned'},
-        {id: 'SHIPPED', name: 'Not Shipped'},
-        {id: 'PAID', name: 'Not Paid'},
-        {id: 'CANCELED', name: 'Not Canceled'},
+      availableCustomFilters: [
+        {id: 'NOT_PAID', name: 'Not Paid'},
       ],
-      notStatusKv: {},
+      customFilterKv: {},
       fields: [
         { key: "number", label: "Sale #", sortable: false },
         { key: "customerName", label: "Customer", sortable: true },
@@ -146,6 +138,9 @@ export default {
       if(new_value.id == "PAID" || new_value.id == "CANCELLED"){
         this.showAll = true;
       }
+      this.getSales();      
+    },
+    customFilterKv(new_value, old_value){
       this.getSales();      
     },
     showAll(new_value, old_value){
@@ -205,6 +200,7 @@ export default {
         itemId: this.itemKv.id,
         customerId: this.customerKv.id,
         status: this.statusKv.id,
+        customFilter: this.customFilterKv.id,
         showAll: this.showAll
       }
       return params;
