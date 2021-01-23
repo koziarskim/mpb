@@ -1,25 +1,17 @@
 <template>
     <b-container fluid>
       <div class="mpb-page-info">Sale > Sale List</div>
-      <b-row style="padding-bottom: 4px; font-size: 12px">
-        <b-col cols=2>
-          <input class="form-control" style="font-size: 12px" type="tel" v-model="saleNumber" @keyup.enter="getSales()" placeholder="Sale"/>
-        </b-col>
-        <b-col cols="2">
-          <b-select option-value="id" option-text="name" :list="availableItems" v-model="itemKv" placeholder="Item"></b-select>
-        </b-col>
-        <b-col cols="2">
-          <b-select option-value="id" option-text="name" :list="availableCustomers" v-model="customerKv" placeholder="Customer"></b-select>
-        </b-col>
-        <b-col cols="2">
-          <b-select option-value="id" option-text="name" :list="availableStatus" v-model="statusKv" placeholder="Status"></b-select>
-        </b-col>
-        <b-col cols=1>
-          <label class="top-label">Show All</label><br/>
-          <input type="checkbox" style="margin-left: 20px" v-model="showAll">
-        </b-col>
-        <b-col cols=1>
-          <div style="display: flex">
+      <b-row style="font-size: 12px">
+          <input style="width: 150px; margin-left: 7px; font-size: 12px" class="form-control" type="tel" v-model="saleNumber" @keyup.enter="getSales()" placeholder="Sale"/>
+          <b-select style="width: 200px; margin-left: 7px" option-value="id" option-text="name" :list="availableItems" v-model="itemKv" placeholder="Item"></b-select>
+          <b-select style="width: 200px; margin-left: 7px" option-value="id" option-text="name" :list="availableCustomers" v-model="customerKv" placeholder="Customer"></b-select>
+          <b-select style="width: 150px; margin-left: 7px" option-value="id" option-text="name" :list="availableStatus" v-model="statusKv" placeholder="Status"></b-select>
+          <b-select style="width: 150px; margin-left: 7px" option-value="id" option-text="name" :list="availableNotStatus" v-model="notStatusKv" placeholder="Not Status"></b-select>
+          <div style="margin-left: 7px">
+            <label class="top-label">Show All</label><br/>
+            <input type="checkbox" style="margin-left: 20px" v-model="showAll">
+          </div>
+          <div style="margin-left: 7px">
             <b-button id="totalsMenu" size="sm" @click="toggleTotals()">Totals</b-button>
             <b-popover :show="showTotalsMenu" placement="bottom" target="totalsMenu" variant="secondary">
               <div style="width: 300px; font-size: 16px">
@@ -28,7 +20,9 @@
                 <div>Total amount: ${{totalAmount.toLocaleString('en-US',{minimumFractionDigits: 2})}}</div>
               </div>
             </b-popover>
-            <b-button id="sortMenu" size="sm" style="margin-left:3px">Sort</b-button>
+          </div>
+          <div style="margin-left:3px">
+            <b-button id="sortMenu" size="sm">Sort</b-button>
             <b-popover :show="showSortMenu" @click="showSortMenu = !showSortMenu" placement="bottom" target="sortMenu" variant="secondary">
               <div style="width: 300px; font-size: 16px">
                 <b-button variant="link" @click="toggleSortTotals('shippingFrom', false)">Ship latest first</b-button><br/>
@@ -36,16 +30,13 @@
               </div>
             </b-popover>
           </div>
-        </b-col>  
-        <b-col>
-          <div style="text-align: right;">
-          <b-button type="submit" variant="primary" size="sm" @click="goToSale('')">New</b-button>
-          <b-button style="margin-left: 3px" type="submit" variant="primary" size="sm" @click="exportXls()">Export</b-button>
-          <b-dropdown style="width:50px; margin-left:3px" right size="sm" :text="selectedSales.length.toString()">
-            <b-dropdown-item-button @click="setFullyPaid()">Set Fully Paid</b-dropdown-item-button>
-          </b-dropdown>
+          <div>
+            <b-button style="margin-left:3px" type="submit" variant="primary" size="sm" @click="goToSale('')">New</b-button>
+            <b-button style="margin-left: 3px" type="submit" variant="primary" size="sm" @click="exportXls()">Export</b-button>
+            <b-dropdown style="width:50px; margin-left:3px" right size="sm" :text="selectedSales.length.toString()">
+              <b-dropdown-item-button @click="setFullyPaid()">Set Fully Paid</b-dropdown-item-button>
+            </b-dropdown>
           </div>
-        </b-col>
       </b-row>
       <b-table :items="sales" :fields="fields" no-local-sorting @sort-changed="sorted">
         <template v-slot:head(action)="row">
@@ -111,6 +102,18 @@ export default {
         {id: 'CANCELED', name: 'Canceled'},
       ],
       statusKv: {},
+      availableNotStatus: [
+        {id: 'DRAFT', name: 'Not Draft'},
+        {id: 'READY', name: 'Not Ready'},
+        {id: 'APPROVED', name: 'Not Approved'},
+        {id: 'SCHEDULED', name: 'Not Scheduled'},
+        {id: 'PRODUCED', name: 'Not Produced'},
+        {id: 'ASSIGNED', name: 'Not Assigned'},
+        {id: 'SHIPPED', name: 'Not Shipped'},
+        {id: 'PAID', name: 'Not Paid'},
+        {id: 'CANCELED', name: 'Not Canceled'},
+      ],
+      notStatusKv: {},
       fields: [
         { key: "number", label: "Sale #", sortable: false },
         { key: "customerName", label: "Customer", sortable: true },
