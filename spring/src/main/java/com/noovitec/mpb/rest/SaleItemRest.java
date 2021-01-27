@@ -176,14 +176,14 @@ class SaleItemRest {
 		return ResponseEntity.ok().build();
 	}
 	
-	@GetMapping("/saleItem/{id}/pdf")
-	HttpEntity<byte[]> getPdf(
+	@GetMapping("/saleItem/{id}/carton/pdf")
+	HttpEntity<byte[]> getCartonPdf(
 			@PathVariable Long id,
 			@RequestParam int pageFrom,
 			@RequestParam int pageTo) throws DocumentException, IOException {
 		SaleItem saleItem = saleItemRepo.findById(id).get();
 		String fileName = "Carton_"+saleItem.getSale().getNumber()+"_"+saleItem.getItemPackaging().getItem().getNumber()+".pdf";
-		byte[] data = this.generatePdf(saleItem, pageFrom, pageTo);
+		byte[] data = this.generateCartonPdf(saleItem, pageFrom, pageTo);
 		HttpHeaders header = new HttpHeaders();
 		header.setContentType(MediaType.APPLICATION_OCTET_STREAM);
 		header.set("Content-Disposition", "inline; filename=" + fileName);
@@ -191,7 +191,22 @@ class SaleItemRest {
 		return new HttpEntity<byte[]>(data, header);
 	}
 
-	private byte[] generatePdf(SaleItem saleItem, int pageFrom, int pageTo) throws IOException, DocumentException {
+	@GetMapping("/saleItem/{id}/tag/pdf")
+	HttpEntity<byte[]> getTagPdf(
+			@PathVariable Long id,
+			@RequestParam int pageFrom,
+			@RequestParam int pageTo) throws DocumentException, IOException {
+		SaleItem saleItem = saleItemRepo.findById(id).get();
+		String fileName = "Tag"+saleItem.getSale().getNumber()+"_"+saleItem.getItemPackaging().getItem().getNumber()+".pdf";
+		byte[] data = this.generateTagPdf(saleItem, pageFrom, pageTo);
+		HttpHeaders header = new HttpHeaders();
+		header.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+		header.set("Content-Disposition", "inline; filename=" + fileName);
+		header.setContentLength(data.length);
+		return new HttpEntity<byte[]>(data, header);
+	}
+
+	private byte[] generateCartonPdf(SaleItem saleItem, int pageFrom, int pageTo) throws IOException, DocumentException {
 	    Document doc = new Document();
 	    ByteArrayOutputStream mainBaos = new ByteArrayOutputStream();
 	    PdfSmartCopy copy = new PdfSmartCopy(doc, mainBaos);
@@ -206,9 +221,13 @@ class SaleItemRest {
 	    	PdfReader reader = new PdfReader(mainReader);
 	        ByteArrayOutputStream baos = new ByteArrayOutputStream();
 	        PdfStamper stamper = new PdfStamper(reader, baos);
-	        stamper.getAcroFields().setField("customerName", saleItem.getSale().getCustomer().getName());
+	        String customerName = saleItem.getSale().getCustomer().getName();
+	        if(customerName.length() > 20) {
+	        	customerName = saleItem.getSale().getCustomer().getName().substring(0,20)+"...";
+	        }
+	        stamper.getAcroFields().setField("customerName", customerName);
 	        stamper.getAcroFields().setField("dc", saleItem.getSale().getShippingAddress().getDc());
-	        String shipToAddress = saleItem.getSale().getShippingAddress().getLine()+"\n"
+	        String shipToAddress = (saleItem.getSale().getShippingAddress().getLine()==null?"\n":saleItem.getSale().getShippingAddress().getLine()+"\n")
 	        		+saleItem.getSale().getShippingAddress().getStreet()+"\n"
 	        		+saleItem.getSale().getShippingAddress().getCity()+", "
 	        		+saleItem.getSale().getShippingAddress().getState()+" "
@@ -229,18 +248,69 @@ class SaleItemRest {
 	        stamper.getAcroFields().setField("totalCases", String.valueOf(totalCases.round(new MathContext(0, RoundingMode.CEILING)).intValue()));
 	        stamper.getAcroFields().setField("totalUnits", String.valueOf(saleItem.getUnits()));
 	        stamper.getAcroFields().setField("expiration", "Best By: "+saleItem.getExpiration().format(DateTimeFormatter.ofPattern("MM/dd/yyy")));
-	        String page = String.valueOf(i)+" of "+pageTo;
-	        stamper.getAcroFields().setField("page", page);
+	        stamper.getAcroFields().setField("page", String.valueOf(i)+" of "+pageTo);
 	        stamper.setFormFlattening(true);
 	        stamper.close();
 	        reader = new PdfReader(baos.toByteArray());
-	        log.info("Created Page...");
 	        copy.addPage(copy.getImportedPage(reader, 1));
-	        log.info("Copied Page...");
 	    }
-
 	    doc.close();
-	    log.info("Done....");
 	    return mainBaos.toByteArray();
 	}
+	
+	private byte[] generateTagPdf(SaleItem saleItem, int pageFrom, int pageTo) throws IOException, DocumentException {
+	    Document doc = new Document();
+	    ByteArrayOutputStream mainBaos = new ByteArrayOutputStream();
+	    PdfSmartCopy copy = new PdfSmartCopy(doc, mainBaos);
+	    doc.open();
+		InputStream in = this.getClass().getClassLoader().getResourceAsStream("pdf/Tag-Label.pdf");
+		PdfReader mainReader = new PdfReader(in);
+		DecimalFormat df = new DecimalFormat();
+		df.setMaximumFractionDigits(2);
+		df.setMinimumFractionDigits(2);
+		df.setGroupingUsed(false);
+        int totalCases = BigDecimal.valueOf(saleItem.getUnits()).divide(BigDecimal.valueOf(saleItem.getItemPackaging().getPackaging().getCasePack()),2, RoundingMode.CEILING)
+        		.round(new MathContext(0, RoundingMode.CEILING)).intValue();
+        int casesPerPallet = saleItem.getItemPackaging().getPackaging().getTi() * saleItem.getItemPackaging().getPackaging().getHi();
+	    for(int i = pageFrom; i <= pageTo; i++) {
+	    	PdfReader reader = new PdfReader(mainReader);
+	        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+	        PdfStamper stamper = new PdfStamper(reader, baos);
+	        String customerName = saleItem.getSale().getCustomer().getName();
+	        if(customerName.length() > 20) {
+	        	customerName = saleItem.getSale().getCustomer().getName().substring(0,20)+"...";
+	        }
+	        stamper.getAcroFields().setField("customerName", customerName);
+	        stamper.getAcroFields().setField("location", (saleItem.getSale().getShippingAddress().getLocationName()==null || saleItem.getSale().getShippingAddress().getLocationName().isBlank())?"":"LOCATION ID. "+saleItem.getSale().getShippingAddress().getLocationName());
+	        stamper.getAcroFields().setField("dc", saleItem.getSale().getShippingAddress().getDc());
+	        String shipToAddress = (saleItem.getSale().getShippingAddress().getLine()==null?"\n":saleItem.getSale().getShippingAddress().getLine()+"\n")
+	        		+saleItem.getSale().getShippingAddress().getStreet()+"\n"
+	        		+saleItem.getSale().getShippingAddress().getCity()+", "
+	        		+saleItem.getSale().getShippingAddress().getState()+" "
+	        		+saleItem.getSale().getShippingAddress().getZip();
+	        stamper.getAcroFields().setField("shipToAddress", shipToAddress);
+	        stamper.getAcroFields().setField("saleNumber", "PO# "+saleItem.getSale().getNumber());
+	        stamper.getAcroFields().setField("itemNumber", saleItem.getItemPackaging().getItem().getNumber()+"-"+saleItem.getItemPackaging().getItem().getName());
+	        stamper.getAcroFields().setField("casePack", "Case Pack: "+String.valueOf(saleItem.getItemPackaging().getPackaging().getCasePack()));
+	        stamper.getAcroFields().setField("sku", (saleItem.getSku()==null || saleItem.getSku().isBlank())?"":"SKU: "+saleItem.getSku());
+	        stamper.getAcroFields().setField("expiration", "Best By: "+saleItem.getExpiration().format(DateTimeFormatter.ofPattern("MM/dd/yyy")));
+	        int cases = 0;
+	        if(totalCases < casesPerPallet) {
+	        	cases = totalCases;
+	        } else if (totalCases >= (i * casesPerPallet)) {
+	        	cases = casesPerPallet;
+	        } else {
+	        	cases = casesPerPallet - ((i * casesPerPallet) - totalCases);
+	        }
+	        stamper.getAcroFields().setField("cases", "Total Cartons/Cases: "+String.valueOf(cases));
+	        stamper.getAcroFields().setField("page", "Pallet "+String.valueOf(i)+" of "+pageTo);
+	        stamper.setFormFlattening(true);
+	        stamper.close();
+	        reader = new PdfReader(baos.toByteArray());
+	        copy.addPage(copy.getImportedPage(reader, 1));
+	    }
+	    doc.close();
+	    return mainBaos.toByteArray();
+	}
+
 }

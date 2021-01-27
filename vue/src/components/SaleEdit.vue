@@ -160,12 +160,16 @@
                   <b-col cols=5>
                     <div style="display: flex">
                       <b-button style="" size="sm" variant="link" @click="downloadCarton(row.item)">Carton Label</b-button>
-                      <input class="form-control" style="font-size: 12px; width: 60px; height: 30px" type="tel" v-model="pageFrom">-
-                      <input class="form-control" style="font-size: 12px; width: 60px; height: 30px" type="tel" v-model="pageTo">
+                      <input class="form-control" style="font-size: 12px; width: 60px; height: 30px" type="tel" v-model="pageFromCarton">-
+                      <input class="form-control" style="font-size: 12px; width: 60px; height: 30px" type="tel" v-model="pageToCarton">
                     </div>
                   </b-col>
-                  <b-col cols=2>
-                    <b-button style="" size="sm" variant="link" @click="downloadTag(row.item)">Pallet Tag</b-button>
+                  <b-col cols=5>
+                    <div style="display: flex">
+                      <b-button style="" size="sm" variant="link" @click="downloadTag(row.item)">Pallet Tag</b-button>
+                      <input class="form-control" style="font-size: 12px; width: 60px; height: 30px" type="tel" v-model="pageFromTag">-
+                      <input class="form-control" style="font-size: 12px; width: 60px; height: 30px" type="tel" v-model="pageToTag">
+                    </div>
                   </b-col>
                   <b-col cols=2>
                     <div style="display: flex">
@@ -252,7 +256,7 @@ export default {
         { key: "unitsAssigned", label: "Assigned", sortable: false },
         { key: "unitsSchedProd", label: "Prod", sortable: false },
         { key: "unitsShipped", label: "Ship", sortable: false },
-        { key: "cases", label: "Case", sortable: false },
+        { key: "cases", label: "Cases", sortable: false },
         { key: "cost", label: "Cost", sortable: false },
         { key: "unitPrice", label: "Unit Price", sortable: false },
         { key: "totalUnitPrice", label: "Total", sortable: false },
@@ -276,8 +280,10 @@ export default {
       itemPackaging: {
         item: {},
       },
-      pageFrom: 1,
-      pageTo: 1,
+      pageFromCarton: 1,
+      pageToCarton: 1,
+      pageFromTag: 1,
+      pageToTag: 1,
       availableStatus: [
         {id: 'DRAFT', name: 'Draft'},
         {id: 'READY', name: 'Ready'},
@@ -345,19 +351,36 @@ export default {
   },
   methods: {
     openActionMenu(saleItem){
-      this.pageFrom = 1;
-      this.pageTo = this.getCases(saleItem);
+      this.pageFromCarton = 1;
+      this.pageToCarton = this.getCases(saleItem);
+      this.pageFromTag = 1;
+      this.pageToTag = this.getPallets(saleItem);
     },
-    downloadTag(saleItem){
-
-    },
-    downloadCarton(saleItem){
+    downloadTag(si){
       this.saveSale().then(r=> {
-        if(!saleItem.expiration){
+        if(!si.expiration){
           alert("Best By is not set");
           return false;
         }
-        var url = httpUtils.getUrl("/saleItem/" + saleItem.id + "/pdf", "&pageFrom="+this.pageFrom+"&pageTo="+this.pageTo);
+        if(this.pageFromTag > this.getPallets(si) || this.pageToTag > this.getPallets(si)){
+          alert("Page from/to are too large");
+          return false;
+        }
+        var url = httpUtils.getUrl("/saleItem/" + si.id + "/tag/pdf", "&pageFrom="+this.pageFromTag+"&pageTo="+this.pageToTag);
+        window.open(url, "_blank","")
+      })
+    },
+    downloadCarton(si){
+      this.saveSale().then(r=> {
+        if(!si.expiration){
+          alert("Best By is not set");
+          return false;
+        }
+        if(this.pageFromCarton > this.getCases(si) || this.pageToCarton > this.getCases(si)){
+          alert("Page from/to are too large");
+          return false;
+        }
+        var url = httpUtils.getUrl("/saleItem/" + si.id + "/carton/pdf", "&pageFrom="+this.pageFromCarton+"&pageTo="+this.pageToCarton);
         window.open(url, "_blank","")
       })
     },
@@ -657,6 +680,11 @@ export default {
     getCases(si){
       return Math.ceil(+si.units / +si.itemPackaging.packaging.casePack).toFixed(0);
     },
+    getPallets(si){
+      var number = Math.ceil(+this.getCases(si) / (+si.itemPackaging.packaging.ti * +si.itemPackaging.packaging.hi))
+      return number;
+    },
+
   },
   mounted() {
     var id = this.$route.params.sale_id;

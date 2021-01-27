@@ -146,7 +146,7 @@
               <span>{{row.item.cases = Math.ceil(+row.item.units / +row.item.saleItem.itemPackaging.packaging.casePack)}}</span>
             </template>
             <template v-slot:cell(pallets)="row">
-              <span>{{row.item.pallets = getNumberOfPallets(row.item)}}</span>
+              <span>{{row.item.pallets = getPallets(row.item)}}</span>
             </template>
             <template v-slot:cell(action)="row">
               <b-button size="sm" @click.stop="removeSaleItem(row.item.saleItem.id)">x</b-button>
@@ -347,7 +347,7 @@ export default {
       var query = { saleId: saleItem.sale.id, itemId: saleItem.itemPackaging.item.id };
       router.push({path: "/itemReturnList", query: query});
     },
-    getNumberOfPallets(shipmentItem){
+    getPallets(shipmentItem){
       var number = null;
       if(this.shipment.totalPalletsCustom < 1){
         number = Math.ceil(+shipmentItem.cases / (+shipmentItem.saleItem.itemPackaging.packaging.ti * +shipmentItem.saleItem.itemPackaging.packaging.hi))
