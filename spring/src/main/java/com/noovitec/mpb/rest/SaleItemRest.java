@@ -215,9 +215,9 @@ class SaleItemRest {
 	        		+saleItem.getSale().getShippingAddress().getZip();
 	        stamper.getAcroFields().setField("shipToAddress", shipToAddress);
 	        stamper.getAcroFields().setField("saleNumber", "PO# "+saleItem.getSale().getNumber());
-	        stamper.getAcroFields().setField("department", saleItem.getDepartment()==null?"":"DEPT. "+saleItem.getDepartment());
+	        stamper.getAcroFields().setField("department", (saleItem.getDepartment()==null || saleItem.getDepartment().isBlank())?"":"DEPT. "+saleItem.getDepartment());
 	        stamper.getAcroFields().setField("itemNumber", saleItem.getItemPackaging().getItem().getNumber()+"-"+saleItem.getItemPackaging().getItem().getName());
-	        stamper.getAcroFields().setField("sku", saleItem.getSku()==null?"":"SKU: "+saleItem.getSku());
+	        stamper.getAcroFields().setField("sku", (saleItem.getSku()==null || saleItem.getSku().isBlank())?"":"SKU: "+saleItem.getSku());
 	        stamper.getAcroFields().setField("upc", "UPC: "+String.valueOf(saleItem.getItemPackaging().getItem().getUpc().getCode()));
 	        stamper.getAcroFields().setField("casePack", "Case Pack: "+String.valueOf(saleItem.getItemPackaging().getPackaging().getCasePack()));
 	        BigDecimal grossWeight = saleItem.getItemPackaging().getItem().getWeight().multiply(BigDecimal.valueOf(saleItem.getItemPackaging().getPackaging().getCasePack()));
