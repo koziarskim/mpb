@@ -427,12 +427,12 @@ export default {
         if(this.shipment.shippedDate){
           shippedUnits -= shipItem.units;
         }
-        if(((+shipItem.saleItem.units + +shipItem.saleItem.unitsAdjusted) - +shippedUnits - +shipItem.units < 0)){
+        if(((+shipItem.saleItem.units + +shipItem.saleItem.unitsAdjusted) - +shippedUnits - +shipItem.units != 0)){
           overShippedItem = shipItem.saleItem.itemPackaging.item.number;
         }
       })
       if(overShippedItem){
-        alert("Item: "+overShippedItem +" - Cannot ship more that on units Assigned")
+        alert("Item: "+overShippedItem +" - Units shipped must equal to units assigned. If short shipped, you might want to adjust sale")
         return false;
       }
       return true;
