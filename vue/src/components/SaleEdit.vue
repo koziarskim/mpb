@@ -159,7 +159,10 @@
                 <b-row>
                   <b-col cols=5>
                     <div style="display: flex">
-                      <b-button style="" size="sm" variant="link" @click="downloadCarton(row.item)">Carton Label</b-button>
+                      <div>
+                        <b-button style="" size="sm" variant="link" @click="downloadCarton(row.item)">Carton Label</b-button><br/>
+                        <label style="margin-left: 10px" class="top-label">Source: {{getCartonSource(row.item)}}</label>
+                      </div>
                       <input class="form-control" style="font-size: 12px; width: 60px; height: 30px" type="tel" v-model="pageFromCarton">-
                       <input class="form-control" style="font-size: 12px; width: 60px; height: 30px" type="tel" v-model="pageToCarton">
                     </div>
@@ -350,6 +353,16 @@ export default {
     }
   },
   methods: {
+    getCartonSource(si){
+      var source = "MIMS";
+      if(this.sale.customer.labelType == "UCC_128"){
+        source = "EDI";
+      }
+      if(!this.sale.customer.cartonLabel){
+        source = "None"
+      }
+      return source;
+    },
     openActionMenu(saleItem){
       this.pageFromCarton = 1;
       this.pageToCarton = this.getCases(saleItem);
