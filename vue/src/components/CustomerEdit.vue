@@ -3,7 +3,7 @@
     <b-row>
       <b-col cols=2>
         <label class="top-label">Name:</label>
-        <input class="form-control" type="search" v-model="customer.name" />
+        <input class="form-control" maxlength="20" type="text" v-model="customer.name" />
       </b-col>
       <b-col cols=1>
         <label class="top-label">Account #:</label>

@@ -3,11 +3,11 @@
         <b-row>
           <b-col cols=2>
             <label class="top-label">Item Number:</label>
-            <input class="form-control" type="text" v-model="item.number">
+            <input class="form-control" type="text" maxlength="6" v-model="item.number">
           </b-col>
           <b-col cols=4>
             <label class="top-label">Item Name:</label>
-            <input class="form-control" type="text" v-model="item.name">
+            <input class="form-control" type="text" maxlength="20" v-model="item.name">
           </b-col>
           <b-col cols=2>
             <label class="top-label">UPC Number:</label>

@@ -4,7 +4,7 @@
       <b-row>
 				<b-col cols=4>
 					<label class="top-label">Address Distribution Center</label>
-					<input class="form-control" type="tel" v-model="address.dc">
+					<input class="form-control" maxlength="20" type="text" v-model="address.dc">
 				</b-col>
 				<b-col v-if="addressType=='FRG'">
 					<label class="top-label">Keep it? </label><br/>

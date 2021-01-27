@@ -5,7 +5,7 @@
         <b-row>
           <b-col cols=4>
             <label class="top-label">Sale Number:</label>
-            <input :disabled="!allowEdit()" class="form-control" type="tel" v-model="sale.number" placeholder="Number">
+            <input :disabled="!allowEdit()" maxlength="18" class="form-control" type="text" v-model="sale.number" placeholder="Number">
           </b-col>
           <b-col cols=4>
             <label class="top-label">Sale Date:</label>
