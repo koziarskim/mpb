@@ -107,7 +107,7 @@
             <div style="width:100px; overflow: wrap; font-size: 11px">{{row.item.itemPackaging.packaging.name}}</div>
           </template>
           <template v-slot:cell(unitsAssigned)="row">
-            <input :disabled="!allowEdit()" class="form-control" style="width:80px" type="tel" v-model="row.item.unitsAssigned">
+            <input :disabled="!allowEditItem(row.item)" class="form-control" style="width:80px" type="tel" v-model="row.item.unitsAssigned">
           </template>
           <template v-slot:cell(cost)="row">
             <span>${{(+row.item.itemPackaging.item.totalCost + +row.item.itemPackaging.packaging.totalPackagingCost).toFixed(2)}}</span>
@@ -116,17 +116,17 @@
             <b-button size="sm" variant="link" @click="goToScheduled(row.item)">{{row.item.unitsProduced}}</b-button>
           </template>
           <template v-slot:cell(units)="row">
-            <input :disabled="!allowEdit()" class="form-control" style="width:80px" type="tel" v-model="row.item.units">
+            <input :disabled="!allowEditItem(row.item)" class="form-control" style="width:80px" type="tel" v-model="row.item.units">
           </template>
           <template v-slot:cell(unitsAdjusted)="row">
-            <input class="form-control" style="width:80px" type="tel" v-model="row.item.unitsAdjusted">
+            <input :disabled="!allowEditItem(row.item)" class="form-control" style="width:80px" type="tel" v-model="row.item.unitsAdjusted">
           </template>
           <template v-slot:cell(cases)="row">
             <span>{{getCases(row.item)}}</span>
           </template>
           <template v-slot:cell(unitPrice)="row">
             <div style="display:flex">
-            $<input :disabled="!allowEdit()" class="form-control" style="display: inline; width:80px" type="tel" v-model="row.item.unitPrice">
+            $<input :disabled="!allowEditItem(row.item)" class="form-control" style="display: inline; width:80px" type="tel" v-model="row.item.unitPrice">
             </div>
           </template>
           <template v-slot:cell(totalUnitPrice)="row">
@@ -176,7 +176,7 @@
                 </b-row>
                 <b-row>
                   <b-col cols=12 style="text-align: right;">
-                    <b-button size="sm" variant="link" @click="deleteItem(row.item)">Delete Item</b-button>
+                    <b-button :disabled="!allowEditItem(row.item)" size="sm" variant="link" @click="deleteItem(row.item)">Delete Item</b-button>
                   </b-col>
                 </b-row>
             </b-popover>
@@ -398,6 +398,12 @@ export default {
       return securite.hasRole(["SALE_ADMIN"]);
       // return securite.hasRole(["SALE_ADMIN"]);
     },
+    allowEditItem(si){
+      if(si.status == "SHIPPED"){
+        return false;
+      }
+      return securite.hasRole(["SALE_ADMIN"]);
+    },
     allowSave(){
       return securite.hasRole(["SALE_ADMIN"]) && !this.sale.cancelled;
     },
@@ -526,7 +532,11 @@ export default {
       }
       var tooManyAssignedItem = null;
       var tooManyShippedItem = null;
+      var alreadyShipped = false;
       this.sale.saleItems.forEach(si=>{
+        if(this.sale.status == "SHIPPED"){
+          alreadyShipped = true;
+        }
         si.unitsAdjusted = si.unitsAdjusted || 0;
         si.units == si.units || 0;
         var unitsAssignedDiff = +si.unitsAssigned - +si.prevUnitsAssigned;
