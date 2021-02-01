@@ -50,9 +50,6 @@
         <template v-slot:cell(dc)="row">
           <div style="width:150px; overflow: wrap; font-size: 12px">{{row.item.dc}}</div>
         </template>
-        <template v-slot:cell(unitsSoldAdj)="row">
-            <span>{{+row.item.unitsSold + +row.item.unitsAdjusted}}</span>
-        </template>
         <template v-slot:cell(unitsSchProd)="row">
             <span>{{row.item.unitsScheduled}}/{{row.item.unitsProduced}}</span>
         </template>
@@ -112,7 +109,8 @@ export default {
         { key: "customerName", label: "Customer", sortable: true },
         { key: "dc", label: "DC (State)", sortable: false },
         { key: "shippingWindow", label: "Ship", sortable: false },
-        { key: "unitsSoldAdj", label: "Sold&Adj", sortable: false },
+        { key: "unitsSold", label: "Sold", sortable: false },
+        { key: "unitsAdjusted", label: "Adj", sortable: false },
         { key: "unitsSchProd", label: "Sch/Prod", sortable: false },
         { key: "unitsAssigned", label: "Assigned", sortable: false },
         { key: "unitsShipped", label: "Shipped", sortable: false },
