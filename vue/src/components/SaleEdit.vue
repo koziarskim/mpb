@@ -5,25 +5,25 @@
         <b-row>
           <b-col cols=4>
             <label class="top-label">Sale Number:</label>
-            <input :disabled="!allowEdit()" maxlength="18" class="form-control" type="text" v-model="sale.number" placeholder="Number">
+            <input :disabled="disableEditSale()" maxlength="18" class="form-control" type="text" v-model="sale.number" placeholder="Number">
           </b-col>
           <b-col cols=4>
             <label class="top-label">Sale Date:</label>
-            <input :disabled="!allowEdit()" class="form-control" type="date" v-model="sale.date" placeholder="Date">
+            <input :disabled="disableEditSale()" class="form-control" type="date" v-model="sale.date" placeholder="Date">
           </b-col>
           <b-col cols=4>
             <label class="top-label">Expected Date:</label>
-            <input :disabled="!allowEdit()" class="form-control" type="date" v-model="sale.expectedDate" placeholder="Date">
+            <input :disabled="disableEditSale()" class="form-control" type="date" v-model="sale.expectedDate" placeholder="Date">
           </b-col>
         </b-row>
         <b-row>
           <b-col cols=6>
             <label class="top-label">Customer:</label>
-            <b-select :isDisabled="!allowEdit()" option-value="id" option-text="value" :list="availableCustomers" v-model="customerDto" placeholder="Customer"></b-select>
+            <b-select :isDisabled="disableEditSale()" option-value="id" option-text="value" :list="availableCustomers" v-model="customerDto" placeholder="Customer"></b-select>
           </b-col>
           <b-col cols=4>
             <label class="top-label">Pay Terms:</label>
-            <input :disabled="!allowEdit()" class="form-control" type="tel" v-model="sale.paymentTerms">
+            <input :disabled="disableEditSale()" class="form-control" type="tel" v-model="sale.paymentTerms">
           </b-col>
           <b-col cols=2>
             <label class="top-label">PCR:</label><br/>
@@ -33,7 +33,7 @@
       </b-col>
       <b-col cols=4>
         <label class="top-label">Notes:</label>
-        <b-form-textarea :disabled="!allowEdit()" type="text" :rows="4" v-model="sale.notes"></b-form-textarea>
+        <b-form-textarea :disabled="disableEditSale()" type="text" :rows="4" v-model="sale.notes"></b-form-textarea>
       </b-col>
       <b-col cols=2>
         <div style="display: flex; text-align: right">
@@ -44,9 +44,9 @@
           <b-button size="sm" :id="'popover-menu'+sale.id" style="margin-left: 3px">...</b-button>
             <b-popover placement="bottomleft" :target="'popover-menu'+sale.id" variant="secondary">
               <div style="width: 240px">
-              <b-button style="margin-left: 3px" :disabled="!allowEdit()" size="sm" @click="cancelSale()">Cancel</b-button>
-              <b-button style="margin-left: 3px" :disabled="!allowEdit()" size="sm" @click="copySale()">Copy</b-button>
-              <b-button style="margin-left: 3px" :disabled="!allowEdit()" size="sm" @click="deleteSale()">Delete</b-button>
+              <b-button style="margin-left: 3px" :disabled="disableEditSale()" size="sm" @click="cancelSale()">Cancel</b-button>
+              <b-button style="margin-left: 3px" :disabled="disableEditSale()" size="sm" @click="copySale()">Copy</b-button>
+              <b-button style="margin-left: 3px" :disabled="disableEditSale()" size="sm" @click="deleteSale()">Delete</b-button>
               </div>
             </b-popover>
         </div>
@@ -62,15 +62,15 @@
     <b-row>
       <b-col cols=4>
         <label class="top-label">Shipping to Address:</label>
-        <b-select :isDisabled="!allowEdit()" option-value="id" option-text="label" :list="customer.addresses" v-model="shippingAddress" placeholder="shipping to address"></b-select>
+        <b-select :isDisabled="disableEditSale()" option-value="id" option-text="label" :list="customer.addresses" v-model="shippingAddress" placeholder="shipping to address"></b-select>
       </b-col>
       <b-col cols=2>
         <label class="top-label">Shipping Window From:</label>
-        <input :disabled="!allowEdit()" class="form-control" type="date" v-model="sale.shippingFrom" placeholder="Date">
+        <input :disabled="disableEditSale()" class="form-control" type="date" v-model="sale.shippingFrom" placeholder="Date">
       </b-col>
       <b-col cols=2>
         <label class="top-label">Shipping Window To:</label>
-        <input :disabled="!allowEdit()" class="form-control" type="date" v-model="sale.shippingTo" placeholder="Date">
+        <input :disabled="disableEditSale()" class="form-control" type="date" v-model="sale.shippingTo" placeholder="Date">
       </b-col>
       <b-col cols=2>
         <label class="top-label">Freight Terms:</label>
@@ -81,14 +81,14 @@
     <b-row>
       <b-col cols=4>
         <label class="top-label">Available Items:</label>
-        <b-select :isDisabled="!allowEdit()" option-value="id" option-text="name" :list="availableItems" v-model="itemDto" placeholder="Items"></b-select>
+        <b-select :isDisabled="disableEditSale()" option-value="id" option-text="name" :list="availableItems" v-model="itemDto" placeholder="Items"></b-select>
       </b-col>
       <b-col cols=4>
         <label class="top-label">Available Packaging:</label>
-        <b-select :isDisabled="!allowEdit()" option-value="id" option-text="label" :list="item.itemPackagings" v-model="itemPackaging" placeholder="Packaging"></b-select>
+        <b-select :isDisabled="disableEditSale()" option-value="id" option-text="label" :list="item.itemPackagings" v-model="itemPackaging" placeholder="Packaging"></b-select>
       </b-col>
       <b-col cols=1 style="margin-top: 30px">
-        <b-button :disabled="!allowEdit()" variant="link" @click="addItem()">(+)</b-button>
+        <b-button :disabled="disableEditSale()" variant="link" @click="addItem()">(+)</b-button>
       </b-col>
       <b-col cols=3 style="margin-top: 20px;">
           <span style="font-weight: bold">Items #: </span>{{totalItems}}, <span style="font-weight: bold">Units: </span>{{totalUnits}}<br/>
@@ -107,7 +107,7 @@
             <div style="width:100px; overflow: wrap; font-size: 11px">{{row.item.itemPackaging.packaging.name}}</div>
           </template>
           <template v-slot:cell(unitsAssigned)="row">
-            <input :disabled="!allowEditItem(row.item)" class="form-control" style="width:80px" type="tel" v-model="row.item.unitsAssigned">
+            <input :disabled="disableEditItem(row.item)" class="form-control" style="width:80px" type="tel" v-model="row.item.unitsAssigned">
           </template>
           <template v-slot:cell(cost)="row">
             <span>${{(+row.item.itemPackaging.item.totalCost + +row.item.itemPackaging.packaging.totalPackagingCost).toFixed(2)}}</span>
@@ -116,17 +116,17 @@
             <b-button size="sm" variant="link" @click="goToScheduled(row.item)">{{row.item.unitsProduced}}</b-button>
           </template>
           <template v-slot:cell(units)="row">
-            <input :disabled="!allowEditItem(row.item)" class="form-control" style="width:80px" type="tel" v-model="row.item.units">
+            <input :disabled="disableEditItem(row.item)" class="form-control" style="width:80px" type="tel" v-model="row.item.units">
           </template>
           <template v-slot:cell(unitsAdjusted)="row">
-            <input :disabled="!allowEditItem(row.item)" class="form-control" style="width:80px" type="tel" v-model="row.item.unitsAdjusted">
+            <input :disabled="disableEditItem(row.item)" class="form-control" style="width:80px" type="tel" v-model="row.item.unitsAdjusted">
           </template>
           <template v-slot:cell(cases)="row">
             <span>{{getCases(row.item)}}</span>
           </template>
           <template v-slot:cell(unitPrice)="row">
             <div style="display:flex">
-            $<input :disabled="!allowEditItem(row.item)" class="form-control" style="display: inline; width:80px" type="tel" v-model="row.item.unitPrice">
+            $<input :disabled="disableEditItem(row.item)" class="form-control" style="display: inline; width:80px" type="tel" v-model="row.item.unitPrice">
             </div>
           </template>
           <template v-slot:cell(totalUnitPrice)="row">
@@ -183,7 +183,7 @@
                 </b-row>
                 <b-row>
                   <b-col cols=12 style="text-align: right;">
-                    <b-button :disabled="!allowEditItem(row.item)" size="sm" variant="link" @click="deleteItem(row.item)">Delete Item</b-button>
+                    <b-button :disabled="disableEditItem(row.item)" size="sm" variant="link" @click="deleteItem(row.item)">Delete Item</b-button>
                   </b-col>
                 </b-row>
             </b-popover>
@@ -430,14 +430,11 @@ export default {
       }
       return "Not Yet Saved";
     },
-    allowEdit(){
-      return securite.hasRole(["SALE_ADMIN"]);
-      // return securite.hasRole(["SALE_ADMIN"]);
+    disableEditSale(){
+      return !securite.hasRole(["SALE_ADMIN"]) || this.sale.approved;
     },
-    allowEditItem(si){
-      if(si.status == "SHIPPED"){
-        return false;
-      }
+    disableEditItem(si){
+      return si.status == "SHIPPED" || this.sale.approved;
       return securite.hasRole(["SALE_ADMIN"]);
     },
     allowSave(){
