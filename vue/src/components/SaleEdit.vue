@@ -33,7 +33,7 @@
       </b-col>
       <b-col cols=4>
         <label class="top-label">Notes:</label>
-        <b-form-textarea :disabled="disableEditSale()" type="text" :rows="4" v-model="sale.notes"></b-form-textarea>
+        <b-form-textarea type="text" :rows="4" v-model="sale.notes"></b-form-textarea>
       </b-col>
       <b-col cols=2>
         <div style="display: flex; text-align: right">
