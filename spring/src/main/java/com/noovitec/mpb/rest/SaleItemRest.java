@@ -253,6 +253,8 @@ class SaleItemRest {
 	        stamper.close();
 	        reader = new PdfReader(baos.toByteArray());
 	        copy.addPage(copy.getImportedPage(reader, 1));
+	        reader.close();
+	        baos.close();
 	    }
 	    doc.close();
 	    return mainBaos.toByteArray();

@@ -74,7 +74,7 @@
       </b-col>
       <b-col cols=2>
         <label class="top-label">Freight Terms:</label>
-        <b-select option-value="id" option-text="name" :list="availableFreightTerms" v-model="sale.freightTerms"></b-select>
+        <b-select :isDisabled="disableEditSale()" option-value="id" option-text="name" :list="availableFreightTerms" v-model="sale.freightTerms"></b-select>
       </b-col>
     </b-row>
     <hr class="hr-text" data-content="Sale Items">
@@ -119,7 +119,7 @@
             <input :disabled="disableEditItem(row.item)" class="form-control" style="width:80px" type="tel" v-model="row.item.units">
           </template>
           <template v-slot:cell(unitsAdjusted)="row">
-            <input :disabled="disableEditItem(row.item)" class="form-control" style="width:80px" type="tel" v-model="row.item.unitsAdjusted">
+            <input class="form-control" style="width:80px" type="tel" v-model="row.item.unitsAdjusted">
           </template>
           <template v-slot:cell(cases)="row">
             <span>{{getCases(row.item)}}</span>
