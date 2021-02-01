@@ -226,13 +226,15 @@ class SaleItemRest {
 	        	customerName = saleItem.getSale().getCustomer().getName().substring(0,20)+"...";
 	        }
 	        stamper.getAcroFields().setField("customerName", customerName);
-	        stamper.getAcroFields().setField("dc", saleItem.getSale().getShippingAddress().getDc());
-	        String shipToAddress = (saleItem.getSale().getShippingAddress().getLine()==null?"":saleItem.getSale().getShippingAddress().getLine()+"\n")
-	        		+saleItem.getSale().getShippingAddress().getStreet()+"\n"
-	        		+saleItem.getSale().getShippingAddress().getCity()+", "
-	        		+saleItem.getSale().getShippingAddress().getState()+" "
-	        		+saleItem.getSale().getShippingAddress().getZip();
-	        stamper.getAcroFields().setField("shipToAddress", shipToAddress);
+	        if(saleItem.getSale().getShippingAddress() != null) {
+		        stamper.getAcroFields().setField("dc", saleItem.getSale().getShippingAddress().getDc());
+		        String shipToAddress = (saleItem.getSale().getShippingAddress().getLine()==null?"":saleItem.getSale().getShippingAddress().getLine()+"\n")
+		        		+saleItem.getSale().getShippingAddress().getStreet()+"\n"
+		        		+saleItem.getSale().getShippingAddress().getCity()+", "
+		        		+saleItem.getSale().getShippingAddress().getState()+" "
+		        		+saleItem.getSale().getShippingAddress().getZip();
+		        stamper.getAcroFields().setField("shipToAddress", shipToAddress);
+	        }
 	        stamper.getAcroFields().setField("saleNumber", "PO# "+saleItem.getSale().getNumber());
 	        stamper.getAcroFields().setField("department", (saleItem.getDepartment()==null || saleItem.getDepartment().isBlank())?"":"DEPT. "+saleItem.getDepartment());
 	        stamper.getAcroFields().setField("itemNumber", saleItem.getItemPackaging().getItem().getNumber()+"-"+saleItem.getItemPackaging().getItem().getName());

@@ -122,7 +122,7 @@
             <input class="form-control" style="width:80px" type="tel" v-model="row.item.unitsAdjusted">
           </template>
           <template v-slot:cell(cases)="row">
-            <span>{{getCases(row.item)}}</span>
+            <span>{{getCases(row.item).toFixed(0)}}</span>
           </template>
           <template v-slot:cell(unitPrice)="row">
             <div style="display:flex">
@@ -688,7 +688,7 @@ export default {
       // this.saveSale();
     },
     getCases(si){
-      return Math.ceil(+si.units / +si.itemPackaging.packaging.casePack).toFixed(0);
+      return Math.ceil(+si.units / +si.itemPackaging.packaging.casePack);
     },
     getPallets(si){
       var number = Math.ceil(+this.getCases(si) / (+si.itemPackaging.packaging.ti * +si.itemPackaging.packaging.hi))
