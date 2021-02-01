@@ -227,7 +227,7 @@ class SaleItemRest {
 	        }
 	        stamper.getAcroFields().setField("customerName", customerName);
 	        stamper.getAcroFields().setField("dc", saleItem.getSale().getShippingAddress().getDc());
-	        String shipToAddress = (saleItem.getSale().getShippingAddress().getLine()==null?"\n":saleItem.getSale().getShippingAddress().getLine()+"\n")
+	        String shipToAddress = (saleItem.getSale().getShippingAddress().getLine()==null?"":saleItem.getSale().getShippingAddress().getLine()+"\n")
 	        		+saleItem.getSale().getShippingAddress().getStreet()+"\n"
 	        		+saleItem.getSale().getShippingAddress().getCity()+", "
 	        		+saleItem.getSale().getShippingAddress().getState()+" "
