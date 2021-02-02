@@ -104,21 +104,21 @@ public class SaleItem extends BaseEntity {
 		}
 		if(this.getSale().isApproved()) {
 			this.status = Sale.STATUS.APPROVED.name();
-		}
-		if((this.units + this.unitsAdjusted) > 0 && (this.units + this.unitsAdjusted) == this.unitsScheduled) {
-			this.status = Sale.STATUS.SCHEDULED.name();
-		}
-		if((this.units + this.unitsAdjusted) > 0 && (this.units + this.unitsAdjusted) == this.unitsProduced ) {
-			this.status = Sale.STATUS.PRODUCED.name();
-		}
-		if((this.units + this.unitsAdjusted) > 0 && (this.units + this.unitsAdjusted) == this.unitsAssigned ) {
-			this.status = Sale.STATUS.ASSIGNED.name();
-		}
-		if((this.units + this.unitsAdjusted) > 0 && (this.units + this.unitsAdjusted) == this.unitsShipped) {
-			status = Sale.STATUS.SHIPPED.name();
-		}
-		if(this.getSale().isPaidInFull()) {
-			status = STATUS.PAID.name();
+			if((this.units + this.unitsAdjusted) > 0 && (this.units + this.unitsAdjusted) == this.unitsScheduled) {
+				this.status = Sale.STATUS.SCHEDULED.name();
+			}
+			if((this.units + this.unitsAdjusted) > 0 && (this.units + this.unitsAdjusted) == this.unitsProduced ) {
+				this.status = Sale.STATUS.PRODUCED.name();
+			}
+			if((this.units + this.unitsAdjusted) > 0 && (this.units + this.unitsAdjusted) == this.unitsAssigned ) {
+				this.status = Sale.STATUS.ASSIGNED.name();
+			}
+			if((this.units + this.unitsAdjusted) > 0 && (this.units + this.unitsAdjusted) == this.unitsShipped) {
+				status = Sale.STATUS.SHIPPED.name();
+			}
+			if(this.getSale().isPaidInFull()) {
+				status = STATUS.PAID.name();
+			}
 		}
 		if(this.getSale().isCancelled()) {
 			status = Sale.STATUS.CANCELED.name();
