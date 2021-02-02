@@ -544,8 +544,12 @@ export default {
       }
       this.sale.pcr = this.pcr;
       return http.post("/sale", this.sale).then(r => {
-        this.getSaleData(r.data.id);
-        return r;
+        if(window.location.pathname.slice(-8) == "saleEdit"){
+          router.push("/saleEdit/" + r.data.id);
+        } else {
+          this.getSaleData(r.data.id);
+          return r;
+        }
       }).catch(e => {
         console.log("API error: " + e);
       });
