@@ -289,10 +289,19 @@ export default {
       })
     },
     changeShippedDate(e){
+      var notApproved = this.shipment.shipmentItems.find(si => !si.saleItem.sale.approved);
+      if(notApproved){
+        alert("Sale "+notApproved.saleItem.sale.number+" is not approved")
+        e.target.value = null;
+        this.readyDisabled = false;
+        this.shippedDate = null;
+        this.shipment.shippedDate = null;
+        return false;
+      }
       if(!this.shipment.ready){
         alert("Shipment is not ready!");
         this.shippedDate = null;
-        return;
+        return false;
       }
       if(e.target.value){
         this.readyDisabled = true;
