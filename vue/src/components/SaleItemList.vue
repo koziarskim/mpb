@@ -162,6 +162,10 @@ export default {
   },
   methods: {
     openScheduleEventModal(saleItemDto){
+      if(!saleItemDto.approved){
+        alert("Sale is not approved yet");
+        return false;
+      }
       this.saleItemId = saleItemDto.id;
       this.itemId = saleItemDto.itemId;
       this.scheduleEventModalVisible = true;

@@ -33,5 +33,6 @@ public class SaleItemDto {
 	private BigDecimal invoicedAmount;
 	private String status;
 	private String packagingLabel;
+	private boolean approved;
 	
 }

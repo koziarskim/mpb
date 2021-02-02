@@ -105,6 +105,7 @@ class SaleItemRest {
 				dto.setUnitsAssigned(saleItem.getUnitsAssigned());
 				dto.setStatus(saleItem.getStatus());
 				dto.setPackagingLabel(saleItem.getItemPackaging().getLabel());
+				dto.setApproved(saleItem.getSale().isApproved());
 				return dto;
 			});
 			return all;
