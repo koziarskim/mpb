@@ -187,7 +187,8 @@ class SaleItemRest {
 		byte[] data = this.generateCartonPdf(saleItem, pageFrom, pageTo);
 		HttpHeaders header = new HttpHeaders();
 		header.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-		header.set("Content-Disposition", "inline; filename=" + fileName);
+		header.set("content-disposition", "inline; filename=" + fileName);
+		header.set("file-name", fileName);
 		header.setContentLength(data.length);
 		return new HttpEntity<byte[]>(data, header);
 	}
@@ -202,7 +203,8 @@ class SaleItemRest {
 		byte[] data = this.generateTagPdf(saleItem, pageFrom, pageTo);
 		HttpHeaders header = new HttpHeaders();
 		header.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-		header.set("Content-Disposition", "inline; filename=" + fileName);
+		header.set("content-disposition", "inline; filename=" + fileName);
+		header.set("file-name", fileName);
 		header.setContentLength(data.length);
 		return new HttpEntity<byte[]>(data, header);
 	}

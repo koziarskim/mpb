@@ -280,6 +280,7 @@ class ItemRest {
 			saleService.updateUnits(null);
 			itemService.updateUnitsReadyProd(null);
 			purchaseService.updateUnits(null);
+			log.info("Done updating item units!");
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

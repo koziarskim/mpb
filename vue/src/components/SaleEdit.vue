@@ -160,7 +160,7 @@
                   <b-col cols=5>
                     <div style="display: flex">
                       <div>
-                        <b-button style="" size="sm" variant="link" @click="downloadCarton(row.item)">Carton Label</b-button><br/>
+                        <b-button :disabled="loaderActive" style="" size="sm" variant="link" @click="downloadCarton(row.item)">Carton Label</b-button><br/>
                         <label style="margin-left: 10px" class="top-label">Source: {{getCartonSource(row.item)}}</label>
                       </div>
                       <input class="form-control" style="font-size: 12px; width: 60px; height: 30px" type="tel" v-model="pageFromCarton">-
@@ -169,7 +169,7 @@
                   </b-col>
                   <b-col cols=5>
                     <div style="display: flex">
-                      <b-button style="" size="sm" variant="link" @click="downloadTag(row.item)">Pallet Tag</b-button>
+                      <b-button :disabled="loaderActive" size="sm" variant="link" @click="downloadTag(row.item)">Pallet Tag</b-button>
                       <input class="form-control" style="font-size: 12px; width: 60px; height: 30px" type="tel" v-model="pageFromTag">-
                       <input class="form-control" style="font-size: 12px; width: 60px; height: 30px" type="tel" v-model="pageToTag">
                     </div>
@@ -182,7 +182,13 @@
                   </b-col>
                 </b-row>
                 <b-row>
-                  <b-col cols=12 style="text-align: right;">
+                  <b-col cols=6>
+                    <div v-if="loaderActive">
+                      <b-spinner small label="Loading..."></b-spinner>
+                      <label class="top-label" style="margin-left:7px">Generating file, please wait...</label>
+                    </div>
+                  </b-col>
+                  <b-col cols=6 style="text-align: right;">
                     <b-button :disabled="disableEditItem(row.item)" size="sm" variant="link" @click="deleteItem(row.item)">Delete Item</b-button>
                   </b-col>
                 </b-row>
@@ -221,6 +227,7 @@ import router from "../router";
 import securite from "../securite";
 import moment from "moment";
 import httpUtils from "../httpUtils";
+import axios from "axios";
 
 export default {
   components: {
@@ -298,6 +305,7 @@ export default {
         {id: 'PAID', name: 'Paid'},
         {id: 'CANCELED', name: 'Canceled'},
       ],
+      loaderActive: false,
     };
   },
   computed: {
@@ -379,8 +387,30 @@ export default {
           alert("Page from/to are too large");
           return false;
         }
+        if(!si.itemPackaging.item.weight){
+          alert("Item has no weight")
+          return false;
+        }
+        if(!this.sale.shippingAddress){
+          alert("Sale has no shipping address")
+          return false;
+        }
         var url = httpUtils.getUrl("/saleItem/" + si.id + "/tag/pdf", "&pageFrom="+this.pageFromTag+"&pageTo="+this.pageToTag);
-        window.open(url, "_blank","")
+                this.loaderActive = true;
+        axios({
+          url: url,
+          method: 'GET',
+          responseType: 'blob',
+        }).then((response) => {
+            var fileURL = window.URL.createObjectURL(new Blob([response.data]));
+            var fileLink = document.createElement('a');
+            fileLink.href = fileURL;
+            fileLink.setAttribute('download', 'file.pdf');
+            document.body.appendChild(fileLink);
+            fileLink.click();
+            this.loaderActive = false;
+            fileLink.remove();
+        });
       })
     },
     downloadCarton(si){
@@ -389,12 +419,35 @@ export default {
           alert("Best By is not set");
           return false;
         }
+        if(!si.itemPackaging.item.weight){
+          alert("Item has no weight")
+          return false;
+        }
+        if(!this.sale.shippingAddress){
+          alert("Sale has no shipping address")
+          return false;
+        }
         if(this.pageFromCarton > this.getCases(si) || this.pageToCarton > this.getCases(si)){
           alert("Page from/to are too large");
           return false;
         }
         var url = httpUtils.getUrl("/saleItem/" + si.id + "/carton/pdf", "&pageFrom="+this.pageFromCarton+"&pageTo="+this.pageToCarton);
-        window.open(url, "_blank","")
+        this.loaderActive = true;
+        axios({
+          url: url,
+          method: 'GET',
+          responseType: 'blob',
+        }).then((response) => {
+            var fileURL = window.URL.createObjectURL(new Blob([response.data]));
+            var fileLink = document.createElement('a');
+            fileLink.href = fileURL;
+            var fileName = response.headers["file-name"];
+            fileLink.setAttribute('download', fileName);
+            document.body.appendChild(fileLink);
+            fileLink.click();
+            this.loaderActive = false;
+            fileLink.remove();
+        });
       })
     },
     getTotalUnitPrice(saleItem){
