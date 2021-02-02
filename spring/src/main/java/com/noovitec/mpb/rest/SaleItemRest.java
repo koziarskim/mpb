@@ -222,9 +222,9 @@ class SaleItemRest {
 	        ByteArrayOutputStream baos = new ByteArrayOutputStream();
 	        PdfStamper stamper = new PdfStamper(reader, baos);
 	        String customerName = saleItem.getSale().getCustomer().getName();
-	        if(customerName.length() > 20) {
-	        	customerName = saleItem.getSale().getCustomer().getName().substring(0,20)+"...";
-	        }
+//	        if(customerName.length() > 20) {
+//	        	customerName = saleItem.getSale().getCustomer().getName().substring(0,20)+"...";
+//	        }
 	        stamper.getAcroFields().setField("customerName", customerName);
 	        if(saleItem.getSale().getShippingAddress() != null) {
 		        stamper.getAcroFields().setField("dc", saleItem.getSale().getShippingAddress().getDc());
@@ -281,9 +281,9 @@ class SaleItemRest {
 	        ByteArrayOutputStream baos = new ByteArrayOutputStream();
 	        PdfStamper stamper = new PdfStamper(reader, baos);
 	        String customerName = saleItem.getSale().getCustomer().getName();
-	        if(customerName.length() > 20) {
-	        	customerName = saleItem.getSale().getCustomer().getName().substring(0,20)+"...";
-	        }
+//	        if(customerName.length() > 20) {
+//	        	customerName = saleItem.getSale().getCustomer().getName().substring(0,20)+"...";
+//	        }
 	        stamper.getAcroFields().setField("customerName", customerName);
 	        String location = (saleItem.getSale().getShippingAddress().getLocationName()==null || saleItem.getSale().getShippingAddress().getLocationName().isBlank())?"":"LOCATION ID. "+saleItem.getSale().getShippingAddress().getLocationName();
 	        String dc = saleItem.getSale().getShippingAddress().getDc();
