@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import com.noovitec.mpb.entity.Item;
 import com.noovitec.mpb.entity.ItemComponent;
+import com.noovitec.mpb.entity.SaleItem;
 import com.noovitec.mpb.repo.ItemRepo;
 
 public interface ItemService {
@@ -26,6 +27,7 @@ public interface ItemService {
 //	public void updateUnitsReadyProdByComponent(Long componentId);
 	public List<Long> findIdsByComponents(List<Long> componentIds);
 	public void asyncUpdateUnits();
+	public List<SaleItem> findSaleItemsForChecklist(Long itemId);
 	
 	@Transactional
 	@Service("itemServiceImpl")
@@ -105,6 +107,10 @@ public interface ItemService {
 			}
 			List<Long> ids = itemRepo.findIdsByComponents(componentIds);
 			return ids;
+		}
+		
+		public List<SaleItem> findSaleItemsForChecklist(Long itemId){
+			return itemRepo.findSaleItemsForChecklist(itemId);
 		}
 		
 		@Async

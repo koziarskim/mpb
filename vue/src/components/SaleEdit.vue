@@ -377,42 +377,6 @@ export default {
       this.pageFromTag = 1;
       this.pageToTag = this.getPallets(saleItem);
     },
-    downloadTag(si){
-      this.saveSale().then(r=> {
-        if(!si.expiration){
-          alert("Best By is not set");
-          return false;
-        }
-        if(this.pageFromTag > this.getPallets(si) || this.pageToTag > this.getPallets(si)){
-          alert("Page from/to are too large");
-          return false;
-        }
-        if(!si.itemPackaging.item.weight){
-          alert("Item has no weight")
-          return false;
-        }
-        if(!this.sale.shippingAddress){
-          alert("Sale has no shipping address")
-          return false;
-        }
-        var url = httpUtils.getUrl("/saleItem/" + si.id + "/tag/pdf", "&pageFrom="+this.pageFromTag+"&pageTo="+this.pageToTag);
-                this.loaderActive = true;
-        axios({
-          url: url,
-          method: 'GET',
-          responseType: 'blob',
-        }).then((response) => {
-            var fileURL = window.URL.createObjectURL(new Blob([response.data]));
-            var fileLink = document.createElement('a');
-            fileLink.href = fileURL;
-            fileLink.setAttribute('download', 'file.pdf');
-            document.body.appendChild(fileLink);
-            fileLink.click();
-            this.loaderActive = false;
-            fileLink.remove();
-        });
-      })
-    },
     downloadCarton(si){
       this.saveSale().then(r=> {
         if(!si.expiration){
@@ -432,6 +396,43 @@ export default {
           return false;
         }
         var url = httpUtils.getUrl("/saleItem/" + si.id + "/carton/pdf", "&pageFrom="+this.pageFromCarton+"&pageTo="+this.pageToCarton);
+        this.loaderActive = true;
+        axios({
+          url: url,
+          method: 'GET',
+          responseType: 'blob',
+        }).then((response) => {
+            var fileURL = window.URL.createObjectURL(new Blob([response.data]));
+            var fileLink = document.createElement('a');
+            fileLink.href = fileURL;
+            var fileName = response.headers["file-name"];
+            fileLink.setAttribute('download', fileName);
+            document.body.appendChild(fileLink);
+            fileLink.click();
+            this.loaderActive = false;
+            fileLink.remove();
+        });
+      })
+    },
+    downloadTag(si){
+      this.saveSale().then(r=> {
+        if(!si.expiration){
+          alert("Best By is not set");
+          return false;
+        }
+        if(this.pageFromTag > this.getPallets(si) || this.pageToTag > this.getPallets(si)){
+          alert("Page from/to are too large");
+          return false;
+        }
+        if(!si.itemPackaging.item.weight){
+          alert("Item has no weight")
+          return false;
+        }
+        if(!this.sale.shippingAddress){
+          alert("Sale has no shipping address")
+          return false;
+        }
+        var url = httpUtils.getUrl("/saleItem/" + si.id + "/tag/pdf", "&pageFrom="+this.pageFromTag+"&pageTo="+this.pageToTag);
         this.loaderActive = true;
         axios({
           url: url,

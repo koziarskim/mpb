@@ -1,13 +1,18 @@
 package com.noovitec.mpb.rest;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +20,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,12 +37,18 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.pdf.PdfReader;
+import com.itextpdf.text.pdf.PdfSmartCopy;
+import com.itextpdf.text.pdf.PdfStamper;
 import com.noovitec.mpb.dto.ItemDto;
 import com.noovitec.mpb.dto.ItemListDto;
 import com.noovitec.mpb.dto.ItemTreeDto;
 import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.dto.ScheduleEventTreeDto;
 import com.noovitec.mpb.entity.Attachment;
+import com.noovitec.mpb.entity.Customer;
 import com.noovitec.mpb.entity.Item;
 import com.noovitec.mpb.entity.ItemComponent;
 import com.noovitec.mpb.entity.ItemPackaging;
@@ -287,4 +301,64 @@ class ItemRest {
 		}
 		return ResponseEntity.ok().body("OK");
 	}
+	
+	@GetMapping("/item/{id}/checklist/pdf")
+	HttpEntity<byte[]> getChecklistPdf(@PathVariable Long id) throws DocumentException, IOException {
+		Item item = itemRepo.findById(id).get();
+		String fileName = "Checklist_"+item.getNumber()+".pdf";
+		byte[] data = this.generateChecklistPdf(item);
+		HttpHeaders header = new HttpHeaders();
+		header.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+		header.set("content-disposition", "inline; filename=" + fileName);
+		header.set("file-name", fileName);
+		header.setContentLength(data.length);
+		return new HttpEntity<byte[]>(data, header);
+	}
+	
+	private byte[] generateChecklistPdf(Item item) throws IOException, DocumentException {
+	    Document doc = new Document();
+	    ByteArrayOutputStream mainBaos = new ByteArrayOutputStream();
+	    PdfSmartCopy copy = new PdfSmartCopy(doc, mainBaos);
+	    doc.open();
+		InputStream in = this.getClass().getClassLoader().getResourceAsStream("pdf/Checklist.pdf");
+		PdfReader mainReader = new PdfReader(in);
+		DecimalFormat df = new DecimalFormat();
+		df.setMaximumFractionDigits(2);
+		df.setMinimumFractionDigits(2);
+		df.setGroupingUsed(false);
+		List<SaleItem> saleItems = itemService.findSaleItemsForChecklist(item.getId());
+		int customerCount = 0;
+		Map<Customer, Long> customerMap = new HashMap<Customer, Long>();
+		for(SaleItem saleItem: saleItems) {
+			Customer customer = saleItem.getSale().getCustomer();
+			Long units = customerMap.get(customer);
+			if(units == null) {units = 0L;}
+			units += (saleItem.getUnits() + saleItem.getUnitsAdjusted() - saleItem.getUnitsAssigned());
+			customerMap.put(customer, units);
+		}
+		int pages = (int) Math.ceil((double) customerMap.size()/3);
+		for (int i=0; i<pages; i++) {
+	    	PdfReader reader = new PdfReader(mainReader);
+	        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+	        PdfStamper stamper = new PdfStamper(reader, baos);
+	        for (int c=0; c<3; c++) {
+	        	if(customerCount<customerMap.size()) {
+			        Customer customer = (Customer) customerMap.keySet().toArray()[customerCount];
+			        String customerName = customer.getName();
+			        stamper.getAcroFields().setField("customerName"+c, customerName + " - "+customerMap.get(customer).toString());
+			        customerCount++;
+		        }
+	        }
+	        stamper.setFormFlattening(true);
+	        stamper.close();
+	        reader = new PdfReader(baos.toByteArray());
+	        copy.addPage(copy.getImportedPage(reader, 1));
+	        reader.close();
+	        baos.close();
+	    };
+	    doc.close();
+	    return mainBaos.toByteArray();
+	}
+
+
 }

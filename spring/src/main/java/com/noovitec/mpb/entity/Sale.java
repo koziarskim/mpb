@@ -107,16 +107,16 @@ public class Sale extends BaseEntity {
 		}
 		if(this.isApproved()) {
 			this.status = Sale.STATUS.APPROVED.name();
-			if((this.unitsSold + this.unitsAdjusted) > 0 && (this.unitsSold + this.unitsAdjusted) == this.unitsScheduled) {
+			if((this.unitsSold + this.unitsAdjusted) == this.unitsScheduled) {
 				this.status = Sale.STATUS.SCHEDULED.name();
 			}
-			if((this.unitsSold + this.unitsAdjusted) > 0 && (this.unitsSold + this.unitsAdjusted) == this.unitsProduced ) {
+			if((this.unitsSold + this.unitsAdjusted) == this.unitsProduced ) {
 				this.status = Sale.STATUS.PRODUCED.name();
 			}
-			if((this.unitsSold + this.unitsAdjusted) > 0 && (this.unitsSold + this.unitsAdjusted) == this.unitsAssigned ) {
+			if((this.unitsSold + this.unitsAdjusted) == this.unitsAssigned ) {
 				this.status = Sale.STATUS.ASSIGNED.name();
 			}
-			if((this.unitsSold + this.unitsAdjusted) > 0 && (this.unitsSold + this.unitsAdjusted) == this.unitsShipped) {
+			if((this.unitsSold + this.unitsAdjusted) == this.unitsShipped) {
 				status = Sale.STATUS.SHIPPED.name();
 			}
 			if(this.isPaidInFull()) {

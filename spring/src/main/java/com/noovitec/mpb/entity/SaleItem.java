@@ -13,6 +13,7 @@ import javax.persistence.OneToMany;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.noovitec.mpb.entity.Sale.STATUS;
 
+import jdk.internal.jline.internal.Log;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -104,16 +105,16 @@ public class SaleItem extends BaseEntity {
 		}
 		if(this.getSale().isApproved()) {
 			this.status = Sale.STATUS.APPROVED.name();
-			if((this.units + this.unitsAdjusted) > 0 && (this.units + this.unitsAdjusted) == this.unitsScheduled) {
+			if((this.units + this.unitsAdjusted) == this.unitsScheduled) {
 				this.status = Sale.STATUS.SCHEDULED.name();
 			}
-			if((this.units + this.unitsAdjusted) > 0 && (this.units + this.unitsAdjusted) == this.unitsProduced ) {
+			if((this.units + this.unitsAdjusted) == this.unitsProduced ) {
 				this.status = Sale.STATUS.PRODUCED.name();
 			}
-			if((this.units + this.unitsAdjusted) > 0 && (this.units + this.unitsAdjusted) == this.unitsAssigned ) {
+			if((this.units + this.unitsAdjusted) == this.unitsAssigned ) {
 				this.status = Sale.STATUS.ASSIGNED.name();
 			}
-			if((this.units + this.unitsAdjusted) > 0 && (this.units + this.unitsAdjusted) == this.unitsShipped) {
+			if((this.units + this.unitsAdjusted) == this.unitsShipped) {
 				status = Sale.STATUS.SHIPPED.name();
 			}
 			if(this.getSale().isPaidInFull()) {

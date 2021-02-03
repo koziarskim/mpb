@@ -18,7 +18,8 @@
           </b-col>
           <b-col cols=2 style="margin-top: 10px">
             <div style="text-align: right">
-              <b-button :disabled="!allowEdit()" size="sm" variant="success" @click="saveItem()">Save</b-button>
+              <b-button :disabled="!allowEdit()" size="sm" variant="primary" @click="downloadChecklist()">Checklist</b-button>
+              <b-button :disabled="!allowEdit()" size="sm" variant="success" style="margin-left: 3px" @click="saveItem()">Save</b-button>
               <b-button :disabled="!allowEdit()" style="margin-left: 3px" size="sm" @click="deleteItem()">x</b-button>
             </div>
             <label class="top-label">Stock: {{item.unitsOnStock}}</label><br/>
@@ -120,6 +121,7 @@ import router from "../router";
 import httpUtils from "../httpUtils";
 import navigation from "../utils/navigation";
 import securite from "../securite";
+import axios from "axios";
 
 export default {
   components: {
@@ -184,6 +186,25 @@ export default {
   watch: {
   },
   methods: {
+    downloadChecklist(){
+      var url = httpUtils.getUrl("/item/" + this.item.id + "/checklist/pdf", "");
+      this.loaderActive = true;
+      axios({
+        url: url,
+        method: 'GET',
+        responseType: 'blob',
+      }).then((response) => {
+          var fileURL = window.URL.createObjectURL(new Blob([response.data]));
+          var fileLink = document.createElement('a');
+          fileLink.href = fileURL;
+          var fileName = response.headers["file-name"];
+          fileLink.setAttribute('download', fileName);
+          document.body.appendChild(fileLink);
+          fileLink.click();
+          this.loaderActive = false;
+          fileLink.remove();
+      });
+    },
     editPackaging(){
       this.packagingModalVisible = true;
     },

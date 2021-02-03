@@ -1,6 +1,5 @@
 package com.noovitec.mpb.repo.custom;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -15,11 +14,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import com.noovitec.mpb.entity.Item;
-import com.noovitec.mpb.entity.Shipment;
+import com.noovitec.mpb.entity.SaleItem;
 
 public interface CustomItemRepo {
 	public Page<Item> findPagable(Pageable pageable, String numberName, Long componentId, Long brandId, Long categoryId, String unitsFilter);
-
+	public List<SaleItem> findSaleItemsForChecklist(Long itemId);
+	
 	@Repository
 	public class CustomItemRepoImpl implements CustomItemRepo {
 
@@ -88,6 +88,20 @@ public interface CustomItemRepo {
 			List<Item> result = query.setFirstResult(pageable.getPageNumber() * pageable.getPageSize()).setMaxResults(pageable.getPageSize()).getResultList();
 			Page<Item> page = new PageImpl<Item>(result, pageable, total);
 			return page;
+		}
+		
+		public List<SaleItem> findSaleItemsForChecklist(Long itemId){
+			String q = "select distinct si from Item i "
+					+ "join i.itemPackagings ip "
+					+ "join ip.saleItems si "
+					+ "where i.id = :itemId "
+					+ "and (si.status = 'APPROVED' "
+					+ "or si.status = 'SCHEDULED')";
+			Query query = entityManager.createQuery(q);
+			query.setParameter("itemId", itemId);
+			@SuppressWarnings("unchecked")
+			List<SaleItem> result = query.getResultList();
+			return result;
 		}
 	}
 }
