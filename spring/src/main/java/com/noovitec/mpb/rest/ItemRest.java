@@ -52,6 +52,7 @@ import com.noovitec.mpb.entity.Customer;
 import com.noovitec.mpb.entity.Item;
 import com.noovitec.mpb.entity.ItemComponent;
 import com.noovitec.mpb.entity.ItemPackaging;
+import com.noovitec.mpb.entity.Packaging;
 import com.noovitec.mpb.entity.SaleItem;
 import com.noovitec.mpb.entity.ScheduleEvent;
 import com.noovitec.mpb.entity.Season;
@@ -328,32 +329,49 @@ class ItemRest {
 		df.setGroupingUsed(false);
 		List<SaleItem> saleItems = itemService.findSaleItemsForChecklist(item.getId());
 		int customerCount = 0;
-		int customersPerPage = 3;
-		Map<Customer, Long> customerMap = new HashMap<Customer, Long>();
+		int customersPerPage = 2;
+		Map<Customer, List<SaleItem>> customerMap = new HashMap<Customer, List<SaleItem>>();
 		for(SaleItem saleItem: saleItems) {
 			Customer customer = saleItem.getSale().getCustomer();
-			Long units = customerMap.get(customer);
-			if(units == null) {units = 0L;}
-			units += (saleItem.getUnits() + saleItem.getUnitsAdjusted() - saleItem.getUnitsAssigned());
-			customerMap.put(customer, units);
+			List<SaleItem> customerSaleItems = customerMap.get(customer);
+			if(customerSaleItems == null) {
+				customerSaleItems = new ArrayList<SaleItem>();
+			}
+			customerSaleItems.add(saleItem);
+			customerMap.put(customer, customerSaleItems);
 		}
 		int pages = (int) Math.ceil((double) customerMap.size()/customersPerPage);
 		for (int i=0; i<pages; i++) {
+			log.info("i: "+i);
 	    	PdfReader reader = new PdfReader(mainReader);
 	        ByteArrayOutputStream baos = new ByteArrayOutputStream();
 	        PdfStamper stamper = new PdfStamper(reader, baos);
 	        stamper.getAcroFields().setField("itemNumber", item.getNumber()+" - "+item.getName());
-	        for (int c=0; c<customersPerPage; c++) {
-	        	if(customerCount<customerMap.size()) {
+	        for (int c=1; c<=customersPerPage; c++) {
+	        	log.info("c: "+c);
+	        	log.info("customerCount: "+customerCount);
+	        	if(customerCount<=customerMap.size()) {
 			        Customer customer = (Customer) customerMap.keySet().toArray()[customerCount];
 			        String customerName = customer.getName();
 			        stamper.getAcroFields().setField("customerName"+c, customerName);
-			        stamper.getAcroFields().setField("cartonType"+c, "TODO");
-			        stamper.getAcroFields().setField("priceSticker"+c, "TODO");
-			        stamper.getAcroFields().setField("cartonLabel"+c, customer.isCartonLabel()?"Yes":"No");
-			        stamper.getAcroFields().setField("cartonLabelType"+c, "TODO");
-			        stamper.getAcroFields().setField("palletTagType"+c,  customer.getPalletType());
-			        stamper.getAcroFields().setField("unitsToProduce"+c, df.format(customerMap.get(customer)));
+			        stamper.getAcroFields().setField("priceSticker"+c, customer.isPriceTicket()?"Yes":"No");
+			        String cartonLabelType = "None";
+			        if(customer.isCartonLabel()) {
+			        	cartonLabelType = customer.isEdi()?"EDI":"MIMS";
+			        }
+			        stamper.getAcroFields().setField("cartonLabelType"+c, cartonLabelType);
+			        stamper.getAcroFields().setField("palletTagType"+c,  customer.getPalletTagSize());
+			        long units = 0;
+			        String cartonTypes = "";
+			        for(SaleItem si: customerMap.get(customer)) {
+			        	units += (si.getUnits() + si.getUnitsAdjusted() - si.getUnitsAssigned());
+			        	String cartonType = Packaging.TYPE.valueOf(si.getItemPackaging().getPackaging().getType()).label();
+			        	if(cartonTypes.indexOf(cartonType) == -1) {
+			        		cartonTypes += cartonType+"\n";
+			        	}
+			        }
+			        stamper.getAcroFields().setField("unitsToProduce"+c, df.format(units));
+			        stamper.getAcroFields().setField("cartonType"+c, cartonTypes);
 			        customerCount++;
 		        }
 	        }

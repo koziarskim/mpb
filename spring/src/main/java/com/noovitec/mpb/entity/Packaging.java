@@ -25,8 +25,9 @@ public class Packaging extends BaseEntity {
 
 	private static final long serialVersionUID = -6014743735048004494L;
 	public static enum TYPE {
-		MASTER_CARTON("Master Carton"), 
-		PDQ("PDQ");
+		RSC_MC("RSC-MC"), 
+		PDQ_HSC("PDQ-HSC"),
+		PDQ_ROG("PDQ-ROG");
 		private String label;
 		public String label() { 
 	        return this.label; 

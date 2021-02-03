@@ -66,8 +66,9 @@ export default {
         { key: "action", label: "Action", sortable: false },
       ],
       availableTypes: [
-        {id: "MASTER_CARTON", name: "Master Carton"},
-        {id: "PDQ", name: "PDQ"}
+        {id: "RSC_MC", name: "RSC-MC"},
+        {id: "PDQ_HSC", name: "PDQ-HSC"},
+        {id: "PDQ_ROG", name: "PDQ-ROG"}
       ],
       packagingIds: [],
       packagings: [],
