@@ -346,12 +346,12 @@ class ItemRest {
 	        PdfStamper stamper = new PdfStamper(reader, baos);
 	        stamper.getAcroFields().setField("itemNumber", item.getNumber()+" - "+item.getName());
 	        for (int c=1; c<=customersPerPage; c++) {
-	        	if(customerCount<=customerMap.size()) {
+	        	if(customerCount<customerMap.size()) {
 			        Customer customer = (Customer) customerMap.keySet().toArray()[customerCount];
 			        String customerName = customer.getName();
 			        stamper.getAcroFields().setField("customerName"+c, customerName);
 			        stamper.getAcroFields().setField("priceSticker"+c, customer.isPriceTicket()?"Yes":"No");
-			        String cartonLabelType = "None";
+			        String cartonLabelType = "---";
 			        if(customer.isCartonLabel()) {
 			        	cartonLabelType = customer.isEdi()?"EDI":"MIMS";
 			        }
