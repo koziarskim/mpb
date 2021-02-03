@@ -156,7 +156,7 @@
         <b-form-textarea maxlength="250" type="text" :rows="3" v-model="customer.palletRequirements"></b-form-textarea>
       </b-col>
       <b-col cols=2>
-        <label class="top-label">Pallet Tag Size:</label>
+        <label class="top-label">Pallet Tag Type:</label>
         <b-select option-value="id" option-text="name" :list="availablePalletTagTypes" v-model="customer.palletTagType"></b-select>
       </b-col>
       <b-col cols=4>
@@ -313,7 +313,7 @@ export default {
       availablePalletTagTypes: [
         { id: "4 x 6", name: "4 x 6" },
         { id: "Standard", name: "Standard" },
-        { id: "Edi", name: "Edi" },
+        { id: "EDI", name: "EDI" },
       ],
       availablePalletTypes: [
         { id: "GRADE_A", name: "Grade A" },
