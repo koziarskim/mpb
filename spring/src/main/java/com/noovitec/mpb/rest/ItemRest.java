@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,6 +13,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -323,13 +325,10 @@ class ItemRest {
 	    doc.open();
 		InputStream in = this.getClass().getClassLoader().getResourceAsStream("pdf/Checklist.pdf");
 		PdfReader mainReader = new PdfReader(in);
-		DecimalFormat df = new DecimalFormat();
-		df.setMaximumFractionDigits(0);
-		df.setMinimumFractionDigits(0);
-		df.setGroupingUsed(false);
+		DecimalFormat df = (DecimalFormat) NumberFormat.getInstance(Locale.US);
 		List<SaleItem> saleItems = itemService.findSaleItemsForChecklist(item.getId());
 		int customerCount = 0;
-		int customersPerPage = 2;
+		int customersPerPage = 7;
 		Map<Customer, List<SaleItem>> customerMap = new HashMap<Customer, List<SaleItem>>();
 		for(SaleItem saleItem: saleItems) {
 			Customer customer = saleItem.getSale().getCustomer();
@@ -342,14 +341,11 @@ class ItemRest {
 		}
 		int pages = (int) Math.ceil((double) customerMap.size()/customersPerPage);
 		for (int i=0; i<pages; i++) {
-			log.info("i: "+i);
 	    	PdfReader reader = new PdfReader(mainReader);
 	        ByteArrayOutputStream baos = new ByteArrayOutputStream();
 	        PdfStamper stamper = new PdfStamper(reader, baos);
 	        stamper.getAcroFields().setField("itemNumber", item.getNumber()+" - "+item.getName());
 	        for (int c=1; c<=customersPerPage; c++) {
-	        	log.info("c: "+c);
-	        	log.info("customerCount: "+customerCount);
 	        	if(customerCount<=customerMap.size()) {
 			        Customer customer = (Customer) customerMap.keySet().toArray()[customerCount];
 			        String customerName = customer.getName();
@@ -360,7 +356,7 @@ class ItemRest {
 			        	cartonLabelType = customer.isEdi()?"EDI":"MIMS";
 			        }
 			        stamper.getAcroFields().setField("cartonLabelType"+c, cartonLabelType);
-			        stamper.getAcroFields().setField("palletTagType"+c,  customer.getPalletTagSize());
+			        stamper.getAcroFields().setField("palletTagType"+c,  customer.getPalletTagType());
 			        long units = 0;
 			        String cartonTypes = "";
 			        for(SaleItem si: customerMap.get(customer)) {

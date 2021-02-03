@@ -157,7 +157,7 @@
       </b-col>
       <b-col cols=2>
         <label class="top-label">Pallet Tag Size:</label>
-        <b-select option-value="id" option-text="name" :list="availablePalletTagSizes" v-model="customer.palletTagSize"></b-select>
+        <b-select option-value="id" option-text="name" :list="availablePalletTagTypes" v-model="customer.palletTagType"></b-select>
       </b-col>
       <b-col cols=4>
         <label class="top-label">Pallet Tag Requirements:</label>
@@ -310,9 +310,10 @@ export default {
         { id: "UCC_128", name: "UCC-128" },
         { id: "SELF_GEN", name: "Self Generated" },
       ],
-      availablePalletTagSizes: [
-        { id: "4_6", name: "4 X 6" },
-        { id: "STANDARD", name: "Standard" },
+      availablePalletTagTypes: [
+        { id: "4 x 6", name: "4 x 6" },
+        { id: "Standard", name: "Standard" },
+        { id: "Edi", name: "Edi" },
       ],
       availablePalletTypes: [
         { id: "GRADE_A", name: "Grade A" },
