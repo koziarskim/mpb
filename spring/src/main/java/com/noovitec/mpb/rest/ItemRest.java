@@ -323,11 +323,12 @@ class ItemRest {
 		InputStream in = this.getClass().getClassLoader().getResourceAsStream("pdf/Checklist.pdf");
 		PdfReader mainReader = new PdfReader(in);
 		DecimalFormat df = new DecimalFormat();
-		df.setMaximumFractionDigits(2);
-		df.setMinimumFractionDigits(2);
+		df.setMaximumFractionDigits(0);
+		df.setMinimumFractionDigits(0);
 		df.setGroupingUsed(false);
 		List<SaleItem> saleItems = itemService.findSaleItemsForChecklist(item.getId());
 		int customerCount = 0;
+		int customersPerPage = 3;
 		Map<Customer, Long> customerMap = new HashMap<Customer, Long>();
 		for(SaleItem saleItem: saleItems) {
 			Customer customer = saleItem.getSale().getCustomer();
@@ -336,16 +337,23 @@ class ItemRest {
 			units += (saleItem.getUnits() + saleItem.getUnitsAdjusted() - saleItem.getUnitsAssigned());
 			customerMap.put(customer, units);
 		}
-		int pages = (int) Math.ceil((double) customerMap.size()/3);
+		int pages = (int) Math.ceil((double) customerMap.size()/customersPerPage);
 		for (int i=0; i<pages; i++) {
 	    	PdfReader reader = new PdfReader(mainReader);
 	        ByteArrayOutputStream baos = new ByteArrayOutputStream();
 	        PdfStamper stamper = new PdfStamper(reader, baos);
-	        for (int c=0; c<3; c++) {
+	        stamper.getAcroFields().setField("itemNumber", item.getNumber()+" - "+item.getName());
+	        for (int c=0; c<customersPerPage; c++) {
 	        	if(customerCount<customerMap.size()) {
 			        Customer customer = (Customer) customerMap.keySet().toArray()[customerCount];
 			        String customerName = customer.getName();
-			        stamper.getAcroFields().setField("customerName"+c, customerName + " - "+customerMap.get(customer).toString());
+			        stamper.getAcroFields().setField("customerName"+c, customerName);
+			        stamper.getAcroFields().setField("cartonType"+c, "TODO");
+			        stamper.getAcroFields().setField("priceSticker"+c, "TODO");
+			        stamper.getAcroFields().setField("cartonLabel"+c, customer.isCartonLabel()?"Yes":"No");
+			        stamper.getAcroFields().setField("cartonLabelType"+c, "TODO");
+			        stamper.getAcroFields().setField("palletTagType"+c,  customer.getPalletType());
+			        stamper.getAcroFields().setField("unitsToProduce"+c, df.format(customerMap.get(customer)));
 			        customerCount++;
 		        }
 	        }
