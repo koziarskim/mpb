@@ -1,5 +1,6 @@
 <template>
   <b-container fluid>
+    <div class="mpb-page-info">Accounting > Bill List</div>
     <b-row style="padding-bottom: 4px; font-size: 12px">
       <b-col cols=1 style="margin-right: -45px;">
         <b-button id="filterMenu" size="sm" @click="showFilterMenu = true">Filter</b-button>
@@ -40,7 +41,7 @@
       </b-col>
       <b-col cols=2>
         <div style="display: flex">
-          <b-button id="totalsMenu" size="sm" @click="toggleShowTotals()">Totals</b-button>
+          <b-button id="totalsMenu" size="sm" @click="toggleTotals()">Totals</b-button>
           <b-popover :show="showTotalsMenu" placement="bottom" target="totalsMenu" variant="secondary">
             <div style="width: 300px; font-size: 16px">
               <div>Total of {{pageable.totalElements}} rows</div>
@@ -48,7 +49,6 @@
               <div>Total received: ${{totalUnitsPrice}}</div>
               <div>Units ordered: {{unitsOrdered}}</div>
               <div>Units received: {{unitsReceived}}</div>
-              <!-- <div>Total inventory value:</div> -->
             </div>
           </b-popover>
           <b-button size="sm" style="margin-left:3px" variant="primary" @click="editReceivings()">Edit ({{selectedReceivings.length}})</b-button>
@@ -113,6 +113,7 @@ import httpUtils from "../httpUtils";
 import moment from "moment";
 
 export default {
+  name: "BillList",
   components: {
     BillEdit: () => import("./modals/BillEdit"),
     BillEditMultiple: () => import("./modals/BillEditMultiple"),
@@ -203,7 +204,7 @@ export default {
       this.receivingIds = [];
       this.getReceivings();
     },
-    toggleShowTotals(){
+    toggleTotals(){
       if(!this.showTotalsMenu){
         this.getReceivings(true);
         this.getTotalPo();
@@ -248,6 +249,7 @@ export default {
         return date? moment(date).utc().format("MM/DD/YYYY"):"";
     },
     getReceivings(totals) {
+      this.showTotalsMenu = false;
       http.get("/receiving/pageable", {params: {pageable: this.pageable,
         totals: totals, 
         purchaseId: this.purchaseKv.id, 
@@ -311,8 +313,11 @@ export default {
     this.getAvailableSuppliers();
     this.getAvailablePurchases();
     this.getAvailableComponents();
+    // this.getReceivings();
+    // window.history.replaceState({}, document.title, window.location.pathname);
+  },
+  activated(){
     this.getReceivings();
-    window.history.replaceState({}, document.title, window.location.pathname);
   }
 };
 </script>

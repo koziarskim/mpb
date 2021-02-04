@@ -1,43 +1,42 @@
 <template>
   <div id="app">
-    <div v-if="yearName" class="fade-out">
-      <div style="font-size: 20px">You are in the year context</div>
-      <div>{{this.yearName}}</div>
-    </div>
     <b-navbar toggleable="md" type="dark" variant="dark" style="height:35px">
       <b-collapse is-nav id="nav_collapse">
         <b-navbar-nav v-if="showNav">
           <b-nav-item @click="goTo('/home')" :class="navClass('home')">Home</b-nav-item>
           <b-nav-item id="nav-supplier" @click="goTo('/supplierList')" :class="navClass('supplier')">Supplier</b-nav-item>
-          <b-nav-item id="nav-component" @click="goTo('/componentList')" :class="navClass('component')">Component</b-nav-item>
-          <b-nav-item @click="goTo('/itemList')" :class="navClass('item')">Item</b-nav-item>
+          <b-nav-item-dropdown text="Component" :class="navClass('component')">
+            <b-dropdown-item id="nav-component" @click="goTo('/componentList')"><span style="color: black">Component List</span></b-dropdown-item>
+            <b-dropdown-item @click="goTo('/componentInventoryList')"><span style="color: black">Inventory List</span></b-dropdown-item>
+            <b-dropdown-item @click="goTo('/componentAdjustmentList')"><span style="color: black">Adjustment List</span></b-dropdown-item>
+          </b-nav-item-dropdown>
+          <b-nav-item-dropdown text="Item" :class="navClass('item')">
+            <b-dropdown-item @click="goTo('/itemList')"><span style="color: black">Item List</span></b-dropdown-item>
+            <b-dropdown-item @click="goTo('/itemPackagingList')"><span style="color: black">Items by Package</span></b-dropdown-item>
+            <b-dropdown-item @click="goTo('/packagingList')"><span style="color: black">Packaging List</span></b-dropdown-item>
+          </b-nav-item-dropdown>
           <b-nav-item @click="goTo('/customerList')" :class="navClass('customer')">Customer</b-nav-item>
-          <b-nav-item @click="goTo('/saleList')" :class="navClass('sale')">Sale</b-nav-item>
+          <b-nav-item-dropdown text="Sale" :class="navClass('sale')">
+            <b-dropdown-item @click="goTo('/saleList')"><span style="color: black">Sale List</span></b-dropdown-item>
+            <b-dropdown-item @click="goTo('/saleItemList')"><span style="color: black">Sales by Item</span></b-dropdown-item>
+          </b-nav-item-dropdown>
           <b-nav-item id="nav-purchase" @click="goTo('/purchaseList')" :class="navClass('purchase')">Purchase</b-nav-item>
           <b-nav-item @click="goTo('/receivingList')" :class="navClass('receiving')">Receiving</b-nav-item>
-          <b-nav-item @click="goTo('/shipmentList')" :class="navClass('shipment')">Shipment</b-nav-item>
-          <b-nav-item @click="goTo('/shipmentSchedule')" :class="navClass('shipmentSchedule')">Schedule</b-nav-item>
-          <b-nav-item @click="goTo('/productionLineList')" :class="navClass('production')">Production/</b-nav-item>
-          <b-nav-item @click="goTo('/schedule')" :class="navClass('schedule')" style="margin-left: -17px">Schedule</b-nav-item>
+          <b-nav-item-dropdown text="Shipment" :class="navClass('shipment')">
+            <b-dropdown-item @click="goTo('/shipmentList')"><span style="color: black">Shipment List</span></b-dropdown-item>
+            <b-dropdown-item @click="goTo('/shipmentSchedule')"><span style="color: black">Shipment Schedule</span></b-dropdown-item>
+          </b-nav-item-dropdown>
+          <b-nav-item-dropdown text="Production" :class="navClass('production')">
+            <b-dropdown-item @click="goTo('/productionLineList')"><span style="color: black">Daily Status</span></b-dropdown-item>
+            <b-dropdown-item @click="goTo('/scheduleEventList')"><span style="color: black">Schedule List</span></b-dropdown-item>
+          </b-nav-item-dropdown>
           <b-nav-item-dropdown text="Accounting" :class="navClass('invoice')">
             <b-dropdown-item @click="goTo('/invoiceList')"><span style="color: black">Invoices (Sales)</span></b-dropdown-item>
+            <b-dropdown-item @click="goTo('/invoiceItemList')"><span style="color: black">Invoices by Item</span></b-dropdown-item>
             <b-dropdown-item @click="goTo('/billList')"><span style="color: black">Bills (Receivings)</span></b-dropdown-item>
-            <b-dropdown-item @click="goTo('/invoiceItemList')"><span style="color: black">Invoices by Sale/Item</span></b-dropdown-item>
-          </b-nav-item-dropdown>
-
-		      
-        </b-navbar-nav>
-        <b-navbar-nav v-if="showNav" style="margin:0px 0px 0px auto;">
-          <!-- <b-nav-item-dropdown right :text="user.season.name">
-            <b-dropdown-item v-for="season in availableSeasons" :key="season.id" @click="changeSeason(season)">{{season.name}}</b-dropdown-item>
-          </b-nav-item-dropdown> -->
-        </b-navbar-nav>
-        <b-navbar-nav v-if="showNav">
-          <b-nav-item-dropdown right :text="user.year.name">
-            <b-dropdown-item v-for="year in availableYears" :key="year.id" @click="changeYear(year)">{{year.name}}</b-dropdown-item>
           </b-nav-item-dropdown>
         </b-navbar-nav>
-        <b-navbar-nav v-if="showNav">
+        <b-navbar-nav v-if="showNav" style="margin-left: 19%">
           <b-nav-item-dropdown right :text="user.fullName">
             <b-dropdown-item @click="goTo('/Profile')">Profile</b-dropdown-item>
             <b-dropdown-item v-if="securite.hasRole(['ADMIN'])" @click="goTo('/users')">Manage Users</b-dropdown-item>
@@ -51,7 +50,11 @@
       </b-collapse>
     </b-navbar>
     <div class="center pagebase" :class="getViewClass()">
-      <router-view :key="$route.fullPath"></router-view>
+      <keep-alive :max="2" :include="/List/">
+      <!-- <keep-alive :max="1" :include="['SupplierList', 'ComponentList', 'ItemList', 'CustomerList', 'SaleList', 'SaleItemList',
+      'PurchaseList', 'ReceivingList', 'ShipmentList', 'InvoiceList', 'BillList', 'InvoiceItemList']"> -->
+        <router-view :key="$route.fullPath"></router-view>
+      </keep-alive>
     </div>
   </div>
 </template>
@@ -393,5 +396,11 @@ export default {
   font-weight: normal;
   margin-bottom: -7px;
   margin-top: -7px;
+}
+.mpb-page-info {
+  font-size: 10px; 
+  font-weight: bold; 
+  text-align: left; 
+  color: darkred;
 }
 </style>

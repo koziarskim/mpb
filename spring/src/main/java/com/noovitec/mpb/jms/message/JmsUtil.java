@@ -1,9 +1,9 @@
 package com.noovitec.mpb.jms.message;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.hibernate.event.spi.PostInsertEvent;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -16,6 +16,16 @@ public class JmsUtil {
 		}
 		Object obj = values[ArrayUtils.indexOf(keys, name)];
 		value = obj==null?false:((boolean) obj);
+		return value;
+	}
+
+	public LocalTime getLocalTime(String name, String[] keys, Object[] values) {
+		LocalTime value = null;
+		if(keys == null || values == null) {
+			return value;
+		}
+		Object obj = values[ArrayUtils.indexOf(keys, name)];
+		value = obj==null?null:((LocalTime) obj);
 		return value;
 	}
 

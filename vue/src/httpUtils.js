@@ -6,8 +6,8 @@ export default {
   goTo: function(view) {
     return router.push(view);
   },
-  getUrl(path){
-    var query = "?yearContext=y"+securite.getUser().year.name;
+  getUrl(path, q){
+    var query = "?yearContext=y"+securite.getUser().year.name+q;
     return decodeURI(this.baseUrl + path + query);
   }
 };

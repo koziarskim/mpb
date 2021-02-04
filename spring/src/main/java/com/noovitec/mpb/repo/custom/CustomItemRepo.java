@@ -1,6 +1,5 @@
 package com.noovitec.mpb.repo.custom;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -15,10 +14,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import com.noovitec.mpb.entity.Item;
+import com.noovitec.mpb.entity.SaleItem;
 
 public interface CustomItemRepo {
 	public Page<Item> findPagable(Pageable pageable, String numberName, Long componentId, Long brandId, Long categoryId, String unitsFilter);
-
+	public List<SaleItem> findSaleItemsForChecklist(Long itemId);
+	
 	@Repository
 	public class CustomItemRepoImpl implements CustomItemRepo {
 
@@ -29,7 +30,7 @@ public interface CustomItemRepo {
 
 		@Override
 		public Page<Item> findPagable(Pageable pageable, String numberName, Long componentId, Long brandId, Long categoryId, String unitsFilter) {
-			String q = "select distinct i, (i.unitsSold + i.unitsAdjusted - i.unitsShipped) as open from Item i "
+			String q = "select distinct i from Item i "
 					+ "left join i.itemComponents ic "
 					+ "left join ic.component c "
 					+ "left join i.brand b "
@@ -48,18 +49,21 @@ public interface CustomItemRepo {
 			if(categoryId != null) {
 				q += "and cat.id = :categoryId ";
 			}
-			if(unitsFilter != null && unitsFilter.equalsIgnoreCase("ON_STOCK")) {
-				q += "and i.unitsOnStock > 0 ";
+			if(unitsFilter != null) {
+				if(unitsFilter.equalsIgnoreCase("ON_FLOOR")) {
+					q += "and (i.unitsProduced - i.unitsShipped) != 0 ";
+				}
+				if(unitsFilter.equalsIgnoreCase("ON_STOCK")) {
+					q += "and i.unitsOnStock != 0 ";
+				}
+				if(unitsFilter.equalsIgnoreCase("NOT_ASSIGNED")) {
+					q += "and i.salesNotAssigned != 0 ";
+				}
+				if(unitsFilter.equalsIgnoreCase("SHORT")) {
+					q += "and i.unitsShort != 0 ";
+				}
 			}
-			if(unitsFilter != null && unitsFilter.equalsIgnoreCase("OVERSTOCK")) {
-				q += "and i.unitsOverstock > 0 ";
-			}
-			if(unitsFilter != null && unitsFilter.equalsIgnoreCase("OPEN_SALES")) {
-				q += "and (i.unitsSold + i.unitsAdjusted - i.unitsShipped) > 0 ";
-			}			if(unitsFilter != null && unitsFilter.equalsIgnoreCase("RFP")) {
-				q += "and i.unitsReadyProd > 0 ";
-			}
-			q += "order by open desc";
+			q += "order by i.salesNotAssigned desc";
 			Query query = entityManager.createQuery(q);
 			if(numberName!=null && !numberName.isBlank()) {
 				query.setParameter("numberName", numberName);
@@ -74,13 +78,30 @@ public interface CustomItemRepo {
 				query.setParameter("categoryId", categoryId);
 			}
 			long total = query.getResultStream().count();
+//			@SuppressWarnings("unchecked")
+//			List<Object[]> result = query.setFirstResult(pageable.getPageNumber()*pageable.getPageSize())
+//				.setMaxResults(pageable.getPageSize()).getResultList();
+//			List<Item> entities = new ArrayList<Item>();
+//			result.forEach(o -> entities.add((Item) o[0]));
+//			Page<Item> page = new PageImpl<Item>(entities, pageable, total);
 			@SuppressWarnings("unchecked")
-			List<Object[]> result = query.setFirstResult(pageable.getPageNumber()*pageable.getPageSize())
-				.setMaxResults(pageable.getPageSize()).getResultList();
-			List<Item> entities = new ArrayList<Item>();
-			result.forEach(o -> entities.add((Item) o[0]));
-			Page<Item> page = new PageImpl<Item>(entities, pageable, total);
+			List<Item> result = query.setFirstResult(pageable.getPageNumber() * pageable.getPageSize()).setMaxResults(pageable.getPageSize()).getResultList();
+			Page<Item> page = new PageImpl<Item>(result, pageable, total);
 			return page;
+		}
+		
+		public List<SaleItem> findSaleItemsForChecklist(Long itemId){
+			String q = "select distinct si from Item i "
+					+ "join i.itemPackagings ip "
+					+ "join ip.saleItems si "
+					+ "where i.id = :itemId "
+					+ "and (si.status = 'APPROVED' "
+					+ "or si.status = 'SCHEDULED')";
+			Query query = entityManager.createQuery(q);
+			query.setParameter("itemId", itemId);
+			@SuppressWarnings("unchecked")
+			List<SaleItem> result = query.getResultList();
+			return result;
 		}
 	}
 }

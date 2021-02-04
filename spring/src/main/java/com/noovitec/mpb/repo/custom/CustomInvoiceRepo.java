@@ -1,6 +1,7 @@
 package com.noovitec.mpb.repo.custom;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -17,10 +18,11 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Repository;
 
 import com.noovitec.mpb.entity.Invoice;
+import com.noovitec.mpb.entity.InvoiceItem;
 
 public interface CustomInvoiceRepo {
-	public Page<Invoice> findPagable(Pageable pageable, String invoiceNumer, Long itemId, Long saleId, Long customerId, Long shipmentId,
-			LocalDate invoiceFrom, LocalDate invoiceTo);
+	public Page<?> findPagable(Pageable pageable, boolean totals, String invoiceNumer, Long itemId, Long saleId, Long customerId, Long shipmentId,
+			LocalDate invoiceFrom, LocalDate invoiceTo, String sent);
 	public boolean findBySale(Long saleId);
 	public void deleteByShipment(Long shipmentId);
 	
@@ -33,14 +35,42 @@ public interface CustomInvoiceRepo {
 		EntityManager entityManager;
 
 		@Override
-		public Page<Invoice> findPagable(Pageable pageable, String invoiceNumber, Long itemId, Long saleId, Long customerId, Long shipmentId,
-				LocalDate invoiceFrom, LocalDate invoiceTo) {
-			String q = "select distinct inv from Invoice inv "
+		public Page<?> findPagable(Pageable pageable, boolean totals, String invoiceNumber, Long itemId, Long saleId, Long customerId, Long shipmentId,
+				LocalDate invoiceFrom, LocalDate invoiceTo, String sent) {
+			List<Long> ids = this.getIds(pageable, totals, invoiceNumber, itemId, saleId, customerId, shipmentId, invoiceFrom, invoiceTo, sent);
+			Query query = entityManager.createQuery("select count(*) from Invoice inv where inv.id in :ids");
+			query.setParameter("ids", ids);
+			long total = (long) query.getSingleResult();
+			if(totals) {
+				query = entityManager.createQuery("select distinct sum(inv.totalAmount), sum(inv.payments) from Invoice inv where inv.id in :ids");
+				query.setParameter("ids", ids);
+				Object result = query.getSingleResult();
+				Page<Object> page = new PageImpl<Object>(Arrays.asList(result), pageable, total);
+				return page;
+			}else {
+				String q = "select distinct inv from Invoice inv where inv.id in :ids ";
+				Order order = pageable.getSort().iterator().next();
+				q += "order by inv."+order.getProperty() + " "+order.getDirection();
+				q += ", cast(inv.number as string) asc ";
+				query = entityManager.createQuery(q);
+				query.setParameter("ids", ids);
+				@SuppressWarnings("unchecked")
+				List<Invoice> result = query.setFirstResult(pageable.getPageNumber()*pageable.getPageSize())
+					.setMaxResults(pageable.getPageSize()).getResultList();
+				Page<Invoice> page = new PageImpl<Invoice>(result, pageable, total);
+				return page;
+			}
+		}
+		
+		public List<Long> getIds(Pageable pageable, boolean totals, String invoiceNumber, Long itemId, Long saleId, Long customerId, Long shipmentId,
+				LocalDate invoiceFrom, LocalDate invoiceTo, String sent) {
+			String q = "select distinct inv.id from Invoice inv "
 					+ "join inv.shipment ship "
 					+ "join inv.invoiceItems invItem "
 					+ "join invItem.saleItem si "
 					+ "join si.sale s "
-					+ "join si.item i "
+					+ "join si.itemPackaging ip "
+					+ "join ip.item i "
 					+ "join ship.customer cu "
 					+ "where inv.id is not null ";
 			if (invoiceNumber != null && !invoiceNumber.isEmpty()) {
@@ -64,8 +94,9 @@ public interface CustomInvoiceRepo {
 			if(invoiceTo !=null) {
 				q += "and inv.date <= :invoiceTo ";
 			}
-			Order order = pageable.getSort().iterator().next();
-			q += "order by inv."+order.getProperty() + " "+order.getDirection();
+			if(sent !=null) {
+				q += "and inv.sent = :sent ";
+			}
 			Query query = entityManager.createQuery(q);
 			if (invoiceNumber != null && !invoiceNumber.isEmpty()) {
 				query.setParameter("invoiceNumber", invoiceNumber);
@@ -88,13 +119,17 @@ public interface CustomInvoiceRepo {
 			if(invoiceTo !=null) {
 				query.setParameter("invoiceTo", invoiceTo);
 			}
-			long total = query.getResultStream().count();
+			if(sent !=null) {
+				query.setParameter("sent", sent.equalsIgnoreCase("YES")?true:false);
+			}
 			@SuppressWarnings("unchecked")
-			List<Invoice> result = query.setFirstResult(pageable.getPageNumber()*pageable.getPageSize())
-				.setMaxResults(pageable.getPageSize()).getResultList();
-			Page<Invoice> page = new PageImpl<Invoice>(result, pageable, total);
-			return page;
+			List<Long> ids = query.getResultList();
+			if(ids.size()==0) {
+				ids.add(0L);
+			}
+			return ids;
 		}
+
 		
 		public boolean findBySale(Long saleId) {
 			String q = "select inv.id from Invoice inv "

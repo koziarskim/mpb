@@ -87,6 +87,7 @@ import router from "../router";
 import httpUtils from "../httpUtils";
 
 export default {
+  name: "PurchaseList",
   data() {
     return {
       pageable: {totalElements: 100, currentPage: 1, perPage: 25, sortBy: 'updated', sortDesc: true},
@@ -220,7 +221,7 @@ export default {
       router.push({ path: "/receivingList", query: query });
     },
     rowPdfUrl: function(purchase_id) {
-      return httpUtils.getUrl("/purchase/" + purchase_id + "/pdf");
+      return httpUtils.getUrl("/purchase/" + purchase_id + "/pdf", "");
     }
   },
   mounted() {
@@ -230,6 +231,9 @@ export default {
     }
     this.getAvailableComponents();
     this.getAvailableSuppliers();
+    // this.getPurchases();
+  },
+  activated(){
     this.getPurchases();
   }
 };

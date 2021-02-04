@@ -9,7 +9,6 @@ import "bootstrap-vue/dist/bootstrap-vue.css";
 import "../node_modules/nprogress/nprogress.css";
 import { ModelListSelect } from "vue-search-select";
 import UploadImage from "./directives/UploadImage";
-import ScheduleModal from "./components/ScheduleModal";
 import Chart from "./directives/Chart";
 import VueCal from "vue-cal";
 import "vue-cal/dist/vuecal.css";
@@ -20,7 +19,6 @@ Vue.component("v-money", Money)
 Vue.component("chart", Chart);
 Vue.component("upload", UploadImage);
 Vue.component("b-select", ModelListSelect);
-Vue.component("schedule-modal", ScheduleModal);
 Vue.component("vue-cal", VueCal);
 Vue.config.productionTip = false;
 Vue.filter("formatDate", function(value) {

@@ -1,5 +1,7 @@
 package com.noovitec.mpb.dto;
 
+import java.math.BigDecimal;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,15 +21,18 @@ public class SaleItemDto {
 	private Long customerId;
 	private String customerName;
 	private String dc;
-	private Long unitsSold;
-	private Long unitsScheduled;
-	private Long unitsProduced;
-	private Long unitsShipped;
-	private Long unitsOnStock;
-	private Long unitsTransferedTo;
-	private Long unitsTranferedFrom;
-	private Long unitsAdjusted;
-	private long unitsReadyProd;
+	private long unitsSold;
+	private long unitsScheduled;
+	private long unitsProduced;
+	private long unitsShipped;
+	private long unitsOnStock;
+	private long unitsTransferedTo;
+	private long unitsTranferedFrom;
+	private long unitsAdjusted;
+	private long unitsAssigned;
+	private BigDecimal invoicedAmount;
 	private String status;
+	private String packagingLabel;
+	private boolean approved;
 	
 }

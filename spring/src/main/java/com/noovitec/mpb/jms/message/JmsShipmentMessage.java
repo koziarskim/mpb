@@ -18,6 +18,7 @@ public class JmsShipmentMessage extends JmsMessage {
 	private static final long serialVersionUID = -5369798288520560425L;
 	private boolean oldReady;
 	private boolean ready;
+	private boolean shippingDateChanged;
 	private LocalDate oldShippedDate;
 	private LocalDate shippedDate;
 

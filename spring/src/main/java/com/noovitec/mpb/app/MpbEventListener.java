@@ -1,5 +1,8 @@
 package com.noovitec.mpb.app;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 import org.hibernate.event.spi.PostDeleteEvent;
 import org.hibernate.event.spi.PostDeleteEventListener;
 import org.hibernate.event.spi.PostInsertEvent;
@@ -17,8 +20,6 @@ import com.noovitec.mpb.entity.BaseEntity;
 import com.noovitec.mpb.entity.Customer;
 import com.noovitec.mpb.entity.Sale;
 import com.noovitec.mpb.entity.Shipment;
-import com.noovitec.mpb.jms.message.JmsCustomerMessage;
-import com.noovitec.mpb.jms.message.JmsMessage;
 import com.noovitec.mpb.jms.message.JmsSaleMessage;
 import com.noovitec.mpb.jms.message.JmsShipmentMessage;
 import com.noovitec.mpb.jms.message.JmsUtil;
@@ -45,7 +46,7 @@ public class MpbEventListener implements PostInsertEventListener, PostUpdateEven
 	@Override
 	public void onPostInsert(PostInsertEvent event) {
 		Object entity = event.getEntity();
-		if (entity.getClass() != Shipment.class && entity.getClass() != Sale.class && entity.getClass() != Customer.class) {
+		if (entity.getClass() != Shipment.class) {
 			return;
 		}
 		BaseEntity baseEntity = null;
@@ -69,26 +70,12 @@ public class MpbEventListener implements PostInsertEventListener, PostUpdateEven
 	    			.build();
 			MpbTenantContext.addMessage(message);
 		}
-		if (entity.getClass() == Sale.class) {
-	    	JmsSaleMessage message = JmsSaleMessage.builder().id((Long) event.getId())
-	    			.oldPendingApproval(jmsUtil.getBoolean("pendingApproval", keys, null))
-	    			.pendingApproval(jmsUtil.getBoolean("pendingApproval", keys, state))
-	    			.oldUnitsShipped(jmsUtil.getLong("unitsShipped", keys, null))
-	    			.unitsShipped(jmsUtil.getLong("unitsShipped", keys, state))
-	    			.unitsSold(jmsUtil.getLong("unitsSold", keys, state))
-	    			.oldStatus(jmsUtil.getString("status", keys, null))
-	    			.status(jmsUtil.getString("status", keys, state))
-	    			.type("saleUpdated")
-	    			.build();
-			MpbTenantContext.addMessage(message);
-		}
-
 	}
 	
 	@Override
 	public void onPostUpdate(PostUpdateEvent event) {
 		Object entity = event.getEntity();
-		if (entity.getClass() != Shipment.class && entity.getClass() != Sale.class && entity.getClass() != Customer.class) {
+		if (entity.getClass() != Shipment.class) {
 			return;
 		}
 		BaseEntity baseEntity = null;
@@ -104,29 +91,27 @@ public class MpbEventListener implements PostInsertEventListener, PostUpdateEven
 		Object[] oldState = event.getOldState();
 		Object[] state = event.getState();
 		if (entity.getClass() == Shipment.class) {
+			LocalDate oldShippingDate = jmsUtil.getLocalDate("shippingDate", keys, oldState);
+			LocalDate shippingDate = jmsUtil.getLocalDate("shippingDate", keys, state);
+			LocalTime oldShippingTime = jmsUtil.getLocalTime("shippingTime", keys, oldState);
+			LocalTime shippingTime = jmsUtil.getLocalTime("shippingTime", keys, state);
+			boolean shippingDateChanged = false;
+			if(oldShippingDate!=null && shippingDate!=null && !oldShippingDate.equals(shippingDate)) {
+				shippingDateChanged = true;
+			}
+			if(oldShippingTime!=null && shippingTime!=null && !oldShippingTime.equals(shippingTime)) {
+				shippingDateChanged = true;
+			}
 			JmsShipmentMessage message = JmsShipmentMessage.builder().id((Long) event.getId())
 	    			.oldReady(jmsUtil.getBoolean("ready", keys, oldState))
 	    			.ready(jmsUtil.getBoolean("ready", keys, state))
 	    			.oldShippedDate(jmsUtil.getLocalDate("shippedDate", keys, oldState))
 	    			.shippedDate(jmsUtil.getLocalDate("shippedDate", keys, state))
+	    			.shippingDateChanged(shippingDateChanged)
 	    			.type("shipmentUpdated")
 	    			.build();
 			MpbTenantContext.addMessage(message);
 		}
-		if (entity.getClass() == Sale.class) {
-	    	JmsSaleMessage message = JmsSaleMessage.builder().id((Long) event.getId())
-	    			.oldPendingApproval(jmsUtil.getBoolean("pendingApproval", keys, oldState))
-	    			.pendingApproval(jmsUtil.getBoolean("pendingApproval", keys, state))
-	    			.oldUnitsShipped(jmsUtil.getLong("unitsShipped", keys, oldState))
-	    			.unitsShipped(jmsUtil.getLong("unitsShipped", keys, state))
-	    			.unitsSold(jmsUtil.getLong("unitsSold", keys, state))
-	    			.oldStatus(jmsUtil.getString("status", keys, oldState))
-	    			.status(jmsUtil.getString("status", keys, state))
-	    			.type("saleUpdated")
-	    			.build();
-	    	MpbTenantContext.addMessage(message);
-		}
-
 	}
 
 	@Override

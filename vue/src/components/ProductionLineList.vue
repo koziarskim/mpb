@@ -9,10 +9,10 @@
         <input class="form-control" type="date" v-model="date" placeholder="Date">
       </b-col>
       <b-col cols=1>
-        <b-select option-value="id" option-text="number" :list="availableLines" v-model="selectedLine" placeholder="Line"></b-select>
+        <b-select option-value="id" option-text="number" :list="availableLines" v-model="lineKv" placeholder="Line"></b-select>
       </b-col>
       <b-col cols=3>
-        <b-select option-value="id" option-text="name" :list="availableItems" v-model="selectedItem" placeholder="Pick Item"></b-select>
+        <b-select option-value="id" option-text="name" :list="availableItems" v-model="itemkv" placeholder="Pick Item"></b-select>
       </b-col>
     </b-row>
     <b-table :sticky-header="browserHeight()" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="scheduleEvents" :fields="fields">
@@ -20,14 +20,14 @@
         <b-link role="button" @click="goToProductionLine(row.item)">{{row.item.line.id}}</b-link>
       </template>
       <template v-slot:cell(item)="row">
-        <b-link role="button" @click="goToItem(row.item.saleItem.item.id)">{{row.item.saleItem.item.number}}</b-link>
-		    <span> ({{row.item.saleItem.item.name}})</span>
+        <b-link role="button" @click="goToItem(row.item.itemPackaging.item.id)">{{row.item.itemPackaging.item.number}}</b-link>
+		    <span> ({{row.item.itemPackaging.item.name}})</span>
       </template>
       <template v-slot:cell(sale)="row">
-		    <span>{{row.item.saleItem.sale.number}} - {{row.item.saleItem.sale.customer.name}}</span>
+		    <span v-if="row.item.saleItem">{{row.item.saleItem.sale.number}} - {{row.item.saleItem.sale.customer.name}}</span>
       </template>
       <template v-slot:cell(dc)="row">
-		    <span>{{getAddress(row.item.saleItem.sale)}}</span>
+		    <span v-if="row.item.saleItem">{{getAddress(row.item.saleItem.sale)}}</span>
       </template>
       <template v-slot:cell(totalTime)="row">
 		  <span>{{formatter.secondsToTime(row.item.totalTime)}}</span>
@@ -87,12 +87,11 @@ export default {
         { key: "totalTime", label: "Total Time", sortable: true },
         { key: "action", label: "", sortable: false },
     ],
-    schedule: {},
     scheduleEvents: [],
     availableLines: [],
     availableItems: [],
-    selectedLine: {},
-    selectedItem: {},
+    lineKv: {},
+    itemkv: {},
     totalScheduled: 0,
     totalProduced: 0,
     itemView: false,
@@ -102,10 +101,10 @@ export default {
     date(newValue, oldValue) {
       this.getScheduleEvents(newValue);
     },
-    selectedLine(newValue, oldValue){
+    lineKv(newValue, oldValue){
       this.getScheduleEvents(this.date);
     },
-    selectedItem(newValue, oldValue){
+    itemkv(newValue, oldValue){
       this.getScheduleEvents(this.date);
     },
     itemView(newValue, oldValue){
@@ -141,7 +140,6 @@ export default {
         alert("Cannot schedule less than produced");
         return;
       }
-      se.schedule = {id: this.schedule.id}
       http.post("/scheduleEvent", se).then(response => {
         this.getScheduleEvents(this.date)
       }).catch(e => {
@@ -180,44 +178,46 @@ export default {
       ];
     },
     getAvailableItems(){
-      if(this.selectedItem.id){
+      if(this.itemkv.id){
         return;
       }
       this.availableItems = [];
-      this.scheduleEvents.forEach(event => {
+      this.scheduleEvents.forEach(se => {
         //Remove duplicates.
         if(this.availableItems.find(item => 
-          item.id == event.saleItem.item.id
+          item.id == se.itemPackaging.item.id
         )){
           return;
         }
         this.availableItems.push({
-          id: event.saleItem.item.id,
-          name: event.saleItem.item.name
+          id: se.itemPackaging.item.id,
+          name: se.itemPackaging.item.name
         })
       })
     },
 	  getScheduleEvents(date){
+      var query = {line_id: this.lineKv.id};
       http
-        .get("/schedule/single/date/"+date)
+        .get("/scheduleEvent/date/"+date, {params: {
+          line_id: this.lineKv.id
+        }})
         .then(response => {
           this.scheduleEvents = [];
           this.totalScheduled = 0;
           this.totalProduced = 0;
           if(response.data){
-            response.data.scheduleEvents.forEach(se =>{
+            response.data.forEach(se =>{
               se.edit = false;
-              if(this.selectedLine.id && se.line.id != this.selectedLine.id){
+              if(this.lineKv.id && se.line.id != this.lineKv.id){
                 return;
               }
-              if(this.selectedItem.id && se.saleItem.item.id != this.selectedItem.id){
+              if(this.itemkv.id && se.itemPackaging.item.id != this.itemkv.id){
                 return;
               }
               this.totalScheduled += se.unitsScheduled;
               this.totalProduced += se.unitsProduced;
               this.scheduleEvents.push(se)
             })
-            this.schedule = response.data;
           }
           this.getAvailableItems();
         })
@@ -229,7 +229,7 @@ export default {
       router.push("/itemEdit/" +item_id);
 	  },
     goToProductionLine(se) {
-      var query = { date: this.schedule.date, seId: se.id};
+      var query = { date: this.date, seId: se.id};
       router.push({ path: "/productionLine/"+se.line.id, query: query } );
 	  },
   },

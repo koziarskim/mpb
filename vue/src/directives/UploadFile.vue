@@ -96,7 +96,7 @@ export default {
       this.$emit("header-click");
     },
     downloadFile(attachment){
-      var url = httpUtils.getUrl("/file/attachment/"+attachment.id);
+      var url = httpUtils.getUrl("/file/attachment/"+attachment.id, "");
        window.open(url, "_blank","")
     },
     uploadFile(file){

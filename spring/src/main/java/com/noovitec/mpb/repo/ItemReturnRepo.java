@@ -15,7 +15,8 @@ public interface ItemReturnRepo extends PagingAndSortingRepository<ItemReturn, L
 	@Query("select ir from ItemReturn ir "
 			+ "join ir.saleItemReturns sir "
 			+ "join sir.saleItem si "
-			+ "join si.item i "
+			+ "join si.itemPackaging ip "
+			+ "join ip.item i "
 			+ "join si.sale s "
 			+ "where i.id = :itemId")
 	public List<ItemReturn> findByItem(Long itemId);
@@ -23,7 +24,8 @@ public interface ItemReturnRepo extends PagingAndSortingRepository<ItemReturn, L
 	@Query("select ir from ItemReturn ir "
 			+ "join ir.saleItemReturns sir "
 			+ "join sir.saleItem si "
-			+ "join si.item i "
+			+ "join si.itemPackaging ip "
+			+ "join ip.item i "
 			+ "join si.sale s "
 			+ "where s.id = :saleId")
 	public List<ItemReturn> findBySale(Long saleId);
@@ -31,7 +33,8 @@ public interface ItemReturnRepo extends PagingAndSortingRepository<ItemReturn, L
 	@Query("select ir from ItemReturn ir "
 			+ "join ir.saleItemReturns sir "
 			+ "join sir.saleItem si "
-			+ "join si.item i "
+			+ "join si.itemPackaging ip "
+			+ "join ip.item i "
 			+ "join si.sale s "
 			+ "where i.id = :itemId "
 			+ "and s.id = :saleId")

@@ -3,6 +3,7 @@ package com.noovitec.mpb.rest;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -48,6 +49,8 @@ import com.noovitec.mpb.entity.Shipment;
 import com.noovitec.mpb.entity.ShipmentItem;
 import com.noovitec.mpb.repo.ShipmentRepo;
 import com.noovitec.mpb.service.CrudService;
+import com.noovitec.mpb.service.ItemService;
+import com.noovitec.mpb.service.SaleService;
 import com.noovitec.mpb.service.ShipmentService;
 
 @RestController
@@ -60,6 +63,10 @@ class ShipmentRest {
 	private ShipmentRepo shipmentRepo;
 	@Autowired
 	private CrudService crudService;
+	@Autowired
+	private ItemService itemService;
+	@Autowired
+	private SaleService saleService;
 	
 	public ShipmentRest(ShipmentService shipmentService) {
 		this.shipmentService = shipmentService;
@@ -199,12 +206,14 @@ class ShipmentRest {
 		}
 		shipment.setStatus(status);
 		shipment = shipmentRepo.save(shipment);
+		List<Long> itemIds = new ArrayList<Long>();
+		List<Long> saleIds = new ArrayList<Long>();
 		for(ShipmentItem si: shipment.getShipmentItems()) {
-			si.getSaleItem().getItem().updateUnits();
-			si.getSaleItem().getSale().updateUnits();
-			crudService.save(si.getSaleItem().getSale());
-			crudService.save(si.getSaleItem().getItem());
+			itemIds.add(si.getSaleItem().getItemPackaging().getItem().getId());
+			saleIds.add(si.getSaleItem().getSale().getId());
 		}
+		itemService.updateUnits(itemIds);
+		saleService.updateUnits(saleIds);
 		return ResponseEntity.ok().body(shipment);
 	}
 
@@ -215,7 +224,7 @@ class ShipmentRest {
 		List<Sale> sales = new ArrayList<Sale>();
 		for(ShipmentItem si: shipment.getShipmentItems()) {
 			if(si.getSaleItem()!=null) {
-				items.add(si.getSaleItem().getItem());
+				items.add(si.getSaleItem().getItemPackaging().getItem());
 				sales.add(si.getSaleItem().getSale());
 			}
 		}
@@ -259,21 +268,29 @@ class ShipmentRest {
 			if(count <= 30) {
 				saleNumber += si.getSaleItem().getSale().getNumber() +"\n";
 				itemQuantity += si.getUnits() + "\n";
-				itemDescription += si.getSaleItem().getItem().getNumber() + " - " +si.getSaleItem().getItem().getName() 
+				itemDescription += si.getSaleItem().getItemPackaging().getItem().getNumber() + " - " +si.getSaleItem().getItemPackaging().getItem().getName() 
 						+ (si.getSaleItem().getSku()==null?"":" SKU# "+ si.getSaleItem().getSku()) + "\n";
-				itemCasePack += si.getSaleItem().getItem().getCasePack() + "\n";
+				itemCasePack += si.getSaleItem().getItemPackaging().getPackaging().getCasePack() + "\n";
 				itemCases += si.getCases() + "\n";
-				itemPallets += si.getPallets() + "\n";
+				if(shipment.getTotalPalletsCustom() < 1) {
+					itemPallets += si.getPallets() + "\n";
+				}else {
+					itemPallets += "\n";
+				}
 			}else {
 				saleNumber2 += si.getSaleItem().getSale().getNumber() +"\n";
 				itemQuantity2 += si.getUnits() + "\n";
-				itemDescription2 += si.getSaleItem().getItem().getNumber() + " - " +si.getSaleItem().getItem().getName() 
+				itemDescription2 += si.getSaleItem().getItemPackaging().getItem().getNumber() + " - " +si.getSaleItem().getItemPackaging().getItem().getName() 
 						+ (si.getSaleItem().getSku()==null?"":" SKU# "+ si.getSaleItem().getSku()) + "\n";
-				itemCasePack2 += si.getSaleItem().getItem().getCasePack() + "\n";
+				itemCasePack2 += si.getSaleItem().getItemPackaging().getPackaging().getCasePack() + "\n";
 				itemCases2 += si.getCases() + "\n";
-				itemPallets2 += si.getPallets() + "\n";
+				if(shipment.getTotalPalletsCustom() < 1) {
+					itemPallets2 += si.getPallets() + "\n";
+				}else {
+					itemPallets2 += "\n";
+				}
 			}
-			totalCasePack += si.getSaleItem().getItem().getCasePack();
+			totalCasePack += si.getSaleItem().getItemPackaging().getPackaging().getCasePack();
 		}
 		InputStream bolIn = null;
 		if(shipmentItems.size() <= 30) {
@@ -313,6 +330,7 @@ class ShipmentRest {
 				+ shipment.getShippingAddress().getStreet() + "\n" 
 				+ shipment.getShippingAddress().getCity() + ", " + shipment.getShippingAddress().getState() + " "+shipment.getShippingAddress().getZip() + "\n"
 				+ (phone==null?"":("Phone: "+phone + "\n"))
+				+ (shipment.getShippingAddress().getLocationName()==null?"":("Location ID: "+shipment.getShippingAddress().getLocationName() + "\n"))
 				+ (shipment.getShippingAddress().getNotes()==null?"":shipment.getShippingAddress().getNotes());
 			bolStamper.getAcroFields().setField("shippingAddress", shippingAddress);
 		}
@@ -322,6 +340,7 @@ class ShipmentRest {
 				+ shipment.getFreightAddress().getStreet() + "\n" 
 				+ shipment.getFreightAddress().getCity() + ", "+ shipment.getFreightAddress().getState() + " "+shipment.getFreightAddress().getZip() + "\n"		
 				+ (shipment.getFreightAddress().getPhone()==null?"":("Phone: "+shipment.getFreightAddress().getPhone() + "\n"))
+				+ (shipment.getFreightAddress().getLocationName()==null?"":("Location ID: "+shipment.getFreightAddress().getLocationName() + "\n"))
 				+ (shipment.getFreightAddress().getNotes()==null?"":shipment.getFreightAddress().getNotes());
 			bolStamper.getAcroFields().setField("freightAddress", freightAddress);
 		}
@@ -329,8 +348,16 @@ class ShipmentRest {
 		bolStamper.getAcroFields().setField("totalUnits", String.valueOf(shipment.getUnitsShipped()));
 		bolStamper.getAcroFields().setField("totalCasePack", String.valueOf(totalCasePack));
 		bolStamper.getAcroFields().setField("totalCases", String.valueOf(shipment.getTotalCases()));
-		bolStamper.getAcroFields().setField("totalPallets", String.valueOf(shipment.getTotalPalletsCustom()));
-		bolStamper.getAcroFields().setField("totalWeight", shipment.getTotalWeightCustom().toString());
+		String totalWeight = shipment.getTotalWeight().toString();
+		if(shipment.getTotalWeightCustom()!=null && shipment.getTotalWeightCustom().compareTo(BigDecimal.ZERO) != 0){
+			totalWeight = shipment.getTotalWeightCustom().toString();
+		}
+		bolStamper.getAcroFields().setField("totalWeight", totalWeight);
+		String totalPallets = String.valueOf(shipment.getTotalPallets());
+		if(shipment.getTotalPalletsCustom() > 0){
+			totalPallets = String.valueOf(shipment.getTotalPalletsCustom());
+		}
+		bolStamper.getAcroFields().setField("totalPallets", totalPallets);
 		bolStamper.close();
 		bolTemplate.close();
 		

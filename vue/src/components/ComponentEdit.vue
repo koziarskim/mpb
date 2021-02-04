@@ -20,44 +20,45 @@
       <b-col cols=2 style="margin-top: 5px">
         <upload :on-upload="onUpload" :file-url="getImageUrl()"></upload>
       </b-col>
-      <b-col cols=1 style="margin-left: -50px">
+      <b-col cols=1 style="margin-left: -50px; margin-top: 10px">
         <div style="margin-right: -10px">
           <b-button :disabled="!allowEdit()" id="componentedit-savecomponent" size="sm" variant="success" @click="saveComponent()">Save</b-button>
           <b-button :disabled="!allowEdit()" id="componentedit-delete" style="margin-left: 3px" size="sm" @click="deleteComponent()">x</b-button>
         </div>
-        <br />
-        <label class="top-label">
-          Stock:
+        <br/>
+        <label class="top-label">Floor:
           <b-link role="button" @click="goToReceiving(component.id)">{{component.unitsOnStock}}</b-link>
         </label>
-        <br />
-        <label class="top-label">Reserved: {{component.unitsLocked}}</label>
+        <br/>
+        <label class="top-label">
+          <b-link role="button" @click="adjustStock()">Adjust</b-link>
+        </label>
       </b-col>
     </b-row>
     <b-row style="margin-top: -60px">
-      <b-col cols=12>
+      <b-col cols=10>
         <b-row>
           <b-col cols=3>
             <label class="top-label">Supplier:</label>
             <b-select id="componentedit-supplier" option-value="id" option-text="name" :list="availableSuppliers" v-model="supplier"></b-select>
           </b-col>
-          <b-col cols=2>
+          <b-col cols=3>
             <label class="top-label">Supplier's Stock#:</label>
             <input class="form-control" type="text" v-model="component.supplierStockNumber" />
           </b-col>
           <b-col cols=3>
-            <label class="top-label">Dimension (H x W x D):</label>
+            <label class="top-label">Dimension (L x W x H):</label>
             <div style="display:flex">
-              <input class="form-control" type="number" v-model="component.height" />
+              <input class="form-control" v-model="component.length" />
               <span style="padding:7px">x</span>
-              <input class="form-control" type="number" v-model="component.width" />
+              <input class="form-control" v-model="component.width" />
               <span style="padding:7px">x</span>
-              <input class="form-control" type="number" v-model="component.depth" />
+              <input class="form-control" v-model="component.height" />
             </div>
           </b-col>
-          <b-col cols=1>
+          <b-col cols=2>
             <label class="top-label">Net Weight:</label>
-            <input class="form-control" type="number" min="0" v-model="component.weight" />
+            <input class="form-control" min="0" v-model="component.weight" />
           </b-col>          
         </b-row>
       </b-col>
@@ -101,7 +102,7 @@
       <b-col cols="2">
         <br />
         <label class="top-label">Recent unit price: ${{component.unitCost}}</label>
-        <label class="top-label">Average price: ${{component.unitCost}}</label>
+        <label class="top-label">Average price: ${{component.averagePrice}}</label>
         <br />
       </b-col>
       <b-col cols="2">
@@ -195,6 +196,10 @@ export default {
     };
   },
   computed: {
+    adjustStock(){
+      var query = { componentId: this.component.id };
+      router.push({ path: "/componentAdjustmentList", query: query });
+    },
     totalLandedCost() {
       return (
         +this.component.unitCost +
@@ -245,7 +250,7 @@ export default {
       router.push({ path: "/receivingList", query: query });
     },
     goToItemScheduleList(itemId) {
-      router.push("/scheduleEventList/" + itemId);
+      router.push({path: "/ScheduleEventList", query: {itemId: itemId}});
     },
     addItem() {
       if (!this.item.id) {
@@ -389,7 +394,7 @@ export default {
     getImageUrl() {
       if (this.component.attachment) {
         return httpUtils.getUrl(
-          "/file/attachment/" + this.component.attachment.id
+          "/file/attachment/" + this.component.attachment.id, ""
         );
       }
       return null;

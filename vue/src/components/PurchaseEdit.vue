@@ -86,8 +86,8 @@
       <b-col>
         <b-table sort-by.sync="name" sort-desc.sync="false" :items="purchase.purchaseComponents" :fields="fields">
           <template v-slot:cell(name)="row">
-            <b-link @click.stop="goToComponent(row.item.component.id)">{{row.item.component.number}}</b-link>
-            <span style="font-size: 11px"> ({{row.item.component.name}})</span>
+            <div style="width:200px; overflow: wrap; font-size: 14px"><b-link @click.stop="goToComponent(row.item.component.id)">{{row.item.component.number}}</b-link>
+            <span style="font-size: 11px"> ({{row.item.component.name}})</span></div>
           </template>
           <template v-slot:cell(unitsReceived)="row">
             <b-button v-if="!receiveMode" size="sm" @click.stop="goToReceiving(purchase.id, row.item.component.id)" variant="link">{{row.item.unitsReceived.toLocaleString()}}</b-button>
@@ -104,14 +104,18 @@
             <span v-if="receiveMode">${{row.item.unitPrice}}</span>
           </template>
           <template v-slot:cell(units)="row">
-            <v-money v-if="!receiveMode" class="form-control" style="width: 120px" type="tel" v-bind="{precision: 0}" v-model="row.item.units"></v-money>  
+            <v-money v-if="!receiveMode" class="form-control" style="width: 100px" type="tel" v-bind="{precision: 0}" v-model="row.item.units"></v-money>  
             <span v-if="receiveMode">{{row.item.units.toLocaleString()}}</span>
+          </template>
+          <template v-slot:cell(unitsSpoilage)="row">
+            ({{Math.ceil(row.item.unitsExtra).toLocaleString()}})<br/>{{Math.ceil(row.item.unitsSpoilage).toLocaleString()}}
           </template>
           <template v-slot:cell(casePack)="row">
             <span>{{row.item.component.casePack.toLocaleString()}}</span>
           </template>             
           <template v-slot:cell(cases)="row">
-            <span>{{Math.ceil(row.item.units / row.item.component.casePack).toLocaleString()}}</span>
+            {{row.item.cases = Math.ceil(row.item.units / row.item.component.casePack).toLocaleString()}}<br>
+            ({{Math.ceil(row.item.cases * row.item.component.casePack).toLocaleString()}})
           </template>             
           <template v-slot:cell(totalPrice)="row">
             ${{row.item.totalPrice = getTotalPrice(row.item).toLocaleString('en-US',{minimumFractionDigits: 2})}}
@@ -158,6 +162,7 @@ export default {
         { key: "component.unitCost", label: "Unit Cost", sortable: false },
         { key: "unitPrice", label: "P.O. Price", sortable: false },
         { key: "units", label: "P.O. Units", sortable: false },
+        { key: "unitsSpoilage", label: "Spoilage", sortable: false },
         { key: "casePack", label: "C/P", sortable: false },
         { key: "cases", label: "Cases", sortable: false },
         { key: "unitsReceived", label: "Received", sortable: false },
@@ -234,7 +239,7 @@ export default {
         console.log("API error: "+e);
       })
     },
-    getPurchaseNumber() {
+    setPurchaseNumber() {
       if(this.purchase.number){
         return
       }
@@ -386,6 +391,10 @@ export default {
     },
     getPurchase(purchase_id) {
       return http.get("/purchase/" + purchase_id).then(r => {
+        r.data.purchaseComponents.forEach(pc => {
+          pc.unitsExtra = pc.units * 0.03;
+          pc.unitsSpoilage = pc.units + pc.unitsExtra;
+        })
         this.purchase = r.data;
         this.receivingDate = r.data.receivingDate;
         return r.data;
@@ -409,11 +418,13 @@ export default {
     var componentIds = this.$route.query.componentIds;
     if(purchaseId){
       this.getPurchase(purchaseId);
+    }else{
+          this.setPurchaseNumber();
     }
     if(componentIds){
       this.getComponentDtos(componentIds);
     }
-    this.getPurchaseNumber();
+
   }
 };
 </script>

@@ -35,7 +35,11 @@ public interface SaleItemRepo extends PagingAndSortingRepository<SaleItem, Long>
 	@Query(value = "select si " + "from SaleItem si " + "where si.id = :sale_item_id ")
 	public Optional<SaleItem> getSaleItemById(@Param("sale_item_id") Long sale_item_id);
 
-	@Query(value = "select new com.noovitec.mpb.dto.KeyValueDto(si.id, si.item.number, si.item.name) " + "from SaleItem si " + "where si.sale.id = :sale_id ")
+	@Query(value = "select new com.noovitec.mpb.dto.KeyValueDto(si.id, i.number, i.name) " 
+			+ "from SaleItem si "
+			+ "join si.itemPackaging ip "
+			+ "join ip.item i " 
+			+ "where si.sale.id = :sale_id ")
 	public List<KeyValueDto> findSaleItemsBySale(@Param("sale_id") Long sale_id);
 
 	@Query(value = "select si from SaleItem si join si.sale s join s.customer cu where cu.id = :customerId")
@@ -45,36 +49,51 @@ public interface SaleItemRepo extends PagingAndSortingRepository<SaleItem, Long>
 			+ "from SaleItem si "
 			+ "join si.sale s "
 			+ "join s.customer c "
-			+ "where si.item.id = :item_id ")
+			+ "join si.itemPackaging ip "
+			+ "join ip.item i "
+			+ "where i.id = :item_id ")
 	public List<KeyValueDto> findKvByItem(@Param("item_id") Long item_id);
 
 	@Query(value = "select si from SaleItem si "
 			+ "join si.sale s "
 			+ "join s.customer c "
-			+ "where si.item.id = :item_id "
-			+ "and si.unitsOnStock > 0 "
-			+ "order by si.unitsReturned desc, si.unitsOnStock desc")
+			+ "join si.itemPackaging ip "
+			+ "join ip.item i "
+			+ "where i.id = :item_id "
+			+ "and (si.unitsShipped - si.unitsAssigned) > 0 "
+			+ "order by si.unitsAssigned desc")
 	public List<SaleItem> findKvTrasferByItem(@Param("item_id") Long item_id);
 
 	@Query(value = "select distinct new com.noovitec.mpb.dto.KeyValueDto(si.id, concat(s.number, ' (', c.name, ')' )) "
 			+ "from SaleItem si "
 			+ "join si.sale s "
 			+ "join s.customer c "
-			+ "where si.item.id = :itemId "
+			+ "join si.itemPackaging ip "
+			+ "join ip.item i "
+			+ "where i.id = :itemId "
 			+ "and c.id = :customerId")
 	public List<KeyValueDto> findKvByItemAndCustomer(Long itemId, Long customerId);
 
-	@Query(value = "select new com.noovitec.mpb.dto.KeyValueDto(si.id, concat(s.number, ' (', i.number, ' - ', i.name, ')')) " + "from SaleItem si "
-			+ "join si.sale s " + "join s.customer cu " + "join si.item i " + "where cu.id = :customerId " + "and si.units > si.unitsShipped")
+	@Query(value = "select new com.noovitec.mpb.dto.KeyValueDto(si.id, concat(s.number, ' (', i.number, ' - ', i.name, ')')) " 
+			+ "from SaleItem si "
+			+ "join si.sale s " 
+			+ "join s.customer cu "
+			+ "join si.itemPackaging ip " 
+			+ "join ip.item i " 
+			+ "where cu.id = :customerId ")
 	public List<KeyValueDto> findKvByCustomer(@Param("customerId") Long customerId);
 
-	@Query(value = "select new com.noovitec.mpb.dto.KeyValueDto(si.id, concat(si.sale.number, ' (', si.item.number, ')')) from SaleItem si "
+	@Query(value = "select new com.noovitec.mpb.dto.KeyValueDto(si.id, concat(s.number, ' (', i.number, ')')) from SaleItem si "
 			+ "join si.sale s "
+			+ "join si.itemPackaging ip "
+			+ "join ip.item i "
 			+ "order by s.number asc")
 	public List<KeyValueDto> findAllKvs();
 
-	@Query(value = "select new com.noovitec.mpb.dto.KeyValueDto(si.id, concat(si.sale.number, ' (', si.item.number, ')')) from SaleItem si "
+	@Query(value = "select new com.noovitec.mpb.dto.KeyValueDto(si.id, concat(s.number, ' (', i.number, ')')) from SaleItem si "
 			+ "join si.sale s "
+			+ "join si.itemPackaging ip "
+			+ "join ip.item i "
 			+ "join si.shipmentItems shipItem "
 			+ "join shipItem.shipment ship "
 			+ "where ship.id = :shipmentId "

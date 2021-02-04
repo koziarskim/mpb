@@ -1,7 +1,8 @@
 <template>
   <b-container fluid>
-    <b-row style="padding-bottom: 4px;">
-      <b-col cols=3 style="margin-top: -7px">
+    <div class="mpb-page-info">Production > Schedule List</div>
+    <b-row style="padding-bottom: 4px; font-size: 12px">
+      <!-- <b-col cols=3 style="margin-top: -7px">
         <span style="font-size: 18px; font-weight: bold;">Schedule for Item:</span>
             <b-button size="sm" id="item-popover" variant="link">{{item.name}}</b-button>
             <b-popover placement="bottomright" target="item-popover" triggers="focus" variant="info">
@@ -10,48 +11,57 @@
               </template>
               <div>Avg Performance: {{item.performance}} [units per hour]</div>
             </b-popover>
+      </b-col> -->
+      <b-col cols=2>
+        <b-select option-value="id" option-text="name" :list="availableItems" v-model="itemKv" placeholder="Pick Item"></b-select>
       </b-col>
-      <b-col cols=3>
-        <b-select option-value="id" option-text="number" :list="availableSales" v-model="selectedSale" placeholder="Pick Sale"></b-select>
+      <b-col cols=2>
+        <b-select option-value="id" option-text="name" :list="availablePackagings" v-model="packagingKv" placeholder="Pick Package"></b-select>
       </b-col>
-      <b-col cols=1 offset=4>
+      <b-col cols=2>
+        <b-select option-value="id" option-text="name" :list="availableSales" v-model="saleKv" placeholder="Pick Sale"></b-select>
+      </b-col>
+      <!-- <b-col cols=1 offset=4>
         <div style="display: flex; text-align: right; margin-left: 20px">
           <b-button style="margin: 3px" type="reset" variant="success" @click="goToGraph()" :disabled="false">Graph</b-button>
           <b-button style="margin: 3px" type="reset" variant="success" @click="close()">Close</b-button>
         </div>
+      </b-col> -->
+      <b-col cols=1>
+        <div style="margin-left: 15px">
+          <b-button id="totalsMenu" size="sm" @click="toggleTotals()">Totals</b-button>
+          <b-popover :show="showTotalsMenu" placement="bottom" target="totalsMenu" variant="secondary">
+            <div style="width: 300px; font-size: 16px">
+              <div>Total of {{pageable.totalElements}} rows</div>
+              <div>Scheduled: {{totalScheduled.toLocaleString()}}</div>
+              <div>Produced: {{totalProduced.toLocaleString()}}</div>
+              <div>Pending Prod: {{(+totalScheduled - +totalProduced).toLocaleString()}}</div>
+            </div>
+          </b-popover>
+        </div>
       </b-col>
     </b-row>
     <b-row>
-      <b-col>
-        <label class="top-label"></label>
-        <b-table :sort-compare="sortCompare" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="scheduleEvents" :fields="columns">
-          <template v-slot:cell(sale)="row">
-            <b-link role="button" @click.stop="goToSale(row.item.saleItem.sale.id)">{{row.item.saleItem.sale.number}}</b-link>
-            <span style="font-size: 11px"> ({{row.item.saleItem.sale.customer.name}})</span>
-          </template>
-          <template v-slot:cell(unitsProduced)="row">
-            <b-button size="sm" @click.stop="goToProduction(row.item)" variant="link">{{row.item.unitsProduced}}</b-button>
-          </template>
-          <template v-slot:cell(performance)="row">
-            <span :style="getEfficiencyStyle(row.item.efficiency)">{{row.item.performance}} ({{row.item.efficiency}}%)</span>
-          </template>
-          <template v-slot:cell(unitsScheduled)="row">
-            <b-button :class="getScheduledClass(row.item)" v-if="!row.item.edit" @click="editScheduleEvent(row.item)" variant="light">{{row.item.unitsScheduled}}</b-button>
-            <b-input-group>
-              <b-form-input style="width:100px" v-if="row.item.edit" class="form-control" type="tel" v-model="row.item.unitsScheduled">
-              </b-form-input>
-              <b-input-group-append>
-                <b-button v-if="row.item.edit" style="margin-left: 5px" variant="link" @click="saveScheduleEvent(row.item)">save</b-button>
-              </b-input-group-append>
-            </b-input-group>
-          </template>
-          <template v-slot:cell(action)="row">
-            <span v-if="row.item.eventCompleted">Done</span>
-            <b-button v-if="!row.item.eventCompleted" :disabled="deleteDisabled(row.item)" size="sm" type="submit" variant="primary" @click="deleteScheduleEvent(row.item.id)">X</b-button>
-          </template>
-        </b-table>
-      </b-col>
+      <b-table :items="scheduleEvents" :fields="columns">
+        <template v-slot:cell(scheduleDate)="row">
+          <span>{{row.item.scheduleDate | formatDate}}</span>
+        </template>
+        <template v-slot:cell(unitsProduced)="row">
+          <b-button size="sm" @click="goToProduction(row.item)" variant="link">{{row.item.unitsProduced}}</b-button>
+        </template>
+        <template v-slot:cell(unitsScheduled)="row">
+          <b-button size="sm" @click=openScheduleEventModal(row.item) variant="link">{{row.item.unitsScheduled}}</b-button>
+        </template>
+      </b-table>
+      <div style="display: flex">
+        <b-pagination size="sm" v-model="pageable.currentPage" :per-page="pageable.perPage" :total-rows="pageable.totalElements" @change="paginationChange"></b-pagination>
+        <span style="margin-top: 5px">Total of {{pageable.totalElements}} rows</span>
+      </div>
     </b-row>
+    <div v-if="scheduleEventModalVisible">
+      <schedule-event-modal :scheduleEventId="this.scheduleEventId" :saleItemId="this.saleItemId" :itemId="this.itemId" v-on:close="closeScheduleEventModal"></schedule-event-modal>
+    </div>  
+
   </b-container>
 </template>
 
@@ -60,39 +70,83 @@ import http from "../http-common";
 import router from "../router";
 
 export default {
+  name: "ScheduleEventList",
+	components: {
+	  ScheduleEventModal: () => import("./modals/ScheduleEventModal")
+  },  
   data() {
     return {
-      scheduleEvents: [],
+      scheduleEventModalVisible: false,
+      scheduleEventId: null,
+      saleItemId: null,
+      itemId: null,
+      pageable: {totalElements: 100, currentPage: 1, perPage: 25, sortBy: 'updated', sortDesc: false},
+      scheduleEvents: [], //ScheduleEventListDto
       availableSales: [],
-      selectedSale: {},
-      item: {},
-      sortBy: "id",
-      sortDesc: false,
+      saleKv: {},
+      availableItems: [],
+      itemKv: {},
+      availablePackagings: [],
+      packagingKv: {},
       columns: [
-        { key: "sale", label: "Sale (Customer)", sortable: true },
-        { key: "schedule.date", label: "Date", sortable: true },
+        { key: "scheduleDate", label: "Date", sortable: false },
+        { key: "lineId", label: "Line", sortable: false },
+        { key: "itemNumber", label: "Item", sortable: false },
+        { key: "packagingLabel", label: "Package", sortable: false },
+        { key: "saleNumber", label: "Sale", sortable: false },
         { key: "startTime", label: "Started", sortable: false },
         { key: "finishTime", label: "Finished", sortable: false },
-        { key: "performance", label: "Perform [u/h]", sortable: true },
-        { key: "line.number", label: "Line", sortable: true },
-        { key: "sale", label: "Sale", sortable: true },
-        { key: "saleItem.units", label: "Sold", sortable: false },
+        // { key: "performance", label: "Perform [u/h]", sortable: true },
         { key: "unitsScheduled", label: "Scheduled", sortable: false },
         { key: "unitsProduced", label: "Produced", sortable: false },
         { key: "action", label: "", sortable: false },
-      ]
+      ],
+      showTotalsMenu: false,
+      totalSoldAdj: 0,
+      totalScheduled: 0,
+      totalProduced: 0,
+      totalAssigned: 0,
+      item: {},
     };
   },
 
   computed: {},
   watch: {
-    selectedSale(newValue, oldValue){
-      if(this.item.id){
-        this.getScheduleEvents(this.item.id);
-      }
+    itemKv(newValue, oldValue){
+      this.getScheduleEvents();
+      this.getAvailablePackagins();
+    },
+    packagingKv(newValue, oldValue){
+      this.getScheduleEvents();
+    },
+    saleKv(newValue, oldValue){
+      this.getScheduleEvents();
     }
   },
   methods: {
+    toggleTotals(){
+      this.getScheduleEvents(true);
+      this.showTotalsMenu = !this.showTotalsMenu;
+    },      
+    openScheduleEventModal(se){
+      console.log(se.id);
+      this.scheduleEventId = se.id;
+      this.saleItemId = se.saleItemId;
+      this.itemId = se.itemId;
+      this.scheduleEventModalVisible = true;
+    },
+    closeScheduleEventModal(){
+      this.scheduleEventModalVisible = false;
+      this.getScheduleEvents();
+    },    
+    goToProduction(se) {
+      var query = { date: se.scheduleDate, seId: se.id };
+      router.push({ path: "/productionLine/"+se.lineId, query: query } );
+    },    
+    paginationChange(page){
+      this.pageable.currentPage = page;
+      this.getScheduleEvents();
+    },
     getScheduledClass(se){
       if(se.unitsScheduled > se.unitsProduced){
         return "schedule-red";
@@ -101,13 +155,6 @@ export default {
         return "schedule-yellow"
       }
       return "";
-    },
-    setup(item_id, sale_id){
-      this.getItem(item_id);
-      if(sale_id){
-        this.getSale(sale_id);
-      }
-      this.getScheduleEvents(item_id);
     },
     getEfficiencyStyle(eff){
       var style = "color: ";
@@ -155,46 +202,46 @@ export default {
     close() {
         window.history.back();
     },
-    getScheduleEvents(item_id){
-      http
-        .get("scheduleEvent/item/" + item_id)
-        .then(response => {
-          this.scheduleEvents = [],
-          response.data.forEach(se => {
-            se.edit = false;
-            if(this.selectedSale.id == se.saleItem.sale.id || !this.selectedSale.id){
-              this.scheduleEvents.push(se);
-            }
-            //Remove duplicates.
-            if(this.availableSales.find(i => i.id == se.saleItem.sale.id)){
-              return;
-            }
-            this.availableSales.push(se.saleItem.sale);
-          })
-        })
-        .catch(e => {
-          console.log("API error: " + e);
-        });
+    getScheduleEvents(totals){
+      this.showTotalsMenu = false;
+      var query = {params: {
+        pageable: this.pageable,
+        totals: totals, 
+        saleId: this.saleKv.id, 
+        itemId: this.itemKv.id,
+        packagingId: this.packagingKv.id,
+      }}
+      http.get("/scheduleEvent/pageable", query).then(r => {
+        if(totals){
+          this.totalScheduled = parseFloat(r.data.content[0][0]);
+          this.totalProduced = parseFloat(r.data.content[0][1]);
+        }else{
+         this.scheduleEvents = r.data.content;
+        }
+        this.pageable.totalElements = r.data.totalElements;
+      }).catch(e => {console.log("API error: " + e);});
     },
-    getItem(item_id) {
-      http
-        .get("/item/" + item_id)
-        .then(response => {
-          this.item = response.data;
-        })
-        .catch(e => {
-          console.log("API error: " + e);
-        });
+    getAvailableItems() {
+      http.get("/item/kv").then(r => {
+        this.availableItems = r.data;
+      }).catch(e => {
+        console.log("API error: "+e);
+      });
     },
-    getSale(sale_id) {
-      http
-        .get("/sale/" + sale_id)
-        .then(response => {
-          this.selectedSale = response.data;
-        })
-        .catch(e => {
-          console.log("API error: " + e);
-        });
+    getAvailablePackagins() {
+      http.get("/packaging/kv", {params: {itemId: this.itemKv.id}}).then(r => {
+        this.availablePackagings = r.data;
+      }).catch(e => {
+        console.log("API error: "+e);
+      });
+    },
+    getAvailableSales() {
+      http.get("/sale/kv").then(r => {
+        r.data.unshift({id: 0, name: '----'})
+        this.availableSales = r.data;
+      }).catch(e => {
+        console.log("API error: "+e);
+      });
     },
     goToSale(sale_id) {
       router.push("/saleEdit/" + sale_id);
@@ -202,18 +249,29 @@ export default {
     goToItem(itemId){
       router.push("/itemEdit/"+itemId);
     },
-    goToProduction(se) {
-      var query = { date: se.schedule.date, seId: se.id };
-      router.push({ path: "/productionLine/"+se.line.id, query: query } );
-    },
     goToGraph() {
       router.push("/itemGraph/" + this.item.id);
     },
   },
   mounted() {
-    var item_id = this.$route.params.item_id;
-    var sale_id = this.$route.params.sale_id;
-    this.setup(item_id, sale_id);
+    var itemId = this.$route.query.itemId;
+    var saleId = this.$route.query.saleId;
+    var packagingId = this.$route.query.packagingId;
+    if(itemId){
+      this.itemKv = {id: itemId}
+    }
+    if(saleId != null){
+      this.saleKv = {id: saleId}
+    }
+    if(packagingId){
+      this.packagingKv = {id: packagingId}
+    }
+    this.getAvailableItems();
+    this.getAvailablePackagins();
+    this.getAvailableSales();
+  },
+  activated(){
+    this.getScheduleEvents();
   }
 };
 </script>

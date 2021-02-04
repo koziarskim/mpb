@@ -14,7 +14,8 @@ public interface ShipmentItemRepo extends JpaRepository<ShipmentItem, Long> {
 			+ "join shipItem.shipment ship "
 			+ "join shipItem.saleItem si "
 			+ "join si.sale s "
-			+ "join si.item i "
+			+ "join si.itemPackaging ip "
+			+ "join ip.item i "
 			+ "where ship.id = :shipmentId")
 	public List<KeyValueDto> findKvByShipment(Long shipmentId);
 

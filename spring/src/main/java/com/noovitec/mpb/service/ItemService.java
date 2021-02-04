@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import com.noovitec.mpb.entity.Item;
 import com.noovitec.mpb.entity.ItemComponent;
+import com.noovitec.mpb.entity.SaleItem;
 import com.noovitec.mpb.repo.ItemRepo;
 
 public interface ItemService {
@@ -23,9 +24,10 @@ public interface ItemService {
 	public void updateUnits(List<Long> itemIds);
 	public void updateUnitsReadyProd(List<Long> itemIds);
 	public void updateUnitsByComponent(Long componentId);
-	public void updateUnitsReadyProdByComponent(Long componentId);
+//	public void updateUnitsReadyProdByComponent(Long componentId);
 	public List<Long> findIdsByComponents(List<Long> componentIds);
 	public void asyncUpdateUnits();
+	public List<SaleItem> findSaleItemsForChecklist(Long itemId);
 	
 	@Transactional
 	@Service("itemServiceImpl")
@@ -60,7 +62,7 @@ public interface ItemService {
 			Long counter = 0L;
 			Iterable<Item> items = itemIds==null?itemRepo.findAll():itemRepo.findByIds(itemIds);
 			for (Item item : items) {
-				item.updateUnitsReadyProd();
+//				item.updateUnitsReadyProd();
 				itemRepo.save(item);
 				counter++;
 				log.info("Updated Item: " + item.getId());
@@ -92,12 +94,12 @@ public interface ItemService {
 			}
 		}
 
-		public void updateUnitsReadyProdByComponent(Long componentId) {
-			for(Item item: itemRepo.findByComponent(componentId)) {
-				item.updateUnitsReadyProd();
-				crudService.save(item);
-			}
-		}
+//		public void updateUnitsReadyProdByComponent(Long componentId) {
+//			for(Item item: itemRepo.findByComponent(componentId)) {
+//				item.updateUnitsReadyProd();
+//				crudService.save(item);
+//			}
+//		}
 		
 		public List<Long> findIdsByComponents(List<Long> componentIds){
 			if(componentIds != null && componentIds.size()==0) {
@@ -105,6 +107,10 @@ public interface ItemService {
 			}
 			List<Long> ids = itemRepo.findIdsByComponents(componentIds);
 			return ids;
+		}
+		
+		public List<SaleItem> findSaleItemsForChecklist(Long itemId){
+			return itemRepo.findSaleItemsForChecklist(itemId);
 		}
 		
 		@Async

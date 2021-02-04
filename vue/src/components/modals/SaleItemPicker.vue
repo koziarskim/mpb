@@ -27,8 +27,8 @@
 </template>
 
 <script>
-import http from "../http-common";
-import router from "../router";
+import http from "../../http-common";
+import router from "../../router";
 import moment from "moment";
 
 export default {
@@ -68,7 +68,7 @@ export default {
 				this.availableSaleItems = [];
 				r.data.content.forEach(si=> {
 					var found = this.addedSaleItemIds.find(siId=> siId == si.id);
-					if(!found){
+					if(!found && si.status != "SHIPPED"){
 						this.availableSaleItems.push(si);
 					}
 				})

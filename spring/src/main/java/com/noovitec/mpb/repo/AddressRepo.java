@@ -24,7 +24,7 @@ public interface AddressRepo extends JpaRepository<Address, Long> {
 			+ "where upper(a.type) = upper(:type)")
 	List<KeyValueDto> findKvByType(String type);
 	
-	@Query("select distinct new com.noovitec.mpb.dto.KeyValueDto(a.id, concat(a.street, ', ', a.city)) from Address a "
+	@Query("select distinct new com.noovitec.mpb.dto.KeyValueDto(a.id, concat(a.dc, ', ', a.street, ', ', a.city)) from Address a "
 			+ "where upper(a.type) = 'FRG' "
 			+ "and a.visible = true")
 	List<KeyValueDto> findFreightKv();

@@ -1,9 +1,13 @@
 
+ #if($shippingDateChanged)
+  Shipping Date/Time Changed!
+ #end
   Shipmet: $shipmentNumber is ready for shipment.
+  Customer: $customerName
+
   ----------------------------------------------
   This is automaticaly generated notification!
   Please, login to MIMS to see details.
   MIMS (Marketplace Inventory Management System).
   ----------------------------------------------
-  Year Context: $yearContext
   Notification ID: $notificationId

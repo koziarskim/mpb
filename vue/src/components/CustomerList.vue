@@ -5,7 +5,7 @@
           <span style="text-align: left; font-size: 18px; font-weight: bold">Customers</span>
       </b-col>
       <b-col cols="3">
-          <input class="form-control" type="tel" v-model="searchCustomer" @keyup.enter="getCustomers('customer')" placeholder="Search Name"/>
+          <input class="form-control" type="tel" v-model="customerName" @keyup.enter="getCustomers()" placeholder="Search Name"/>
       </b-col>
       <b-col>
           <div style="text-align: right;">
@@ -32,10 +32,11 @@ import http from "../http-common";
 import router from "../router";
 
 export default {
+  name: "CustomerList",
   data() {
     return {
       pageable: {totalElements: 100, currentPage: 1, perPage: 25, sortBy: 'name', sortDesc: false},
-      searchCustomer: "",
+      customerName: "",
       fields: [
         { key: "name", label: "Name", sortable: false },
         { key: "addressName", label: "Address", sortable: false },
@@ -51,10 +52,9 @@ export default {
       this.pageable.currentPage = page;
       this.getCustomers();
     },
-    getCustomers(type) {
-      var searchKey = type=="customer"?this.searchCustomer:"";
+    getCustomers() {
       http
-        .get("/customer/pageable", {params: {pageable: this.pageable, searchKey: searchKey, searchType: type}})
+        .get("/customer/pageable", {params: {pageable: this.pageable, customerName: this.customerName}})
         .then(response => {
           this.customers = response.data.content;
           this.pageable.totalElements = response.data.totalElements;
@@ -82,6 +82,9 @@ export default {
     }
   },
   mounted() {
+    // this.getCustomers();
+  },
+  activated(){
     this.getCustomers();
   }
 };

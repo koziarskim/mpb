@@ -60,7 +60,7 @@ public class Customer extends BaseEntity {
 	
 	private boolean seasonPalletMark;
 	private String palletRequirements;
-	private String palletTagSize;
+	private String palletTagType;
 	private String palletTagRequirements;
 	
 	private boolean routing;

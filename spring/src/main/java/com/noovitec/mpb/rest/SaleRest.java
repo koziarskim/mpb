@@ -6,10 +6,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -44,17 +42,16 @@ import org.springframework.web.bind.annotation.RestController;
 import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.dto.SaleListDto;
 import com.noovitec.mpb.entity.Address;
-import com.noovitec.mpb.entity.Item;
-import com.noovitec.mpb.entity.ItemComponent;
 import com.noovitec.mpb.entity.Sale;
 import com.noovitec.mpb.entity.SaleItem;
-import com.noovitec.mpb.entity.SaleItemTransfer;
 import com.noovitec.mpb.repo.ItemRepo;
+import com.noovitec.mpb.repo.SaleItemRepo;
 import com.noovitec.mpb.repo.SaleRepo;
 import com.noovitec.mpb.repo.ScheduleEventRepo;
 import com.noovitec.mpb.service.ComponentService;
 import com.noovitec.mpb.service.CrudService;
 import com.noovitec.mpb.service.CustomerService;
+import com.noovitec.mpb.service.ItemService;
 import com.noovitec.mpb.service.SaleService;
 
 @RestController
@@ -73,6 +70,10 @@ class SaleRest {
 	CustomerService customerService;
 	@Autowired
 	ComponentService componentService;
+	@Autowired
+	private ItemService itemService;
+	@Autowired
+	private SaleItemRepo saleItemRepo;
 	
 	private final Logger log = LoggerFactory.getLogger(SaleRest.class);
 	private SaleService saleService;
@@ -87,38 +88,72 @@ class SaleRest {
 	}
 
 	@GetMapping("/sale/pageable")
-	Page<SaleListDto> getAllPageable(
-			@RequestParam(required = false) Pageable pageable, 
+	Page<?> getAllPageable(@RequestParam(required = false) Pageable pageable, 
+			@RequestParam(required = false) boolean totals,
 			@RequestParam(required = false) String saleNumber,
 			@RequestParam(required = false) Long itemId,
 			@RequestParam(required = false) Long customerId,
-			@RequestParam(required = false) String status) {
-		Page<Sale> sales = saleRepo.findPagable(pageable, saleNumber, itemId, customerId, status);
-		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-		DateTimeFormatter windowFormat = DateTimeFormatter.ofPattern("MM/dd");
-		Page<SaleListDto> all = sales.map(sale -> {
-			SaleListDto dto = new SaleListDto();
-			dto.setId(sale.getId());
-			dto.setNumber(sale.getNumber());
-			dto.setName(sale.getName());
-			dto.setDc(sale.getShippingAddress() == null ? "" : sale.getShippingAddress().getDc() + " (" + sale.getShippingAddress().getState() + ")");
-			dto.setDate(sale.getDate());
-			dto.setCustomerName(sale.getCustomer() == null ? "" : sale.getCustomer().getName());
-			dto.setUnitsSold(sale.getUnitsSold());
-			dto.setUnitsScheduled(sale.getUnitsScheduled());
-			dto.setUnitsProduced(sale.getUnitsProduced());
-			dto.setUnitsTransferedTo(sale.getUnitsTransferedTo());
-			dto.setUnitsTransferedFrom(sale.getUnitsTransferedFrom());
-			dto.setUnitsShipped(sale.getUnitsShipped());
-			dto.setUnitsOnStock(sale.getUnitsOnStock());
-			dto.setUnitsAdjusted(sale.getUnitsAdjusted());
-			dto.setStatus(sale.getStatus());
-			String shippingFrom = sale.getShippingFrom()==null?"":sale.getShippingFrom().format(windowFormat);
-			String shippingTo = sale.getShippingTo()==null?"":sale.getShippingTo().format(windowFormat);
-			dto.setShippingWindow(shippingFrom +" - "+shippingTo);
-			return dto;
-		});
-		return all;
+			@RequestParam(required = false) String status,
+			@RequestParam(required = false) String customFilter,
+			@RequestParam(required = false) boolean showAll) {
+		if(totals) {
+			Page<?> resultTotals = saleRepo.findPageable(pageable, totals, saleNumber, itemId, customerId, status, customFilter, showAll);
+			return resultTotals;
+		} else {
+			@SuppressWarnings("unchecked")
+			Page<Sale> sales = (Page<Sale>) saleRepo.findPageable(pageable, totals, saleNumber, itemId, customerId, status, customFilter, showAll);
+			DateTimeFormatter windowFormat = DateTimeFormatter.ofPattern("MM/dd");
+			Page<SaleListDto> all = sales.map(sale -> {
+				SaleListDto dto = new SaleListDto();
+				dto.setId(sale.getId());
+				dto.setNumber(sale.getNumber());
+				dto.setName(sale.getName());
+				dto.setDc(sale.getShippingAddress() == null ? "" : sale.getShippingAddress().getDc() + " (" + sale.getShippingAddress().getState() + ")");
+				dto.setDate(sale.getDate());
+				dto.setCustomerName(sale.getCustomer() == null ? "" : sale.getCustomer().getName());
+				dto.setUnitsSold(sale.getUnitsSold());
+				dto.setUnitsScheduled(sale.getUnitsScheduled());
+				dto.setUnitsProduced(sale.getUnitsProduced());
+				dto.setUnitsShipped(sale.getUnitsShipped());
+	//			dto.setUnitsOnStock(sale.getUnitsOnStock());
+				dto.setUnitsAdjusted(sale.getUnitsAdjusted());
+				dto.setUnitsAssigned(sale.getUnitsAssigned());
+	//			dto.setInvoicedAmount(sale.getInvoicedAmount());
+				dto.setStatus(sale.getStatus());
+				String shippingFrom = sale.getShippingFrom()==null?"":sale.getShippingFrom().format(windowFormat);
+				String shippingTo = sale.getShippingTo()==null?"":sale.getShippingTo().format(windowFormat);
+				dto.setShippingWindow(shippingFrom +"-"+shippingTo);
+				return dto;
+			});
+			return all;
+		}
+	}
+
+	@GetMapping("/sale/xls")
+	HttpEntity<byte[]> getXls(@RequestParam(required = false) Pageable pageable, 
+			@RequestParam(required = false) boolean totals,
+			@RequestParam(required = false) String saleNumber,
+			@RequestParam(required = false) Long itemId,
+			@RequestParam(required = false) Long customerId,
+			@RequestParam(required = false) String status,
+			@RequestParam(required = false) String customFilter,
+			@RequestParam(required = false) boolean showAll) throws IOException {
+		@SuppressWarnings("unchecked")
+		Page<Sale> sales = (Page<Sale>) saleRepo.findPageable(pageable, totals, saleNumber, itemId, customerId, status, customFilter, showAll);
+		List<Long> saleIds = new ArrayList<Long>();
+		for(Sale sale: sales) {
+			saleIds.add(sale.getId());
+		}
+		byte[] data = generateXls(saleIds);
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+		String fileName = "Sales_" + "-" + sdf.format(timestamp) +".xlsx";
+		HttpHeaders header = new HttpHeaders();
+		header.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+		header.set("Content-Disposition", "inline; filename=" + fileName);
+		header.set("File-Name", fileName);
+		header.setContentLength(data.length);
+		return new HttpEntity<byte[]>(data, header);
 	}
 
 	@GetMapping("/sale/kv/customer/{customer_id}")
@@ -162,19 +197,100 @@ class SaleRest {
 		}
 	}
 	
-	@PutMapping("/sale/xls")
-	HttpEntity<byte[]> getXls(@RequestBody List<Long> saleIds) throws IOException {
-		log.info("Sale IDs: "+saleIds);
-		byte[] data = generateXls(saleIds);
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
-		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-		String fileName = "Sales_" + "-" + sdf.format(timestamp) +".xlsx";
-		HttpHeaders header = new HttpHeaders();
-		header.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-		header.set("Content-Disposition", "inline; filename=" + fileName);
-		header.set("File-Name", fileName);
-		header.setContentLength(data.length);
-		return new HttpEntity<byte[]>(data, header);
+	@PutMapping("/sale/paid")
+	HttpEntity<?> setSalesPaid(@RequestBody List<Long> saleIds) {
+		log.info("Testing...."+saleIds);
+		for(Long saleId: saleIds) {
+			Sale sale = saleRepo.getOne(saleId);
+			if(sale.isPaidInFull()) {
+				continue;
+			}
+			sale.setPaidInFull(true);
+			this.post(sale);
+		}
+		return ResponseEntity.ok().build();
+	}
+	
+	@PostMapping("/sale/{saleId}/duplicate")
+	ResponseEntity<?> post(@PathVariable Long saleId) {
+		Sale existingSale = saleRepo.getOne(saleId);
+		Sale sale = new Sale();
+		sale.setCustomer(existingSale.getCustomer());
+		sale.setDate(existingSale.getDate());
+		sale.setExpectedDate(existingSale.getExpectedDate());
+		sale.setFreightTerms(existingSale.getFreightTerms());
+		sale.setNotes(existingSale.getNotes());
+		sale.setNumber(existingSale.getNumber()+"-Copy");
+		sale.setPaymentTerms(existingSale.getPaymentTerms());
+		sale.setShippingAddress(existingSale.getShippingAddress());
+		sale.setShippingFrom(existingSale.getShippingFrom());
+		sale.setShippingTo(existingSale.getShippingTo());
+		List<SaleItem> saleItems = new ArrayList<SaleItem>();
+		for(SaleItem existingSi: existingSale.getSaleItems()) {
+			SaleItem si = new SaleItem();
+			si.setItemPackaging(existingSi.getItemPackaging());
+			si.setSku(existingSi.getSku());
+			si.setUnits(existingSi.getUnits());
+			si.setUnitPrice(existingSi.getUnitPrice());
+			si.setTotalUnitPrice(existingSi.getTotalUnitPrice());
+			si.setSale(sale);
+			si.setItemPackaging(existingSi.getItemPackaging());
+			saleItems.add(si);
+		}
+		sale.setSaleItems(saleItems);
+		return this.post(sale);
+	}
+	
+	@PostMapping("/sale")
+	ResponseEntity<?> post(@RequestBody Sale sale) {
+		List<Long> itemIds = new ArrayList<Long>();
+		if(sale.getId()!=null) {
+			Sale prevSale = saleRepo.getOne(sale.getId());
+			for(SaleItem si: prevSale.getSaleItems()) {
+				itemIds.add(si.getItemPackaging().getItem().getId());
+			}
+		}
+		if(!sale.getNumber().matches("^[a-zA-Z0-9\\-]{1,25}$")) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Sale Number is invalid. Alphanumeric and hyphen only allowed. Maximum 25 characters.");
+		}
+		Long id = saleRepo.getIdByNumber(sale.getNumber());
+		if((sale.getId()==null && id !=null) || (sale.getId()!=null && id !=null && !sale.getId().equals(id))) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Sale Number already exists. Please, choose differrent.");
+		}
+		for (SaleItem sa : sale.getSaleItems()) {
+			sa.setSale(sale);
+		}
+		sale = (Sale) crudService.merge(sale);
+		sale.updateUnits();
+		for (SaleItem si : sale.getSaleItems()) {
+			itemIds.add(si.getItemPackaging().getItem().getId());
+		}
+		itemService.updateUnits(itemIds);
+		Sale result = (Sale) crudService.save(sale);
+		return ResponseEntity.ok().body(result);
+	}
+
+	@DeleteMapping("/sale/{id}")
+	public ResponseEntity<?> delete(@PathVariable Long id) {
+		Sale sale = saleRepo.getOne(id);
+//		if(sale.getSaleItems().size()>0) {
+//			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("There are existing Sale Items!");
+//		}
+		List<Long> itemIds = new ArrayList<Long>();
+		List<Long> saleIds = new ArrayList<Long>();
+		for (SaleItem si : sale.getSaleItems()) {
+//			if(si.getShipmentItems().size() > 0) {
+//				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Sale has been shipped already. Cannot delete!");
+//			}
+//			saleItemRepo.deleteById(si.getId());
+			itemIds.add(si.getItemPackaging().getItem().getId());
+			saleIds.add(si.getSale().getId());
+		}
+//		sale.setSaleItems(null);
+		saleRepo.deleteById(id);
+		saleService.updateUnits(saleIds);
+		itemService.updateUnits(itemIds);
+		return ResponseEntity.ok().build();
 	}
 	
 	private byte[] generateXls(List<Long> saleIds) throws IOException {
@@ -237,8 +353,8 @@ class SaleRest {
 			}
 			int totalPallets = 0;
 			for(SaleItem si: sale.getSaleItems()) {
-				int cases = (int) Math.round(si.getUnits()/si.getItem().getCasePack());
-				int pallets = (int) Math.round(cases/(si.getItem().getHi()*si.getItem().getTi()));
+				int cases = (int) Math.round(si.getUnits()/si.getItemPackaging().getPackaging().getCasePack());
+				int pallets = (int) Math.round(cases/(si.getItemPackaging().getPackaging().getHi()*si.getItemPackaging().getPackaging().getTi()));
 				totalPallets += pallets;
 			}
 			for(SaleItem si: sale.getSaleItems()) {
@@ -260,19 +376,19 @@ class SaleRest {
 					windowDate += sale.getShippingTo().format(windowFormat);
 				}
 				addCell(3, windowDate, row);
-				addCell(3, sale.getDate().format(windowFormat), row);
+				addCell(3, sale.getDate()==null?"":sale.getDate().format(windowFormat), row);
 				addCell(4, si.getSku(), row);
-				addCell(5, si.getItem().getNumber(), row);
-				addCell(6, si.getItem().getName(), row);
-				addCell(7, String.valueOf(si.getItem().getCasePack()), row);
+				addCell(5, si.getItemPackaging().getItem().getNumber(), row);
+				addCell(6, si.getItemPackaging().getItem().getName(), row);
+				addCell(7, String.valueOf(si.getItemPackaging().getPackaging().getCasePack()), row);
 				addCell(8, String.valueOf(si.getUnits()), row);
 				addCell(9, String.valueOf(si.getTotalUnitPrice()), row);
-				int cases = BigDecimal.valueOf(si.getUnits()).divide(BigDecimal.valueOf(si.getItem().getCasePack()),RoundingMode.CEILING).intValue();
+				int cases = BigDecimal.valueOf(si.getUnits()).divide(BigDecimal.valueOf(si.getItemPackaging().getPackaging().getCasePack()),RoundingMode.CEILING).intValue();
 				cases = cases==0?1:cases;
-				int pallets = (si.getItem().getTi()*si.getItem().getHi())/cases;
+				int pallets = (si.getItemPackaging().getPackaging().getTi()*si.getItemPackaging().getPackaging().getHi())/cases;
 				pallets = pallets==0?1:pallets;
-				BigDecimal unitsWeight = si.getItem().getWeight().multiply(BigDecimal.valueOf(si.getUnits()));
-				BigDecimal palletsWeight = si.getItem().getPalletWeight().multiply(BigDecimal.valueOf(pallets));
+				BigDecimal unitsWeight = si.getItemPackaging().getItem().getWeight().multiply(BigDecimal.valueOf(si.getUnits()));
+				BigDecimal palletsWeight = si.getItemPackaging().getPackaging().getPalletWeight().multiply(BigDecimal.valueOf(pallets));
 				int totalWeight = unitsWeight.add(palletsWeight).intValue();
 				addCell(10, String.valueOf(cases), row);
 				addCell(11, String.valueOf(pallets), row);
@@ -300,116 +416,4 @@ class SaleRest {
 		cell.setCellValue(value);
 	}
 	
-	@PostMapping("/sale/units/{saleId}")
-	ResponseEntity<?> updateUnits(@PathVariable Long saleId) {
-		Sale sale = saleRepo.getOne(saleId);
-		sale.updateUnits();
-		saleRepo.save(sale);
-		return ResponseEntity.ok().body("OK");
-	}
-
-	@PostMapping("/sale")
-	ResponseEntity<?> post(@RequestBody Sale sale) {
-		if(!sale.getNumber().matches("^[a-zA-Z0-9\\-]{1,25}$")) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Sale Number is invalid. Alphanumeric and hyphen only allowed. Maximum 25 characters.");
-		}
-		Long id = saleRepo.getIdByNumber(sale.getNumber());
-		if((sale.getId()==null && id !=null) || (sale.getId()!=null && id !=null && !sale.getId().equals(id))) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Sale Number already exists. Please, choose differrent.");
-		}
-		for (SaleItem sa : sale.getSaleItems()) {
-			sa.setSale(sale);
-			for (SaleItemTransfer t : sa.getTransfersTo()) {
-				if (t.getSaleItemTo() == null) {
-					SaleItem saTo = new SaleItem();
-					saTo.setId(t.getSaleItemToId());
-					t.setSaleItemTo(saTo);
-				}
-				if (t.getSaleItemFrom() == null) {
-					SaleItem saFrom = new SaleItem();
-					saFrom.setId(t.getSaleItemFromId());
-					t.setSaleItemFrom(saFrom);
-				}
-			}
-			for (SaleItemTransfer t : sa.getTransfersFrom()) {
-				if (t.getSaleItemTo() == null) {
-					SaleItem saTo = new SaleItem();
-					saTo.setId(t.getSaleItemToId());
-					t.setSaleItemTo(saTo);
-				}
-				if (t.getSaleItemFrom() == null) {
-					SaleItem saFrom = new SaleItem();
-					saFrom.setId(t.getSaleItemFromId());
-					t.setSaleItemFrom(saFrom);
-				}
-			}
-		}
-		sale = (Sale) crudService.merge(sale);
-		sale.updateUnits();
-		for (SaleItem sa : sale.getSaleItems()) {
-			List<Long> componentIds = new ArrayList<Long>();
-			for (ItemComponent ic : sa.getItem().getItemComponents()) {
-				componentIds.add(ic.getComponent().getId());
-			}
-			componentService.updateUnits(componentIds);
-			sa.getItem().updateUnits();
-		}
-		Sale result = (Sale) crudService.save(sale);
-		return ResponseEntity.ok().body(result);
-	}
-
-	@DeleteMapping("/sale/{id}")
-	public ResponseEntity<?> delete(@PathVariable Long id) {
-		Sale sale = saleRepo.getOne(id);
-		if(sale.getSaleItems().size()>0) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("There are existing Sale Items!");
-		}
-		List<Item> items = new ArrayList<Item>();
-		for (SaleItem sa : sale.getSaleItems()) {
-			items.add(sa.getItem());
-		}
-		saleRepo.deleteById(id);
-		for (Item item : items) {
-			item.updateUnits();
-			crudService.save(item);
-		}
-		return ResponseEntity.ok().build();
-	}
-	
-	// This is acting as POST.
-	@GetMapping("/sale/update/units")
-	ResponseEntity<?> postUpdateUnits() {
-		try {
-			saleService.updateUnits(null);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-		}
-		return ResponseEntity.ok().body("OK");
-	}
-	
-	// This is acting as POST.
-	@GetMapping("/sale/update/number")
-	ResponseEntity<?> postUpdateNumber() {
-		try {
-			saleService.updateNumber();
-		} catch (Exception e) {
-			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-		}
-		return ResponseEntity.ok().body("OK");
-	}
-
-	// This is acting as POST.
-	@GetMapping("/sale/update/merge")
-	ResponseEntity<?> mergeSales() {
-		try {
-			saleService.mergeSales();
-		} catch (Exception e) {
-			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-		}
-		return ResponseEntity.ok().body("OK");
-	}
-
 }

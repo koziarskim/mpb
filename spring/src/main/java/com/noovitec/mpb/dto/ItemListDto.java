@@ -14,13 +14,17 @@ public class ItemListDto {
 	private String name;
 	private String brand;
 	private String category;
+	private long numPackagings;
 	private long unitsOnStock = 0;
 	private long unitsSold = 0;
+	private long salesNotAssigned = 0;
 	private long unitsScheduled = 0;
 	private long unitsProduced = 0;
 	private long unitsShipped = 0;
 	private long unitsReadyProd = 0;
-	private long unitsOverstock = 0;
 	private long unitsAdjusted = 0;
+	private long unitsOnFloor = 0;
+	private long unitsNotAssigned = 0;
+	private long unitsShort = 0;
 	private long performance = 0;
 }

@@ -3,7 +3,7 @@
     <b-modal centered size="lg" v-model="visible" :hide-header="true" :hide-footer="true">
       <b-row>
         <b-col cols=9>
-          <span>Production output for {{scheduleEvent.saleItem.item.name}}</span>
+          <span>Production output for {{scheduleEvent.itemPackaging.item.name}}</span>
         </b-col>
         <b-col>
           <div style="text-align: right;">
@@ -31,8 +31,8 @@
 </template>
 
 <script>
-import http from "../http-common";
-import router from "../router";
+import http from "../../http-common";
+import router from "../../router";
 import moment from "moment";
 
 export default {

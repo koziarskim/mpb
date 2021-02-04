@@ -2,6 +2,7 @@ package com.noovitec.mpb.entity;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -30,21 +31,23 @@ import lombok.NoArgsConstructor;
 @Entity
 public class ScheduleEvent extends BaseEntity {
 
+	private static final long serialVersionUID = 920544982775913064L;
 	LocalTime scheduleTime;
 	LocalTime startTime;
 	LocalTime finishTime;
 	long unitsScheduled = 0;
 	long unitsProduced = 0;
+	private LocalDate date;
 
 	@JsonIgnoreProperties(value = { "scheduleEvents" }, allowSetters = true)
 	@ManyToOne()
 	@JoinColumn(name = "line_id", referencedColumnName = "id")
 	private Line line;
 
-	@JsonIgnoreProperties(value = { "scheduleEvents" }, allowSetters = true)
+	@JsonIgnoreProperties(value = { "scheduleEvents", "saleItems" }, allowSetters = true)
 	@ManyToOne()
-	@JoinColumn(name = "schedule_id", referencedColumnName = "id")
-	private Schedule schedule;
+	@JoinColumn(name = "item_packaging_id", referencedColumnName = "id")
+	private ItemPackaging itemPackaging;
 
 	@JsonIgnoreProperties(value = { "scheduleEvent" }, allowSetters = true)
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
@@ -55,6 +58,11 @@ public class ScheduleEvent extends BaseEntity {
 	@ManyToOne()
 	@JoinColumn(name = "sale_item_id", referencedColumnName = "id")
 	private SaleItem saleItem;
+
+//	@JsonIgnoreProperties(value = { "scheduleEvents" }, allowSetters = true)
+//	@ManyToOne()
+//	@JoinColumn(name = "item_id", referencedColumnName = "id")
+//	private Item item;
 
 	@Transient
 	boolean completed = false;
@@ -80,10 +88,10 @@ public class ScheduleEvent extends BaseEntity {
 	
 	public BigDecimal getEfficiency() {
 		BigDecimal eff = BigDecimal.ZERO;
-		Long perf = this.getSaleItem().getItem().getPerformance();
+		Long perf = this.getItemPackaging().getItem().getPerformance();
 		if(perf > 0L) {
 			eff = BigDecimal.valueOf(this.getPerformance())
-					.divide(BigDecimal.valueOf(this.getSaleItem().getItem().getPerformance()), 6, RoundingMode.HALF_UP)
+					.divide(BigDecimal.valueOf(this.getItemPackaging().getItem().getPerformance()), 6, RoundingMode.HALF_UP)
 					.multiply(BigDecimal.valueOf(100));
 		}
 		return eff.setScale(1, RoundingMode.HALF_UP);
@@ -129,8 +137,12 @@ public class ScheduleEvent extends BaseEntity {
 	private long totalPeople = 0;
 	
 	public long getTotalPeople() {
+		this.totalPeople = 0;
 		for (Production p : this.getProductions()) {
-			this.totalPeople += p.getPeople();
+			if(p.getPeople() > this.totalPeople) {
+				this.totalPeople = p.getPeople();
+			}
+//			this.totalPeople += p.getPeople();
 		}
 		return this.totalPeople;
 	}

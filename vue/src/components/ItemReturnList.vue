@@ -158,7 +158,7 @@ export default {
     if(saleId){
       this.saleKv = {id: saleId};
     }
-    window.history.replaceState({}, document.title, window.location.pathname);
+    // window.history.replaceState({}, document.title, window.location.pathname);
     this.getAvailableItems();
     this.getAvailableSales();
     

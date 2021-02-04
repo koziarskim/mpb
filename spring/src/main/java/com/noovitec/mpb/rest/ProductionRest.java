@@ -69,16 +69,28 @@ class ProductionRest {
 	@PostMapping("/production")
 	ResponseEntity<Production> post(@RequestBody Production production) {
 		Long unitsDiff = production.getUnitsProduced() - production.getPreUnitsProduced();
+		production = (Production) crudService.merge(production);
+		if(production.getScheduleEvent().getSaleItem() != null) {
+			long unitsAssigned = production.getScheduleEvent().getSaleItem().getUnitsAssigned();
+			unitsAssigned += unitsDiff;
+			long unitsNeeded = production.getScheduleEvent().getSaleItem().getUnits() + production.getScheduleEvent().getSaleItem().getUnitsAdjusted();
+			if(unitsAssigned > unitsNeeded){
+				unitsAssigned = unitsNeeded;
+			}
+			production.getScheduleEvent().getSaleItem().setUnitsAssigned(unitsAssigned);
+		}
 		production = productionService.save(production);
 		componentService.updateUnitsOnStockByProduction(production.getId(), unitsDiff);
-		itemService.updateUnits(Arrays.asList(production.getScheduleEvent().getSaleItem().getItem().getId()));
-		saleService.updateUnits(Arrays.asList(production.getScheduleEvent().getSaleItem().getSale().getId()));
+		itemService.updateUnits(Arrays.asList(production.getScheduleEvent().getItemPackaging().getItem().getId()));
+		if(production.getScheduleEvent().getSaleItem() != null) {
+			saleService.updateUnits(Arrays.asList(production.getScheduleEvent().getSaleItem().getSale().getId()));
+		}
 		List<Long> componentIds = new ArrayList<Long>();
-		for (ItemComponent ic : production.getScheduleEvent().getSaleItem().getItem().getItemComponents()) {
+		for (ItemComponent ic : production.getScheduleEvent().getItemPackaging().getItem().getItemComponents()) {
 			componentIds.add(ic.getComponent().getId());
 		}
 		componentService.updateUnits(componentIds);
-		itemService.updateUnitsReadyProd(Arrays.asList(production.getScheduleEvent().getSaleItem().getItem().getId()));
+		itemService.updateUnitsReadyProd(Arrays.asList(production.getScheduleEvent().getItemPackaging().getItem().getId()));
 		return ResponseEntity.ok().body(production);
 	}
 
@@ -86,9 +98,23 @@ class ProductionRest {
 	ResponseEntity<?> delete(@PathVariable Long id) {
 		Production production = productionRepo.getOne(id);
 		Long unitsDiff = production.getUnitsProduced() * (-1);
+		production = (Production) crudService.merge(production);
+		if(production.getScheduleEvent().getSaleItem() != null) {
+			long unitsAssigned = production.getScheduleEvent().getSaleItem().getUnitsAssigned();
+			unitsAssigned += unitsDiff;
+			long unitsNeeded = production.getScheduleEvent().getSaleItem().getUnits() + production.getScheduleEvent().getSaleItem().getUnitsAdjusted();
+			if(unitsAssigned > unitsNeeded){
+				unitsAssigned = unitsNeeded;
+			}
+			production.getScheduleEvent().getSaleItem().setUnitsAssigned(unitsAssigned);
+		}
+		production = productionService.save(production);
 		componentService.updateUnitsOnStockByProduction(production.getId(), unitsDiff);
-		Long itemId = production.getScheduleEvent().getSaleItem().getItem().getId();
-		Long saleId = production.getScheduleEvent().getSaleItem().getSale().getId();
+		Long itemId = production.getScheduleEvent().getItemPackaging().getItem().getId();
+		Long saleId = null;
+		if(production.getScheduleEvent().getSaleItem() != null) {
+			saleId = production.getScheduleEvent().getSaleItem().getSale().getId();
+		}
 		productionService.delete(id);
 		itemService.updateUnits(Arrays.asList(itemId));
 		saleService.updateUnits(Arrays.asList(saleId));

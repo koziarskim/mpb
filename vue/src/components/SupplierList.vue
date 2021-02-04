@@ -5,7 +5,7 @@
                 <span style="text-align: left; font-size: 18px; font-weight: bold">Suppliers</span>
             </b-col>
             <b-col cols="3">
-                <input id="supplierlist-searchname" class="form-control" type="tel" v-model="searchKey" @keyup.enter="getSuppliers" placeholder="Search by Name"/>
+                <input id="supplierlist-searchname" class="form-control" type="tel" v-model="supplierName" @keyup.enter="getSuppliers()" placeholder="Search by Name"/>
             </b-col>
             <b-col>
                 <div style="text-align: right;">
@@ -37,10 +37,11 @@ import http from "../http-common";
 import router from "../router";
 
 export default {
+  name: "SupplierList",
   data() {
     return {
       pageable: {totalElements: 100, currentPage: 1, perPage: 25, sortBy: 'name', sortDesc: false},
-      searchKey: "",
+      supplierName: "",
       sortBy: "account",
       sortDesc: false,
       fields: [
@@ -59,7 +60,7 @@ export default {
     },
     getSuppliers() {
       http
-        .get("/supplier/pageable", {params: {pageable: this.pageable, searchKey: this.searchKey}})
+        .get("/supplier/pageable", {params: {pageable: this.pageable, supplierName: this.supplierName}})
         .then(response => {
           this.suppliers = response.data.content;
           this.pageable.totalElements = response.data.totalElements;
@@ -94,6 +95,9 @@ export default {
     }
   },
   mounted() {
+    // this.getSuppliers();
+  },
+  activated(){
     this.getSuppliers();
   }
 };

@@ -46,6 +46,8 @@ public interface NotificationService {
 	
 	public void sendMail(List<String> emailsTo, Map<String, String> model, Notification.TYPE type);
 	public void sendMailAttachment(List<String> emailsTo, Map<String, String> model, Notification.TYPE type, byte[] file, String fileName);
+	public void sendMailAttachment(List<String> emailsTo, Map<String, String> model, Notification.TYPE type, byte[] file, String fileName,
+			String subject, String body);
 	
 	@Transactional
 	@Service("notificationServiceImpl")
@@ -65,9 +67,16 @@ public interface NotificationService {
 		}
 
 		public void sendMailAttachment(List<String> emailsTo, Map<String, String> model, Notification.TYPE type, byte[] file, String fileName) {
+			this.sendMailAttachment(emailsTo, model, type, file, fileName, null, null);
+		}
+
+		public void sendMailAttachment(List<String> emailsTo, Map<String, String> model, Notification.TYPE type, byte[] file, String fileName,
+				String subject, String body) {
 			log.info("EmailNotification: "+type);
 			try {
-				emailsTo.add("mkoziarski@marketplacebrands.com");
+				if(!Notification.TYPE.INVOICE_EMAIL.equals(type)) {
+					emailsTo.add("mkoziarski@marketplacebrands.com");
+				}
 				Notification notification = new Notification();
 				notification.setEmails(emailsTo.toString());
 				notification.setType(type.name());
@@ -75,14 +84,18 @@ public interface NotificationService {
 				List<String> SCOPES = Arrays.asList(GmailScopes.GMAIL_SEND, GmailScopes.GMAIL_LABELS);
 				String MIMS_JSON_KEY = "oauth/mims-268617-f7755598ac50.json";
 		        model.put("type", type.name());
-		        String subject = "MIMS Notification";
-				String body = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, type.template(), model);
+		        if(subject  == null) {
+		        	subject = "MIMS Notification";
+		        }
+				if(body == null) {
+					body = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, type.template(), model);
+				}
 				if(MpbRequestContext.getStaticSetting().isDevEnv()) {
 					emailsTo = Arrays.asList("mkoziarski@marketplacebrands.com");
 				}
 				InternetAddress[] bcc = new InternetAddress[emailsTo.size()]; 
 			    for (int i =0; i < emailsTo.size(); i++) 
-			    	bcc[i] = new InternetAddress(emailsTo.get(i)); 
+				    bcc[i] = new InternetAddress(emailsTo.get(i)); 
 				HttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
 				JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
 				InputStream credentialsJSON = this.getClass().getClassLoader().getResourceAsStream(MIMS_JSON_KEY);
@@ -103,9 +116,12 @@ public interface NotificationService {
 				ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 				Session session = Session.getDefaultInstance(new Properties());
 				MimeMessage email = new MimeMessage(session);
-				email.setFrom(new InternetAddress("mkoziarski@marketplacebrands.com"));
-				email.addRecipient(javax.mail.Message.RecipientType.TO, new InternetAddress("mims@marketplacebrands.com"));
-				email.addRecipients(javax.mail.Message.RecipientType.BCC, bcc);
+				if(Notification.TYPE.INVOICE_EMAIL.equals(type)) {
+					email.addRecipient(javax.mail.Message.RecipientType.TO, new InternetAddress(emailsTo.get(0)));
+				} else {
+					email.addRecipient(javax.mail.Message.RecipientType.TO, new InternetAddress("mims@marketplacebrands.com"));
+					email.addRecipients(javax.mail.Message.RecipientType.BCC, bcc);
+				}
 				email.setSubject(subject);
 				Multipart multipart = new MimeMultipart();
 				MimeBodyPart messageBodyPart = new MimeBodyPart();

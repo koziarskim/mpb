@@ -5,8 +5,8 @@ import Home from "./components/Home.vue";
 import ItemEdit from "./components/ItemEdit.vue";
 import ComponentEdit from "./components/ComponentEdit.vue";
 import ItemList from "./components/ItemList";
-import ItemComponentList from "./components/ItemComponentList";
 import ComponentList from "./components/ComponentList";
+import ComponentInventoryList from "./components/ComponentInventoryList";
 import SupplierList from "./components/SupplierList";
 import SupplierEdit from "./components/SupplierEdit";
 import CustomerList from "./components/CustomerList";
@@ -15,14 +15,10 @@ import SaleList from "./components/SaleList";
 import SaleEdit from "./components/SaleEdit";
 import PurchaseList from "./components/PurchaseList";
 import PurchaseEdit from "./components/PurchaseEdit";
-import PurchaseItem from "./components/PurchaseItem";
-import PurchaseComponent from "./components/PurchaseComponent";
 import ReceivingList from "./components/ReceivingList";
 import ReceivingEdit from "./components/ReceivingEdit";
 import Users from "./components/Users";
 import Login from "./components/Login";
-import Schedule from "./components/Schedule";
-import ItemSaleList from "./components/ItemSaleList";
 import SaleItemList from "./components/SaleItemList";
 import AccessDenied from "./components/AccessDenied";
 import ShipmentEdit from "./components/ShipmentEdit";
@@ -33,7 +29,6 @@ import ProductionLineList from "./components/ProductionLineList";
 import ProductionItemList from "./components/ProductionItemList";
 import Profile from "./components/Profile";
 import DailyStatus from "./components/public/DailyStatus";
-import PurchaseNew from "./components/PurchaseNew";
 import ItemGraph from "./components/ItemGraph";
 import ItemReturnList from "./components/ItemReturnList";
 import ShipmentSchedule from "./components/ShipmentSchedule";
@@ -41,6 +36,10 @@ import InvoiceList from "./components/InvoiceList";
 import InvoiceItemList from "./components/InvoiceItemList";
 import InvoiceEdit from "./components/InvoiceEdit";
 import BillList from "./components/BillList";
+import PackagingList from "./components/PackagingList";
+import PackagingEdit from "./components/PackagingEdit";
+import ItemPackagingList from "./components/ItemPackagingList";
+import ComponentAdjustmentList from "./components/ComponentAdjustmentList";
 
 Vue.use(Router);
 
@@ -83,16 +82,6 @@ const router = new Router({
       }
     },
     {
-      path: "/itemComponentList/:item_id",
-      name: "ItemComponentList",
-      component: ItemComponentList,
-      meta: {
-        roles: ["READ_ONLY"],
-        group: "item",
-        viewClass: "view-item"
-      }
-    },
-    {
       path: "/itemEdit/:item_id?",
       name: "ItemEdit",
       component: ItemEdit,
@@ -113,9 +102,29 @@ const router = new Router({
       }
     },
     {
-      path: "/itemSaleList/:item_id",
-      name: "ItemSaleList",
-      component: ItemSaleList,
+      path: "/packagingList",
+      name: "PackagingList",
+      component: PackagingList,
+      meta: {
+        roles: ["READ_ONLY"],
+        group: "item",
+        viewClass: "view-item"
+      }
+    },
+    {
+      path: "/ItemPackagingList",
+      name: "ItemPackagingList",
+      component: ItemPackagingList,
+      meta: {
+        roles: ["READ_ONLY"],
+        group: "item",
+        viewClass: "view-item"
+      }
+    },
+    {
+      path: "/packagingEdit/:packaging_id?",
+      name: "PackagingEdit",
+      component: PackagingEdit,
       meta: {
         roles: ["READ_ONLY"],
         group: "item",
@@ -126,6 +135,26 @@ const router = new Router({
       path: "/componentList",
       name: "ComponentList",
       component: ComponentList,
+      meta: {
+        roles: ["READ_ONLY"],
+        group: "component",
+        viewClass: "view-component"
+      }
+    },
+    {
+      path: "/componentInventoryList",
+      name: "ComponentInventoryList",
+      component: ComponentInventoryList,
+      meta: {
+        roles: ["READ_ONLY"],
+        group: "component",
+        viewClass: "view-component"
+      }
+    },
+    {
+      path: "/componentAdjustmentList",
+      name: "ComponentAdjustmentList",
+      component: ComponentAdjustmentList,
       meta: {
         roles: ["READ_ONLY"],
         group: "component",
@@ -233,36 +262,6 @@ const router = new Router({
       }
     },
     {
-      path: "/purchaseNew",
-      name: "PurchaseNew",
-      component: PurchaseNew,
-      meta: {
-        roles: ["READ_ONLY"],
-        group: "purchase",
-        viewClass: "view-purchase"
-      }
-    },
-    {
-      path: "/PurchaseComponent/:purchase_id",
-      name: "PurchaseComponent",
-      component: PurchaseComponent,
-      meta: {
-        roles: ["READ_ONLY"],
-        group: "purchase",
-        viewClass: "view-purchase"
-      }
-    },
-    {
-      path: "/PurchaseItem/:purchase_id",
-      name: "PurchaseItem",
-      component: PurchaseItem,
-      meta: {
-        roles: ["READ_ONLY"],
-        group: "purchase",
-        viewClass: "view-purchase"
-      }
-    },
-    {
       path: "/ReceivingList",
       name: "ReceivingList",
       component: ReceivingList,
@@ -290,26 +289,6 @@ const router = new Router({
         roles: ["READ_ONLY"],
         group: "receiving",
         viewClass: "view-receiving"
-      }
-    },
-    {
-      path: "/Schedule",
-      name: "Schedule",
-      component: Schedule,
-      meta: {
-        roles: ["READ_ONLY"],
-        group: "schedule",
-        viewClass: "view-schedule"
-      }
-    },
-    {
-      path: "/ScheduleEventList/:item_id?/:sale?/:sale_id?",
-      name: "ScheduleEventList",
-      component: ScheduleEventList,
-      meta: {
-        roles: ["READ_ONLY"],
-        group: "schedule",
-        viewClass: "view-schedule"
       }
     },
     {
@@ -370,6 +349,16 @@ const router = new Router({
         roles: ["READ_ONLY", "PRODUCTION_ADMIN", "PRODUCTION_EDIT"],
         group: "production",
         viewClass: "view-production"
+      }
+    },
+    {
+      path: "/ScheduleEventList",
+      name: "ScheduleEventList",
+      component: ScheduleEventList,
+      meta: {
+        roles: ["READ_ONLY"],
+        group: "production",
+        viewClass: "view-schedule"
       }
     },
     {

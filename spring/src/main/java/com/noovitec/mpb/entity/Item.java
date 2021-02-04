@@ -8,10 +8,13 @@ import java.util.HashSet;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.AllArgsConstructor;
@@ -26,40 +29,34 @@ import lombok.NoArgsConstructor;
 @Entity
 public class Item extends BaseEntity {
 
+	private static final long serialVersionUID = -1613201559035575793L;
 	private String name;
 	private String number;
 	private String description;
 	private BigDecimal height;
+	private BigDecimal length;
 	private BigDecimal width;
-	private BigDecimal depth;
 	private BigDecimal weight;
-	private int casePack = 1;
-	private BigDecimal caseHeight;
-	private BigDecimal caseWidth;
-	private BigDecimal caseDepth;
-	private BigDecimal caseWeight;
-	private BigDecimal palletWeight;
-	private int ti = 1; // number of cases in single layer on pallet.
-	private int hi = 1; // number of layers on pallet.
-	private BigDecimal warehouseCost = new BigDecimal(12);
-	private BigDecimal packageCost = new BigDecimal(12);
-	private BigDecimal laborCost;
-	private BigDecimal otherCost;
 	private BigDecimal totalCost;
 	private long unitsProduced = 0;
 	private long unitsSold = 0;
 	private long unitsScheduled = 0;
 	private long unitsShipped = 0;
-	private long unitsReadyProd = 0;
-	private long unitsReturned = 0;
 	private long unitsOnStock = 0;
 	private long unitsAdjusted = 0;
-	private long unitsOverstock = 0;
-
+	private long salesNotAssigned = 0;
+	private long unitsNotAssigned = 0;
+	private long unitsShort = 0;
+	private long unitsOnFloor = 0;
+//	private long unitsReadyProd = 0;	
+	
 	@JsonIgnoreProperties(value = { "item" }, allowSetters = true)
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn(name = "item_id")
+	@OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Collection<ItemComponent> itemComponents = new HashSet<ItemComponent>();
+	
+	@JsonIgnoreProperties(value = { "item", "scheduleEvents", "saleItems" }, allowSetters = true)
+	@OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
+	private Collection<ItemPackaging> itemPackagings = new HashSet<ItemPackaging>();
 
 	@JsonIgnoreProperties(value = { "items" }, allowSetters = true)
 	@ManyToOne()
@@ -86,30 +83,17 @@ public class Item extends BaseEntity {
 	@JoinColumn(name = "upc_id", referencedColumnName = "id")
 	private Upc upc;
 
-//	@JsonIgnoreProperties(value = { "items" }, allowSetters = true)
-//	@ManyToOne()
-//	@JoinColumn(name = "case_upc_id", referencedColumnName = "id")
-//	private Upc caseUpc;
-
 	@ManyToOne()
 	@JoinColumn(name = "attachment_id", referencedColumnName = "id")
 	private Attachment attachment;
 
-	@JsonIgnoreProperties(value = { "item" }, allowSetters = true)
-	@OneToMany()
-	@JoinColumn(name = "item_id")
-	private Collection<SaleItem> saleItems = new HashSet<SaleItem>();
-
-	@JsonIgnoreProperties(value = { "item", "saleItemReturns" }, allowSetters = true)
-	@OneToMany()
-	@JoinColumn(name = "item_id")
-	private Collection<ItemReturn> itemReturns = new HashSet<ItemReturn>();
-
 	public Long getDurationSeconds() {
 		Long secs = 0L;
-		for (SaleItem si : this.getSaleItems()) {
-			for (ScheduleEvent se : si.getScheduleEvents()) {
-				secs += se.getDurationSeconds();
+		for(ItemPackaging ip: this.getItemPackagings()) {
+			for (SaleItem si : ip.getSaleItems()) {
+				for (ScheduleEvent se : si.getScheduleEvents()) {
+					secs += se.getDurationSeconds();
+				}
 			}
 		}
 		return secs;
@@ -120,9 +104,9 @@ public class Item extends BaseEntity {
 	
 	public Long getUnitsReceived() {
 		Long units = 0L;
-		for(ItemReturn ir: this.getItemReturns()) {
-			units += ir.getUnitsReceived();
-		}
+//		for(ItemReturn ir: this.getItemReturns()) {
+//			units += ir.getUnitsReceived();
+//		}
 		return units;
 	}
 	
@@ -133,11 +117,13 @@ public class Item extends BaseEntity {
 		Long average = 0L;
 		Long schedules = 0L;
 		BigDecimal perf = BigDecimal.ZERO;
-		for(SaleItem si: this.getSaleItems()) {
-			for(ScheduleEvent se: si.getScheduleEvents()) {
-				if(se.getFinishTime()!=null) {
-					average += se.getPerformance();
-					schedules++;
+		for(ItemPackaging ip: this.getItemPackagings()) {
+			for(SaleItem si: ip.getSaleItems()) {
+				for(ScheduleEvent se: si.getScheduleEvents()) {
+					if(se.getFinishTime()!=null) {
+						average += se.getPerformance();
+						schedules++;
+					}
 				}
 			}
 		}
@@ -147,57 +133,48 @@ public class Item extends BaseEntity {
 		return perf.longValue();
 	}
 
-	public void updateUnitsReadyProd() {
-		this.unitsReadyProd = 1000000000;
-		if(this.getItemComponents().size()==0) {
-			this.unitsReadyProd = 0;
-			return;
-		}
-		for (ItemComponent ic: this.getItemComponents()) {
-			long unitsLocked = this.getUnitsScheduled()-this.getUnitsProduced();
-			if(unitsLocked < 0) {
-				unitsLocked = 0;
-			}
-			long units = BigDecimal.valueOf(ic.getComponent().getUnitsOnStock() - unitsLocked).divide(ic.getUnits(),0, RoundingMode.CEILING).longValue();
-			if(units < this.unitsReadyProd) {
-				this.unitsReadyProd = units<0?0:units;
-			}
-		}
-	}
+//	public void updateUnitsReadyProd() {
+//		this.unitsReadyProd = 1000000000;
+//		if(this.getItemComponents().size()==0) {
+//			this.unitsReadyProd = 0;
+//			return;
+//		}
+//		for (ItemComponent ic: this.getItemComponents()) {
+//			long unitsLocked = this.getUnitsScheduled()-this.getUnitsProduced();
+//			if(unitsLocked < 0) {
+//				unitsLocked = 0;
+//			}
+//			long units = BigDecimal.valueOf(ic.getComponent().getUnitsOnStock() - unitsLocked).divide(ic.getUnits(),0, RoundingMode.CEILING).longValue();
+//			if(units < this.unitsReadyProd) {
+//				this.unitsReadyProd = units<0?0:units;
+//			}
+//		}
+//	}
 	
 	public void updateUnits() {
 		this.unitsSold = 0;
+		this.unitsAdjusted = 0;
+		this.salesNotAssigned = 0;
+		this.unitsNotAssigned = 0;		
 		this.unitsScheduled = 0;
 		this.unitsProduced = 0;
 		this.unitsShipped = 0;
-		this.unitsReturned = 0;
-		this.unitsAdjusted = 0;
 		this.unitsOnStock = 0;
-		this.unitsOverstock = 0;
-		for(ItemReturn ir: this.getItemReturns()) {
-			ir.updateUnits();
+		this.unitsOnFloor = 0;
+		this.unitsShort = 0;
+		for(ItemPackaging ip: this.getItemPackagings()) {
+			ip.updateUnits();
+			this.unitsSold += ip.getUnitsSold();
+			this.unitsAdjusted += ip.getUnitsAdjusted();
+			this.salesNotAssigned += ip.getSalesNotAssigned();
+			this.unitsNotAssigned += ip.getUnitsNotAssigned();
+			this.unitsScheduled += ip.getUnitsScheduled();
+			this.unitsProduced += ip.getUnitsProduced();
+			this.unitsShipped += ip.getUnitsShipped();
+			this.unitsOnStock += ip.getUnitsOnStock();
+			this.unitsOnFloor += ip.getUnitsOnFloor();
+			this.unitsShort += ip.getUnitsShort();
 		}
-		for (SaleItem sa : this.getSaleItems()) {
-			sa.updateUnits();
-			this.unitsReturned += sa.getUnitsReturned();
-			if(!sa.getSale().isCancelled()) {
-				this.unitsSold += sa.getUnits();
-			}
-			this.unitsScheduled += sa.getUnitsScheduled();
-			this.unitsProduced += sa.getUnitsProduced();
-			this.unitsShipped += sa.getUnitsShipped();
-			this.unitsAdjusted += sa.getUnitsAdjusted();
-			this.unitsOnStock += sa.getUnitsOnStock();
-			this.unitsOverstock += sa.getUnitsOverstock();
-		}
-//		this.unitsOnStock = this.unitsProduced + this.unitsReturned - this.unitsShipped;
-//		if(this.unitsOnStock < 0) {
-//			this.unitsOnStock = 0;
-//		}
-//		this.unitsOverstock = this.unitsProduced + this.unitsReturned - (this.unitsSold + this.unitsAdjusted);
-//		if(this.unitsOverstock < 0) {
-//			this.unitsOverstock = 0;
-//		}
-		this.updateUnitsReadyProd();
+//		this.updateUnitsReadyProd();
 	}
 }

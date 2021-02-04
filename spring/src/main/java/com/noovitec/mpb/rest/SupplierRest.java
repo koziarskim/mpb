@@ -44,13 +44,13 @@ class SupplierRest {
 	}
 
 	@GetMapping("/supplier/pageable")
-	Page<SupplierDto> getAllPageable(@RequestParam(name = "pageable", required = false) Pageable pageable,
-			@RequestParam(name = "searchKey", required = false) String searchKey) {
+	Page<SupplierDto> getAllPageable(@RequestParam(required = false) Pageable pageable,
+			@RequestParam(required = false) String supplierName) {
 		Page<Supplier> suppliers = null;
-		if (searchKey == null || searchKey.trim().length() == 0) {
+		if (supplierName == null || supplierName.trim().length() == 0) {
 			suppliers = supplierRepo.findPage(pageable);
 		} else {
-			suppliers = supplierRepo.findPageBySupplier(pageable, searchKey);
+			suppliers = supplierRepo.findPageBySupplier(pageable, supplierName);
 		}
 		if (suppliers == null) {
 			return Page.empty();

@@ -75,7 +75,7 @@ import router from "../router";
 import moment from "moment";
 
 export default {
-  name: "edit-component",
+  name: "ComponentList",
   data() {
     return {
       pageable: {totalElements: 100, currentPage: 1, perPage: 25, sortBy: 'number', sortDesc: true},
@@ -89,7 +89,7 @@ export default {
         { key: "categoryName", label: "Category", sortable: false },
         { key: "componentTypeName", label: "Type", sortable: false },
         { key: "supplierName", label: "Supplier", sortable: false },
-        { key: "unitsOnStock", label: "Stock", sortable: false },
+        { key: "unitsOnStock", label: "Floor", sortable: false },
         { key: "unitsForSale", label: "Sales", sortable: false },
         { key: "unitsSchedProd", label: "Sched/Prod", sortable: false },
         { key: "unitsOrderedRec", label: "PO/Received", sortable: false },
@@ -248,11 +248,14 @@ export default {
     }
   },
   mounted() {
-    this.getComponents();
+    // this.getComponents();
     this.getAvailableSuppliers();
     this.getAvailableItems();
     this.getAvailableCategories();
     this.getAvailableComponentTypes();
+  },
+  activated(){
+    this.getComponents();
   }
 };
 </script>

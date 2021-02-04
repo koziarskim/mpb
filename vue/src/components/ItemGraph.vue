@@ -118,7 +118,7 @@ export default {
 				if(!se.startTime){
 					return;
 				}
-				var startDate = moment(se.schedule.date +" "+ se.startTime, 'YYYY-MM-DD HH:mm:ss');
+				var startDate = moment(se.date +" "+ se.startTime, 'YYYY-MM-DD HH:mm:ss');
 				var prevTime = moment(se.startTime, 'HH:mm:ss');
 				var tooltipLabel = "Started at "+ moment(se.startTime, 'HH:mm:ss').format('HH:mm');
 				var data = [{x: startDate, y: 0, tooltipLabel: tooltipLabel}];
@@ -130,7 +130,7 @@ export default {
 					var time = moment().startOf('day').seconds(secs).format('HH:mm:ss')
 					var perf = !secs?0:((p.unitsProduced/secs)*3600).toFixed(0);
 					var tooltipLabel= "SO: "+se.saleItem.sale.number+", "+ perf+" u/h (" +p.unitsProduced+" units in "+time+")"
-					data.push({x: moment(se.schedule.date +" "+ p.finishTime, 'YYYY-MM-DD HH:mm:ss'), y: perf, tooltipLabel: tooltipLabel});
+					data.push({x: moment(se.date +" "+ p.finishTime, 'YYYY-MM-DD HH:mm:ss'), y: perf, tooltipLabel: tooltipLabel});
 					prevTime = moment(p.finishTime, 'HH:mm:ss');
 				})
 				this.chartData.datasets.push({

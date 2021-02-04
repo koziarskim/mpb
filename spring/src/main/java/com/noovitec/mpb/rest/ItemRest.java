@@ -1,14 +1,20 @@
 package com.noovitec.mpb.rest;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
+import java.util.Locale;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +22,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,22 +39,34 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.pdf.PdfReader;
+import com.itextpdf.text.pdf.PdfSmartCopy;
+import com.itextpdf.text.pdf.PdfStamper;
 import com.noovitec.mpb.dto.ItemDto;
 import com.noovitec.mpb.dto.ItemListDto;
 import com.noovitec.mpb.dto.ItemTreeDto;
 import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.dto.ScheduleEventTreeDto;
 import com.noovitec.mpb.entity.Attachment;
+import com.noovitec.mpb.entity.Customer;
 import com.noovitec.mpb.entity.Item;
 import com.noovitec.mpb.entity.ItemComponent;
+import com.noovitec.mpb.entity.ItemPackaging;
+import com.noovitec.mpb.entity.Packaging;
+import com.noovitec.mpb.entity.SaleItem;
 import com.noovitec.mpb.entity.ScheduleEvent;
 import com.noovitec.mpb.entity.Season;
+import com.noovitec.mpb.repo.ItemPackagingRepo;
 import com.noovitec.mpb.repo.ItemRepo;
+import com.noovitec.mpb.repo.PackagingRepo;
 import com.noovitec.mpb.repo.ScheduleEventRepo;
 import com.noovitec.mpb.repo.SeasonRepo;
 import com.noovitec.mpb.repo.UpcRepo;
 import com.noovitec.mpb.service.AttachmentService;
 import com.noovitec.mpb.service.ComponentService;
+import com.noovitec.mpb.service.CrudService;
 import com.noovitec.mpb.service.CustomerService;
 import com.noovitec.mpb.service.ItemService;
 import com.noovitec.mpb.service.PurchaseService;
@@ -75,6 +96,12 @@ class ItemRest {
 	private AttachmentService attachmentService;
 	@Autowired
 	private PurchaseService purchaseService;
+	@Autowired
+	private PackagingRepo packagingRepo;
+	@Autowired
+	private CrudService crudService;
+	@Autowired
+	private ItemPackagingRepo itemPackagingRepo;
 	
 	private ItemService itemService;
 	private final Logger log = LoggerFactory.getLogger(ItemRest.class);
@@ -100,7 +127,6 @@ class ItemRest {
 		dto.setUnitsAdjusted(item.getUnitsAdjusted());
 		dto.setUnitsOnStock(item.getUnitsOnStock());
 		dto.setUnitsProduced(item.getUnitsProduced());
-		dto.setUnitsReturned(item.getUnitsReturned());
 		dto.setUnitsScheduled(item.getUnitsScheduled());
 		dto.setUnitsShipped(item.getUnitsShipped());
 		dto.setUnitsSold(item.getUnitsSold());
@@ -129,13 +155,17 @@ class ItemRest {
 			dto.setCategory(item.getCategory() == null ? "" : item.getCategory().getName());
 			dto.setUnitsOnStock(item.getUnitsOnStock());
 			dto.setUnitsSold(item.getUnitsSold());
+			dto.setSalesNotAssigned(item.getSalesNotAssigned());
 			dto.setUnitsScheduled(item.getUnitsScheduled());
 			dto.setUnitsProduced(item.getUnitsProduced());
 			dto.setUnitsShipped(item.getUnitsShipped());
-			dto.setUnitsReadyProd(item.getUnitsReadyProd());
+//			dto.setUnitsReadyProd(item.getUnitsReadyProd());
 			dto.setPerformance(item.getPerformance());
-			dto.setUnitsOverstock(item.getUnitsOverstock());
 			dto.setUnitsAdjusted(item.getUnitsAdjusted());
+			dto.setUnitsOnFloor(item.getUnitsProduced() - item.getUnitsShipped());
+			dto.setUnitsNotAssigned(item.getUnitsNotAssigned());
+			dto.setUnitsShort(item.getUnitsShort());
+			dto.setNumPackagings(item.getItemPackagings().size());
 			return dto;
 		});
 		return dtos;
@@ -143,8 +173,8 @@ class ItemRest {
 
 	@GetMapping("/item/{id}")
 	ResponseEntity<?> get(@PathVariable Long id) {
-		Optional<Item> item = itemRepo.findById(id);
-		return item.map(response -> ResponseEntity.ok().body(response)).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+		Item item = itemRepo.findById(id).get();
+		return ResponseEntity.ok().body(item);
 	}
 
 	@GetMapping("/item/number/season/{season_id}")
@@ -168,15 +198,15 @@ class ItemRest {
 		List<ItemTreeDto> dtos = new ArrayList<ItemTreeDto>();
 		List<ScheduleEvent> events = scheduleEventRepo.findByDate(date);
 		for (ScheduleEvent se : events) {
-			ItemTreeDto itemDto = dtos.stream().filter(existingDto -> existingDto.getId().equals(se.getSaleItem().getItem().getId())).findAny().orElse(null);
+			ItemTreeDto itemDto = dtos.stream().filter(existingDto -> existingDto.getId().equals(se.getItemPackaging().getItem().getId())).findAny().orElse(null);
 			if (itemDto == null) {
 				itemDto = new ItemTreeDto();
-				itemDto.setId(se.getSaleItem().getItem().getId());
-				itemDto.setName(se.getSaleItem().getItem().getName());
-				itemDto.setUnitsOnStock(se.getSaleItem().getItem().getUnitsOnStock());
-				itemDto.setTotalSold(se.getSaleItem().getItem().getUnitsSold());
-				itemDto.setTotalProduced(se.getSaleItem().getItem().getUnitsProduced());
-				itemDto.setTotalSeconds(se.getSaleItem().getItem().getDurationSeconds());
+				itemDto.setId(se.getItemPackaging().getItem().getId());
+				itemDto.setName(se.getItemPackaging().getItem().getName());
+				itemDto.setUnitsOnStock(se.getItemPackaging().getItem().getUnitsOnStock());
+				itemDto.setTotalSold(se.getItemPackaging().getItem().getUnitsSold());
+				itemDto.setTotalProduced(se.getItemPackaging().getItem().getUnitsProduced());
+				itemDto.setTotalSeconds(se.getItemPackaging().getItem().getDurationSeconds());
 				dtos.add(itemDto);
 			}
 			itemDto.setDailyScheduled(itemDto.getDailyScheduled() + se.getUnitsScheduled());
@@ -184,16 +214,20 @@ class ItemRest {
 			itemDto.setDailySeconds(itemDto.getDailySeconds() + se.getDurationSeconds());
 			ScheduleEventTreeDto eventDto = new ScheduleEventTreeDto();
 			eventDto.setId(se.getId());
-			eventDto.setCustomerName(se.getSaleItem().getSale().getCustomer().getName());
-			eventDto.setSaleNumber(se.getSaleItem().getSale().getNumber());
+			if(se.getSaleItem()!=null) {
+				eventDto.setCustomerName(se.getSaleItem().getSale().getCustomer().getName());
+				eventDto.setSaleNumber(se.getSaleItem().getSale().getNumber());
+				eventDto.setUnitsSold(se.getSaleItem().getSale().getUnitsSold());
+				eventDto.setSaleTotalProduced(se.getSaleItem().getSale().getUnitsProduced());
+			}
 			eventDto.setLineNumber(String.valueOf(se.getLine().getNumber()));
-			eventDto.setUnitsSold(se.getSaleItem().getSale().getUnitsSold());
-			eventDto.setSaleTotalProduced(se.getSaleItem().getSale().getUnitsProduced());
 			eventDto.setDailyScheduled(se.getUnitsScheduled());
 			eventDto.setDailyProduced(se.getUnitsProduced());
 			eventDto.setDailySeconds(se.getDurationSeconds());
 			eventDto.setDailyPeople(se.getTotalPeople());
-			itemDto.setTotalPeople(itemDto.getTotalPeople() + eventDto.getDailyPeople());
+			if(eventDto.getDailyPeople() > itemDto.getTotalPeople()) {
+				itemDto.setTotalPeople(eventDto.getDailyPeople());
+			}
 			itemDto.getEvents().add(eventDto);
 		}
 		return dtos;
@@ -202,6 +236,13 @@ class ItemRest {
 	@PostMapping("/item")
 	ResponseEntity<?> postItemAndAttachment(@RequestParam(required = false) MultipartFile image, @RequestParam String jsonItem) throws JsonParseException, JsonMappingException, IOException, URISyntaxException {
 		Item item = objectMapper.readValue(jsonItem, Item.class);
+		for(ItemComponent ic: item.getItemComponents()) {
+			ic.setItem(item);
+		}
+		for(ItemPackaging ip: item.getItemPackagings()) {
+			ip.setItem(item);
+		}
+		
 		if(!item.getNumber().matches("^[a-zA-Z0-9\\-]{1,15}$")) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Component Number is invalid. Alphanumeric and hyphen only allowed. Maximum 15 characters.");
 		}
@@ -209,7 +250,7 @@ class ItemRest {
 		if((item.getId()==null && id !=null) || (item.getId()!=null && id !=null && !item.getId().equals(id))) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Component Number already exists. Please, choose differrent.");
 		}
-		item = itemService.save(item);
+		item = itemRepo.save(item);
 		if(image!=null) {
 			Attachment attachment = attachmentService.store(image, Item.class.getSimpleName(), item.getId(), item.getAttachment());
 			item.setAttachment(attachment);
@@ -228,12 +269,12 @@ class ItemRest {
 	@DeleteMapping("/item/{id}")
 	public ResponseEntity<?> delete(@PathVariable Long id) {
 		Item item = itemRepo.findById(id).get();
-		if(item.getSaleItems().size()>0) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("There are existing Sales!");
-		}
-		if(item.getItemReturns().size()>0) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("There are existing Returns!");
-		}
+//		if(item.getSaleItems().size()>0) {
+//			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("There are existing Sales!");
+//		}
+//		if(item.getItemReturns().size()>0) {
+//			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("There are existing Returns!");
+//		}
 		itemService.delete(id);
 		return ResponseEntity.ok().build();
 	}
@@ -256,10 +297,90 @@ class ItemRest {
 			saleService.updateUnits(null);
 			itemService.updateUnitsReadyProd(null);
 			purchaseService.updateUnits(null);
+			log.info("Done updating item units!");
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 		return ResponseEntity.ok().body("OK");
 	}
+	
+	@GetMapping("/item/{id}/checklist/pdf")
+	HttpEntity<byte[]> getChecklistPdf(@PathVariable Long id) throws DocumentException, IOException {
+		Item item = itemRepo.findById(id).get();
+		String fileName = "Checklist_"+item.getNumber()+".pdf";
+		byte[] data = this.generateChecklistPdf(item);
+		HttpHeaders header = new HttpHeaders();
+		header.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+		header.set("content-disposition", "inline; filename=" + fileName);
+		header.set("file-name", fileName);
+		header.setContentLength(data.length);
+		return new HttpEntity<byte[]>(data, header);
+	}
+	
+	private byte[] generateChecklistPdf(Item item) throws IOException, DocumentException {
+	    Document doc = new Document();
+	    ByteArrayOutputStream mainBaos = new ByteArrayOutputStream();
+	    PdfSmartCopy copy = new PdfSmartCopy(doc, mainBaos);
+	    doc.open();
+		InputStream in = this.getClass().getClassLoader().getResourceAsStream("pdf/Checklist.pdf");
+		PdfReader mainReader = new PdfReader(in);
+		DecimalFormat df = (DecimalFormat) NumberFormat.getInstance(Locale.US);
+		List<SaleItem> saleItems = itemService.findSaleItemsForChecklist(item.getId());
+		int customerCount = 0;
+		int customersPerPage = 7;
+		Map<Customer, List<SaleItem>> customerMap = new HashMap<Customer, List<SaleItem>>();
+		for(SaleItem saleItem: saleItems) {
+			Customer customer = saleItem.getSale().getCustomer();
+			List<SaleItem> customerSaleItems = customerMap.get(customer);
+			if(customerSaleItems == null) {
+				customerSaleItems = new ArrayList<SaleItem>();
+			}
+			customerSaleItems.add(saleItem);
+			customerMap.put(customer, customerSaleItems);
+		}
+		int pages = (int) Math.ceil((double) customerMap.size()/customersPerPage);
+		for (int i=0; i<pages; i++) {
+	    	PdfReader reader = new PdfReader(mainReader);
+	        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+	        PdfStamper stamper = new PdfStamper(reader, baos);
+	        stamper.getAcroFields().setField("itemNumber", item.getNumber()+" - "+item.getName());
+	        for (int c=1; c<=customersPerPage; c++) {
+	        	if(customerCount<customerMap.size()) {
+			        Customer customer = (Customer) customerMap.keySet().toArray()[customerCount];
+			        String customerName = customer.getName();
+			        stamper.getAcroFields().setField("customerName"+c, customerName);
+			        stamper.getAcroFields().setField("priceSticker"+c, customer.isPriceTicket()?"Yes":"No");
+			        String cartonLabelType = "---";
+			        if(customer.isCartonLabel()) {
+			        	cartonLabelType = customer.isEdi()?"EDI":"MIMS";
+			        }
+			        stamper.getAcroFields().setField("cartonLabelType"+c, cartonLabelType);
+			        stamper.getAcroFields().setField("palletTagType"+c,  customer.getPalletTagType());
+			        long units = 0;
+			        String cartonTypes = "";
+			        for(SaleItem si: customerMap.get(customer)) {
+			        	units += (si.getUnits() + si.getUnitsAdjusted() - si.getUnitsAssigned());
+			        	String cartonType = Packaging.TYPE.valueOf(si.getItemPackaging().getPackaging().getType()).label();
+			        	if(cartonTypes.indexOf(cartonType) == -1) {
+			        		cartonTypes += cartonType+"\n";
+			        	}
+			        }
+			        stamper.getAcroFields().setField("unitsToProduce"+c, df.format(units));
+			        stamper.getAcroFields().setField("cartonType"+c, cartonTypes);
+			        customerCount++;
+		        }
+	        }
+	        stamper.setFormFlattening(true);
+	        stamper.close();
+	        reader = new PdfReader(baos.toByteArray());
+	        copy.addPage(copy.getImportedPage(reader, 1));
+	        reader.close();
+	        baos.close();
+	    };
+	    doc.close();
+	    return mainBaos.toByteArray();
+	}
+
+
 }

@@ -71,14 +71,13 @@ class CustomerRest {
 	}
 
 	@GetMapping("/customer/pageable")
-	Page<CustomerDto> getAllPageable(@RequestParam(name = "pageable", required = false) Pageable pageable, 
-			@RequestParam(name = "searchKey", required = false) String searchKey,
-			@RequestParam(name = "searchType", required = false) String searchType) {
+	Page<CustomerDto> getAllPageable(@RequestParam(required = false) Pageable pageable, 
+			@RequestParam(required = false) String customerName) {
 		Page<Customer> customers = null;
-		if(searchType==null || searchType.isBlank() || searchKey==null || searchKey.isBlank()) {
+		if (customerName == null || customerName.trim().length() == 0) {
 			customers = customerRepo.findPage(pageable);
-		}else if(searchType.equals("customer") && !searchKey.isBlank()) {
-			customers = customerRepo.findPageByCustomer(pageable, searchKey);
+		}else {
+			customers = customerRepo.findPageByCustomer(pageable, customerName);
 		}
 		if(customers == null) {
 			 return Page.empty();

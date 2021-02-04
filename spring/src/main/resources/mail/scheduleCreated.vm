@@ -1,6 +1,7 @@
 
   Schedule has been created.
   Item: $itemNumber
+  Packaging: $packagingLabel
   Sale: $saleNumber
   Customer: $customerName
   ----------------------------------------------

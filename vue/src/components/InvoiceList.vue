@@ -1,13 +1,12 @@
 <template>
     <b-container fluid>
+      <div class="mpb-page-info">Accounting > Invoice List</div>
       <b-row style="font-size: 12px">
-        <b-col cols=1 style="margin-right: -45px;">
           <b-button id="filterMenu" size="sm" @click="showFilterMenu = true">Filter</b-button>
           <b-popover :show="showFilterMenu" placement="bottom" target="filterMenu" variant="secondary">
             <template v-slot:title>
               <span>Advanced Filters</span>
-              <b-button style="margin-left: 185px" size="sm" @click="searchFilterMenu()">Search</b-button>
-              <b-button style="margin-left: 10px" size="sm" @click="clearFilterMenu()">Clear</b-button>
+              <b-button style="margin-left: 220px" size="sm" @click="searchFilterMenu()">Search</b-button>
             </template>
             <div style="width: 400px">
                 <b-row>
@@ -22,34 +21,31 @@
                 </b-row>
             </div>
           </b-popover>
-        </b-col>      
-        <b-col cols=2>
-          <input class="form-control" style="font-size: 12px" type="tel" v-model="invoiceNumber" @keyup.enter="getInvoices()" placeholder="Invoice"/>
-        </b-col>
-        <b-col cols=2>
-          <b-select option-value="id" option-text="name" :list="availableSales" v-model="saleKv" placeholder="Sale"></b-select>
-        </b-col>
-        <b-col cols=2>
-          <b-select option-value="id" option-text="name" :list="availableItems" v-model="itemKv" placeholder="Item"></b-select>
-        </b-col>
-        <b-col cols=2>
-          <b-select option-value="id" option-text="name" :list="availableCustomers" v-model="customerKv" placeholder="Customer"></b-select>
-        </b-col>
-        <b-col cols=2>
-          <b-select option-value="id" option-text="name" :list="availableShipments" v-model="shipmentKv" placeholder="Shipment"></b-select>
-        </b-col>
+          <b-button style="margin-left: 3px" size="sm" @click="clearFilterMenu()">Clear</b-button>
+          <input class="form-control" style="font-size: 12px; width: 150px; margin-left: 15px" type="tel" v-model="invoiceNumber" @keyup.enter="getInvoices()" placeholder="Invoice"/>
+          <b-select style="width: 150px; margin-left: 15px" option-value="id" option-text="name" :list="availableSales" v-model="saleKv" placeholder="Sale"></b-select>
+          <b-select style="width: 150px; margin-left: 15px" option-value="id" option-text="name" :list="availableItems" v-model="itemKv" placeholder="Item"></b-select>
+          <b-select style="width: 150px; margin-left: 15px" option-value="id" option-text="name" :list="availableCustomers" v-model="customerKv" placeholder="Customer"></b-select>
+          <b-select style="width: 150px; margin-left: 15px" option-value="id" option-text="name" :list="availableShipments" v-model="shipmentKv" placeholder="Shipment"></b-select>
+          <b-select style="width: 100px; margin-left: 15px" option-value="id" option-text="name" :list="availableSent" v-model="filterSent" placeholder="Sent"></b-select>
+          <div style="margin-left: 15px">
+            <b-button id="totalsMenu" size="sm" @click="toggleTotals()">Totals</b-button>
+            <b-popover :show="showTotalsMenu" placement="bottom" target="totalsMenu" variant="secondary">
+              <div style="width: 300px; font-size: 16px">
+                <div>Total invoices: {{pageable.totalElements}}</div>
+                <div>Total invoiced: ${{parseFloat(totalInvoiced).toLocaleString('en-US',{minimumFractionDigits: 2})}}</div>
+                <div>Total paid: ${{parseFloat(totalPaid).toLocaleString('en-US',{minimumFractionDigits: 2})}}</div>
+              </div>
+            </b-popover>
+          </div>
+          <b-button style="margin-left: 50px" type="submit" :disabled="true" variant="primary" size="sm" @click="goToInvoice('')">New</b-button>
       </b-row>
       <b-table :items="invoices" :fields="fields" no-local-sorting>
         <template v-slot:cell(number)="row">
-            <b-button variant="link" :id="'popover-number'+row.item.id" @click="showPopover(row.item)">{{row.item.number}}</b-button>
-            <b-popover placement="bottomright" :target="'popover-number'+row.item.id" triggers="focus" variant="primary">
-              <template v-slot:title>
-                <b-button size="sm" @click="goToInvoice(row.item.id)" variant="link">View/Edit Details</b-button>
-              </template>
-              <div v-for="ii in row.item.invoiceItems" :key="ii.id">
-                <div>Sale: {{ii.saleItem.sale.number}}, Item: {{ii.saleItem.item.number}} {{ii.saleItem.item.name}}, Units: {{ii.unitsInvoiced}}, Price: {{ii.unitPrice}}</div>
-              </div>
-            </b-popover>
+            <b-button size="sm" @click="goToInvoice(row.item.id)" variant="link">{{row.item.number}}</b-button>
+        </template>
+        <template v-slot:cell(totalAmount)="row">
+          <span>${{parseFloat(row.item.totalAmount).toLocaleString('en-US',{minimumFractionDigits: 2})}}</span>
         </template>
         <template v-slot:cell(sent)="row">
           <span>{{row.item.sent?'Yes':'No'}}</span>
@@ -68,17 +64,19 @@ import securite from "../securite"
 import navigation from "../utils/navigation";
 
 export default {
+  name: "InvoiceList",
   data() {
     return {
       securite: securite,
       navigation: navigation,
-      pageable: {totalElements: 100, currentPage: 1, perPage: 25, sortBy: 'date', sortDesc: false},
+      pageable: {totalElements: 100, currentPage: 1, perPage: 25, sortBy: 'updated', sortDesc: true},
       fields: [
         { key: "number", label: "Invoice #", sortable: false },
         { key: "date", label: "Date", sortable: false },
         { key: "customerName", label: "Customer", sortable: false },
         { key: "shipmentNumber", label: "Shipment", sortable: false },
         { key: "type", label: "Type", sortable: false },
+        { key: "totalAmount", label: "Total", sortable: false },
         { key: "sent", label: "Sent", sortable: false },
         { key: "action", label: "", sortable: false}
       ],
@@ -93,10 +91,18 @@ export default {
       itemKv: {},
       invoiceNumber: "",
       showFilterMenu: false,
+      totalInvoiced: 0,
+      totalPaid: 0,
+      availableSent: [
+        {id: "YES", name: "Yes"},
+        {id: "NO", name: "No"},
+      ],
+      filterSent: {},
       filter: {
         invoiceFrom: null,
         invoiceTo: null,
       },
+      showTotalsMenu: false,
     };
   },
   watch: {
@@ -112,8 +118,17 @@ export default {
     itemKv(newValue, oldValue){
       this.getInvoices();
     },
+    filterSent(newValue, oldValue){
+      this.getInvoices();
+    },
   },
   methods: {
+    toggleTotals(){
+      if(!this.showTotalsMenu){
+        this.getInvoices(true);
+      }
+      this.showTotalsMenu = !this.showTotalsMenu;
+    },
     showPopover(dto){
       this.getInvoice(dto.id).then(invoice => {
         dto.invoiceItems = invoice.invoiceItems;
@@ -124,32 +139,37 @@ export default {
       this.showFilterMenu = false;
     },
     clearFilterMenu(){
-      this.filter.invoiceFrom = null;
-      this.filter.invoiceTo = null;
-      this.getInvoices();
-      this.showFilterMenu = false;
+      router.go();
     },      
     paginationChange(page){
         this.pageable.currentPage = page;
         this.getInvoices();
     },
-	  getInvoices() {
+	  getInvoices(totals) {
+      this.showTotalsMenu = false;
       var query = {params: {
         pageable: this.pageable,
+        totals: totals,
         invoiceNumber: this.invoiceNumber,
         itemId: this.itemKv.id,
         saleId: this.saleKv.id,
         customerId: this.customerKv.id,
         shipmentId: this.shipmentKv.id,
         invoiceFrom: this.filter.invoiceFrom,
-        invoiceTo: this.filter.invoiceTo
+        invoiceTo: this.filter.invoiceTo,
+        sent: this.filterSent.id,
       }}
       http.get("/invoice/pageable", query).then(r => {
-        r.data.content.forEach(dto => {
-          dto.invoiceItems = []
-        })
-        this.invoices = r.data.content;
-        this.pageable.totalElements = r.data.totalElements;
+        if(totals){
+          this.totalInvoiced = r.data.content[0][0];
+          this.totalPaid = r.data.content[0][1];
+        } else {
+          r.data.content.forEach(dto => {
+            dto.invoiceItems = []
+          })
+          this.invoices = r.data.content;
+          this.pageable.totalElements = r.data.totalElements;
+        }
       }).catch(e => {
         console.log("API error: "+e);
       });
@@ -184,11 +204,14 @@ export default {
     },
   },
   mounted() {
-    this.getInvoices();
+    // this.getInvoices();
     this.getAvailableItems();
     this.getAvailableSales();
     this.getAvailableCustomers();
     this.getAvailableShipments();
+  },
+  activated(){
+    this.getInvoices();
   }
 };
 </script>

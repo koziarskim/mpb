@@ -1,62 +1,66 @@
 <template>
     <b-container fluid>
-      <b-row style="padding-bottom: 4px; font-size: 12px">
-        <b-col cols=1>
-          <b-form-checkbox size="sm" v-model="itemView">Item View</b-form-checkbox>
-        </b-col>
-        <b-col cols=2>
-          <input class="form-control" style="font-size: 12px" type="tel" v-model="saleNumber" @keyup.enter="getSales()" placeholder="Sale"/>
-        </b-col>
-        <b-col cols="2">
-          <b-select option-value="id" option-text="name" :list="availableItems" v-model="itemKv" placeholder="Item"></b-select>
-        </b-col>
-        <b-col cols="2">
-          <b-select option-value="id" option-text="name" :list="availableCustomers" v-model="customerKv" placeholder="Customer"></b-select>
-        </b-col>
-        <b-col cols="2">
-          <b-select option-value="id" option-text="name" :list="availableStatus" v-model="statusKv" placeholder="Status"></b-select>
-        </b-col>
-        <b-col>
-          <div style="text-align: right;">
-          <b-button type="submit" variant="primary" size="sm" @click="goToSale('')">New S.O.</b-button>
-          <b-button size="sm" style="margin-left:3px" variant="primary" @click="exportSelected()">Export ({{selectedSales.length}})</b-button>          
+      <div class="mpb-page-info">Sale > Sale List</div>
+      <b-row style="font-size: 12px">
+          <input style="width: 150px; margin-left: 7px; font-size: 12px" class="form-control" type="tel" v-model="saleNumber" @keyup.enter="getSales()" placeholder="Sale"/>
+          <b-select style="width: 200px; margin-left: 7px" option-value="id" option-text="name" :list="availableItems" v-model="itemKv" placeholder="Item"></b-select>
+          <b-select style="width: 200px; margin-left: 7px" option-value="id" option-text="name" :list="availableCustomers" v-model="customerKv" placeholder="Customer"></b-select>
+          <b-select style="width: 150px; margin-left: 7px" option-value="id" option-text="name" :list="availableStatus" v-model="statusKv" placeholder="Status"></b-select>
+          <b-select style="width: 150px; margin-left: 7px" option-value="id" option-text="name" :list="availableCustomFilters" v-model="customFilterKv" placeholder="Custom Filter"></b-select>
+          <div style="margin-left: 7px">
+            <label class="top-label">Show All</label><br/>
+            <input type="checkbox" style="margin-left: 20px" v-model="showAll">
           </div>
-        </b-col>
+          <div style="margin-left: 7px">
+            <b-button id="totalsMenu" size="sm" @click="toggleTotals()">Totals</b-button>
+            <b-popover :show="showTotalsMenu" placement="bottom" target="totalsMenu" variant="secondary">
+              <div style="width: 300px; font-size: 16px">
+                <div>Total of {{pageable.totalElements}} rows</div>
+                <div>Total Sold & Adj: {{totalSold}}</div>
+                <div>Total amount: ${{totalAmount.toLocaleString('en-US',{minimumFractionDigits: 2})}}</div>
+              </div>
+            </b-popover>
+          </div>
+          <div style="margin-left:3px">
+            <b-button id="sortMenu" size="sm">Sort</b-button>
+            <b-popover :show="showSortMenu" @click="showSortMenu = !showSortMenu" placement="bottom" target="sortMenu" variant="secondary">
+              <div style="width: 300px; font-size: 16px">
+                <b-button variant="link" @click="toggleSortTotals('shippingFrom', false)">Ship latest first</b-button><br/>
+                <b-button variant="link" @click="toggleSortTotals('shippingFrom', true)">Ship earliest first</b-button>
+              </div>
+            </b-popover>
+          </div>
+          <div>
+            <b-button style="margin-left:3px" type="submit" variant="primary" size="sm" @click="goToSale('')">New</b-button>
+            <b-button style="margin-left: 3px" type="submit" variant="primary" size="sm" @click="exportXls()">Export</b-button>
+            <b-dropdown style="width:50px; margin-left:3px" right size="sm" :text="selectedSales.length.toString()">
+              <b-dropdown-item-button @click="setFullyPaid()">Set Fully Paid</b-dropdown-item-button>
+            </b-dropdown>
+          </div>
       </b-row>
       <b-table :items="sales" :fields="fields" no-local-sorting @sort-changed="sorted">
-        <template v-slot:head(action)="row">
+        <!-- <template v-slot:head(action)="row">
           <div style="display: flex; width: 20px; margin-left: -25px">
             <b-button size="sm" @click="triggerAll(false)" variant="link">(-)</b-button><b-button size="sm" @click="triggerAll(true)" variant="link">(+)</b-button>
           </div>
-        </template>
+        </template> -->
         <template v-slot:cell(number)="row">
-            <b-button variant="link" :id="'popover-button-variant'+row.item.id" @click="showPopover(row.item)">{{row.item.number}}</b-button>
-            <b-popover placement="bottomright" :target="'popover-button-variant'+row.item.id" triggers="focus" variant="primary">
-              <template v-slot:title>
-                <b-button size="sm" @click="goToSale(row.item.id)" variant="link">View/Edit Details</b-button>
-              </template>
-              <div v-for="si in row.item.saleItems" :key="si.id">
-                <div>{{si.item.number}} - {{si.item.name}}, Sold: {{si.units}}, Produced: {{si.unitsProduced}}, Price: ${{si.unitPrice}}</div>
-              </div>
-            </b-popover>
+          <b-button size="sm" @click="goToSale(row.item.id)" variant="link">{{row.item.number}}</b-button>
         </template>
-        <template v-slot:cell(unitsSold)="row">
-            <span>{{row.item.unitsSold}}</span>
+        <template v-slot:cell(dc)="row">
+          <div style="width:150px; overflow: wrap; font-size: 12px">{{row.item.dc}}</div>
         </template>
         <template v-slot:cell(unitsSchProd)="row">
             <span>{{row.item.unitsScheduled}}/{{row.item.unitsProduced}}</span>
         </template>
-        <template v-slot:cell(unitsTransfered)="row">
-            <span>{{row.item.unitsTransferedTo}}-{{row.item.unitsTransferedFrom}}</span>
-        </template>
-        <template v-slot:cell(unitsStockShip)="row">
-            <b-button size="sm" @click=goToShipment(row.item.id) variant="link">{{row.item.unitsOnStock}}/{{row.item.unitsShipped}}</b-button>
+        <template v-slot:cell(unitsShipped)="row">
+            <b-button size="sm" @click=goToShipment(row.item.id) variant="link">{{row.item.unitsShipped}}</b-button>
         </template>
         <template v-slot:cell(status)="row">
             <b :class="getStatusClass(row.item.status)">{{getStatus(row.item.status)}}</b>
         </template>
         <template v-slot:cell(action)="row">
-          <input type="checkbox" v-model="selectedSales" :value="row.item">
+          <input type="checkbox" v-model="selectedSales" @input="toggleSaleSelected($event, row.item)" :value="row.item">
         </template>
       </b-table>
       <div style="display: flex">
@@ -72,6 +76,7 @@ import securite from "../securite"
 import navigation from "../utils/navigation";
 
 export default {
+  name: "SaleList",
   data() {
     return {
       securite: securite,
@@ -84,48 +89,96 @@ export default {
       customerKv: {},
       availableStatus: [
         {id: 'DRAFT', name: 'Draft'},
-        {id: 'PENDING_APPROVAL', name: 'Pending Approval'},
-        {id: 'APPROVED', name: 'Pending Schedule'},
-        {id: 'PENDING_PROD', name: 'Pending Prod'},
-        {id: 'PENDING_SHIPMENT', name: 'Pending Shipment'},
-        {id: 'SHIPPED', name: 'Fully Shipped'},
-        {id: 'CANCELLED', name: 'Cancelled'},
+        {id: 'READY', name: 'Ready'},
+        {id: 'APPROVED', name: 'Approved'},
+        {id: 'SCHEDULED', name: 'Scheduled'},
+        {id: 'PRODUCED', name: 'Produced'},
+        {id: 'ASSIGNED', name: 'Assigned'},
+        {id: 'SHIPPED', name: 'Shipped'},
+        {id: 'PAID', name: 'Paid'},
+        {id: 'CANCELED', name: 'Canceled'},
       ],
       statusKv: {},
-      itemView: false,
+      availableCustomFilters: [
+        {id: 'NOT_PAID', name: 'Not Paid'},
+        {id: 'PC_NOT_READY', name: 'PC Not Ready'},
+      ],
+      customFilterKv: {},
       fields: [
         { key: "number", label: "Sale #", sortable: false },
-        { key: "customerName", label: "Customer", sortable: false },
+        { key: "customerName", label: "Customer", sortable: true },
         { key: "dc", label: "DC (State)", sortable: false },
-        { key: "shippingWindow", label: "Ship Window", sortable: false },
+        { key: "shippingWindow", label: "Ship", sortable: false },
         { key: "unitsSold", label: "Sold", sortable: false },
+        { key: "unitsAdjusted", label: "Adj", sortable: false },
         { key: "unitsSchProd", label: "Sch/Prod", sortable: false },
-        { key: "unitsTransfered", label: "Transf", sortable: false },
-        { key: "unitsStockShip", label: "Stock/Ship", sortable: false },
+        { key: "unitsAssigned", label: "Assigned", sortable: false },
+        { key: "unitsShipped", label: "Shipped", sortable: false },
         { key: "status", label: "Status", sortable: false },
         { key: "action", label: "", sortable: false}
       ],
       sales: [], //SaleListDto
-      selectedSales: []
+      selectedSales: [],
+      showTotalsMenu: false,
+      showSortMenu: false,
+      totalSold: 0,
+      totalAmount: 0,
+      showAll: false
     };
   },
   watch: {
-    itemKv(old_value, new_value){
+    itemKv(new_value, old_value){
       this.getSales();      
     },
-    customerKv(old_value, new_value){
+    customerKv(new_value, old_value){
       this.getSales();      
     },
-    itemView(newValue, oldValue){
-      if(newValue==true){
-        navigation.goTo("/saleItemList/")
+    statusKv(new_value, old_value){
+      if(new_value.id == "PAID" || new_value.id == "CANCELLED"){
+        this.showAll = true;
       }
+      this.getSales();      
     },
-    statusKv(old_value, new_value){
+    customFilterKv(new_value, old_value){
+      this.getSales();      
+    },
+    showAll(new_value, old_value){
       this.getSales();      
     },
   },
   methods: {
+    toggleSaleSelected(e, sale){
+      if(sale.status != "SHIPPED"){
+        e.target.checked = false;
+      }
+    },
+    setFullyPaid(){
+      if(this.selectedSales.length == 0){
+        return;
+      }
+      this.$bvModal.msgBoxConfirm("Are you sure you want to update all Sales as Paid?").then(ok => {
+        if(ok){
+          var saleIds = [];
+          this.selectedSales.forEach(sale=> {
+            saleIds.push(sale.id);
+          })
+          http.put("/sale/paid", saleIds).then(r => {
+            this.getSales();
+            this.selectedSales = [];
+          }).catch(e => {console.log("API error: "+e);});  
+        }
+      })
+    },
+    toggleTotals(){
+      this.getSales(true);
+      this.showTotalsMenu = !this.showTotalsMenu;
+    },
+    toggleSortTotals(sortBy, sortDesc){
+      this.pageable.sortBy = sortBy;
+      this.pageable.sortDesc = sortDesc;
+      this.getSales();
+      this.showSortMenu = false;
+    },
     triggerAll(add){
       this.sales.forEach(sale => {
         if(add){
@@ -138,18 +191,33 @@ export default {
         }
       })
     },
-    exportSelected(){
-      var saleIds = [];
-      this.selectedSales.forEach(sale=> {
-        saleIds.push(sale.id);
-      })
-      http.put("/sale/xls", saleIds, { responseType: 'blob'}).then(r => {
+    getFilterParams(totals){
+      var params = {
+        pageable: this.pageable,
+        totals: totals, 
+        saleNumber: this.saleNumber, 
+        itemId: this.itemKv.id,
+        customerId: this.customerKv.id,
+        status: this.statusKv.id,
+        customFilter: this.customFilterKv.id,
+        showAll: this.showAll
+      }
+      return params;
+    },
+    exportXls(){
+      var pageable = this.pageable;
+      pageable.currentPage = 1;
+      pageable.perPage = pageable.totalElements;
+      var params = this.getFilterParams(false);
+      params.pageable = pageable;
+      http.get("/sale/xls", { responseType: 'blob', params: params}).then(r => {
         const url = URL.createObjectURL(new Blob([r.data], { type: r.headers['content-type']}))
         const link = document.createElement('a')
         link.href = url
         link.setAttribute("download", r.headers['file-name'])
         document.body.appendChild(link)
         link.click()
+        this.pageable.perPage = 25;
       }).catch(e => {
         console.log("API error: "+e);
       });
@@ -166,32 +234,32 @@ export default {
       return statusKv.name
     },
     showPopover(saleDto){
-      // this.sales.forEach(sale => sale.show = false)
       this.getSale(saleDto.id).then(sale => {
         saleDto.saleItems = sale.saleItems;
       })
     },
 	  sorted(e){
-      if(!e.sortBy){ return }
-      this.pageable.sortBy = e.sortBy;
-      this.pageable.sortDesc = e.sortDesc;
+      // if(!e.sortBy){ return }
+      // this.pageable.sortBy = e.sortBy;
+      // this.pageable.sortDesc = e.sortDesc;
       this.getSales();
     },
     paginationChange(page){
         this.pageable.currentPage = page;
         this.getSales();
     },
-	getSales() {
-    var query = {params: {
-      pageable: this.pageable, 
-      saleNumber: this.saleNumber, 
-      itemId: this.itemKv.id,
-      customerId: this.customerKv.id,
-      status: this.statusKv.id 
-    }}
+	getSales(totals) {
+    this.showTotalsMenu = false;
+    var params = this.getFilterParams(totals);
+    var query = {params: params}
     http.get("/sale/pageable", query).then(r => {
-      this.sales = r.data.content;
-      this.pageable.totalElements = r.data.totalElements;
+      if(totals){
+        this.totalSold = r.data.content[0][0].toLocaleString();
+        this.totalAmount = parseFloat(r.data.content[0][1]);
+      }else{
+        this.sales = r.data.content;
+        this.pageable.totalElements = r.data.totalElements;
+      }
     }).catch(e => {
       console.log("API error: "+e);
     });
@@ -229,10 +297,6 @@ export default {
         alert("Don't have permission to delete sale");
         return;
       }
-      if(sale.unitsTransferedTo != 0 || sale.unitsTransferedFrom != 0){
-        alert("There are Transfered Sale(s). Please, remove any transfers.");
-        return;
-      }
       this.$bvModal.msgBoxConfirm('Are you sure you want to delete this Sale? '+
       'This will also delete all Schedules and Productions associated with this Sale').then(ok => {
         if(ok){
@@ -259,6 +323,9 @@ export default {
   mounted() {
     this.getAvailableItems();
     this.getAvailableCustomers();
+    // this.getSales();
+  },
+  activated(){
     this.getSales();
   }
 };

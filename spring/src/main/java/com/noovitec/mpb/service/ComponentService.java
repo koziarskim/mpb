@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.noovitec.mpb.entity.Component;
+import com.noovitec.mpb.entity.ComponentAdjustment;
 import com.noovitec.mpb.entity.ItemComponent;
 import com.noovitec.mpb.entity.PurchaseComponent;
 import com.noovitec.mpb.entity.Receiving;
@@ -54,6 +55,9 @@ public interface ComponentService {
 			for(ItemComponent ic: component.getItemComponents()) {
 				ic.setComponent(component);
 			}
+			for(ComponentAdjustment ca: component.getComponentAdjustments()) {
+				ca.setComponent(component);
+			}
 			return componentRepo.save(component);
 		}
 		
@@ -68,7 +72,7 @@ public interface ComponentService {
 			List<ItemComponent> itemComponents = itemComponentRepo.findByProduction(productionId);
 			for(ItemComponent ic: itemComponents) {
 				Component c = ic.getComponent();
-				c.setUnitsOnStock(c.getUnitsOnStock() - (new BigDecimal(units).multiply(ic.getUnits()).setScale(0, RoundingMode.CEILING).longValue()));
+				c.setUnitsOnStock((long) Math.ceil(c.getUnitsOnStock() - (units/ic.getUnits())));
 				componentRepo.save(c);
 			};
 		}
@@ -113,14 +117,15 @@ public interface ComponentService {
 			Long counter = 0L;
 			Iterable<Component> components = componentIds==null?componentRepo.findAll():componentRepo.findByIds(componentIds);
 			for (Component component : components) {
-				Long unitsReceived = 0L;
-				BigDecimal unitsScheduledBD = BigDecimal.ZERO;
-				BigDecimal unitsForProductionBD = BigDecimal.ZERO;
-				BigDecimal unitsForSaleBD = BigDecimal.ZERO;
-				Long unitsOrdered = 0L;
+				long unitsReceived = 0;
+				long unitsOrdered = 0;
+				long unitsAdjusted = 0;
 				BigDecimal totalPrice = BigDecimal.ZERO;
-				long receivingsCount = 1;
+				long receivingsCount = 0;
 				LocalDateTime lastDate = LocalDateTime.parse("2000-01-01T01:01:01");
+				for(ComponentAdjustment ca: component.getComponentAdjustments()) {
+					unitsAdjusted += ca.getUnitsAdjusted();
+				}
 				for(PurchaseComponent pc: component.getPurchaseComponents()) {
 					unitsOrdered += pc.getUnits();
 					for(Receiving r: pc.getReceivings()) {
@@ -137,23 +142,27 @@ public interface ComponentService {
 						}
 					}
 				}
+				long unitsScheduled = 0;
+				long unitsForProduction = 0;
+				long unitsForSale = 0;
 				for(ItemComponent ic: component.getItemComponents()) {
-					unitsScheduledBD = unitsScheduledBD.add(ic.getUnits().multiply(new BigDecimal(ic.getItem().getUnitsScheduled())));
-					unitsForProductionBD = unitsForProductionBD.add(ic.getUnits().multiply(new BigDecimal(ic.getItem().getUnitsProduced())));
-					unitsForSaleBD = unitsForSaleBD.add(ic.getUnits().multiply(new BigDecimal(ic.getItem().getUnitsSold())));
+					unitsScheduled += (long) Math.ceil(ic.getItem().getUnitsScheduled()*ic.getUnits());
+					unitsForProduction += (long) Math.ceil(ic.getItem().getUnitsProduced()*ic.getUnits());
+					unitsForSale += (long) Math.ceil(ic.getItem().getUnitsSold()*ic.getUnits());
 				}
-				long unitsScheduled = unitsScheduledBD.setScale(0, RoundingMode.CEILING).longValue();
-				long unitsForProduction = unitsForProductionBD.setScale(0, RoundingMode.CEILING).longValue();
-				long unitsForSale = unitsForSaleBD.setScale(0, RoundingMode.CEILING).longValue();
-				component.setUnitsOnStock(unitsReceived - unitsForProduction);
+				component.setUnitsOnStock(unitsReceived + unitsAdjusted - unitsForProduction);
 				component.setUnitsLocked(unitsScheduled - unitsForProduction);
 				component.setUnitsSoldNotProd(unitsForSale - unitsForProduction);
 				component.setUnitsOrdered(unitsOrdered);
 				component.setUnitsReceived(unitsReceived);
 				component.setUnitsForProduction(unitsForProduction);
 				component.setUnitsForSale(unitsForSale);
-				component.setUnitsShort((unitsForSale - unitsForProduction) - (unitsReceived - unitsForProduction) - (unitsOrdered - unitsReceived));
-				component.setAveragePrice(totalPrice.divide(BigDecimal.valueOf(receivingsCount), 4, RoundingMode.CEILING).setScale(4, RoundingMode.CEILING));
+				component.setUnitsShort((unitsForSale - unitsForProduction) - (unitsReceived + unitsAdjusted - unitsForProduction) - (unitsOrdered - unitsReceived));
+				BigDecimal averagePrice = BigDecimal.ZERO;
+				if(receivingsCount > 0) {
+					averagePrice = totalPrice.divide(BigDecimal.valueOf(receivingsCount), 4, RoundingMode.CEILING).setScale(4, RoundingMode.CEILING);
+				}
+				component.setAveragePrice(averagePrice);
 				componentRepo.save(component);
 				counter++;
 				log.info("Updated Component: " + component.getId());

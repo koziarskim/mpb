@@ -1,8 +1,6 @@
 package com.noovitec.mpb.rest;
 
 import java.io.IOException;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,10 +31,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.itextpdf.text.DocumentException;
 import com.noovitec.mpb.dto.InvoiceListDto;
 import com.noovitec.mpb.entity.Invoice;
+import com.noovitec.mpb.entity.InvoiceItem;
 import com.noovitec.mpb.entity.Notification;
 import com.noovitec.mpb.repo.InvoiceRepo;
 import com.noovitec.mpb.service.InvoiceService;
 import com.noovitec.mpb.service.NotificationService;
+import com.noovitec.mpb.service.SaleService;
 
 @RestController
 @RequestMapping("/api")
@@ -48,34 +48,46 @@ class InvoiceRest {
 	private InvoiceRepo invoiceRepo;
 	@Autowired
 	private NotificationService notificationService;
+	@Autowired
+	private SaleService saleService;
 	
 	public InvoiceRest(InvoiceService invoiceService) {
 		this.invoiceService = invoiceService;
 	}
 
 	@GetMapping("/invoice/pageable")
-	Page<InvoiceListDto> getAllPageable(@RequestParam(required = false) Pageable pageable,
+	Page<?> getAllPageable(@RequestParam(required = false) Pageable pageable,
+			@RequestParam(required=false) boolean totals,
 			@RequestParam(required=false) String invoiceNumber,
 			@RequestParam(required=false) Long itemId,
 			@RequestParam(required=false) Long saleId,
 			@RequestParam(required=false) Long customerId,
 			@RequestParam(required=false) Long shipmentId,
 			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate invoiceFrom,
-			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate invoiceTo) {
-		Page<Invoice> invoices = invoiceRepo.findPagable(pageable, invoiceNumber, itemId, saleId, customerId, shipmentId, invoiceFrom, invoiceTo);
-		Page<InvoiceListDto> dtos = invoices.map(invoice -> {
-			InvoiceListDto dto = new InvoiceListDto();
-			dto.setId(invoice.getId());
-			dto.setNumber(invoice.getNumber());
-			dto.setDate(invoice.getDate());
-			dto.setShippingDate(invoice.getShippingDate());
-			dto.setSent(invoice.isSent());
-			dto.setType(invoice.getType());
-			dto.setShipmentNumber(invoice.getShipment().getNumber());
-			dto.setCustomerName(invoice.getShipment().getCustomer().getName());
-			return dto;
-		});
-		return dtos;
+			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate invoiceTo,
+			@RequestParam(required=false) String sent) {
+		@SuppressWarnings("unchecked")
+		Page<Invoice> invoices = (Page<Invoice>) invoiceRepo.findPagable(pageable, totals, invoiceNumber, itemId, saleId, customerId, shipmentId, invoiceFrom, invoiceTo, sent);
+		if(totals) {
+			@SuppressWarnings("unchecked")
+			Page<?> result = (Page<Invoice>) invoiceRepo.findPagable(pageable, totals, invoiceNumber, itemId, saleId, customerId, shipmentId, invoiceFrom, invoiceTo, sent);
+			return result;
+		} else {
+			Page<InvoiceListDto> dtos = invoices.map(invoice -> {
+				InvoiceListDto dto = new InvoiceListDto();
+				dto.setId(invoice.getId());
+				dto.setNumber(invoice.getNumber());
+				dto.setDate(invoice.getDate());
+				dto.setShippingDate(invoice.getShippingDate());
+				dto.setSent(invoice.isSent());
+				dto.setType(invoice.getType());
+				dto.setShipmentNumber(invoice.getShipment().getNumber());
+				dto.setCustomerName(invoice.getShipment().getCustomer().getName());
+				dto.setTotalAmount(invoice.getTotalAmount());
+				return dto;
+			});
+			return dtos;
+		}
 	}
 
 	@GetMapping("/invoice/{id}")
@@ -87,9 +99,7 @@ class InvoiceRest {
 	@GetMapping("/invoice/{invoiceId}/pdf")
 	HttpEntity<byte[]> getPdf(@PathVariable Long invoiceId) throws DocumentException, IOException {
 		Invoice invoice = invoiceRepo.findById(invoiceId).get();
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
-		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-		String fileName = "INV_"+invoice.getNumber()+"_"+invoice.getId() + "-" + sdf.format(timestamp) +".pdf";
+		String fileName = invoice.getNumber() +".pdf";
 		byte[] data = invoiceService.generatePdf(invoice.getId());
 		HttpHeaders header = new HttpHeaders();
 		header.setContentType(MediaType.APPLICATION_OCTET_STREAM);
@@ -100,7 +110,10 @@ class InvoiceRest {
 
 	@PostMapping("/invoice")
 	ResponseEntity<?> post(@RequestBody Invoice invoice, 
-			@RequestParam(required=false) boolean sendEmail) throws IOException, DocumentException {
+			@RequestParam(required=false) boolean sendEmail,
+			@RequestParam(required=false) boolean includeCc,
+			@RequestParam(required=false) String emailSubject,
+			@RequestParam(required=false) String emailBody) throws IOException, DocumentException {
 		if(!invoice.getNumber().matches("^[a-zA-Z0-9\\-]{1,15}$")) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Invoice Number is invalid. Alphanumeric and hyphen only allowed. Maximum 15 characters.");
 		}
@@ -115,19 +128,34 @@ class InvoiceRest {
 			Map<String, String> model = new HashMap<String, String>();
 			model.put("invoiceNumber", invoice.getNumber());
 			byte[] data = invoiceService.generatePdf(invoice.getId());
-			notificationService.sendMailAttachment(emails, model, Notification.TYPE.INVOICE_EMAIL, data, "MPB_Invoice_"+invoice.getNumber()+".pdf");
+			notificationService.sendMailAttachment(emails, model, Notification.TYPE.INVOICE_EMAIL, data, invoice.getNumber()+".pdf", emailSubject, emailBody);
 			invoice.setSent(true);
 			invoice = invoiceService.save(invoice);
+			if(includeCc) {
+				List<String> ccEmails = new ArrayList<String>();
+				ccEmails.add("akoziarski@marketplacebrands.com");
+				ccEmails.add("mkoziarski@marketplacebrands.com");
+				notificationService.sendMailAttachment(ccEmails, model, Notification.TYPE.INVOICE_EMAIL, data, invoice.getNumber()+".pdf", emailSubject, emailBody);
+			}
 		}
+		List<Long> saleIds = new ArrayList<Long>();
+		for(InvoiceItem ii: invoice.getInvoiceItems()) {
+			saleIds.add(ii.getSaleItem().getSale().getId());
+		}
+		saleService.updateUnits(saleIds);
 		return ResponseEntity.ok().body(invoice);
 	}
 
 	@DeleteMapping("/invoice/{id}")
 	public ResponseEntity<?> delete(@PathVariable Long id) {
+		Invoice invoice = invoiceRepo.findById(id).get();
+		List<Long> saleIds = new ArrayList<Long>();
+		for(InvoiceItem ii: invoice.getInvoiceItems()) {
+			saleIds.add(ii.getSaleItem().getSale().getId());
+		}
 		invoiceService.delete(id);
+		saleService.updateUnits(saleIds);
 		return ResponseEntity.ok().build();
 	}
-
-	
 
 }

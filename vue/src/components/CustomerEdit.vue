@@ -3,7 +3,7 @@
     <b-row>
       <b-col cols=2>
         <label class="top-label">Name:</label>
-        <input class="form-control" type="search" v-model="customer.name" />
+        <input class="form-control" maxlength="20" type="text" v-model="customer.name" />
       </b-col>
       <b-col cols=1>
         <label class="top-label">Account #:</label>
@@ -42,8 +42,8 @@
         <input class="form-control" type="text" v-model="customer.brokerEmail" />
       </b-col>
       <b-col cols=6>
-        <label class="top-label">Billing Address:</label>
-        <input class="form-control" type="search" v-model="billingAddress.street" />
+        <label class="top-label">Address Line:</label>
+        <input class="form-control" type="search" v-model="customer.billingAddress.line" />
       </b-col>
     </b-row>
     <b-row>
@@ -55,32 +55,36 @@
         <label class="top-label">Broker Phone:</label>
         <input class="form-control" type="text" v-model="customer.brokerPhone" />
       </b-col>
-        <b-col cols=2>
-          <label class="top-label">City:</label>
-          <input class="form-control" type="tel" v-model="billingAddress.city" placeholder="City" />
-        </b-col>
-        <b-col cols=2>
-          <label class="top-label">State:</label>
-          <input class="form-control" type="tel" v-model="billingAddress.state" placeholder />
-        </b-col>
-        <b-col cols=2>
-          <label class="top-label">Zip Code:</label>
-          <input class="form-control" type="tel" v-model="billingAddress.zip" placeholder="Zip" />
-        </b-col>
-      </b-row>
-      <b-row>
-        <b-col cols=6 offset=6>
-          <label class="top-label">
-            Shipping Addresses:
-            <span style="cursor: pointer; color: blue" @click="openShipAddressModal()">(Edit/New)</span>
-            <span v-if="shipAddress.id" style="cursor: pointer; color: blue" @click="deleteShipAddress()">(Delete)</span>
-          </label>
-          <b-select option-value="id" option-text="label" :list="customer.addresses" v-model="shipAddress" placeholder="Address"></b-select>
-        </b-col>
-      </b-row>
-        <br/><b-link role="button" @click="showCompliance = !showCompliance" style="margin-top: 20px; margin-bottom: 5px;">
-          <hr class="left"><img class="customer-image" src="../assets/customer-compliance.png">
-        </b-link>
+      <b-col cols=6>
+        <label class="top-label">Billing Address:</label>
+        <input class="form-control" type="search" v-model="customer.billingAddress.street" />
+      </b-col>
+    </b-row>
+    <b-row>
+      <b-col cols=6>
+        <label class="top-label">
+          Shipping Addresses:
+          <span style="cursor: pointer; color: blue" @click="openShipAddressModal()">(Edit/New)</span>
+          <span v-if="shipAddress.id" style="cursor: pointer; color: blue" @click="deleteShipAddress()">(Delete)</span>
+        </label>
+        <b-select option-value="id" option-text="label" :list="customer.addresses" v-model="shipAddress" placeholder="Address"></b-select>
+      </b-col>
+      <b-col cols=2>
+        <label class="top-label">City:</label>
+        <input class="form-control" type="tel" v-model="customer.billingAddress.city" placeholder="City" />
+      </b-col>
+      <b-col cols=2>
+        <label class="top-label">State:</label>
+        <input class="form-control" type="tel" v-model="customer.billingAddress.state" placeholder />
+      </b-col>
+      <b-col cols=2>
+        <label class="top-label">Zip Code:</label>
+        <input class="form-control" type="tel" v-model="customer.billingAddress.zip" placeholder="Zip" />
+      </b-col>
+    </b-row>
+    <br/><b-link role="button" @click="showCompliance = !showCompliance" style="margin-top: 20px; margin-bottom: 5px;">
+      <hr class="left"><img class="customer-image" src="../assets/customer-compliance.png">
+    </b-link>
     <b-row v-if="showCompliance">
       <b-col cols=4>
         <label class="top-label">Vendor Portal:</label>
@@ -152,8 +156,8 @@
         <b-form-textarea maxlength="250" type="text" :rows="3" v-model="customer.palletRequirements"></b-form-textarea>
       </b-col>
       <b-col cols=2>
-        <label class="top-label">Pallet Tag Size:</label>
-        <b-select option-value="id" option-text="name" :list="availablePalletTagSizes" v-model="customer.palletTagSize"></b-select>
+        <label class="top-label">Pallet Tag Type:</label>
+        <b-select option-value="id" option-text="name" :list="availablePalletTagTypes" v-model="customer.palletTagType"></b-select>
       </b-col>
       <b-col cols=4>
         <label class="top-label">Pallet Tag Requirements:</label>
@@ -256,7 +260,7 @@ import state from "../data/state";
 
 export default {
   components: {
-    AddressModal: () => import("./AddressModal"),
+    AddressModal: () => import("./modals/AddressModal"),
     UploadFile: () => import("../directives/UploadFile"),
   },
   data() {
@@ -277,7 +281,6 @@ export default {
         addresses: []
       },
       shipAddress: {},
-      billingAddress: {},
       freightTerms: {},
       availableStates: state.states,
       availableFreightTerms: [
@@ -291,9 +294,9 @@ export default {
       availableInvoiceTypes: [
         { id: "PER_SHIPMENT_ITEM", name: "Per Shipment BOL" },
         { id: "PER_SHIPMENT_SALE", name: "Per Shipment Sale" },
-        { id: "PER_FIRST_SHIPMENT", name: "Per First Shipment" },
-        { id: "PER_LAST_SHIPMENT", name: "Per Last Shipment" },
-        { id: "NO_INVOICE", name: "No Invoice" }
+        // { id: "PER_FIRST_SHIPMENT", name: "Per First Shipment" },
+        // { id: "PER_LAST_SHIPMENT", name: "Per Last Shipment" },
+        // { id: "NO_INVOICE", name: "No Invoice" }
       ],
       availableShipTo: [
         { id: "CROSS_DOCK", name: "Cross Dock" },
@@ -307,9 +310,10 @@ export default {
         { id: "UCC_128", name: "UCC-128" },
         { id: "SELF_GEN", name: "Self Generated" },
       ],
-      availablePalletTagSizes: [
-        { id: "4_6", name: "4 X 6" },
-        { id: "STANDARD", name: "Standard" },
+      availablePalletTagTypes: [
+        { id: "4 x 6", name: "4 x 6" },
+        { id: "Standard", name: "Standard" },
+        { id: "EDI", name: "EDI" },
       ],
       availablePalletTypes: [
         { id: "GRADE_A", name: "Grade A" },
@@ -324,12 +328,6 @@ export default {
     freightTerms(newValue, oldValue) {
       this.customer.freightTerms = newValue.id;
     },
-    billingAddress: {
-      handler: function(newValue, oldValue) {
-        this.customer.billingAddress = this.billingAddress;
-      },
-      deep: true
-    }
   },
   methods: {
     closeUpload(attachments){
@@ -343,9 +341,6 @@ export default {
           this.customer = response.data;
           this.invoiceTypeKv = { id: response.data.invoiceType };
           this.freightTerms = this.getFreightById(response.data.freightTerms);
-          if (response.data.billingAddress) {
-            this.billingAddress = response.data.billingAddress;
-          }
         })
         .catch(e => {
           console.log("API error: " + e);
@@ -354,6 +349,14 @@ export default {
     validate() {
       if (this.customer.addresses.length < 1) {
         alert("At least one shipping address is required");
+        return false;
+      }
+      if (!this.invoiceTypeKv.id) {
+        alert("Invoice type is required.");
+        return false;
+      }
+      if (!this.customer.billingAddress.line || !this.customer.billingAddress.street || !this.customer.billingAddress.city || !this.customer.billingAddress.state || !this.customer.billingAddress.zip) {
+        alert("Full billing address required.");
         return false;
       }
       return true;

@@ -58,7 +58,8 @@
           </div>
         </template>
         <template v-slot:cell(number)="row">
-          <div style="width:200px; overflow: wrap; font-size: 14px"><b-link role="button" :id="'popover-'+row.item.id" @click="getShipmentItems(row.item)">{{row.item.number}}</b-link> {{row.item.name}}</div>
+          <div style="width:200px; overflow: wrap; font-size: 14px"><b-link role="button" @click="goToShipment(row.item.id)">{{row.item.number}}</b-link> {{row.item.name}}</div>
+          <!-- <div style="width:200px; overflow: wrap; font-size: 14px"><b-link role="button" :id="'popover-'+row.item.id" @click="getShipmentItems(row.item)">{{row.item.number}}</b-link> {{row.item.name}}</div>
             <b-popover placement="bottomright" :target="'popover-'+row.item.id" triggers="focus" variant="primary">
               <template v-slot:title>
                 <b-button size="sm" @click="goToShipment(row.item.id)" variant="link">View/Edit Details</b-button>
@@ -75,7 +76,7 @@
               </tr>
               </table>
               </div>
-            </b-popover>
+            </b-popover> -->
         </template>
         <template v-slot:cell(status)="row">
             <b :class="getStatusClass(row.item)">{{getStatus(row.item)}}</b>
@@ -95,6 +96,7 @@ import http from "../http-common";
 import router from "../router";
 
 export default {
+  name: "ShipmentList",
   data() {
     return {
       sortBy: "number",
@@ -270,11 +272,14 @@ export default {
   mounted() {
     if(this.$route.query.saleId){this.sale = {id: this.$route.query.saleId};}
     if(this.$route.query.itemId){this.item = {id: this.$route.query.itemId};}
-    window.history.replaceState({}, document.title, window.location.pathname);
-    this.getShipments();
+    // window.history.replaceState({}, document.title, window.location.pathname);
+    // this.getShipments();
     this.getAvailableCustomers();
     this.getAvailableSales()
     this.getAvailableItems()
+  },
+  activated(){
+    this.getShipments();
   }
 };
 </script>

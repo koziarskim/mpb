@@ -1,48 +1,56 @@
 <template>
     <b-container fluid>
-        <b-row style="padding-bottom: 4px; font-size: 12px">
-            <b-col cols=1>
-              <b-form-checkbox size="sm" v-model="itemView">Item View</b-form-checkbox>
-            </b-col>
-            <b-col cols=2>
-              <input style="font-size: 12px" class="form-control" type="tel" v-model="numberName" @keyup.enter="getSaleItems()" placeholder="Sale"/>
-            </b-col>
-            <b-col cols=2>
-              <b-select option-value="id" option-text="name" :list="availableItems" v-model="item" placeholder="Item"></b-select>
-            </b-col>
-            <b-col cols=2>
-              <b-select option-value="id" option-text="name" :list="availableCustomers" v-model="customer" placeholder="Customer"></b-select>
-            </b-col>
-            <b-col cols=2>
-              <b-select option-value="id" option-text="name" :list="availableStatus" v-model="statusKv" placeholder="Status"></b-select>
-            </b-col>
-            <b-col cols=2>
-              <b-select option-value="id" option-text="name" :list="availableUnitsFilters" v-model="unitsFilter" placeholder="Units"></b-select>
-            </b-col>
-            <b-col cols=1>
-                <div style="text-align: right;">
-                <b-button type="submit" size="sm" variant="primary" @click="newShipment()">Ship ({{selectedSaleItemIds.length}})</b-button>
-                </div>
-            </b-col>
+      <div class="mpb-page-info">Sale > Sales by Item</div>
+        <b-row style="font-size: 12px">
+          <input style="width: 150px; margin-left: 15px; font-size: 12px" class="form-control" type="tel" v-model="numberName" @keyup.enter="getSaleItems()" placeholder="Sale"/>
+          <b-select style="width: 200px; margin-left: 15px" option-value="id" option-text="name" :list="availableItems" v-model="itemKv" placeholder="Item"></b-select>
+          <b-select style="width: 150px; margin-left: 15px" option-value="id" option-text="name" :list="availablePackagings" v-model="packagingKv" placeholder="Package"></b-select>
+          <b-select style="width: 150px; margin-left: 15px" option-value="id" option-text="name" :list="availableCustomers" v-model="customer" placeholder="Customer"></b-select>
+          <b-select style="width: 150px; margin-left: 15px" option-value="id" option-text="name" :list="availableStatus" v-model="statusKv" placeholder="Status"></b-select>
+          <b-select style="width: 150px; margin-left: 15px" option-value="id" option-text="name" :list="availableCustomFilters" v-model="customFilterKv" placeholder="Custom Filter"></b-select>
+          <div style="margin-left: 15px">
+            <label class="top-label">Show All</label><br/>
+            <input type="checkbox" style="margin-left: 20px" v-model="showAll">
+          </div>
+          <div style="margin-left: 15px">
+            <b-button id="totalsMenu" size="sm" @click="toggleTotals()">Totals</b-button>
+            <b-popover :show="showTotalsMenu" placement="bottom" target="totalsMenu" variant="secondary">
+              <div style="width: 300px; font-size: 16px">
+                <div>Total of {{pageable.totalElements.toLocaleString()}} rows</div>
+                <div><b>Sold & Adj:</b> {{totalSoldAdj.toLocaleString()}}</div>
+                <div><b>Scheduled:</b> {{totalScheduled.toLocaleString()}}</div>
+                <div><b>Produced:</b> {{totalProduced.toLocaleString()}}</div>
+                <div><b>Pending Prod:</b> {{(+totalScheduled - +totalProduced).toLocaleString()}}</div>
+                <div><b>Assigned:</b> {{totalAssigned.toLocaleString()}}</div>
+                <div><b>Not Assigned:</b> {{(+totalSoldAdj - +totalAssigned).toLocaleString()}}</div>
+                <div><b>Shipped:</b> {{totalShipped.toLocaleString()}}</div>
+                <div><b>Pending Ship:</b> {{(+totalSoldAdj - +totalShipped).toLocaleString()}}</div>
+              </div>
+            </b-popover>
+            <b-button style="margin-left: 15px" size="sm" variant="primary" @click="newShipment()">Ship ({{selectedSaleItemIds.length}})</b-button>
+          </div>
         </b-row>
         <b-table :items="saleItems" :fields="fields" no-local-sorting @sort-changed="sorted">
           <template v-slot:cell(number)="row">
               <b-link role="button" @click=goToSale(row.item.saleId)>{{row.item.saleNumber}}</b-link>
           </template>
           <template v-slot:cell(itemNumber)="row">
-              <b-link role="button" @click=goToItem(row.item.itemId)>{{row.item.itemNumber}} ({{row.item.itemName}})</b-link>
+            <div><b-link role="button" @click="goToItem(row.item.itemId)">{{row.item.itemNumber}}</b-link><span style="width:200px; overflow: wrap; font-size: 12px"> {{row.item.itemName}}</span></div>
+          </template>
+          <template v-slot:cell(packagingLabel)="row">
+            <div style="width:150px; overflow: wrap; font-size: 12px">{{row.item.packagingLabel}}</div>
           </template>
           <template v-slot:cell(unitsSoldAdj)="row">
               <span>{{+row.item.unitsSold + +row.item.unitsAdjusted}}</span>
           </template>
-          <template v-slot:cell(unitsTrasfered)="row">
-              <span>{{row.item.unitsTransferedTo}}-{{row.item.unitsTranferedFrom}}</span>
-          </template>
-          <template v-slot:cell(unitsStockShip)="row">
-              <b-button size="sm" @click=goToShipment(row.item.itemId,row.item.saleId) variant="link">{{row.item.unitsOnStock}}/{{row.item.unitsShipped}}</b-button>
+          <template v-slot:cell(unitsShipped)="row">
+              <b-button size="sm" @click=goToShipment(row.item.itemId,row.item.saleId) variant="link">{{row.item.unitsShipped}}</b-button>
           </template>
           <template v-slot:cell(unitsSchProd)="row">
-              <span>{{row.item.unitsScheduled}}/{{row.item.unitsProduced}}</span>
+            <div style="display:flex">
+              <b-button size="sm" variant="link" @click="goToScheduleEventList(row.item)">{{row.item.unitsScheduled}}/{{row.item.unitsProduced}}</b-button>
+              <b-button size="sm" style="margin-left:-15px" variant="link" @click="openScheduleEventModal(row.item)">+</b-button>
+            </div>
           </template>
           <template v-slot:cell(status)="row">
               <span>{{getStatus(row.item.status)}}</span>
@@ -55,6 +63,9 @@
 		      <b-pagination size="sm" v-model="pageable.currentPage" :per-page="pageable.perPage" :total-rows="pageable.totalElements" @change="paginationChange"></b-pagination>
           <span style="margin-top: 5px">Total of {{pageable.totalElements}} Items Sold</span>
         </div>
+        <div v-if="scheduleEventModalVisible">
+          <schedule-event-modal :saleItemId="this.saleItemId" :itemId="this.itemId" v-on:close="closeScheduleEventModal"></schedule-event-modal>
+        </div>  
     </b-container>
 </template>
 <script>
@@ -63,74 +74,115 @@ import router from "../router";
 import navigation from "../utils/navigation";
 
 export default {
+  name: "SaleItemList",
+	components: {
+	  ScheduleEventModal: () => import("./modals/ScheduleEventModal")
+  },  
   data() {
     return {
       navigation: navigation,
       pageable: {totalElements: 100, currentPage: 1, perPage: 25, sortBy: 'id', sortDesc: false},
       searchSale: "",
       searchItem: "",
-      itemView: true,
       selectedSaleItemIds: [],
       saleItems: [], //SaleItemDto
+      saleItemId: null,
+      itemId: null,
       numberName: "",
       availableItems: [],
-      item: {},
+      itemKv: {},
+      availablePackagings: [],
+      packagingKv: {},
       availableCustomers: [],
       customer: {},
       selectedCustomerId: null,
       fields: [
         { key: "number", label: "Sale #", sortable: false },
         { key: "itemNumber", label: "Item", sortable: false },
+        { key: "packagingLabel", label: "Packaging", sortable: false },
         { key: "customerName", label: "Customer", sortable: false },
-        { key: "dc", label: "DC (State)", sortable: false },
-        { key: "unitsSoldAdj", label: "Sold", sortable: false },
+        { key: "unitsSoldAdj", label: "Sold&Adj", sortable: false },
         { key: "unitsSchProd", label: "Sch/Prod", sortable: false },
-        { key: "unitsTrasfered", label: "Transf", sortable: false },
-        { key: "unitsStockShip", label: "Stock/Ship", sortable: false },
-        { key: "unitsReadyProd", label: "RFP", sortable: false },
+        { key: "unitsAssigned", label: "Assigned", sortable: false },
+        { key: "unitsShipped", label: "Ship", sortable: false },
         { key: "status", label: "Status", sortable: false },
         { key: "action", label: "", sortable: false}
       ],
       sales: [],
       availableStatus: [
         {id: 'DRAFT', name: 'Draft'},
-        {id: 'PENDING_APPROVAL', name: 'Pending Approval'},
-        {id: 'APPROVED', name: 'Pending Schedule'},
-        {id: 'PENDING_PROD', name: 'Pending Prod'},
-        {id: 'PENDING_SHIPMENT', name: 'Pending Shipment'},
-        {id: 'SHIPPED', name: 'Fully Shipped'},
-        {id: 'CANCELLED', name: 'Cancelled'},
+        {id: 'READY', name: 'Ready'},
+        {id: 'APPROVED', name: 'Approved'},
+        {id: 'SCHEDULED', name: 'Scheduled'},
+        {id: 'PRODUCED', name: 'Produced'},
+        {id: 'ASSIGNED', name: 'Assigned'},
+        {id: 'SHIPPED', name: 'Shipped'},
+        {id: 'PAID', name: 'Paid'},
+        {id: 'CANCELED', name: 'Canceled'},
       ],
       statusKv: {},
-      availableUnitsFilters: [
-        {id: "ON_STOCK", name: "On Stock"},
-        {id: "RFP_ONLY", name: "RFP Only"}
+      availableCustomFilters: [
+        {id: "NOT_PAID", name: "Not Paid"},
+        {id: "PC_NOT_READY", name: "PC Not Ready"},
       ],
-      unitsFilter: {}
+      customFilterKv: {},
+      showTotalsMenu: false,
+      totalSoldAdj: 0,
+      totalScheduled: 0,
+      totalProduced: 0,
+      totalAssigned: 0,
+      totalShipped: 0,
+      showAll: false,
+      scheduleEventModalVisible: false,
     };
   },
   watch: {
-    itemView(newValue, oldValue){
-      if(newValue==false){
-        navigation.goTo("/saleList/")
-      }
+    itemKv(newValue, oldValue){
+      this.getAvailablePackagings();
+      this.getSaleItems();
     },
-    item(newValue, oldValue){
+    packagingKv(newValue, oldValue){
       this.getSaleItems();
     },
     customer(newValue, oldValue){
       this.getSaleItems();
     },
-    statusKv(old_value, new_value){
+    statusKv(new_value, old_value){
+      if(new_value.id == "PAID" || new_value.id == "CANCELED"){
+        this.showAll = true;
+      }
       this.getSaleItems();      
     },
-    unitsFilter(old_value, new_value){
+    customFilterKv(new_value, old_value){
+      this.getSaleItems();      
+    },
+    showAll(new_value, old_value){
       this.getSaleItems();      
     },
   },
   methods: {
+    openScheduleEventModal(saleItemDto){
+      if(!saleItemDto.approved){
+        alert("Sale is not approved yet");
+        return false;
+      }
+      this.saleItemId = saleItemDto.id;
+      this.itemId = saleItemDto.itemId;
+      this.scheduleEventModalVisible = true;
+    },
+    closeScheduleEventModal(){
+      this.scheduleEventModalVisible = false;
+      this.getSaleItems();
+    },
+    toggleTotals(){
+      this.getSaleItems(true);
+      this.showTotalsMenu = !this.showTotalsMenu;
+    },    
     getStatus(statusId){
       var statusKv = this.availableStatus.find(stat => stat.id == statusId)
+      if(!statusKv){
+        console.log("Status not found: " +status)
+      }
       return statusKv.name
     },
     checkboxSelected(saleItem){
@@ -154,17 +206,29 @@ export default {
         this.pageable.currentPage = page;
         this.getSaleItems();
     },
-  getSaleItems(){
+  getSaleItems(totals){
+    this.showTotalsMenu = false;
     http.get("/saleItem/pageable", {params: {
         pageable: this.pageable,  
+        totals: totals, 
         numberName: this.numberName, 
         customerId: this.customer.id, 
-        itemId: this.item.id, 
+        itemId: this.itemKv.id, 
+        packagingId: this.packagingKv.id,
         status: this.statusKv.id,
-        unitsFilter: this.unitsFilter.id
+        customFilter: this.customFilterKv.id,
+        showAll: this.showAll
       }}).then(r => {
-      this.saleItems = r.data.content;
-      this.pageable.totalElements = r.data.totalElements;
+      if(totals){
+        this.totalSoldAdj = r.data.content[0][0];
+        this.totalScheduled = r.data.content[0][1];
+        this.totalProduced = r.data.content[0][2];
+        this.totalAssigned = r.data.content[0][3];
+        this.totalShipped = r.data.content[0][4];
+      }else{
+        this.saleItems = r.data.content;
+        this.pageable.totalElements = r.data.totalElements;
+      }
     }).catch(e => {
       console.log("API error: "+e);
     });
@@ -183,10 +247,20 @@ export default {
       console.log("API error: "+e);
     });
   },
+  getAvailablePackagings() {
+    http.get("/packaging/kv", {params: {itemId: this.itemKv.id}}).then(r => {
+      this.availablePackagings = r.data;
+    }).catch(e => {
+      console.log("API error: "+e);
+    });
+  },
   newShipment(){
     var query = { saleItemIds: this.selectedSaleItemIds.join(",") };
     router.push({ path: "/shipmentEdit/new", query: query })
   },
+    goToScheduleEventList(saleItemDto) {
+      router.push({path: "/ScheduleEventList", query: {itemId: saleItemDto.itemId, saleId: saleItemDto.saleId}});
+    },
   goToShipment(itemId, saleId){
     var query = { itemId: itemId, saleId: saleId };
     router.push({path: "/shipmentList", query: query})
@@ -195,25 +269,39 @@ export default {
       router.push("/itemEdit/"+itemId);
     },
     goToSale(saleId){
-        if(!saleId){
-            http
-            .post("/sale")
-            .then(response =>{
-                router.push('/saleEdit/'+response.data.id);
-            })
-            .catch(e =>{
-                console.log("API Error: "+e);
-            })
-        }else{
-            router.push('/saleEdit/'+saleId);
-        }
+      router.push('/saleEdit/'+saleId);
+    },
+    goToItem(itemId){
+      router.push('/itemEdit/'+itemId);
     },
   },
   mounted() {
-     this.getSaleItems();
-     this.getAvailableCustomers();
-     this.getAvailableItems();
-  }
+    var itemId = this.$route.query.itemId;
+    var packagingId = this.$route.query.packagingId;
+    var statusId = this.$route.query.statusId;
+    var unitsFilterId = this.$route.query.unitsFilterId;
+    if(itemId){
+      this.itemKv = {id: itemId};
+    }
+    if(packagingId){
+      this.packagingKv = {id: packagingId};
+    }
+    if(statusId){
+      this.statusKv = {id: statusId}
+    }
+    if(unitsFilterId){
+      this.customFilterKv = {id: unitsFilterId}
+    }
+    // window.history.replaceState({}, document.title, window.location.pathname);
+    // this.$router.push(this.$route.path)
+    // router.replace({'query': null});
+    this.getAvailableCustomers();
+    this.getAvailableItems();
+    this.getAvailablePackagings();
+  },
+  activated(){
+    this.getSaleItems();
+  },
 };
 </script>
 

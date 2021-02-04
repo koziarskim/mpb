@@ -1,5 +1,6 @@
 <template>
   <b-container fluid>
+    <div class="mpb-page-info">Item > Item List</div>
     <b-row style="padding-bottom: 4px; font-size: 12px">
       <b-col cols=2>
         <input class="form-control" style="font-size: 12px" type="tel" v-model="numberName" @keyup.enter="getItems()" placeholder="Number or Name" />
@@ -24,23 +25,42 @@
     </b-row>
     <b-table :items="items" :fields="fields" no-local-sorting @sort-changed="sorted">
       <template v-slot:head(unitsOnStock)="row">
-        <div>Stock</div><div class="mpb-head-line">Including Overstock</div>
+        <div>Stock</div><div class="mpb-head-line">Floor Not Assigned</div>
+      </template>
+      <template v-slot:head(unitsOnFloor)="row">
+        <div>Floor</div><div class="mpb-head-line">Units On Floor</div>
+      </template>
+      <template v-slot:head(notAssigned)="row">
+        <div>Not Assigned</div><div class="mpb-head-line"># of sales (Units)</div>
+      </template>
+      <template v-slot:head(unitsShort)="row">
+        <div>Short</div><div class="mpb-head-line">Units Needed</div>
       </template>
       <template v-slot:cell(name)="row">
-        <div style="width:200px; overflow: wrap; font-size: 14px"><b-link role="button" :id="'popover-'+row.item.id" @click="getUnits(row.item.id)">{{row.item.number}}</b-link> {{row.item.name}}</div>
-        <b-popover placement="bottomright" :target="'popover-'+row.item.id" triggers="focus" variant="primary">
-          <b-link role="button" style="font-weight: bold" @click="updateItem(row.item.id)">View Details</b-link>
-          <div>Units Sold & Adj: <b-button size="sm" style="padding-bottom: 0px; padding-left:0px; padding-top: 0px" variant="link" @click="goToItemSaleList(row.item.id)">{{+itemDto.unitsSold + +itemDto.unitsAdjusted}}</b-button></div>
-          <div>Units Produced: <b-button size="sm" style="padding-bottom: 0px; padding-left:0px; padding-top: 0px" variant="link" @click="goToItemScheduleList(row.item.id)">{{itemDto.unitsProduced}}</b-button></div>
-          <div>Units Shipped: <b-button size="sm" style="padding-bottom: 0px; padding-left:0px; padding-top: 0px" variant="link" @click="goToItemShippedList(row.item.id)">{{itemDto.unitsShipped}}</b-button></div>
-          <div>Units Returned: {{itemDto.unitsReturned}}</div>
-        </b-popover>
+        <div style="width:200px; overflow: wrap; font-size: 14px"><b-link role="button" @click="updateItem(row.item.id)">{{row.item.number}}</b-link> {{row.item.name}}</div>
       </template>
-      <template v-slot:cell(unitsOverstock)="row">
-        <div>{{getUnitsOverstock(row.item)}}</div>
+      <template v-slot:cell(numPackagings)="row">
+        <div style="display: flex">
+          <b-button :id="'itemPackagings_'+row.item.id" size="sm" @click="showItemPackagings(row.item.id)" variant="link">{{row.item.numPackagings}}</b-button>
+          <b-popover placement="bottom" :target="'itemPackagings_'+row.item.id" variant="secondary">
+            <div style="width: 500px; font-size: 14px">
+              <div v-for="ip in itemPackagings" :key="ip.id">
+                Package: {{ip.label}}<br/>
+                  <div style="margin-left: 20px">
+                    <b>Floor: </b>{{ip.unitsOnFloor}}, 
+                    <b>Stock: </b>{{ip.unitsOnStock}}, 
+                    <b>Not Assigned:</b><b-button style="margin-top: -4px" size="md" variant="link" @click="goToSaleItemList(row.item.id, ip.packagingId, 'NOT_ASSIGNED')">{{ip.salesNotAssigned}} ({{ip.unitsNotAssigned}}),</b-button>
+                    <b>Short: </b>{{ip.unitsShort}}, 
+                    <!-- <b>Pending Ship:</b><b-button style="margin-top: -4px" size="md" variant="link" @click="goToSaleItemList(row.item.id, ip.packagingId, null)">{{ip.unitsPenShip}},</b-button> -->
+                    <!-- <b>Open: </b>{{ip.salesOpen}} ({{ip.unitsOpen}}), -->
+                  </div>
+              </div>
+            </div>
+          </b-popover>
+        </div>        
       </template>
-      <template v-slot:cell(openSales)="row">
-        <b-button size="sm" variant="link" @click="goToItemSaleList(row.item.id)">{{+row.item.unitsSold + +row.item.unitsAdjusted - +row.item.unitsShipped}}</b-button>
+      <template v-slot:cell(notAssigned)="row">
+        <b-button size="sm" variant="link" @click="goToSaleItemList(row.item.id, null, 'NOT_ASSIGNED')">{{row.item.salesNotAssigned}} ({{row.item.unitsNotAssigned}})</b-button>
       </template>
     </b-table>
     <div style="display: flex">
@@ -54,6 +74,7 @@ import http from "../http-common";
 import router from "../router";
 
 export default {
+  name: "ItemList",
   data() {
     return {
       pageable: {
@@ -65,13 +86,14 @@ export default {
       },
       numberName: "",
       fields: [
-        { key: "name", sortable: true, label: "Item # (Name)" },
-        { key: "brand", sortable: true, label: "Brand" },
-        { key: "category", sortable: true, label: "Category" },
-        { key: "unitsOnStock", sortable: false, label: "Stock" },
-        { key: "unitsOverstock", sortable: false, label: "Overstock" },
-        { key: "openSales", sortable: false, label: "Open Sales" },
-        { key: "unitsReadyProd", sortable: false, label: "RFP" }
+        { key: "name", sortable: false, label: "Item # (Name)" },
+        { key: "brand", sortable: false, label: "Brand" },
+        { key: "category", sortable: false, label: "Category" },
+        { key: "numPackagings", sortable: false, label: "Pkgs" },
+        { key: "unitsOnFloor", sortable: false, label: "Floor" },
+        { key: "unitsOnStock", sortable: false, label: "Available" },
+        { key: "notAssigned", sortable: false, label: "Not Assigned" },
+        { key: "unitsShort", sortable: false, label: "Short" },
       ],
       items: [], //ItemListDto
       availableComponents: [],
@@ -81,14 +103,16 @@ export default {
       availableCategories: [],
       categoryKv: {},
       availableUnitFilters: [
+        {id: "ON_FLOOR", name: "On Floor"},
         {id: "ON_STOCK", name: "On Stock"},
-        {id: "OVERSTOCK", name: "Overstock"},
-        {id: "OPEN_SALES", name: "Open Sales"},
-        {id: "RFP", name: "RFP"}
+        {id: "NOT_ASSIGNED", name: "Not Assigned"},
+        {id: "SHORT", name: "Units Short"},
       ],
       unitsFilter: {},
       itemDto: {
       },
+      showItemPackagingsMenu: false,
+      itemPackagings: [], //ItemPackagingListDto
     };
   },
   watch: {
@@ -106,14 +130,17 @@ export default {
     }
   },
   methods: {
+    showItemPackagings(itemId){
+      http.get("/itemPackaging/item/"+itemId).then(r => {
+        this.itemPackagings = r.data.content;
+        this.showItemPackagingsMenu = !this.showItemPackagingsMenu;
+      }).catch(e => {console.log("API error: "+ e)})
+    },
     getUnits(itemId){
       http.get("/item/"+itemId+"/dto").then(r => {
         r.data.unitsAdjusted = r.data.unitsAdjusted < 0 ? r.data.unitsAdjusted: '+'+r.data.unitsAdjusted;
         this.itemDto = r.data;
       }).catch(e => {console.log("API error: "+ e)})
-    },
-    getUnitsOverstock(item){
-      return item.unitsOverstock<0?0:item.unitsOverstock
     },
     sorted(e) {
       if (!e.sortBy) {
@@ -164,14 +191,11 @@ export default {
     updateItem(item_id) {
       router.push("/itemEdit/" + item_id);
     },
-    gotToInventory(item_id) {
-      router.push("/itemComponentList/" + item_id);
-    },
-    goToItemSaleList(item_id) {
-      router.push("/itemSaleList/" + item_id);
-    },
-    goToItemScheduleList(item_id) {
-      router.push("/scheduleEventList/" + item_id);
+    goToSaleItemList(itemId, packagingId, unitsFilterId) {
+      router.push({path: "/saleItemList/", query: {
+        itemId: itemId,
+        packagingId: packagingId, 
+        unitsFilterId: unitsFilterId}});
     },
     goToItemShippedList(itemId) {
       var query = { itemId: itemId };
@@ -182,6 +206,8 @@ export default {
     this.getAvailableComponents();
     this.getAvailableCategories();
     this.getAvailableBrands();
+  },
+  activated(){
     this.getItems();
   }
 };

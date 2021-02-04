@@ -13,7 +13,7 @@
       <b-col cols=3>Item<br/> (Sale - Customer)</b-col>
       <b-col cols=1>Total<br/>Sold/Prod</b-col>
       <b-col cols=1>Short</b-col>
-      <b-col cols=1>Labor</b-col>
+      <b-col cols=1>Max. Labor</b-col>
       <b-col cols=1>Total %<br/>Produced</b-col>
       <b-col cols=1>Daily [u]<br/>Sched/Prod</b-col>
       <b-col cols=1>Daily %<br/>Produced</b-col>
@@ -103,7 +103,7 @@ export default {
     },
     goToProductionLine(seId) {
       var se = this.getScheduleEvent(seId).then(se => {
-        var query = { date: se.schedule.date, seId: se.id };
+        var query = { date: se.date, seId: se.id };
         router.push({ path: "/productionLine/"+se.line.id, query: query } );
       })
       // router.push("/productionLine/" + schedule_event_id);
@@ -115,7 +115,11 @@ export default {
       return (((high - low) / ((high + low)/2)) * 100).toFixed(0)+"%";
     },
     percOut(high, low){
-      return ((high / low) * 100).toFixed(0)+"%";
+      var number = 0;
+      if(low || low != 0){
+        number = ((high / low) * 100);
+      }
+      return number.toFixed(0)+"%";
     }
 
   },

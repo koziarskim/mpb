@@ -26,4 +26,5 @@ public class InvoiceItemListDto {
 	private long unitsInvoiced;
 	private BigDecimal unitPrice;
 	private BigDecimal totalUnitPrice;
+	private String brandName;
 }

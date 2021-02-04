@@ -1,6 +1,7 @@
 package com.noovitec.mpb.rest;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -13,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -28,6 +30,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.noovitec.mpb.dto.ComponentDto;
+import com.noovitec.mpb.dto.ComponentInventoryListDto;
 import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.entity.Attachment;
 import com.noovitec.mpb.entity.Category;
@@ -63,6 +66,24 @@ class ComponentRest {
 	@GetMapping("/component")
 	Iterable<Component> getAll() {
 		return componentRepo.findAll();
+	}
+	@GetMapping("/component/inventory/pageable")
+	Page<?> getAllInventoryPageable(@RequestParam Pageable pageable, 
+			@RequestParam(required = false) boolean totals, 
+			@RequestParam(required = false) String nameSearch, 
+			@RequestParam(required = false) Long supplierId,
+			@RequestParam(required = false) Long itemId,
+			@RequestParam(required = false) Long categoryId,
+			@RequestParam(required = false) Long componentTypeId,
+			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dateFrom,
+			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dateTo,
+			@RequestParam(required = false) boolean positiveFloor,
+			@RequestParam(required = false) boolean zeroFloor,
+			@RequestParam(required = false) boolean negativeFloor,
+			@RequestParam(required = false) boolean nonInventory) {
+		Page<?> dtos = componentRepo.findInventoryPage(pageable, totals, nameSearch, supplierId, itemId, 
+			categoryId, componentTypeId, dateFrom, dateTo, positiveFloor, zeroFloor, negativeFloor, nonInventory);
+		return dtos;
 	}
 
 	@GetMapping("/component/pageable")
@@ -170,7 +191,7 @@ class ComponentRest {
 		}
 		itemService.updateUnitsByComponent(component.getId());
 		componentService.updateUnits(Arrays.asList(component.getId()));
-		itemService.updateUnitsReadyProdByComponent(component.getId());
+//		itemService.updateUnitsReadyProdByComponent(component.getId());
 		return ResponseEntity.ok(component);
 	}
 

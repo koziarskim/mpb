@@ -5,7 +5,7 @@
 				<div style="display:flex">
 					<input class="form-control" style="width: 170px; height: 33px; margin-top: -10px; margin-right: 5px;" type="date" v-model="date"> 
 					<b-button size="sm" type="submit" variant="success" style="margin-top: -10px; margin-right: 5px;" @click="setToday()">Today</b-button>
-					Line: <span style="font-weight: bold; margin-right: 5px;">{{line_id}}</span> 
+					Line: <span style="font-weight: bold; margin-right: 5px;">{{scheduleEvent.line.number}}</span>
 					Started: <span style="font-weight: bold; margin-right: 5px;">{{scheduleEvent.startTime}}</span> 
 					Finished: <span style="font-weight: bold; margin-right: 5px;">{{scheduleEvent.finishTime}}</span> 
 					Units Scheduled: <span style="font-weight: bold; margin-right: 5px;">{{scheduleEvent.unitsScheduled}}</span> 
@@ -14,20 +14,21 @@
 				</div>
 			</b-col>
 			<b-col>
-				<b-button v-if="inProgress() && !isFinished()" style="margin-right: 3px" type="submit" variant="success" @click="openModal()">Add Units</b-button>
-				<b-button v-if="this.scheduleEvent.id !=null && !inProgress() && !isFinished()" type="submit" variant="success" @click="startProduction()">Start</b-button>
-				<b-button v-if="inProgress() && !isFinished()" type="submit" variant="success" @click="finishProduction">Finish</b-button>
+				<b-button style="margin-right: 3px;" type="submit" size="sm" variant="success" @click="editScheduleEvent()">Edit</b-button>
+				<b-button v-if="inProgress() && !isFinished()"  size="sm" style="margin-right: 3px" type="submit" variant="success" @click="openModal()">Add Units</b-button>
+				<b-button v-if="this.scheduleEvent.id !=null && !inProgress() && !isFinished()" size="sm" type="submit" variant="success" @click="startProduction()">Start</b-button>
+				<b-button v-if="inProgress() && !isFinished()" size="sm" type="submit" variant="success" @click="finishProduction">Finish</b-button>
 			</b-col>
 		</b-row>
 		<b-row>
 			<b-col cols=4>
-				<div v-for="ie in itemEvents" :key="ie.id">
-					<div style="display:inline; color: blue">{{ie.name}}</div>
-					<div v-for="customer in ie.customers" :key="customer.id" style="margin-bottom: 0px">
-						<div style="display:inline; color: #4bb316">&nbsp;&nbsp;&nbsp;&#9679;{{customer.name}}</div>
-						<div v-for="event in customer.events" :key="event.id">
+				<div v-for="item in items" :key="item.id">
+					<div style="display:inline; color: blue">{{item.name}}</div>
+					<div v-for="packaging in item.packagings" :key="packaging.id" style="margin-bottom: 0px">
+						<div style="display:inline; color: #4bb316">&nbsp;&nbsp;&nbsp;&#9679;Package: {{packaging.name}}</div>
+						<div v-for="event in packaging.events" :key="event.id">
 							<div style="cursor: pointer; display:inline; color:#e22626; font-weight: bold" :style="getTreeItemStyle(event.active)" @click="getScheduleEvent(event.id)">
-								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SO: {{event.saleItem.sale.number}} {{event.finishTime?" (Completed)":(event.startTime?" (Started)":" (Not Started)")}}
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SO: {{event.saleItem?event.saleItem.sale.number:'None'}} {{event.finishTime?" (Completed)":(event.startTime?" (Started)":" (Not Started)")}}
 							</div>
 						</div>
 					</div>
@@ -36,14 +37,11 @@
 			<b-col cols=8>
 				<div v-if="!scheduleEvent.id" style="margin-top: 120px; font-weight: bold">Please select sale order (SO) on the left (red)</div>
 				<div id="1234" :style="chartVisibility">
-					<div style="font-size: 12px; margin-left: 260px">{{scheduleEvent.saleItem.item.number}} ({{scheduleEvent.saleItem.sale.customer.name}} - {{scheduleEvent.saleItem.sale.number}})</div>
+					<div style="font-size: 12px; margin-left: 260px">{{scheduleEvent.itemPackaging.item?scheduleEvent.itemPackaging.item.number:""}}, {{scheduleEvent.itemPackaging.label}}, {{scheduleEvent.saleItem?scheduleEvent.saleItem.sale.number:'None'}}</div>
 					<chart :chartdata="chartData" :options="chartOptions" :width="600" :height="300"></chart>
 				</div>
 			</b-col>
 		</b-row>
-		<div v-if="modalVisible">
-			<production-modal :schedule-event="scheduleEvent" v-on:closeModal="closeModals()"></production-modal>
-		</div>
 		<br/>
 		<div v-if="securite.hasRole(['PRODUCTION_ADMIN'])">
 		<b-row>
@@ -85,6 +83,12 @@
 			</b-col>
 		</b-row>
 	</b-modal>
+	<div v-if="modalVisible">
+		<production-line-add-modal :schedule-event="scheduleEvent" v-on:closeModal="closeModals()"></production-line-add-modal>
+	</div>
+	<div v-if="productionLineEditModalVisible">
+		<production-line-edit-modal :scheduleEventId="this.scheduleEvent.id" v-on:close="closeProductionLineEditModal"></production-line-edit-modal>
+	</div>  
   </b-container>
 </template>
 
@@ -97,28 +101,31 @@ import securite from "../securite";
 
 export default {
 	components: {
-    ProductionModal: () => import("./ProductionModal")
+	ProductionLineAddModal: () => import("./modals/ProductionLineAddModal"),
+	ProductionLineEditModal: () => import("./modals/ProductionLineEditModal")
   },
   data() {
     return {
 			chartVisibility: "visibility: hidden",
+			productionLineEditModalVisible: false,
 			startModalVisible: false,
 			date: moment().format("YYYY-MM-DD"),
 			startTime: moment().format("HH:mm:ss"),
 			line_id: "",
-			schedule: {},
 			modalVisible: false,
 			securite: securite,
 			addInProgress: false,
 			sortedProductions: [],
 			unitsToAdd: 0,
 			people: 0,
-			itemEvents: [],
+			items: [],
 			activeItemEvent: {},
 			scheduleEvents: [],
 			scheduleEvent: {
-				schedule: {},
 				line: {},
+				itemPackaging: {
+					item: {}
+				},
 				saleItem: {
 					item: {},
 					sale: {
@@ -160,8 +167,9 @@ export default {
   watch: {
 		date(new_value, old_value){
 			this.scheduleEvent = {
-				schedule: {},
 				line: {},
+				item: {},
+				itemPackaging: {},
 				saleItem: {
 					item: {},
 					sale: {
@@ -175,6 +183,14 @@ export default {
 		}
 	},
   methods: {
+	    closeProductionLineEditModal(){
+			this.productionLineEditModalVisible = false;
+			this.getScheduleEvents();
+			this.getScheduleEvent(this.scheduleEvent.id);
+		},
+		editScheduleEvent(){
+			this.productionLineEditModalVisible = true;
+		},
 		startProduction(){
 			this.startModalVisible = true;
 		},
@@ -184,7 +200,7 @@ export default {
 		getTreeItemStyle(active){
 			var style = "";
 			if(active){
-				style = "background-color: #dbe0db"; 
+				style = "background-color: #1be0db"; 
 			}
 			return style;
 		},
@@ -210,7 +226,12 @@ export default {
 		},
 		updateProduction(production){
 			production.scheduleEvent = {id: this.scheduleEvent.id};
-				this.saveScheduleEvent();
+			http.post("/production", production).then(response => {
+						this.getScheduleEvents();
+						this.getScheduleEvent(this.scheduleEvent.id);
+			}).catch(e => {
+				console.log("API error: " + e);
+			});
 		},
 		deleteProduction(production_id){
 			http.delete("/production/"+production_id).then(response => {
@@ -221,7 +242,6 @@ export default {
 			});
 		},
 		saveScheduleEvent(){
-				// this.scheduleEvent.finishTime = this.sortedProductions[this.sortedProductions.length-1].finishTime;
 				http.post("/scheduleEvent", this.scheduleEvent).then(response => {
 					this.getScheduleEvent(this.scheduleEvent.id);
 				}).catch(e => {
@@ -229,32 +249,36 @@ export default {
 				});
 		},
     getScheduleEvents() {
-      http.get("/scheduleEvent/date/"+this.date+"/line/" + this.line_id).then(response => {
-				this.itemEvents.splice(0, this.itemEvents.length);
+      http.get("/scheduleEvent/date/"+this.date, {params: {line_id: this.line_id}}).then(response => {
+				this.items.splice(0, this.items.length);
 				this.scheduleEvents = response.data;
-				response.data.forEach(event => {
-					var itemEvent = this.itemEvents.find(ie => ie.id == event.saleItem.item.id);
-					if(!itemEvent){
-						itemEvent = {
-							id: event.saleItem.item.id,
-							name: event.saleItem.item.number +" ("+event.saleItem.item.name+")",
-							active: this.scheduleEvent.saleItem.item.id == event.saleItem.item.id?true:false,
-							customers: [],
+				response.data.forEach(se => {
+					var item = this.items.find(ie => ie.id == se.itemPackaging.item.id);
+					if(!item){
+						var isActive = false;
+						if(this.scheduleEvent.id){
+							isActive = this.scheduleEvent.itemPackaging.item.id == se.itemPackaging.item.id?true:false;
+						}						
+						item = {
+							id: se.itemPackaging.item.id,
+							name: se.itemPackaging.item.number +" ("+se.itemPackaging.item.name+")",
+							active: isActive,
+							packagings: [],
 						}
-						this.itemEvents.push(itemEvent);
+						this.items.push(item);
 					}
-					var customer = itemEvent.customers.find(cu => cu.id == event.saleItem.sale.customer.id);
-					if(!customer){
-						customer = {
-							id: event.saleItem.sale.customer.id,
-							name: event.saleItem.sale.customer.name,
-							active: this.scheduleEvent.saleItem.sale.customer.id == event.saleItem.sale.customer.id?true:false,
+					var packaging = item.packagings.find(ip => ip.id == se.itemPackaging.packaging.id);
+					if(!packaging){
+						packaging = {
+							id: se.itemPackaging.packaging.id,
+							name: se.itemPackaging.label,
+							// active: this.scheduleEvent.saleItem.sale.customer.id == event.saleItem.sale.customer.id?true:false,
 							events: []
 						}
-						itemEvent.customers.push(customer);
+						item.packagings.push(packaging);
 					}
-					event.active = this.scheduleEvent.id == event.id?true:false;
-					customer.events.push(event);
+					se.active = this.scheduleEvent.id == se.id?true:false;
+					packaging.events.push(se);
 				})
       }).catch(e => {
         console.log("API error: " + e);
@@ -270,50 +294,48 @@ export default {
 				this.getScheduleEvents();
 				this.chartVisibility = "visiblility: visible;"
 				return response.data;
-      }).catch(e => {
-        console.log("API error: " + e);
-      });
+      }).catch(e => {console.log("API error: " + e);});
+	},
+	saveStartProduction() {
+		var alreadyStarted = false;
+		this.scheduleEvents.forEach(se => {
+			if(se.startTime && !se.finishTime){
+				alreadyStarted = true;
+			}
+		})
+		if(alreadyStarted){
+			alert("There is another Sale in progress. Please, finish it before start next one");
+			return;
+		}
+		this.scheduleEvent.startTime = this.startTime;
+			return http.post("/scheduleEvent", this.scheduleEvent).then(response => {
+				this.getScheduleEvent(this.scheduleEvent.id);
+				this.startModalVisible = false;
+			}).catch(e => {
+				console.log("API error: " + e);
+			});
 		},
-		saveStartProduction() {
-			var alreadyStarted = false;
-			this.scheduleEvents.forEach(se => {
-				if(se.startTime && !se.finishTime){
-					alreadyStarted = true;
-				}
-			})
-			if(alreadyStarted){
-				alert("There is another Sale in progress. Please, finish it before start next one");
+		finishProduction() {
+			if(this.sortedProductions.length==0){
+				alert("Nothing produced yet");
 				return;
 			}
-			this.scheduleEvent.startTime = this.startTime;
-				return http.post("/scheduleEvent", this.scheduleEvent).then(response => {
-					this.getScheduleEvent(this.scheduleEvent.id);
-					this.startModalVisible = false;
-				}).catch(e => {
-					console.log("API error: " + e);
-				});
-			},
-			finishProduction() {
-				if(this.sortedProductions.length==0){
-					alert("Nothing produced yet");
+			if(this.scheduleEvent.unitsProduced < this.scheduleEvent.unitsScheduled){
+				if(!confirm("There are more units scheduled that produced. \n"+
+				"Please adjust units scheduled to unlock units reserved! \n"+
+				"Are you sure you want to finish it?")){
 					return;
 				}
-				if(this.scheduleEvent.unitsProduced < this.scheduleEvent.unitsScheduled){
-					if(!confirm("There are more units scheduled that produced. \n"+
-					"Please adjust units scheduled to unlock units reserved! \n"+
-					"Are you sure you want to finish it?")){
-						return;
-					}
+			}
+			this.$bvModal.msgBoxConfirm("Are you sure you want to Finish production?").then(ok => {
+				if(ok){
+					this.scheduleEvent.finishTime = this.sortedProductions[this.sortedProductions.length-1].finishTime;
+					return http.post("/scheduleEvent", this.scheduleEvent).then(response => {
+						this.getScheduleEvent(this.scheduleEvent.id);
+					}).catch(e => {console.log("API error: " + e);});
 				}
-				this.$bvModal.msgBoxConfirm("Are you sure you want to Finish production?").then(ok => {
-					if(ok){
-						this.scheduleEvent.finishTime = this.sortedProductions[this.sortedProductions.length-1].finishTime;
-						return http.post("/scheduleEvent", this.scheduleEvent).then(response => {
-							this.getScheduleEvent(this.scheduleEvent.id);
-						}).catch(e => {console.log("API error: " + e);});
-					}
-				})
-			},
+			})
+		},
 		openModal(){
 			this.modalVisible = true;
 		},
@@ -340,7 +362,7 @@ export default {
 		if(scheduleEventId){
 			this.getScheduleEvent(scheduleEventId);
 		}
-		window.history.replaceState({}, document.title, window.location.pathname);
+		// window.history.replaceState({}, document.title, window.location.pathname);
   }
 };
 </script>

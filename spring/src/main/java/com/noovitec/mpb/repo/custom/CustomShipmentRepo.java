@@ -38,7 +38,8 @@ public interface CustomShipmentRepo {
 					+ "left join ship.shipmentItems shipItem " 
 					+ "left join shipItem.saleItem si "
 					+ "left join si.sale s "
-					+ "left join si.item i " 
+					+ "left join si.itemPackaging ip "
+					+ "left join ip.item i " 
 					+ "left join ship.customer cu " 
 					+ "where ship.id is not null ";
 			if (number != null && !number.isEmpty()) {
@@ -65,7 +66,7 @@ public interface CustomShipmentRepo {
 			if(shipTo !=null) {
 				q += "and ship.shippedDate <= :shipTo ";
 			}
-			q += "order by ship.status asc, ship.shippedDate asc";
+			q += "order by ship.status asc, ship.shippingDate asc";
 			Query query = entityManager.createQuery(q);
 			if (number != null && !number.isEmpty()) {
 				query.setParameter("number", number);

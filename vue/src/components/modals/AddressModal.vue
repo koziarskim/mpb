@@ -4,7 +4,7 @@
       <b-row>
 				<b-col cols=4>
 					<label class="top-label">Address Distribution Center</label>
-					<input class="form-control" type="tel" v-model="address.dc">
+					<input class="form-control" maxlength="20" type="text" v-model="address.dc">
 				</b-col>
 				<b-col v-if="addressType=='FRG'">
 					<label class="top-label">Keep it? </label><br/>
@@ -44,15 +44,25 @@
 				</b-col>
 			</b-row>
 			<b-row>
-				<b-col cols=10>
+				<b-col cols=5>
 					<label class="top-label">Phone:</label>
 					<input class="form-control" type="tel" v-model="address.phone"/>
+				</b-col>
+				<b-col cols=5>
+					<label class="top-label">Location ID:</label>
+					<input class="form-control" type="tel" v-model="address.locationName"/>
+				</b-col>
+			</b-row>
+			<b-row>
+				<b-col cols=7>
+					<label class="top-label">Notes:</label>
+					<input class="form-control" type="tel" v-model="address.notes"/>
 				</b-col>
 			</b-row>
 			<b-row>
 				<b-col cols=10>
-					<label class="top-label">Note:</label>
-					<b-form-textarea type="text" :rows="3" v-model="address.notes"></b-form-textarea>
+					<label class="top-label">Old Note (To Be Deleted):</label>
+					<b-form-textarea type="text" :rows="3" v-model="address.notesDelete"></b-form-textarea>
 				</b-col>
 			</b-row>
     </b-modal>
@@ -60,8 +70,8 @@
 </template>
 
 <script>
-import http from "../http-common";
-import router from "../router";
+import http from "../../http-common";
+import router from "../../router";
 import moment from "moment";
 
 export default {

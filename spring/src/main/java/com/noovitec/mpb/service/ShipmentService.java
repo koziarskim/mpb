@@ -141,8 +141,8 @@ public interface ShipmentService {
 					addCell(1, ship.getNumber(), row);
 					addCell(2, ship.getCustomer().getName(), row);
 					addCell(3, si.getSaleItem().getSale().getNumber(), row);
-					addCell(4, si.getSaleItem().getItem().getNumber(), row);
-					addCell(5, si.getSaleItem().getItem().getName(), row);
+					addCell(4, si.getSaleItem().getItemPackaging().getItem().getNumber(), row);
+					addCell(5, si.getSaleItem().getItemPackaging().getItem().getName(), row);
 					addCell(6, String.valueOf(si.getUnits()), row);
 					addCell(7, String.valueOf(si.getCases()), row);
 					addCell(8, String.valueOf(si.getPallets()), row);

@@ -1,8 +1,9 @@
 <template>
     <b-container fluid>
+      <div class="mpb-page-info">Accounting > Invoices by Item</div>
       <b-row style="font-size: 12px">
-        <b-col cols=1 style="margin-right: -45px;">
-          <b-button id="filterMenu" size="sm" @click="showFilterMenu = true">Filter</b-button>
+        <div style="display:flex">
+          <b-button style="margin-left: 3px;" id="filterMenu" size="sm" @click="showFilterMenu = true">Filter</b-button>
           <b-popover :show="showFilterMenu" placement="bottom" target="filterMenu" variant="secondary">
             <template v-slot:title>
               <span>Advanced Filters</span>
@@ -20,35 +21,29 @@
                     <input class="form-control" type="date" v-model="filter.invoiceTo">
                   </b-col>
                 </b-row>
+                <b-row>
+                  <b-col cols=6>
+                    <label class="top-label">Brand:</label>
+                    <b-select option-value="id" option-text="name" :list="availableBrands" v-model="brandKv" placeholder="Brand"></b-select>
+                  </b-col>
+                </b-row>
             </div>
           </b-popover>
-        </b-col>      
-        <b-col cols=2>
-          <input class="form-control" style="font-size: 12px" type="tel" v-model="invoiceNumber" @keyup.enter="getInvoiceItems()" placeholder="Invoice"/>
-        </b-col>
-        <b-col cols=2>
-          <b-select option-value="id" option-text="name" :list="availableSales" v-model="saleKv" placeholder="Sale"></b-select>
-        </b-col>
-        <b-col cols=2>
-          <b-select option-value="id" option-text="name" :list="availableItems" v-model="itemKv" placeholder="Item"></b-select>
-        </b-col>
-        <b-col cols=2>
-          <b-select option-value="id" option-text="name" :list="availableCustomers" v-model="customerKv" placeholder="Customer"></b-select>
-        </b-col>
-        <b-col cols=2>
-          <b-select option-value="id" option-text="name" :list="availableShipments" v-model="shipmentKv" placeholder="Shipment"></b-select>
-        </b-col>
-      <b-col cols=1 style="margin-right: -45px;">
-        <b-button id="totalsMenu" size="sm" @click="toggleShowTotals()">Totals</b-button>
+          <input style="font-size: 12px; width: 180px; margin-left: 3px;" class="form-control" type="tel" v-model="invoiceNumber" @keyup.enter="getInvoiceItems()" placeholder="Invoice"/>
+          <b-select style="width: 200px; margin-left: 3px;" option-value="id" option-text="name" :list="availableSales" v-model="saleKv" placeholder="Sale"></b-select>
+          <b-select style="width: 200px; margin-left: 3px;" option-value="id" option-text="name" :list="availableItems" v-model="itemKv" placeholder="Item"></b-select>
+          <b-select style="width: 200px; margin-left: 3px;" option-value="id" option-text="name" :list="availableCustomers" v-model="customerKv" placeholder="Customer"></b-select>
+          <b-select style="width: 200px; margin-left: 3px;" option-value="id" option-text="name" :list="availableShipments" v-model="shipmentKv" placeholder="Shipment"></b-select>
+        <b-button style="margin-left: 3px;" id="totalsMenu" size="sm" @click="toggleTotals()">Totals</b-button>
         <b-popover :show="showTotalsMenu" placement="bottom" target="totalsMenu" variant="secondary">
           <div style="width: 300px; font-size: 16px">
-            <div>Total of {{pageable.totalElements}} rows</div>
-            <div>Total price: ${{totalUnitsPrice}}</div>
-            <div>Total units: {{totalUnits}}</div>
+            <div>Total items: {{pageable.totalElements}}</div>
+            <div>Total amount: ${{parseFloat(totalUnitsPrice).toLocaleString('en-US',{minimumFractionDigits: 2})}}</div>
+            <div>Total units: {{parseFloat(totalUnits).toLocaleString()}}</div>
           </div>
         </b-popover>
-      </b-col>      
-
+        <b-button style="margin-left: 3px;" variant="primary" size="sm" @click="exportXls()">Export</b-button>
+      </div>
       </b-row>
       <b-table :items="invoiceItems" :fields="fields" no-local-sorting>
         <template v-slot:cell(number)="row">
@@ -77,15 +72,17 @@ import securite from "../securite"
 import navigation from "../utils/navigation";
 
 export default {
+  name: "InvoiceItemList",
   data() {
     return {
       securite: securite,
       navigation: navigation,
-      pageable: {totalElements: 100, currentPage: 1, perPage: 25, sortBy: 'updated', sortDesc: false},
+      pageable: {totalElements: 100, currentPage: 1, perPage: 25, sortBy: 'updated', sortDesc: true},
       fields: [
         { key: "number", label: "Invoice #", sortable: false },
         { key: "saleNumber", label: "Sale #", sortable: false },
         { key: "itemNumber", label: "Item #", sortable: false },
+        { key: "brandName", label: "Brand", sortable: false },
         { key: "date", label: "Date", sortable: false },
         { key: "customerName", label: "Customer", sortable: false },
         { key: "shipmentNumber", label: "Shipment", sortable: false },
@@ -113,6 +110,9 @@ export default {
       },
       totalUnitsPrice: 0,
       totalUnits: 0,
+      showTotalsMenu: false,
+      availableBrands: [],
+      brandKv: {}
     };
   },
   watch: {
@@ -130,10 +130,43 @@ export default {
     },
   },
   methods: {
+    exportXls(){
+      var pageable = this.pageable;
+      pageable.currentPage = 1;
+      pageable.perPage = pageable.totalElements;
+      var params = {
+        totals: false,
+        pageable: pageable,
+        invoiceNumber: this.invoiceNumber,
+        itemId: this.itemKv.id,
+        saleId: this.saleKv.id,
+        customerId: this.customerKv.id,
+        shipmentId: this.shipmentKv.id,
+        invoiceFrom: this.filter.invoiceFrom,
+        invoiceTo: this.filter.invoiceTo,
+        brandId: this.brandKv.id,
+      }
+      http.get("/invoiceItem/xls", {responseType: 'blob', params: params}).then(r => {
+        const url = URL.createObjectURL(new Blob([r.data], { type: r.headers['content-type']}))
+        const link = document.createElement('a')
+        link.href = url
+        link.setAttribute("download", r.headers['file-name'])
+        document.body.appendChild(link)
+        link.click()
+        this.pageable.perPage = 25;
+      }).catch(e => {
+        console.log("API error: "+e);
+      });
+    },    
+    getAvailableBrands(){
+      http.get("brand/kv").then(r => {
+        this.availableBrands = r.data;
+      }).catch(e => {console.log("API error: "+ e)})
+    },
     getTotalUnitPrice(ii){
       return parseFloat(ii.totalUnitPrice).toLocaleString('en-US',{minimumFractionDigits: 2})
     },
-    toggleShowTotals(){
+    toggleTotals(){
       if(!this.showTotalsMenu){
         this.getInvoiceItems(true);
       }
@@ -144,16 +177,14 @@ export default {
       this.showFilterMenu = false;
     },
     clearFilterMenu(){
-      this.filter.invoiceFrom = null;
-      this.filter.invoiceTo = null;
-      this.getInvoiceItems();
-      this.showFilterMenu = false;
+      router.go();
     },      
     paginationChange(page){
         this.pageable.currentPage = page;
         this.getInvoiceItems();
     },
 	  getInvoiceItems(totals) {
+      this.showTotalsMenu = false;
       var query = {params: {
         totals: totals,
         pageable: this.pageable,
@@ -163,11 +194,12 @@ export default {
         customerId: this.customerKv.id,
         shipmentId: this.shipmentKv.id,
         invoiceFrom: this.filter.invoiceFrom,
-        invoiceTo: this.filter.invoiceTo
+        invoiceTo: this.filter.invoiceTo,
+        brandId: this.brandKv.id,
       }}
       http.get("/invoiceItem/pageable", query).then(r => {
         if(totals){
-          this.totalUnitsPrice = parseFloat(r.data.content[0][0]).toLocaleString('en-US',{minimumFractionDigits: 2});
+          this.totalUnitsPrice = r.data.content[0][0];
           this.totalUnits = r.data.content[0][1];
         } else {
           this.invoiceItems = r.data.content;
@@ -205,11 +237,14 @@ export default {
     },
   },
   mounted() {
-    this.getInvoiceItems();
     this.getAvailableItems();
     this.getAvailableSales();
     this.getAvailableCustomers();
     this.getAvailableShipments();
+    this.getAvailableBrands();
+  },
+  activated(){
+    this.getInvoiceItems();
   }
 };
 </script>

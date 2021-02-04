@@ -16,8 +16,8 @@ public interface ItemComponentRepo extends JpaRepository<ItemComponent, Long> {
 
 	@Query("select distinct ic from ItemComponent ic "
 			+ "join ic.item i "
-			+ "join i.saleItems si "
-			+ "join si.scheduleEvents se "
+			+ "join i.itemPackagings ip "
+			+ "join ip.scheduleEvents se "
 			+ "join se.productions p "
 			+ "where p.id = :productionId")
 	List<ItemComponent> findByProduction(Long productionId);

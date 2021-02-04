@@ -5,31 +5,35 @@
         <b-row>
           <b-col cols=4>
             <label class="top-label">Sale Number:</label>
-            <input :disabled="!allowEdit()" class="form-control" type="tel" v-model="sale.number" placeholder="Number">
+            <input :disabled="disableEditSale()" maxlength="18" class="form-control" type="text" v-model="sale.number" placeholder="Number">
           </b-col>
           <b-col cols=4>
             <label class="top-label">Sale Date:</label>
-            <input :disabled="!allowEdit()" class="form-control" type="date" v-model="sale.date" placeholder="Date">
+            <input :disabled="disableEditSale()" class="form-control" type="date" v-model="sale.date" placeholder="Date">
           </b-col>
           <b-col cols=4>
             <label class="top-label">Expected Date:</label>
-            <input :disabled="!allowEdit()" class="form-control" type="date" v-model="sale.expectedDate" placeholder="Date">
+            <input :disabled="disableEditSale()" class="form-control" type="date" v-model="sale.expectedDate" placeholder="Date">
           </b-col>
         </b-row>
         <b-row>
           <b-col cols=6>
             <label class="top-label">Customer:</label>
-            <b-select :isDisabled="!allowEdit()" option-value="id" option-text="value" :list="availableCustomers" v-model="customerDto" placeholder="Customer"></b-select>
+            <b-select :isDisabled="disableEditSale()" option-value="id" option-text="value" :list="availableCustomers" v-model="customerDto" placeholder="Customer"></b-select>
           </b-col>
           <b-col cols=4>
             <label class="top-label">Pay Terms:</label>
-            <input :disabled="!allowEdit()" class="form-control" type="tel" v-model="sale.paymentTerms">
+            <input :disabled="disableEditSale()" class="form-control" type="tel" v-model="sale.paymentTerms">
+          </b-col>
+          <b-col cols=2>
+            <label class="top-label">PCR:</label><br/>
+            <span>{{pcr==true?'Ready':'Not Ready'}}</span>
           </b-col>
         </b-row>
       </b-col>
       <b-col cols=4>
         <label class="top-label">Notes:</label>
-        <b-form-textarea :disabled="!allowEdit()" type="text" :rows="4" v-model="sale.notes"></b-form-textarea>
+        <b-form-textarea type="text" :rows="4" v-model="sale.notes"></b-form-textarea>
       </b-col>
       <b-col cols=2>
         <div style="display: flex; text-align: right">
@@ -37,12 +41,18 @@
           <b-button v-if="!sale.approved && sale.pendingApproval" style="margin-left: 3px" size="sm" variant="success" @click="approveSale()">Approve</b-button>
           <b-button v-if="!sale.pendingApproval" style="margin-left: 3px" size="sm" variant="success" @click="readySale()">Ready</b-button>
           <b-button :title="getSaveTitle(sale)" style="margin-left: 3px" :disabled="!allowSave()" size="sm" variant="success" @click="saveSale()">Save</b-button>
-          <b-button style="margin-left: 3px" :disabled="!allowEdit()" size="sm" @click="cancelSale()">Cancel</b-button>
-          <b-button style="margin-left: 3px" :disabled="!allowEdit()" size="sm" @click="deleteSale()">x</b-button>
+          <b-button size="sm" :id="'popover-menu'+sale.id" style="margin-left: 3px">...</b-button>
+            <b-popover placement="bottomleft" :target="'popover-menu'+sale.id" variant="secondary">
+              <div style="width: 240px">
+              <b-button style="margin-left: 3px" :disabled="disableEditSale()" size="sm" @click="cancelSale()">Cancel</b-button>
+              <b-button style="margin-left: 3px" :disabled="disableEditSale()" size="sm" @click="copySale()">Copy</b-button>
+              <b-button style="margin-left: 3px" :disabled="disableEditSale()" size="sm" @click="deleteSale()">Delete</b-button>
+              </div>
+            </b-popover>
         </div>
+        <input type="checkbox" style="margin-top: 10px" v-model="sale.paidInFull"><span style="font-size: 14px"> Paid in Full</span>
         <br/>
         <span style="font-weight: bold">{{getStatus(sale.status)}}</span><br/>
-        <label class="top-label">Stock: {{sale.unitsOnStock}},&nbsp;&nbsp;</label>
         <label class="top-label">Shed/Prod: {{sale.unitsScheduled}}/{{sale.unitsProduced}}</label><br/>
         <label class="top-label">Sold: {{sale.unitsSold}},&nbsp;&nbsp;</label>
         <label class="top-label">Shipped: <b-link role="button" @click="goToShipment()">{{sale.unitsShipped}}</b-link></label>
@@ -52,90 +62,136 @@
     <b-row>
       <b-col cols=4>
         <label class="top-label">Shipping to Address:</label>
-        <b-select :isDisabled="!allowEdit()" option-value="id" option-text="label" :list="customer.addresses" v-model="shippingAddress" placeholder="shipping to address"></b-select>
+        <b-select :isDisabled="disableEditSale()" option-value="id" option-text="label" :list="customer.addresses" v-model="shippingAddress" placeholder="shipping to address"></b-select>
       </b-col>
       <b-col cols=2>
         <label class="top-label">Shipping Window From:</label>
-        <input :disabled="!allowEdit()" class="form-control" type="date" v-model="sale.shippingFrom" placeholder="Date">
+        <input :disabled="disableEditSale()" class="form-control" type="date" v-model="sale.shippingFrom" placeholder="Date">
       </b-col>
       <b-col cols=2>
         <label class="top-label">Shipping Window To:</label>
-        <input :disabled="!allowEdit()" class="form-control" type="date" v-model="sale.shippingTo" placeholder="Date">
+        <input :disabled="disableEditSale()" class="form-control" type="date" v-model="sale.shippingTo" placeholder="Date">
       </b-col>
       <b-col cols=2>
         <label class="top-label">Freight Terms:</label>
-        <b-select option-value="id" option-text="name" :list="availableFreightTerms" v-model="sale.freightTerms"></b-select>
+        <b-select :isDisabled="disableEditSale()" option-value="id" option-text="name" :list="availableFreightTerms" v-model="sale.freightTerms"></b-select>
       </b-col>
     </b-row>
     <hr class="hr-text" data-content="Sale Items">
     <b-row>
       <b-col cols=4>
         <label class="top-label">Available Items:</label>
-        <b-select :isDisabled="!allowEdit()" option-value="id" option-text="name" :list="availableItems" v-model="itemDto" placeholder="Items"></b-select>
+        <b-select :isDisabled="disableEditSale()" option-value="id" option-text="name" :list="availableItems" v-model="itemDto" placeholder="Items"></b-select>
       </b-col>
-      <b-col cols=1 style="padding-top: 30px">
-        <b-button :disabled="!allowEdit()" variant="link" @click="addItem()">(+)</b-button>
+      <b-col cols=4>
+        <label class="top-label">Available Packaging:</label>
+        <b-select :isDisabled="disableEditSale()" option-value="id" option-text="label" :list="item.itemPackagings" v-model="itemPackaging" placeholder="Packaging"></b-select>
       </b-col>
-      <b-col cols=5 offset=1 style="margin-top: 44px; margin-left: 0px;">
-          <span style="font-weight: bold">Items #: </span>{{totalItems}},
-          <span style="font-weight: bold">Units: </span>{{totalUnits}},
-          <span style="font-weight: bold">Cases: </span>{{totalCases}},
-          <span style="font-weight: bold">Total: </span>${{totalPrice}}
+      <b-col cols=1 style="margin-top: 30px">
+        <b-button :disabled="disableEditSale()" variant="link" @click="addItem()">(+)</b-button>
+      </b-col>
+      <b-col cols=3 style="margin-top: 20px;">
+          <span style="font-weight: bold">Items #: </span>{{totalItems}}, <span style="font-weight: bold">Units: </span>{{totalUnits}}<br/>
+          <span style="font-weight: bold">Cases: </span>{{Math.ceil(totalCases)}}, <span style="font-weight: bold">Total: </span>${{totalPrice}}
       </b-col>
     </b-row>
     <b-row>
       <b-col>
         <label class="top-label"></label>
-        <b-table v-if="sale.saleItems.length>0" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="sale.saleItems" :fields="columns">
+        <b-table v-if="sale.saleItems.length>0" :tbody-tr-class="rowClass" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="sale.saleItems" :fields="columns">
           <template v-slot:cell(item)="row">
-            <b-link role="button" @click.stop="goToItem(row.item.item.id)">{{row.item.item.number}}</b-link>
-            <div class="name-sm" :title="row.item.item.name"> ({{row.item.item.name}})</div>
+            <b-link role="button" @click.stop="goToItem(row.item.itemPackaging.item.id)">{{row.item.itemPackaging.item.number}}</b-link>
+            <div class="name-sm" :title="row.item.itemPackaging.item.name"> ({{row.item.itemPackaging.item.name}})</div>
           </template>
-          <template v-slot:cell(sku)="row">
-            <input :disabled="!allowEdit()" class="form-control" style="width:100px" type="tel" v-model="row.item.sku">
+          <template v-slot:cell(packaging)="row">
+            <div style="width:100px; overflow: wrap; font-size: 11px">{{row.item.itemPackaging.packaging.name}}</div>
+          </template>
+          <template v-slot:cell(unitsAssigned)="row">
+            <input :disabled="disableEditItem(row.item)" class="form-control" style="width:80px" type="tel" v-model="row.item.unitsAssigned">
           </template>
           <template v-slot:cell(cost)="row">
-            <span>${{row.item.item.totalCost}}</span>
-          </template>
-          <template v-slot:cell(unitsOnStockRet)="row">
-            <span>{{row.item.unitsOnStock}} </span><b-link @click.stop="goToItemReturnList(row.item)">({{row.item.unitsReturned}})</b-link>
+            <span>${{(+row.item.itemPackaging.item.totalCost + +row.item.itemPackaging.packaging.totalPackagingCost).toFixed(2)}}</span>
           </template>
           <template v-slot:cell(unitsSchedProd)="row">
-            <b-button size="sm" variant="link" @click="goToScheduled(row.item)">{{row.item.unitsScheduled}}/{{row.item.unitsProduced}}</b-button>
+            <b-button size="sm" variant="link" @click="goToScheduled(row.item)">{{row.item.unitsProduced}}</b-button>
           </template>
           <template v-slot:cell(units)="row">
-            <input :disabled="!allowEdit()" class="form-control" style="width:80px" type="tel" v-model="row.item.units">
+            <input :disabled="disableEditItem(row.item)" class="form-control" style="width:80px" type="tel" v-model="row.item.units">
           </template>
           <template v-slot:cell(unitsAdjusted)="row">
             <input class="form-control" style="width:80px" type="tel" v-model="row.item.unitsAdjusted">
           </template>
           <template v-slot:cell(cases)="row">
-            <span>{{getCases(row.item)}}</span>
+            <span>{{getCases(row.item).toFixed(0)}}</span>
           </template>
           <template v-slot:cell(unitPrice)="row">
             <div style="display:flex">
-            $<input :disabled="!allowEdit()" class="form-control" style="display: inline; width:80px" type="tel" v-model="row.item.unitPrice">
+            $<input :disabled="disableEditItem(row.item)" class="form-control" style="display: inline; width:80px" type="tel" v-model="row.item.unitPrice">
             </div>
           </template>
           <template v-slot:cell(totalUnitPrice)="row">
-            <span>${{row.item.totalUnitPrice = (+row.item.unitPrice * +row.item.units).toFixed(2)}}</span>
+            <span>${{getTotalUnitPrice(row.item)}}</span>
           </template>
-          <template v-slot:cell(unitsTransfered)="row">
-            <b-button size="sm" variant="link" @click="openTransferModal(row.item)">{{row.item.unitsTransferedTo}}-{{row.item.unitsTransferedFrom}}</b-button>
+          <template v-slot:cell(invoicedAmount)="row">
+            <span>${{parseFloat(row.item.invoicedAmount).toLocaleString('en-US',{minimumFractionDigits: 2})}}</span>
           </template>
           <template v-slot:cell(unitsShipped)="row">
             <b-button size="sm" variant="link" @click="goToShipment(row.item)">{{row.item.unitsShipped}}</b-button>
           </template>
           <template v-slot:cell(action)="row">
-            <b-button size="sm" :id="'popover-'+row.item.id">...</b-button>
-            <b-popover placement="left" :target="'popover-'+row.item.id" variant="light">
-              <div style="width: 340px">
-                <b-button :disabled="!allowEdit()" size="sm" @click="deleteItem(row.item)" variant="link">Delete Item</b-button><br/>
-                <div style="display:flex;">
-                  <b-button :disabled="!allowSave()" size="sm" @click="moveItem(row.item)" variant="link">Move Item</b-button>
-                  <b-select style="width: 250px" option-value="id" option-text="name" :list="availableSales" v-model="saleKv"></b-select>
-                </div>
-              </div>
+            <b-button size="sm" :id="'popover-menu'+row.item.id" @click="openActionMenu(row.item)">...</b-button>
+            <b-popover placement="bottomleft" :target="'popover-menu'+row.item.id" variant="secondary">
+                <b-row>
+                  <b-col cols=4>
+                    <label class="top-label">SKU: </label>
+                    <input class="form-control" type="tel" v-model="row.item.sku">
+                  </b-col>
+                  <b-col cols=4>
+                    <label class="top-label">DEPT: </label>
+                    <input class="form-control" type="tel" v-model="row.item.department">
+                  </b-col>
+                  <b-col cols=4>
+                    <label class="top-label">Best By: </label>
+                    <input class="form-control" type="date" v-model="row.item.expiration">
+                  </b-col>
+                </b-row>
+                <br/>
+                <b-row>
+                  <b-col cols=5>
+                    <div style="display: flex">
+                      <div>
+                        <b-button :disabled="loaderActive" style="" size="sm" variant="link" @click="downloadCarton(row.item)">Carton Label</b-button><br/>
+                        <label style="margin-left: 10px" class="top-label">Source: {{getCartonSource(row.item)}}</label>
+                      </div>
+                      <input class="form-control" style="font-size: 12px; width: 60px; height: 30px" type="tel" v-model="pageFromCarton">-
+                      <input class="form-control" style="font-size: 12px; width: 60px; height: 30px" type="tel" v-model="pageToCarton">
+                    </div>
+                  </b-col>
+                  <b-col cols=5>
+                    <div style="display: flex">
+                      <b-button :disabled="loaderActive" size="sm" variant="link" @click="downloadTag(row.item)">Pallet Tag</b-button>
+                      <input class="form-control" style="font-size: 12px; width: 60px; height: 30px" type="tel" v-model="pageFromTag">-
+                      <input class="form-control" style="font-size: 12px; width: 60px; height: 30px" type="tel" v-model="pageToTag">
+                    </div>
+                  </b-col>
+                  <b-col cols=2>
+                    <div style="display: flex">
+                      <label class="top-label" style="margin-top:7px">PCR: </label>
+                      <input style="width: 20px; height: 20px; margin-top:7px; margin-left: 5px" type="checkbox" v-model="row.item.pcr">
+                    </div>
+                  </b-col>
+                </b-row>
+                <b-row>
+                  <b-col cols=6>
+                    <div v-if="loaderActive">
+                      <b-spinner small label="Loading..."></b-spinner>
+                      <label class="top-label" style="margin-left:7px">Generating file, please wait...</label>
+                    </div>
+                  </b-col>
+                  <b-col cols=6 style="text-align: right;">
+                    <b-button :disabled="disableEditItem(row.item)" size="sm" variant="link" @click="deleteItem(row.item)">Delete Item</b-button>
+                  </b-col>
+                </b-row>
             </b-popover>
           </template>
         </b-table>
@@ -162,9 +218,6 @@
         </b-col>
       </b-row>
     </b-modal>
-    <div v-if="transferModalVisible">
-			<transfer-modal :sale-item-to="saleItem" v-on:saveModal="saveTransferModal"></transfer-modal>
-		</div>
   </b-container>
 </template>
 
@@ -173,17 +226,17 @@ import http from "../http-common";
 import router from "../router";
 import securite from "../securite";
 import moment from "moment";
+import httpUtils from "../httpUtils";
+import axios from "axios";
 
 export default {
   components: {
-    TransferModal: () => import("./TransferModal"),
     UploadFile: () => import("../directives/UploadFile"),
   },
   data() {
     return {
       securite: securite,
       modalVisible: false,
-      transferModalVisible: false,
       locked: false,
       sale: {
         saleItems: [],
@@ -191,11 +244,14 @@ export default {
         shippingAddress: {},
         freightTerms: {},
         paymentTerms: "",
+        paidInFull: false,
       },
       customer: {
         addresses: []
       },
-      item: {},
+      item: {
+        itemPackagings: []
+      },
       shippingAddress: {},
       availableCustomers: [],
       availableItems: [],
@@ -203,14 +259,14 @@ export default {
       sortDesc: false,
       columns: [
         { key: "item", label: "Item", sortable: false },
-        { key: "sku", label: "SKU#", sortable: false },
+        { key: "packaging", label: "Package", sortable: false },
+        { key: "itemPackaging.unitsOnStock", label: "Stock", sortable: false },
         { key: "units", label: "Sold", sortable: false },
         { key: "unitsAdjusted", label: "Adjusted", sortable: false },
-        { key: "unitsOnStockRet", label: "Stock(R)", sortable: false },
-        { key: "unitsSchedProd", label: "Sched/Prod", sortable: false },
-        { key: "unitsTransfered", label: "Trans", sortable: false },
+        { key: "unitsAssigned", label: "Assigned", sortable: false },
+        { key: "unitsSchedProd", label: "Prod", sortable: false },
         { key: "unitsShipped", label: "Ship", sortable: false },
-        { key: "cases", label: "Case", sortable: false },
+        { key: "cases", label: "Cases", sortable: false },
         { key: "cost", label: "Cost", sortable: false },
         { key: "unitPrice", label: "Unit Price", sortable: false },
         { key: "totalUnitPrice", label: "Total", sortable: false },
@@ -221,7 +277,6 @@ export default {
       unitsForSale: null,
       unitPrice: null,
       saleItem: {},
-      saleFromIds: [],
       availableFreightTerms: [
         {id: "TPB", name: "TP Bill"},
         {id: "PRP", name: "Pre Paid"},
@@ -232,15 +287,25 @@ export default {
       ],
       availableSales: [],
       saleKv: {},
+      itemPackaging: {
+        item: {},
+      },
+      pageFromCarton: 1,
+      pageToCarton: 1,
+      pageFromTag: 1,
+      pageToTag: 1,
       availableStatus: [
         {id: 'DRAFT', name: 'Draft'},
-        {id: 'PENDING_APPROVAL', name: 'Pending Approval'},
-        {id: 'APPROVED', name: 'Pending Schedule'},
-        {id: 'PENDING_PROD', name: 'Pending Prod'},
-        {id: 'PENDING_SHIPMENT', name: 'Pending Shipment'},
-        {id: 'SHIPPED', name: 'Fully Shipped'},
-        {id: 'CANCELLED', name: 'Cancelled'},
+        {id: 'READY', name: 'Ready'},
+        {id: 'APPROVED', name: 'Approved'},
+        {id: 'SCHEDULED', name: 'Scheduled'},
+        {id: 'PRODUCED', name: 'Produced'},
+        {id: 'ASSIGNED', name: 'Assigned'},
+        {id: 'SHIPPED', name: 'Shipped'},
+        {id: 'PAID', name: 'Paid'},
+        {id: 'CANCELED', name: 'Canceled'},
       ],
+      loaderActive: false,
     };
   },
   computed: {
@@ -269,10 +334,13 @@ export default {
           var cases = 0;
           this.sale.saleItems.forEach(si=> {
             var units = si.units?si.units:0;
-            var casePack = si.item.casePack?si.item.casePack:0
+            var casePack = si.itemPackaging.packaging.casePack?si.itemPackaging.packaging.casePack:0
               cases += +units/+casePack.toFixed(0);
           })
           return cases;
+      },
+      pcr(){
+        return this.sale.saleItems.find(si=> si.pcr == false) == null;
       },
   },
   watch: {
@@ -293,6 +361,110 @@ export default {
     }
   },
   methods: {
+    getCartonSource(si){
+      var source = "MIMS";
+      if(this.sale.customer.labelType == "UCC_128"){
+        source = "EDI";
+      }
+      if(!this.sale.customer.cartonLabel){
+        source = "None"
+      }
+      return source;
+    },
+    openActionMenu(saleItem){
+      this.pageFromCarton = 1;
+      this.pageToCarton = this.getCases(saleItem);
+      this.pageFromTag = 1;
+      this.pageToTag = this.getPallets(saleItem);
+    },
+    downloadCarton(si){
+      this.saveSale().then(r=> {
+        if(!si.expiration){
+          alert("Best By is not set");
+          return false;
+        }
+        if(!si.itemPackaging.item.weight){
+          alert("Item has no weight")
+          return false;
+        }
+        if(!this.sale.shippingAddress){
+          alert("Sale has no shipping address")
+          return false;
+        }
+        if(this.pageFromCarton > this.getCases(si) || this.pageToCarton > this.getCases(si)){
+          alert("Page from/to are too large");
+          return false;
+        }
+        var url = httpUtils.getUrl("/saleItem/" + si.id + "/carton/pdf", "&pageFrom="+this.pageFromCarton+"&pageTo="+this.pageToCarton);
+        this.loaderActive = true;
+        axios({
+          url: url,
+          method: 'GET',
+          responseType: 'blob',
+        }).then((response) => {
+            var fileURL = window.URL.createObjectURL(new Blob([response.data]));
+            var fileLink = document.createElement('a');
+            fileLink.href = fileURL;
+            var fileName = response.headers["file-name"];
+            fileLink.setAttribute('download', fileName);
+            document.body.appendChild(fileLink);
+            fileLink.click();
+            this.loaderActive = false;
+            fileLink.remove();
+        });
+      })
+    },
+    downloadTag(si){
+      this.saveSale().then(r=> {
+        if(!si.expiration){
+          alert("Best By is not set");
+          return false;
+        }
+        if(this.pageFromTag > this.getPallets(si) || this.pageToTag > this.getPallets(si)){
+          alert("Page from/to are too large");
+          return false;
+        }
+        if(!si.itemPackaging.item.weight){
+          alert("Item has no weight")
+          return false;
+        }
+        if(!this.sale.shippingAddress){
+          alert("Sale has no shipping address")
+          return false;
+        }
+        var url = httpUtils.getUrl("/saleItem/" + si.id + "/tag/pdf", "&pageFrom="+this.pageFromTag+"&pageTo="+this.pageToTag);
+        this.loaderActive = true;
+        axios({
+          url: url,
+          method: 'GET',
+          responseType: 'blob',
+        }).then((response) => {
+            var fileURL = window.URL.createObjectURL(new Blob([response.data]));
+            var fileLink = document.createElement('a');
+            fileLink.href = fileURL;
+            var fileName = response.headers["file-name"];
+            fileLink.setAttribute('download', fileName);
+            document.body.appendChild(fileLink);
+            fileLink.click();
+            this.loaderActive = false;
+            fileLink.remove();
+        });
+      })
+    },
+    getTotalUnitPrice(saleItem){
+      saleItem.totalUnitPrice = saleItem.totalUnitPrice = (+saleItem.unitPrice * +saleItem.units);
+      return saleItem.totalUnitPrice.toLocaleString('en-US',{minimumFractionDigits: 2});
+    },
+    rowClass(item, type) {
+      var klass = "";
+      if(item.status == 'SHIPPED'){
+        klass = 'fully-shipped'
+      }
+      if((+item.units + +item.unitsAdjusted) < +item.unitsShipped){
+        klass = 'over-shipped';
+      }
+      return klass;
+    },
     goToItemReturnList(saleItem){
       var query = { saleId: this.sale.id, itemId: saleItem.item.id };
       router.push({path: "/itemReturnList", query: query});
@@ -312,19 +484,22 @@ export default {
       }
       return "Not Yet Saved";
     },
-    allowEdit(){
-      return securite.hasRole(["SALE_ADMIN"]);
-      // return securite.hasRole(["SALE_ADMIN"]);
+    disableEditSale(){
+      return !securite.hasRole(["SALE_ADMIN"]) || this.sale.approved;
+    },
+    disableEditItem(si){
+      // return si.status == "SHIPPED" || this.sale.approved || !securite.hasRole(["SALE_ADMIN"]);
+      return false;
     },
     allowSave(){
-      return securite.hasRole(["SALE_ADMIN"]);
+      return securite.hasRole(["SALE_ADMIN"]) && !this.sale.cancelled;
     },
     allowApprove(){
       return !this.sale.approved && securite.hasRole(["SALE_ADMIN"]);
       // return securite.hasRole(["SALE_ADMIN"]);
     },
     goToScheduled(si) {
-      router.push("/scheduleEventList/" + si.item.id + "/sale/" + this.sale.id);
+      router.push("/itemSheduleEventList/" + si.itemPackaging.item.id + "/sale/" + this.sale.id);
     },
     goToShipment(si){
       var query = { saleId: this.sale.id };
@@ -332,19 +507,6 @@ export default {
         query.itemId = si.item.id;
       }
       router.push({path: "/shipmentList", query: query})
-    },
-    openTransferModal(saleItem){
-      if(!this.sale.id){
-        alert("Please, save sale before adding transfer");
-        return;
-      }
-      this.saleItem = saleItem;
-      this.saleItem.saleNumber = this.sale.number
-      this.transferModalVisible = true;
-    },
-    saveTransferModal(saleItem){
-      this.saleItem = {},
-      this.transferModalVisible = false;
     },
     saveModal(){
       this.closeModal();
@@ -379,7 +541,10 @@ export default {
     getSaleData(id) {
       return http.get("/sale/" + id).then(response => {
         this.sale = response.data;
-        this.setSaleFromIds();
+        response.data.saleItems.forEach(si => {
+          si.prevUnitsAssigned = si.unitsAssigned;
+          si.unitsOnStock = 0;
+        })
         if (response.data.customer) {
           this.customerDto = {
             id: response.data.customer.id,
@@ -395,13 +560,6 @@ export default {
         console.log("API error: " + e);
       });
     },
-    setSaleFromIds(){
-      this.sale.saleItems.forEach(si => {
-        si.transfersTo.forEach(sit => {
-          this.saleFromIds.push(sit.saleFromId);
-        })
-      })
-    },
     readySale(){
       this.sale.pendingApproval = true;
       this.saveSale().then(r=> {
@@ -413,6 +571,10 @@ export default {
     approveSale(){
       if(!this.allowApprove()){
         alert("Don't have permission");
+        return;
+      }
+      if(!this.pcr){
+        alert("Production Compliance is Not Ready!");
         return;
       }
       this.sale.approved = true;
@@ -430,40 +592,86 @@ export default {
       if(!this.validate()){
         return Promise.reject();
       }
-      this.sale.saleItems.forEach(si=>{
-        si.unitsAdjusted = si.unitsAdjusted || 0;
-        si.units == si.units || 0;
-      })
       this.sale.totalPrice = this.totalPrice;
       if(!this.sale.shippingAddress || !this.sale.shippingAddress.id){
         this.sale.shippingAddress = null;
       }
+      this.sale.pcr = this.pcr;
       return http.post("/sale", this.sale).then(r => {
-        this.getSaleData(r.data.id);
-        return r;
+        if(window.location.pathname.slice(-8) == "saleEdit"){
+          router.push("/saleEdit/" + r.data.id);
+        } else {
+          this.getSaleData(r.data.id);
+          return r;
+        }
       }).catch(e => {
         console.log("API error: " + e);
       });
-      return r;
+    },
+    copySale() {
+      this.saveSale().then(r => {
+        http.post("/sale/"+r.data.id+"/duplicate").then(r => {
+          router.push("/saleEdit/"+r.data.id);
+      }).catch(e => {console.log("API error: " + e);});
+      })
     },
     validate(){
       if(!this.sale.number || !this.sale.customer.id){
         alert("Number, Customer required");
         return false;
       }
+      var tooManyAssignedItem = null;
+      var tooManyShippedItem = null;
+      var alreadyShipped = false;
+      this.sale.saleItems.forEach(si=>{
+        if(this.sale.status == "SHIPPED"){
+          alreadyShipped = true;
+        }
+        si.unitsAdjusted = si.unitsAdjusted || 0;
+        si.units == si.units || 0;
+        var unitsAssignedDiff = +si.unitsAssigned - +si.prevUnitsAssigned;
+        if(si.unitsAssigned < 0 || ((+si.itemPackaging.unitsOnStock - +unitsAssignedDiff) < 0) || (si.unitsAssigned > (+si.units + +si.unitsAdjusted))){
+          tooManyAssignedItem = si.itemPackaging.item.number;
+        }
+        if(si.unitsShipped > (+si.units + si.unitsAdjusted)){
+          tooManyShippedItem = si.itemPackaging.item.number;
+        }
+      })
+      if(tooManyAssignedItem){
+        alert("Item: "+tooManyAssignedItem+" - Units Assigned more that Stock or (Sold + Adjusted)");
+        return false;
+      }
+      if(tooManyShippedItem){
+        alert("Item: "+tooManyShippedItem+" - Units Shipped more that (Sold + Adjusted)");
+        return false;
+      }
       return true;
     },
     cancelSale(){
+      if(this.sale.unitsShipped > 0){
+        alert("This sale was already shipped! Cannot cancel.");
+        return;
+      }
       this.sale.cancelled = !this.sale.cancelled;
+      if(this.sale.cancelled){
+        this.sale.saleItems.forEach(si => {
+          si.unitsAssigned = 0;
+        })
+      }
       this.saveSale();
     },
     deleteSale() {
-      if(this.sale.saleItems.length > 0 ){
-        alert("There are existing items. Please, move or delete items first");
+      if(this.sale.unitsShipped > 0){
+        alert("This sale was already shipped! Cannot cancel.");
         return;
       }
+      // if(this.sale.saleItems.length > 0 ){
+      //   alert("There are existing items. Please, move or delete items first");
+      //   return;
+      // }
       this.$bvModal.msgBoxConfirm("Are you sure you want to delete this Sale?").then(ok => {
         if(ok){
+          this.sale.saleItems = [];
           http.delete("/sale/"+this.sale.id).then(r => {
             router.push('/saleList/');
           }).catch(e => {
@@ -500,6 +708,7 @@ export default {
       http.post("/saleItem/"+saleItem.id+"/move/to/sale/"+this.saleKv.id).then(r => {
         this.saleKv = {};
         this.getSaleData(this.sale.id);
+        this.showItemMenu = false;
       }).catch(e => {
         console.log("API error: " + e);
       });
@@ -508,38 +717,41 @@ export default {
       if (!this.item.id) {
         return;
       }
-      var item = this.sale.saleItems.find(it => it.item.id == this.item.id);
+      var item = this.sale.saleItems.find(si => si.itemPackaging.item.id == this.item.id);
       if (item) {
         return;
       }
-      this.sale.saleItems.push({ 
+      this.itemPackaging.item = {id: this.item.id, name: this.item.name, number: this.item.number, totalCost: this.item.totalCost};
+      this.sale.saleItems.unshift({ 
           units: 0,
           unitPrice: 0.00,
-          item: this.item,
-          unitsTransferedTo: 0,
-          unitsTransferedFrom: 0,
-          transfersTo: [],
-          transfersFrom: [] 
+          prevUnitsAssigned: 0,
+          unitsAssigned: 0,
+          itemPackaging: this.itemPackaging,
       });
+      this.itemDto = {},
+      this.itemPackaging = {}
     },
     goToItem(item_id) {
       router.push("/itemEdit/" + item_id);
     },
-    gotToItemComponentList(item_id){
-        router.push('/itemComponentList/'+item_id);
-    },
     deleteItem(si) {
-      if(si.unitsScheduled>0 || si.unitsProduced>0 || si.unitsTransferedTo>0 || si.unitsTransferedFrom>0 || si.unitsShipped>0){
-        alert("Make sure there is no Schedule, Production, Transfers or Shipment for this item!");
+      if(si.unitsShipped>0){
+        alert("Make sure there is no Schedule or Shipment for this item!");
         return false;
       }
       var idx = this.sale.saleItems.findIndex(it => it.id == si.id);
       this.sale.saleItems.splice(idx, 1);
-      this.saveSale();
+      // this.saveSale();
     },
     getCases(si){
-      return (+si.units / +si.item.casePack).toFixed(0);
-    }
+      return Math.ceil(+si.units / +si.itemPackaging.packaging.casePack);
+    },
+    getPallets(si){
+      var number = Math.ceil(+this.getCases(si) / (+si.itemPackaging.packaging.ti * +si.itemPackaging.packaging.hi))
+      return number;
+    },
+
   },
   mounted() {
     var id = this.$route.params.sale_id;
@@ -553,4 +765,14 @@ export default {
 </script>
 
 <style>
+.table th, .table td {
+  padding-right: 0px !important;
+  padding-left: 0px !important;
+}
+.fully-shipped {
+  background-color: #b6e6c9;
+}
+.over-shipped {
+  background-color: #cea0a0;
+}
 </style>

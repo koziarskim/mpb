@@ -3,11 +3,11 @@
         <b-row>
           <b-col cols=2>
             <label class="top-label">Item Number:</label>
-            <input class="form-control" type="text" v-model="item.number">
+            <input class="form-control" type="text" maxlength="6" v-model="item.number">
           </b-col>
           <b-col cols=4>
             <label class="top-label">Item Name:</label>
-            <input class="form-control" type="text" v-model="item.name">
+            <input class="form-control" type="text" maxlength="20" v-model="item.name">
           </b-col>
           <b-col cols=2>
             <label class="top-label">UPC Number:</label>
@@ -18,12 +18,13 @@
           </b-col>
           <b-col cols=2 style="margin-top: 10px">
             <div style="text-align: right">
-              <b-button :disabled="!allowEdit()" size="sm" variant="success" @click="saveItem()">Save</b-button>
+              <b-button :disabled="!allowEdit()" size="sm" variant="primary" @click="downloadChecklist()">Checklist</b-button>
+              <b-button :disabled="!allowEdit()" size="sm" variant="success" style="margin-left: 3px" @click="saveItem()">Save</b-button>
               <b-button :disabled="!allowEdit()" style="margin-left: 3px" size="sm" @click="deleteItem()">x</b-button>
             </div>
             <label class="top-label">Stock: {{item.unitsOnStock}}</label><br/>
             <label class="top-label">Sch/Pro: <b-link role="button" @click="goToItemScheduleList()">{{item.unitsScheduled}}/{{item.unitsProduced}}</b-link></label><br/>
-            <label class="top-label">Sold: <b-link role="button" @click="goToItemSaleList()">{{item.unitsSold}}</b-link>&nbsp;</label><label class="top-label" :class="getReturnClass()"><b-link role="button" @click="goToItemReturnList()">Ret: {{item.unitsReturned}}</b-link></label><br/>
+            <label class="top-label">Sold: <b-link role="button" @click="goToSaleItemList()">{{item.unitsSold}}</b-link>&nbsp;</label><label class="top-label" :class="getReturnClass()"><b-link role="button" @click="goToItemReturnList()">Ret: {{item.unitsReturned}}</b-link></label><br/>
             <label class="top-label">Shipped: <b-link role="button" @click="goToItemShippedList()">{{item.unitsShipped}}</b-link></label>
           </b-col>
         </b-row>
@@ -38,125 +39,35 @@
             <label class="top-label">Category:</label>
             <b-select option-value="id" option-text="value" :list="availableItemCategories" v-model="item.category" placeholder="Category"></b-select>
           </b-col>
-          <b-col cols=2>
-            <img style="margin-top: 27px; width: 165px; height: 40px" :src="upcUrl" fluid>
-            <img style="margin-top: 5px; width: 165px; height: 64px" :src="caseUrl" fluid>
-          </b-col>
           <b-col cols=2 style="margin-top: 70px;">
             <label class="top-label">Season:</label>
             <b-select option-value="id" option-text="name" :list="availableSeasons" v-model="item.season" placeholder="Season"></b-select>
           </b-col>
-          <!-- <b-col cols=4>
-            <label class="top-label">Case Upc:</label>
-            <b-select option-value="id" style="width: 165px" option-text="name" :list="availableUpc" v-model="caseUpc" placeholder="UPC"></b-select>
-          </b-col> -->
         </b-row>
         <b-row>
         </b-row>
     <b-row>
     </b-row>
-    <b-row style="margin-top: 10px">
-      <b-col cols=3 style="border-right: 1px solid #c5c5c5">
         <!-- Units Section -->
         <hr class="hr-text" data-content="Unit dimenstion">
         <b-row>
-          <b-col cols=12>
-            <label class="top-label">Item Dimension (H x W x D):</label>
+          <b-col cols=3>
+            <label class="top-label">Item Dimension (L x W x H):</label>
             <div style="display:flex">
-              <input class="form-control" v-model="item.height"><span style="margin-top: 7px">x</span>
+              <input class="form-control" v-model="item.length"><span style="margin-top: 7px">x</span>
               <input class="form-control" v-model="item.width"><span style="margin-top: 7px">x</span>
-              <input class="form-control" v-model="item.depth">
+              <input class="form-control" v-model="item.height">
             </div>
           </b-col>
-        </b-row>
-        <b-row>
-          <b-col cols=5>
+          <b-col cols=2>
             <label class="top-label">Weight (lbs):</label>
             <input class="form-control" v-model="item.weight">
           </b-col>
-          <b-col cols=5>
+          <b-col cols=2>
             <br/>
-            <label class="top-label">Cubic (ft): {{itemCubic}}</label>
-          </b-col>
+            <label class="top-label">Item Cost: ${{totalCost}}</label>
+          </b-col>          
         </b-row>
-      </b-col>
-      <b-col cols=3 style="border-right: 1px solid #c5c5c5">
-        <hr class="hr-text" data-content="Case dimenstion">
-        <b-row>
-          <b-col cols=12>
-            <label class="top-label">Case Dimension (H x W x D):</label>
-            <div style="display:flex">
-              <input class="form-control" v-model="item.caseHeight"><span style="margin-top: 7px">x</span>
-              <input class="form-control" v-model="item.caseWidth"><span style="margin-top: 7px">x</span>
-              <input class="form-control" v-model="item.caseDepth">
-            </div>
-          </b-col>
-        </b-row>
-        <b-row>
-          <b-col cols=4>
-            <label class="top-label">Case Pack:</label>
-            <input class="form-control" v-model="item.casePack">
-          </b-col>
-          <b-col cols=8>
-            <br/>
-            <label class="top-label">Case weight: {{caseWeight}}</label><br/>
-            <label class="top-label">Case cubic: {{caseCubic}}</label>
-          </b-col>
-        </b-row>
-      </b-col>
-      <b-col cols=3 style="border-right: 1px solid #c5c5c5">
-        <hr class="hr-text" data-content="Pallet dimenstion">
-        <b-row>
-          <b-col cols=6>
-            <label class="top-label">TI x HI (pcs):</label>
-            <div style="display:flex">
-              <input class="form-control" v-model="item.ti" placeholder="0"><span style="margin-top: 7px">x</span>
-              <input class="form-control" v-model="item.hi" placeholder="0">
-            </div>
-          </b-col>
-          <b-col cols=6>
-            <label class="top-label">Pallet Weight:</label>
-            <input class="form-control" v-model="item.palletWeight">
-          </b-col>
-        </b-row>
-        <b-row>
-          <b-col cols=6>
-            <br/>
-            <label class="top-label">Units p/ pallet: {{unitsPerPallet}}</label><br/>
-            <label class="top-label">Pallet height: {{palletHeight}}</label>
-          </b-col>
-          <b-col cols=6>
-            <br/>
-            <label class="top-label">Cases p/p: {{casesPerPallet}}</label><br/>
-            <label class="top-label">Pallet cubic: {{palletCubic}}</label>
-          </b-col>
-        </b-row>
-      </b-col>
-      <b-col cols=3>
-        <hr class="hr-text" data-content="Prices are in USD">
-        <b-row>
-          <b-col cols=6>
-            <label class="top-label">Labor ($):</label>
-            <input class="form-control" v-model="item.laborCost">
-          </b-col>
-          <b-col cols=6>
-            <label class="top-label">Other ($):</label>
-            <input class="form-control" v-model="item.otherCost">
-          </b-col>
-        </b-row>
-        <b-row>
-          <b-col cols=6>
-            <br/>
-            <label class="top-label">Warehouse ($): {{warehouseCost}}</label><br/>
-            <label class="top-label">Package/mat. ($): {{packageCost}}</label>
-          </b-col>
-          <b-col cols=6>
-            <br/>
-            <label class="top-label">Total Cost: {{totalCost}}</label>
-          </b-col>
-        </b-row>
-      </b-col>
-    </b-row>
     <!-- Item Components -->
     <div style="border: 1px solid #d6d3d3; margin-top: 10px;">
       <b-row>
@@ -167,6 +78,12 @@
         <b-col cols=1>
           <b-button size="sm" style="margin-top: 30px;" variant="primary" @click="addComponent()">Add &#x25BC;</b-button>
         </b-col>
+        <b-col cols=4>
+          <label class="top-label">Possible Packages:
+            <span style="cursor: pointer; color: blue" @click="editPackaging()">(Update)</span>
+        </label>
+        <b-select option-value="label" option-text="label" :list="item.itemPackagings" v-model="itemPackaging"></b-select>
+      </b-col>
       </b-row>
       <br>
       <b-row>
@@ -192,6 +109,9 @@
         </b-col>
       </b-row>
     </div>
+    <div v-if="packagingModalVisible">
+      <packaging-modal :itemPackagings="item.itemPackagings" :item-name="item.number+' - '+item.name" v-on:close="closePackagingModal"></packaging-modal>
+    </div>    
   </b-container>
 </template>
 
@@ -201,8 +121,12 @@ import router from "../router";
 import httpUtils from "../httpUtils";
 import navigation from "../utils/navigation";
 import securite from "../securite";
+import axios from "axios";
 
 export default {
+  components: {
+    PackagingModal: () => import("./modals/PackagingModal"),
+  },
   data() {
     return {
       navigation: navigation,
@@ -215,8 +139,7 @@ export default {
         category: {},
         season: {},
         upc:{},
-        // caseUpc: {},
-        palletWeight: 60,
+        itemPackagings: []
       },
       image: "",
       httpUtils: httpUtils,
@@ -228,9 +151,6 @@ export default {
     availableSeasons: [],
     availableUpc: [],
     upc: {},
-    // caseUpc: {},
-    upcUrl: "",
-    caseUrl: "",
     uploadedFile: null,
     columns: [
         { key: "component", label: "Component", sortable: false },
@@ -241,6 +161,9 @@ export default {
         { key: "component.unitsLocked", label: "Reserved", sortable: false },
         { key: "action", label: "", sortable: false }
       ],
+      packagingModalVisible: false,
+      itemPackaging: {},
+
     };
   },
   computed: {
@@ -250,74 +173,56 @@ export default {
         totalCost = +totalCost + +ic.component.totalLandedCost * +ic.units;
       });
       totalCost =
-        +totalCost +
-        +this.warehouseCost +
-        +this.packageCost +
-        +this.item.laborCost +
-        +this.item.otherCost;
+        +totalCost
       return totalCost?totalCost.toFixed(2):0.00;
-    },
-
-    palletHeight() {
-      return +this.item.caseHeight * +this.item.hi;
     },
     itemCubic() {
       return (
-        (+this.item.height * +this.item.width * +this.item.depth) /
+        (+this.item.length * +this.item.width * +this.item.height) /
         1728
       ).toFixed(2);
-    },
-    caseCubic() {
-      return (
-        (+this.item.caseHeight * +this.item.caseWidth * +this.item.caseDepth) /
-        1728
-      ).toFixed(2);
-    },
-    palletCubic() {
-      return (+this.item.hi * +this.item.ti * +this.caseCubic).toFixed(2);
-    },
-    unitsPerPallet() {
-      return +this.item.hi * +this.item.ti * +this.item.casePack;
-    },
-    casesPerPallet() {
-      return +this.item.hi * +this.item.ti;
-    },
-    caseWeight() {
-      return (+this.item.casePack * +this.item.weight).toFixed(2);
-    },
-    warehouseCost() {
-      var cost = 12 / +this.unitsPerPallet;
-      return cost.toFixed(2);
-    },
-    packageCost() {
-      var cost = 12 / +this.unitsPerPallet;
-      return cost.toFixed(2);
     },
   },
   watch: {
-    upc(newValue, oldValue){
-      this.setUpcUrl(newValue.id);
-      // this.caseUpc = {id: newValue.id};
-      this.setCaseUrl(newValue.id);
-    },
-    // caseUpc(newValue, oldValue){
-    //   this.setCaseUrl(newValue.id);
-    // }
   },
   methods: {
-    setUpcUrl(upcId){
-      if(upcId){
-        this.upcUrl = httpUtils.getUrl("/upc/image/" + upcId);
-      }else{
-        this.upcUrl = "";
-      }
+    downloadChecklist(){
+      var url = httpUtils.getUrl("/item/" + this.item.id + "/checklist/pdf", "");
+      this.loaderActive = true;
+      axios({
+        url: url,
+        method: 'GET',
+        responseType: 'blob',
+      }).then((response) => {
+          var fileURL = window.URL.createObjectURL(new Blob([response.data]));
+          var fileLink = document.createElement('a');
+          fileLink.href = fileURL;
+          var fileName = response.headers["file-name"];
+          fileLink.setAttribute('download', fileName);
+          document.body.appendChild(fileLink);
+          fileLink.click();
+          this.loaderActive = false;
+          fileLink.remove();
+      });
     },
-    setCaseUrl(upcId){
-      if(upcId){
-        this.caseUrl = httpUtils.getUrl("/upc/case/image/" + upcId);
-      }else{
-        this.caseUrl = "";
+    editPackaging(){
+      this.packagingModalVisible = true;
+    },
+    closePackagingModal(packagings){
+      if (packagings) {
+        var itemPackagings = [];
+        packagings.forEach(p => {
+          var idx = this.item.itemPackagings.findIndex(ip =>  ip.packaging.id == p.id);
+          if(idx == -1){
+            itemPackagings.push({item: {id: this.item.id}, packaging: p, label: p.name+' ('+p.typeLabel+')'});
+          } else {
+            itemPackagings.push(this.item.itemPackagings[idx]);
+          }
+        })
+        this.item.itemPackagings = itemPackagings;
       }
+      this.packagingModalVisible = false;
+      this.packaging = {};
     },
     allowEdit(){
       return securite.hasRole(["STANDARD_ADMIN"]);
@@ -350,11 +255,11 @@ export default {
         console.log("API error: " + e);
       });
     },
-    goToItemSaleList(){
-        router.push('/itemSaleList/'+this.item.id);
+    goToSaleItemList(){
+      router.push({path: "/saleItemList/", query: {itemId: this.item.id}});
     },
     goToItemScheduleList(){
-        router.push('/scheduleEventList/'+this.item.id);
+        router.push({path: "/ScheduleEventList", query: {itemId: this.item.id}});
     },
     goToItemShippedList(){
       var query = { itemId: this.item.id};
@@ -386,12 +291,7 @@ export default {
         this.item = response.data;
         if(response.data.upc){
           this.upc = {id: response.data.upc.id};
-          this.setUpcUrl(response.data.upc.id);
         }
-        // if(response.data.caseUpc){
-        //   this.caseUpc = {id: response.data.caseUpc.id};
-        //   this.setCaseUrl(response.data.caseUpc.id);
-        // }
         return response.data;
       }).catch(e => {
         console.log("API error: " + e);
@@ -443,9 +343,6 @@ export default {
       if(this.upc.id){
         this.item.upc = {id: this.upc.id}
       }
-      // if(this.caseUpc.id){
-      //   this.item.caseUpc = {id: this.caseUpc.id}
-      // }
       var formData = new FormData();
       formData.append("image", this.uploadedFile);
       formData.append("jsonItem", JSON.stringify(this.item));
@@ -466,7 +363,7 @@ export default {
 	},
 	getImageUrl(){
 		if(this.item.attachment){
-        	return httpUtils.getUrl("/file/attachment/" + this.item.attachment.id);
+        	return httpUtils.getUrl("/file/attachment/" + this.item.attachment.id, "");
 		}
 		return null;
   },
@@ -499,9 +396,6 @@ export default {
     var item_id = this.$route.params.item_id;
     if (item_id) {
       this.getItem(item_id);
-    }else{
-      // this.item.season = navigation.getSeason();
-      // this.item.year = navigation.getYear();
     }
     this.getAvailableBrands();
     this.getAvailableCategories();

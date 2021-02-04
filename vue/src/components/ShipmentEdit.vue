@@ -25,6 +25,7 @@
         <div style="display:flex; margin-left: 75px">
           <upload-file v-if="shipment.id" v-on:header-click="openPdf" v-on:close="closeUpload" :entity-id="shipment.id" header-text="Bill of Lading/Packing Slip (PDF)" type="Shipment" :attachments="shipment.attachments"></upload-file>
           <b-button :disabled="!allowEdit()" :title="getSaveTitle(shipment)" size="sm" style="margin-left: 5px" variant="success" @click="saveShipment()">Save</b-button>
+          <b-button style="margin-left: 3px" size="sm" @click="unlockShipment()">Unlock</b-button>
           <b-button style="margin-left: 3px" :disabled="!allowEdit()" size="sm" @click="deleteShipment()">x</b-button>
         </div>
         <div style="display: flex; margin-left: 85px; margin-top: 7px">
@@ -110,17 +111,15 @@
       </b-col>
       <b-col>
         <div style="display: flex">
-          <b style="margin-top: 7px">Total pallets:</b><input class="form-control" style="width: 60px" type="tel" v-model="totalPalletsCustom" @input="overwrite=true">
+          <b style="margin-top: 7px">Total pallets:</b><input disabled class="form-control" style="width: 60px" type="tel" v-model="totalPallets">
+          <input class="form-control" style="width: 60px" type="tel" v-model="shipment.totalPalletsCustom">
         </div>
       </b-col>
-      <b-col>    
+      <b-col cols=3>    
         <div style="display: flex">
-          <b style="margin-top: 7px">Total weight:</b><input class="form-control" style="width: 80px" type="tel" v-model="totalWeightCustom" @input="overwrite=true">
+          <b style="margin-top: 7px">Total weight:</b><input disabled class="form-control" style="width: 80px" type="tel" v-model="totalWeight">
+          <input class="form-control" style="width: 80px" type="tel" v-model="shipment.totalWeightCustom">
         </div>
-      </b-col>
-      <b-col cols=2>
-        <span style="visibility: hidden">{{totalPallets}}</span>
-        <span style="visibility: hidden">{{totalWeight}}</span><br/>
       </b-col>
     </b-row>
     <div style="border: 1px solid #d6d3d3; margin-top: 10px;">
@@ -128,32 +127,26 @@
         <b-col>
           <b-table v-if="shipment.shipmentItems.length>0" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="shipment.shipmentItems" :fields="columns">
             <template v-slot:cell(item)="row">
-              <b-link role="button" @click.stop="goToItem(row.item.saleItem.item.id)">{{row.item.saleItem.item.number}}</b-link>
-              <div class="name-md" :title="row.item.name"> {{row.item.saleItem.item.name}}</div>
+              <b-link role="button" @click.stop="goToItem(row.item.saleItem.itemPackaging.item.id)">{{row.item.saleItem.itemPackaging.item.number}}</b-link>
+              <div class="name-md"> {{row.item.saleItem.itemPackaging.item.name}}</div>
             </template>
             <template v-slot:cell(sale)="row">
               <b-link @click.stop="goToSale(row.item.saleItem.sale.id)">{{row.item.saleItem.sale.number}}</b-link>
-            </template>
-            <template v-slot:cell(unitsOnStockRet)="row">
-              <span>{{row.item.saleItem.unitsOnStock}} </span><b-link @click.stop="goToItemReturnList(row.item.saleItem)">({{row.item.saleItem.unitsReturned}})</b-link>
             </template>
             <template v-slot:cell(units)="row">
               <input class="form-control" style="width:100px" type="tel" v-model="row.item.units">
             </template>
             <template v-slot:cell(unitsSoldAdj)="row">
-              <span>{{row.item.saleItem.units}} {{row.item.saleItem.unitsAdjusted >= 0?'+':''}}{{row.item.saleItem.unitsAdjusted}}</span>
-            </template>
-            <template v-slot:cell(unitsTransfered)="row">
-              <b-button size="sm" variant="link" @click="openTransferModal(row.item.saleItem)">{{row.item.saleItem.unitsTransferedTo}}-{{row.item.saleItem.unitsTransferedFrom}}</b-button>
+              <span>{{+row.item.saleItem.units + +row.item.saleItem.unitsAdjusted}}</span>
             </template>
             <template v-slot:cell(unitsSchedProd)="row">
               <span>{{row.item.saleItem.unitsScheduled}}/{{row.item.saleItem.unitsProduced}}</span>
             </template>
             <template v-slot:cell(cases)="row">
-              <span>{{row.item.cases = Math.ceil(+row.item.units / +row.item.saleItem.item.casePack)}}</span>
+              <span>{{row.item.cases = Math.ceil(+row.item.units / +row.item.saleItem.itemPackaging.packaging.casePack)}}</span>
             </template>
             <template v-slot:cell(pallets)="row">
-              <span>{{row.item.pallets = getNumberOfPallets(row.item)}}</span>
+              <span>{{row.item.pallets = getPallets(row.item)}}</span>
             </template>
             <template v-slot:cell(action)="row">
               <b-button size="sm" @click.stop="removeSaleItem(row.item.saleItem.id)">x</b-button>
@@ -168,9 +161,6 @@
     <div v-if="saleItemPickerVisible">
 			<sale-item-picker :customer-id="customer.id" :added-sale-item-ids="getAddedSaleItemsIds()" v-on:closeModal="closeSaleItemPicker"></sale-item-picker>
 		</div>
-    <div v-if="transferModalVisible">
-			<transfer-modal :read-only="true" :sale-item-to="saleItemTransfer" v-on:saveModal="saveTransferModal"></transfer-modal>
-		</div>    
   </b-container>
 </template>
 
@@ -183,19 +173,13 @@ import securite from "../securite";
 
 export default {
   components: {
-    AddressModal: () => import("./AddressModal"),
-    SaleItemPicker: () => import("./SaleItemPicker"),
+    AddressModal: () => import("./modals/AddressModal"),
+    SaleItemPicker: () => import("./modals/SaleItemPicker"),
     UploadFile: () => import("../directives/UploadFile"),
-    TransferModal: () => import("./TransferModal"),
   },
   data() {
     return {
       securite: securite,
-      transferModalVisible: false,
-      saleItemTransfer: {},
-      overwrite: false,
-      totalPalletsCustom: 0,
-      totalWeightCustom: 0,
       selectionVisible: false,
       saleItemPickerVisible: false,
       selected: [],
@@ -225,13 +209,12 @@ export default {
       columns: [
         { key: "item", label: "Item", sortable: false },
         { key: "sale", label: "Sale", sortable: false },
-        { key: "unitsSoldAdj", label: "Sold (+/-Adj)", sortable: false },
-        { key: "unitsOnStockRet", label: "Stock (R)", sortable: false },
-        { key: "unitsSchedProd", label: "Sched/Prod", sortable: false },
-        { key: "unitsTransfered", label: "Trans", sortable: false },
+        { key: "unitsSoldAdj", label: "Sold", sortable: false },
+        { key: "saleItem.unitsAssigned", label: "Assigned", sortable: false },
+        // { key: "unitsSchedProd", label: "Sched/Prod", sortable: false },
         { key: "saleItem.unitsShipped", label: "Shipped", sortable: false },
         { key: "units", label: "Units", sortable: false },
-        { key: "saleItem.item.casePack", label: "C/P", sortable: false },
+        { key: "saleItem.itemPackaging.packaging.casePack", label: "C/P", sortable: false },
         { key: "cases", label: "Case", sortable: false },
         { key: "pallets", label: "Pallet", sortable: false },
         { key: "action", label: "", sortable: false }
@@ -268,22 +251,16 @@ export default {
       this.shipment.shipmentItems.forEach(si => {
         total += +si.pallets;
       });
-      if(!this.overwrite){
-        this.totalPalletsCustom = total;
-      }
       return total;
     },
     totalWeight() {
       var total = 0;
       this.shipment.shipmentItems.forEach(si => {
-        var totalPaletWeight = +si.saleItem.item.palletWeight * +si.pallets
-        total += (+si.saleItem.item.weight * +si.units) + +totalPaletWeight;
+        var totalPaletWeight = +si.saleItem.itemPackaging.packaging.palletWeight * +si.pallets
+        total += (+si.saleItem.itemPackaging.item.weight * +si.units) + +totalPaletWeight;
       });
-      if(!this.overwrite){
-        this.totalWeightCustom = total.toFixed();
-      }
       return total.toFixed();
-    }
+    },
   },
   watch: {
     customer(new_value, old_value) {
@@ -302,20 +279,29 @@ export default {
     },
   },
   methods: {
-    openTransferModal(saleItem){
-      this.saleItemTransfer = saleItem;
-      this.saleItemTransfer.saleNumber = saleItem.sale.number
-      this.transferModalVisible = true;
-    },    
-    saveTransferModal(saleItem){
-      this.saleItemTransfer = {},
-      this.transferModalVisible = false;
+    unlockShipment(){
+      this.$bvModal.msgBoxConfirm('This Shipment was alread shipped. Invoices were generated and submitted'
+                                  +'These invoices needs to be submitted again. Please confirm with Accounting department').then(ok => {
+        if(ok){
+          this.shippedDate = null;
+          this.saveShipment();
+        }
+      })
     },
     changeShippedDate(e){
+      var notApproved = this.shipment.shipmentItems.find(si => !si.saleItem.sale.approved);
+      if(notApproved){
+        alert("Sale "+notApproved.saleItem.sale.number+" is not approved")
+        e.target.value = null;
+        this.readyDisabled = false;
+        this.shippedDate = null;
+        this.shipment.shippedDate = null;
+        return false;
+      }
       if(!this.shipment.ready){
         alert("Shipment is not ready!");
         this.shippedDate = null;
-        return;
+        return false;
       }
       if(e.target.value){
         this.readyDisabled = true;
@@ -367,13 +353,13 @@ export default {
       })
     },
     goToItemReturnList(saleItem){
-      var query = { saleId: saleItem.sale.id, itemId: saleItem.item.id };
+      var query = { saleId: saleItem.sale.id, itemId: saleItem.itemPackaging.item.id };
       router.push({path: "/itemReturnList", query: query});
     },
-    getNumberOfPallets(shipmentItem){
+    getPallets(shipmentItem){
       var number = null;
-      if(!this.overwrite){
-        number = Math.ceil(+shipmentItem.cases / (+shipmentItem.saleItem.item.ti * +shipmentItem.saleItem.item.hi))
+      if(this.shipment.totalPalletsCustom < 1){
+        number = Math.ceil(+shipmentItem.cases / (+shipmentItem.saleItem.itemPackaging.packaging.ti * +shipmentItem.saleItem.itemPackaging.packaging.hi))
       }
       return number;
     },
@@ -430,35 +416,32 @@ export default {
         if (response.data.freightAddress){
           this.freightAddress = response.data.freightAddress;
         }
-        if(response.data.totalPallets != response.data.totalPalletsCustom){
-          this.overwrite = true;
-        }
-        if(response.data.totalWeight != response.data.totalWeightCustom){
-          this.overwrite = true;
-        }
-        this.totalPalletsCustom = response.data.totalPalletsCustom;
-        this.totalWeightCustom = response.data.totalWeightCustom;
         this.shipment = response.data;
         this.shippedDate = response.data.shippedDate;
       }).catch(e => { console.log("API error: " + e); });
     },
     validate(){
+      if(moment(this.shippedDate).isBefore('2019-01-01')){
+        alert("Shipped date cannot be less that 2019.")
+        this.shippedDate = null;
+        return false;
+      }
       if(!this.shipment.number){
         alert("Shipping Number required.")
         return false;
       }
-      if(this.shipment.shippedDate){
-        alert("Shipping was already shipped. No modification allowed");
-        return false;
-      }
-      var overStock = false;
-      this.shipment.shipmentItems.forEach(si=> {
-        if(((+si.units - +si.prevUnits) > +si.saleItem.unitsOnStock)){
-          overStock = true;
+      var overShippedItem = null;
+      this.shipment.shipmentItems.forEach(shipItem=> {
+        var shippedUnits = shipItem.saleItem.unitsShipped;
+        if(this.shipment.shippedDate){
+          shippedUnits -= shipItem.units;
+        }
+        if(((+shipItem.saleItem.units + +shipItem.saleItem.unitsAdjusted) - +shippedUnits - +shipItem.units != 0)){
+          overShippedItem = shipItem.saleItem.itemPackaging.item.number;
         }
       })
-      if(overStock){
-        alert("Cannot ship more that on stock")
+      if(overShippedItem){
+        alert("Item: "+overShippedItem +" - Units shipped must equal to units assigned. If short shipped, you might want to adjust sale")
         return false;
       }
       return true;
@@ -478,8 +461,6 @@ export default {
       this.shipment.totalCases = this.totalCases;
       this.shipment.totalPallets = this.totalPallets;
       this.shipment.totalWeight = this.totalWeight;
-      this.shipment.totalPalletsCustom = this.totalPalletsCustom;
-      this.shipment.totalWeightCustom = this.totalWeightCustom;
       this.shipment.shippedDate = this.shippedDate;
       return http.post("/shipment", this.shipment).then(r => {
         this.shipment = r.data;
@@ -562,7 +543,7 @@ export default {
         {
           shipment: {id: this.shipment.id},
           saleItem: saleItem,
-          units: saleItem.unitsOnStock,
+          units: saleItem.unitsAssigned,
           cases: 0,
           pallets: 0
         }
@@ -583,11 +564,11 @@ export default {
       if(this.allowEdit()){
         this.saveShipment().then(shipment => {
           this.shipment.id = shipment.id;
-          var url = httpUtils.getUrl("/shipment/" + this.shipment.id + "/pdf");
+          var url = httpUtils.getUrl("/shipment/" + this.shipment.id + "/pdf", "");
           window.open(url, "_blank","")
         })
       }else{
-        var url = httpUtils.getUrl("/shipment/" + this.shipment.id + "/pdf");
+        var url = httpUtils.getUrl("/shipment/" + this.shipment.id + "/pdf", "");
         window.open(url, "_blank","")
       }
     },
@@ -595,7 +576,7 @@ export default {
   mounted() {
     var id = this.$route.params.shipment_id;
     var saleItemIds = this.$route.query.saleItemIds;
-    window.history.replaceState({}, document.title, window.location.pathname);
+    // window.history.replaceState({}, document.title, window.location.pathname);
     if(id!="new"){
       this.getShipment(id);
     }else{
