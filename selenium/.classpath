@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="C:/Users/kozia/eclipse/libs/bundle-jars.jar"/>
+	<classpathentry kind="lib" path="C:/Users/kozia/eclipse/libs/byte-buddy-1.7.9.jar"/>
+	<classpathentry kind="lib" path="C:/Users/kozia/eclipse/libs/byte-buddy-1.8.15.jar"/>
+	<classpathentry kind="lib" path="C:/Users/kozia/eclipse/libs/commons-codec-1.10.jar"/>
+	<classpathentry kind="lib" path="C:/Users/kozia/eclipse/libs/commons-exec-1.3.jar"/>
+	<classpathentry kind="lib" path="C:/Users/kozia/eclipse/libs/commons-io-2.6.jar"/>
+	<classpathentry kind="lib" path="C:/Users/kozia/eclipse/libs/commons-lang3-3.7.jar"/>
+	<classpathentry kind="lib" path="C:/Users/kozia/eclipse/libs/commons-logging-1.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/kozia/eclipse/libs/commons-net-3.6.jar"/>
+	<classpathentry kind="lib" path="C:/Users/kozia/eclipse/libs/commons-text-1.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/kozia/eclipse/libs/cssparser-0.9.24.jar"/>
+	<classpathentry kind="lib" path="C:/Users/kozia/eclipse/libs/gson-2.8.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/kozia/eclipse/libs/guava-23.6-jre.jar"/>
+	<classpathentry kind="lib" path="C:/Users/kozia/eclipse/libs/guava-25.0-jre.jar"/>
+	<classpathentry kind="lib" path="C:/Users/kozia/eclipse/libs/htmlunit-2.29.jar"/>
+	<classpathentry kind="lib" path="C:/Users/kozia/eclipse/libs/htmlunit-core-js-2.28.jar"/>
+	<classpathentry kind="lib" path="C:/Users/kozia/eclipse/libs/htmlunit-driver-2.29.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/kozia/eclipse/libs/httpclient-4.5.3.jar"/>
+	<classpathentry kind="lib" path="C:/Users/kozia/eclipse/libs/httpcore-4.4.6.jar"/>
+	<classpathentry kind="lib" path="C:/Users/kozia/eclipse/libs/httpmime-4.5.3.jar"/>
+	<classpathentry kind="lib" path="C:/Users/kozia/eclipse/libs/javax.servlet-api-3.1.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/kozia/eclipse/libs/jcip-annotations-1.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/kozia/eclipse/libs/jcommander-1.72.jar"/>
+	<classpathentry kind="lib" path="C:/Users/kozia/eclipse/libs/jetty-client-9.4.7.v20170914.jar"/>
+	<classpathentry kind="lib" path="C:/Users/kozia/eclipse/libs/jetty-http-9.4.8.v20171121.jar"/>
+	<classpathentry kind="lib" path="C:/Users/kozia/eclipse/libs/jetty-io-9.4.8.v20171121.jar"/>
+	<classpathentry kind="lib" path="C:/Users/kozia/eclipse/libs/jetty-util-9.4.8.v20171121.jar"/>
+	<classpathentry kind="lib" path="C:/Users/kozia/eclipse/libs/jetty-xml-9.4.7.v20170914.jar"/>
+	<classpathentry kind="lib" path="C:/Users/kozia/eclipse/libs/neko-htmlunit-2.28.jar"/>
+	<classpathentry kind="lib" path="C:/Users/kozia/eclipse/libs/okhttp-3.9.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/kozia/eclipse/libs/okhttp-3.11.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/kozia/eclipse/libs/okio-1.13.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/kozia/eclipse/libs/okio-1.14.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/kozia/eclipse/libs/sac-1.3.jar"/>
+	<classpathentry kind="lib" path="C:/Users/kozia/eclipse/libs/serializer-2.7.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/kozia/eclipse/libs/snakeyaml-1.19.jar"/>
+	<classpathentry kind="lib" path="C:/Users/kozia/eclipse/libs/websocket-api-9.4.7.v20170914.jar"/>
+	<classpathentry kind="lib" path="C:/Users/kozia/eclipse/libs/websocket-client-9.4.7.v20170914.jar"/>
+	<classpathentry kind="lib" path="C:/Users/kozia/eclipse/libs/websocket-common-9.4.7.v20170914.jar"/>
+	<classpathentry kind="lib" path="C:/Users/kozia/eclipse/libs/xalan-2.7.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/kozia/eclipse/libs/xercesImpl-2.11.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/kozia/eclipse/libs/xml-apis-1.4.01.jar"/>
+	<classpathentry kind="lib" path="C:/Users/kozia/eclipse/selenium-3.9.1-nodeps.jar"/>
+	<classpathentry kind="lib" path="C:/Users/kozia/eclipse/selenium-3.9.1-nodeps-sources.jar"/>
+	<classpathentry kind="lib" path="C:/Users/kozia/eclipse/libs/selenium-server-standalone-3.9.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/kozia/eclipse/libs/selenium-chrome-driver-2.3.1.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
