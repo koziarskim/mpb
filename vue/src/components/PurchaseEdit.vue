@@ -56,7 +56,7 @@
       <b-col cols=2>
         <div>
           <div style="text-align: right;">
-            <b-button size="sm" style="margin-right: 2px;" type="reset" variant="success" @click="save()">Save</b-button>
+            <b-button id="purchaseedit-save" size="sm" style="margin-right: 2px;" type="reset" variant="success" @click="save()">Save</b-button>
             <b-button v-if="!receiveMode" size="sm" style="width: 28px;" type="reset" variant="secondary" @click="deletePo()">x</b-button><br/>
             <b-button v-if="!receiveMode" size="sm" style="margin: 2px;" type="reset" variant="success" @click="receive()">Receive</b-button>
             <b-button v-if="!receiveMode" :disabled="purchase.canceled" size="sm" style="margin: 2px;" type="reset" variant="success" @click="cancelPO()">Cancel</b-button>
@@ -69,7 +69,7 @@
       <b-col cols=2>
           <div style="width: 200px; padding-left: 3px; padding-right: 3px;">
             <label class="top-label">P.O. Name:</label>
-            <input class="form-control" type="text" v-model="purchase.name" placeholder="P.O. Name/Description">
+            <input id="C" cclass="form-control" type="text" v-model="purchase.name" placeholder="P.O. Name/Description">
           </div>
         Units: {{totalUnits.toLocaleString()}}<br/>
         Cases: {{totalCases.toLocaleString()}}<br/>

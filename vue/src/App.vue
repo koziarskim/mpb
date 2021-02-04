@@ -8,12 +8,12 @@
       <b-collapse is-nav id="nav_collapse">
         <b-navbar-nav v-if="showNav">
           <b-nav-item @click="goTo('/home')" :class="navClass('home')">Home</b-nav-item>
-          <b-nav-item @click="goTo('/supplierList')" :class="navClass('supplier')">Supplier</b-nav-item>
-          <b-nav-item @click="goTo('/componentList')" :class="navClass('component')">Component</b-nav-item>
+          <b-nav-item id="nav-supplier" @click="goTo('/supplierList')" :class="navClass('supplier')">Supplier</b-nav-item>
+          <b-nav-item id="nav-component" @click="goTo('/componentList')" :class="navClass('component')">Component</b-nav-item>
           <b-nav-item @click="goTo('/itemList')" :class="navClass('item')">Item</b-nav-item>
           <b-nav-item @click="goTo('/customerList')" :class="navClass('customer')">Customer</b-nav-item>
           <b-nav-item @click="goTo('/saleList')" :class="navClass('sale')">Sale</b-nav-item>
-          <b-nav-item @click="goTo('/purchaseList')" :class="navClass('purchase')">Purchase</b-nav-item>
+          <b-nav-item id="nav-purchase" @click="goTo('/purchaseList')" :class="navClass('purchase')">Purchase</b-nav-item>
           <b-nav-item @click="goTo('/receivingList')" :class="navClass('receiving')">Receiving</b-nav-item>
           <b-nav-item @click="goTo('/shipmentList')" :class="navClass('shipment')">Shipment</b-nav-item>
           <b-nav-item @click="goTo('/shipmentSchedule')" :class="navClass('shipmentSchedule')">Schedule</b-nav-item>

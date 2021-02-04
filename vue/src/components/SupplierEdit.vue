@@ -4,13 +4,13 @@
             <h4 style="text-align: left;">New/Edit Supplier</h4>
             <div style="text-align: right;">
                 <!-- <b-button type="submit" variant="primary" @click="save">Save</b-button> -->
-                <b-button type="reset" variant="success" @click="saveAndClose">Save & Close</b-button>
+                <b-button id="supplieredit-savebutton" type="reset" variant="success" @click="saveAndClose">Save & Close</b-button>
             </div>
         </div>
         <b-row>
             <b-col cols=4>
                 <label class="top-label">Name:</label>
-                <input class="form-control" type="text" v-model="supplier.name" placeholder="Name"/>
+                <input id="supplieredit-name" class="form-control" type="text" v-model="supplier.name" placeholder="Name"/>
             </b-col>
             <b-col cols=1>
                 <label class="top-label">Account #:</label>

@@ -3,27 +3,27 @@
     <b-row>
       <b-col cols=2>
         <label class="top-label">Component #:</label>
-        <input class="form-control" maxlength="20" type="tel" v-model="component.number" />
+        <input class="form-control" id="componentedit-number" maxlength="20" type="tel" v-model="component.number" />
       </b-col>
       <b-col cols=3>
         <label class="top-label">Name/Short Description:</label>
-        <input class="form-control" type="tel" maxlength="50" v-model="component.name" />
+        <input class="form-control" id="componentedit-name" type="tel" maxlength="50" v-model="component.name" />
       </b-col>
       <b-col cols=2>
         <label class="top-label">Category:</label>
-        <b-select option-value="id" option-text="name" :list="availableCategories" v-model="category"></b-select>
+        <b-select id="componentedit-category" option-value="id" option-text="name" :list="availableCategories" v-model="category"></b-select>
       </b-col>
       <b-col cols=2>
         <label class="top-label">Type:</label>
-        <b-select option-value="id" option-text="name" :list="availableComponentTypes" v-model="componentType"></b-select>
+        <b-select id="componentedit-type"option-value="id" option-text="name" :list="availableComponentTypes" v-model="componentType"></b-select>
       </b-col>
       <b-col cols=2 style="margin-top: 5px">
         <upload :on-upload="onUpload" :file-url="getImageUrl()"></upload>
       </b-col>
       <b-col cols=1 style="margin-left: -50px">
         <div style="margin-right: -10px">
-          <b-button :disabled="!allowEdit()" size="sm" variant="success" @click="saveComponent()">Save</b-button>
-          <b-button :disabled="!allowEdit()" style="margin-left: 3px" size="sm" @click="deleteComponent()">x</b-button>
+          <b-button :disabled="!allowEdit()" id="componentedit-savecomponent" size="sm" variant="success" @click="saveComponent()">Save</b-button>
+          <b-button :disabled="!allowEdit()" id="componentedit-delete" style="margin-left: 3px" size="sm" @click="deleteComponent()">x</b-button>
         </div>
         <br />
         <label class="top-label">
@@ -39,7 +39,7 @@
         <b-row>
           <b-col cols=3>
             <label class="top-label">Supplier:</label>
-            <b-select option-value="id" option-text="name" :list="availableSuppliers" v-model="supplier"></b-select>
+            <b-select id="componentedit-supplier" option-value="id" option-text="name" :list="availableSuppliers" v-model="supplier"></b-select>
           </b-col>
           <b-col cols=2>
             <label class="top-label">Supplier's Stock#:</label>
