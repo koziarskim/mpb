@@ -22,7 +22,7 @@
         </b-popover>
       </b-col>
       <b-col cols=2>
-        <input class="form-control" style="font-size: 12px" type="tel" v-model="nameSearch" @keyup.enter="getComponents()" placeholder="Number or Name"/>
+        <input class="form-control" id= "componentlist-name" style="font-size: 12px" type="tel" v-model="nameSearch" @keyup.enter="getComponents()" placeholder="Number or Name"/>
       </b-col>
       <b-col cols=2>
         <b-select option-value="id" option-text="name" :list="availableSuppliers" v-model="supplierKv" placeholder="Supplier"></b-select>
@@ -35,8 +35,8 @@
       </b-col>
       <b-col>
         <div style="text-align: right;">
-          <b-button size="sm" variant="primary" @click="goToComponent('')">New</b-button>
-          <b-button size="sm" style="margin-left:3px" variant="primary" @click="createNewPurchase()">New P.O.({{selectedComponents.length}})</b-button>&nbsp;
+          <b-button id="componentlist-newbtn" size="sm" variant="primary" @click="goToComponent('')">New</b-button>
+          <b-button id="componentlist-newpo" size="sm" style="margin-left:3px" variant="primary" @click="createNewPurchase()">New P.O.({{selectedComponents.length}})</b-button>&nbsp;
         </div>
       </b-col>
     </b-row>

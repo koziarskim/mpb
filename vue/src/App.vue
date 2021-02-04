@@ -4,9 +4,9 @@
       <b-collapse is-nav id="nav_collapse">
         <b-navbar-nav v-if="showNav">
           <b-nav-item @click="goTo('/home')" :class="navClass('home')">Home</b-nav-item>
-          <b-nav-item @click="goTo('/supplierList')" :class="navClass('supplier')">Supplier</b-nav-item>
+          <b-nav-item id="nav-supplier" @click="goTo('/supplierList')" :class="navClass('supplier')">Supplier</b-nav-item>
           <b-nav-item-dropdown text="Component" :class="navClass('component')">
-            <b-dropdown-item @click="goTo('/componentList')"><span style="color: black">Component List</span></b-dropdown-item>
+            <b-dropdown-item id="nav-component" @click="goTo('/componentList')"><span style="color: black">Component List</span></b-dropdown-item>
             <b-dropdown-item @click="goTo('/componentInventoryList')"><span style="color: black">Inventory List</span></b-dropdown-item>
             <b-dropdown-item @click="goTo('/componentAdjustmentList')"><span style="color: black">Adjustment List</span></b-dropdown-item>
           </b-nav-item-dropdown>
@@ -20,7 +20,7 @@
             <b-dropdown-item @click="goTo('/saleList')"><span style="color: black">Sale List</span></b-dropdown-item>
             <b-dropdown-item @click="goTo('/saleItemList')"><span style="color: black">Sales by Item</span></b-dropdown-item>
           </b-nav-item-dropdown>
-          <b-nav-item @click="goTo('/purchaseList')" :class="navClass('purchase')">Purchase</b-nav-item>
+          <b-nav-item id="nav-purchase" @click="goTo('/purchaseList')" :class="navClass('purchase')">Purchase</b-nav-item>
           <b-nav-item @click="goTo('/receivingList')" :class="navClass('receiving')">Receiving</b-nav-item>
           <b-nav-item-dropdown text="Shipment" :class="navClass('shipment')">
             <b-dropdown-item @click="goTo('/shipmentList')"><span style="color: black">Shipment List</span></b-dropdown-item>

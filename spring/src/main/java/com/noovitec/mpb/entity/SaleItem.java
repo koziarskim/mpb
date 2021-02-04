@@ -13,7 +13,6 @@ import javax.persistence.OneToMany;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.noovitec.mpb.entity.Sale.STATUS;
 
-import jdk.internal.jline.internal.Log;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

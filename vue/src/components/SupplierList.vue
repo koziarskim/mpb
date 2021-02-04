@@ -5,11 +5,11 @@
                 <span style="text-align: left; font-size: 18px; font-weight: bold">Suppliers</span>
             </b-col>
             <b-col cols="3">
-                <input class="form-control" type="tel" v-model="supplierName" @keyup.enter="getSuppliers()" placeholder="Search by Name"/>
+                <input id="supplierlist-searchname" class="form-control" type="tel" v-model="supplierName" @keyup.enter="getSuppliers()" placeholder="Search by Name"/>
             </b-col>
             <b-col>
                 <div style="text-align: right;">
-                <b-button type="submit" variant="primary" @click="goToSupplier('')">New Supplier</b-button>
+                <b-button id="supplierlist-button" type="submit" variant="primary" @click="goToSupplier('')">New Supplier</b-button>
                 </div>
             </b-col>
         </b-row>
