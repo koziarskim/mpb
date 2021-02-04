@@ -488,8 +488,8 @@ export default {
       return !securite.hasRole(["SALE_ADMIN"]) || this.sale.approved;
     },
     disableEditItem(si){
-      return si.status == "SHIPPED" || this.sale.approved;
-      return securite.hasRole(["SALE_ADMIN"]);
+      // return si.status == "SHIPPED" || this.sale.approved || !securite.hasRole(["SALE_ADMIN"]);
+      return false;
     },
     allowSave(){
       return securite.hasRole(["SALE_ADMIN"]) && !this.sale.cancelled;
@@ -607,7 +607,6 @@ export default {
       }).catch(e => {
         console.log("API error: " + e);
       });
-      return r;
     },
     copySale() {
       this.saveSale().then(r => {

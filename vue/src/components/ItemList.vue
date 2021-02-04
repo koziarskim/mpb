@@ -25,7 +25,7 @@
     </b-row>
     <b-table :items="items" :fields="fields" no-local-sorting @sort-changed="sorted">
       <template v-slot:head(unitsOnStock)="row">
-        <div>Stock</div><div class="mpb-head-line">Units Available</div>
+        <div>Stock</div><div class="mpb-head-line">Floor Not Assigned</div>
       </template>
       <template v-slot:head(unitsOnFloor)="row">
         <div>Floor</div><div class="mpb-head-line">Units On Floor</div>
