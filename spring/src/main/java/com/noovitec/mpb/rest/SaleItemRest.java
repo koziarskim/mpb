@@ -245,6 +245,7 @@ class SaleItemRest {
 	        stamper.getAcroFields().setField("upc", "UPC: "+String.valueOf(saleItem.getItemPackaging().getItem().getUpc().getCode()));
 	        stamper.getAcroFields().setField("casePack", "Case Pack: "+String.valueOf(saleItem.getItemPackaging().getPackaging().getCasePack()));
 	        BigDecimal grossWeight = saleItem.getItemPackaging().getItem().getWeight().multiply(BigDecimal.valueOf(saleItem.getItemPackaging().getPackaging().getCasePack()));
+	        grossWeight = grossWeight.add(saleItem.getItemPackaging().getPackaging().getCaseWeight());
 	        stamper.getAcroFields().setField("grossWeight", grossWeight.round(new MathContext(0, RoundingMode.CEILING)).intValue()+" LBS");
 	        BigDecimal caseCube = saleItem.getItemPackaging().getPackaging().getCaseHeight().multiply(saleItem.getItemPackaging().getPackaging().getCaseLength())
 	        		.multiply(saleItem.getItemPackaging().getPackaging().getCaseWidth()).divide(BigDecimal.valueOf(1728),2, RoundingMode.CEILING);
