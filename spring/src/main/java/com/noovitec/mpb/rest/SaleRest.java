@@ -389,7 +389,8 @@ class SaleRest {
 				pallets = pallets==0?1:pallets;
 				BigDecimal unitsWeight = si.getItemPackaging().getItem().getWeight().multiply(BigDecimal.valueOf(si.getUnits()));
 				BigDecimal palletsWeight = si.getItemPackaging().getPackaging().getPalletWeight().multiply(BigDecimal.valueOf(pallets));
-				int totalWeight = unitsWeight.add(palletsWeight).intValue();
+				BigDecimal caseWeight = si.getItemPackaging().getPackaging().getCaseWeight().multiply(BigDecimal.valueOf(cases));
+				int totalWeight = unitsWeight.add(palletsWeight).add(caseWeight).intValue();
 				addCell(10, String.valueOf(cases), row);
 				addCell(11, String.valueOf(pallets), row);
 				addCell(12, String.valueOf(totalWeight), row);

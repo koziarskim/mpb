@@ -31,6 +31,10 @@
           <label class="top-label">Case Pack:</label>
           <input class="form-control" type="text" v-model="packaging.casePack">
         </b-col>
+        <b-col cols=2>
+          <label class="top-label">Case Weight (case only):</label>
+          <input class="form-control" type="text" v-model="packaging.caseWeight">
+        </b-col>
       </b-row>
       <b-row>
         <b-col cols=2 offset=1>
@@ -40,8 +44,8 @@
             <input class="form-control" v-model="packaging.hi" placeholder="0">
           </div>
         </b-col>
-        <b-col cols=1>
-          <label class="top-label">Pallet Weight:</label>
+        <b-col cols=2>
+          <label class="top-label">Pallet Weight (pallet only):</label>
           <input class="form-control" v-model="packaging.palletWeight">
         </b-col>
         <b-col cols=2>
@@ -73,7 +77,6 @@ export default {
     return {
       packaging: {},
       itemName: "",
-      packaging: {},
       availablePackagingTypes: [
         {id: "RSC_MC", name: "RSC-MC"},
         {id: "PDQ_HSC", name: "PDQ-HSC"},

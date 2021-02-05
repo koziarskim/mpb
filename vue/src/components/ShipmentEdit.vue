@@ -256,8 +256,10 @@ export default {
     totalWeight() {
       var total = 0;
       this.shipment.shipmentItems.forEach(si => {
-        var totalPaletWeight = +si.saleItem.itemPackaging.packaging.palletWeight * +si.pallets
-        total += (+si.saleItem.itemPackaging.item.weight * +si.units) + +totalPaletWeight;
+        var totalUnitWeight = +si.saleItem.itemPackaging.item.weight * +si.units;
+        var totalCaseWeight = +si.saleItem.itemPackaging.packaging.caseWeight * +si.cases;
+        var totalPalletWeight = +si.saleItem.itemPackaging.packaging.palletWeight * +si.pallets;
+        total += +totalUnitWeight + +totalCaseWeight + +totalPalletWeight;
       });
       return total.toFixed();
     },
@@ -464,8 +466,8 @@ export default {
       this.shipment.shippedDate = this.shippedDate;
       return http.post("/shipment", this.shipment).then(r => {
         this.shipment = r.data;
-        return r.data;
         this.getAvailableSaleItems();
+        return r.data;
       }).catch(e => {
          console.log("API error: " + e);
       });

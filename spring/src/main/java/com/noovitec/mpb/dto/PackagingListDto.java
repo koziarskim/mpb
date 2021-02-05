@@ -18,6 +18,7 @@ public class PackagingListDto {
 	private BigDecimal caseLength;
 	private BigDecimal caseWidth;
 	private int casePack;
+	private BigDecimal caseWeight;
 	private BigDecimal palletWeight;
 	private int ti;
 	private int hi;

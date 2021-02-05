@@ -56,6 +56,7 @@ class PackagingRest {
 			dto.setCaseLength(p.getCaseLength());
 			dto.setCaseWidth(p.getCaseWidth());
 			dto.setCasePack(p.getCasePack());
+			dto.setCaseWeight(p.getCaseWeight());
 			dto.setHi(p.getHi());
 			dto.setTi(p.getTi());
 			dto.setPalletWeight(p.getPalletWeight());

@@ -70,6 +70,7 @@ class ItemPackagingRest {
 			dto.setCaseLength(ip.getPackaging().getCaseLength());
 			dto.setCaseWidth(ip.getPackaging().getCaseWidth());
 			dto.setCasePack(ip.getPackaging().getCasePack());
+			dto.setCaseWeight(ip.getPackaging().getCaseWeight());
 			dto.setHi(ip.getPackaging().getHi());
 			dto.setTi(ip.getPackaging().getTi());
 			dto.setPalletWeight(ip.getPackaging().getPalletWeight());
