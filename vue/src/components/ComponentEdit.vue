@@ -15,7 +15,7 @@
       </b-col>
       <b-col cols=2>
         <label class="top-label">Type:</label>
-        <b-select id="componentedit-type"option-value="id" option-text="name" :list="availableComponentTypes" v-model="componentType"></b-select>
+        <b-select id="componentedit-type" option-value="id" option-text="name" :list="availableComponentTypes" v-model="componentType"></b-select>
       </b-col>
       <b-col cols=2 style="margin-top: 5px">
         <upload :on-upload="onUpload" :file-url="getImageUrl()"></upload>
@@ -196,10 +196,6 @@ export default {
     };
   },
   computed: {
-    adjustStock(){
-      var query = { componentId: this.component.id };
-      router.push({ path: "/componentAdjustmentList", query: query });
-    },
     totalLandedCost() {
       return (
         +this.component.unitCost +
@@ -242,6 +238,10 @@ export default {
     }
   },
   methods: {
+    adjustStock(){
+      var query = { componentId: this.component.id };
+      router.push({ path: "/componentAdjustmentList", query: query });
+    },
     allowEdit() {
       return securite.hasRole(["STANDARD_ADMIN"]);
     },
