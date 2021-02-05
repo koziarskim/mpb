@@ -1,25 +1,26 @@
-In progrees or Not yet started/Future requests: (-)
-Done but not yet reviewed: (+)
-
 Current priority
+Customer
++ Change Palet tag size to Pallet Tag Type on Customer (add "EDI")
+Packaging:
++ Change packaging type to "RSC - Master Carton", "PDQ - HSC", "PDQ - ROG"
++ Add case weight
++ Modify sale and shipment to include case weight.
++ Modify carton label to include case weight.
 
-	
-Future requests (priority not set yet)
-	Production
-	- Daily, Weekly, monthly view/report.
-	Schedule:
-	- Show legend.
-	Return:
-	- Validate that it cannot return more that shipped.
-	Shipment:
-	- Select ship to address based on first sale (if not selected yet).
-	- Show DC in freight address list.
-	- Two and One week notification based on Window From (Routing)
-	- Attach picking list to notification when shipment is ready.
-	Global:
-	- Lock all PDFs. Option to lock.
+Sale edit
+Allow to Un-Approve sale.
++ Validate units sold > 0 when approved or save.
++ Validate units sold + adjusted > 0 when saving sale.
++ Delete sale item with units sold = 0, or units sold+adjusted = 0. Both units shipped = 0.
+Move season from item to sale.
+Add filter on sale list by season.
 
-------------------------------------------------------------------
++ Generate Production Ready Checklist based on Item.
+
+Sales Order Sumary - After Tag
+Excel export by Customer, then Sale, then Item.
+
+----------------------------------------------
 
 Marcin's Backlog
 - Delete item from component not updating items because it doesn't exist in post sale.
@@ -34,5 +35,31 @@ Marcin's Backlog
 - add year to notifications.
 - Price history/average (based on PO).
 - Change notification to not use events.
+- Lock all PDFs. Option to lock.
+
+-------------------------------------------------
+Other priorities:
+Kinga:
+	+ Sales unpaid filter - Priority 2
+	Prepaid invoices - Priority 3, June 1st
+Michal:
+	None
+Kasia:
+	+ Pallet weight on the packaging (including case weight) - Priority 2
+	Notification - Purchase Collect Orders - Priority 4, End of June.
+	Modification frieight info after invoice was created - Priority 4
+	Show units shipped on pick item even if the were not shipped yet - Priority 4
+	Allow to modify ship from address (pick from list or ...) - Priority 4
+Hania:
+	None
+Victoria:
+	+ Finishing up carton label.
+	+ Export Sales to excel all.
+
+Marcin
+	+ Prevent shipment status "Shipped" if units assigned are diff than shipped. It should not allow to change status to Shipped in this case.
+	+ Prevent sale check to be paid if status not fully shipped.
+	+ Check why Sales to Excel is blowing. Also, allow to export page view (without selection).
+
 
 
