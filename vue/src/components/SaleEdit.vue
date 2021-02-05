@@ -40,7 +40,7 @@
           <upload-file v-if="sale.id" v-on:close="closeUpload" :entity-id="sale.id" type="Sale" :attachments="sale.attachments"></upload-file>
           <b-button v-if="!sale.approved && sale.pendingApproval" style="margin-left: 3px" size="sm" variant="success" @click="approveSale()">Approve</b-button>
           <b-button v-if="!sale.pendingApproval" style="margin-left: 3px" size="sm" variant="success" @click="readySale()">Ready</b-button>
-          <b-button :title="getSaveTitle(sale)" style="margin-left: 3px" :disabled="!allowSave()" size="sm" variant="success" @click="saveSale()">Save</b-button>
+          <b-button :title="getSaveTitle(sale)" style="margin-left: 3px" :disabled="!allowSave()" size="sm" variant="success" @click="saveSaleClick()">Save</b-button>
           <b-button size="sm" :id="'popover-menu'+sale.id" style="margin-left: 3px">...</b-button>
             <b-popover placement="bottomleft" :target="'popover-menu'+sale.id" variant="secondary">
               <div style="width: 240px">
@@ -584,6 +584,13 @@ export default {
         this.sale.approved = false;
       })
     },
+    saveSaleClick(){
+      this.saveSale().then(r => {
+        return r;
+      }).catch(e => {
+        return false;
+      })
+    },
     saveSale() {
       if(!this.allowSave()){
         alert("Don't have permission");
@@ -616,13 +623,19 @@ export default {
       })
     },
     validate(){
-      if(!this.sale.number || !this.sale.customer.id){
-        alert("Number, Customer required");
+      if(!this.sale.number || !this.sale.customer.id || !this.sale.date || !this.sale.paymentTerms 
+        || !this.shippingAddress.id){
+        alert("Number, Customer, Date, Pay Terms, Shipping Address required");
+        return false;
+      }
+      if(this.sale.saleItems.length == 0) {
+        alert("At least one Item is required");
         return false;
       }
       var tooManyAssignedItem = null;
       var tooManyShippedItem = null;
       var alreadyShipped = false;
+      var soldAdjZero = false;
       this.sale.saleItems.forEach(si=>{
         if(this.sale.status == "SHIPPED"){
           alreadyShipped = true;
@@ -636,6 +649,9 @@ export default {
         if(si.unitsShipped > (+si.units + si.unitsAdjusted)){
           tooManyShippedItem = si.itemPackaging.item.number;
         }
+        if(+si.units + +si.unitsAdjusted == 0){
+          soldAdjZero = si.itemPackaging.item.number;
+        }
       })
       if(tooManyAssignedItem){
         alert("Item: "+tooManyAssignedItem+" - Units Assigned more that Stock or (Sold + Adjusted)");
@@ -643,6 +659,10 @@ export default {
       }
       if(tooManyShippedItem){
         alert("Item: "+tooManyShippedItem+" - Units Shipped more that (Sold + Adjusted)");
+        return false;
+      }
+      if(soldAdjZero){
+        alert("Item: "+soldAdjZero+" - Units Sold and Adjusted has to be > 0");
         return false;
       }
       return true;
