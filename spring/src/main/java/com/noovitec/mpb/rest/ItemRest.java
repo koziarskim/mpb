@@ -319,6 +319,11 @@ class ItemRest {
 	}
 	
 	private byte[] generateChecklistPdf(Item item) throws IOException, DocumentException {
+		List<SaleItem> saleItems = itemService.findSaleItemsForChecklist(item.getId());
+		if(saleItems.size()==0) {
+			//TODO: create empty file.
+			return new byte[0];
+		}
 	    Document doc = new Document();
 	    ByteArrayOutputStream mainBaos = new ByteArrayOutputStream();
 	    PdfSmartCopy copy = new PdfSmartCopy(doc, mainBaos);
@@ -326,7 +331,6 @@ class ItemRest {
 		InputStream in = this.getClass().getClassLoader().getResourceAsStream("pdf/Checklist.pdf");
 		PdfReader mainReader = new PdfReader(in);
 		DecimalFormat df = (DecimalFormat) NumberFormat.getInstance(Locale.US);
-		List<SaleItem> saleItems = itemService.findSaleItemsForChecklist(item.getId());
 		int customerCount = 0;
 		int customersPerPage = 7;
 		Map<Customer, List<SaleItem>> customerMap = new HashMap<Customer, List<SaleItem>>();

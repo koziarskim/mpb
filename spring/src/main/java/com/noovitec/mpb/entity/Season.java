@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(schema="shared")
+//@Table(schema="shared")
 public class Season extends BaseEntity {
 
 	private String name;

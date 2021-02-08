@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(schema="shared")
+//@Table(schema="shared")
 public class Line extends BaseEntity {
 
 	private int number;

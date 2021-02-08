@@ -25,7 +25,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "system_user")
-@Table(schema="shared")
+//@Table(schema="shared")
 public class User extends BaseEntity {
 
 	private String number;
@@ -48,7 +48,7 @@ public class User extends BaseEntity {
 
 	@JsonIgnoreProperties(value = { "users" }, allowSetters = true)
 	@ManyToMany()
-	@JoinTable(name = "shared.user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+	@JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
 	private Collection<Role> roles = new HashSet<Role>();
 
 	@Transient

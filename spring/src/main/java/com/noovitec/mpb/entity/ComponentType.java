@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(schema="shared")
+//@Table(schema="shared")
 public class ComponentType extends BaseEntity {
 
 	private static final long serialVersionUID = -4954896544515474005L;

@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(schema="shared")
+//@Table(schema="shared")
 public class CalendarEvent extends BaseEntity {
 	
 	public static enum TYPE {

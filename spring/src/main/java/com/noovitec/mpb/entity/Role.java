@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(schema="shared")
+//@Table(schema="shared")
 public class Role extends BaseEntity {
 
 	private String code;
@@ -30,7 +30,7 @@ public class Role extends BaseEntity {
 
 	@JsonIgnoreProperties(value = { "roles" }, allowSetters = true)
 	@ManyToMany()
-	@JoinTable(name = "shared.user_role", joinColumns = @JoinColumn(name = "role_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
+	@JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "role_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
 	private Collection<User> users = new HashSet<User>();
 
 }
