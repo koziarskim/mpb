@@ -6,6 +6,8 @@ Packaging:
 + Add case weight
 + Modify sale and shipment to include case weight.
 + Modify carton label to include case weight.
+Tag/Address:
++ Transfer Location ID and Notes and remove old notes from Address.
 
 Sale edit
 Allow to Un-Approve sale.
@@ -19,6 +21,11 @@ Add filter on sale list by season.
 
 Sales Order Sumary - After Tag
 Excel export by Customer, then Sale, then Item.
+
+Michal:
+Purchase
+- Extra Received filter
+- Adjusted units purchased like sales (+/-)
 
 ----------------------------------------------
 

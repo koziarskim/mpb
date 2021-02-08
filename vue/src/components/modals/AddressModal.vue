@@ -59,12 +59,6 @@
 					<input class="form-control" type="tel" v-model="address.notes"/>
 				</b-col>
 			</b-row>
-			<b-row>
-				<b-col cols=10>
-					<label class="top-label">Old Note (To Be Deleted):</label>
-					<b-form-textarea type="text" :rows="3" v-model="address.notesDelete"></b-form-textarea>
-				</b-col>
-			</b-row>
     </b-modal>
   </b-container>
 </template>
