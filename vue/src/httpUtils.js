@@ -7,7 +7,8 @@ export default {
     return router.push(view);
   },
   getUrl(path, q){
-    var query = "?yearContext=y"+securite.getUser().year.name+q;
+    // var query = "?yearContext=y"+securite.getUser().year.name+q;
+    var query = q;
     return decodeURI(this.baseUrl + path + query);
   }
 };

@@ -28,7 +28,9 @@ public class MpbApiInterceptor implements HandlerInterceptor {
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object object) throws Exception {
 		String yearContext = request.getParameter("yearContext");
 		if(yearContext == null) {
-			throw new Exception("Tenant schema not specified!");
+			log.info("Tenant schema not specified! Using 'y2020' schema");
+			yearContext = "y2020";
+//			throw new Exception("Tenant schema not specified!");
 		}
 		MpbTenantContext.setCurrentTenant(yearContext);
 		return true;

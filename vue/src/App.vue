@@ -72,12 +72,7 @@ export default {
     return {
       securite: securite,
       navigate: navigate,
-      yearName: null,
-      availableSeasons: [],
-      availableYears: [],
       user: {
-        season: {},
-        year: {}
       },
       
     };
@@ -97,29 +92,10 @@ export default {
     getUser() {
       if(this.securite.getUser().id){
         this.user = this.securite.getUser();
-        if(this.availableSeasons.length < 1 || this.availableYears.length < 1){
-          this.getAvailableSeasons();
-          this.getAvailableYears();
-        }
-        this.showYearContextPop();
       }
       if(!this.user || !this.user.id){
         this.goTo("/login");
       }
-    },
-    getAvailableSeasons() {
-      http.get("/season").then(response => {
-        this.availableSeasons = response.data;
-      }).catch(e => {
-        console.log("API error: " + e);
-      });
-    },
-    getAvailableYears() {
-      http.get("/year").then(response => {
-        this.availableYears = response.data;
-      }).catch(e => {
-        console.log("API error: " + e);
-      });
     },
     updateUserSession() {
       http.post("/user", this.user).then(r => {
@@ -128,16 +104,6 @@ export default {
       }).catch(e => {
         console.log("API error: " + e);
       });
-    },
-    changeSeason(season){
-      this.user.season = season;
-      this.updateUserSession();
-      //TODO: eventBus emit changeSeason to update any data like itemList
-    },
-    changeYear(year){
-      this.user.year = year;
-      this.updateUserSession();
-      //TODO: eventBus emit changeYear to update any data like itemList
     },
     navClass(navName){
       return navigate.selected == navName?'highlight':'';
@@ -149,15 +115,11 @@ export default {
       document.cookie = "SID=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
       this.user = {};
       this.securite.setUser({})
-      this.yearName = null;
       this.goTo("/login");
     },
     userChangedListener(user){
       this.getUser();
     },
-    showYearContextPop(){
-      this.yearName = this.user.year.name;
-    }
   },
   mounted(){
     EventBus.$on('userChanged', this.userChangedListener);

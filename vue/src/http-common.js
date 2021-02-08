@@ -11,13 +11,13 @@ const http = axios.create({
 http.interceptors.request.use(
   config => {
     NProgress.start();
-    var user = securite.getUser();
-    if (user.year) {
-      if (!config.params) {
-        config.params = {};
-      }
-      config.params.yearContext = "y" + user.year.name;
-    }
+    // var user = securite.getUser();
+    // if (user.year) {
+    //   if (!config.params) {
+    //     config.params = {};
+    //   }
+    //   config.params.yearContext = "y" + user.year.name;
+    // }
     return config;
   },
   error => {
