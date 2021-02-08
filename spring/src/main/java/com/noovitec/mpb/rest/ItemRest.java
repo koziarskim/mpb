@@ -321,15 +321,15 @@ class ItemRest {
 	private byte[] generateChecklistPdf(Item item) throws IOException, DocumentException {
 		List<SaleItem> saleItems = itemService.findSaleItemsForChecklist(item.getId());
 		if(saleItems.size()==0) {
-			//TODO: create empty file.
-			return new byte[0];
+			InputStream emptyIs = this.getClass().getClassLoader().getResourceAsStream("pdf/Empty.pdf");
+			return emptyIs.readAllBytes();
 		}
 	    Document doc = new Document();
 	    ByteArrayOutputStream mainBaos = new ByteArrayOutputStream();
 	    PdfSmartCopy copy = new PdfSmartCopy(doc, mainBaos);
 	    doc.open();
-		InputStream in = this.getClass().getClassLoader().getResourceAsStream("pdf/Checklist.pdf");
-		PdfReader mainReader = new PdfReader(in);
+		InputStream is = this.getClass().getClassLoader().getResourceAsStream("pdf/Checklist.pdf");
+		PdfReader mainReader = new PdfReader(is);
 		DecimalFormat df = (DecimalFormat) NumberFormat.getInstance(Locale.US);
 		int customerCount = 0;
 		int customersPerPage = 7;
