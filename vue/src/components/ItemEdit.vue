@@ -24,7 +24,7 @@
             </div>
             <label class="top-label">Stock: {{item.unitsOnStock}}</label><br/>
             <label class="top-label">Sch/Pro: <b-link role="button" @click="goToItemScheduleList()">{{item.unitsScheduled}}/{{item.unitsProduced}}</b-link></label><br/>
-            <label class="top-label">Sold: <b-link role="button" @click="goToSaleItemList()">{{item.unitsSold}}</b-link>&nbsp;</label><label class="top-label" :class="getReturnClass()"><b-link role="button" @click="goToItemReturnList()">Ret: {{item.unitsReturned}}</b-link></label><br/>
+            <label class="top-label">Sold: <b-link role="button" @click="goToSaleItemList()">{{item.unitsSold}}</b-link></label><br/>
             <label class="top-label">Shipped: <b-link role="button" @click="goToItemShippedList()">{{item.unitsShipped}}</b-link></label>
           </b-col>
         </b-row>
