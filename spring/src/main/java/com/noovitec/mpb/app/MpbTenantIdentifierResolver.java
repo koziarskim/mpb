@@ -13,7 +13,6 @@ public class MpbTenantIdentifierResolver implements CurrentTenantIdentifierResol
     public String resolveCurrentTenantIdentifier() {
         String tenantId = MpbTenantContext.getCurrentTenant();
         if (tenantId == null) {
-        	log.info("Tenant not specified, using 'public' tenant");
             tenantId = "public";
         }
         return tenantId;
