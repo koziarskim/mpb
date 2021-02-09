@@ -32,10 +32,13 @@ alter table shared.component_type set schema y2020;
 ALTER SEQUENCE shared.calendar_event_id_seq SET SCHEMA y2020;
 ALTER SEQUENCE shared.component_type_id_seq SET SCHEMA y2020;
 
+ALTER TABLE y2020.year ALTER COLUMN id SET DEFAULT nextval('y2020.year_id_seq'::regclass);
+
+drop schema shared cascade;
+
 SELECT setval('brand_id_seq', COALESCE((SELECT MAX(id)+1 FROM brand), 1), false);
 SELECT setval('category_id_seq', COALESCE((SELECT MAX(id)+1 FROM category), 1), false);
 SELECT setval('line_id_seq', COALESCE((SELECT MAX(id)+1 FROM line), 1), false);
-SELECT setval('user_role_id_seq', COALESCE((SELECT MAX(id)+1 FROM user_role), 1), false);
 SELECT setval('role_id_seq', COALESCE((SELECT MAX(id)+1 FROM role), 1), false);
 SELECT setval('season_id_seq', COALESCE((SELECT MAX(id)+1 FROM season), 1), false);
 SELECT setval('system_user_id_seq', COALESCE((SELECT MAX(id)+1 FROM system_user), 1), false);
