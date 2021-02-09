@@ -144,7 +144,7 @@
                 <b-row>
                   <b-col cols=4>
                     <label class="top-label">SKU: </label>
-                    <input class="form-control" type="tel" v-model="row.item.sku">
+                    <input class="form-control" maxlength="18" type="tel" v-model="row.item.sku">
                   </b-col>
                   <b-col cols=4>
                     <label class="top-label">DEPT: </label>

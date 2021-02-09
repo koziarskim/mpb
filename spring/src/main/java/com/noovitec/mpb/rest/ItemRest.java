@@ -3,6 +3,7 @@ package com.noovitec.mpb.rest;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.net.URISyntaxException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -361,16 +362,25 @@ class ItemRest {
 			        }
 			        stamper.getAcroFields().setField("cartonLabelType"+c, cartonLabelType);
 			        stamper.getAcroFields().setField("palletTagType"+c,  customer.getPalletTagType());
-			        long units = 0;
+			        long totalUnits = 0;
+			        long totalCases = 0;
+			        long totalPallets = 0;
 			        String cartonTypes = "";
 			        for(SaleItem si: customerMap.get(customer)) {
-			        	units += (si.getUnits() + si.getUnitsAdjusted() - si.getUnitsAssigned());
-			        	String cartonType = Packaging.TYPE.valueOf(si.getItemPackaging().getPackaging().getType()).label();
+			        	long units = (si.getUnits() + si.getUnitsAdjusted() - si.getUnitsAssigned());
+			        	totalUnits += units;
+						long cases = (long) Math.ceil(units/si.getItemPackaging().getPackaging().getCasePack());
+						totalCases += cases;
+						long pallets = (long) Math.ceil(cases/(si.getItemPackaging().getPackaging().getHi()*si.getItemPackaging().getPackaging().getTi()));
+						totalPallets += pallets;
+						String cartonType = Packaging.TYPE.valueOf(si.getItemPackaging().getPackaging().getType()).label();
 			        	if(cartonTypes.indexOf(cartonType) == -1) {
 			        		cartonTypes += cartonType+"\n";
 			        	}
 			        }
-			        stamper.getAcroFields().setField("unitsToProduce"+c, df.format(units));
+			        stamper.getAcroFields().setField("totalUnits"+c, df.format(totalUnits));
+			        stamper.getAcroFields().setField("totalCases"+c, df.format(totalCases));
+			        stamper.getAcroFields().setField("totalPallets"+c, df.format(totalPallets));
 			        stamper.getAcroFields().setField("cartonType"+c, cartonTypes);
 			        customerCount++;
 		        }

@@ -8,8 +8,8 @@ Current priority
 	- Allow to Un-Approve sale.
 	- Popup to update PRC and other sales.
 	- Carton Label:
-		- Check the error.
-		- Make SKU: 20 characters.
+		+ Check the error.
+		+ Make SKU: 25 characters.
 		- Single page preview (Screen or PDF?)
 	- Season & Year:
 		- Move season from item to sale.
@@ -17,12 +17,14 @@ Current priority
 		- Add filter on sale list by season.
 	Item:
 	- Production Checklist:
-		- add columns Cases and Pallet (1-n)
+		+ add columns Cases and Pallet (1-n)
 
 Next after above changes done:
-	- Tag for shipment (talk to Kasia)
-	- Production report based on schedule (when saved)
-	- Sales Order Sumary (Excel export by Customer, then Sale, then Item)
+	- Shipment:
+		- Tag for shipment (talk to Kasia)
+	- Sale
+		- Sale by Item: Production report based on schedule (when saved)
+		- Sales Order Sumary (Excel export by Customer, then Sale, then Item)
 
 Michal:
 	Purchase

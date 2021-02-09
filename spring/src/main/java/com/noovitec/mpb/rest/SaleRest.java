@@ -351,10 +351,11 @@ class SaleRest {
 				addCell(3, windowDate, row);
 				count++;
 			}
-			int totalPallets = 0;
+			long totalPallets = 0;
 			for(SaleItem si: sale.getSaleItems()) {
-				int cases = (int) Math.round(si.getUnits()/si.getItemPackaging().getPackaging().getCasePack());
-				int pallets = (int) Math.round(cases/(si.getItemPackaging().getPackaging().getHi()*si.getItemPackaging().getPackaging().getTi()));
+				long units = si.getUnits() + si.getUnitsAdjusted();
+				long cases = (long) Math.ceil(units/si.getItemPackaging().getPackaging().getCasePack());
+				long pallets = (long) Math.ceil(cases/(si.getItemPackaging().getPackaging().getHi()*si.getItemPackaging().getPackaging().getTi()));
 				totalPallets += pallets;
 			}
 			for(SaleItem si: sale.getSaleItems()) {
