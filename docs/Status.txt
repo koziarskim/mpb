@@ -1,31 +1,49 @@
+Done:
+	Customer:
+	+ Change Palet tag size to Pallet Tag Type on Customer (add "EDI")
+	Packaging:
+	+ Change packaging type to "RSC - Master Carton", "PDQ - HSC", "PDQ - ROG"
+	+ Add case weight
+	+ Modify sale and shipment to include case weight.
+	+ Modify carton label to include case weight.
+	Sale:
+	+ Validate units sold > 0 when approved or save.
+	+ Validate units sold + adjusted > 0 when saving sale.
+	+ Delete sale item with units sold = 0, or units sold+adjusted = 0. Both units shipped = 0.
+	+ Tag/Address:
+		- Transfer Location ID and Notes and remove old notes from Address.
+	Item:
+	+ Generate Production Ready Checklist PDF based on Item.
+
 Current priority
-Customer
-+ Change Palet tag size to Pallet Tag Type on Customer (add "EDI")
-Packaging:
-+ Change packaging type to "RSC - Master Carton", "PDQ - HSC", "PDQ - ROG"
-+ Add case weight
-+ Modify sale and shipment to include case weight.
-+ Modify carton label to include case weight.
-Tag/Address:
-+ Transfer Location ID and Notes and remove old notes from Address.
+	Customer
+	- Change bill to address to have multiple and have "Office Name".
+	- Change invoice to use Office Name instead of Customer name.
+	Packaging:
+	- Add pallet config picture (upload).
+	Sale:
+	- Allow to Un-Approve sale.
+	- Popup to update PRC and other sales.
+	- Carton Label:
+		- Check the error.
+		- Make SKU: 20 characters.
+	- Season & Year:
+		- Move season from item to sale.
+		- Add year dropdown on sale.
+		- Add filter on sale list by season.
+	Item:
+	- Production Checklist:
+		- add columns Cases and Pallet (1-n)
 
-Sale edit
-Allow to Un-Approve sale.
-+ Validate units sold > 0 when approved or save.
-+ Validate units sold + adjusted > 0 when saving sale.
-+ Delete sale item with units sold = 0, or units sold+adjusted = 0. Both units shipped = 0.
-Move season from item to sale.
-Add filter on sale list by season.
-
-+ Generate Production Ready Checklist based on Item.
-
-Sales Order Sumary - After Tag
-Excel export by Customer, then Sale, then Item.
+Next after above changes done:
+	- Tag for shipment (talk to Kasia)
+	- Production report based on schedule (when saved)
+	- Sales Order Sumary (Excel export by Customer, then Sale, then Item)
 
 Michal:
-Purchase
-- Extra Received filter
-- Adjusted units purchased like sales (+/-)
+	Purchase
+	- Extra Received filter
+	- Adjusted units purchased like sales (+/-)
 
 ----------------------------------------------
 
@@ -58,7 +76,7 @@ Kasia:
 	Show units shipped on pick item even if the were not shipped yet - Priority 4
 	Allow to modify ship from address (pick from list or ...) - Priority 4
 Hania:
-	None
+	- Item version (button to copy item or create new version of item)
 Victoria:
 	+ Finishing up carton label.
 	+ Export Sales to excel all.
