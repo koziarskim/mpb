@@ -6,6 +6,8 @@ update role set description = 'Allow grand full access to everything' where id =
 update role set description = 'Allow admin access to everything' where id = 1;
 update role set code = 'USER_ADMIN', description = 'Allow full access to Users', name = 'User Admin' where id = 3;
 update role set code = 'INVOICE_ADMIN', description = 'Allow full access to Invoices', name = 'Invoice Admin' where id = 9;
+update role set code = 'ADMIN', description = 'Allow admin access to everything', name = 'Administrator' where id = 2;
+update role set code = 'SUPER_USER', description = 'Allow grand full access to everything', name = 'Super User' where id = 1;
 
 
 ---------------------------------
