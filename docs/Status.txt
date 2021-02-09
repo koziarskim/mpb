@@ -1,20 +1,3 @@
-Done:
-	Customer:
-	+ Change Palet tag size to Pallet Tag Type on Customer (add "EDI")
-	Packaging:
-	+ Change packaging type to "RSC - Master Carton", "PDQ - HSC", "PDQ - ROG"
-	+ Add case weight
-	+ Modify sale and shipment to include case weight.
-	+ Modify carton label to include case weight.
-	Sale:
-	+ Validate units sold > 0 when approved or save.
-	+ Validate units sold + adjusted > 0 when saving sale.
-	+ Delete sale item with units sold = 0, or units sold+adjusted = 0. Both units shipped = 0.
-	+ Tag/Address:
-		- Transfer Location ID and Notes and remove old notes from Address.
-	Item:
-	+ Generate Production Ready Checklist PDF based on Item.
-
 Current priority
 	Customer
 	- Change bill to address to have multiple and have "Office Name".
@@ -27,6 +10,7 @@ Current priority
 	- Carton Label:
 		- Check the error.
 		- Make SKU: 20 characters.
+		- Single page preview (Screen or PDF?)
 	- Season & Year:
 		- Move season from item to sale.
 		- Add year dropdown on sale.
