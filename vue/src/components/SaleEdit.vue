@@ -44,14 +44,14 @@
           <b-button size="sm" :id="'popover-menu'+sale.id" style="margin-left: 3px">...</b-button>
             <b-popover placement="bottomleft" :target="'popover-menu'+sale.id" variant="secondary">
               <div style="width: 240px">
-              <b-button style="margin-left: 3px" :disabled="!securite.hasRole(['SALE_ADMIN'])" size="sm" @click="editSale()">Edit</b-button>
+              <b-button style="margin-left: 3px" :disabled="!securite.hasRole(['SALE_ADMIN', 'ADMIN'])" size="sm" @click="editSale()">Edit</b-button>
               <b-button style="margin-left: 3px" :disabled="disableEditSale()" size="sm" @click="cancelSale()">Cancel</b-button>
               <b-button style="margin-left: 3px" :disabled="disableEditSale()" size="sm" @click="copySale()">Copy</b-button>
               <b-button style="margin-left: 3px" :disabled="disableEditSale()" size="sm" @click="deleteSale()">Delete</b-button>
               </div>
             </b-popover>
         </div>
-        <input type="checkbox" style="margin-top: 10px" :disabled="!securite.hasRole(['INVOICE_ADMIN'])" v-model="paidInFull"><span style="font-size: 14px"> Paid in Full</span>
+        <input type="checkbox" style="margin-top: 10px" :disabled="!securite.hasRole(['INVOICE_ADMIN', 'ADMIN'])" v-model="paidInFull"><span style="font-size: 14px"> Paid in Full</span>
         <br/>
         <span style="font-weight: bold">{{getStatus(sale.status)}}</span><br/>
         <label class="top-label">Shed/Prod: {{sale.unitsScheduled}}/{{sale.unitsProduced}}</label><br/>
@@ -491,7 +491,7 @@ export default {
       return "Not Yet Saved";
     },
     disableEditSale(){
-      return !securite.hasRole(["SALE_ADMIN"]) || this.sale.approved;
+      return !securite.hasRole(['SALE_ADMIN', 'ADMIN']) || this.sale.approved;
     },
     goToScheduled(si) {
       router.push("/itemSheduleEventList/" + si.itemPackaging.item.id + "/sale/" + this.sale.id);
@@ -565,7 +565,7 @@ export default {
       })
     },
     editSale(){
-      if(!securite.hasRole(["SALE_ADMIN"])){
+      if(!securite.hasRole(['SALE_ADMIN', 'ADMIN'])){
         alert("Don't have permission");
         return;
       }
@@ -577,7 +577,7 @@ export default {
       })
     },    
     approveSale(){
-      if(!securite.hasRole(["SALE_ADMIN"])){
+      if(!securite.hasRole(['SALE_ADMIN', 'ADMIN'])){
         alert("Don't have permission");
         return;
       }

@@ -390,7 +390,7 @@ const router = new Router({
       name: "Users",
       component: Users,
       meta: {
-        roles: ["USER_ADMIN"],
+        roles: ['USER_ADMIN', 'ADMIN'],
         group: "user"
       }
     },

@@ -34,7 +34,7 @@
             <b-button style="margin-left:3px" type="submit" variant="primary" size="sm" @click="goToSale('')">New</b-button>
             <b-button style="margin-left: 3px" type="submit" variant="primary" size="sm" @click="exportXls()">Export</b-button>
             <b-dropdown style="width:50px; margin-left:3px" right size="sm" :text="selectedSales.length.toString()">
-              <b-dropdown-item-button :disabled="!securite.hasRole(['INVOICE_ADMIN'])" @click="setFullyPaid()">Set Fully Paid</b-dropdown-item-button>
+              <b-dropdown-item-button :disabled="!securite.hasRole(['INVOICE_ADMIN', 'ADMIN'])" @click="setFullyPaid()">Set Fully Paid</b-dropdown-item-button>
             </b-dropdown>
           </div>
       </b-row>

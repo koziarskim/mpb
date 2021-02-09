@@ -328,7 +328,7 @@ export default {
       })
     },
     allowEdit(){
-      return securite.hasRole(["SHIPMENT_ADMIN"]) && !this.shipment.shippedDate;
+      return securite.hasRole(['SHIPMENT_ADMIN', 'ADMIN']) && !this.shipment.shippedDate;
     },
     getAddedSaleItemsIds(){
       var ids = [];

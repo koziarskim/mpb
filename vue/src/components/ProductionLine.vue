@@ -43,7 +43,7 @@
 			</b-col>
 		</b-row>
 		<br/>
-		<div v-if="securite.hasRole(['PRODUCTION_ADMIN'])">
+		<div v-if="securite.hasRole(['PRODUCTION_ADMIN', 'ADMIN'])">
 		<b-row>
 			<b-col>
 				<span style="font-size: 18px; font-weight: bold; align:left">Production Output </span>
