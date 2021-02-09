@@ -34,7 +34,7 @@
             <b-button style="margin-left:3px" type="submit" variant="primary" size="sm" @click="goToSale('')">New</b-button>
             <b-button style="margin-left: 3px" type="submit" variant="primary" size="sm" @click="exportXls()">Export</b-button>
             <b-dropdown style="width:50px; margin-left:3px" right size="sm" :text="selectedSales.length.toString()">
-              <b-dropdown-item-button @click="setFullyPaid()">Set Fully Paid</b-dropdown-item-button>
+              <b-dropdown-item-button :disabled="!securite.hasRole(['INVOICE_ADMIN'])" @click="setFullyPaid()">Set Fully Paid</b-dropdown-item-button>
             </b-dropdown>
           </div>
       </b-row>
@@ -291,22 +291,6 @@ export default {
            }
         });
         return component;
-    },
-    deleteSale(sale) {
-      if(!securite.hasRole(["ADMIN"])){
-        alert("Don't have permission to delete sale");
-        return;
-      }
-      this.$bvModal.msgBoxConfirm('Are you sure you want to delete this Sale? '+
-      'This will also delete all Schedules and Productions associated with this Sale').then(ok => {
-        if(ok){
-          http.delete("/sale/"+sale.id).then(response => {
-            this.getSales();
-          }).catch(e => {
-            console.log("API Error: "+e);
-          });
-            }
-        })
     },
     goToSale(id){
         if(!id){

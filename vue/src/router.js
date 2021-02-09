@@ -76,7 +76,6 @@ const router = new Router({
       name: "itemList",
       component: ItemList,
       meta: {
-        roles: ["READ_ONLY"],
         group: "item",
         viewClass: "view-item"
       }
@@ -86,7 +85,6 @@ const router = new Router({
       name: "ItemEdit",
       component: ItemEdit,
       meta: {
-        roles: ["READ_ONLY"],
         group: "item",
         viewClass: "view-item"
       }
@@ -96,7 +94,6 @@ const router = new Router({
       name: "ItemGraph",
       component: ItemGraph,
       meta: {
-        roles: ["READ_ONLY"],
         group: "item",
         viewClass: "view-item"
       }
@@ -106,7 +103,6 @@ const router = new Router({
       name: "PackagingList",
       component: PackagingList,
       meta: {
-        roles: ["READ_ONLY"],
         group: "item",
         viewClass: "view-item"
       }
@@ -116,7 +112,6 @@ const router = new Router({
       name: "ItemPackagingList",
       component: ItemPackagingList,
       meta: {
-        roles: ["READ_ONLY"],
         group: "item",
         viewClass: "view-item"
       }
@@ -126,7 +121,6 @@ const router = new Router({
       name: "PackagingEdit",
       component: PackagingEdit,
       meta: {
-        roles: ["READ_ONLY"],
         group: "item",
         viewClass: "view-item"
       }
@@ -136,7 +130,6 @@ const router = new Router({
       name: "ComponentList",
       component: ComponentList,
       meta: {
-        roles: ["READ_ONLY"],
         group: "component",
         viewClass: "view-component"
       }
@@ -146,7 +139,6 @@ const router = new Router({
       name: "ComponentInventoryList",
       component: ComponentInventoryList,
       meta: {
-        roles: ["READ_ONLY"],
         group: "component",
         viewClass: "view-component"
       }
@@ -156,7 +148,6 @@ const router = new Router({
       name: "ComponentAdjustmentList",
       component: ComponentAdjustmentList,
       meta: {
-        roles: ["READ_ONLY"],
         group: "component",
         viewClass: "view-component"
       }
@@ -166,7 +157,6 @@ const router = new Router({
       name: "ComponentEdit",
       component: ComponentEdit,
       meta: {
-        roles: ["READ_ONLY"],
         group: "component",
         viewClass: "view-component"
       }
@@ -176,7 +166,6 @@ const router = new Router({
       name: "SupplierList",
       component: SupplierList,
       meta: {
-        roles: ["READ_ONLY"],
         group: "supplier",
         viewClass: "view-supplier"
       }
@@ -186,7 +175,6 @@ const router = new Router({
       name: "SupplierEdit",
       component: SupplierEdit,
       meta: {
-        roles: ["READ_ONLY"],
         group: "supplier",
         viewClass: "view-supplier"
       }
@@ -196,7 +184,6 @@ const router = new Router({
       name: "CustomerList",
       component: CustomerList,
       meta: {
-        roles: ["READ_ONLY"],
         group: "customer",
         viewClass: "view-customer"
       }
@@ -206,7 +193,6 @@ const router = new Router({
       name: "CustomerEdit",
       component: CustomerEdit,
       meta: {
-        roles: ["READ_ONLY"],
         group: "customer",
         viewClass: "view-customer"
       }
@@ -216,7 +202,6 @@ const router = new Router({
       name: "SaleList",
       component: SaleList,
       meta: {
-        roles: ["READ_ONLY"],
         group: "sale",
         viewClass: "view-sale"
       }
@@ -226,7 +211,6 @@ const router = new Router({
       name: "SaleItemList",
       component: SaleItemList,
       meta: {
-        roles: ["READ_ONLY"],
         group: "sale",
         viewClass: "view-sale"
       }
@@ -236,7 +220,6 @@ const router = new Router({
       name: "SaleEdit",
       component: SaleEdit,
       meta: {
-        roles: ["READ_ONLY"],
         group: "sale",
         viewClass: "view-sale"
       }
@@ -246,7 +229,6 @@ const router = new Router({
       name: "PurchaseList",
       component: PurchaseList,
       meta: {
-        roles: ["READ_ONLY"],
         group: "purchase",
         viewClass: "view-purchase"
       }
@@ -256,7 +238,6 @@ const router = new Router({
       name: "PurchaseEdit",
       component: PurchaseEdit,
       meta: {
-        roles: ["READ_ONLY"],
         group: "purchase",
         viewClass: "view-purchase"
       }
@@ -266,7 +247,6 @@ const router = new Router({
       name: "ReceivingList",
       component: ReceivingList,
       meta: {
-        roles: ["READ_ONLY"],
         group: "receiving",
         viewClass: "view-receiving"
       }
@@ -276,7 +256,6 @@ const router = new Router({
       name: "ReceivingEdit",
       component: ReceivingEdit,
       meta: {
-        roles: ["READ_ONLY"],
         group: "receiving",
         viewClass: "view-receiving"
       }
@@ -286,7 +265,6 @@ const router = new Router({
       name: "ReceivingEditPc",
       component: ReceivingEdit,
       meta: {
-        roles: ["READ_ONLY"],
         group: "receiving",
         viewClass: "view-receiving"
       }
@@ -296,7 +274,6 @@ const router = new Router({
       name: "ShipmentEdit",
       component: ShipmentEdit,
       meta: {
-        roles: ["READ_ONLY"],
         group: "shipment",
         viewClass: "view-shipment"
       }
@@ -306,7 +283,6 @@ const router = new Router({
       name: "ShipmentList",
       component: ShipmentList,
       meta: {
-        roles: ["READ_ONLY"],
         group: "shipment",
         viewClass: "view-shipment"
       }
@@ -316,7 +292,6 @@ const router = new Router({
       name: "ShipmentSchedule",
       component: ShipmentSchedule,
       meta: {
-        roles: ["READ_ONLY"],
         group: "shipmentSchedule",
         viewClass: "view-shipment"
       }
@@ -326,7 +301,6 @@ const router = new Router({
       name: "ProductionLine",
       component: ProductionLine,
       meta: {
-        roles: ["READ_ONLY", "PRODUCTION_ADMIN", "PRODUCTION_EDIT"],
         group: "production",
         viewClass: "view-production"
       }
@@ -336,7 +310,6 @@ const router = new Router({
       name: "ProductionLineList",
       component: ProductionLineList,
       meta: {
-        roles: ["READ_ONLY", "PRODUCTION_ADMIN", "PRODUCTION_EDIT"],
         group: "production",
         viewClass: "view-production"
       }
@@ -346,7 +319,6 @@ const router = new Router({
       name: "ProductionItemList",
       component: ProductionItemList,
       meta: {
-        roles: ["READ_ONLY", "PRODUCTION_ADMIN", "PRODUCTION_EDIT"],
         group: "production",
         viewClass: "view-production"
       }
@@ -356,7 +328,6 @@ const router = new Router({
       name: "ScheduleEventList",
       component: ScheduleEventList,
       meta: {
-        roles: ["READ_ONLY"],
         group: "production",
         viewClass: "view-schedule"
       }
@@ -366,7 +337,6 @@ const router = new Router({
       name: "ItemReturnList",
       component: ItemReturnList,
       meta: {
-        roles: ["READ_ONLY"],
         group: "itemReturn",
         viewClass: "view-item-return"
       }
@@ -376,7 +346,6 @@ const router = new Router({
       name: "InvoiceList",
       component: InvoiceList,
       meta: {
-        roles: ["READ_ONLY"],
         group: "invoice",
         viewClass: "view-invoice"
       }
@@ -386,7 +355,6 @@ const router = new Router({
       name: "InvoiceItemList",
       component: InvoiceItemList,
       meta: {
-        roles: ["READ_ONLY"],
         group: "invoice",
         viewClass: "view-invoice"
       }
@@ -396,7 +364,6 @@ const router = new Router({
       name: "InvoiceEdit",
       component: InvoiceEdit,
       meta: {
-        roles: ["READ_ONLY"],
         group: "invoice",
         viewClass: "view-invoice"
       }
@@ -406,7 +373,6 @@ const router = new Router({
       name: "BillList",
       component: BillList,
       meta: {
-        roles: ["READ_ONLY"],
         group: "invoice",
         viewClass: "view-invoice"
       }
@@ -424,7 +390,7 @@ const router = new Router({
       name: "Users",
       component: Users,
       meta: {
-        roles: ["ADMIN"],
+        roles: ["USER_ADMIN"],
         group: "user"
       }
     },

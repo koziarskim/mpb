@@ -243,7 +243,7 @@ export default {
       router.push({ path: "/componentAdjustmentList", query: query });
     },
     allowEdit() {
-      return securite.hasRole(["STANDARD_ADMIN"]);
+      return true;
     },
     goToReceiving(componentId) {
       var query = { component_id: componentId };

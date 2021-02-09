@@ -225,7 +225,7 @@ export default {
       this.packaging = {};
     },
     allowEdit(){
-      return securite.hasRole(["STANDARD_ADMIN"]);
+      return true;
     },
     goToItemReturnList(){
       var query = { itemId: this.item.id };

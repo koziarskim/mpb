@@ -7,7 +7,7 @@ export default {
       return false;
     }
     this.getUser().roles.forEach(ur => {
-      if (ur.code == "ADMIN") {
+      if (ur.code == "SUPER_USER") {
         found = true;
         return;
       }

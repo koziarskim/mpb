@@ -125,7 +125,7 @@ export default {
       return +window.innerHeight - 150 +"px";
     },
     editScheduleEvent(se){
-      if(!securite.hasRole(['SUPER_USER', 'PROD_ADMIN'])){
+      if(!securite.hasRole(['PRODUCTION_ADMIN'])){
         alert("You don't have permission for this operation");
         return;
       }
@@ -151,7 +151,7 @@ export default {
       return se.unitsProduced > 0;
     },
     deleteScheduleEvent(se_id){
-      if(!securite.hasRole(['SUPER_USER', 'PROD_ADMIN'])){
+      if(!securite.hasRole(['PRODUCTION_ADMIN'])){
         alert("You don't have permission for this operation");
         return;
       }

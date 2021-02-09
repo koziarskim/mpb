@@ -33,24 +33,25 @@
       </b-col>
       <b-col cols=4>
         <label class="top-label">Notes:</label>
-        <b-form-textarea type="text" :rows="4" v-model="sale.notes"></b-form-textarea>
+        <b-form-textarea  :disabled="disableEditSale()" type="text" :rows="4" v-model="sale.notes"></b-form-textarea>
       </b-col>
       <b-col cols=2>
         <div style="display: flex; text-align: right">
           <upload-file v-if="sale.id" v-on:close="closeUpload" :entity-id="sale.id" type="Sale" :attachments="sale.attachments"></upload-file>
           <b-button v-if="!sale.approved && sale.pendingApproval" style="margin-left: 3px" size="sm" variant="success" @click="approveSale()">Approve</b-button>
           <b-button v-if="!sale.pendingApproval" style="margin-left: 3px" size="sm" variant="success" @click="readySale()">Ready</b-button>
-          <b-button :title="getSaveTitle(sale)" style="margin-left: 3px" :disabled="!allowSave()" size="sm" variant="success" @click="saveSaleClick()">Save</b-button>
+          <b-button :title="getSaveTitle(sale)" style="margin-left: 3px" :disabled="disableEditSale()" size="sm" variant="success" @click="saveSaleClick()">Save</b-button>
           <b-button size="sm" :id="'popover-menu'+sale.id" style="margin-left: 3px">...</b-button>
             <b-popover placement="bottomleft" :target="'popover-menu'+sale.id" variant="secondary">
               <div style="width: 240px">
+              <b-button style="margin-left: 3px" :disabled="!securite.hasRole(['SALE_ADMIN'])" size="sm" @click="editSale()">Edit</b-button>
               <b-button style="margin-left: 3px" :disabled="disableEditSale()" size="sm" @click="cancelSale()">Cancel</b-button>
               <b-button style="margin-left: 3px" :disabled="disableEditSale()" size="sm" @click="copySale()">Copy</b-button>
               <b-button style="margin-left: 3px" :disabled="disableEditSale()" size="sm" @click="deleteSale()">Delete</b-button>
               </div>
             </b-popover>
         </div>
-        <input type="checkbox" style="margin-top: 10px" v-model="sale.paidInFull"><span style="font-size: 14px"> Paid in Full</span>
+        <input type="checkbox" style="margin-top: 10px" :disabled="!securite.hasRole(['INVOICE_ADMIN'])" v-model="paidInFull"><span style="font-size: 14px"> Paid in Full</span>
         <br/>
         <span style="font-weight: bold">{{getStatus(sale.status)}}</span><br/>
         <label class="top-label">Shed/Prod: {{sale.unitsScheduled}}/{{sale.unitsProduced}}</label><br/>
@@ -107,7 +108,7 @@
             <div style="width:100px; overflow: wrap; font-size: 11px">{{row.item.itemPackaging.packaging.name}}</div>
           </template>
           <template v-slot:cell(unitsAssigned)="row">
-            <input :disabled="disableEditItem(row.item)" class="form-control" style="width:80px" type="tel" v-model="row.item.unitsAssigned">
+            <input :disabled="disableEditSale()" class="form-control" style="width:80px" type="tel" v-model="row.item.unitsAssigned">
           </template>
           <template v-slot:cell(cost)="row">
             <span>${{(+row.item.itemPackaging.item.totalCost + +row.item.itemPackaging.packaging.totalPackagingCost).toFixed(2)}}</span>
@@ -116,17 +117,17 @@
             <b-button size="sm" variant="link" @click="goToScheduled(row.item)">{{row.item.unitsProduced}}</b-button>
           </template>
           <template v-slot:cell(units)="row">
-            <input :disabled="disableEditItem(row.item)" class="form-control" style="width:80px" type="tel" v-model="row.item.units">
+            <input :disabled="disableEditSale()" class="form-control" style="width:80px" type="tel" v-model="row.item.units">
           </template>
           <template v-slot:cell(unitsAdjusted)="row">
-            <input class="form-control" style="width:80px" type="tel" v-model="row.item.unitsAdjusted">
+            <input :disabled="disableEditSale()" class="form-control" style="width:80px" type="tel" v-model="row.item.unitsAdjusted">
           </template>
           <template v-slot:cell(cases)="row">
             <span>{{getCases(row.item).toFixed(0)}}</span>
           </template>
           <template v-slot:cell(unitPrice)="row">
             <div style="display:flex">
-            $<input :disabled="disableEditItem(row.item)" class="form-control" style="display: inline; width:80px" type="tel" v-model="row.item.unitPrice">
+            $<input :disabled="disableEditSale()" class="form-control" style="display: inline; width:80px" type="tel" v-model="row.item.unitPrice">
             </div>
           </template>
           <template v-slot:cell(totalUnitPrice)="row">
@@ -144,15 +145,15 @@
                 <b-row>
                   <b-col cols=4>
                     <label class="top-label">SKU: </label>
-                    <input class="form-control" maxlength="18" type="tel" v-model="row.item.sku">
+                    <input :disabled="disableEditSale()" class="form-control" maxlength="18" type="tel" v-model="row.item.sku">
                   </b-col>
                   <b-col cols=4>
                     <label class="top-label">DEPT: </label>
-                    <input class="form-control" type="tel" v-model="row.item.department">
+                    <input :disabled="disableEditSale()" class="form-control" type="tel" v-model="row.item.department">
                   </b-col>
                   <b-col cols=4>
                     <label class="top-label">Best By: </label>
-                    <input class="form-control" type="date" v-model="row.item.expiration">
+                    <input :disabled="disableEditSale()" class="form-control" type="date" v-model="row.item.expiration">
                   </b-col>
                 </b-row>
                 <br/>
@@ -177,7 +178,7 @@
                   <b-col cols=2>
                     <div style="display: flex">
                       <label class="top-label" style="margin-top:7px">PCR: </label>
-                      <input style="width: 20px; height: 20px; margin-top:7px; margin-left: 5px" type="checkbox" v-model="row.item.pcr">
+                      <input :disabled="disableEditSale()" style="width: 20px; height: 20px; margin-top:7px; margin-left: 5px" type="checkbox" v-model="row.item.pcr">
                     </div>
                   </b-col>
                 </b-row>
@@ -189,7 +190,7 @@
                     </div>
                   </b-col>
                   <b-col cols=6 style="text-align: right;">
-                    <b-button :disabled="disableEditItem(row.item)" size="sm" variant="link" @click="deleteItem(row.item)">Delete Item</b-button>
+                    <b-button :disabled="disableEditSale()" size="sm" variant="link" @click="deleteItem(row.item)">Delete Item</b-button>
                   </b-col>
                 </b-row>
             </b-popover>
@@ -246,6 +247,7 @@ export default {
         paymentTerms: "",
         paidInFull: false,
       },
+      paidInFull: false,
       customer: {
         addresses: []
       },
@@ -358,6 +360,10 @@ export default {
       if(new_value && new_value.id){
         this.getItem(new_value.id)
       }
+    },
+    paidInFull(new_value, old_value){
+      this.sale.paidInFull = new_value;
+      this.saveSale();
     }
   },
   methods: {
@@ -378,7 +384,7 @@ export default {
       this.pageToTag = this.getPallets(saleItem);
     },
     downloadCarton(si){
-      this.saveSale().then(r=> {
+      this.saveSale(true).then(r=> {
         if(!si.expiration){
           alert("Best By is not set");
           return false;
@@ -415,7 +421,7 @@ export default {
       })
     },
     downloadTag(si){
-      this.saveSale().then(r=> {
+      this.saveSale(true).then(r=> {
         if(!si.expiration){
           alert("Best By is not set");
           return false;
@@ -471,7 +477,7 @@ export default {
     },
     closeUpload(attachments){
       this.sale.attachments = attachments;
-      this.saveSale();
+      this.saveSale(true);
     },
     getSaveTitle(sale){
       return "Created: "+moment(sale.created).format("YYYY/MM/DD HH:mm")+"\n"+
@@ -486,17 +492,6 @@ export default {
     },
     disableEditSale(){
       return !securite.hasRole(["SALE_ADMIN"]) || this.sale.approved;
-    },
-    disableEditItem(si){
-      // return si.status == "SHIPPED" || this.sale.approved || !securite.hasRole(["SALE_ADMIN"]);
-      return false;
-    },
-    allowSave(){
-      return securite.hasRole(["SALE_ADMIN"]) && !this.sale.cancelled;
-    },
-    allowApprove(){
-      return !this.sale.approved && securite.hasRole(["SALE_ADMIN"]);
-      // return securite.hasRole(["SALE_ADMIN"]);
     },
     goToScheduled(si) {
       router.push("/itemSheduleEventList/" + si.itemPackaging.item.id + "/sale/" + this.sale.id);
@@ -555,6 +550,7 @@ export default {
         if (response.data.shippingAddress) {
           this.shippingAddress = response.data.shippingAddress;
         }
+        this.paidInFull = response.data.paidInFull;
         return response.data;
       }).catch(e => {
         console.log("API error: " + e);
@@ -562,14 +558,26 @@ export default {
     },
     readySale(){
       this.sale.pendingApproval = true;
-      this.saveSale().then(r=> {
+      this.saveSale(true).then(r=> {
         this.getSaleData(r.data.id);
       }).catch(e => {
         this.sale.pendingApproval = false;
       })
     },
+    editSale(){
+      if(!securite.hasRole(["SALE_ADMIN"])){
+        alert("Don't have permission");
+        return;
+      }
+      this.sale.approved = false;
+      this.saveSale(false).then(r=> {
+        this.getSaleData(r.data.id);
+      }).catch(e => {
+        console.log("API error: " + e);
+      })
+    },    
     approveSale(){
-      if(!this.allowApprove()){
+      if(!securite.hasRole(["SALE_ADMIN"])){
         alert("Don't have permission");
         return;
       }
@@ -578,25 +586,21 @@ export default {
         return;
       }
       this.sale.approved = true;
-      this.saveSale().then(r=> {
+      this.saveSale(true).then(r=> {
         this.getSaleData(r.data.id);
       }).catch(e => {
         this.sale.approved = false;
       })
     },
     saveSaleClick(){
-      this.saveSale().then(r => {
+      this.saveSale(true).then(r => {
         return r;
       }).catch(e => {
         return false;
       })
     },
-    saveSale() {
-      if(!this.allowSave()){
-        alert("Don't have permission");
-        return Promise.reject();
-      }
-      if(!this.validate()){
+    saveSale(validate) {
+      if(validate && !this.validate()){
         return Promise.reject();
       }
       this.sale.totalPrice = this.totalPrice;
@@ -616,7 +620,7 @@ export default {
       });
     },
     copySale() {
-      this.saveSale().then(r => {
+      this.saveSale(true).then(r => {
         http.post("/sale/"+r.data.id+"/duplicate").then(r => {
           router.push("/saleEdit/"+r.data.id);
       }).catch(e => {console.log("API error: " + e);});
@@ -678,7 +682,7 @@ export default {
           si.unitsAssigned = 0;
         })
       }
-      this.saveSale();
+      this.saveSale(true);
     },
     deleteSale() {
       if(this.sale.unitsShipped > 0){
@@ -762,7 +766,6 @@ export default {
       }
       var idx = this.sale.saleItems.findIndex(it => it.id == si.id);
       this.sale.saleItems.splice(idx, 1);
-      // this.saveSale();
     },
     getCases(si){
       return Math.ceil(+si.units / +si.itemPackaging.packaging.casePack);
