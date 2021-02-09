@@ -240,7 +240,11 @@ class SaleItemRest {
 	        }
 	        stamper.getAcroFields().setField("saleNumber", "PO# "+saleItem.getSale().getNumber());
 	        stamper.getAcroFields().setField("department", (saleItem.getDepartment()==null || saleItem.getDepartment().isBlank())?"":"DEPT. "+saleItem.getDepartment());
-	        stamper.getAcroFields().setField("itemNumber", saleItem.getItemPackaging().getItem().getNumber()+"-"+saleItem.getItemPackaging().getItem().getName());
+	        String itemNumber = saleItem.getItemPackaging().getItem().getNumber()+"-"+saleItem.getItemPackaging().getItem().getName();
+	        if(itemNumber.length() > 25) {
+	        	itemNumber = itemNumber.substring(0,25)+"...";
+        	}
+	        stamper.getAcroFields().setField("itemNumber", itemNumber);
 	        stamper.getAcroFields().setField("sku", (saleItem.getSku()==null || saleItem.getSku().isBlank())?"":"SKU: "+saleItem.getSku());
 	        stamper.getAcroFields().setField("upc", "UPC: "+String.valueOf(saleItem.getItemPackaging().getItem().getUpc().getCode()));
 	        stamper.getAcroFields().setField("casePack", "Case Pack: "+String.valueOf(saleItem.getItemPackaging().getPackaging().getCasePack()));
@@ -300,7 +304,11 @@ class SaleItemRest {
 	        		+saleItem.getSale().getShippingAddress().getZip();
 	        stamper.getAcroFields().setField("shipToAddress", shipToAddress);
 	        stamper.getAcroFields().setField("saleNumber", "PO# "+saleItem.getSale().getNumber());
-	        stamper.getAcroFields().setField("itemNumber", saleItem.getItemPackaging().getItem().getNumber()+"-"+saleItem.getItemPackaging().getItem().getName());
+	        String itemNumber = saleItem.getItemPackaging().getItem().getNumber()+"-"+saleItem.getItemPackaging().getItem().getName();
+	        if(itemNumber.length() > 35) {
+	        	itemNumber = itemNumber.substring(0,35)+"...";
+        	}
+	        stamper.getAcroFields().setField("itemNumber", itemNumber);
 	        stamper.getAcroFields().setField("casePack", "Case Pack: "+String.valueOf(saleItem.getItemPackaging().getPackaging().getCasePack()));
 	        stamper.getAcroFields().setField("sku", (saleItem.getSku()==null || saleItem.getSku().isBlank())?"":"SKU: "+saleItem.getSku());
 	        stamper.getAcroFields().setField("expiration", "Best By: "+saleItem.getExpiration().format(DateTimeFormatter.ofPattern("MM/dd/yyy")));

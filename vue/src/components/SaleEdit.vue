@@ -395,7 +395,7 @@ export default {
           alert("Page from/to are too large");
           return false;
         }
-        var url = httpUtils.getUrl("/saleItem/" + si.id + "/carton/pdf", "&pageFrom="+this.pageFromCarton+"&pageTo="+this.pageToCarton);
+        var url = httpUtils.getUrl("/saleItem/" + si.id + "/carton/pdf?pageFrom="+this.pageFromCarton+"&pageTo="+this.pageToCarton, "");
         this.loaderActive = true;
         axios({
           url: url,
@@ -432,7 +432,7 @@ export default {
           alert("Sale has no shipping address")
           return false;
         }
-        var url = httpUtils.getUrl("/saleItem/" + si.id + "/tag/pdf", "&pageFrom="+this.pageFromTag+"&pageTo="+this.pageToTag);
+        var url = httpUtils.getUrl("/saleItem/" + si.id + "/tag/pdf?pageFrom="+this.pageFromTag+"&pageTo="+this.pageToTag, "");
         this.loaderActive = true;
         axios({
           url: url,
