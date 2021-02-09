@@ -34,7 +34,7 @@ if "%ARG%"=="full" (
 :export
 if "%EXPORT%" == "true" (
 	echo Processing Export...
-	if exist %SCHEMA_FILE_SHARED% (echo Schema File already exist %SCHEMA_FILE_SHARED% && GOTO import)
+	if exist %SCHEMA_FILE_SHARED% (echo Backup Failed! Schema File already exist %SCHEMA_FILE_SHARED% && GOTO end)
 		"C:\Program Files (x86)\pgAdmin 4\v4\runtime\pg_dump.exe" --file %SCHEMA_FILE_SHARED% --host "mpb.noovitec.com" --port "5432" --username "postgres" --verbose --format=p --create --inserts --column-inserts --schema-only --schema "shared" "mpb"
 		"C:\Program Files (x86)\pgAdmin 4\v4\runtime\pg_dump.exe" --file %SCHEMA_FILE_2020% --host "mpb.noovitec.com" --port "5432" --username "postgres" --verbose --format=p --create --inserts --column-inserts --schema-only --schema "y2020" "mpb"
 		"C:\Program Files (x86)\pgAdmin 4\v4\runtime\pg_dump.exe" --exclude-table-data "doc_content" --file %DATA_FILE_SHARED% --host "mpb.noovitec.com" --port "5432" --username "postgres" --verbose --format=p --create --inserts --column-inserts --data-only --schema "shared" "mpb"
@@ -47,7 +47,7 @@ if "%IMPORT%" == "true" (
 	findstr /v /b /c:"SET " /c:"CREATE DATABASE" /c:"ALTER DATABASE" /c:"\connect" /c:"REVOKE ALL" /c:"GRANT ALL" /c:"SELECT pg_catalog.set_config('search_path'" %SCHEMA_FILE_2020% > %EXPORT_DIR%\clean_schema_2020.sql
 	findstr /v /b /c:"SET " /c:"CREATE DATABASE" /c:"ALTER DATABASE" /c:"\connect" /c:"REVOKE ALL" /c:"GRANT ALL" /c:"SELECT pg_catalog.set_config('search_path'" %DATA_FILE_SHARED% > %EXPORT_DIR%\clean_data_shared.sql
 	findstr /v /b /c:"SET " /c:"CREATE DATABASE" /c:"ALTER DATABASE" /c:"\connect" /c:"REVOKE ALL" /c:"GRANT ALL" /c:"SELECT pg_catalog.set_config('search_path'" %DATA_FILE_2020% > %EXPORT_DIR%\clean_data_2020.sql
-	createdb -h localhost -p 5432 -U postgres %DB_NAME% || (GOTO end)
+	createdb -h localhost -p 5432 -U postgres %DB_NAME% || (echo Backup Failed DB already exist && GOTO end)
 	psql -U postgres -d %DB_NAME% < %EXPORT_DIR%\clean_schema_shared.sql
 	psql -U postgres -d %DB_NAME% < %EXPORT_DIR%\clean_schema_2020.sql
 	psql -U postgres -d %DB_NAME% < %EXPORT_DIR%\clean_data_shared.sql
