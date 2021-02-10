@@ -80,7 +80,7 @@ export default {
       availablePackagingTypes: [
         {id: "RSC_MC", name: "RSC-MC"},
         {id: "PDQ_HSC", name: "PDQ-HSC"},
-        {id: "PDQ_ROG", name: "PDQ-ROG"}
+        {id: "HSC_DRC", name: "HSC-DRC"}
       ],
       typeKv: {},
 

@@ -27,7 +27,7 @@ public class Packaging extends BaseEntity {
 	public static enum TYPE {
 		RSC_MC("RSC-MC"), 
 		PDQ_HSC("PDQ-HSC"),
-		PDQ_ROG("PDQ-ROG");
+		HSC_DRC("HSC-DRC");
 		private String label;
 		public String label() { 
 	        return this.label; 
