@@ -563,10 +563,17 @@ export default {
         alert("Don't have permission");
         return;
       }
-      this.sale.approved = false;
-      this.saveSale(false).then(r=> {
-        this.getSaleData(r.data.id);
-      });
+      this.$bvModal.msgBoxConfirm("This sale was already approved and could be in partially or fully produced or shipped.\n"+
+        "Your changes might effect the rest of the workflow.\n"+
+        "Make sure to generate new Production Compliance Requirements if you change any sale info (including units).\n\n"+
+        "Are you sure you want to modify sale already approved?").then(ok => {
+        if(ok){
+          this.sale.approved = false;
+          this.saveSale(false).then(r=> {
+            this.getSaleData(r.data.id);
+          });
+        }
+      })
     },    
     approveSale(){
       if(!securite.hasRole(['SALE_ADMIN', 'ADMIN'])){
@@ -679,10 +686,6 @@ export default {
         alert("This sale was already shipped! Cannot cancel.");
         return;
       }
-      // if(this.sale.saleItems.length > 0 ){
-      //   alert("There are existing items. Please, move or delete items first");
-      //   return;
-      // }
       this.$bvModal.msgBoxConfirm("Are you sure you want to delete this Sale?").then(ok => {
         if(ok){
           this.sale.saleItems = [];

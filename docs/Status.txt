@@ -5,8 +5,8 @@ Current priority
 	Packaging:
 	- Add pallet config picture (upload).
 	Sale:
-	- Allow to Un-Approve sale (Edit)
-	- Popup to update PRC and other sales.
+	+ Allow to Un-Approve sale (Edit)
+	+ Popup to update PRC and other sales.
 	- Carton Label:
 		+ Check the error.
 		+ Make SKU: 25 characters.
