@@ -341,9 +341,6 @@ export default {
           this.customer = response.data;
           this.invoiceTypeKv = { id: response.data.invoiceType };
           this.freightTerms = this.getFreightById(response.data.freightTerms);
-        })
-        .catch(e => {
-          console.log("API error: " + e);
         });
     },
     validate() {
@@ -370,9 +367,6 @@ export default {
         .post("/customer", this.customer)
         .then(response => {
           this.getCustomer(this.customer.id);
-        })
-        .catch(e => {
-          console.log("API error: " + e);
         });
     },
     saveAndClose() {

@@ -99,10 +99,9 @@ export default {
       var url = httpUtils.getUrl("/file/attachment/"+attachment.id, "");
        window.open(url, "_blank","")
     },
-    uploadFile(file){
+    uploadFile(){
       this.uploadProgress = true;
       var file = this.inputElement.files[0];
-      console.log("Size: "+file.size);
       if(file.size > 10485760){
         alert("Maximum 10MB file allowed");
         return;
@@ -115,8 +114,6 @@ export default {
       http.post("/file/upload", formData, headers).then(r =>{
         this.newAttachments.push(r.data);
         this.uploadProgress = false;
-      }).catch(e => {
-        console.log("API error: "+e);
       });
     },
   },

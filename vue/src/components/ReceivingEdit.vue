@@ -79,7 +79,7 @@ export default {
     deleteReceiving() {
       http.delete("/receiving/" + this.receiving.id).then(response => {
         router.push("/receivingList");
-      }).catch(e => {console.log("API Error: " + e);});
+      });
     },
     getReceiving(receiving_id) {
       return http.get("/receiving/" + receiving_id).then(r => {
@@ -90,8 +90,6 @@ export default {
           if(!this.purchaseComponent.id){
             this.purchaseComponent = r.data.purchaseComponent;
           }
-        }).catch(e => {
-          console.log("API error: " + e);
         });
     },
     validate(){
@@ -115,8 +113,6 @@ export default {
       this.receiving.totalPrice = (+this.receiving.unitPrice * +this.receiving.units);
       return http.post("/receiving", this.receiving).then(r => {
         return Promise.resolve();
-      }).catch(e => {
-        console.log("API error: " + e);
       });
     },
     saveAndClose() {
@@ -134,8 +130,6 @@ export default {
           if(!this.receiving.number){
             this.receiving.number = r.data.purchase.number + "-" + r.data.component.number;
           }
-        }).catch(e => {
-          console.log("API error: " + e);
         });
     },
   },

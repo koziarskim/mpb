@@ -180,9 +180,6 @@ export default {
     },    
     getStatus(statusId){
       var statusKv = this.availableStatus.find(stat => stat.id == statusId)
-      if(!statusKv){
-        console.log("Status not found: " +status)
-      }
       return statusKv.name
     },
     checkboxSelected(saleItem){
@@ -229,29 +226,21 @@ export default {
         this.saleItems = r.data.content;
         this.pageable.totalElements = r.data.totalElements;
       }
-    }).catch(e => {
-      console.log("API error: "+e);
     });
   },
   getAvailableCustomers() {
     http.get("/customer/kv").then(r => {
       this.availableCustomers = r.data;
-    }).catch(e => {
-      console.log("API error: "+e);
     });
   },
   getAvailableItems() {
     http.get("/item/kv").then(r => {
       this.availableItems = r.data;
-    }).catch(e => {
-      console.log("API error: "+e);
     });
   },
   getAvailablePackagings() {
     http.get("/packaging/kv", {params: {itemId: this.itemKv.id}}).then(r => {
       this.availablePackagings = r.data;
-    }).catch(e => {
-      console.log("API error: "+e);
     });
   },
   newShipment(){

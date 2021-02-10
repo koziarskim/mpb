@@ -90,9 +90,6 @@ export default {
         .then(response => {
           this.users = response.data;
           this.getAvailableRoles();
-        })
-        .catch(e => {
-          console.log("API error: " + e);
         });
     },
     save() {
@@ -109,9 +106,6 @@ export default {
             this.securite.setUser(response.data)
           }
           return response;
-        })
-        .catch(e => {
-          console.log("API error: " + e);
         });
     },
     saveAndClose() {
@@ -120,14 +114,9 @@ export default {
       });
     },
     deleteUser(id) {
-      http
-        .delete("/user/" + id)
-        .then(() => {
-          this.getUsers();
-        })
-        .catch(e => {
-          console.log("API Error: " + e);
-        });
+      http.delete("/user/" + id).then(() => {
+        this.getUsers();
+      });
     },
     createUser() {
       this.user = {
@@ -151,16 +140,11 @@ export default {
       this.editMode = true;
     },
     getAvailableRoles() {
-      http
-        .get("/role")
-        .then(response => {
-          this.availableRoles = response.data.sort(function(a, b){
-				    return a.id - b.id;
-			    });
-        })
-        .catch(e => {
-          console.log("API error: " + e);
-        });
+      http.get("/role").then(response => {
+        this.availableRoles = response.data.sort(function(a, b){
+				  return a.id - b.id;
+			  });
+      });
     },
     isSelected(role_id) {
       return false;

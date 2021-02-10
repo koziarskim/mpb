@@ -165,7 +165,7 @@ export default {
           http.put("/sale/paid", saleIds).then(r => {
             this.getSales();
             this.selectedSales = [];
-          }).catch(e => {console.log("API error: "+e);});  
+          });  
         }
       })
     },
@@ -218,8 +218,6 @@ export default {
         document.body.appendChild(link)
         link.click()
         this.pageable.perPage = 25;
-      }).catch(e => {
-        console.log("API error: "+e);
       });
     },
     getStatusClass(statusId){
@@ -260,22 +258,16 @@ export default {
         this.sales = r.data.content;
         this.pageable.totalElements = r.data.totalElements;
       }
-    }).catch(e => {
-      console.log("API error: "+e);
     });
   },
 	getAvailableItems() {
     http.get("/item/kv").then(r => {
       this.availableItems = r.data;
-    }).catch(e => {
-      console.log("API error: "+e);
     });
   },
 	getAvailableCustomers() {
     http.get("/customer/kv").then(r => {
       this.availableCustomers = r.data;
-    }).catch(e => {
-      console.log("API error: "+e);
     });
   },
     getSale(saleId){

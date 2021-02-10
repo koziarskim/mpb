@@ -64,33 +64,20 @@ export default {
         .then(response => {
           this.suppliers = response.data.content;
           this.pageable.totalElements = response.data.totalElements;
-        })
-        .catch(e => {
-          console.log("API error: " + e);
         });
     },
     deleteSupplier(id) {
-      http
-        .delete("/supplier/" + id)
-        .then(() => {
-          this.getSuppliers();
-        })
-        .catch(e => {
-          console.log("API Error: " + e);
-        });
+      http.delete("/supplier/" + id).then(() => {
+        this.getSuppliers();
+      });
     },
     goToSupplier(id) {
       if (id) {
         router.push("/supplierEdit/" + id);
       } else {
-        http
-          .post("/supplier")
-          .then(response => {
-            router.push("/supplierEdit/" + response.data.id);
-          })
-          .catch(e => {
-            console.log("API Error: " + e);
-          });
+        http.post("/supplier").then(response => {
+          router.push("/supplierEdit/" + response.data.id);
+        });
       }
     }
   },

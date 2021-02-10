@@ -185,10 +185,7 @@ export default {
       return http.post("/search/season/kv", this.searchDto).then(r => {
           this.setResponse(this.seasons, this.searchDto.seasonAll, r.data);
           return Promise.resolve();
-        }).catch(e => {
-          console.log("API error: " + e);
         });
-      return Promise.resolve();
     },
 
     // Item
@@ -217,10 +214,7 @@ export default {
       return http.post("/search/item/kv", this.searchDto).then(r => {
           this.setResponse(this.items, this.searchDto.itemAll, r.data);
           return Promise.resolve();
-        }).catch(e => {
-          console.log("API error: " + e);
         });
-      return Promise.resolve();
     },
 
     // Customer
@@ -249,10 +243,7 @@ export default {
       return http.post("/search/customer/kv", this.searchDto).then(r => {
           this.setResponse(this.customers, this.searchDto.customerAll, r.data);
           return Promise.resolve();
-        }).catch(e => {
-          console.log("API error: " + e);
         });
-      return Promise.resolve();
     },
 
     // Sale
@@ -281,10 +272,7 @@ export default {
       return http.post("/search/sale/kv", this.searchDto).then(r => {
           this.setResponse(this.sales, this.searchDto.saleAll, r.data);
           return Promise.resolve();
-        }).catch(e => {
-          console.log("API error: " + e);
         });
-      return Promise.resolve();
     },
 
     // Supplier
@@ -313,10 +301,7 @@ export default {
       return http.post("/search/supplier/kv", this.searchDto).then(r => {
           this.setResponse(this.suppliers, this.searchDto.supplierAll, r.data);
           return Promise.resolve();
-        }).catch(e => {
-          console.log("API error: " + e);
         });
-      return Promise.resolve();
     },
 
     // Component
@@ -344,8 +329,6 @@ export default {
       return http.post("/search/component/kv", this.searchDto).then(r => {
           this.setResponse(this.components, this.searchDto.componentAll, r.data);
           return Promise.resolve();
-        }).catch(e => {
-          console.log("API error: " + e);
         });
     },
 

@@ -105,8 +105,6 @@ export default {
 			};
       http.post("/production", production).then(response => {
         this.closeModal();
-			}).catch(e => {
-				console.log("API error: " + e);
 			});
     },
     closeModal() {

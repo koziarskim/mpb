@@ -235,9 +235,7 @@ export default {
               units: units, unitPrice: dto.unitCost, unitsReceived: dto.unitsReceived});
           }
         })
-      }).catch(e=> {
-        console.log("API error: "+e);
-      })
+      });
     },
     setPurchaseNumber() {
       if(this.purchase.number){
@@ -245,8 +243,6 @@ export default {
       }
       return http.get("/purchase/number/"+moment.utc().local().format("YYYY-MM-DD")).then(r => {
         this.purchase.number = r.data;
-      }).catch(e => {
-        console.log("API error: " + e);
       });
     }, 
     getCases(pc){
@@ -255,9 +251,6 @@ export default {
         cases = Math.ceil(pc.units / pc.component.casePack).toLocaleString();
       }
       return cases;
-    },
-    formatter(value){
-      console.log("Format: "+value)
     },
     deletePo(){
       if(!this.purchase.id){
@@ -272,14 +265,13 @@ export default {
         if(ok){
           http.delete("/purchase/" + this.purchase.id).then(response => {
             router.push("/purchaseList");
-          }).catch(e => {console.log("API Error: " + e);});          }
+          });
+        }
       })
-
     },
     deletePc(pc){
       var idx = this.purchase.purchaseComponents.findIndex(it => it.id == pc.id);
       this.purchase.purchaseComponents.splice(idx, 1);
-      // this.save();
     },
     back(){
       this.getPurchase(this.purchase.id).then(purchase =>{
@@ -339,8 +331,6 @@ export default {
         this.purchase = r.data;
         this.receiveMode = false;
         return r.data;
-      }).catch(e => {
-        console.log("API error: " + e);
       });
     },
     saveReceive(){
@@ -381,8 +371,6 @@ export default {
         return http.post("/receivings/purchase/"+this.purchase.id, receivings).then(r => {
           this.purchase = r.data;
           this.receiveMode = false;
-        }).catch(e => {
-          console.log("API error: " + e);
         });
       }
     },
@@ -398,8 +386,6 @@ export default {
         this.purchase = r.data;
         this.receivingDate = r.data.receivingDate;
         return r.data;
-      }).catch(e => {
-        console.log("API error: " + e);
       });
     },
     close() {

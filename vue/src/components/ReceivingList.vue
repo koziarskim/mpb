@@ -113,7 +113,7 @@ export default {
     getAvailableSuppliers(){
       http.get("/supplier/kv").then(response => {
         this.availableSuppliers = response.data;
-      }).catch(e => {console.log("API error: " + e);});
+      });
     },
     paginationChange(page){
       this.pageable.currentPage = page;
@@ -131,26 +131,21 @@ export default {
         .then(r => {
           this.receivings = r.data.content;
           this.pageable.totalElements = r.data.totalElements;
-        })
-        .catch(e => {
-          console.log("API error: " + e);
         });
     },
     getAvailablePurchases() {
       return http.get("/purchase/kv").then(response => {
         this.availablePurchases = response.data;
-      }).catch(e => {console.log("API error: " + e);});
+      });
     },
     getAvailableComponents() {
       return http.get("/component/kv").then(response => {
         this.availableComponents = response.data;
-      }).catch(e => {console.log("API error: " + e);});
+      });
     },
     getPurchaseComponent(purchase_id, component_id) {
       return http.get("/purchaseComponent/purchase/"+purchase_id+"/component/"+component_id).then(r => {
        return r.data;
-      }).catch(e => {
-        console.log("API error: " + e);
       });
     },
     goToReceiving(receiving_id) {

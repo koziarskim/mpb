@@ -123,17 +123,17 @@ export default {
         }).then(response => {
           this.itemPackagings = response.data.content;
           this.pageable.totalElements = response.data.totalElements;
-        }).catch(e => {console.log("API error: " + e);});
+        });
     },
     getAvailableItems(){
       http.get("/item/kv").then(r => {
         this.availableItems = r.data;
-      }).catch(e => {console.log("API error: "+ e)})
+      });
     },
     getAvailablePackagings(){
       http.get("/packaging/kv", {params: {itemId: this.itemKv.id}}).then(r => {
         this.availablePackagings = r.data;
-      }).catch(e => {console.log("API error: "+ e)})
+      });
     },
     goToItem(itemId) {
       router.push("/itemEdit/" + itemId);

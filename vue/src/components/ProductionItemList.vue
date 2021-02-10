@@ -90,15 +90,11 @@ export default {
     getItemTree(date){
       http.get("/item/production/date/"+date).then(response => {
         this.treeItems = response.data;
-      }).catch(e => {
-         console.log("API error: " + e);
       });
     },
     getScheduleEvent(seId){
       return http.get("/scheduleEvent/"+seId).then(response => {
         return response.data;
-      }).catch(e => {
-         console.log("API error: " + e);
       });
     },
     goToProductionLine(seId) {

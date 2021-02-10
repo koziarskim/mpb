@@ -251,8 +251,6 @@ export default {
     getComponent(componentId){
       return http.get("/component/" + componentId).then(r => {
         return r.data;
-      }).catch(e => {
-        console.log("API error: " + e);
       });
     },
     goToSaleItemList(){
@@ -282,8 +280,6 @@ export default {
             this.availableComponents.push(c);
           }
         })
-      }).catch(e => {
-        console.log("API error: " + e);
       });
     },
     getItem(item_id) {
@@ -293,15 +289,11 @@ export default {
           this.upc = {id: response.data.upc.id};
         }
         return response.data;
-      }).catch(e => {
-        console.log("API error: " + e);
       });
     },
     getAvailableBrands() {
       http.get("/brand").then(response => {
         this.availableBrands = response.data;
-      }).catch(e => {
-        console.log("API error: " + e);
       });
     },
     getAvailableCategories() {
@@ -309,22 +301,16 @@ export default {
         response.data.forEach(category => {
           this.availableItemCategories.push(category);
         });
-      }).catch(e => {
-        console.log("API error: " + e);
       });
       http.get("/category/component/kv").then(response => {
         response.data.forEach(category => {
           this.availableCompCategories.push(category);
         });
-      }).catch(e => {
-        console.log("API error: " + e);
-        });
+      });
     },
     getAvailableSeasons() {
       http.get("/season").then(response => {
         this.availableSeasons = response.data;
-      }).catch(e => {
-        console.log("API error: " + e);
       });
     },
     validate(){
@@ -350,8 +336,6 @@ export default {
       return http.post("/item", formData, headers).then(r => {
         this.getItem(r.data.id)
         return r.data;
-      }).catch(e => {
-         console.log("API error: " + e);
       });
     },
     goToComponent(componentId) {
@@ -378,8 +362,6 @@ export default {
       if(ok){
         http.delete("/item/"+this.item.id).then(response => {
             router.push("/itemList")
-          }).catch(e => {
-            console.log("Error post");
           });
         }
     })
@@ -387,7 +369,7 @@ export default {
   getAvailableUpc(){
     http.get("/upc/kv").then(r=> {
       this.availableUpc = r.data;
-    }).catch(e=> {console.log("API error: " + e);})
+    });
   }
   },
   mounted() {

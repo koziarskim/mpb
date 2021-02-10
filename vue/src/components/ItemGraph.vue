@@ -84,66 +84,59 @@ export default {
 		}
 	},
   methods: {
-		getChartStyle(){
-			return "height: "+this.chartHeight+"px; width: "+this.chartWidth+"px;";
-		},
-		getItem(item_id) {
-			http.get("/item/"+item_id).then(response => {
-				this.item = response.data;
-				this.getScheduleEvents(response.data.id);
-			}).catch(e => {
-				console.log("API error: " + e);
-			});
-		},
+	getChartStyle(){
+		return "height: "+this.chartHeight+"px; width: "+this.chartWidth+"px;";
+	},
+	getItem(item_id) {
+		http.get("/item/"+item_id).then(response => {
+			this.item = response.data;
+			this.getScheduleEvents(response.data.id);
+		});
+	},
     getScheduleEvents(item_id) {
-      http
-        .get("/scheduleEvent/item/" + item_id)
-        .then(response => {
-		  		this.scheduleEvents = response.data;
-		  		this.updateChart();
-        })
-        .catch(e => {
-          console.log("API error: " + e);
-        });
+      	http.get("/scheduleEvent/item/" + item_id).then(response => {
+			this.scheduleEvents = response.data;
+			this.updateChart();
+		});
 		},
-		mtime(time){
-			var mtime = moment(time,'YYYY-MM-DD HH:mm:ss');
-			return mtime;
-		},	
-		updateChart(){
-			// this.chartOptions.scales.xAxes[0].time.unit = 'day';
-			var dsIndex = 0;
-			this.chartData.datasets = [];
-			this.scheduleEvents.forEach(se => {
-				if(!se.startTime){
-					return;
-				}
-				var startDate = moment(se.date +" "+ se.startTime, 'YYYY-MM-DD HH:mm:ss');
-				var prevTime = moment(se.startTime, 'HH:mm:ss');
-				var tooltipLabel = "Started at "+ moment(se.startTime, 'HH:mm:ss').format('HH:mm');
-				var data = [{x: startDate, y: 0, tooltipLabel: tooltipLabel}];
-				var sortedProductions = se.productions.sort(function(a, b){
-					return moment(a.finishTime, 'HH:mm:ss').diff(moment(b.finishTime, 'HH:mm:ss'));
-				});
-				sortedProductions.forEach(p => {
-					var secs = moment(p.finishTime, 'HH:mm:ss').diff(prevTime, 'seconds');
-					var time = moment().startOf('day').seconds(secs).format('HH:mm:ss')
-					var perf = !secs?0:((p.unitsProduced/secs)*3600).toFixed(0);
-					var tooltipLabel= "SO: "+se.saleItem.sale.number+", "+ perf+" u/h (" +p.unitsProduced+" units in "+time+")"
-					data.push({x: moment(se.date +" "+ p.finishTime, 'YYYY-MM-DD HH:mm:ss'), y: perf, tooltipLabel: tooltipLabel});
-					prevTime = moment(p.finishTime, 'HH:mm:ss');
-				})
-				this.chartData.datasets.push({
-					// label: this.scheduleEvent.saleItem.item.name,
-					datasetIndex: dsIndex, 
-					data: data, 
-					steppedLine: 'after',
-					fill: false,
-					borderColor: '#C28535',
-				});
-				dsIndex++;
+	mtime(time){
+		var mtime = moment(time,'YYYY-MM-DD HH:mm:ss');
+		return mtime;
+	},	
+	updateChart(){
+		// this.chartOptions.scales.xAxes[0].time.unit = 'day';
+		var dsIndex = 0;
+		this.chartData.datasets = [];
+		this.scheduleEvents.forEach(se => {
+			if(!se.startTime){
+				return;
+			}
+			var startDate = moment(se.date +" "+ se.startTime, 'YYYY-MM-DD HH:mm:ss');
+			var prevTime = moment(se.startTime, 'HH:mm:ss');
+			var tooltipLabel = "Started at "+ moment(se.startTime, 'HH:mm:ss').format('HH:mm');
+			var data = [{x: startDate, y: 0, tooltipLabel: tooltipLabel}];
+			var sortedProductions = se.productions.sort(function(a, b){
+				return moment(a.finishTime, 'HH:mm:ss').diff(moment(b.finishTime, 'HH:mm:ss'));
+			});
+			sortedProductions.forEach(p => {
+				var secs = moment(p.finishTime, 'HH:mm:ss').diff(prevTime, 'seconds');
+				var time = moment().startOf('day').seconds(secs).format('HH:mm:ss')
+				var perf = !secs?0:((p.unitsProduced/secs)*3600).toFixed(0);
+				var tooltipLabel= "SO: "+se.saleItem.sale.number+", "+ perf+" u/h (" +p.unitsProduced+" units in "+time+")"
+				data.push({x: moment(se.date +" "+ p.finishTime, 'YYYY-MM-DD HH:mm:ss'), y: perf, tooltipLabel: tooltipLabel});
+				prevTime = moment(p.finishTime, 'HH:mm:ss');
 			})
-		}
+			this.chartData.datasets.push({
+				// label: this.scheduleEvent.saleItem.item.name,
+				datasetIndex: dsIndex, 
+				data: data, 
+				steppedLine: 'after',
+				fill: false,
+				borderColor: '#C28535',
+			});
+			dsIndex++;
+		})
+	}
   },
   mounted() {
     var item_id = this.$route.params.item_id;

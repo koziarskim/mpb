@@ -101,8 +101,6 @@ export default {
       http.post("/user", this.user).then(r => {
         this.securite.setUser(this.user);
         router.go();
-      }).catch(e => {
-        console.log("API error: " + e);
       });
     },
     navClass(navName){

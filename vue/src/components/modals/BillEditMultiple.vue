@@ -43,8 +43,6 @@ export default {
     save() {
       return http.post("/receiving/invoice/ids/"+this.receivingIds, {}, {params: {invoiceNumber: this.invoiceNumber}}).then(r => {
         return Promise.resolve();
-      }).catch(e => {
-        console.log("API error: " + e);
       });
     },
     closeModal(){

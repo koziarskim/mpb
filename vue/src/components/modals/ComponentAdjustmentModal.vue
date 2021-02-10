@@ -70,16 +70,12 @@ export default {
       http.get("/componentAdjustment/" + id).then(r => {
 		this.componentAdjustment = r.data;
 		this.reasonKv = {id: r.data.reason};
-    	}).catch(e => {
-			console.log("API error: " + e);
-		});
+    	});
     },
 	getComponent(id) {
       http.get("/component/" + id).then(r => {
 		this.componentAdjustment.component = r.data;
-    	}).catch(e => {
-			console.log("API error: " + e);
-		});
+    	});
     },
     validate() {
 			if(!this.componentAdjustment.date || !this.reasonKv.id || !this.componentAdjustment.unitsAdjusted){
@@ -96,8 +92,6 @@ export default {
 	  this.componentAdjustment.reason = this.reasonKv.id;
       http.post("/componentAdjustment", this.componentAdjustment).then(response => {
         this.closeModal(response.data);
-			}).catch(e => {
-				console.log("API error: " + e);
 			});
     },
     deleteModal() {
@@ -105,8 +99,6 @@ export default {
         if(ok){
           http.delete("/componentAdjustment/"+this.componentAdjustment.id).then(r => {
             this.closeModal();
-          }).catch(e => {
-            console.log("API Error: "+e);
           });
             }
         })

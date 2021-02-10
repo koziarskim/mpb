@@ -116,16 +116,12 @@ export default {
       http.get("/packaging/"+id).then(r => {
         this.packaging = r.data;
         this.typeKv = {id: r.data.type};
-      }).catch(e => {
-        console.log("API error: " + e);
       });      
     },
     save(){
       this.packaging.type = this.typeKv.id;
       http.post("/packaging", this.packaging).then(r => {
         router.back();
-      }).catch(e => {
-        console.log("API error: " + e);
       });      
     },
     deletePackaging(){
@@ -133,8 +129,6 @@ export default {
         if(ok){
           http.delete("/packaging/"+this.packaging.id).then(r => {
             router.back();
-          }).catch(e => {
-            console.log("API error: " + e);
           });
           }
       })

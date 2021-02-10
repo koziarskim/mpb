@@ -160,8 +160,6 @@ export default {
         link.setAttribute("download", r.headers['file-name'])
         document.body.appendChild(link)
         link.click()
-      }).catch(e => {
-        console.log("API error: "+e);
       });
     },    
     triggerAll(add){
@@ -184,8 +182,6 @@ export default {
     getShipmentItems(shipmentDto){
       http.get("/shipment/"+shipmentDto.id).then(r => {
         shipmentDto.shipmentItems = r.data.shipmentItems
-      }).catch(e => {
-        console.log("API error: " + e);
       });
     },
     searchFilterMenu(){
@@ -225,31 +221,23 @@ export default {
         })
         this.shipments = r.data.content;
         this.pageable.totalElements = r.data.totalElements;
-      }).catch(e => {
-        console.log("API error: " + e);
       });
     },
     getAvailableCustomers() {
       http.get("/customer/kv").then(r => {
         this.availableCustomers = r.data;
-      }).catch(e => {
-        console.log("API error: "+e);
       });
     },
     getAvailableSales() {
       return http.get("/sale/kv").then(r => {
         this.availableSales = r.data;
         return r.data;
-      }).catch(e => {
-        console.log("API error: "+e);
       });
     },
     getAvailableItems() {
       return http.get("/item/kv").then(r => {
         this.availableItems = r.data;
         return r.data;
-      }).catch(e => {
-        console.log("API error: "+e);
       });
     },
     deleteShipment(id) {
@@ -257,8 +245,6 @@ export default {
         if(ok){
           http.delete("/shipment/" + id).then(() => {
             this.getShipments();
-          }).catch(e => {
-            console.log("API Error: " + e);
           });
         }
       })

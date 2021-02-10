@@ -256,30 +256,24 @@ export default {
       return http.get("/customer/kv").then(r => {
         this.availableCustomers = r.data;
         return r.data;
-      }).catch(e => {console.log("API error: " + e);});
+      });
     },
     getAvailableShipments(customerId) {
       return http.get("/shipment/kv/customer/"+customerId).then(r => {
         this.availableShipments = r.data;
         return r.data;
-      }).catch(e => {
-        console.log("API error: " + e);
       });
     },
     getAvailableSaleItems(customerId) {
       return http.get("/saleItem/kv/customer/"+customerId).then(r => {
         this.availableSaleItems = r.data;
         return r.data;
-      }).catch(e => {
-        console.log("API error: " + e);
       });
     },
     getAvailableShipmentItems(shipmentId) {
       return http.get("/shipmentItem/kv/shipment/"+shipmentId).then(r => {
         this.availableShipmentItems = r.data;
         return r.data;
-      }).catch(e => {
-        console.log("API error: " + e);
       });
     },
     getShipment(shipmentId) {
@@ -294,24 +288,18 @@ export default {
         this.invoice.shippingCost = r.data.shippingCost?r.data.shippingCost:0;
         this.invoice.invoiceEmail = r.data.customer.invoiceEmail;
         return r.data;
-      }).catch(e => {
-        console.log("API error: " + e);
       });
     },
     getSaleItem(saleItemId) {
       return http.get("/saleItem/" + saleItemId).then(r => {
         this.saleItem = r.data;
         return r.data;
-      }).catch(e => {
-        console.log("API error: " + e);
       });
     },
     getShipmentItem(shipmentItemId) {
       return http.get("/shipmentItem/" + shipmentItemId).then(r => {
         this.shipmentItem = r.data;
         return r.data;
-      }).catch(e => {
-        console.log("API error: " + e);
       });
     },
     addSaleItem() {
@@ -341,8 +329,6 @@ export default {
       return http.post("/invoice/", this.invoice, query).then(r => {
         this.invoice = r.data;
         return r.data;
-      }).catch(e => {
-        console.log("API error: " + e);
       });
     },
     deleteInvoice() {
@@ -350,9 +336,9 @@ export default {
         if(ok){
           http.delete("/invoice/"+this.invoice.id).then(r => {
             router.push({path: "/invoiceList"});
-          }).catch(e => {console.log("API error: " + e);});
-            }
-        })
+          });
+        }
+      })
     },
     goToSale(sale){
       router.push({path: "/saleEdit/"+sale.id})
@@ -382,9 +368,7 @@ export default {
         }
         this.setBody();
         return r.data;
-      }).catch(e => {
-        console.log("API error: " + e);
-      });
+      })
     },
   },
   mounted() {

@@ -522,16 +522,12 @@ export default {
           this.sale.freightTerms = response.data.freightTerms;
         }
         this.sale.customer = response.data;
-      }).catch(e =>{
-        console.log("API error: " + e);
-      })
+      });
     },
     getItem(item_id){
       http.get("/item/"+item_id).then(response =>{
         this.item = response.data;
-      }).catch(e =>{
-        console.log("API error: " + e);
-      })
+      });
     },
     getSaleData(id) {
       return http.get("/sale/" + id).then(response => {
@@ -552,8 +548,6 @@ export default {
         }
         this.paidInFull = response.data.paidInFull;
         return response.data;
-      }).catch(e => {
-        console.log("API error: " + e);
       });
     },
     readySale(){
@@ -572,9 +566,7 @@ export default {
       this.sale.approved = false;
       this.saveSale(false).then(r=> {
         this.getSaleData(r.data.id);
-      }).catch(e => {
-        console.log("API error: " + e);
-      })
+      });
     },    
     approveSale(){
       if(!securite.hasRole(['SALE_ADMIN', 'ADMIN'])){
@@ -615,15 +607,13 @@ export default {
           this.getSaleData(r.data.id);
           return r;
         }
-      }).catch(e => {
-        console.log("API error: " + e);
       });
     },
     copySale() {
       this.saveSale(true).then(r => {
         http.post("/sale/"+r.data.id+"/duplicate").then(r => {
           router.push("/saleEdit/"+r.data.id);
-      }).catch(e => {console.log("API error: " + e);});
+        });
       })
     },
     validate(){
@@ -698,34 +688,25 @@ export default {
           this.sale.saleItems = [];
           http.delete("/sale/"+this.sale.id).then(r => {
             router.push('/saleList/');
-          }).catch(e => {
-            console.log("API Error: "+e);
           });
-            }
-        })
+        }
+      })
     },
     getAvailableCustomers() {
       http
         .get("/customer/kv")
         .then(response => {
           this.availableCustomers = response.data;
-        })
-        .catch(e => {
-          console.log("API error: " + e);
         });
     },
     getAvailableItems() {
       http.get("/item/kv").then(r => {
         this.availableItems = r.data;
-      }).catch(e => {
-        console.log("API error: " + e);
       });
     },
     getAvailableSales() {
       http.get("/sale/kv/customer/"+this.sale.customer.id).then(r => {
         this.availableSales = r.data.filter(s => s.id != this.sale.id);
-      }).catch(e => {
-        console.log("API error: " + e);
       });
     },
     moveItem(saleItem){
@@ -733,8 +714,6 @@ export default {
         this.saleKv = {};
         this.getSaleData(this.sale.id);
         this.showItemMenu = false;
-      }).catch(e => {
-        console.log("API error: " + e);
       });
     },
     addItem() {

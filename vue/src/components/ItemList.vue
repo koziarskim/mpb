@@ -134,13 +134,13 @@ export default {
       http.get("/itemPackaging/item/"+itemId).then(r => {
         this.itemPackagings = r.data.content;
         this.showItemPackagingsMenu = !this.showItemPackagingsMenu;
-      }).catch(e => {console.log("API error: "+ e)})
+      });
     },
     getUnits(itemId){
       http.get("/item/"+itemId+"/dto").then(r => {
         r.data.unitsAdjusted = r.data.unitsAdjusted < 0 ? r.data.unitsAdjusted: '+'+r.data.unitsAdjusted;
         this.itemDto = r.data;
-      }).catch(e => {console.log("API error: "+ e)})
+      });
     },
     sorted(e) {
       if (!e.sortBy) {
@@ -168,22 +168,22 @@ export default {
           //ItemListDto
           this.items = response.data.content;
           this.pageable.totalElements = response.data.totalElements;
-        }).catch(e => {console.log("API error: " + e);});
+        });
     },
     getAvailableComponents(){
       http.get("component/kv").then(r => {
         this.availableComponents = r.data;
-      }).catch(e => {console.log("API error: "+ e)})
+      });
     },
     getAvailableBrands(){
       http.get("brand/kv").then(r => {
         this.availableBrands = r.data;
-      }).catch(e => {console.log("API error: "+ e)})
+      });
     },
     getAvailableCategories(){
       http.get("category/item/kv").then(r => {
         this.availableCategories = r.data;
-      }).catch(e => {console.log("API error: "+ e)})
+      });
     },
     createNewItem() {
       router.push("/itemEdit");

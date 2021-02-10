@@ -43,13 +43,11 @@ export default {
   watch: {},
   methods: {
     login() {
-      // var query = {params: {yearContext: ""}}
       return http.post("/user/login", this.loginDto).then(response => {
         this.securite.setUser(response.data)
         EventBus.$emit('userChanged', response.data);
         router.push("/home")
       }).catch(e => {
-        console.log("API error: " + e);
         alert(e.response.data)
       });
     },

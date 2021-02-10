@@ -170,8 +170,6 @@ export default {
           this.invoices = r.data.content;
           this.pageable.totalElements = r.data.totalElements;
         }
-      }).catch(e => {
-        console.log("API error: "+e);
       });
     },
     goToInvoice(id){
@@ -180,27 +178,27 @@ export default {
     getInvoice(invoiceId) {
       return http.get("/invoice/"+invoiceId).then(r => {
         return r.data;
-      }).catch(e => {console.log("API error: "+e);});
+      });
     },
     getAvailableItems() {
       http.get("/item/kv").then(r => {
         this.availableItems = r.data;
-      }).catch(e => {console.log("API error: "+e);});
+      });
     },
     getAvailableSales() {
       http.get("/sale/kv").then(r => {
         this.availableSales = r.data;
-      }).catch(e => {console.log("API error: "+e);});
+      });
     },
     getAvailableCustomers() {
       http.get("/customer/kv").then(r => {
         this.availableCustomers = r.data;
-      }).catch(e => {console.log("API error: "+e);});
+      });
     },
     getAvailableShipments() {
       http.get("/shipment/kv").then(r => {
         this.availableShipments = r.data;
-      }).catch(e => {console.log("API error: "+e);});
+      });
     },
   },
   mounted() {

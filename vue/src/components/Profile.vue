@@ -63,9 +63,6 @@ export default {
           this.securite.setUser(response.data)
           this.getUser();
           return response;
-        })
-        .catch(e => {
-          console.log("API error: " + e);
         });
     },
   },

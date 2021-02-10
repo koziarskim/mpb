@@ -229,23 +229,17 @@ export default {
 			http.post("/production", production).then(response => {
 						this.getScheduleEvents();
 						this.getScheduleEvent(this.scheduleEvent.id);
-			}).catch(e => {
-				console.log("API error: " + e);
 			});
 		},
 		deleteProduction(production_id){
 			http.delete("/production/"+production_id).then(response => {
 						this.getScheduleEvents();
 						this.getScheduleEvent(this.scheduleEvent.id);
-			}).catch(e => {
-				console.log("API error: " + e);
 			});
 		},
 		saveScheduleEvent(){
 				http.post("/scheduleEvent", this.scheduleEvent).then(response => {
 					this.getScheduleEvent(this.scheduleEvent.id);
-				}).catch(e => {
-					console.log("API error: " + e);
 				});
 		},
     getScheduleEvents() {
@@ -280,8 +274,6 @@ export default {
 					se.active = this.scheduleEvent.id == se.id?true:false;
 					packaging.events.push(se);
 				})
-      }).catch(e => {
-        console.log("API error: " + e);
       });
 		},
     getScheduleEvent(schedule_event_id) {
@@ -294,7 +286,7 @@ export default {
 				this.getScheduleEvents();
 				this.chartVisibility = "visiblility: visible;"
 				return response.data;
-      }).catch(e => {console.log("API error: " + e);});
+      });
 	},
 	saveStartProduction() {
 		var alreadyStarted = false;
@@ -311,8 +303,6 @@ export default {
 			return http.post("/scheduleEvent", this.scheduleEvent).then(response => {
 				this.getScheduleEvent(this.scheduleEvent.id);
 				this.startModalVisible = false;
-			}).catch(e => {
-				console.log("API error: " + e);
 			});
 		},
 		finishProduction() {
@@ -332,7 +322,7 @@ export default {
 					this.scheduleEvent.finishTime = this.sortedProductions[this.sortedProductions.length-1].finishTime;
 					return http.post("/scheduleEvent", this.scheduleEvent).then(response => {
 						this.getScheduleEvent(this.scheduleEvent.id);
-					}).catch(e => {console.log("API error: " + e);});
+					});
 				}
 			})
 		},

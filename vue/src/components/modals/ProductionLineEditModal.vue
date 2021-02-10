@@ -64,7 +64,7 @@ export default {
     save() {
       return http.post("/scheduleEvent/", this.scheduleEvent).then(r => {
         return Promise.resolve();
-      }).catch(e => {console.log("API error: " + e);});
+      });
     },
     closeModal(){
       this.$emit("close");
@@ -77,7 +77,7 @@ export default {
     getScheduleEvent(){
       http.get("/scheduleEvent/"+this.scheduleEventId).then(r=> {
         this.scheduleEvent = r.data;
-      }).catch(e => {console.log("API error: " + e);});
+      });
     },
   },
   mounted() {

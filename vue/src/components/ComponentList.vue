@@ -195,31 +195,27 @@ export default {
       http.get("/component/pageable", query).then(response => {
         this.components = response.data.content;
         this.pageable.totalElements = response.data.totalElements;
-      }).catch(e => {
-        console.log("API error: " + e);
       });
     },
     getAvailableCategories() {
       http.get("/category/component/kv").then(r => {
         this.availableCategories = r.data;
-      }).catch(e => {console.log("API error: " + e);});
+      });
     },
     getAvailableComponentTypes() {
       var query = {params: {categoryId: this.category.id}}
       http.get("/registery/componentType/kv", query).then(r => {
         this.availableComponentTypes = r.data;
-      }).catch(e => {console.log("API error: " + e);});
+      });
     },
     getAvailableSuppliers() {
       http.get("/supplier/kv").then(r => {
         this.availableSuppliers = r.data;
-      }).catch(e => {console.log("API error: " + e);});
+      });
     },
     getAvailableItems() {
       http.get("/item/kv").then(r => {
         this.availableItems = r.data;
-      }).catch(e => {
-        console.log("API error: " + e);
       });
     },
     getItem(component_id) {

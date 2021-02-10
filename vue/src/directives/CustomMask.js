@@ -22,7 +22,6 @@ function bind(el, binding, vnode) {
   el.dispatchEvent(new Event("input"));
 }
 function onBlur(event) {
-  console.log("testing blur " + event.srcElement.isValid);
   if (!event.srcElement.binding.value.test(event.srcElement.value)) {
     event.srcElement.classList.add("invalid");
   } else {

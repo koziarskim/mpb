@@ -72,16 +72,12 @@ export default {
 						this.availableSaleItems.push(si);
 					}
 				})
-			}).catch(e => {
-				console.log("API error: "+e);
-			});
+			});;
 		},
 		getAvailableSales(){
 			var query = {params: {onlyStock: true}}
 			http.get("/sale/kv/customer/"+this.customerId, query).then(r => {
 				this.availableSales = r.data;
-			}).catch(e => {
-				console.log("API error: "+e);
 			});
 		},
     closeModal(selectedSaleItems) {

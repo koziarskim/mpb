@@ -110,7 +110,6 @@ export default {
       },
       totalUnitsPrice: 0,
       totalUnits: 0,
-      showTotalsMenu: false,
       availableBrands: [],
       brandKv: {}
     };
@@ -154,14 +153,12 @@ export default {
         document.body.appendChild(link)
         link.click()
         this.pageable.perPage = 25;
-      }).catch(e => {
-        console.log("API error: "+e);
       });
     },    
     getAvailableBrands(){
       http.get("brand/kv").then(r => {
         this.availableBrands = r.data;
-      }).catch(e => {console.log("API error: "+ e)})
+      });
     },
     getTotalUnitPrice(ii){
       return parseFloat(ii.totalUnitPrice).toLocaleString('en-US',{minimumFractionDigits: 2})
@@ -205,8 +202,6 @@ export default {
           this.invoiceItems = r.data.content;
           this.pageable.totalElements = r.data.totalElements;
         }
-      }).catch(e => {
-        console.log("API error: "+e);
       });
     },
     goToInvoice(id){
@@ -218,22 +213,22 @@ export default {
     getAvailableItems() {
       http.get("/item/kv").then(r => {
         this.availableItems = r.data;
-      }).catch(e => {console.log("API error: "+e);});
+      });
     },
     getAvailableSales() {
       http.get("/sale/kv").then(r => {
         this.availableSales = r.data;
-      }).catch(e => {console.log("API error: "+e);});
+      });
     },
     getAvailableCustomers() {
       http.get("/customer/kv").then(r => {
         this.availableCustomers = r.data;
-      }).catch(e => {console.log("API error: "+e);});
+      });
     },
     getAvailableShipments() {
       http.get("/shipment/kv").then(r => {
         this.availableShipments = r.data;
-      }).catch(e => {console.log("API error: "+e);});
+      });
     },
   },
   mounted() {

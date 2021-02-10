@@ -87,8 +87,6 @@ export default {
 		getAddress(){
 			http.get("/address/"+this.addressId).then(r => {
 				this.address = r.data;
-			}).catch(e => {
-				console.log("API error: " + e)
 			})
 		},
     validate() {
@@ -105,9 +103,7 @@ export default {
 			this.address.type = this.addressType;
       http.post("/address", this.address).then(response => {
         this.closeModal(response.data);
-			}).catch(e => {
-				console.log("API error: " + e);
-			});
+			})
     },
     closeModal(address) {
       this.$emit("closeModal", address);

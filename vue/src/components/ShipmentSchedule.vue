@@ -101,7 +101,7 @@ export default {
           e.class = this.getStyleClass(e);
         })
         this.events.push.apply(this.events, r.data);
-      }).catch(e=> {console.log("API error: " + e);})
+      });
     },
     getCalendarEvents(startDate, endDate){
       http.get("/calendarEvent", {params: {
@@ -112,7 +112,7 @@ export default {
           e.class = this.getStyleClass(e);
         })
         this.events.push.apply(this.events, r.data);
-      }).catch(e=> {console.log("API error: " + e);})
+      });
     }
   },
   mounted() {

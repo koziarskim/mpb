@@ -107,32 +107,23 @@ export default {
           unitsReturned: 0,
         };
         this.itemReturn.saleItemReturns.push(sir);
-			}).catch(e => {
-				console.log("API error: " + e)
-			})
+			});
     },
 		getAvailableSaleItems(){
-      console.log("Customer: "+this.customerKv.id)
 			http.get("/saleItem/kv/item/"+this.itemId+"/customer/"+this.customerKv.id).then(r=> {
 				this.availableSaleItems = r.data;
-			}).catch(e => {
-				console.log("API error: " + e)
-			})
+			});
 		},
 		getAvailableCustomers(){
 			http.get("/customer/kv/item/"+this.itemId).then(r=> {
 				this.availableCustomers = r.data;
-			}).catch(e => {
-				console.log("API error: " + e)
-			})
+			});
 		},
 		getItem(){
 			return http.get("/item/"+this.itemId).then(r=> {
         this.item = r.data;
         return r.data;
-			}).catch(e => {
-				console.log("API error: " + e)
-			})
+			});
 		},
 		getItemReturn(){
 			return http.get("/itemReturn/"+this.itemReturnId).then(r=> {
@@ -140,9 +131,7 @@ export default {
         this.customerKv = {id: r.data.customer.id};
         // this.getAvailableSaleItems();
         return r.data;
-			}).catch(e => {
-				console.log("API error: " + e)
-			})
+			});
 		},
     validate() {
       return true;
@@ -155,8 +144,6 @@ export default {
       this.itemReturn.customer = {id: this.customerKv.id};
       http.post("/itemReturn", this.itemReturn).then(r=> {
         this.closeModal();
-			}).catch(e => {
-				console.log("API error: " + e);
 			});
     },
     closeModal() {

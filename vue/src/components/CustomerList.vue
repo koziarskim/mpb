@@ -58,9 +58,6 @@ export default {
         .then(response => {
           this.customers = response.data.content;
           this.pageable.totalElements = response.data.totalElements;
-        })
-        .catch(e => {
-          console.log("API error: " + e);
         });
     },
     remove(id) {
@@ -68,9 +65,6 @@ export default {
         .delete("/customer/" + id)
         .then(() => {
           this.getCustomers();
-        })
-        .catch(e => {
-          console.log("API Error: " + e);
         });
     },
     goTo(id) {

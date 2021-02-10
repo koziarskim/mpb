@@ -142,8 +142,6 @@ export default {
       }
       http.post("/scheduleEvent", se).then(response => {
         this.getScheduleEvents(this.date)
-      }).catch(e => {
-        console.log("API error: " + e);
       });
       se.edit = false;
     },
@@ -159,8 +157,6 @@ export default {
         if(value){
           http.delete("/scheduleEvent/" + se_id).then(response => {
             this.getScheduleEvents(this.date);
-          }).catch(e => {
-            console.log("API error: " + e);
           });
         }
       })
@@ -220,9 +216,6 @@ export default {
             })
           }
           this.getAvailableItems();
-        })
-        .catch(e => {
-          console.log("API error: " + e);
         });
 	  },
     goToItem(item_id) {

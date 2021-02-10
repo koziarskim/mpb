@@ -122,18 +122,12 @@ export default {
         .then(response => {
           this.supplier = response.data;
           this.freightTerms = this.getFreightById(response.data.freightTerms);
-        })
-        .catch(e => {
-          console.log("API error: " + e);
         });
     },
     save() {
-      return http
-        .post("/supplier", this.supplier)
-        .then(response => {})
-        .catch(e => {
-          console.log("API error: " + e);
-        });
+      return http.post("/supplier", this.supplier).then(r => {
+          return r;
+      });
     },
     saveAndClose() {
         this.save().then(r=>{

@@ -84,9 +84,7 @@ export default {
         http.get("/itemReturn/"+itemReturnId).then(r=> {
           this.itemId = r.data.item.id;
           this.itemReturnModalVisible = true;
-        }).catch(e => {
-          console.log("API error: " + e)
-        })
+        });
       }else{
         this.itemId = this.itemKv.id;
         this.itemReturnModalVisible = true;
@@ -110,22 +108,16 @@ export default {
       http.get("/itemReturn", query).then(r=> {
         this.itemReturns = r.data;
         this.pageable.totalElements = r.data.totalElements;
-      }).catch(e => {
-        console.log("API error: "+e);
       });
     },
     getAvailableItems() {
       http.get("/item/kv").then(r=> {
         this.availableItems = r.data;
-      }).catch(e => {
-        console.log("API error: "+e);
       });
     },
     getAvailableSales() {
       http.get("/sale/kv").then(r=> {
         this.availableSales = r.data;
-      }).catch(e => {
-        console.log("API error: "+e);
       });
     },
     deleteItemReturn(itemReturnId) {
@@ -133,8 +125,6 @@ export default {
         if(ok){
           http.delete("/itemReturn/"+itemReturnId).then(r => {
             this.getItemReturns();
-          }).catch(e => {
-            console.log("Error post");
           });
         }
       })

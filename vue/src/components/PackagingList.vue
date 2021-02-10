@@ -88,8 +88,6 @@ export default {
           r.data = r.data.filter(p => p.typeLabel.includes(this.typeKv.name))
         }
         this.packagings = r.data;
-      }).catch(e => {
-        console.log("API error: " + e);
       });
     },
   },

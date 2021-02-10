@@ -171,12 +171,12 @@ export default {
     getAvailableComponents(){
       http.get("/component/kv").then(response => {
         this.availableComponents = response.data;
-      }).catch(e => {console.log("API error: " + e);});
+      });
     },
     getAvailableSuppliers(){
       http.get("/supplier/kv").then(response => {
         this.availableSuppliers = response.data;
-      }).catch(e => {console.log("API error: " + e);});
+      });
     },
     paginationChange(page){
       this.pageable.currentPage = page;
@@ -205,7 +205,7 @@ export default {
       }}).then(response => {
         this.purchases = response.data.content;
         this.pageable.totalElements = response.data.totalElements;
-      }).catch(e => {console.log("API error: " + e);});
+      });
     },
     goToPurchaseNew() {
       router.push("/purchaseEdit");

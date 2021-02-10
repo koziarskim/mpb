@@ -87,8 +87,6 @@ export default {
           }
         })
         this.packagings = r.data;
-      }).catch(e => {
-        console.log("API error: " + e);
       });
     },
     save(){

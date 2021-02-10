@@ -105,14 +105,14 @@ export default {
       // this.event.start = moment(this.startDate, "YYYY-MM-dd").set({hour: moment(this.event.startTime, "HH"), minute: moment(this.event.startTime, "mm")});
       http.post("/calendarEvent", this.event).then(r => {
         this.close(this.event);
-      }).catch(e=> {console.log("API error: " + e);})
+      });
     },
     deleteEvent(){
       this.$bvModal.msgBoxConfirm("Are you sure you want to delete?").then(ok => {
         if (ok) {
           http.delete("/calendarEvent/"+this.event.id).then(r => {
             this.close();
-          }).catch(e=> {console.log("API error: " + e);})
+          });
         }
       });
     }

@@ -321,8 +321,6 @@ export default {
         if(ok){
           http.delete("/shipment/" + this.shipment.id).then(() => {
             router.push("/shipmentList")
-          }).catch(e => {
-            console.log("API Error: " + e);
           });
         }
       })
@@ -350,9 +348,7 @@ export default {
           this.addSaleItem(saleItem);
         })
         this.saleItemPickerVisible = false;
-      }).catch(e => {
-        console.log("API error: " + e); 
-      })
+      });
     },
     goToItemReturnList(saleItem){
       var query = { saleId: saleItem.sale.id, itemId: saleItem.itemPackaging.item.id };
@@ -378,9 +374,7 @@ export default {
         this.saleItem = {};
         this.getAvailableSaleItems();
         this.$refs.bselect.$children[0].searchText = this.itemText
-      }).catch(e => {
-        console.log("API error: " + e);
-      })
+      });
     },
     getSaveTitle(shipment){
       return "Created: "+moment(shipment.created).format("YYYY/MM/DD HH:mm")+"\n"+
@@ -400,8 +394,6 @@ export default {
     getCustomer(customerId) {
       return http.get("/customer/" + customerId).then(r => {
         return r.data;
-      }).catch(e => {
-        console.log("API error: " + e);
       });
     },
      getShipment(id) {
@@ -420,7 +412,7 @@ export default {
         }
         this.shipment = response.data;
         this.shippedDate = response.data.shippedDate;
-      }).catch(e => { console.log("API error: " + e); });
+      });
     },
     validate(){
       if(moment(this.shippedDate).isBefore('2019-01-01')){
@@ -468,8 +460,6 @@ export default {
         this.shipment = r.data;
         this.getAvailableSaleItems();
         return r.data;
-      }).catch(e => {
-         console.log("API error: " + e);
       });
     },
     getSaleItems(saleItemIds){
@@ -481,17 +471,13 @@ export default {
         r.data.forEach(saleItem => {
           this.addSaleItem(saleItem);
         })
-      }).catch(e => {
-        console.log("API error: " + e); 
-      })
+      });
     },
     getAvailableCustomers() {
       return http
         .get("/customer/kv")
         .then(response => {
           this.availableCustomers = response.data;
-        }).catch(e => {
-          console.log("API error: " + e);
         });
     },
     getAvailableFreightAddresses() {
@@ -502,8 +488,6 @@ export default {
           this.availableFreightAddresses.push({id: this.shipment.freightAddress.id, name: this.shipment.freightAddress.street});
         }
         return r.data;
-      }).catch(e => {
-        console.log("API error: " + e);
       });
     },
     getAvailableShippingAddresses(customer_id) {
@@ -525,9 +509,6 @@ export default {
               this.availableSaleItems.push(si);
             }
           })
-        })
-        .catch(e => {
-          console.log("API error: " + e);
         });
     },
     getShipmentNumber() {
@@ -536,8 +517,6 @@ export default {
       }
       return http.get("/shipment/number/"+moment.utc().local().format("YYYY-MM-DD")).then(r => {
         this.shipment.number = r.data;
-      }).catch(e => {
-        console.log("API error: " + e);
       });
     },
     addSaleItem(saleItem){

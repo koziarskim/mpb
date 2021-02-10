@@ -283,9 +283,6 @@ export default {
               .delete("/component/" + this.component.id)
               .then(response => {
                 router.push("/componentList");
-              })
-              .catch(e => {
-                console.log("API Error: " + e);
               });
           }
         });
@@ -308,9 +305,6 @@ export default {
             this.shelf = {id: r.data.shelf};
           }
           return r.data;
-        })
-        .catch(e => {
-          console.log("API error: " + e);
         });
     },
     getAvailableSuppliers() {
@@ -318,30 +312,24 @@ export default {
         .get("/supplier/kv")
         .then(response => {
           this.availableSuppliers = response.data;
-        })
-        .catch(e => {
-          console.log("API error: " + e);
         });
     },
     getAvailableCategories() {
       http.get("/category/type/CMP").then(response => {
         this.availableCategories = response.data;
-      }).catch(e => {console.log("API error: " + e);});
+      });
     },
     getAvailableComponentTypes() {
       var query = {params: {categoryId: this.category.id}}
       http.get("/registery/componentType/kv", query).then(response => {
         this.availableComponentTypes = response.data;
-      }).catch(e => {console.log("API error: " + e);});
+      });
     },
     getAvailableItems() {
       http
         .get("/item/kv")
         .then(response => {
           this.availableItems = response.data;
-        })
-        .catch(e => {
-          console.log("API error: " + e);
         });
     },
     getItem(item_id) {
@@ -349,9 +337,6 @@ export default {
         .get("/item/" + item_id)
         .then(r => {
           return r.data;
-        })
-        .catch(e => {
-          console.log("API error: " + e);
         });
     },
     validate(){
@@ -372,9 +357,6 @@ export default {
         .then(r => {
           this.getComponentData(r.data.id);
           return r.data;
-        })
-        .catch(e => {
-          console.log("API error: " + e);
         });
     },
     deleteItemComponent(ic_id) {
@@ -383,9 +365,6 @@ export default {
         .delete("/itemComponent/" + ic_id)
         .then(response => {
           this.component.itemComponents.splice(idx, 1);
-        })
-        .catch(e => {
-          console.log("API error: " + e);
         });
     },
     goToItem(item_id) {

@@ -129,7 +129,6 @@ export default {
       this.showTotalsMenu = !this.showTotalsMenu;
     },      
     openScheduleEventModal(se){
-      console.log(se.id);
       this.scheduleEventId = se.id;
       this.saleItemId = se.saleItemId;
       this.itemId = se.itemId;
@@ -180,8 +179,6 @@ export default {
       }
       http.post("/scheduleEvent", se).then(response => {
         this.getScheduleEvents(this.item.id)
-      }).catch(e => {
-        console.log("API error: " + e);
       });
       se.edit = false;
     },
@@ -193,8 +190,6 @@ export default {
         if(value){
           http.delete("/scheduleEvent/" + se_id).then(response => {
             this.getScheduleEvents(this.item.id);
-          }).catch(e => {
-            console.log("API error: " + e);
           });
         }
       })
@@ -219,28 +214,22 @@ export default {
          this.scheduleEvents = r.data.content;
         }
         this.pageable.totalElements = r.data.totalElements;
-      }).catch(e => {console.log("API error: " + e);});
+      });
     },
     getAvailableItems() {
       http.get("/item/kv").then(r => {
         this.availableItems = r.data;
-      }).catch(e => {
-        console.log("API error: "+e);
       });
     },
     getAvailablePackagins() {
       http.get("/packaging/kv", {params: {itemId: this.itemKv.id}}).then(r => {
         this.availablePackagings = r.data;
-      }).catch(e => {
-        console.log("API error: "+e);
       });
     },
     getAvailableSales() {
       http.get("/sale/kv").then(r => {
         r.data.unshift({id: 0, name: '----'})
         this.availableSales = r.data;
-      }).catch(e => {
-        console.log("API error: "+e);
       });
     },
     goToSale(sale_id) {

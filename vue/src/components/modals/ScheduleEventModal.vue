@@ -107,7 +107,7 @@ export default {
       if(!this.scheduleEventId) {return}
       http.get("/scheduleEvent/"+this.scheduleEventId).then(r => {
         this.scheduleEvent = r.data;
-      }).catch(e => {console.log("API error: "+e);});
+      });
     },
     getItem(){
       http.get("/item/"+this.itemId).then(r => {
@@ -115,7 +115,7 @@ export default {
         if(!this.scheduleEvent.item.id){
           this.scheduleEvent.item = r.data;
         }
-      }).catch(e => {console.log("API error: "+e);});
+      });
     },
     getSaleItem(){
       if(!this.saleItemId) {return}
@@ -125,7 +125,7 @@ export default {
           this.scheduleEvent.itemPackaging = r.data.itemPackaging;
         }
         this.scheduleEvent.unitsScheduled = +r.data.units - +r.data.unitsScheduled;
-      }).catch(e => {console.log("API error: "+e);});
+      });
     },
     validate(){
       if(!this.scheduleEvent.date || !this.scheduleEvent.scheduleTime || !this.scheduleEvent.line || !this.scheduleEvent.unitsScheduled){
@@ -156,9 +156,6 @@ export default {
         .post("/scheduleEvent", this.scheduleEvent)
         .then(response => {
           this.closeModal();
-        })
-        .catch(e => {
-          console.log("API error: " + e);
         });
     },
     closeModal(){

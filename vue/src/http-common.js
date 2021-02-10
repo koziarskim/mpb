@@ -2,7 +2,6 @@ import axios from "axios";
 import httpUtils from "./httpUtils";
 import router from "./router";
 import NProgress from 'nprogress';
-import securite from "./securite";
 
 const http = axios.create({
   baseURL: httpUtils.baseUrl
@@ -11,18 +10,10 @@ const http = axios.create({
 http.interceptors.request.use(
   config => {
     NProgress.start();
-    // var user = securite.getUser();
-    // if (user.year) {
-    //   if (!config.params) {
-    //     config.params = {};
-    //   }
-    //   config.params.yearContext = "y" + user.year.name;
-    // }
     return config;
   },
   error => {
-    console.log("Interceptor Request Error: " + error);
-    alert("There was an error! /n"+error);
+    alert("There was an error in request!\n" + error+"\n"+error.response.data.message);
     return Promise.reject(error);
   }
 );
@@ -33,13 +24,11 @@ http.interceptors.response.use(
     return response;
   },
   error => {
-    console.log("Interceptor Response Error: " + error);
-    console.log(error.response.data.message);
     if (error.response.status === 401) {
       router.push("/login");
       NProgress.done();
     } else {
-      alert("There was an error!\n" + error.response.data);
+      alert("There was an error in response!\n" + error+"\n"+error.response.data.message);
       NProgress.done();
     }
     return Promise.reject(error);

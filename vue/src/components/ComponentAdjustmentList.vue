@@ -86,14 +86,12 @@ export default {
       http.get("/componentAdjustment/pageable", query).then(response => {
         this.componentAdjustments = response.data.content;
         this.pageable.totalElements = response.data.totalElements;
-      }).catch(e => {
-        console.log("API error: " + e);
       });
     },
     getAvailableComponents() {
       http.get("/component/kv").then(r => {
         this.availableComponents = r.data;
-      }).catch(e => {console.log("API error: " + e);});
+      });
     },
     goToComponent(component_id) {
       if (!component_id) {
