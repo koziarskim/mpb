@@ -72,7 +72,7 @@ public interface ComponentService {
 			List<ItemComponent> itemComponents = itemComponentRepo.findByProduction(productionId);
 			for(ItemComponent ic: itemComponents) {
 				Component c = ic.getComponent();
-				c.setUnitsOnStock((long) Math.ceil(c.getUnitsOnStock() - (units/ic.getUnits())));
+				c.setUnitsOnStock((long) Math.ceil(c.getUnitsOnStock() - ((double) units/ic.getUnits())));
 				componentRepo.save(c);
 			};
 		}
@@ -146,9 +146,9 @@ public interface ComponentService {
 				long unitsForProduction = 0;
 				long unitsForSale = 0;
 				for(ItemComponent ic: component.getItemComponents()) {
-					unitsScheduled += (long) Math.ceil(ic.getItem().getUnitsScheduled()*ic.getUnits());
-					unitsForProduction += (long) Math.ceil(ic.getItem().getUnitsProduced()*ic.getUnits());
-					unitsForSale += (long) Math.ceil(ic.getItem().getUnitsSold()*ic.getUnits());
+					unitsScheduled += (long) Math.ceil((double) ic.getItem().getUnitsScheduled()*ic.getUnits());
+					unitsForProduction += (long) Math.ceil((double) ic.getItem().getUnitsProduced()*ic.getUnits());
+					unitsForSale += (long) Math.ceil((double) ic.getItem().getUnitsSold()*ic.getUnits());
 				}
 				component.setUnitsOnStock(unitsReceived + unitsAdjusted - unitsForProduction);
 				component.setUnitsLocked(unitsScheduled - unitsForProduction);

@@ -369,9 +369,9 @@ class ItemRest {
 			        for(SaleItem si: customerMap.get(customer)) {
 			        	long units = (si.getUnits() + si.getUnitsAdjusted() - si.getUnitsAssigned());
 			        	totalUnits += units;
-						long cases = (long) Math.ceil(units/si.getItemPackaging().getPackaging().getCasePack());
+						long cases = (long) Math.ceil((double) units/si.getItemPackaging().getPackaging().getCasePack());
 						totalCases += cases;
-						long pallets = (long) Math.ceil(cases/(si.getItemPackaging().getPackaging().getHi()*si.getItemPackaging().getPackaging().getTi()));
+						long pallets = (long) Math.ceil((double) cases/(si.getItemPackaging().getPackaging().getHi()*si.getItemPackaging().getPackaging().getTi()));
 						totalPallets += pallets;
 						String cartonType = Packaging.TYPE.valueOf(si.getItemPackaging().getPackaging().getType()).label();
 			        	if(cartonTypes.indexOf(cartonType) == -1) {

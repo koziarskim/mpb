@@ -354,8 +354,8 @@ class SaleRest {
 			long totalPallets = 0;
 			for(SaleItem si: sale.getSaleItems()) {
 				long units = si.getUnits() + si.getUnitsAdjusted();
-				long cases = (long) Math.ceil(units/si.getItemPackaging().getPackaging().getCasePack());
-				long pallets = (long) Math.ceil(cases/(si.getItemPackaging().getPackaging().getHi()*si.getItemPackaging().getPackaging().getTi()));
+				long cases = (long) Math.ceil((double) units/si.getItemPackaging().getPackaging().getCasePack());
+				long pallets = (long) Math.ceil((double) cases/(si.getItemPackaging().getPackaging().getHi()*si.getItemPackaging().getPackaging().getTi()));
 				totalPallets += pallets;
 			}
 			for(SaleItem si: sale.getSaleItems()) {
