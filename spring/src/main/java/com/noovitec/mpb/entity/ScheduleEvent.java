@@ -1,7 +1,5 @@
 package com.noovitec.mpb.entity;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
@@ -59,11 +57,6 @@ public class ScheduleEvent extends BaseEntity {
 	@JoinColumn(name = "sale_item_id", referencedColumnName = "id")
 	private SaleItem saleItem;
 
-//	@JsonIgnoreProperties(value = { "scheduleEvents" }, allowSetters = true)
-//	@ManyToOne()
-//	@JoinColumn(name = "item_id", referencedColumnName = "id")
-//	private Item item;
-
 	@Transient
 	boolean completed = false;
 
@@ -71,32 +64,6 @@ public class ScheduleEvent extends BaseEntity {
 		return this.unitsProduced >= this.unitsScheduled;
 	}
 	
-	@Transient
-	private Long performance = 0L;
-	
-	public Long getPerformance() {
-		BigDecimal perf = BigDecimal.ZERO;
-		Long time = this.getTotalTime();
-		if(time > 0 && this.unitsProduced > 0) {
-			perf = BigDecimal.valueOf(this.unitsProduced).divide(BigDecimal.valueOf(time), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(3600));
-		}
-		return perf.longValue();
-	}
-	
-	@Transient
-	private BigDecimal efficency;
-	
-	public BigDecimal getEfficiency() {
-		BigDecimal eff = BigDecimal.ZERO;
-		Long perf = this.getItemPackaging().getItem().getPerformance();
-		if(perf > 0L) {
-			eff = BigDecimal.valueOf(this.getPerformance())
-					.divide(BigDecimal.valueOf(this.getItemPackaging().getItem().getPerformance()), 6, RoundingMode.HALF_UP)
-					.multiply(BigDecimal.valueOf(100));
-		}
-		return eff.setScale(1, RoundingMode.HALF_UP);
-	}
-
 	@Transient
 	private Long totalTime = 0L; // In seconds.
 
@@ -142,7 +109,6 @@ public class ScheduleEvent extends BaseEntity {
 			if(p.getPeople() > this.totalPeople) {
 				this.totalPeople = p.getPeople();
 			}
-//			this.totalPeople += p.getPeople();
 		}
 		return this.totalPeople;
 	}

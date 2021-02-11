@@ -102,7 +102,6 @@ export default {
         var query = { date: se.date, seId: se.id };
         router.push({ path: "/productionLine/"+se.line.id, query: query } );
       })
-      // router.push("/productionLine/" + schedule_event_id);
     },
     percPerf(high, low){
       if(high==0 || low==0){

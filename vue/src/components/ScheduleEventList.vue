@@ -2,16 +2,6 @@
   <b-container fluid>
     <div class="mpb-page-info">Production > Schedule List</div>
     <b-row style="padding-bottom: 4px; font-size: 12px">
-      <!-- <b-col cols=3 style="margin-top: -7px">
-        <span style="font-size: 18px; font-weight: bold;">Schedule for Item:</span>
-            <b-button size="sm" id="item-popover" variant="link">{{item.name}}</b-button>
-            <b-popover placement="bottomright" target="item-popover" triggers="focus" variant="info">
-              <template v-slot:title>
-                <b-button size="sm" @click="goToItem(item.id)" variant="link">View Item Details</b-button>
-              </template>
-              <div>Avg Performance: {{item.performance}} [units per hour]</div>
-            </b-popover>
-      </b-col> -->
       <b-col cols=2>
         <b-select option-value="id" option-text="name" :list="availableItems" v-model="itemKv" placeholder="Pick Item"></b-select>
       </b-col>
@@ -21,12 +11,6 @@
       <b-col cols=2>
         <b-select option-value="id" option-text="name" :list="availableSales" v-model="saleKv" placeholder="Pick Sale"></b-select>
       </b-col>
-      <!-- <b-col cols=1 offset=4>
-        <div style="display: flex; text-align: right; margin-left: 20px">
-          <b-button style="margin: 3px" type="reset" variant="success" @click="goToGraph()" :disabled="false">Graph</b-button>
-          <b-button style="margin: 3px" type="reset" variant="success" @click="close()">Close</b-button>
-        </div>
-      </b-col> -->
       <b-col cols=1>
         <div style="margin-left: 15px">
           <b-button id="totalsMenu" size="sm" @click="toggleTotals()">Totals</b-button>
@@ -96,7 +80,6 @@ export default {
         { key: "saleNumber", label: "Sale", sortable: false },
         { key: "startTime", label: "Started", sortable: false },
         { key: "finishTime", label: "Finished", sortable: false },
-        // { key: "performance", label: "Perform [u/h]", sortable: true },
         { key: "unitsScheduled", label: "Scheduled", sortable: false },
         { key: "unitsProduced", label: "Produced", sortable: false },
         { key: "action", label: "", sortable: false },
