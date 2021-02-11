@@ -46,10 +46,10 @@ class AddressRest {
 				.orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
 	}
 	
-	@GetMapping("/address/customer/{customer_id}")
+	@GetMapping("/address/shipping/customer/{customer_id}")
 	Collection<KeyValueDto> getByCustomer(@PathVariable Long customer_id) {
 		List<KeyValueDto> dtos = new ArrayList<KeyValueDto>();
-		List<Address> addresses = addressRepo.findByCustomer(customer_id);
+		List<Address> addresses = addressRepo.findShippingAddressesByCustomer(customer_id);
 		for(Address a: addresses) {
 			KeyValueDto dto = new KeyValueDto();
 			dto.setId(a.getId());

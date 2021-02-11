@@ -91,9 +91,9 @@ public class Customer extends BaseEntity {
 	
 
 	@OneToMany(cascade = CascadeType.ALL)
-	@JoinTable(name = "customer_address", joinColumns = @JoinColumn(name = "customer_id"), inverseJoinColumns = @JoinColumn(name = "address_id"))
+	@JoinTable(name = "customer_shipping_address", joinColumns = @JoinColumn(name = "customer_id"), inverseJoinColumns = @JoinColumn(name = "address_id"))
 	@OrderBy("dc asc")
-	private Collection<Address> addresses = new HashSet<Address>();
+	private Collection<Address> shippingAddresses = new HashSet<Address>();
 
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "billig_address_id", referencedColumnName = "id")

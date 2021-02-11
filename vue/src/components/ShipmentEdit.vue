@@ -491,7 +491,7 @@ export default {
       });
     },
     getAvailableShippingAddresses(customer_id) {
-      return http.get("/address/customer/"+customer_id).then(r => {
+      return http.get("/address/shipping/customer/"+customer_id).then(r => {
         this.availableShippingAddresses = r.data;
       })
     },

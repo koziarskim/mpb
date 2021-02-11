@@ -63,7 +63,7 @@
     <b-row>
       <b-col cols=4>
         <label class="top-label">Shipping to Address:</label>
-        <b-select :isDisabled="disableEditSale()" option-value="id" option-text="label" :list="customer.addresses" v-model="shippingAddress" placeholder="shipping to address"></b-select>
+        <b-select :isDisabled="disableEditSale()" option-value="id" option-text="label" :list="customer.shippingAddresses" v-model="shippingAddress" placeholder="shipping to address"></b-select>
       </b-col>
       <b-col cols=2>
         <label class="top-label">Shipping Window From:</label>
@@ -249,7 +249,7 @@ export default {
       },
       paidInFull: false,
       customer: {
-        addresses: []
+        shippingAddresses: []
       },
       item: {
         itemPackagings: []

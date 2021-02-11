@@ -67,7 +67,7 @@
           <span style="cursor: pointer; color: blue" @click="openShipAddressModal()">(Edit/New)</span>
           <span v-if="shipAddress.id" style="cursor: pointer; color: blue" @click="deleteShipAddress()">(Delete)</span>
         </label>
-        <b-select option-value="id" option-text="label" :list="customer.addresses" v-model="shipAddress" placeholder="Address"></b-select>
+        <b-select option-value="id" option-text="label" :list="customer.shippingAddresses" v-model="shipAddress" placeholder="Address"></b-select>
       </b-col>
       <b-col cols=2>
         <label class="top-label">City:</label>
@@ -278,7 +278,7 @@ export default {
         phone: "",
         paymentTerms: "",
         freightTerms: "Collect",
-        addresses: []
+        shippingAddresses: []
       },
       shipAddress: {},
       freightTerms: {},
@@ -344,7 +344,7 @@ export default {
         });
     },
     validate() {
-      if (this.customer.addresses.length < 1) {
+      if (this.customer.shippingAddresses.length < 1) {
         alert("At least one shipping address is required");
         return false;
       }
@@ -388,21 +388,21 @@ export default {
     },
     closeShipAddressModal(address) {
       if (address && address.id) {
-        var idx = this.customer.addresses.findIndex(a => a.id == address.id);
+        var idx = this.customer.shippingAddresses.findIndex(a => a.id == address.id);
         if (idx > -1) {
-          this.customer.addresses.splice(idx, 1);
+          this.customer.shippingAddresses.splice(idx, 1);
         }
-        this.customer.addresses.push(address);
+        this.customer.shippingAddresses.push(address);
       }
       this.shipAddressModalVisible = false;
       this.shipAddress = {};
     },
     deleteShipAddress() {
-      var idx = this.customer.addresses.findIndex(
+      var idx = this.customer.shippingAddresses.findIndex(
         a => a.id == this.shipAddress.id
       );
       if (idx > -1) {
-        this.customer.addresses.splice(idx, 1);
+        this.customer.shippingAddresses.splice(idx, 1);
       }
       this.shipAddress = {};
     }
