@@ -47,10 +47,10 @@
         <input class="form-control" type="tel" v-model="invoice.loadNumber">
       </b-col>      
       <b-col cols=3>
-        <label class="top-label">Billing Address:</label><br/>
-        <span>{{invoice.shipment.customer.billingAddress.line}}</span><br/>
-        <span>{{invoice.shipment.customer.billingAddress.street}}</span><br/>
-        <span>{{invoice.shipment.customer.billingAddress.city+', '+invoice.shipment.customer.billingAddress.state+' '+invoice.shipment.customer.billingAddress.zip}}</span>
+        <label class="top-label">Physical Address:</label><br/>
+        <span>{{invoice.shipment.customer.address.line}}</span><br/>
+        <span>{{invoice.shipment.customer.address.street}}</span><br/>
+        <span>{{invoice.shipment.customer.address.city+', '+invoice.shipment.customer.address.state+' '+invoice.shipment.customer.address.zip}}</span>
       </b-col>
       <b-col cols=3>
         <label class="top-label">Shipping Address:</label><br/>
@@ -164,7 +164,7 @@ export default {
         payments: 0,
         shipment: {
           customer: {
-            billingAddress: {},
+            address: {},
           },
           shippingAddress: {},
         },

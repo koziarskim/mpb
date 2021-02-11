@@ -88,7 +88,7 @@ public interface InvoiceService {
 			invoice = new Invoice();
 			invoice.setType(type);
 			invoice.setShipment(shipment);
-			invoice.setBillingAddress(customer.getBillingAddress());
+			invoice.setBillingAddress(customer.getAddress());
 			invoice.setShippingAddress(shipment.getShippingAddress());
 			invoice.setDate(LocalDate.now());
 			invoice.setFob(shipment.getFob());
@@ -120,7 +120,7 @@ public interface InvoiceService {
 				Invoice invoice = new Invoice();
 				invoice.setType(Customer.INVOICE_TYPE.PER_SHIPMENT_ITEM.name());
 				invoice.setShipment(shipment);
-				invoice.setBillingAddress(customer.getBillingAddress());
+				invoice.setBillingAddress(customer.getAddress());
 				invoice.setShippingAddress(shipment.getShippingAddress());
 				invoice.setDate(LocalDate.now());
 				invoice.setFob(shipment.getFob());
@@ -156,7 +156,7 @@ public interface InvoiceService {
 					Invoice invoice = new Invoice();
 					invoice.setType(Customer.INVOICE_TYPE.PER_SHIPMENT_SALE.name());
 					invoice.setShipment(shipment);
-					invoice.setBillingAddress(customer.getBillingAddress());
+					invoice.setBillingAddress(customer.getAddress());
 					invoice.setShippingAddress(shipment.getShippingAddress());
 					invoice.setDate(LocalDate.now());
 					invoice.setFob(shipment.getFob());
@@ -266,11 +266,11 @@ public interface InvoiceService {
 				saleNumber = invoice.getInvoiceItems().iterator().next().getSaleItem().getSale().getNumber();
 			}
 			bolStamper.getAcroFields().setField("saleNumber", saleNumber);
-			if(customer.getBillingAddress()!=null) {
+			if(customer.getAddress()!=null) {
 				String billingAddress = customer.getName() + "\n"
-					+ (customer.getBillingAddress().getLine()==null?"":(customer.getBillingAddress().getLine() + "\n"))
-					+ customer.getBillingAddress().getStreet() + "\n" 
-					+ customer.getBillingAddress().getCity() + ", "+ customer.getBillingAddress().getState() + " "+customer.getBillingAddress().getZip();		
+					+ (customer.getAddress().getLine()==null?"":(customer.getAddress().getLine() + "\n"))
+					+ customer.getAddress().getStreet() + "\n" 
+					+ customer.getAddress().getCity() + ", "+ customer.getAddress().getState() + " "+customer.getAddress().getZip();		
 				bolStamper.getAcroFields().setField("billingAddress", billingAddress);
 			}
 			if(shipment.getShippingAddress()!=null) {
