@@ -41,7 +41,7 @@
         <label class="top-label">Broker Email:</label>
         <input class="form-control" type="text" v-model="customer.brokerEmail" />
       </b-col>
-      <b-col cols=6>
+      <b-col cols=4 offset=2>
         <label class="top-label">Physical Address (Street): </label>
         <input class="form-control" type="search" v-model="customer.address.street" />
       </b-col>
@@ -55,23 +55,27 @@
         <label class="top-label">Broker Phone:</label>
         <input class="form-control" type="text" v-model="customer.brokerPhone" />
       </b-col>
-      <b-col cols=6>
+      <b-col cols=4 offset=2>
         <label class="top-label">Additional Line: </label>
         <input class="form-control" type="search" v-model="customer.address.line" />
       </b-col>
     </b-row>
     <b-row>
-      <b-col cols=6>
+      <b-col cols=4>
         <label class="top-label">
           Shipping Addresses:
           <span style="cursor: pointer; color: blue" @click="openShipAddressModal()">(Edit/New)</span>
           <span v-if="shipAddress.id" style="cursor: pointer; color: blue" @click="deleteShipAddress()">(Delete)</span>
         </label>
-        <b-select option-value="id" option-text="label" :list="customer.shippingAddresses" v-model="shipAddress" placeholder="Address"></b-select>
+        <b-select option-value="id" option-text="label" :list="customer.shippingAddresses" v-model="shipAddress"></b-select>
       </b-col>
-      <b-col cols=2>
-        <label class="top-label">City:</label>
-        <input class="form-control" type="tel" v-model="customer.address.city" placeholder="City" />
+      <b-col cols=4>
+        <label class="top-label">
+          Billing Addresses:
+          <span style="cursor: pointer; color: blue" @click="openBillingAddressModal()">(Edit/New)</span>
+          <span v-if="billingAddress.id" style="cursor: pointer; color: blue" @click="deleteBillingAddress()">(Delete)</span>
+        </label>
+        <b-select option-value="id" option-text="label" :list="customer.billingAddresses" v-model="billingAddress"></b-select>
       </b-col>
       <b-col cols=2>
         <label class="top-label">State:</label>
@@ -249,6 +253,9 @@
     <div v-if="shipAddressModalVisible">
       <address-modal :address-id="shipAddress.id" address-type="SHP" v-on:closeModal="closeShipAddressModal"></address-modal>
     </div>
+    <div v-if="billingAddressModalVisible">
+      <address-modal :address-id="billingAddress.id" address-type="BIL" v-on:closeModal="closeBillingAddressModal"></address-modal>
+    </div>
     <br />
   </b-container>
 </template>
@@ -266,6 +273,7 @@ export default {
   data() {
     return {
       shipAddressModalVisible: false,
+      billingAddressModalVisible: false,
       showCompliance: false,
       showOperation: false,
       showShipping: false,
@@ -278,9 +286,11 @@ export default {
         phone: "",
         paymentTerms: "",
         freightTerms: "Collect",
-        shippingAddresses: []
+        shippingAddresses: [],
+        billingAddresses: [],
       },
       shipAddress: {},
+      billingAddress: {},
       freightTerms: {},
       availableStates: state.states,
       availableFreightTerms: [
@@ -344,8 +354,8 @@ export default {
         });
     },
     validate() {
-      if (this.customer.shippingAddresses.length < 1) {
-        alert("At least one shipping address is required");
+      if (this.customer.shippingAddresses.length < 1 || this.customer.billingAddresses.length < 1) {
+        alert("At least one shipping and billing address is required");
         return false;
       }
       if (!this.invoiceTypeKv.id) {
@@ -386,6 +396,9 @@ export default {
     openShipAddressModal() {
       this.shipAddressModalVisible = true;
     },
+    openBillingAddressModal() {
+      this.billingAddressModalVisible = true;
+    },
     closeShipAddressModal(address) {
       if (address && address.id) {
         var idx = this.customer.shippingAddresses.findIndex(a => a.id == address.id);
@@ -397,6 +410,17 @@ export default {
       this.shipAddressModalVisible = false;
       this.shipAddress = {};
     },
+    closeBillingAddressModal(address) {
+      if (address && address.id) {
+        var idx = this.customer.billingAddresses.findIndex(a => a.id == address.id);
+        if (idx > -1) {
+          this.customer.billingAddresses.splice(idx, 1);
+        }
+        this.customer.billingAddresses.push(address);
+      }
+      this.billingAddressModalVisible = false;
+      this.billingAddress = {};
+    },
     deleteShipAddress() {
       var idx = this.customer.shippingAddresses.findIndex(
         a => a.id == this.shipAddress.id
@@ -405,6 +429,15 @@ export default {
         this.customer.shippingAddresses.splice(idx, 1);
       }
       this.shipAddress = {};
+    },
+    deleteBillingAddress() {
+      var idx = this.customer.billingAddresses.findIndex(
+        a => a.id == this.billingAddress.id
+      );
+      if (idx > -1) {
+        this.customer.billingAddresses.splice(idx, 1);
+      }
+      this.billingAddress = {};
     }
   },
   mounted() {
