@@ -40,9 +40,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfStamper;
+import com.noovitec.mpb.app.MpbHttpError;
 import com.noovitec.mpb.dto.CalendarEventDto;
 import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.dto.ShipmentDto;
+import com.noovitec.mpb.entity.Address;
+import com.noovitec.mpb.entity.Customer;
 import com.noovitec.mpb.entity.Item;
 import com.noovitec.mpb.entity.Sale;
 import com.noovitec.mpb.entity.Shipment;
@@ -193,6 +196,21 @@ class ShipmentRest {
 		shipment = (Shipment) crudService.merge(shipment);
 		if(shipment.getCustomer().getInvoiceType()==null) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Customer doesn't have Invoice Type set. Please, update customer");
+		}
+		if(Customer.INVOICE_TYPE.PER_SHIPMENT_ITEM.name().equalsIgnoreCase(shipment.getCustomer().getInvoiceType())) {
+			Address billingAddress = shipment.getShipmentItems().stream().findFirst().get().getSaleItem().getSale().getBillingAddress();
+			for(ShipmentItem si: shipment.getShipmentItems()) {
+				if(si.getSaleItem().getSale().getBillingAddress() == null) {
+					MpbHttpError error = MpbHttpError.builder().message("One or more sales have no billing address").build();
+					log.info(error.getMessage());
+					return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+				}
+				if(billingAddress.getId() != si.getSaleItem().getSale().getBillingAddress().getId()) {
+					MpbHttpError error = MpbHttpError.builder().message("One or more sales have different billing address").build();
+					log.info(error.getMessage());
+					return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+				}
+			}
 		}
 		//Set modifiedDate
 		shipment.setModifiedDate(LocalDateTime.now());

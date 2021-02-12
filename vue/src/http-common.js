@@ -24,13 +24,14 @@ http.interceptors.response.use(
     return response;
   },
   error => {
-    if (error.response.status === 401) {
+    if (error.response.status === 401) { //Authorization and authentication.
       router.push("/login");
-      NProgress.done();
+    } else if (error.response.status === 409){ //Conflict, validation, etc.
+      alert(error.response.data.message);
     } else {
       alert("There was an error in response!\n" + error+"\n"+error.response.data.message);
-      NProgress.done();
     }
+    NProgress.done();
     return Promise.reject(error);
   }
 );
