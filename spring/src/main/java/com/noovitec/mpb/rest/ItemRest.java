@@ -45,6 +45,7 @@ import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfSmartCopy;
 import com.itextpdf.text.pdf.PdfStamper;
+import com.noovitec.mpb.app.MpbHttpError;
 import com.noovitec.mpb.dto.ItemDto;
 import com.noovitec.mpb.dto.ItemListDto;
 import com.noovitec.mpb.dto.ItemTreeDto;
@@ -243,11 +244,15 @@ class ItemRest {
 		}
 		
 		if(!item.getNumber().matches("^[a-zA-Z0-9\\-]{1,15}$")) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Component Number is invalid. Alphanumeric and hyphen only allowed. Maximum 15 characters.");
+			MpbHttpError error = MpbHttpError.builder().message("Component Number is invalid. Alphanumeric and hyphen only allowed. Maximum 15 characters.").build();
+			log.info(error.getMessage());
+			return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
 		}
 		Long id = itemRepo.getIdByNumber(item.getNumber());
 		if((item.getId()==null && id !=null) || (item.getId()!=null && id !=null && !item.getId().equals(id))) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Component Number already exists. Please, choose differrent.");
+			MpbHttpError error = MpbHttpError.builder().message("Component Number already exists. Please, choose differrent.").build();
+			log.info(error.getMessage());
+			return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
 		}
 		item = itemRepo.save(item);
 		if(image!=null) {
@@ -267,13 +272,6 @@ class ItemRest {
 
 	@DeleteMapping("/item/{id}")
 	public ResponseEntity<?> delete(@PathVariable Long id) {
-		Item item = itemRepo.findById(id).get();
-//		if(item.getSaleItems().size()>0) {
-//			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("There are existing Sales!");
-//		}
-//		if(item.getItemReturns().size()>0) {
-//			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("There are existing Returns!");
-//		}
 		itemService.delete(id);
 		return ResponseEntity.ok().build();
 	}
@@ -299,7 +297,7 @@ class ItemRest {
 			log.info("Done updating item units!");
 		} catch (Exception e) {
 			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+			return ResponseEntity.status(HttpStatus.CONFLICT).body(e);
 		}
 		return ResponseEntity.ok().body("OK");
 	}

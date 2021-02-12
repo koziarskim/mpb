@@ -39,6 +39,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfStamper;
+import com.noovitec.mpb.app.MpbHttpError;
 import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.dto.PurchaseListDto;
 import com.noovitec.mpb.entity.Component;
@@ -172,7 +173,9 @@ class PurchaseRest {
 	@PostMapping("/purchase")
 	ResponseEntity<?> post(@RequestBody Purchase purchase) throws IOException, DocumentException{
 		if(!purchase.getNumber().matches("^[a-zA-Z0-9\\-]{1,15}$")) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Sale Number is invalid. Alphanumeric and hyphen only allowed. Maximum 15 characters.");
+			MpbHttpError error = MpbHttpError.builder().message("Sale Number is invalid. Alphanumeric and hyphen only allowed. Maximum 15 characters.").build();
+			log.info(error.getMessage());
+			return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
 		}
 		Long id = purchaseRepo.getIdByNumber(purchase.getNumber());
 		if((purchase.getId()==null && id !=null) || (purchase.getId()!=null && id !=null && !purchase.getId().equals(id))) {

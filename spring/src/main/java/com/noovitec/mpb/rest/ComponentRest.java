@@ -29,6 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.noovitec.mpb.app.MpbHttpError;
 import com.noovitec.mpb.dto.ComponentDto;
 import com.noovitec.mpb.dto.ComponentInventoryListDto;
 import com.noovitec.mpb.dto.KeyValueDto;
@@ -177,11 +178,15 @@ class ComponentRest {
 	ResponseEntity<?> postComponentAndAttachment(@RequestParam(required = false) MultipartFile image, @RequestParam String jsonComponent) throws JsonParseException, JsonMappingException, IOException{
 		Component component = objectMapper.readValue(jsonComponent, Component.class);
 		if(!component.getNumber().matches("^[a-zA-Z0-9\\-]{1,15}$")) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Component Number is invalid. Alphanumeric and hyphen only allowed. Maximum 15 characters.");
+			MpbHttpError error = MpbHttpError.builder().message("Component Number is invalid. Alphanumeric and hyphen only allowed. Maximum 15 characters.").build();
+			log.info(error.getMessage());
+			return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
 		}
 		Long id = componentRepo.getIdByNumber(component.getNumber());
 		if((component.getId()==null && id !=null) || (component.getId()!=null && id !=null && !component.getId().equals(id))) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Component Number already exists. Please, choose differrent.");
+			MpbHttpError error = MpbHttpError.builder().message("Component Number already exists. Please, choose differrent.").build();
+			log.info(error.getMessage());
+			return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
 		}
 		component = componentService.save(component);
 		if(image!=null) {
@@ -199,10 +204,14 @@ class ComponentRest {
 	public ResponseEntity<?> delete(@PathVariable Long id) {
 		Component component = componentRepo.findById(id).get();
 		if(component.getItemComponents().size()>0) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("There are existing Items!");
+			MpbHttpError error = MpbHttpError.builder().message("There are existing Items!").build();
+			log.info(error.getMessage());
+			return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
 		}
 		if(component.getPurchaseComponents().size()>0) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("There are existing Purchases!");
+			MpbHttpError error = MpbHttpError.builder().message("There are existing Purchases!").build();
+			log.info(error.getMessage());
+			return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
 		}
 		componentService.delete(id);
 		return ResponseEntity.ok().build();
@@ -215,7 +224,7 @@ class ComponentRest {
 			componentService.updateUnits(null);
 		} catch (Exception e) {
 			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+			return ResponseEntity.status(HttpStatus.CONFLICT).body(e);
 		}
 		return ResponseEntity.ok().body("OK");
 	}

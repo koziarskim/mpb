@@ -104,7 +104,7 @@
         <b-button size="sm" variant="primary" @click="openSaleItemPicker()">Pick Sales to Add</b-button>
       </b-col>
       <b-col style="margin-top: 7px">
-          <b>Total units:</b>{{unitsShipped}}
+          <b>Total units:</b>{{totalUnitsShipped}}
       </b-col>
       <b-col style="margin-top: 7px">
           <b>Total cases:</b>{{totalCases}}
@@ -139,8 +139,8 @@
             <template v-slot:cell(unitsSoldAdj)="row">
               <span>{{+row.item.saleItem.units + +row.item.saleItem.unitsAdjusted}}</span>
             </template>
-            <template v-slot:cell(unitsSchedProd)="row">
-              <span>{{row.item.saleItem.unitsScheduled}}/{{row.item.saleItem.unitsProduced}}</span>
+            <template v-slot:cell(unitsShipped)="row">
+              <span>{{getUnitsShipped(row.item)}}</span>
             </template>
             <template v-slot:cell(cases)="row">
               <span>{{row.item.cases = Math.ceil(+row.item.units / +row.item.saleItem.itemPackaging.packaging.casePack)}}</span>
@@ -211,8 +211,7 @@ export default {
         { key: "sale", label: "Sale", sortable: false },
         { key: "unitsSoldAdj", label: "Sold", sortable: false },
         { key: "saleItem.unitsAssigned", label: "Assigned", sortable: false },
-        // { key: "unitsSchedProd", label: "Sched/Prod", sortable: false },
-        { key: "saleItem.unitsShipped", label: "Shipped", sortable: false },
+        { key: "unitsShipped", label: "Shipped", sortable: false },
         { key: "units", label: "Units", sortable: false },
         { key: "saleItem.itemPackaging.packaging.casePack", label: "C/P", sortable: false },
         { key: "cases", label: "Case", sortable: false },
@@ -232,7 +231,7 @@ export default {
     };
   },
   computed: {
-    unitsShipped() {
+    totalUnitsShipped() {
       var total = 0;
       this.shipment.shipmentItems.forEach(si => {
         total += +si.units;
@@ -281,6 +280,9 @@ export default {
     },
   },
   methods: {
+    getUnitsShipped(si){
+      return +si.saleItem.unitsShipped - (+si.prevUnits - +si.units);
+    },
     unlockShipment(){
       this.$bvModal.msgBoxConfirm('This Shipment was alread shipped. Invoices were generated and submitted'
                                   +'These invoices needs to be submitted again. Please confirm with Accounting department').then(ok => {
@@ -424,18 +426,14 @@ export default {
         alert("Shipping Number required.")
         return false;
       }
-      var overShippedItem = null;
+      var overShippedItemNumber = null;
       this.shipment.shipmentItems.forEach(shipItem=> {
-        var shippedUnits = shipItem.saleItem.unitsShipped;
-        if(this.shipment.shippedDate){
-          shippedUnits -= shipItem.units;
-        }
-        if(((+shipItem.saleItem.units + +shipItem.saleItem.unitsAdjusted) - +shippedUnits - +shipItem.units != 0)){
-          overShippedItem = shipItem.saleItem.itemPackaging.item.number;
+        if(((+shipItem.saleItem.units + +shipItem.saleItem.unitsAdjusted) < this.getUnitsShipped(shipItem))){
+          overShippedItemNumber = shipItem.saleItem.itemPackaging.item.number;
         }
       })
-      if(overShippedItem){
-        alert("Item: "+overShippedItem +" - Units shipped must equal to units assigned. If short shipped, you might want to adjust sale")
+      if(overShippedItemNumber){
+        alert("Item: "+overShippedItemNumber +" - Units shipped must equal to units assigned. If short shipped, you might want to adjust sale")
         return false;
       }
       return true;
@@ -451,7 +449,7 @@ export default {
       this.shipment.customer = this.customer.id?this.customer:null;
       this.shipment.shippingAddress = this.shippingAddress.id?{ id: this.shippingAddress.id }:null;
       this.shipment.freightAddress = this.freightAddress.id?{ id: this.freightAddress.id }:null;
-      this.shipment.unitsShipped = this.unitsShipped;
+      this.shipment.unitsShipped = this.totalUnitsShipped;
       this.shipment.totalCases = this.totalCases;
       this.shipment.totalPallets = this.totalPallets;
       this.shipment.totalWeight = this.totalWeight;

@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.itextpdf.text.DocumentException;
+import com.noovitec.mpb.app.MpbHttpError;
 import com.noovitec.mpb.dto.InvoiceListDto;
 import com.noovitec.mpb.entity.Invoice;
 import com.noovitec.mpb.entity.InvoiceItem;
@@ -115,11 +116,15 @@ class InvoiceRest {
 			@RequestParam(required=false) String emailSubject,
 			@RequestParam(required=false) String emailBody) throws IOException, DocumentException {
 		if(!invoice.getNumber().matches("^[a-zA-Z0-9\\-]{1,15}$")) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Invoice Number is invalid. Alphanumeric and hyphen only allowed. Maximum 15 characters.");
+			MpbHttpError error = MpbHttpError.builder().message("Invoice Number is invalid. Alphanumeric and hyphen only allowed. Maximum 15 characters.").build();
+			log.info(error.getMessage());
+			return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
 		}
 		Long id = invoiceRepo.getIdByNumber(invoice.getNumber());
 		if((invoice.getId()==null && id !=null) || (invoice.getId()!=null && id !=null && !invoice.getId().equals(id))) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Invoice Number already exists. Please, choose differrent.");
+			MpbHttpError error = MpbHttpError.builder().message("Invoice Number already exists. Please, choose differrent.").build();
+			log.info(error.getMessage());
+			return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
 		}
 		invoice = invoiceService.save(invoice);
 		if(sendEmail) {

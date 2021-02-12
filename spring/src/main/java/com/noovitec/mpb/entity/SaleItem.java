@@ -83,9 +83,9 @@ public class SaleItem extends BaseEntity {
 			this.unitsProduced += se.getUnitsProduced();
 		}
 		for (ShipmentItem si : this.getShipmentItems()) {
-			if(si.getShipment().getShippedDate() !=null ) {
+//			if(si.getShipment().getShippedDate() !=null ) {
 				this.unitsShipped += si.getUnits();
-			}
+//			}
 		}
 		for(InvoiceItem ii : this.invoiceItems) {
 			if(ii.getTotalUnitPrice()!=null && ii.getInvoice().isSent()) {
