@@ -94,10 +94,10 @@ public class Customer extends BaseEntity {
 	@OrderBy("dc asc")
 	private Collection<Address> shippingAddresses = new HashSet<Address>();
 
-//	@OneToMany(cascade = CascadeType.ALL)
-//	@JoinTable(name = "customer_billing_address", joinColumns = @JoinColumn(name = "customer_id"), inverseJoinColumns = @JoinColumn(name = "address_id"))
-//	@OrderBy("dc asc")
-//	private Collection<Address> billingAddresses = new HashSet<Address>();
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinTable(name = "customer_billing_address", joinColumns = @JoinColumn(name = "customer_id"), inverseJoinColumns = @JoinColumn(name = "address_id"))
+	@OrderBy("dc asc")
+	private Collection<Address> billingAddresses = new HashSet<Address>();
 
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "address_id", referencedColumnName = "id")
