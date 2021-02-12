@@ -65,8 +65,12 @@ public class Sale extends BaseEntity {
 	private Customer customer;
 
 	@ManyToOne()
-	@JoinColumn(name = "address_id", referencedColumnName = "id")
+	@JoinColumn(name = "shipping_address_id", referencedColumnName = "id")
 	private Address shippingAddress;
+
+	@ManyToOne()
+	@JoinColumn(name = "billing_address_id", referencedColumnName = "id")
+	private Address billingAddress;
 
 	@JsonIgnoreProperties(value = { "sale" }, allowSetters = true)
 	@OneToMany(mappedBy = "sale", cascade = CascadeType.ALL, orphanRemoval = true)

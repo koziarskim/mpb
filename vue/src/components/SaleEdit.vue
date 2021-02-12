@@ -21,11 +21,7 @@
             <label class="top-label">Customer:</label>
             <b-select :isDisabled="disableEditSale()" option-value="id" option-text="value" :list="availableCustomers" v-model="customerDto" placeholder="Customer"></b-select>
           </b-col>
-          <b-col cols=4>
-            <label class="top-label">Pay Terms:</label>
-            <input :disabled="disableEditSale()" class="form-control" type="tel" v-model="sale.paymentTerms">
-          </b-col>
-          <b-col cols=2>
+          <b-col cols=2 offset=3>
             <label class="top-label">PCR:</label><br/>
             <span>{{pcr==true?'Ready':'Not Ready'}}</span>
           </b-col>
@@ -64,6 +60,10 @@
       <b-col cols=4>
         <label class="top-label">Billing Address:</label>
         <b-select :isDisabled="disableEditSale()" option-value="id" option-text="label" :list="customer.billingAddresses" v-model="billingAddress"></b-select>
+      </b-col>
+      <b-col cols=2>
+        <label class="top-label">Pay Terms:</label>
+        <input :disabled="disableEditSale()" class="form-control" type="tel" v-model="sale.paymentTerms">
       </b-col>
     </b-row>
     <hr class="hr-text" data-content="Shipment Information">
