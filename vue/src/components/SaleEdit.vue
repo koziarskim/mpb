@@ -59,26 +59,33 @@
         <label class="top-label">Shipped: <b-link role="button" @click="goToShipment()">{{sale.unitsShipped}}</b-link></label>
       </b-col>
     </b-row>
+    <hr class="hr-text" data-content="Billing Information">
+    <b-row>
+      <b-col cols=4>
+        <label class="top-label">Billing Address:</label>
+        <b-select :isDisabled="disableEditSale()" option-value="id" option-text="label" :list="customer.billingAddresses" v-model="billingAddress"></b-select>
+      </b-col>
+    </b-row>
     <hr class="hr-text" data-content="Shipment Information">
     <b-row>
       <b-col cols=4>
-        <label class="top-label">Shipping to Address:</label>
-        <b-select :isDisabled="disableEditSale()" option-value="id" option-text="label" :list="customer.shippingAddresses" v-model="shippingAddress" placeholder="shipping to address"></b-select>
+        <label class="top-label">Shipping Address:</label>
+        <b-select :isDisabled="disableEditSale()" option-value="id" option-text="label" :list="customer.shippingAddresses" v-model="shippingAddress"></b-select>
       </b-col>
       <b-col cols=2>
         <label class="top-label">Shipping Window From:</label>
-        <input :disabled="disableEditSale()" class="form-control" type="date" v-model="sale.shippingFrom" placeholder="Date">
+        <input :disabled="disableEditSale()" class="form-control" type="date" v-model="sale.shippingFrom">
       </b-col>
       <b-col cols=2>
         <label class="top-label">Shipping Window To:</label>
-        <input :disabled="disableEditSale()" class="form-control" type="date" v-model="sale.shippingTo" placeholder="Date">
+        <input :disabled="disableEditSale()" class="form-control" type="date" v-model="sale.shippingTo">
       </b-col>
       <b-col cols=2>
         <label class="top-label">Freight Terms:</label>
         <b-select :isDisabled="disableEditSale()" option-value="id" option-text="name" :list="availableFreightTerms" v-model="sale.freightTerms"></b-select>
       </b-col>
     </b-row>
-    <hr class="hr-text" data-content="Sale Items">
+    <hr class="hr-text" data-content="Items Information">
     <b-row>
       <b-col cols=4>
         <label class="top-label">Available Items:</label>
@@ -243,18 +250,21 @@ export default {
         saleItems: [],
         customer: {},
         shippingAddress: {},
+        billingAddress: {},
         freightTerms: {},
         paymentTerms: "",
         paidInFull: false,
       },
       paidInFull: false,
       customer: {
-        shippingAddresses: []
+        shippingAddresses: [],
+        billingAddresses: [],
       },
       item: {
         itemPackagings: []
       },
       shippingAddress: {},
+      billingAddress: {},
       availableCustomers: [],
       availableItems: [],
       sortBy: "id",
@@ -349,6 +359,9 @@ export default {
     shippingAddress(new_value, old_value) {
       this.sale.shippingAddress = new_value;
     },
+    billingAddress(new_value, old_value) {
+      this.sale.billingAddress = new_value;
+    },
     customerDto(new_value, old_value){
       if(this.sale.customer.id != new_value.id){
         this.sale.freightTerms = "";
@@ -393,8 +406,8 @@ export default {
           alert("Item has no weight")
           return false;
         }
-        if(!this.sale.shippingAddress){
-          alert("Sale has no shipping address")
+        if(!this.sale.shippingAddress || !this.sale.billingAddress){
+          alert("Shipping and billing address selection required")
           return false;
         }
         if(this.pageFromCarton > this.getCases(si) || this.pageToCarton > this.getCases(si)){
@@ -434,8 +447,8 @@ export default {
           alert("Item has no weight")
           return false;
         }
-        if(!this.sale.shippingAddress){
-          alert("Sale has no shipping address")
+        if(!this.sale.shippingAddress || !this.sale.billingAddress){
+          alert("Shipping and billing address selection required")
           return false;
         }
         var url = httpUtils.getUrl("/saleItem/" + si.id + "/tag/pdf?pageFrom="+this.pageFromTag+"&pageTo="+this.pageToTag, "");
@@ -514,7 +527,6 @@ export default {
     getCustomer(customer_id){
       http.get("/customer/"+customer_id).then(response =>{
         this.customer = response.data;
-        // this.shippingAddress = {};
         if(!this.sale.paymentTerms){
           this.sale.paymentTerms = response.data.paymentTerms;
         }
@@ -545,6 +557,9 @@ export default {
         }
         if (response.data.shippingAddress) {
           this.shippingAddress = response.data.shippingAddress;
+        }
+        if (response.data.billingAddress) {
+          this.billingAddress = response.data.billingAddress;
         }
         this.paidInFull = response.data.paidInFull;
         return response.data;
@@ -606,6 +621,9 @@ export default {
       if(!this.sale.shippingAddress || !this.sale.shippingAddress.id){
         this.sale.shippingAddress = null;
       }
+      if(!this.sale.billingAddress || !this.sale.billingAddress.id){
+        this.sale.billingAddress = null;
+      }
       this.sale.pcr = this.pcr;
       return http.post("/sale", this.sale).then(r => {
         if(window.location.pathname.slice(-8) == "saleEdit"){
@@ -624,9 +642,12 @@ export default {
       })
     },
     validate(){
-      if(!this.sale.number || !this.sale.customer.id || !this.sale.date || !this.sale.paymentTerms 
-        || !this.shippingAddress.id){
-        alert("Number, Customer, Date, Pay Terms, Shipping Address required");
+      if(!this.sale.number || !this.sale.customer.id || !this.sale.date || !this.sale.paymentTerms){
+        alert("Number, Customer, Date, Pay Terms");
+        return false;
+      }
+      if(!this.shippingAddress.id || !this.billingAddress.id) {
+        alert("Shipping and Billing Address required");
         return false;
       }
       if(this.sale.saleItems.length == 0) {
