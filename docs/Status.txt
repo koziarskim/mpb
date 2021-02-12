@@ -1,9 +1,10 @@
 Current priority
 	Customer
 	+ Change bill to address to physical address.
-	- Allow to enter multiple bill to addresses (have multiple and have "Office Name").
-	- Change invoice to use Office Name instead of Customer name.
-	- Allow to select bill to address on sale.
+	+ Allow to enter multiple bill to addresses.
+	+ Use DC as Location Name.
+	- Change invoice to use Location Name instead of Customer name.
+	+ Allow to select bill to address on sale.
 	Packaging:
 	- Add pallet config picture (upload).
 	Sale:
