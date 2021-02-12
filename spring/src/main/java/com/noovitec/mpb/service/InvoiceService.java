@@ -88,7 +88,7 @@ public interface InvoiceService {
 			invoice = new Invoice();
 			invoice.setType(type);
 			invoice.setShipment(shipment);
-			invoice.setBillingAddress(customer.getAddress());
+			invoice.setBillingAddress(sale.getBillingAddress());
 			invoice.setShippingAddress(shipment.getShippingAddress());
 			invoice.setDate(LocalDate.now());
 			invoice.setFob(shipment.getFob());
@@ -120,7 +120,8 @@ public interface InvoiceService {
 				Invoice invoice = new Invoice();
 				invoice.setType(Customer.INVOICE_TYPE.PER_SHIPMENT_ITEM.name());
 				invoice.setShipment(shipment);
-				invoice.setBillingAddress(customer.getAddress());
+				//There should be validation on shipment so all sales have the same billing address.
+				invoice.setBillingAddress(shipment.getShipmentItems().stream().findFirst().get().getSaleItem().getSale().getBillingAddress());
 				invoice.setShippingAddress(shipment.getShippingAddress());
 				invoice.setDate(LocalDate.now());
 				invoice.setFob(shipment.getFob());
@@ -142,21 +143,22 @@ public interface InvoiceService {
 			}
 			
 			if(customer.getInvoiceType().equalsIgnoreCase(Customer.INVOICE_TYPE.PER_SHIPMENT_SALE.name())) {
-				Map<Long, List<ShipmentItem>> saleMap = new HashMap<Long, List<ShipmentItem>>();
+				Map<Sale, List<ShipmentItem>> saleMap = new HashMap<Sale, List<ShipmentItem>>();
 				for(ShipmentItem shipItem: shipment.getShipmentItems()) {
 					List<ShipmentItem> list = saleMap.get(shipItem.getSaleItem().getSale().getId());
 					if(list==null) {
 						list = new ArrayList<ShipmentItem>();
-						saleMap.put(shipItem.getSaleItem().getSale().getId(), list);
+						saleMap.put(shipItem.getSaleItem().getSale(), list);
 					}
 					list.add(shipItem);
 				}
-				for (Map.Entry<Long, List<ShipmentItem>> entry : saleMap.entrySet()) {
+				for (Map.Entry<Sale, List<ShipmentItem>> entry : saleMap.entrySet()) {
+					Sale sale = entry.getKey();
 					List<ShipmentItem> shipItems = entry.getValue();
 					Invoice invoice = new Invoice();
 					invoice.setType(Customer.INVOICE_TYPE.PER_SHIPMENT_SALE.name());
 					invoice.setShipment(shipment);
-					invoice.setBillingAddress(customer.getAddress());
+					invoice.setBillingAddress(sale.getBillingAddress());
 					invoice.setShippingAddress(shipment.getShippingAddress());
 					invoice.setDate(LocalDate.now());
 					invoice.setFob(shipment.getFob());
@@ -266,11 +268,11 @@ public interface InvoiceService {
 				saleNumber = invoice.getInvoiceItems().iterator().next().getSaleItem().getSale().getNumber();
 			}
 			bolStamper.getAcroFields().setField("saleNumber", saleNumber);
-			if(customer.getAddress()!=null) {
-				String billingAddress = customer.getName() + "\n"
-					+ (customer.getAddress().getLine()==null?"":(customer.getAddress().getLine() + "\n"))
-					+ customer.getAddress().getStreet() + "\n" 
-					+ customer.getAddress().getCity() + ", "+ customer.getAddress().getState() + " "+customer.getAddress().getZip();		
+			if(invoice.getBillingAddress()!=null) {
+				String billingAddress = invoice.getBillingAddress().getDc() + "\n"
+					+ (invoice.getBillingAddress().getLine()==null?"":(invoice.getBillingAddress().getLine() + "\n"))
+					+ invoice.getBillingAddress().getStreet() + "\n" 
+					+ invoice.getBillingAddress().getCity() + ", "+ invoice.getBillingAddress().getState() + " "+invoice.getBillingAddress().getZip();		
 				bolStamper.getAcroFields().setField("billingAddress", billingAddress);
 			}
 			if(shipment.getShippingAddress()!=null) {
