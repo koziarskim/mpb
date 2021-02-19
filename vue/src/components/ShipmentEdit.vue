@@ -24,9 +24,9 @@
       <b-col cols=2>
         <div style="display:flex; margin-left: 75px">
           <upload-file v-if="shipment.id" v-on:header-click="openPdf" v-on:close="closeUpload" :entity-id="shipment.id" header-text="Bill of Lading/Packing Slip (PDF)" type="Shipment" :attachments="shipment.attachments"></upload-file>
-          <b-button :disabled="!allowEdit()" :title="getSaveTitle(shipment)" size="sm" style="margin-left: 5px" variant="success" @click="saveShipment()">Save</b-button>
+          <b-button :disabled="disableEdit()" :title="getSaveTitle(shipment)" size="sm" style="margin-left: 5px" variant="success" @click="saveShipment()">Save</b-button>
           <b-button style="margin-left: 3px" size="sm" @click="unlockShipment()">Unlock</b-button>
-          <b-button style="margin-left: 3px" :disabled="!allowEdit()" size="sm" @click="deleteShipment()">x</b-button>
+          <b-button style="margin-left: 3px" :disabled="disableEdit()" size="sm" @click="deleteShipment()">x</b-button>
         </div>
         <div style="display: flex; margin-left: 85px; margin-top: 7px">
             <label class="top-label">Ready To Ship</label>
@@ -143,13 +143,25 @@
               <span>{{getUnitsShipped(row.item)}}</span>
             </template>
             <template v-slot:cell(cases)="row">
-              <span>{{row.item.cases = Math.ceil(+row.item.units / +row.item.saleItem.itemPackaging.packaging.casePack)}}</span>
+              <span>{{row.item.cases = getCases(row.item)}}</span>
             </template>
             <template v-slot:cell(pallets)="row">
-              <span>{{row.item.pallets = getPallets(row.item)}}</span>
+              <span>({{row.item.pallets = getPallets(row.item)}})</span>
             </template>
             <template v-slot:cell(action)="row">
-              <b-button size="sm" @click.stop="removeSaleItem(row.item.saleItem.id)">x</b-button>
+              <b-button size="sm" :id="'popover-menu'+row.item.id">...</b-button>
+              <b-popover placement="bottomleft" :target="'popover-menu'+row.item.id" variant="secondary">
+                  <b-row>
+                    <b-col cols=12>
+                      <b-button size="sm" variant="link" @click="openTagModal(row.item)">Pallet Tag</b-button>
+                    </b-col>
+                  </b-row>
+                  <b-row>
+                    <b-col cols=12 style="text-align: right;">
+                      <b-button size="sm" variant="link" @click="deleteShipItem(row.item.saleItem.id)">Delete Item</b-button>
+                    </b-col>
+                  </b-row>
+              </b-popover>
             </template>
           </b-table>
         </b-col>
@@ -161,6 +173,9 @@
     <div v-if="saleItemPickerVisible">
 			<sale-item-picker :customer-id="customer.id" :added-sale-item-ids="getAddedSaleItemsIds()" v-on:closeModal="closeSaleItemPicker"></sale-item-picker>
 		</div>
+    <div v-if="palletTagVisible">
+			<pallet-tag-modal :pallet-tag="palletTag" @closeModal="closeTagModal()"></pallet-tag-modal>
+		</div>
   </b-container>
 </template>
 
@@ -170,12 +185,14 @@ import httpUtils from "../httpUtils";
 import router from "../router";
 import moment from "moment";
 import securite from "../securite";
+import axios from "axios";
 
 export default {
   components: {
     AddressModal: () => import("./modals/AddressModal"),
     SaleItemPicker: () => import("./modals/SaleItemPicker"),
     UploadFile: () => import("../directives/UploadFile"),
+    PalletTagModal: () => import("./modals/PalletTagModal"),
   },
   data() {
     return {
@@ -184,6 +201,7 @@ export default {
       saleItemPickerVisible: false,
       selected: [],
       modalVisible: false,
+      palletTagVisible: false,
       shipment: {
         number: 0, 
         shipmentItems: [],
@@ -227,7 +245,11 @@ export default {
         {id: "CPU", name: "Customer Pickup"}
       ],
       itemText: "",
-      shippedDate: null
+      shippedDate: null,
+      pageFromTag: 1,
+      pageToTag: 1,
+      loaderActive: false,
+      palletTag: {},
     };
   },
   computed: {
@@ -280,6 +302,31 @@ export default {
     },
   },
   methods: {
+    openTagModal(shipItem){
+      this.palletTag.shipItemId = shipItem.id;
+      this.palletTag.customerName = shipItem.saleItem.sale.customer.name;
+      this.palletTag.locationName = shipItem.saleItem.sale.shippingAddress.locationName;
+      this.palletTag.dc = shipItem.saleItem.sale.shippingAddress.dc;
+      this.palletTag.street = shipItem.saleItem.sale.shippingAddress.street;
+      this.palletTag.line1 = shipItem.saleItem.sale.shippingAddress.line1;
+      this.palletTag.city = shipItem.saleItem.sale.shippingAddress.city;
+      this.palletTag.state = shipItem.saleItem.sale.shippingAddress.state;
+      this.palletTag.zip = shipItem.saleItem.sale.shippingAddress.zip;
+      this.palletTag.saleNumber = shipItem.saleItem.sale.number;
+      this.palletTag.itemNumber = shipItem.saleItem.itemPackaging.item.number + " - " + shipItem.saleItem.itemPackaging.item.name;
+      this.palletTag.sku = shipItem.saleItem.sku;
+      this.palletTag.casePack = shipItem.saleItem.itemPackaging.packaging.casePack;
+      this.palletTag.expiration = shipItem.saleItem.expiration;
+      this.palletTag.cases = this.getCases(shipItem);
+      this.palletTag.hi = shipItem.saleItem.itemPackaging.packaging.hi;
+      this.palletTag.ti = shipItem.saleItem.itemPackaging.packaging.ti;
+      this.palletTag.pageFrom = 1;
+      this.palletTag.pageTo = this.getPallets(shipItem);
+      this.palletTagVisible = true;
+    },
+    closeTagModal(){
+      this.palletTagVisible = false;
+    },
     getUnitsShipped(si){
       return +si.saleItem.unitsShipped - (+si.prevUnits - +si.units);
     },
@@ -327,8 +374,8 @@ export default {
         }
       })
     },
-    allowEdit(){
-      return securite.hasRole(['SHIPMENT_ADMIN', 'ADMIN']) && !this.shipment.shippedDate;
+    disableEdit(){
+      return !securite.hasRole(['SHIPMENT_ADMIN', 'ADMIN']) || this.shipment.shippedDate;
     },
     getAddedSaleItemsIds(){
       var ids = [];
@@ -357,12 +404,11 @@ export default {
       router.push({path: "/itemReturnList", query: query});
     },
     getPallets(shipmentItem){
-      var number = null;
-      if(this.shipment.totalPalletsCustom < 1){
-        number = Math.ceil(+shipmentItem.cases / (+shipmentItem.saleItem.itemPackaging.packaging.ti * +shipmentItem.saleItem.itemPackaging.packaging.hi))
-      }
-      return number;
+       return Math.ceil(+shipmentItem.cases / (+shipmentItem.saleItem.itemPackaging.packaging.ti * +shipmentItem.saleItem.itemPackaging.packaging.hi))
     },
+    getCases(shipItem){
+      return Math.ceil(+shipItem.units / +shipItem.saleItem.itemPackaging.packaging.casePack);
+    },    
     keyDown(event){
       this.itemText = event.target.value;
     },
@@ -528,8 +574,8 @@ export default {
         }
       );
     },
-    removeSaleItem(saleItemId) {
-      var idx = this.shipment.shipmentItems.findIndex(shipItem => shipItem.saleItem.id == saleItemId);
+    deleteShipItem(shipItemId) {
+      var idx = this.shipment.shipmentItems.findIndex(shipItem => shipItem.id == shipItemId);
       this.shipment.shipmentItems.splice(idx, 1)
       this.getAvailableSaleItems();
     },
@@ -540,15 +586,15 @@ export default {
       router.push("/saleEdit/" + sale_id);
     },
     openPdf(){
-      if(this.allowEdit()){
+      if(this.disableEdit()){
+        var url = httpUtils.getUrl("/shipment/" + this.shipment.id + "/pdf", "");
+        window.open(url, "_blank","")
+      }else{
         this.saveShipment().then(shipment => {
           this.shipment.id = shipment.id;
           var url = httpUtils.getUrl("/shipment/" + this.shipment.id + "/pdf", "");
           window.open(url, "_blank","")
         })
-      }else{
-        var url = httpUtils.getUrl("/shipment/" + this.shipment.id + "/pdf", "");
-        window.open(url, "_blank","")
       }
     },
   },

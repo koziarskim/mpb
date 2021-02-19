@@ -297,8 +297,8 @@ class SaleItemRest {
 	        String dc = saleItem.getSale().getShippingAddress().getDc();
 	        String shipToAddress = location+"\n"
 	        		+dc+"\n"
-	        		+(saleItem.getSale().getShippingAddress().getLine()==null?"\n":saleItem.getSale().getShippingAddress().getLine()+"\n")
 	        		+saleItem.getSale().getShippingAddress().getStreet()+"\n"
+	        		+(saleItem.getSale().getShippingAddress().getLine()==null?"":saleItem.getSale().getShippingAddress().getLine()+"\n")
 	        		+saleItem.getSale().getShippingAddress().getCity()+", "
 	        		+saleItem.getSale().getShippingAddress().getState()+" "
 	        		+saleItem.getSale().getShippingAddress().getZip();
