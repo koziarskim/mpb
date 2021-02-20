@@ -65,6 +65,14 @@
         <label class="top-label">Pay Terms:</label>
         <input :disabled="disableEditSale()" class="form-control" type="tel" v-model="sale.paymentTerms">
       </b-col>
+      <b-col cols=2>
+        <label class="top-label">Season:</label>
+        <b-select :isDisabled="disableEditSale()" option-value="id" option-text="name" :list="availableSeasons" v-model="seasonKv"></b-select>
+      </b-col>
+      <b-col cols=2>
+        <label class="top-label">Year:</label>
+        <b-select :isDisabled="disableEditSale()" option-value="id" option-text="name" :list="availableYears" v-model="yearKv"></b-select>
+      </b-col>
     </b-row>
     <hr class="hr-text" data-content="Shipment Information">
     <b-row>
@@ -306,6 +314,9 @@ export default {
       pageToCarton: 1,
       pageFromTag: 1,
       pageToTag: 1,
+      loaderActive: false,
+      seasonKv: {},
+      yearKv: {},
       availableStatus: [
         {id: 'DRAFT', name: 'Draft'},
         {id: 'READY', name: 'Ready'},
@@ -317,7 +328,22 @@ export default {
         {id: 'PAID', name: 'Paid'},
         {id: 'CANCELED', name: 'Canceled'},
       ],
-      loaderActive: false,
+      availableSeasons: [
+        {id: "VALENTINE", name: "Valentine"},
+        {id: "EASTER", name: "Easter"},
+        {id: "SUMMER", name: "Summer"},
+        {id: "MOTHER_DAY", name: "Mother Day"},
+        {id: "FATHER_DAY", name: "Father Day"},
+        {id: "THANKSGIVING", name: "Thanksgiving"},
+        {id: "CHRISTMAS", name: "Christmas"},
+        {id: "OTHER", name: "Other"},
+      ],
+      availableYears: [
+        {id: "Y2019", name: "2019"},
+        {id: "Y2020", name: "2020"},
+        {id: "Y2021", name: "2021"},
+      ],
+
     };
   },
   computed: {
@@ -541,7 +567,7 @@ export default {
         this.item = response.data;
       });
     },
-    getSaleData(id) {
+    getSale(id) {
       return http.get("/sale/" + id).then(response => {
         this.sale = response.data;
         response.data.saleItems.forEach(si => {
@@ -562,13 +588,15 @@ export default {
           this.billingAddress = response.data.billingAddress;
         }
         this.paidInFull = response.data.paidInFull;
+        this.seasonKv = {id: response.data.season}
+        this.yearKv = {id: response.data.year}
         return response.data;
       });
     },
     readySale(){
       this.sale.pendingApproval = true;
       this.saveSale(true).then(r=> {
-        this.getSaleData(r.data.id);
+        this.getSale(r.data.id);
       }).catch(e => {
         this.sale.pendingApproval = false;
       })
@@ -585,7 +613,7 @@ export default {
         if(ok){
           this.sale.approved = false;
           this.saveSale(false).then(r=> {
-            this.getSaleData(r.data.id);
+            this.getSale(r.data.id);
           });
         }
       })
@@ -601,7 +629,7 @@ export default {
       }
       this.sale.approved = true;
       this.saveSale(true).then(r=> {
-        this.getSaleData(r.data.id);
+        this.getSale(r.data.id);
       }).catch(e => {
         this.sale.approved = false;
       })
@@ -625,11 +653,13 @@ export default {
         this.sale.billingAddress = null;
       }
       this.sale.pcr = this.pcr;
+      this.sale.season = this.seasonKv.id;
+      this.sale.year = this.yearKv.id;
       return http.post("/sale", this.sale).then(r => {
         if(window.location.pathname.slice(-8) == "saleEdit"){
           router.push("/saleEdit/" + r.data.id);
         } else {
-          this.getSaleData(r.data.id);
+          this.getSale(r.data.id);
           return r;
         }
       });
@@ -736,7 +766,7 @@ export default {
     moveItem(saleItem){
       http.post("/saleItem/"+saleItem.id+"/move/to/sale/"+this.saleKv.id).then(r => {
         this.saleKv = {};
-        this.getSaleData(this.sale.id);
+        this.getSale(this.sale.id);
         this.showItemMenu = false;
       });
     },
@@ -782,7 +812,7 @@ export default {
   mounted() {
     var id = this.$route.params.sale_id;
     if (id) {
-      this.getSaleData(id);
+      this.getSale(id);
     }
     this.getAvailableCustomers();
     this.getAvailableItems();
