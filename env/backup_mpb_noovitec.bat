@@ -9,11 +9,11 @@ set EXPORT=false
 set IMPORT=false
 set DATE_FORMAT=%datestr%
 set EXPORT_DIR=C:\Users\kozia\postgres\backups\noovitec
-set SCHEMA_FILE_2020=%EXPORT_DIR%\schema_2020_%DATE_FORMAT%.sql
-set DATA_FILE_2020=%EXPORT_DIR%\data_2020_%DATE_FORMAT%.sql
+set SCHEMA_FILE_PUBLIC=%EXPORT_DIR%\schema_public_%DATE_FORMAT%.sql
+set DATA_FILE_PUBLIC=%EXPORT_DIR%\data_public_%DATE_FORMAT%.sql
 set DB_NAME=mpb_%DATE_FORMAT%
-echo Schemas: %SCHEMA_FILE_2020%
-echo Data: %DATA_FILE_2020%
+echo Schemas: %SCHEMA_FILE_PUBLIC%
+echo Data: %DATA_FILE_PUBLIC%
 echo DB name: %DB_NAME%
 
 if "%ARG%"=="" (
@@ -32,18 +32,18 @@ if "%ARG%"=="full" (
 :export
 if "%EXPORT%" == "true" (
 	echo Processing Export...
-	if exist %SCHEMA_FILE_2020% (echo Backup Failed! Schema File already exist %SCHEMA_FILE_2020% && GOTO end)
-		"C:\Program Files (x86)\pgAdmin 4\v4\runtime\pg_dump.exe" --file %SCHEMA_FILE_2020% --host "mpb.noovitec.com" --port "5432" --username "postgres" --verbose --format=p --create --inserts --column-inserts --schema-only --schema "y2020" "mpb"
-		"C:\Program Files (x86)\pgAdmin 4\v4\runtime\pg_dump.exe" --exclude-table-data "doc_content" --file %DATA_FILE_2020% --host "mpb.noovitec.com" --port "5432" --username "postgres" --verbose --format=p --create --inserts --column-inserts --data-only --schema "y2020" "mpb"
+	if exist %SCHEMA_FILE_PUBLIC% (echo Backup Failed! Schema File already exist %SCHEMA_FILE_PUBLIC% && GOTO end)
+		"C:\Program Files (x86)\pgAdmin 4\v4\runtime\pg_dump.exe" --file %SCHEMA_FILE_PUBLIC% --host "mpb.noovitec.com" --port "5432" --username "postgres" --verbose --format=p --create --inserts --column-inserts --schema-only --schema "public" "mpb"
+		"C:\Program Files (x86)\pgAdmin 4\v4\runtime\pg_dump.exe" --exclude-table-data "doc_content" --file %DATA_FILE_PUBLIC% --host "mpb.noovitec.com" --port "5432" --username "postgres" --verbose --format=p --create --inserts --column-inserts --data-only --schema "public" "mpb"
 )
 :import
 if "%IMPORT%" == "true" (
 	echo Processing Import...
-	findstr /v /b /c:"SET " /c:"CREATE DATABASE" /c:"ALTER DATABASE" /c:"\connect" /c:"REVOKE ALL" /c:"GRANT ALL" /c:"SELECT pg_catalog.set_config('search_path'" %SCHEMA_FILE_2020% > %EXPORT_DIR%\clean_schema_2020.sql
-	findstr /v /b /c:"SET " /c:"CREATE DATABASE" /c:"ALTER DATABASE" /c:"\connect" /c:"REVOKE ALL" /c:"GRANT ALL" /c:"SELECT pg_catalog.set_config('search_path'" %DATA_FILE_2020% > %EXPORT_DIR%\clean_data_2020.sql
+	findstr /v /b /c:"SET " /c:"CREATE DATABASE" /c:"ALTER DATABASE" /c:"\connect" /c:"REVOKE ALL" /c:"GRANT ALL" /c:"SELECT pg_catalog.set_config('search_path'" %SCHEMA_FILE_PUBLIC% > %EXPORT_DIR%\clean_schema_public.sql
+	findstr /v /b /c:"SET " /c:"CREATE DATABASE" /c:"ALTER DATABASE" /c:"\connect" /c:"REVOKE ALL" /c:"GRANT ALL" /c:"SELECT pg_catalog.set_config('search_path'" %DATA_FILE_PUBLIC% > %EXPORT_DIR%\clean_data_public.sql
 	createdb -h localhost -p 5432 -U postgres %DB_NAME% || (echo Backup Failed DB already exist && GOTO end)
-	psql -U postgres -d %DB_NAME% < %EXPORT_DIR%\clean_schema_2020.sql
-	psql -U postgres -d %DB_NAME% < %EXPORT_DIR%\clean_data_2020.sql
+	psql -U postgres -d %DB_NAME% < %EXPORT_DIR%\clean_schema_public.sql
+	psql -U postgres -d %DB_NAME% < %EXPORT_DIR%\clean_data_public.sql
 )
 :end
 echo Done!

@@ -24,7 +24,7 @@ Current priority
 
 Next after above changes done:
 	- Shipment:
-		- Tag for shipment (talk to Kasia)
+		+ Tag for shipment (Kasia)
 	- Sale
 		- Sale by Item: Production report based on schedule (when saved)
 		- Sales Order Sumary (Excel export by Customer, then Sale, then Item)

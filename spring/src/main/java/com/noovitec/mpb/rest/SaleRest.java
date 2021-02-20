@@ -42,8 +42,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.noovitec.mpb.dto.KeyValueDto;
 import com.noovitec.mpb.dto.SaleListDto;
 import com.noovitec.mpb.entity.Address;
+import com.noovitec.mpb.entity.Customer;
 import com.noovitec.mpb.entity.Sale;
 import com.noovitec.mpb.entity.SaleItem;
+import com.noovitec.mpb.repo.AddressRepo;
 import com.noovitec.mpb.repo.ItemRepo;
 import com.noovitec.mpb.repo.SaleItemRepo;
 import com.noovitec.mpb.repo.SaleRepo;
@@ -74,6 +76,8 @@ class SaleRest {
 	private ItemService itemService;
 	@Autowired
 	private SaleItemRepo saleItemRepo;
+	@Autowired
+	private AddressRepo addressRepo;
 	
 	private final Logger log = LoggerFactory.getLogger(SaleRest.class);
 	private SaleService saleService;
@@ -195,6 +199,46 @@ class SaleRest {
 		}else {
 			return ResponseEntity.ok().body("Duplicate");
 		}
+	}
+	
+	@GetMapping("/sale/update/address")
+	ResponseEntity<?> updateBillAddress() {
+		List<Sale> sales = saleRepo.findAll();
+		List<Customer> customers = customerService.findAll();
+		for(Customer customer: customers) {
+			if(customer.getBillingAddresses() == null || customer.getBillingAddresses().size() == 0) {
+				Address cuAddress = customer.getAddress();
+				Address newAddress = new Address();
+				newAddress.setCity(cuAddress.getCity());
+				newAddress.setDc(customer.getName());
+				newAddress.setLabel(cuAddress.getLabel());
+				newAddress.setLine(cuAddress.getLine());
+				newAddress.setLocationName(cuAddress.getLocationName());
+				newAddress.setNotes(cuAddress.getNotes());
+				newAddress.setPhone(cuAddress.getPhone());
+				newAddress.setState(cuAddress.getState());
+				newAddress.setStreet(cuAddress.getStreet());
+				newAddress.setType("BIL");
+				newAddress.setVisible(false);
+				newAddress.setZip(cuAddress.getZip());
+				addressRepo.save(newAddress);
+				if(customer.getBillingAddresses() == null) {
+					customer.setBillingAddresses(new ArrayList<Address>());
+				}
+				customer.getBillingAddresses().add(newAddress);
+				customerService.save(customer);
+				log.info("Updating Customer: "+customer.getId());
+			}
+		}
+		for(Sale sale: sales) {
+			if(sale.getBillingAddress() == null) {
+				sale.setBillingAddress(sale.getCustomer().getBillingAddresses().iterator().next());
+				saleRepo.save(sale);
+				log.info("Updating Sale: "+sale.getId());
+			}
+		}
+		log.info("Done");
+		return ResponseEntity.ok().body("OK");
 	}
 	
 	@PutMapping("/sale/paid")
