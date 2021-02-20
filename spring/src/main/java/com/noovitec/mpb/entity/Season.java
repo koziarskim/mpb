@@ -18,5 +18,6 @@ public class Season extends BaseEntity {
 
 	private String name;
 	private String prefix;
+	private String code;
 
 }
