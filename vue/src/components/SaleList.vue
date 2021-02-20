@@ -1,7 +1,27 @@
 <template>
     <b-container fluid>
       <div class="mpb-page-info">Sale > Sale List</div>
-      <b-row style="font-size: 12px">
+        <b-row style="font-size: 12px">
+          <div style="margin-left: 3px">
+            <b-button id="filterMenu" size="sm" @click="showFilterMenu = true">Filter</b-button>
+            <b-popover :show="showFilterMenu" placement="bottom" target="filterMenu" variant="secondary">
+              <div style="width: 440px">
+                  <b-row>
+                    <b-col cols=6>
+                      <label class="top-label">Season:</label>
+                        <b-select option-value="id" option-text="name" :list="availableSeasons" v-model="seasonKv"></b-select>
+                    </b-col>
+                    <b-col cols=6>
+                      <label class="top-label">Year:</label>
+                      <b-select option-value="id" option-text="name" :list="availableYears" v-model="yearKv"></b-select>
+                    </b-col>
+                  </b-row>
+              </div>
+            </b-popover>
+          </div>
+          <div>
+            <b-button style="margin-left: 3px" size="sm" @click="clearFilterMenu()">Clear</b-button>
+          </div>
           <input style="width: 150px; margin-left: 7px; font-size: 12px" class="form-control" type="tel" v-model="saleNumber" @keyup.enter="getSales()" placeholder="Sale"/>
           <b-select style="width: 200px; margin-left: 7px" option-value="id" option-text="name" :list="availableItems" v-model="itemKv" placeholder="Item"></b-select>
           <b-select style="width: 200px; margin-left: 7px" option-value="id" option-text="name" :list="availableCustomers" v-model="customerKv" placeholder="Customer"></b-select>
@@ -21,7 +41,7 @@
               </div>
             </b-popover>
           </div>
-          <div style="margin-left:3px">
+          <!-- <div style="margin-left:3px">
             <b-button id="sortMenu" size="sm">Sort</b-button>
             <b-popover :show="showSortMenu" @click="showSortMenu = !showSortMenu" placement="bottom" target="sortMenu" variant="secondary">
               <div style="width: 300px; font-size: 16px">
@@ -29,7 +49,7 @@
                 <b-button variant="link" @click="toggleSortTotals('shippingFrom', true)">Ship earliest first</b-button>
               </div>
             </b-popover>
-          </div>
+          </div> -->
           <div>
             <b-button style="margin-left:3px" type="submit" variant="primary" size="sm" @click="goToSale('')">New</b-button>
             <b-button style="margin-left: 3px" type="submit" variant="primary" size="sm" @click="exportXls()">Export</b-button>
@@ -87,6 +107,7 @@ export default {
       itemKv: {},
       availableCustomers: [],
       customerKv: {},
+      showFilterMenu: false,
       availableStatus: [
         {id: 'DRAFT', name: 'Draft'},
         {id: 'READY', name: 'Ready'},
@@ -117,6 +138,23 @@ export default {
         { key: "status", label: "Status", sortable: false },
         { key: "action", label: "", sortable: false}
       ],
+      availableSeasons: [
+        {id: "VALENTINE", name: "Valentine"},
+        {id: "EASTER", name: "Easter"},
+        {id: "SUMMER", name: "Summer"},
+        {id: "MOTHER_DAY", name: "Mother Day"},
+        {id: "FATHER_DAY", name: "Father Day"},
+        {id: "THANKSGIVING", name: "Thanksgiving"},
+        {id: "CHRISTMAS", name: "Christmas"},
+        {id: "OTHER", name: "Other"},
+      ],
+      availableYears: [
+        {id: "Y2019", name: "2019"},
+        {id: "Y2020", name: "2020"},
+        {id: "Y2021", name: "2021"},
+      ],
+      seasonKv: {},
+      yearKv: {},
       sales: [], //SaleListDto
       selectedSales: [],
       showTotalsMenu: false,
@@ -145,8 +183,17 @@ export default {
     showAll(new_value, old_value){
       this.getSales();      
     },
+    seasonKv(new_value, old_value){
+      this.getSales();      
+    },
+    yearKv(new_value, old_value){
+      this.getSales();      
+    },
   },
   methods: {
+    clearFilterMenu(){
+      router.go();
+    },    
     toggleSaleSelected(e, sale){
       if(sale.status != "SHIPPED"){
         e.target.checked = false;
@@ -200,7 +247,9 @@ export default {
         customerId: this.customerKv.id,
         status: this.statusKv.id,
         customFilter: this.customFilterKv.id,
-        showAll: this.showAll
+        showAll: this.showAll,
+        season: this.seasonKv.id,
+        year: this.yearKv.id
       }
       return params;
     },

@@ -99,13 +99,17 @@ class SaleRest {
 			@RequestParam(required = false) Long customerId,
 			@RequestParam(required = false) String status,
 			@RequestParam(required = false) String customFilter,
-			@RequestParam(required = false) boolean showAll) {
+			@RequestParam(required = false) boolean showAll,
+			@RequestParam(required = false) String season,
+			@RequestParam(required = false) String year) {
 		if(totals) {
-			Page<?> resultTotals = saleRepo.findPageable(pageable, totals, saleNumber, itemId, customerId, status, customFilter, showAll);
+			Page<?> resultTotals = saleRepo.findPageable(pageable, totals, saleNumber, itemId, customerId, status, customFilter, 
+					showAll, season, year);
 			return resultTotals;
 		} else {
 			@SuppressWarnings("unchecked")
-			Page<Sale> sales = (Page<Sale>) saleRepo.findPageable(pageable, totals, saleNumber, itemId, customerId, status, customFilter, showAll);
+			Page<Sale> sales = (Page<Sale>) saleRepo.findPageable(pageable, totals, saleNumber, itemId, customerId, status, customFilter, 
+					showAll, season, year);
 			DateTimeFormatter windowFormat = DateTimeFormatter.ofPattern("MM/dd");
 			Page<SaleListDto> all = sales.map(sale -> {
 				SaleListDto dto = new SaleListDto();
@@ -141,9 +145,12 @@ class SaleRest {
 			@RequestParam(required = false) Long customerId,
 			@RequestParam(required = false) String status,
 			@RequestParam(required = false) String customFilter,
-			@RequestParam(required = false) boolean showAll) throws IOException {
+			@RequestParam(required = false) boolean showAll,
+			@RequestParam(required = false) String season,
+			@RequestParam(required = false) String year) throws IOException {
 		@SuppressWarnings("unchecked")
-		Page<Sale> sales = (Page<Sale>) saleRepo.findPageable(pageable, totals, saleNumber, itemId, customerId, status, customFilter, showAll);
+		Page<Sale> sales = (Page<Sale>) saleRepo.findPageable(pageable, totals, saleNumber, itemId, customerId, status, customFilter, 
+				showAll, season, year);
 		List<Long> saleIds = new ArrayList<Long>();
 		for(Sale sale: sales) {
 			saleIds.add(sale.getId());

@@ -19,7 +19,8 @@ import org.springframework.stereotype.Repository;
 import com.noovitec.mpb.entity.Sale;
 
 public interface CustomSaleRepo {
-	public Page<?> findPageable(Pageable pageable, boolean totals, String saleNumber, Long itemId, Long customerId, String status, String customFilter, boolean showAll);
+	public Page<?> findPageable(Pageable pageable, boolean totals, String saleNumber, Long itemId, Long customerId, String status, String customFilter, 
+			boolean showAll, String season, String year);
 
 	@Repository
 	public class CustomSaleRepoImpl implements CustomSaleRepo {
@@ -29,8 +30,10 @@ public interface CustomSaleRepo {
 		@PersistenceContext
 		EntityManager entityManager;
 
-		public Page<?> findPageable(Pageable pageable, boolean totals, String saleNumber, Long itemId, Long customerId, String status, String customFilter, boolean showAll) {
-			List<Long> ids = this.getIds(pageable, saleNumber, itemId, customerId, status, customFilter, showAll);
+		public Page<?> findPageable(Pageable pageable, boolean totals, String saleNumber, Long itemId, Long customerId, String status, String customFilter, 
+				boolean showAll, String season, String year) {
+			List<Long> ids = this.getIds(pageable, saleNumber, itemId, customerId, status, customFilter, 
+					showAll, season, year);
 			Query query = entityManager.createQuery("select count(*) from Sale s where s.id in :ids ");
 			query.setParameter("ids", ids);
 			long total = (long) query.getSingleResult();
@@ -56,7 +59,8 @@ public interface CustomSaleRepo {
 			}
 		}
 		
-		private List<Long> getIds(Pageable pageable, String saleNumber, Long itemId, Long customerId, String status, String customFilter, boolean showAll) {
+		private List<Long> getIds(Pageable pageable, String saleNumber, Long itemId, Long customerId, String status, String customFilter, 
+				boolean showAll, String season, String year) {
 			String q = "select distinct s.id from Sale s " 
 					+ "left join s.saleItems si "
 					+ "left join si.itemPackaging ip " 
@@ -84,6 +88,12 @@ public interface CustomSaleRepo {
 			if (!showAll) {
 				q += "and s.cancelled = false and s.paidInFull = false ";
 			}
+			if (season != null && !season.isBlank()) {
+				q += "and s.season = :season ";
+			}
+			if (year != null && !year.isBlank()) {
+				q += "and s.year = :year ";
+			}
 			Query query = entityManager.createQuery(q);
 			if (saleNumber !=null && !saleNumber.isBlank()) {
 				query.setParameter("saleNumber", saleNumber);
@@ -96,6 +106,12 @@ public interface CustomSaleRepo {
 			}
 			if (status !=null && !status.isBlank()) {
 				query.setParameter("status", status);
+			}
+			if (season !=null && !season.isBlank()) {
+				query.setParameter("season", season);
+			}
+			if (year !=null && !year.isBlank()) {
+				query.setParameter("year", year);
 			}
 			@SuppressWarnings("unchecked")
 			List<Long> ids = query.getResultList();
