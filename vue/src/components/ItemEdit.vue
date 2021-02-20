@@ -39,10 +39,10 @@
             <label class="top-label">Category:</label>
             <b-select option-value="id" option-text="value" :list="availableItemCategories" v-model="item.category" placeholder="Category"></b-select>
           </b-col>
-          <b-col cols=2 style="margin-top: 70px;">
+          <!-- <b-col cols=2 style="margin-top: 70px;">
             <label class="top-label">Season:</label>
             <b-select option-value="id" option-text="name" :list="availableSeasons" v-model="item.season" placeholder="Season"></b-select>
-          </b-col>
+          </b-col> -->
         </b-row>
         <b-row>
         </b-row>
@@ -137,7 +137,7 @@ export default {
         itemComponents: [],
         brand: {},
         category: {},
-        season: {},
+        // season: {},
         upc:{},
         itemPackagings: []
       },
@@ -148,7 +148,7 @@ export default {
       availableComponents: [],
       availableItemCategories: [],
       availableCompCategories: [],
-    availableSeasons: [],
+    // availableSeasons: [],
     availableUpc: [],
     upc: {},
     uploadedFile: null,
@@ -308,14 +308,14 @@ export default {
         });
       });
     },
-    getAvailableSeasons() {
-      http.get("/season").then(response => {
-        this.availableSeasons = response.data;
-      });
-    },
+    // getAvailableSeasons() {
+    //   http.get("/season").then(response => {
+    //     this.availableSeasons = response.data;
+    //   });
+    // },
     validate(){
-        if(!this.item.name || !this.item.number || !this.item.season.id || !this.item.brand.id || !this.item.category.id){
-          alert("Item Name, Number, Season, Brand and Category are required");
+        if(!this.item.name || !this.item.number || !this.item.brand.id || !this.item.category.id){
+          alert("Item Name, Number, Brand and Category are required");
           return false;
         }
 
@@ -381,7 +381,7 @@ export default {
     }
     this.getAvailableBrands();
     this.getAvailableCategories();
-    this.getAvailableSeasons();
+    // this.getAvailableSeasons();
   }
 };
 </script>
