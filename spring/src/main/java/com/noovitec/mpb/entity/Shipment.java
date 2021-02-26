@@ -32,7 +32,7 @@ public class Shipment extends BaseEntity {
 	private static final long serialVersionUID = -8138964487526041657L;
 	private String number;
 	private String name;
-	private LocalDate shippingDate;
+	private LocalDate shippingDate; //Expected date.
 	private LocalDate shippedDate;
 	private LocalDateTime modifiedDate;
 	private LocalDate shippingFrom;
