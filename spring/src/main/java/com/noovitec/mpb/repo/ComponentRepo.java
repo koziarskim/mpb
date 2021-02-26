@@ -17,8 +17,8 @@ public interface ComponentRepo extends PagingAndSortingRepository<Component, Lon
 	@Query("select distinct c from Component c where c.id in :componentIds")
 	List<Component> findByIds(List<Long> componentIds);
 
-	@Query("select distinct ic.component from ItemComponent ic where ic.item.id = :itemId")
-	List<Component> findIdsByItem(Long itemId);
+	@Query("select distinct ic.component from ItemComponent ic where ic.item.id in :itemIds")
+	List<Component> findIdsByItems(List<Long> itemIds);
 
 	@Query("select c from Component c "
 			+ "left join c.supplier s "

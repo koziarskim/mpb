@@ -3,6 +3,7 @@ package com.noovitec.mpb.service;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -30,6 +31,7 @@ public interface ComponentService {
 	public void updateUnitsLocked(List<Long> componentIds);
 	public void updateUnitsLockedByItem(Long itemId);
 	public void updateUnits(List<Long> componentIds);
+	public void updateUnitsByItems(List<Long> itemIds);
 
 	@Transactional
 	@Service("componentServiceImpl")
@@ -98,9 +100,24 @@ public interface ComponentService {
 			log.info("Total components: " + counter);
 		}
 
+		public void updateUnitsByItems(List<Long> itemIds) {
+			if(itemIds != null && itemIds.size()==0) {
+				return;
+			}
+			Long counter = 0L;
+			Iterable<Component> components = componentRepo.findIdsByItems(itemIds);
+			for (Component component : components) {
+				component.updateUnitsLocked();
+				componentRepo.save(component);
+				counter++;
+				log.info("Updated Component: " + component.getId());
+			}
+			log.info("Total components: " + counter);
+		}
+
 		public void updateUnitsLockedByItem(Long itemId) {
 			Long counter = 0L;
-			Iterable<Component> components = componentRepo.findIdsByItem(itemId);
+			Iterable<Component> components = componentRepo.findIdsByItems(Arrays.asList(itemId));
 			for (Component component : components) {
 				component.updateUnitsLocked();
 				componentRepo.save(component);

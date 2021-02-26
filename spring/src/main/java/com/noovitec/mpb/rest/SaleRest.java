@@ -292,6 +292,7 @@ class SaleRest {
 			itemIds.add(si.getItemPackaging().getItem().getId());
 		}
 		itemService.updateUnits(itemIds);
+		componentService.updateUnitsByItems(itemIds);
 		Sale result = (Sale) crudService.save(sale);
 		return ResponseEntity.ok().body(result);
 	}
@@ -299,23 +300,16 @@ class SaleRest {
 	@DeleteMapping("/sale/{id}")
 	public ResponseEntity<?> delete(@PathVariable Long id) {
 		Sale sale = saleRepo.getOne(id);
-//		if(sale.getSaleItems().size()>0) {
-//			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("There are existing Sale Items!");
-//		}
 		List<Long> itemIds = new ArrayList<Long>();
 		List<Long> saleIds = new ArrayList<Long>();
 		for (SaleItem si : sale.getSaleItems()) {
-//			if(si.getShipmentItems().size() > 0) {
-//				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Sale has been shipped already. Cannot delete!");
-//			}
-//			saleItemRepo.deleteById(si.getId());
 			itemIds.add(si.getItemPackaging().getItem().getId());
 			saleIds.add(si.getSale().getId());
 		}
-//		sale.setSaleItems(null);
 		saleRepo.deleteById(id);
 		saleService.updateUnits(saleIds);
 		itemService.updateUnits(itemIds);
+		componentService.updateUnitsByItems(itemIds);
 		return ResponseEntity.ok().build();
 	}
 	
