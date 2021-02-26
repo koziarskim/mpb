@@ -1,33 +1,31 @@
 Current priority
-	Customer
-	+ Change bill to address to physical address.
-	+ Allow to enter multiple bill to addresses.
-	+ Use DC as Location Name.
-	+ Change invoice to use Location Name instead of Customer name.
-	+ Allow to select bill to address on sale.
-	Packaging:
-	- Add pallet config picture (upload).
-	Sale:
-	+ Allow to Un-Approve sale (Edit)
-	+ Popup to update PRC and other sales.
-	- Carton Label:
-		+ Check the error.
-		+ Make SKU: 25 characters.
-		- Single page preview (Screen or PDF?)
-	- Season & Year:
-		- Move season from item to sale.
-		- Add year dropdown on sale.
-		- Add filter on sale list by season.
-	Item:
-	- Production Checklist:
-		+ add columns Cases and Pallet (1-n)
+Customer:
+ + Change bill to address to physical address.
+ + Allow to enter multiple bill to addresses.
+ + Use DC as Location Name.
+ + Change invoice to use Location Name instead of Customer name.
+ + Allow to select bill to address on sale.
+Sale:
+ + Allow to Un-Approve sale (Edit)
+ + Popup to update PRC and other sales.
+ + Carton Label:
+  + Check the error.
+  + Make SKU: 25 characters.
+ + Season & Year:
+  + Move season from item to sale.
+  + Add year dropdown on sale.
+  + Add filter on sale list by season.
+Item:
+  Production Checklist:
+  + add columns Cases and Pallet (1-n)
+Shipment:
+  + Tag for shipment (Kasia)
 
-Next after above changes done:
-	- Shipment:
-		+ Tag for shipment (Kasia)
-	- Sale
-		- Sale by Item: Production report based on schedule (when saved)
-		- Sales Order Sumary (Excel export by Customer, then Sale, then Item)
+Next (to do):
+Sale:
+  - Sales Order Sumary (Excel export by Customer, then Sale, then Item)
+
+
 
 Michal:
 	Purchase

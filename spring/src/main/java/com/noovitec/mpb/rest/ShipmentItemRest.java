@@ -147,7 +147,7 @@ class ShipmentItemRest {
 	        	cases = casesPerPallet - ((i * casesPerPallet) - totalCases);
 	        }
 	        stamper.getAcroFields().setField("cases", "Total Cartons/Cases: "+String.valueOf(cases));
-	        stamper.getAcroFields().setField("page", "Pallet "+String.valueOf(i)+" of "+palletTagDto.getPageFrom());
+	        stamper.getAcroFields().setField("page", "Pallet "+String.valueOf(i)+" of "+palletTagDto.getPageTo());
 	        stamper.setFormFlattening(true);
 	        stamper.close();
 	        reader = new PdfReader(baos.toByteArray());
