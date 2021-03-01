@@ -272,6 +272,15 @@ class ScheduleEventRest {
 		stamper.getAcroFields().setField("priceSticker", priceSticker);
 		stamper.getAcroFields().setField("expiration", expiration);
 		
+		long units = scheduleEvent.getUnitsScheduled();
+		stamper.getAcroFields().setField("units", String.valueOf(units));
+		long cases = (long) Math.ceil((double) units/scheduleEvent.getItemPackaging().getPackaging().getCasePack());
+		stamper.getAcroFields().setField("cases", String.valueOf(cases));
+		long casesPerPallet = scheduleEvent.getItemPackaging().getPackaging().getHi()*scheduleEvent.getItemPackaging().getPackaging().getTi();
+		stamper.getAcroFields().setField("casesPerPallet", String.valueOf(casesPerPallet));
+		long pallets = (long) Math.ceil((double) cases/casesPerPallet);
+		stamper.getAcroFields().setField("pallets", String.valueOf(pallets));
+		stamper.getAcroFields().setField("casePack", String.valueOf(scheduleEvent.getItemPackaging().getPackaging().getCasePack()));
 		
 		PdfContentByte content = stamper.getOverContent(reader.getNumberOfPages());
 		Attachment itemAttachment = scheduleEvent.getSaleItem().getItemPackaging().getItem().getAttachment();
