@@ -1,5 +1,5 @@
 <template>
-  <div style="width: 130px; height:130px;" @click="openFileSelect">
+  <div :style="customStyle" @click="openFileSelect">
     <a href="#" v-b-popover.hover="'Click to select new image'">
       <img :src="imageUrl" style="width: 100%; height: 100%">
     </a>
@@ -17,7 +17,12 @@ export default {
     onUpload: {
       type: Function,
       required: true
-    }
+    },
+    size: {
+      type: String,
+      required: false,
+      default: "130px",
+    },
   },
   data() {
     return {
@@ -26,6 +31,9 @@ export default {
     };
   },
   computed: {
+    customStyle(){
+      return "width: "+this.size+"; height: "+this.height;
+    },
     imageUrl() {
       if (this.compressedImage) {
         return this.compressedImage;
