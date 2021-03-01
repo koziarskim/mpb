@@ -121,9 +121,9 @@ export default {
   },
   methods: {
 	  getImageUrl(){
-      // if(this.item.attachment){
-      //       return httpUtils.getUrl("/file/attachment/" + this.item.attachment.id, "");
-      // }
+      if(this.packaging.attachment){
+            return httpUtils.getUrl("/file/attachment/" + this.packaging.attachment.id, "");
+      }
       return null;
     },    
     onUpload(file){
@@ -137,9 +137,16 @@ export default {
     },
     save(){
       this.packaging.type = this.typeKv.id;
-      http.post("/packaging", this.packaging).then(r => {
-        router.back();
-      });      
+      var formData = new FormData();
+      formData.append("image", this.uploadedFile);
+      formData.append("jsonPackaging", JSON.stringify(this.packaging));
+      var headers = {"Content-Type": "multipart/form-data"};
+      http.post("/packaging", formData, headers).then(r => {
+        //Do nothing.
+      });
+      // http.post("/packaging", this.packaging).then(r => {
+      //   router.back();
+      // });      
     },
     deletePackaging(){
       this.$bvModal.msgBoxConfirm('Are you sure you want to delete?').then(ok => {

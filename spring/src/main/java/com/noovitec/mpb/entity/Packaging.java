@@ -6,6 +6,7 @@ import java.util.HashSet;
 
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
@@ -49,6 +50,10 @@ public class Packaging extends BaseEntity {
 	private BigDecimal warehouseCost;
 	private BigDecimal packageCost;
 	private BigDecimal totalPackagingCost;
+	
+	@ManyToOne()
+	@JoinColumn(name = "attachment_id", referencedColumnName = "id")
+	private Attachment attachment;
 	
 	@Transient
 	private String label;
