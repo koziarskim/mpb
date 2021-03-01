@@ -3,10 +3,8 @@ package com.noovitec.mpb.rest;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.math.BigDecimal;
-import java.math.MathContext;
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -38,19 +36,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfReader;
-import com.itextpdf.text.pdf.PdfSmartCopy;
 import com.itextpdf.text.pdf.PdfStamper;
 import com.noovitec.mpb.dto.ScheduleEventListDto;
+import com.noovitec.mpb.entity.Attachment;
 import com.noovitec.mpb.entity.Notification;
+import com.noovitec.mpb.entity.Packaging;
 import com.noovitec.mpb.entity.Production;
 import com.noovitec.mpb.entity.SaleItem;
 import com.noovitec.mpb.entity.ScheduleEvent;
-import com.noovitec.mpb.entity.Shipment;
-import com.noovitec.mpb.entity.ShipmentItem;
 import com.noovitec.mpb.repo.ScheduleEventRepo;
+import com.noovitec.mpb.service.AttachmentService;
 import com.noovitec.mpb.service.ComponentService;
 import com.noovitec.mpb.service.CrudService;
 import com.noovitec.mpb.service.ItemService;
@@ -76,6 +75,8 @@ class ScheduleEventRest {
 	private NotificationService notificationService;
 	@Autowired
 	private CrudService crudService;
+	@Autowired
+	private AttachmentService attachmentService;
 
 	public ScheduleEventRest(ScheduleEventRepo scheduleEventRepo) {
 		this.scheduleEventRepo = scheduleEventRepo;
@@ -235,13 +236,62 @@ class ScheduleEventRest {
 
 	private byte[] generateSchedulePdf(ScheduleEvent scheduleEvent) throws IOException, DocumentException {
 		InputStream bolIn = this.getClass().getClassLoader().getResourceAsStream("pdf/Prod-Schedule.pdf");
-		PdfReader bolTemplate = new PdfReader(bolIn);
+		PdfReader reader = new PdfReader(bolIn);
 		ByteArrayOutputStream bolBaos = new ByteArrayOutputStream();
-		PdfStamper bolStamper = new PdfStamper(bolTemplate, bolBaos);
-		bolStamper.setFormFlattening(true);
-		bolStamper.getAcroFields().setField("totalPallets", "");
-		bolStamper.close();
-		bolTemplate.close();
+		PdfStamper stamper = new PdfStamper(reader, bolBaos);
+		stamper.setFormFlattening(true);
+		String scheduleDate = scheduleEvent.getDate().format(DateTimeFormatter.ofPattern("dd/MM/yy"));
+		stamper.getAcroFields().setField("scheduleDate", scheduleDate);
+		
+		String itemNumber = scheduleEvent.getItemPackaging().getItem().getNumber()+" - "+scheduleEvent.getItemPackaging().getItem().getName();
+		stamper.getAcroFields().setField("itemNumber", itemNumber);
+		String dimensions = scheduleEvent.getItemPackaging().getPackaging().getTi()+" x "+scheduleEvent.getSaleItem().getItemPackaging().getPackaging().getHi();
+		stamper.getAcroFields().setField("dimensions", dimensions);
+		String cartonType = Packaging.TYPE.valueOf(scheduleEvent.getItemPackaging().getPackaging().getType()).label();
+		stamper.getAcroFields().setField("cartonType", cartonType);
+		SaleItem saleItem = scheduleEvent.getSaleItem();
+		String customerSale = "None";
+		String cartonLabel = "No";
+		String palletTag = "No";
+		String priceSticker = "No";
+		String expiration = "";
+		if(saleItem != null) {
+			customerSale = scheduleEvent.getSaleItem().getSale().getCustomer().getName()+" - "+scheduleEvent.getSaleItem().getSale().getNumber();
+	        if( scheduleEvent.getSaleItem().getSale().getCustomer().isCartonLabel()) {
+	        	cartonLabel =  scheduleEvent.getSaleItem().getSale().getCustomer().isEdi()?"EDI":"MIMS";
+	        }
+	        palletTag = scheduleEvent.getSaleItem().getSale().getCustomer().getPalletTagType();
+	        priceSticker = scheduleEvent.getSaleItem().getSale().getCustomer().isPriceTicket()?"Yes":"No";
+	        if(scheduleEvent.getSaleItem().getExpiration()!=null) {
+	        	expiration = scheduleEvent.getSaleItem().getExpiration().format(DateTimeFormatter.ofPattern("dd/MM/yy"));
+	        }
+		}
+		stamper.getAcroFields().setField("customerSale", customerSale);
+		stamper.getAcroFields().setField("cartonLabel", cartonLabel);
+		stamper.getAcroFields().setField("palletTag", palletTag);
+		stamper.getAcroFields().setField("priceSticker", priceSticker);
+		stamper.getAcroFields().setField("expiration", expiration);
+		
+		
+		PdfContentByte content = stamper.getOverContent(reader.getNumberOfPages());
+		Attachment itemAttachment = scheduleEvent.getSaleItem().getItemPackaging().getItem().getAttachment();
+		if(itemAttachment != null) {
+			Path itemPath = attachmentService.load(itemAttachment.getId());
+	        Image itemImage = Image.getInstance(Files.readAllBytes(itemPath));
+	        itemImage.setAbsolutePosition(25,568);
+	        itemImage.scaleAbsolute(165,165);
+	        content.addImage(itemImage);
+		}
+		Attachment packagingAttachment = scheduleEvent.getSaleItem().getItemPackaging().getPackaging().getAttachment();
+		if(packagingAttachment != null) {
+			Path packagingPath = attachmentService.load(packagingAttachment.getId());
+	        Image packagingImage = Image.getInstance(Files.readAllBytes(packagingPath));
+	        packagingImage.setAbsolutePosition(247,588);
+	        packagingImage.scaleAbsolute(145,145);
+	        content.addImage(packagingImage);
+		}
+		stamper.close();
+		reader.close();
 		return bolBaos.toByteArray();
 	}
 	
