@@ -1,7 +1,7 @@
 <template>
   <b-container fluid>
 		<b-row>
-			<b-col cols=10 style="margin-top:7px; margin-bottom:7px">
+			<b-col cols=9 style="margin-top:7px; margin-bottom:7px">
 				<div style="display:flex">
 					<input class="form-control" style="width: 170px; height: 33px; margin-top: -10px; margin-right: 5px;" type="date" v-model="date"> 
 					<b-button size="sm" type="submit" variant="success" style="margin-top: -10px; margin-right: 5px;" @click="setToday()">Today</b-button>
@@ -13,11 +13,14 @@
 					Diff: <span style="font-weight: bold; margin-right: 5px;">{{(+scheduleEvent.unitsProduced - +scheduleEvent.unitsScheduled)}}</span>
 				</div>
 			</b-col>
-			<b-col>
-				<b-button style="margin-right: 3px;" type="submit" size="sm" variant="success" @click="editScheduleEvent()">Edit</b-button>
-				<b-button v-if="inProgress() && !isFinished()"  size="sm" style="margin-right: 3px" type="submit" variant="success" @click="openModal()">Add Units</b-button>
-				<b-button v-if="this.scheduleEvent.id !=null && !inProgress() && !isFinished()" size="sm" type="submit" variant="success" @click="startProduction()">Start</b-button>
-				<b-button v-if="inProgress() && !isFinished()" size="sm" type="submit" variant="success" @click="finishProduction">Finish</b-button>
+			<b-col cols=3 style="text-align: right;">
+				<div style="display: flex; height: 34px">
+					<div style="cursor: pointer" @click="downloadProdSchedulePdf()"><img src="../assets/pdf-download.png" width="23px"></div>				
+					<b-button style="margin-left: 3px;" type="submit" size="sm" variant="success" @click="editScheduleEvent()">Edit</b-button>
+					<b-button v-if="inProgress() && !isFinished()"  size="sm" style="width: 80px; margin-left: 3px" type="submit" variant="success" @click="openModal()">Add Units</b-button>
+					<b-button v-if="this.scheduleEvent.id !=null && !inProgress() && !isFinished()" style="margin-left: 3px" size="sm" type="submit" variant="success" @click="startProduction()">Start</b-button>
+					<b-button v-if="inProgress() && !isFinished()" style="margin-left: 3px" size="sm" type="submit" variant="success" @click="finishProduction">Finish</b-button>
+				</div>
 			</b-col>
 		</b-row>
 		<b-row>
@@ -183,65 +186,75 @@ export default {
 		}
 	},
   methods: {
-	    closeProductionLineEditModal(){
-			this.productionLineEditModalVisible = false;
-			this.getScheduleEvents();
-			this.getScheduleEvent(this.scheduleEvent.id);
-		},
-		editScheduleEvent(){
-			this.productionLineEditModalVisible = true;
-		},
-		startProduction(){
-			this.startModalVisible = true;
-		},
-		setToday(){
-			this.date = moment().format("YYYY-MM-DD");
-		},
-		getTreeItemStyle(active){
-			var style = "";
-			if(active){
-				style = "background-color: #1be0db"; 
-			}
-			return style;
-		},
-		updateChart(){
-			var prevTime = moment(this.scheduleEvent.startTime, 'HH:mm:ss');
-			this.chartOptions.scales.xAxes[0].time.min = moment(prevTime.hour(), "HH");
-			var tooltipLabel = "Started at "+ moment(this.scheduleEvent.startTime, 'HH:mm:ss').format('HH:mm');
-			this.chartData.datasets = [{
-				// label: this.scheduleEvent.saleItem.item.name, 
-				data: [{x: prevTime, y: 0, tooltipLabel: tooltipLabel}], 
-				steppedLine: 'after',
-				fill: false,
-				borderColor: '#C28535',
-			}]; 
-			this.sortedProductions.forEach(p => {
-				var secs = moment(p.finishTime, 'HH:mm:ss').diff(prevTime, 'seconds');
-				var time = moment().startOf('day').seconds(secs).format('HH:mm:ss')
-				var perf = !secs?0:((p.unitsProduced/secs)*3600).toFixed(0);
-				var tooltipLabel= perf+" u/h (" +p.unitsProduced+" units in "+time+")"
-				this.chartData.datasets[0].data.push({x: moment(p.finishTime, 'HH:mm:ss'), y: perf, tooltipLabel: tooltipLabel});
-				prevTime = moment(p.finishTime, 'HH:mm:ss');
-			})
-		},
-		updateProduction(production){
-			production.scheduleEvent = {id: this.scheduleEvent.id};
-			http.post("/production", production).then(response => {
-						this.getScheduleEvents();
-						this.getScheduleEvent(this.scheduleEvent.id);
-			});
-		},
-		deleteProduction(production_id){
-			http.delete("/production/"+production_id).then(response => {
-						this.getScheduleEvents();
-						this.getScheduleEvent(this.scheduleEvent.id);
-			});
-		},
-		saveScheduleEvent(){
-				http.post("/scheduleEvent", this.scheduleEvent).then(response => {
+	downloadProdSchedulePdf(){
+		http.get("/scheduleEvent/"+this.scheduleEvent.id+"/schedule/pdf", { responseType: 'blob'}).then(r => {
+			const url = URL.createObjectURL(new Blob([r.data], { type: r.headers['content-type']}))
+			const link = document.createElement('a')
+			link.href = url
+			link.setAttribute("download", r.headers['file-name'])
+			document.body.appendChild(link)
+			link.click()
+      	});
+	},
+	closeProductionLineEditModal(){
+		this.productionLineEditModalVisible = false;
+		this.getScheduleEvents();
+		this.getScheduleEvent(this.scheduleEvent.id);
+	},
+	editScheduleEvent(){
+		this.productionLineEditModalVisible = true;
+	},
+	startProduction(){
+		this.startModalVisible = true;
+	},
+	setToday(){
+		this.date = moment().format("YYYY-MM-DD");
+	},
+	getTreeItemStyle(active){
+		var style = "";
+		if(active){
+			style = "background-color: #1be0db"; 
+		}
+		return style;
+	},
+	updateChart(){
+		var prevTime = moment(this.scheduleEvent.startTime, 'HH:mm:ss');
+		this.chartOptions.scales.xAxes[0].time.min = moment(prevTime.hour(), "HH");
+		var tooltipLabel = "Started at "+ moment(this.scheduleEvent.startTime, 'HH:mm:ss').format('HH:mm');
+		this.chartData.datasets = [{
+			// label: this.scheduleEvent.saleItem.item.name, 
+			data: [{x: prevTime, y: 0, tooltipLabel: tooltipLabel}], 
+			steppedLine: 'after',
+			fill: false,
+			borderColor: '#C28535',
+		}]; 
+		this.sortedProductions.forEach(p => {
+			var secs = moment(p.finishTime, 'HH:mm:ss').diff(prevTime, 'seconds');
+			var time = moment().startOf('day').seconds(secs).format('HH:mm:ss')
+			var perf = !secs?0:((p.unitsProduced/secs)*3600).toFixed(0);
+			var tooltipLabel= perf+" u/h (" +p.unitsProduced+" units in "+time+")"
+			this.chartData.datasets[0].data.push({x: moment(p.finishTime, 'HH:mm:ss'), y: perf, tooltipLabel: tooltipLabel});
+			prevTime = moment(p.finishTime, 'HH:mm:ss');
+		})
+	},
+	updateProduction(production){
+		production.scheduleEvent = {id: this.scheduleEvent.id};
+		http.post("/production", production).then(response => {
+					this.getScheduleEvents();
 					this.getScheduleEvent(this.scheduleEvent.id);
-				});
-		},
+		});
+	},
+	deleteProduction(production_id){
+		http.delete("/production/"+production_id).then(response => {
+					this.getScheduleEvents();
+					this.getScheduleEvent(this.scheduleEvent.id);
+		});
+	},
+	saveScheduleEvent(){
+			http.post("/scheduleEvent", this.scheduleEvent).then(response => {
+				this.getScheduleEvent(this.scheduleEvent.id);
+			});
+	},
     getScheduleEvents() {
       http.get("/scheduleEvent/date/"+this.date, {params: {line_id: this.line_id}}).then(response => {
 				this.items.splice(0, this.items.length);

@@ -1,6 +1,14 @@
 package com.noovitec.mpb.rest;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -16,7 +24,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,10 +38,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.pdf.PdfReader;
+import com.itextpdf.text.pdf.PdfSmartCopy;
+import com.itextpdf.text.pdf.PdfStamper;
 import com.noovitec.mpb.dto.ScheduleEventListDto;
 import com.noovitec.mpb.entity.Notification;
 import com.noovitec.mpb.entity.Production;
+import com.noovitec.mpb.entity.SaleItem;
 import com.noovitec.mpb.entity.ScheduleEvent;
+import com.noovitec.mpb.entity.Shipment;
+import com.noovitec.mpb.entity.ShipmentItem;
 import com.noovitec.mpb.repo.ScheduleEventRepo;
 import com.noovitec.mpb.service.ComponentService;
 import com.noovitec.mpb.service.CrudService;
@@ -101,10 +120,8 @@ class ScheduleEventRest {
 			dto.setScheduleDate(se.getDate());
 			dto.setStartTime(se.getStartTime());
 			dto.setFinishTime(se.getFinishTime());
-//			dto.setUnitsSoldAdj(se.getSaleItem()!=null?(se.getSaleItem().getUnits() + se.getSaleItem().getUnitsAdjusted()):0);
 			dto.setUnitsScheduled(se.getUnitsScheduled());
 			dto.setUnitsProduced(se.getUnitsProduced());
-//			dto.setUnitsAssigned(se.getSaleItem()!=null?se.getSaleItem().getUnitsAssigned():0);
 			return dto;
 		});
 		return all;
@@ -200,5 +217,33 @@ class ScheduleEventRest {
 		itemService.updateUnitsReadyProd(Arrays.asList(itemId));
 		return ResponseEntity.ok().build();
 	}
+	
+	@GetMapping("/scheduleEvent/{id}/schedule/pdf")
+	HttpEntity<byte[]> getTagPdf(
+			@PathVariable Long id) throws DocumentException, IOException {
+		ScheduleEvent scheduleEvent = scheduleEventRepo.findById(id).get();
+		String scheduleDate = scheduleEvent.getDate().format(DateTimeFormatter.ofPattern("dd-MM-yy"));
+		String fileName = "Schedule_"+scheduleEvent.getSaleItem().getItemPackaging().getItem().getNumber()+"_"+scheduleDate+".pdf";
+		byte[] data = this.generateSchedulePdf(scheduleEvent);
+		HttpHeaders header = new HttpHeaders();
+		header.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+		header.set("content-disposition", "inline; filename=" + fileName);
+		header.set("file-name", fileName);
+		header.setContentLength(data.length);
+		return new HttpEntity<byte[]>(data, header);
+	}
+
+	private byte[] generateSchedulePdf(ScheduleEvent scheduleEvent) throws IOException, DocumentException {
+		InputStream bolIn = this.getClass().getClassLoader().getResourceAsStream("pdf/Prod-Schedule.pdf");
+		PdfReader bolTemplate = new PdfReader(bolIn);
+		ByteArrayOutputStream bolBaos = new ByteArrayOutputStream();
+		PdfStamper bolStamper = new PdfStamper(bolTemplate, bolBaos);
+		bolStamper.setFormFlattening(true);
+		bolStamper.getAcroFields().setField("totalPallets", "");
+		bolStamper.close();
+		bolTemplate.close();
+		return bolBaos.toByteArray();
+	}
+	
 	
 }
