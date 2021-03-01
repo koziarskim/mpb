@@ -22,8 +22,17 @@ Shipment:
   + Tag for shipment (Kasia)
 
 Next (to do):
+Production:
+ - Report per sale/item. 
 Sale:
   - Sales Order Sumary (Excel export by Customer, then Sale, then Item)
+
+Michal:
++ Fix Item C328, C797, C798
++ Change component list screen.
+- Show po based on selected from component list.
+- Item # of components
+- Sort components Food first then alfpha
 
 
 

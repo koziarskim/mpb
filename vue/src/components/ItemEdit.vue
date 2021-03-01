@@ -80,7 +80,7 @@
         </b-col>
         <b-col cols=4>
           <label class="top-label">Possible Packages:
-            <span style="cursor: pointer; color: blue" @click="editPackaging()">(Update)</span>
+            <span style="cursor: pointer; color: blue" @click="editPackagingList()">(Update)</span>
         </label>
         <b-select option-value="label" option-text="label" :list="item.itemPackagings" v-model="itemPackaging"></b-select>
       </b-col>
@@ -109,8 +109,8 @@
         </b-col>
       </b-row>
     </div>
-    <div v-if="packagingModalVisible">
-      <packaging-modal :itemPackagings="item.itemPackagings" :item-name="item.number+' - '+item.name" v-on:close="closePackagingModal"></packaging-modal>
+    <div v-if="packagingModalListVisible">
+      <packaging-modal-list :itemPackagings="item.itemPackagings" :item-name="item.number+' - '+item.name" v-on:close="closePackagingModalList"></packaging-modal-list>
     </div>    
   </b-container>
 </template>
@@ -125,7 +125,7 @@ import axios from "axios";
 
 export default {
   components: {
-    PackagingModal: () => import("./modals/PackagingModal"),
+    PackagingModalList: () => import("./modals/PackagingModalList"),
   },
   data() {
     return {
@@ -161,7 +161,7 @@ export default {
         { key: "component.unitsLocked", label: "Reserved", sortable: false },
         { key: "action", label: "", sortable: false }
       ],
-      packagingModalVisible: false,
+      packagingModalListVisible: false,
       itemPackaging: {},
 
     };
@@ -205,10 +205,10 @@ export default {
           fileLink.remove();
       });
     },
-    editPackaging(){
-      this.packagingModalVisible = true;
+    editPackagingList(){
+      this.packagingModalListVisible = true;
     },
-    closePackagingModal(packagings){
+    closePackagingModalList(packagings){
       if (packagings) {
         var itemPackagings = [];
         packagings.forEach(p => {
@@ -221,7 +221,7 @@ export default {
         })
         this.item.itemPackagings = itemPackagings;
       }
-      this.packagingModalVisible = false;
+      this.packagingModalListVisible = false;
       this.packaging = {};
     },
     allowEdit(){
