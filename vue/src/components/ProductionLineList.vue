@@ -1,6 +1,6 @@
 <template>
   <b-container fluid>
-    <b-row style="padding-bottom: 4px;">
+    <b-row style="padding-bottom: 4px; font-size: 12px">
       <b-col cols=3>
         <span style="font-size: 18px; font-weight: bold">Daily Production Status:</span>
         <b-form-checkbox size="sm" v-model="itemView">Item View</b-form-checkbox>
@@ -13,6 +13,9 @@
       </b-col>
       <b-col cols=3>
         <b-select option-value="id" option-text="name" :list="availableItems" v-model="itemkv" placeholder="Pick Item"></b-select>
+      </b-col>
+      <b-col cols=1>
+        <div style="cursor: pointer; width: 23px" @click="downloadProdSchedulePdf()"><img src="../assets/pdf-download.png" width="23px"></div>				
       </b-col>
     </b-row>
     <b-table :sticky-header="browserHeight()" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="scheduleEvents" :fields="fields">
@@ -114,6 +117,16 @@ export default {
     }
   },
   methods: {
+    downloadProdSchedulePdf(){
+      http.get("/scheduleEvent/date/"+this.date+"/schedule/pdf", { responseType: 'blob'}).then(r => {
+        const url = URL.createObjectURL(new Blob([r.data], { type: r.headers['content-type']}))
+        const link = document.createElement('a')
+        link.href = url
+        link.setAttribute("download", r.headers['file-name'])
+        document.body.appendChild(link)
+        link.click()
+          });
+    },    
     getAddress(sale){
       var addressName = "";
       if(sale.shippingAddress){
