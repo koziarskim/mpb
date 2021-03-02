@@ -209,6 +209,7 @@ export default {
         fob: "Elk Grove Village",
         shippingTime: moment.utc().hours("08").minutes("00").format("HH:mm"),
         attachments: [],
+        status: "INP",
       },
       availableCustomers: [],
       availableShippingAddresses: [],
