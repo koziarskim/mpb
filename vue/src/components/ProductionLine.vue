@@ -28,10 +28,10 @@
 				<div v-for="item in items" :key="item.id">
 					<div style="display:inline; color: blue">{{item.name}}</div>
 					<div v-for="packaging in item.packagings" :key="packaging.id" style="margin-bottom: 0px">
-						<div style="display:inline; color: #4bb316">&nbsp;&nbsp;&nbsp;&#9679;Package: {{packaging.name}}</div>
-						<div v-for="event in packaging.events" :key="event.id">
-							<div style="cursor: pointer; display:inline; color:#e22626; font-weight: bold" :style="getTreeItemStyle(event.active)" @click="getScheduleEvent(event.id)">
-								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SO: {{event.saleItem?event.saleItem.sale.number:'None'}} {{event.finishTime?" (Completed)":(event.startTime?" (Started)":" (Not Started)")}}
+						<div style="margin-left: 10px; display:inline; color: #4bb316">Package: {{packaging.name}}</div>
+						<div v-for="(event, index) in packaging.events" :key="event.id">
+							<div style="margin-left: 20px; cursor: pointer; display:inline; color:#e22626; font-weight: bold" :style="getTreeItemStyle(event.active)" @click="getScheduleEvent(event.id)">
+								{{index+1}}: {{event.saleItem?event.saleItem.sale.number:'None'}} {{event.finishTime?" (Completed)":(event.startTime?" (Started)":" (Not Started)")}}
 							</div>
 						</div>
 					</div>
@@ -286,6 +286,9 @@ export default {
 					}
 					se.active = this.scheduleEvent.id == se.id?true:false;
 					packaging.events.push(se);
+					packaging.events = packaging.events.sort((a, b) => {
+						return new Date(a.created) - new Date(b.created);
+					})
 				})
       });
 		},

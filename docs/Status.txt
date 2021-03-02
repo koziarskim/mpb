@@ -11,7 +11,7 @@ Production:
 	 + Change Carton type to Carton/Package type on PDF.
 	 + Error when showing old productions
 	 + Error when scheduling not approved sale.
-	 - Show order number on production line screen
+	 + Show order number on production line screen
 Sale:
   - Sales Order Sumary (Excel export by Customer, then Sale, then Item)
 
