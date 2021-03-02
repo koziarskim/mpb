@@ -286,18 +286,22 @@ class ScheduleEventRest {
 		Attachment itemAttachment = scheduleEvent.getSaleItem().getItemPackaging().getItem().getAttachment();
 		if(itemAttachment != null) {
 			Path itemPath = attachmentService.load(itemAttachment.getId());
-	        Image itemImage = Image.getInstance(Files.readAllBytes(itemPath));
-	        itemImage.setAbsolutePosition(25,568);
-	        itemImage.scaleToFit(165, 165);
-	        content.addImage(itemImage);
+			if(itemPath != null) {
+		        Image itemImage = Image.getInstance(Files.readAllBytes(itemPath));
+		        itemImage.setAbsolutePosition(25,568);
+		        itemImage.scaleToFit(165, 165);
+		        content.addImage(itemImage);
+			}
 		}
 		Attachment packagingAttachment = scheduleEvent.getSaleItem().getItemPackaging().getPackaging().getAttachment();
 		if(packagingAttachment != null) {
 			Path packagingPath = attachmentService.load(packagingAttachment.getId());
-	        Image packagingImage = Image.getInstance(Files.readAllBytes(packagingPath));
-	        packagingImage.setAbsolutePosition(247,588);
-	        packagingImage.scaleToFit(145,145);
-	        content.addImage(packagingImage);
+			if(packagingPath != null) {
+		        Image packagingImage = Image.getInstance(Files.readAllBytes(packagingPath));
+		        packagingImage.setAbsolutePosition(247,588);
+		        packagingImage.scaleToFit(145,145);
+		        content.addImage(packagingImage);
+			}
 		}
 		stamper.close();
 		reader.close();

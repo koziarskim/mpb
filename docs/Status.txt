@@ -1,35 +1,23 @@
 Current priority
-Customer:
- + Change bill to address to physical address.
- + Allow to enter multiple bill to addresses.
- + Use DC as Location Name.
- + Change invoice to use Location Name instead of Customer name.
- + Allow to select bill to address on sale.
-Sale:
- + Allow to Un-Approve sale (Edit)
- + Popup to update PRC and other sales.
- + Carton Label:
-  + Check the error.
-  + Make SKU: 25 characters.
- + Season & Year:
-  + Move season from item to sale.
-  + Add year dropdown on sale.
-  + Add filter on sale list by season.
-Item:
-  Production Checklist:
-  + add columns Cases and Pallet (1-n)
-Shipment:
-  + Tag for shipment (Kasia)
 
 Next (to do):
 Production:
- - Report per sale/item. 
+ Prod Schedule Report
+	 - Price sticker large
+	 - Bold special instruction
+	 - Add goal label
+	 - Download when schedule saved.
+	 - Add line number on PDF
+	 - Change Carton type to Carton/Package type on PDF.
+	 - Error when showing old productions
+	 - Error when scheduling not approved sale.
 Sale:
   - Sales Order Sumary (Excel export by Customer, then Sale, then Item)
 
 Michal:
 + Fix Item C328, C797, C798
 + Change component list screen.
+- Component adjusted refresh stock.
 - Show po based on selected from component list.
 - Item # of components
 - Sort components Food first then alfpha
