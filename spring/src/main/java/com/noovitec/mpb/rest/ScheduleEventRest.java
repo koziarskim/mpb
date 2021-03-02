@@ -288,7 +288,7 @@ class ScheduleEventRest {
 			Path itemPath = attachmentService.load(itemAttachment.getId());
 	        Image itemImage = Image.getInstance(Files.readAllBytes(itemPath));
 	        itemImage.setAbsolutePosition(25,568);
-	        itemImage.scaleAbsolute(165,165);
+	        itemImage.scaleToFit(165, 165);
 	        content.addImage(itemImage);
 		}
 		Attachment packagingAttachment = scheduleEvent.getSaleItem().getItemPackaging().getPackaging().getAttachment();
@@ -296,7 +296,7 @@ class ScheduleEventRest {
 			Path packagingPath = attachmentService.load(packagingAttachment.getId());
 	        Image packagingImage = Image.getInstance(Files.readAllBytes(packagingPath));
 	        packagingImage.setAbsolutePosition(247,588);
-	        packagingImage.scaleAbsolute(145,145);
+	        packagingImage.scaleToFit(145,145);
 	        content.addImage(packagingImage);
 		}
 		stamper.close();
