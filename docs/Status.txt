@@ -3,19 +3,18 @@ Current priority
 Next (to do):
 Production:
  Prod Schedule Report
-	 - Price sticker large
-	 - Bold special instruction
-	 - Add goal label
+	 + Price sticker large
+	 + Bold special instruction
+	 + Add goal label
 	 - Download when schedule saved.
-	 - Add line number on PDF
-	 - Change Carton type to Carton/Package type on PDF.
-	 - Error when showing old productions
+	 + Add line number on PDF
+	 + Change Carton type to Carton/Package type on PDF.
+	 + Error when showing old productions
 	 - Error when scheduling not approved sale.
 Sale:
   - Sales Order Sumary (Excel export by Customer, then Sale, then Item)
 
 Michal:
-+ Fix Item C328, C797, C798
 + Change component list screen.
 - Component adjusted refresh stock.
 - Show po based on selected from component list.

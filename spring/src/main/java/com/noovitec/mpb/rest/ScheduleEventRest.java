@@ -242,9 +242,10 @@ class ScheduleEventRest {
 		stamper.setFormFlattening(true);
 		String scheduleDate = scheduleEvent.getDate().format(DateTimeFormatter.ofPattern("dd/MM/yy"));
 		stamper.getAcroFields().setField("scheduleDate", scheduleDate);
-		
+		stamper.getAcroFields().setField("line", String.valueOf(scheduleEvent.getLine().getNumber()));
 		String itemNumber = scheduleEvent.getItemPackaging().getItem().getNumber()+" - "+scheduleEvent.getItemPackaging().getItem().getName();
 		stamper.getAcroFields().setField("itemNumber", itemNumber);
+		stamper.getAcroFields().setField("packagingName", String.valueOf(scheduleEvent.getItemPackaging().getPackaging().getName()));
 		String dimensions = scheduleEvent.getItemPackaging().getPackaging().getTi()+" x "+scheduleEvent.getSaleItem().getItemPackaging().getPackaging().getHi();
 		stamper.getAcroFields().setField("dimensions", dimensions);
 		String cartonType = Packaging.TYPE.valueOf(scheduleEvent.getItemPackaging().getPackaging().getType()).label();
@@ -298,7 +299,7 @@ class ScheduleEventRest {
 			Path packagingPath = attachmentService.load(packagingAttachment.getId());
 			if(packagingPath != null) {
 		        Image packagingImage = Image.getInstance(Files.readAllBytes(packagingPath));
-		        packagingImage.setAbsolutePosition(247,588);
+		        packagingImage.setAbsolutePosition(300,588);
 		        packagingImage.scaleToFit(145,145);
 		        content.addImage(packagingImage);
 			}
