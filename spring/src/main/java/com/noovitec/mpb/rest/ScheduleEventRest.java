@@ -184,17 +184,17 @@ class ScheduleEventRest {
 			model.put("saleNumber", saleNumber);
 			notificationService.sendMail(emails, model, Notification.TYPE.PRODUCTION_COMPLETED);
 		}
-		for (Production production : scheduleEvent.getProductions()) {
-			production.setScheduleEvent(scheduleEvent);
-			Long unitsDiff = production.getUnitsProduced() - production.getPreUnitsProduced();
-			componentService.updateUnitsOnStockByProduction(production.getId(), unitsDiff);
-		}
+//		for (Production production : scheduleEvent.getProductions()) {
+//			production.setScheduleEvent(scheduleEvent);
+//			Long unitsDiff = production.getUnitsProduced() - production.getPreUnitsProduced();
+//			componentService.updateUnitsOnStockByProduction(production.getId(), unitsDiff);
+//		}
 		scheduleEvent = scheduleEventService.save(scheduleEvent);
 		itemService.updateUnits(Arrays.asList(scheduleEvent.getItemPackaging().getItem().getId()));
 		if(scheduleEvent.getSaleItem()!=null) {
 			saleService.updateUnits(Arrays.asList(scheduleEvent.getSaleItem().getSale().getId()));
 		}
-		componentService.updateUnitsLockedByItem(scheduleEvent.getItemPackaging().getItem().getId());
+		componentService.updateUnitsByItems(Arrays.asList(scheduleEvent.getItemPackaging().getItem().getId()));
 		itemService.updateUnitsReadyProd(Arrays.asList(scheduleEvent.getItemPackaging().getItem().getId()));
 		return ResponseEntity.ok(scheduleEvent);
 	}
@@ -202,10 +202,10 @@ class ScheduleEventRest {
 	@DeleteMapping("/scheduleEvent/{id}")
 	ResponseEntity<?> delete(@PathVariable Long id) {
 		ScheduleEvent scheduleEvent = scheduleEventRepo.getOne(id);
-		for (Production production : scheduleEvent.getProductions()) {
-			Long unitsDiff = production.getUnitsProduced() - production.getPreUnitsProduced();
-			componentService.updateUnitsOnStockByProduction(production.getId(), unitsDiff * (-1));
-		}
+//		for (Production production : scheduleEvent.getProductions()) {
+//			Long unitsDiff = production.getUnitsProduced() - production.getPreUnitsProduced();
+//			componentService.updateUnitsOnStockByProduction(production.getId(), unitsDiff * (-1));
+//		}
 		Long itemId = scheduleEvent.getItemPackaging().getItem().getId();
 		Long saleId = null;
 		if(scheduleEvent.getSaleItem() != null) {
@@ -214,7 +214,7 @@ class ScheduleEventRest {
 		scheduleEventService.delete(id);
 		itemService.updateUnits(Arrays.asList(itemId));
 		saleService.updateUnits(Arrays.asList(saleId));
-		componentService.updateUnitsLockedByItem(itemId);
+		componentService.updateUnitsByItems(Arrays.asList(itemId));
 		itemService.updateUnitsReadyProd(Arrays.asList(itemId));
 		return ResponseEntity.ok().build();
 	}

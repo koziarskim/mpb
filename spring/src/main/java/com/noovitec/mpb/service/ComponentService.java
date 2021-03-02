@@ -26,10 +26,8 @@ public interface ComponentService {
 
 	public Component save(Component component);
 	public void delete(Long id);
-	public void updateUnitsOnStockByProduction(Long productionId, Long units);
-	public void updateUnitsOnStock(Long componentId, Long units);
-	public void updateUnitsLocked(List<Long> componentIds);
-	public void updateUnitsLockedByItem(Long itemId);
+//	public void updateUnitsOnStockByProduction(Long productionId, Long units);
+//	public void updateUnitsOnStock(Long componentId, Long units);
 	public void updateUnits(List<Long> componentIds);
 	public void updateUnitsByItems(List<Long> itemIds);
 
@@ -67,64 +65,45 @@ public interface ComponentService {
 			componentRepo.deleteById(id);
 		}
 		
-		public void updateUnitsOnStockByProduction(Long productionId, Long units) {
-			if(units !=null && units == 0) {
-				return;
-			}
-			List<ItemComponent> itemComponents = itemComponentRepo.findByProduction(productionId);
-			for(ItemComponent ic: itemComponents) {
-				Component c = ic.getComponent();
-				c.setUnitsOnStock((long) Math.ceil(c.getUnitsOnStock() - ((double) units/ic.getUnits())));
-				componentRepo.save(c);
-			};
-		}
+//		public void updateUnitsOnStockByProduction(Long productionId, Long units) {
+//			if(units !=null && units == 0) {
+//				return;
+//			}
+//			List<ItemComponent> itemComponents = itemComponentRepo.findByProduction(productionId);
+//			for(ItemComponent ic: itemComponents) {
+//				Component c = ic.getComponent();
+//				c.setUnitsOnStock((long) Math.ceil(c.getUnitsOnStock() - ((double) units/ic.getUnits())));
+//				componentRepo.save(c);
+//			};
+//		}
 		
-		public void updateUnitsOnStock(Long componentId, Long units) {
-			Component component = componentRepo.findById(componentId).get();
-			component.setUnitsOnStock(component.getUnitsOnStock() + units);
-			componentRepo.save(component);
-		}
+//		public void updateUnitsOnStock(Long componentId, Long units) {
+//			Component component = componentRepo.findById(componentId).get();
+//			component.setUnitsOnStock(component.getUnitsOnStock() + units);
+//			componentRepo.save(component);
+//		}
 
-		public void updateUnitsLocked(List<Long> componentIds) {
-			if(componentIds != null && componentIds.size()==0) {
-				return;
-			}
-			Long counter = 0L;
-			Iterable<Component> components = componentIds==null?componentRepo.findAll():componentRepo.findByIds(componentIds);
-			for (Component component : components) {
-				component.updateUnitsLocked();
-				componentRepo.save(component);
-				counter++;
-				log.info("Updated Component: " + component.getId());
-			}
-			log.info("Total components: " + counter);
-		}
+//		public void updateUnitsLocked(List<Long> componentIds) {
+//			if(componentIds != null && componentIds.size()==0) {
+//				return;
+//			}
+//			Long counter = 0L;
+//			Iterable<Component> components = componentIds==null?componentRepo.findAll():componentRepo.findByIds(componentIds);
+//			for (Component component : components) {
+//				component.updateUnitsLocked();
+//				componentRepo.save(component);
+//				counter++;
+//				log.info("Updated Component: " + component.getId());
+//			}
+//			log.info("Total components: " + counter);
+//		}
 
 		public void updateUnitsByItems(List<Long> itemIds) {
 			if(itemIds != null && itemIds.size()==0) {
 				return;
 			}
-			Long counter = 0L;
-			Iterable<Component> components = componentRepo.findIdsByItems(itemIds);
-			for (Component component : components) {
-				component.updateUnitsLocked();
-				componentRepo.save(component);
-				counter++;
-				log.info("Updated Component: " + component.getId());
-			}
-			log.info("Total components: " + counter);
-		}
-
-		public void updateUnitsLockedByItem(Long itemId) {
-			Long counter = 0L;
-			Iterable<Component> components = componentRepo.findIdsByItems(Arrays.asList(itemId));
-			for (Component component : components) {
-				component.updateUnitsLocked();
-				componentRepo.save(component);
-				counter++;
-				log.info("Updated Component: " + component.getId());
-			}
-			log.info("Total components: " + counter);
+			List<Long> componentIds = componentRepo.findIdsByItems(itemIds);
+			this.updateUnits(componentIds);
 		}
 
 		public void updateUnits(List<Long> componentIds) {
