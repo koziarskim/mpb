@@ -317,8 +317,8 @@ export default {
         { id: "CC_POOL", name: "CC/Pool" }
       ],
       availableLabelTypes: [
-        { id: "UCC_128", name: "UCC-128" },
-        { id: "SELF_GEN", name: "Self Generated" },
+        { id: "EDI", name: "EDI" },
+        { id: "MIMS", name: "MIMS" },
       ],
       availablePalletTagTypes: [
         { id: "4 x 6", name: "4 x 6" },

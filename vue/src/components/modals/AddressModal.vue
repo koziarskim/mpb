@@ -4,7 +4,7 @@
       <b-row>
 		<b-col cols=4>
 			<label class="top-label">Distribution Center/Location Name</label>
-			<input class="form-control" maxlength="20" type="text" v-model="address.dc">
+			<input class="form-control" maxlength="30" type="text" v-model="address.dc">
 		</b-col>
 		<b-col cols=4>
 			<label class="top-label">Location ID:</label>

@@ -352,11 +352,8 @@ class ItemRest {
 			        String customerName = customer.getName();
 			        stamper.getAcroFields().setField("customerName"+c, customerName);
 			        stamper.getAcroFields().setField("priceSticker"+c, customer.isPriceTicket()?"Yes":"No");
-			        String cartonLabelType = "---";
-			        if(customer.isCartonLabel()) {
-			        	cartonLabelType = customer.isEdi()?"EDI":"MIMS";
-			        }
-			        stamper.getAcroFields().setField("cartonLabelType"+c, cartonLabelType);
+			        String cartonLabel = customer.isCartonLabel()?customer.getLabelType():"---";
+			        stamper.getAcroFields().setField("cartonLabel"+c, cartonLabel);
 			        stamper.getAcroFields().setField("palletTagType"+c,  customer.getPalletTagType());
 			        long totalUnits = 0;
 			        long totalCases = 0;

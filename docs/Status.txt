@@ -11,7 +11,11 @@ Production:
 	 + Error when showing old productions
 	 + Error when scheduling not approved sale.
 	 + Show order number on production line screen
+	 - Add total sold units.
 	 - Download multiple pages for whole day.
+ Checklist
+	+ Extend DC/Location name on address to 30 chars.
+	+ Change Carton Label field to use EDI and MIMS.
 Sale:
   - Sales Order Sumary (Excel export by Customer, then Sale, then Item)
 
