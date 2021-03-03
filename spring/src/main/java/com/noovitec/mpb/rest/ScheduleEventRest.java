@@ -220,11 +220,11 @@ class ScheduleEventRest {
 	}
 	
 	@GetMapping("/scheduleEvent/{id}/schedule/pdf")
-	HttpEntity<byte[]> getTagPdf(
+	HttpEntity<byte[]> getProdSchedulePdf(
 			@PathVariable Long id) throws DocumentException, IOException {
 		ScheduleEvent scheduleEvent = scheduleEventRepo.findById(id).get();
 		String scheduleDate = scheduleEvent.getDate().format(DateTimeFormatter.ofPattern("dd-MM-yy"));
-		String fileName = "Schedule_"+scheduleEvent.getSaleItem().getItemPackaging().getItem().getNumber()+"_"+scheduleDate+".pdf";
+		String fileName = "Schedule_"+scheduleEvent.getItemPackaging().getItem().getNumber()+"_"+scheduleDate+".pdf";
 		byte[] data = this.generateSchedulePdf(scheduleEvent);
 		HttpHeaders header = new HttpHeaders();
 		header.setContentType(MediaType.APPLICATION_OCTET_STREAM);
@@ -246,7 +246,7 @@ class ScheduleEventRest {
 		String itemNumber = scheduleEvent.getItemPackaging().getItem().getNumber()+" - "+scheduleEvent.getItemPackaging().getItem().getName();
 		stamper.getAcroFields().setField("itemNumber", itemNumber);
 		stamper.getAcroFields().setField("packagingName", String.valueOf(scheduleEvent.getItemPackaging().getPackaging().getName()));
-		String dimensions = scheduleEvent.getItemPackaging().getPackaging().getTi()+" x "+scheduleEvent.getSaleItem().getItemPackaging().getPackaging().getHi();
+		String dimensions = scheduleEvent.getItemPackaging().getPackaging().getTi()+" x "+scheduleEvent.getItemPackaging().getPackaging().getHi();
 		stamper.getAcroFields().setField("dimensions", dimensions);
 		String cartonType = Packaging.TYPE.valueOf(scheduleEvent.getItemPackaging().getPackaging().getType()).label();
 		stamper.getAcroFields().setField("cartonType", cartonType);
@@ -284,7 +284,7 @@ class ScheduleEventRest {
 		stamper.getAcroFields().setField("casePack", String.valueOf(scheduleEvent.getItemPackaging().getPackaging().getCasePack()));
 		
 		PdfContentByte content = stamper.getOverContent(reader.getNumberOfPages());
-		Attachment itemAttachment = scheduleEvent.getSaleItem().getItemPackaging().getItem().getAttachment();
+		Attachment itemAttachment = scheduleEvent.getItemPackaging().getItem().getAttachment();
 		if(itemAttachment != null) {
 			Path itemPath = attachmentService.load(itemAttachment.getId());
 			if(itemPath != null) {
@@ -294,7 +294,7 @@ class ScheduleEventRest {
 		        content.addImage(itemImage);
 			}
 		}
-		Attachment packagingAttachment = scheduleEvent.getSaleItem().getItemPackaging().getPackaging().getAttachment();
+		Attachment packagingAttachment = scheduleEvent.getItemPackaging().getPackaging().getAttachment();
 		if(packagingAttachment != null) {
 			Path packagingPath = attachmentService.load(packagingAttachment.getId());
 			if(packagingPath != null) {
