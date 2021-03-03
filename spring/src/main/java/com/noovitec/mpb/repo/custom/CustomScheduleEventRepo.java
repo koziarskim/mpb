@@ -1,5 +1,6 @@
 package com.noovitec.mpb.repo.custom;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -13,6 +14,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.query.Param;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Repository;
 
 import com.noovitec.mpb.entity.Sale;
@@ -21,6 +24,7 @@ import com.noovitec.mpb.entity.ScheduleEvent;
 
 public interface CustomScheduleEventRepo {
 	Page<?> findPageable(Pageable pageable, boolean totals, Long saleId, Long itemId, Long packagingId);
+	public List<ScheduleEvent> findByDate(@Param("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date);
 
 	@Repository
 	public class CustomScheduleEventRepoImpl implements CustomScheduleEventRepo {
@@ -58,7 +62,7 @@ public interface CustomScheduleEventRepo {
 				return page;
 			}			
 		}
-		
+
 		private List<Long> getIds(Pageable pageable, boolean totals, Long saleId, Long itemId, Long packagingId) {
 			String q = "select distinct se.id from ScheduleEvent se "
 					+ "left join se.saleItem si "
@@ -96,6 +100,18 @@ public interface CustomScheduleEventRepo {
 				ids.add(0L);
 			}
 			return ids;
+		}
+
+		public List<ScheduleEvent> findByDate(@Param("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
+			String q = "select se from ScheduleEvent se "
+					+ "join se.line line "
+					+ "where se.date = :date "
+					+ "order by line.number asc";
+			Query query = entityManager.createQuery(q);
+			query.setParameter("date", date);
+			@SuppressWarnings("unchecked")
+			List<ScheduleEvent> scheduleEvents = query.getResultList();
+			return scheduleEvents;
 		}
 	}
 }

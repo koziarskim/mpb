@@ -7,19 +7,18 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,14 +48,12 @@ import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfSmartCopy;
 import com.itextpdf.text.pdf.PdfStamper;
 import com.itextpdf.text.pdf.PdfWriter;
-import com.noovitec.mpb.dto.PalletTagDto;
 import com.noovitec.mpb.dto.ScheduleEventListDto;
 import com.noovitec.mpb.entity.Attachment;
 import com.noovitec.mpb.entity.Notification;
 import com.noovitec.mpb.entity.Packaging;
 import com.noovitec.mpb.entity.SaleItem;
 import com.noovitec.mpb.entity.ScheduleEvent;
-import com.noovitec.mpb.entity.ShipmentItem;
 import com.noovitec.mpb.repo.ScheduleEventRepo;
 import com.noovitec.mpb.service.AttachmentService;
 import com.noovitec.mpb.service.ComponentService;
@@ -229,8 +226,7 @@ class ScheduleEventRest {
 	}
 	
 	@GetMapping("/scheduleEvent/{id}/schedule/pdf")
-	HttpEntity<byte[]> getProdSchedulePdf(
-			@PathVariable Long id) throws DocumentException, IOException {
+	HttpEntity<byte[]> getProdScheduleByIdPdf(@PathVariable Long id) throws DocumentException, IOException {
 		ScheduleEvent scheduleEvent = scheduleEventRepo.findById(id).get();
 		String scheduleDate = scheduleEvent.getDate().format(DateTimeFormatter.ofPattern("dd-MM-yy"));
 		String fileName = "Schedule_"+scheduleEvent.getItemPackaging().getItem().getNumber()+"_"+scheduleDate+".pdf";
@@ -242,7 +238,21 @@ class ScheduleEventRest {
 		header.setContentLength(data.length);
 		return new HttpEntity<byte[]>(data, header);
 	}
-	
+
+	@GetMapping("/scheduleEvent/date/{date}/schedule/pdf")
+	HttpEntity<byte[]> getProdScheduleByDatePdf(@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) throws DocumentException, IOException {
+		List<ScheduleEvent> scheduleEvents = scheduleEventRepo.findByDate(date);
+		String scheduleDate = date.format(DateTimeFormatter.ofPattern("dd-MM-yy"));
+		String fileName = "Schedule_"+scheduleDate+".pdf";
+		byte[] data = this.generateSchedulePdf(scheduleEvents);
+		HttpHeaders header = new HttpHeaders();
+		header.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+		header.set("content-disposition", "inline; filename=" + fileName);
+		header.set("file-name", fileName);
+		header.setContentLength(data.length);
+		return new HttpEntity<byte[]>(data, header);
+	}
+
     public void doMerge(List<byte[]> list, OutputStream outputStream) throws DocumentException, IOException {
         Document document = new Document();
         PdfWriter writer = PdfWriter.getInstance(document, outputStream);
