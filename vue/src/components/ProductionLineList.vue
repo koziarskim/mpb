@@ -18,7 +18,7 @@
         <div style="cursor: pointer; width: 23px" @click="downloadProdSchedulePdf()"><img src="../assets/pdf-download.png" width="23px"></div>				
       </b-col>
     </b-row>
-    <b-table :sticky-header="browserHeight()" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="scheduleEvents" :fields="fields">
+    <b-table :sticky-header="browserHeight()" :items="scheduleEvents" :fields="fields">
       <template v-slot:cell(line.number)="row">
         <b-link role="button" @click="goToProductionLine(row.item)">{{row.item.line.id}}</b-link>
       </template>
@@ -74,10 +74,7 @@ export default {
     return {
       navigation: navigation,
       formatter: formatter,
-      date: moment()
-        .format("YYYY-MM-DD"),
-      sortBy: "line.number",
-      sortDesc: false,
+      date: moment().format("YYYY-MM-DD"),
       fields: [
         { key: "line.number", label: "Line", sortable: false },
         { key: "item", label: "Item # (Name)", sortable: false },

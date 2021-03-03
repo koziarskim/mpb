@@ -125,7 +125,7 @@
     <div style="border: 1px solid #d6d3d3; margin-top: 10px;">
       <b-row>
         <b-col>
-          <b-table v-if="shipment.shipmentItems.length>0" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="shipment.shipmentItems" :fields="columns">
+          <b-table v-if="shipment.shipmentItems.length>0" :items="shipment.shipmentItems" :fields="columns">
             <template v-slot:cell(item)="row">
               <b-link role="button" @click.stop="goToItem(row.item.saleItem.itemPackaging.item.id)">{{row.item.saleItem.itemPackaging.item.number}}</b-link>
               <div class="name-md"> {{row.item.saleItem.itemPackaging.item.name}}</div>
@@ -223,8 +223,6 @@ export default {
       availableSaleItems: [],
       saleItem: {},
       saleItems: [],
-      sortBy: "id",
-      sortDesc: false,
       columns: [
         { key: "item", label: "Item", sortable: false },
         { key: "sale", label: "Sale", sortable: false },

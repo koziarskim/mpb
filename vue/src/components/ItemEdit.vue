@@ -88,7 +88,7 @@
       <br>
       <b-row>
         <b-col>
-          <b-table :items="item.itemComponents" :fields="columns" sort-by="component.category.name">
+          <b-table :items="item.itemComponents" :fields="columns" sort-by="component.category.prefix">
             <template v-slot:head(units)="row">
               <div>Assembly</div><div class="mpb-head-line">Units per item</div>
             </template>

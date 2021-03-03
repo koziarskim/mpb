@@ -114,7 +114,7 @@
     <b-row>
       <b-col>
         <label class="top-label"></label>
-        <b-table v-if="sale.saleItems.length>0" :tbody-tr-class="rowClass" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="sale.saleItems" :fields="columns">
+        <b-table v-if="sale.saleItems.length>0" :tbody-tr-class="rowClass" :items="sale.saleItems" :fields="columns">
           <template v-slot:cell(item)="row">
             <b-link role="button" @click.stop="goToItem(row.item.itemPackaging.item.id)">{{row.item.itemPackaging.item.number}}</b-link>
             <div class="name-sm" :title="row.item.itemPackaging.item.name"> ({{row.item.itemPackaging.item.name}})</div>
@@ -275,8 +275,6 @@ export default {
       billingAddress: {},
       availableCustomers: [],
       availableItems: [],
-      sortBy: "id",
-      sortDesc: false,
       columns: [
         { key: "item", label: "Item", sortable: false },
         { key: "packaging", label: "Package", sortable: false },

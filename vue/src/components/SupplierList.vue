@@ -14,20 +14,16 @@
             </b-col>
         </b-row>
         <div v-if="suppliers.length==0">Not found any data...</div>
-        <b-table v-if="suppliers.length>0"
-                :sort-by.sync="sortBy"
-                :sort-desc.sync="sortDesc"
-                :items="suppliers"
-                :fields="fields">
-                <template v-slot:cell(name)="row">
-                    <b-link role="button" @click.stop="goToSupplier(row.item.id)">{{row.item.name}}</b-link>
-                </template>
-                <template v-slot:cell(addressName)="row">
-                    <span>{{row.item.city+", "+row.item.state}}</span>
-                </template>
-                <template v-slot:cell(action)="row">
-                    <b-button size="sm" @click.stop="deleteSupplier(row.item.id)">x</b-button>
-                </template>
+        <b-table v-if="suppliers.length>0" :items="suppliers" :fields="fields">
+          <template v-slot:cell(name)="row">
+              <b-link role="button" @click.stop="goToSupplier(row.item.id)">{{row.item.name}}</b-link>
+          </template>
+          <template v-slot:cell(addressName)="row">
+              <span>{{row.item.city+", "+row.item.state}}</span>
+          </template>
+          <template v-slot:cell(action)="row">
+              <b-button size="sm" @click.stop="deleteSupplier(row.item.id)">x</b-button>
+          </template>
         </b-table>
         <b-pagination v-model="pageable.currentPage" :per-page="pageable.perPage" :total-rows="pageable.totalElements" @change="paginationChange"></b-pagination>
     </b-container>
@@ -42,8 +38,6 @@ export default {
     return {
       pageable: {totalElements: 100, currentPage: 1, perPage: 25, sortBy: 'name', sortDesc: false},
       supplierName: "",
-      sortBy: "account",
-      sortDesc: false,
       fields: [
         { key: "name", label: "Name", sortable: false },
         { key: "addressName", label: "Address", sortable: false },

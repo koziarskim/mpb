@@ -9,7 +9,7 @@
     </div>
     <b-row>
       <b-col cols="5">
-        <b-table v-if="users.length>0" sticky-header :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="users" :fields="fields">
+        <b-table v-if="users.length>0" sticky-header :items="users" :fields="fields">
           <template v-slot:cell(number)="row">
             <b-button size="sm" @click.stop="editUser(row.item)" variant="link">{{row.item.number}}</b-button>
           </template>
@@ -66,8 +66,6 @@ export default {
   data() {
     return {
       securite: securite,
-      sortBy: "id",
-      sortDesc: false,
       fields: [
         { key: "number", label: "Account", sortable: false },
         { key: "fullName", label: "Name", sortable: false },

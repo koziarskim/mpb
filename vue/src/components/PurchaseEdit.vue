@@ -84,7 +84,7 @@
         <component-search v-if="!receiveMode" v-on:componentsUpdated="updateComponents"></component-search>
       </b-col>
       <b-col>
-        <b-table sort-by.sync="name" sort-desc.sync="false" :items="purchase.purchaseComponents" :fields="fields">
+        <b-table :items="purchase.purchaseComponents" :fields="fields">
           <template v-slot:cell(name)="row">
             <div style="width:200px; overflow: wrap; font-size: 14px"><b-link @click.stop="goToComponent(row.item.component.id)">{{row.item.component.number}}</b-link>
             <span style="font-size: 11px"> ({{row.item.component.name}})</span></div>
@@ -234,7 +234,9 @@ export default {
             this.purchase.purchaseComponents.push({component: {id: dto.id, name: dto.name, number: dto.number, casePack: dto.casePack, unitCost: dto.unitCost}, 
               units: units, unitPrice: dto.unitCost, unitsReceived: dto.unitsReceived
             });
-            this.purchase.purchaseComponents = this.purchase.purchaseComponents.sort((a,b) => {return a.component.number - b.component.number})
+            this.purchase.purchaseComponents = this.purchase.purchaseComponents.sort((a,b) => {
+              return a.component.number.toLowerCase().localeCompare(b.component.number, undefined, {numeric: false, sensitivity: 'base'});
+            })
           }
         })
       });
