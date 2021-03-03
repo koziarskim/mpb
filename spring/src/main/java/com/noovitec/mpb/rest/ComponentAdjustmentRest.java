@@ -1,10 +1,12 @@
 package com.noovitec.mpb.rest;
 
 import java.net.URISyntaxException;
+import java.util.Arrays;
 import java.util.Collection;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -18,9 +20,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.noovitec.mpb.dto.ComponentAdjustmentListDto;
-import com.noovitec.mpb.dto.ComponentDto;
 import com.noovitec.mpb.entity.ComponentAdjustment;
 import com.noovitec.mpb.repo.ComponentAdjustmentRepo;
+import com.noovitec.mpb.service.ComponentService;
 
 
 @RestController
@@ -28,8 +30,10 @@ import com.noovitec.mpb.repo.ComponentAdjustmentRepo;
 class ComponentAdjustmentRest {
 
 	private final Logger log = LoggerFactory.getLogger(ComponentAdjustmentRest.class);
-	ComponentAdjustmentRepo componentAdjustmentRepo;
-
+	private ComponentAdjustmentRepo componentAdjustmentRepo;
+	@Autowired
+	private ComponentService componentService;
+	
 	public ComponentAdjustmentRest(ComponentAdjustmentRepo componentAdjustmentRepo) {
 		this.componentAdjustmentRepo = componentAdjustmentRepo;
 	}
@@ -67,13 +71,17 @@ class ComponentAdjustmentRest {
 
 	@PostMapping("/componentAdjustment")
 	ResponseEntity<?> post(@RequestBody(required = false) ComponentAdjustment componentAdjustment) throws URISyntaxException {
-		ComponentAdjustment result = componentAdjustmentRepo.save(componentAdjustment);
-		return ResponseEntity.ok().body(result);
+		componentAdjustment = componentAdjustmentRepo.save(componentAdjustment);
+		componentService.updateUnits(Arrays.asList(componentAdjustment.getComponent().getId()));
+		return ResponseEntity.ok().body(componentAdjustment);
 	}
 
 	@DeleteMapping("/componentAdjustment/{id}")
 	public ResponseEntity<?> delete(@PathVariable Long id) {
+		ComponentAdjustment ca = componentAdjustmentRepo.findById(id).get();
+		Long componentId = ca.getComponent().getId();
 		componentAdjustmentRepo.deleteById(id);
+		componentService.updateUnits(Arrays.asList(componentId));
 		return ResponseEntity.ok().build();
 	}
 }

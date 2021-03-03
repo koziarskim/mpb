@@ -6,18 +6,18 @@ Production:
 	 + Price sticker large
 	 + Bold special instruction
 	 + Add goal label
-	 - Download when schedule saved.
 	 + Add line number on PDF
 	 + Change Carton type to Carton/Package type on PDF.
 	 + Error when showing old productions
 	 + Error when scheduling not approved sale.
 	 + Show order number on production line screen
+	 - Download multiple pages for whole day.
 Sale:
   - Sales Order Sumary (Excel export by Customer, then Sale, then Item)
 
 Michal:
 + Change component list screen.
-- Component adjusted refresh stock.
++ Component adjusted refresh stock.
 - Show po based on selected from component list.
 - Item # of components
 - Sort components Food first then alfpha
