@@ -232,7 +232,9 @@ export default {
           if(!existing){
             var units = dto.unitsShort < 0?0:dto.unitsShort;
             this.purchase.purchaseComponents.push({component: {id: dto.id, name: dto.name, number: dto.number, casePack: dto.casePack, unitCost: dto.unitCost}, 
-              units: units, unitPrice: dto.unitCost, unitsReceived: dto.unitsReceived});
+              units: units, unitPrice: dto.unitCost, unitsReceived: dto.unitsReceived
+            });
+            this.purchase.purchaseComponents = this.purchase.purchaseComponents.sort((a,b) => {return a.component.number - b.component.number})
           }
         })
       });

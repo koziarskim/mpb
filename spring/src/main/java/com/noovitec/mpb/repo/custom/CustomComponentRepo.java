@@ -202,8 +202,9 @@ public interface CustomComponentRepo {
 			if (unitFilter !=null && unitFilter.equalsIgnoreCase("OPEN_SALE")) {
 				q += "and c.unitsSoldNotProd > 0";
 			}
-			Order order = pageable.getSort().iterator().next();
-			q += "order by c."+order.getProperty() + " "+order.getDirection();
+//			Order order = pageable.getSort().iterator().next();
+//			q += "order by c."+order.getProperty() + " "+order.getDirection();
+			q += "order by c.number asc ";
 			Query query = entityManager.createQuery(q);
 			if (nameSearch != null && !nameSearch.isEmpty()) {
 				query.setParameter("nameSearch", nameSearch);

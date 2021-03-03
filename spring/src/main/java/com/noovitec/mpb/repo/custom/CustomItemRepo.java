@@ -63,7 +63,7 @@ public interface CustomItemRepo {
 					q += "and i.unitsShort != 0 ";
 				}
 			}
-			q += "order by i.salesNotAssigned desc";
+			q += "order by i.number asc";
 			Query query = entityManager.createQuery(q);
 			if(numberName!=null && !numberName.isBlank()) {
 				query.setParameter("numberName", numberName);
