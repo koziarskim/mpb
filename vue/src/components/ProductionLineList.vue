@@ -6,7 +6,7 @@
         <b-form-checkbox size="sm" v-model="itemView">Item View</b-form-checkbox>
       </b-col>
       <b-col cols=2>
-        <input class="form-control" type="date" v-model="date" placeholder="Date">
+        <input class="form-control" type="date" v-model="date" @change="dateChanged()" placeholder="Date">
       </b-col>
       <b-col cols=1>
         <b-select option-value="id" option-text="number" :list="availableLines" v-model="lineKv" placeholder="Line"></b-select>
@@ -98,14 +98,11 @@ export default {
     };
   },
   watch: {
-    date(newValue, oldValue) {
-      this.getScheduleEvents(newValue);
-    },
     lineKv(newValue, oldValue){
-      this.getScheduleEvents(this.date);
+      this.getScheduleEvents();
     },
     itemkv(newValue, oldValue){
-      this.getScheduleEvents(this.date);
+      this.getScheduleEvents();
     },
     itemView(newValue, oldValue){
       if(newValue==true){
@@ -114,6 +111,9 @@ export default {
     }
   },
   methods: {
+    dateChanged(){
+      this.getScheduleEvents();
+    },    
     downloadProdSchedulePdf(){
       http.get("/scheduleEvent/date/"+this.date+"/schedule/pdf", { responseType: 'blob'}).then(r => {
         const url = URL.createObjectURL(new Blob([r.data], { type: r.headers['content-type']}))
@@ -151,7 +151,7 @@ export default {
         return;
       }
       http.post("/scheduleEvent", se).then(response => {
-        this.getScheduleEvents(this.date)
+        this.getScheduleEvents()
       });
       se.edit = false;
     },
@@ -166,7 +166,7 @@ export default {
       this.$bvModal.msgBoxConfirm('Are you sure you want to delete?').then(value => {
         if(value){
           http.delete("/scheduleEvent/" + se_id).then(response => {
-            this.getScheduleEvents(this.date);
+            this.getScheduleEvents();
           });
         }
       })
@@ -201,10 +201,10 @@ export default {
         })
       })
     },
-	  getScheduleEvents(date){
+	  getScheduleEvents(){
       var query = {line_id: this.lineKv.id};
       http
-        .get("/scheduleEvent/date/"+date, {params: {
+        .get("/scheduleEvent/date/"+this.date, {params: {
           line_id: this.lineKv.id
         }})
         .then(response => {
@@ -241,7 +241,7 @@ export default {
     if(date){
       this.date = date;
     }
-    this.getScheduleEvents(this.date);
+    this.getScheduleEvents();
     this.getAvailableLines();
   }
 };

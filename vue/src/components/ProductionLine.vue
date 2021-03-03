@@ -3,7 +3,7 @@
 		<b-row>
 			<b-col cols=9 style="margin-top:7px; margin-bottom:7px">
 				<div style="display:flex">
-					<input class="form-control" style="width: 170px; height: 33px; margin-top: -10px; margin-right: 5px;" type="date" v-model="date"> 
+					<input class="form-control" style="width: 170px; height: 33px; margin-top: -10px; margin-right: 5px;" type="date" @change="dateChanged()" v-model="date"> 
 					<b-button size="sm" type="submit" variant="success" style="margin-top: -10px; margin-right: 5px;" @click="setToday()">Today</b-button>
 					Line: <span style="font-weight: bold; margin-right: 5px;">{{scheduleEvent.line.number}}</span>
 					Started: <span style="font-weight: bold; margin-right: 5px;">{{scheduleEvent.startTime}}</span> 
@@ -167,25 +167,24 @@ export default {
 			},
     };
   },
-  watch: {
-		date(new_value, old_value){
-			this.scheduleEvent = {
-				line: {},
-				item: {},
-				itemPackaging: {},
-				saleItem: {
-					item: {},
-					sale: {
-						customer: {}
-					}
-				}
-			};
-			this.getScheduleEvents();
-			this.sortedProductions = [];
-			this.chartVisibility = "visibility: hidden";
-		}
-	},
+  watch: {},
   methods: {
+	dateChanged(){
+		this.scheduleEvent = {
+			line: {},
+			item: {},
+			itemPackaging: {},
+			saleItem: {
+				item: {},
+				sale: {
+					customer: {}
+				}
+			}
+		};
+		this.getScheduleEvents();
+		this.sortedProductions = [];
+		this.chartVisibility = "visibility: hidden";
+	},
 	downloadProdSchedulePdf(){
 		http.get("/scheduleEvent/"+this.scheduleEvent.id+"/schedule/pdf", { responseType: 'blob'}).then(r => {
 			const url = URL.createObjectURL(new Blob([r.data], { type: r.headers['content-type']}))
