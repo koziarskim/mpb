@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -45,14 +46,17 @@ import com.itextpdf.text.Image;
 import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfImportedPage;
 import com.itextpdf.text.pdf.PdfReader;
+import com.itextpdf.text.pdf.PdfSmartCopy;
 import com.itextpdf.text.pdf.PdfStamper;
 import com.itextpdf.text.pdf.PdfWriter;
+import com.noovitec.mpb.dto.PalletTagDto;
 import com.noovitec.mpb.dto.ScheduleEventListDto;
 import com.noovitec.mpb.entity.Attachment;
 import com.noovitec.mpb.entity.Notification;
 import com.noovitec.mpb.entity.Packaging;
 import com.noovitec.mpb.entity.SaleItem;
 import com.noovitec.mpb.entity.ScheduleEvent;
+import com.noovitec.mpb.entity.ShipmentItem;
 import com.noovitec.mpb.repo.ScheduleEventRepo;
 import com.noovitec.mpb.service.AttachmentService;
 import com.noovitec.mpb.service.ComponentService;
@@ -230,21 +234,13 @@ class ScheduleEventRest {
 		ScheduleEvent scheduleEvent = scheduleEventRepo.findById(id).get();
 		String scheduleDate = scheduleEvent.getDate().format(DateTimeFormatter.ofPattern("dd-MM-yy"));
 		String fileName = "Schedule_"+scheduleEvent.getItemPackaging().getItem().getNumber()+"_"+scheduleDate+".pdf";
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		List<byte[]> bytes = new ArrayList<byte[]>();
-		byte[] data1 = this.generateSchedulePdf(scheduleEvent);
-//		byte[] data2 = this.generateSchedulePdf(scheduleEvent);
-		bytes.add(data1);
-//		bytes.add(data2);
-		this.doMerge(bytes, baos);
+		byte[] data = this.generateSchedulePdf(Arrays.asList(scheduleEvent, scheduleEvent));
 		HttpHeaders header = new HttpHeaders();
 		header.setContentType(MediaType.APPLICATION_OCTET_STREAM);
 		header.set("content-disposition", "inline; filename=" + fileName);
 		header.set("file-name", fileName);
-//		header.setContentLength(baos.toByteArray().length);
-//		return new HttpEntity<byte[]>(baos.toByteArray(), header);
-		header.setContentLength(data1.length);
-		return new HttpEntity<byte[]>(data1, header);
+		header.setContentLength(data.length);
+		return new HttpEntity<byte[]>(data, header);
 	}
 	
     public void doMerge(List<byte[]> list, OutputStream outputStream) throws DocumentException, IOException {
@@ -266,6 +262,95 @@ class ScheduleEventRest {
         outputStream.close();
     }
 
+    private byte[] generateSchedulePdf(List<ScheduleEvent> scheduleEvents) throws IOException, DocumentException {
+	    Document doc = new Document();
+	    ByteArrayOutputStream mainBaos = new ByteArrayOutputStream();
+	    PdfSmartCopy copy = new PdfSmartCopy(doc, mainBaos);
+	    doc.open();
+		InputStream in = this.getClass().getClassLoader().getResourceAsStream("pdf/Prod-Schedule.pdf");
+		PdfReader mainReader = new PdfReader(in);
+	    for(ScheduleEvent scheduleEvent: scheduleEvents) {
+	    	PdfReader reader = new PdfReader(mainReader);
+	        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+	        PdfStamper stamper = new PdfStamper(reader, baos);
+	        //---Stamper---
+			String scheduleDate = scheduleEvent.getDate().format(DateTimeFormatter.ofPattern("dd/MM/yy"));
+			stamper.getAcroFields().setField("scheduleDate", scheduleDate);
+			stamper.getAcroFields().setField("line", String.valueOf(scheduleEvent.getLine().getNumber()));
+			String itemNumber = scheduleEvent.getItemPackaging().getItem().getNumber()+" - "+scheduleEvent.getItemPackaging().getItem().getName();
+			stamper.getAcroFields().setField("itemNumber", itemNumber);
+			stamper.getAcroFields().setField("packagingName", String.valueOf(scheduleEvent.getItemPackaging().getPackaging().getName()));
+			String dimensions = scheduleEvent.getItemPackaging().getPackaging().getTi()+" x "+scheduleEvent.getItemPackaging().getPackaging().getHi();
+			stamper.getAcroFields().setField("dimensions", dimensions);
+			String cartonType = Packaging.TYPE.valueOf(scheduleEvent.getItemPackaging().getPackaging().getType()).label();
+			stamper.getAcroFields().setField("cartonType", cartonType);
+			SaleItem saleItem = scheduleEvent.getSaleItem();
+			String customerSale = "None";
+			String cartonLabel = "No";
+			String palletTag = "No";
+			String priceSticker = "No";
+			String expiration = "";
+			String unitsSold = "(Total Sold: 0)";
+			if(saleItem != null) {
+				customerSale = scheduleEvent.getSaleItem().getSale().getCustomer().getName()+" - "+scheduleEvent.getSaleItem().getSale().getNumber();
+		        if( scheduleEvent.getSaleItem().getSale().getCustomer().isCartonLabel()) {
+		        	cartonLabel =  scheduleEvent.getSaleItem().getSale().getCustomer().getLabelType();
+		        }
+		        palletTag = scheduleEvent.getSaleItem().getSale().getCustomer().getPalletTagType();
+		        priceSticker = scheduleEvent.getSaleItem().getSale().getCustomer().isPriceTicket()?"Yes":"No";
+		        if(scheduleEvent.getSaleItem().getExpiration()!=null) {
+		        	expiration = scheduleEvent.getSaleItem().getExpiration().format(DateTimeFormatter.ofPattern("dd/MM/yy"));
+		        }
+		        unitsSold = "(Total Sold: "+scheduleEvent.getSaleItem().getUnits()+")";
+			}
+			stamper.getAcroFields().setField("customerSale", customerSale);
+			stamper.getAcroFields().setField("cartonLabel", cartonLabel);
+			stamper.getAcroFields().setField("palletTag", palletTag);
+			stamper.getAcroFields().setField("priceSticker", priceSticker);
+			stamper.getAcroFields().setField("expiration", expiration);
+			stamper.getAcroFields().setField("unitsSold", unitsSold);
+			
+			long units = scheduleEvent.getUnitsScheduled();
+			stamper.getAcroFields().setField("units", String.valueOf(units));
+			long cases = (long) Math.ceil((double) units/scheduleEvent.getItemPackaging().getPackaging().getCasePack());
+			stamper.getAcroFields().setField("cases", String.valueOf(cases));
+			long casesPerPallet = scheduleEvent.getItemPackaging().getPackaging().getHi()*scheduleEvent.getItemPackaging().getPackaging().getTi();
+			stamper.getAcroFields().setField("casesPerPallet", String.valueOf(casesPerPallet));
+			long pallets = (long) Math.ceil((double) cases/casesPerPallet);
+			stamper.getAcroFields().setField("pallets", String.valueOf(pallets));
+			stamper.getAcroFields().setField("casePack", String.valueOf(scheduleEvent.getItemPackaging().getPackaging().getCasePack()));
+			
+			PdfContentByte content = stamper.getOverContent(reader.getNumberOfPages());
+			Attachment itemAttachment = scheduleEvent.getItemPackaging().getItem().getAttachment();
+			if(itemAttachment != null) {
+				Path itemPath = attachmentService.load(itemAttachment.getId());
+				if(itemPath != null) {
+			        Image itemImage = Image.getInstance(Files.readAllBytes(itemPath));
+			        itemImage.setAbsolutePosition(25,568);
+			        itemImage.scaleToFit(165, 165);
+			        content.addImage(itemImage);
+				}
+			}
+			Attachment packagingAttachment = scheduleEvent.getItemPackaging().getPackaging().getAttachment();
+			if(packagingAttachment != null) {
+				Path packagingPath = attachmentService.load(packagingAttachment.getId());
+				if(packagingPath != null) {
+			        Image packagingImage = Image.getInstance(Files.readAllBytes(packagingPath));
+			        packagingImage.setAbsolutePosition(300,588);
+			        packagingImage.scaleToFit(145,145);
+			        content.addImage(packagingImage);
+				}
+			}
+			//---End Stamper---
+	        stamper.setFormFlattening(true);
+	        stamper.close();
+	        reader = new PdfReader(baos.toByteArray());
+	        copy.addPage(copy.getImportedPage(reader, 1));
+	    }
+	    doc.close();
+	    return mainBaos.toByteArray();
+	}
+	
 	private byte[] generateSchedulePdf(ScheduleEvent scheduleEvent) throws IOException, DocumentException {
 		InputStream bolIn = this.getClass().getClassLoader().getResourceAsStream("pdf/Prod-Schedule.pdf");
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
