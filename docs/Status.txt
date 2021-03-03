@@ -19,8 +19,8 @@ Michal:
 + Change component list screen.
 + Component adjusted refresh stock.
 + Show po based on selected from component list.
-- Item # of components
-- Sort components Food first then alfpha
++ On Item screen, show LP components
+- On Item screen, sort components Food first then alfpha
 
 
 

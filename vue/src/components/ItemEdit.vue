@@ -88,9 +88,12 @@
       <br>
       <b-row>
         <b-col>
-          <b-table v-if="item.itemComponents.length>0" :items="item.itemComponents" :fields="columns" sort-by="component.category.name">
+          <b-table :items="item.itemComponents" :fields="columns" sort-by="component.category.name">
             <template v-slot:head(units)="row">
               <div>Assembly</div><div class="mpb-head-line">Units per item</div>
+            </template>
+            <template v-slot:cell(index)="row">
+              <div style="width: 20px">{{row.index+1}}</div>
             </template>
             <template v-slot:cell(component)="row">
               <b-link role="button" @click="goToComponent(row.item.component.id)">{{row.item.component.number}}</b-link>
@@ -153,6 +156,7 @@ export default {
     upc: {},
     uploadedFile: null,
     columns: [
+        { key: "index", label: "#", sortable: false },
         { key: "component", label: "Component", sortable: false },
         { key: "component.category.name", label: "Category", sortable: false },
         { key: "units", label: "Units", sortable: false },
