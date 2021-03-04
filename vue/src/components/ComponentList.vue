@@ -50,12 +50,6 @@
       <template v-slot:cell(unitsOrderedRec)="row">
         <b-button size="sm" @click.stop="goToPurchaseList(row.item.id)" variant="link">{{row.item.unitsOrdered}}</b-button>/<b-button size="sm" @click.stop="goToReceiving(row.item.id)" variant="link">{{row.item.unitsReceived}}</b-button>
       </template>
-      <template v-slot:cell(unitsShort)="row">
-        <span>{{getUnitsShort(row.item)}}</span>
-      </template>
-      <template v-slot:cell(unitsSchedProd)="row">
-        <span>{{row.item.unitsLocked + row.item.unitsForProduction}} / {{row.item.unitsForProduction}}</span>
-      </template>
       <template v-slot:cell(action)="row">
         <input type="checkbox" v-model="selectedComponents" :value="row.item">
       </template>
@@ -90,10 +84,8 @@ export default {
         { key: "componentTypeName", label: "Type", sortable: false },
         { key: "supplierName", label: "Supplier", sortable: false },
         { key: "unitsOnStock", label: "Floor", sortable: false },
-        { key: "unitsForSale", label: "Sales", sortable: false },
-        { key: "unitsSchedProd", label: "Sched/Prod", sortable: false },
         { key: "unitsOrderedRec", label: "PO/Received", sortable: false },
-        { key: "unitsShort", label: "Short", sortable: false },
+        { key: "unitsShort", label: "Short/Extra", sortable: false },
         { key: "action", label: "", sortable: false }
       ],
       components: [],
@@ -140,9 +132,6 @@ export default {
       this.getComponents();
       this.showFilterMenu = false;
     },    
-    getUnitsShort(component){
-      return component.unitsShort<0?0:component.unitsShort;
-    },
     getUnitsOnStock(component){
       return component.unitsOnStock<0?0:component.unitsOnStock;
     },

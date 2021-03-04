@@ -51,8 +51,6 @@
                     <b>Stock: </b>{{ip.unitsOnStock}}, 
                     <b>Not Assigned:</b><b-button style="margin-top: -4px" size="md" variant="link" @click="goToSaleItemList(row.item.id, ip.packagingId, 'NOT_ASSIGNED')">{{ip.salesNotAssigned}} ({{ip.unitsNotAssigned}}),</b-button>
                     <b>Short: </b>{{ip.unitsShort}}, 
-                    <!-- <b>Pending Ship:</b><b-button style="margin-top: -4px" size="md" variant="link" @click="goToSaleItemList(row.item.id, ip.packagingId, null)">{{ip.unitsPenShip}},</b-button> -->
-                    <!-- <b>Open: </b>{{ip.salesOpen}} ({{ip.unitsOpen}}), -->
                   </div>
               </div>
             </div>
