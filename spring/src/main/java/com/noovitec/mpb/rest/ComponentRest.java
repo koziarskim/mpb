@@ -88,35 +88,35 @@ class ComponentRest {
 	}
 
 	@GetMapping("/component/pageable")
-	Page<ComponentDto> getAllPageable(@RequestParam Pageable pageable, 
+	Page<?> getAllPageable(@RequestParam Pageable pageable, 
 			@RequestParam(required = false) String nameSearch, 
 			@RequestParam(required = false) Long supplierId,
 			@RequestParam(required = false) Long itemId,
 			@RequestParam(required = false) String unitFilter,
 			@RequestParam(required = false) Long categoryId,
-			@RequestParam(required = false) Long componentTypeId) {
-		Page<Component> components = componentRepo.findPage(pageable, nameSearch, supplierId, itemId,unitFilter, categoryId, componentTypeId);
-		Page<ComponentDto> dtos = components.map(component -> {
-			ComponentDto dto = new ComponentDto();
-			dto.setId(component.getId());
-			dto.setNumber(component.getNumber());
-			dto.setName(component.getName());
-			dto.setCategoryName(component.getCategory()==null?"":component.getCategory().getName());
-			dto.setComponentTypeName(component.getComponentType()==null?null:component.getComponentType().getName());
-			dto.setSupplierName(component.getSupplier()==null?"":component.getSupplier().getName());
-			dto.setSupplierId(component.getSupplier()==null?null:component.getSupplier().getId());
-			dto.setUnitsSoldNotProd(component.getUnitsSoldNotProd());
-			dto.setUnitsOnStock(component.getUnitsOnStock());
-			dto.setUnitsOrdered(component.getUnitsOrdered());
-			dto.setUnitsLocked(component.getUnitsLocked());
-			dto.setUnitsShort(component.getUnitsShort());
-			dto.setUnitCost(component.getUnitCost());
-			dto.setUnitsForProduction(component.getUnitsForProduction());
-			dto.setUnitsForSale(component.getUnitsForSale());
-			dto.setUnitsReceived(component.getUnitsReceived());
-		    return dto;
-		});
-		return dtos;
+			@RequestParam(required = false) Long componentTypeId) throws IOException {
+		Page<?> components = componentRepo.findComponentPage(pageable, nameSearch, supplierId, itemId,unitFilter, categoryId, componentTypeId);
+//		Page<ComponentDto> dtos = components.map(component -> {
+//			ComponentDto dto = new ComponentDto();
+//			dto.setId(component.getId());
+//			dto.setNumber(component.getNumber());
+//			dto.setName(component.getName());
+//			dto.setCategoryName(component.getCategory()==null?"":component.getCategory().getName());
+//			dto.setComponentTypeName(component.getComponentType()==null?null:component.getComponentType().getName());
+//			dto.setSupplierName(component.getSupplier()==null?"":component.getSupplier().getName());
+//			dto.setSupplierId(component.getSupplier()==null?null:component.getSupplier().getId());
+//			dto.setUnitsSoldNotProd(component.getUnitsSoldNotProd());
+//			dto.setUnitsOnStock(component.getUnitsOnStock());
+//			dto.setUnitsOrdered(component.getUnitsOrdered());
+//			dto.setUnitsLocked(component.getUnitsLocked());
+//			dto.setUnitsShort(component.getUnitsShort());
+//			dto.setUnitCost(component.getUnitCost());
+//			dto.setUnitsForProduction(component.getUnitsForProduction());
+//			dto.setUnitsForSale(component.getUnitsForSale());
+//			dto.setUnitsReceived(component.getUnitsReceived());
+//		    return dto;
+//		});
+		return components;
 	}
 
 	@GetMapping("/component/kv")

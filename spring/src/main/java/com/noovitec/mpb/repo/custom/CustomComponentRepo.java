@@ -1,5 +1,6 @@
 package com.noovitec.mpb.repo.custom;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
@@ -14,11 +15,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Repository;
 
 import com.noovitec.mpb.dto.ComponentInventoryListDto;
+import com.noovitec.mpb.dto.ComponentListDto;
 import com.noovitec.mpb.entity.Component;
+import com.noovitec.mpb.util.FileUtil;
 
 public interface CustomComponentRepo {
 	Page<?> findInventoryPage(Pageable pageable, boolean totals, String nameSearch, Long supplierId, 
@@ -26,6 +28,8 @@ public interface CustomComponentRepo {
 			boolean positiveFloor, boolean zeroFloor, boolean negativeFloor, boolean nonInventory);
 	Page<Component> findPage(Pageable pageable, String nameSearch, Long supplierId, Long itemId, String unitFilter,
 			Long categoryId, Long componentTypeId);
+	Page<?> findComponentPage(Pageable pageable, String nameSearch, Long supplierId, Long itemId, String unitFilter,
+			Long categoryId, Long componentTypeId) throws IOException;
 
 	@Repository
 	public class CustomComponentRepoImpl implements CustomComponentRepo {
@@ -166,6 +170,77 @@ public interface CustomComponentRepo {
 				Page<ComponentInventoryListDto> page = new PageImpl<ComponentInventoryListDto>(result, pageable, total);
 				return page;
 			}
+		}
+
+		@Override
+		public Page<?> findComponentPage(Pageable pageable, String nameSearch, Long supplierId, Long itemId, String unitFilter,
+				Long categoryId, Long componentTypeId) throws IOException {
+			String q = FileUtil.readFile("sql/ComponentList.sql");
+			if (nameSearch != null && !nameSearch.isEmpty()) {
+				q += "and (upper(c.number) like concat('%',upper(:nameSearch),'%') ";
+				q += "or upper(c.name) like concat('%',upper(:nameSearch),'%')) ";
+			}
+			if (itemId != null) {
+				q += "and i.id = :itemId ";
+			}
+			if (categoryId != null) {
+				q += "and cat.id = :categoryId ";
+			}
+			if (componentTypeId != null) {
+				q += "and ct.id = :componentTypeId ";
+			}
+			if (supplierId != null) {
+				q += "and su.id = :supplierId ";
+			}
+			String orderBy = "order by c.number asc ";
+			if (unitFilter !=null && unitFilter.equalsIgnoreCase("EXTRA_DESC")) {
+				orderBy = "order by units_extra desc ";
+			}
+			if (unitFilter !=null && unitFilter.equalsIgnoreCase("EXTRA_ASC")) {
+				orderBy = "order by units_extra asc ";
+			}
+			if (unitFilter !=null && unitFilter.equalsIgnoreCase("PEN_REC_DESC")) {
+				orderBy = "order by units_pend_receiving desc ";
+			}
+			if (unitFilter !=null && unitFilter.equalsIgnoreCase("PEN_REC_ASC")) {
+				orderBy = "order by units_pend_receiving asc ";
+			}
+			if (unitFilter !=null && unitFilter.equalsIgnoreCase("STOCK_DESC")) {
+				orderBy = "order by units_on_stock desc ";
+			}
+			if (unitFilter !=null && unitFilter.equalsIgnoreCase("STOCK_ASC")) {
+				orderBy = "order by units_on_stock asc ";
+			}
+			if (unitFilter !=null && unitFilter.equalsIgnoreCase("FLOOR_DESC")) {
+				orderBy = "order by units_on_floor desc ";
+			}
+			if (unitFilter !=null && unitFilter.equalsIgnoreCase("FLOOR_ASC")) {
+				orderBy = "order by units_on_floor asc ";
+			}
+			q += orderBy;
+			Query query = entityManager.createNativeQuery(q);
+			if (nameSearch != null && !nameSearch.isEmpty()) {
+				query.setParameter("nameSearch", nameSearch);
+			}
+			if (supplierId != null) {
+				query.setParameter("supplierId", supplierId);
+			}
+			if (itemId != null) {
+				query.setParameter("itemId", itemId);
+			}
+			if (categoryId != null) {
+				query.setParameter("categoryId", categoryId);
+			}
+			if (componentTypeId != null) {
+				query.setParameter("componentTypeId", componentTypeId);
+			}
+			long total = query.getResultStream().count();
+			@SuppressWarnings("unchecked")
+			List<Object[]> res = query.setFirstResult(pageable.getPageNumber()*pageable.getPageSize())
+				.setMaxResults(pageable.getPageSize()).getResultList();
+			List<ComponentListDto> result = res.stream().map(ComponentListDto::new).collect(Collectors.toList());
+			Page<ComponentListDto> page = new PageImpl<ComponentListDto>(result, pageable, total);
+			return page;
 		}
 
 		@Override

@@ -31,7 +31,7 @@
         <b-select option-value="id" option-text="name" :list="availableItems" v-model="itemKv" placeholder="Item"></b-select>
       </b-col>
       <b-col cols=2>
-        <b-select option-value="id" option-text="name" :list="availableUnitFilters" v-model="unitFilter" placeholder="Units"></b-select>
+        <b-select option-value="id" option-text="name" :list="availableUnitFilters" v-model="unitFilter" placeholder="Sort By"></b-select>
       </b-col>
       <b-col>
         <div style="text-align: right;">
@@ -41,20 +41,36 @@
       </b-col>
     </b-row>
     <b-table no-local-sorting @sort-changed="sorted" :items="components" :fields="fields">
+      <template v-slot:head(action)="row">
+          <b-button style="margin-left:-10px; margin-bottom:-10px" size="sm" @click="triggerAll(false)" variant="link">(-)</b-button><br/><b-button style="margin-left: -10px; margin-bottom: -10px" size="sm" @click="triggerAll(true)" variant="link">(+)</b-button>
+      </template>
+      <template v-slot:head(unitsPendAssignment)="row">
+          <div>Pen Sales</div><div class="mpb-head-line">Sold Not Assigned</div>
+      </template>
+      <template v-slot:head(unitsPendReceiving)="row">
+          <div>Pen Rec</div><div class="mpb-head-line">Ordered Not Received</div>
+      </template>
+      <template v-slot:head(unitsOnFloor)="row">
+          <div>Floor</div><div class="mpb-head-line">Received Not Prod</div>
+      </template>
+      <template v-slot:head(unitsOnStock)="row">
+          <div>Stock</div><div class="mpb-head-line">Received Not Assigned</div>
+      </template>
+      <template v-slot:head(unitsExtra)="row">
+          <div>Extra</div><div class="mpb-head-line">Extra/Short</div>
+      </template>
+
       <template v-slot:cell(name)="row">
         <div style="width:200px; overflow: wrap; font-size: 14px"><b-link role="button" @click.stop="goToComponent(row.item.id)">{{row.item.number}}</b-link> {{row.item.name}}</div>
       </template>
-      <template v-slot:cell(unitsOnStock)="row">
+      <!-- <template v-slot:cell(unitsOnStock)="row">
         <span>{{getUnitsOnStock(row.item)}}</span>
-      </template>
-      <template v-slot:cell(unitsOrderedRec)="row">
-        <b-button size="sm" @click.stop="goToPurchaseList(row.item.id)" variant="link">{{row.item.unitsOrdered}}</b-button>/<b-button size="sm" @click.stop="goToReceiving(row.item.id)" variant="link">{{row.item.unitsReceived}}</b-button>
-      </template>
+      </template> -->
+      <!-- <template v-slot:cell(unitsOrderedRec)="row">
+        <b-button size="sm" @click.stop="goToPurchaseList(row.item.id)" variant="link">{{row.item.unitsPurchased}}</b-button>/<b-button size="sm" @click.stop="goToReceiving(row.item.id)" variant="link">{{row.item.unitsReceived}}</b-button>
+      </template> -->
       <template v-slot:cell(action)="row">
         <input type="checkbox" v-model="selectedComponents" :value="row.item">
-      </template>
-      <template v-slot:head(action)="row">
-          <b-button style="margin-left:-10px; margin-bottom:-10px" size="sm" @click="triggerAll(false)" variant="link">(-)</b-button><br/><b-button style="margin-left: -10px; margin-bottom: -10px" size="sm" @click="triggerAll(true)" variant="link">(+)</b-button>
       </template>
     </b-table>
     <div style="display: flex">
@@ -83,21 +99,28 @@ export default {
         { key: "categoryName", label: "Category", sortable: false },
         { key: "componentTypeName", label: "Type", sortable: false },
         { key: "supplierName", label: "Supplier", sortable: false },
-        { key: "unitsOnStock", label: "Floor", sortable: false },
-        { key: "unitsOrderedRec", label: "PO/Received", sortable: false },
-        { key: "unitsShort", label: "Short/Extra", sortable: false },
+        { key: "unitsPendAssignment", label: "Pend Sales", sortable: false },
+        { key: "unitsPendReceiving", label: "Pend Rec", sortable: false },
+        { key: "unitsOnFloor", label: "Floor", sortable: false },
+        { key: "unitsOnStock", label: "Stock", sortable: false },
+        { key: "unitsExtra", label: "Extra", sortable: false },
         { key: "action", label: "", sortable: false }
       ],
-      components: [],
+      components: [], //ComponentListDto
       availableSuppliers: [],
       supplierKv: {},
       availableItems: [],
       itemKv: {},
       selectedComponents: [],
       availableUnitFilters: [
-        {id: "ONLY_SHORT", name: "Units Short"},
-        {id: "ON_STOCK", name: "On Stock"},
-        {id: "OPEN_SALE", name: "Open Sales"},
+        {id: "EXTRA_DESC", name: "Extra (high to low)"},
+        {id: "EXTRA_ASC", name: "Extra (low to high)"},
+        {id: "PEN_REC_DESC", name: "Pen Rec (high to low)"},
+        {id: "PEN_REC_ASC", name: "Pen Rec (low to high)"},
+        {id: "STOCK_DESC", name: "Stock (high to low)"},
+        {id: "STOCK_ASC", name: "Stock (low to high)"},
+        {id: "FLOOR_DESC", name: "Floor (high to low)"},
+        {id: "FLOOR_ASC", name: "Floor (low to high)"},
       ],
       unitFilter: {},
       availableComponentTypes: [],

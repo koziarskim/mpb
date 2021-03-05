@@ -13,6 +13,8 @@ Production:
 	 + Show order number on production line screen
 	 + Add total sold units.
 	 + Download multiple pages for whole day.
+	 - Fix dates to be mm/dd/yy
+	 - Change Units to Daily Goal
  Checklist
 	+ Extend DC/Location name on address to 30 chars.
 	+ Change Carton Label field to use EDI and MIMS.
@@ -40,12 +42,9 @@ Marcin's Backlog
 - Keep the list of jms messages in requeuest until transaction is over. Then call JMS Receivier.
 	Creating new shipment is not created until transaction completes. Jms runs before trans complete.
 - Setting file
-- Backup all schemas
 - Backup files (compress?)
-- Migration script run using DDL script for all tenants.
 - Disable notifications when running unitsUpdate full.
 - Disable notifications when creating new year context.
-- add year to notifications.
 - Price history/average (based on PO).
 - Change notification to not use events.
 - Lock all PDFs. Option to lock.
