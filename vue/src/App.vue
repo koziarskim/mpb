@@ -27,7 +27,8 @@
             <b-dropdown-item @click="goTo('/shipmentSchedule')"><span style="color: black">Shipment Schedule</span></b-dropdown-item>
           </b-nav-item-dropdown>
           <b-nav-item-dropdown text="Production" :class="navClass('production')">
-            <b-dropdown-item @click="goTo('/productionLineList')"><span style="color: black">Daily Status</span></b-dropdown-item>
+            <b-dropdown-item @click="goTo('/productionOutput')"><span style="color: black">Daily Ouput</span></b-dropdown-item>
+            <b-dropdown-item @click="goTo('/productionItemList')"><span style="color: black">Daily Performance</span></b-dropdown-item>
             <b-dropdown-item @click="goTo('/scheduleEventList')"><span style="color: black">Schedule List</span></b-dropdown-item>
           </b-nav-item-dropdown>
           <b-nav-item-dropdown text="Accounting" :class="navClass('invoice')">

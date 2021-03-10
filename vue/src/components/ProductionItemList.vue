@@ -1,10 +1,10 @@
 <template>
   <b-container fluid>
     <b-row>
-      <b-col cols=3>
+      <!-- <b-col cols=3>
         <span style="font-size: 18px; font-weight: bold">Daily Production Status:</span>
         <b-form-checkbox size="sm" v-model="itemView">Item View</b-form-checkbox>
-      </b-col>
+      </b-col> -->
       <b-col cols=2>
         <input class="form-control" type="date" v-model="date" placeholder="Date">
       </b-col>
@@ -99,8 +99,8 @@ export default {
     },
     goToProductionLine(seId) {
       var se = this.getScheduleEvent(seId).then(se => {
-        var query = { date: se.date, seId: se.id };
-        router.push({ path: "/productionLine/"+se.line.id, query: query } );
+        var query = { date: se.date, seId: se.id, lineId: se.line.id };
+        router.push({ path: "/productionOutput", query: query } );
       })
     },
     percPerf(high, low){

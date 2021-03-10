@@ -1,20 +1,21 @@
 <template>
   <b-container fluid>
 		<b-row>
-			<b-col cols=9 style="margin-top:7px; margin-bottom:7px">
-				<div style="display:flex">
-					<input class="form-control" style="width: 170px; height: 33px; margin-top: -10px; margin-right: 5px;" type="date" @change="dateChanged()" v-model="date"> 
-					<b-button size="sm" type="submit" variant="success" style="margin-top: -10px; margin-right: 5px;" @click="setToday()">Today</b-button>
-					Line: <span style="font-weight: bold; margin-right: 5px;">{{scheduleEvent.line.number}}</span>
+			<b-col cols=4>
+				<div style="display:flex; margin-top:5px; font-size: 12px">
+					<input class="form-control" type="date" @change="dateChanged()" v-model="date"> 
+					<!-- <b-button size="sm" type="submit" variant="success" style="margin-top: -10px; margin-right: 5px;" @click="setToday()">Today</b-button> -->
+					<b-select option-value="id" option-text="number" :list="availableLines" v-model="lineKv" placeholder="Line"></b-select>
+					<!-- <span style="font-weight: bold; margin-right: 5px;">{{scheduleEvent.line.number}}</span> -->
+				</div>
+			</b-col>
+			<b-col cols=8>
+				<div v-if="scheduleEvent.id" style="display:flex; margin-top:5px">
 					Started: <span style="font-weight: bold; margin-right: 5px;">{{scheduleEvent.startTime}}</span> 
 					Finished: <span style="font-weight: bold; margin-right: 5px;">{{scheduleEvent.finishTime}}</span> 
 					Units Scheduled: <span style="font-weight: bold; margin-right: 5px;">{{scheduleEvent.unitsScheduled}}</span> 
 					Total Produced: <span style="font-weight: bold; margin-right: 5px;">{{scheduleEvent.unitsProduced}}</span>
 					Diff: <span style="font-weight: bold; margin-right: 5px;">{{(+scheduleEvent.unitsProduced - +scheduleEvent.unitsScheduled)}}</span>
-				</div>
-			</b-col>
-			<b-col cols=3 style="text-align: right;">
-				<div style="display: flex; height: 34px">
 					<div style="cursor: pointer" @click="downloadProdSchedulePdf()"><img src="../assets/pdf-download.png" width="23px"></div>				
 					<b-button style="margin-left: 3px;" type="submit" size="sm" variant="success" @click="editScheduleEvent()">Edit</b-button>
 					<b-button v-if="inProgress() && !isFinished()"  size="sm" style="width: 80px; margin-left: 3px" type="submit" variant="success" @click="openModal()">Add Units</b-button>
@@ -31,7 +32,7 @@
 						<div style="margin-left: 10px; display:inline; color: #4bb316">Package: {{packaging.name}}</div>
 						<div v-for="(event, index) in packaging.events" :key="event.id">
 							<div style="margin-left: 20px; cursor: pointer; display:inline; color:#e22626; font-weight: bold" :style="getTreeItemStyle(event.active)" @click="getScheduleEvent(event.id)">
-								{{index+1}}: {{event.saleItem?event.saleItem.sale.number:'None'}} {{event.finishTime?" (Completed)":(event.startTime?" (Started)":" (Not Started)")}}
+								{{index+1}}: {{event.saleItem?event.saleItem.sale.number:'Without S.O.'}} {{event.finishTime?" (Completed)":(event.startTime?" (Started)":" (Not Started)")}}
 							</div>
 						</div>
 					</div>
@@ -109,12 +110,13 @@ export default {
   },
   data() {
     return {
+		    availableLines: [],
+    		lineKv: {},
 			chartVisibility: "visibility: hidden",
 			productionLineEditModalVisible: false,
 			startModalVisible: false,
 			date: moment().format("YYYY-MM-DD"),
 			startTime: moment().format("HH:mm:ss"),
-			line_id: "",
 			modalVisible: false,
 			securite: securite,
 			addInProgress: false,
@@ -167,7 +169,11 @@ export default {
 			},
     };
   },
-  watch: {},
+  watch: {
+	lineKv(newValue, oldValue) {
+      this.getScheduleEvents();
+    },
+  },
   methods: {
 	dateChanged(){
 		this.scheduleEvent = {
@@ -181,7 +187,8 @@ export default {
 				}
 			}
 		};
-		this.getScheduleEvents();
+		this.getAvailableLines();
+		this.items = [];
 		this.sortedProductions = [];
 		this.chartVisibility = "visibility: hidden";
 	},
@@ -204,10 +211,21 @@ export default {
 		this.productionLineEditModalVisible = true;
 	},
 	startProduction(){
+		var alreadyStarted = false;
+		this.scheduleEvents.forEach(se => {
+			if(se.startTime && !se.finishTime){
+				alreadyStarted = true;
+			}
+		})
+		if(alreadyStarted){
+			alert("There is another Sale in progress. Please, finish it before start next one");
+			return;
+		}
 		this.startModalVisible = true;
 	},
 	setToday(){
 		this.date = moment().format("YYYY-MM-DD");
+		this.getScheduleEvents();
 	},
 	getTreeItemStyle(active){
 		var style = "";
@@ -254,8 +272,24 @@ export default {
 				this.getScheduleEvent(this.scheduleEvent.id);
 			});
 	},
+	getAvailableLines(){
+		http.get("/scheduleEvent/date/"+this.date).then(r => {
+			this.lineKv = {};
+			this.availableLines = [{id: null, number: ""}];
+			r.data.forEach(se => {
+				var line = this.availableLines.find(l => l.id == se.line.id);
+				if(!line){
+					this.availableLines.push({id: se.line.id, number: se.line.number})
+				}
+			})
+		})
+	},
     getScheduleEvents() {
-      http.get("/scheduleEvent/date/"+this.date, {params: {line_id: this.line_id}}).then(response => {
+	if(!this.lineKv.id){
+		this.items = [];
+		return null
+	}
+      http.get("/scheduleEvent/date/"+this.date, {params: {line_id: this.lineKv.id}}).then(response => {
 				this.items.splice(0, this.items.length);
 				this.scheduleEvents = response.data;
 				response.data.forEach(se => {
@@ -293,27 +327,18 @@ export default {
 		},
     getScheduleEvent(schedule_event_id) {
       return http.get("/scheduleEvent/" + schedule_event_id).then(response => {
-				this.scheduleEvent = response.data;
-				this.sortedProductions = response.data.productions.sort(function(a, b){
-					return moment(a.finishTime, 'HH:mm:ss').diff(moment(b.finishTime, 'HH:mm:ss'));
-				});
-				this.updateChart();
-				this.getScheduleEvents();
-				this.chartVisibility = "visiblility: visible;"
-				return response.data;
+		this.scheduleEvent = response.data;
+		this.lineKv = {id: response.data.line.id};
+		this.sortedProductions = response.data.productions.sort(function(a, b){
+			return moment(a.finishTime, 'HH:mm:ss').diff(moment(b.finishTime, 'HH:mm:ss'));
+		});
+		this.updateChart();
+		this.getScheduleEvents();
+		this.chartVisibility = "visiblility: visible;"
+		return response.data;
       });
 	},
 	saveStartProduction() {
-		var alreadyStarted = false;
-		this.scheduleEvents.forEach(se => {
-			if(se.startTime && !se.finishTime){
-				alreadyStarted = true;
-			}
-		})
-		if(alreadyStarted){
-			alert("There is another Sale in progress. Please, finish it before start next one");
-			return;
-		}
 		this.scheduleEvent.startTime = this.startTime;
 			return http.post("/scheduleEvent", this.scheduleEvent).then(response => {
 				this.getScheduleEvent(this.scheduleEvent.id);
@@ -361,13 +386,14 @@ export default {
 		if(!this.date){
 			this.date = moment().format("YYYY-MM-DD");
 		}
+		this.dateChanged();
+		this.lineKv = {id: this.$route.query.lineId};
 		var scheduleEventId = this.$route.query.seId;
-		this.line_id = this.$route.params.line_id;
 		this.getScheduleEvents();
 		if(scheduleEventId){
 			this.getScheduleEvent(scheduleEventId);
 		}
-		// window.history.replaceState({}, document.title, window.location.pathname);
+		window.history.replaceState({}, document.title, window.location.pathname);
   }
 };
 </script>

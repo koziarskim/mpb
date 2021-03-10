@@ -232,8 +232,8 @@ export default {
       router.push("/itemEdit/" +item_id);
 	  },
     goToProductionLine(se) {
-      var query = { date: this.date, seId: se.id};
-      router.push({ path: "/productionLine/"+se.line.id, query: query } );
+      var query = { date: this.date, seId: se.id, lineId: se.line.id};
+      router.push({ path: "/productionOutput", query: query } );
 	  },
   },
   mounted() {

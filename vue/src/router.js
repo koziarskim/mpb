@@ -24,7 +24,7 @@ import AccessDenied from "./components/AccessDenied";
 import ShipmentEdit from "./components/ShipmentEdit";
 import ShipmentList from "./components/ShipmentList";
 import ScheduleEventList from "./components/ScheduleEventList";
-import ProductionLine from "./components/ProductionLine";
+import ProductionOutput from "./components/ProductionOutput";
 import ProductionLineList from "./components/ProductionLineList";
 import ProductionItemList from "./components/ProductionItemList";
 import Profile from "./components/Profile";
@@ -297,9 +297,9 @@ const router = new Router({
       }
     },
     {
-      path: "/ProductionLine/:line_id",
-      name: "ProductionLine",
-      component: ProductionLine,
+      path: "/ProductionOutput",
+      name: "ProductionOutput",
+      component: ProductionOutput,
       meta: {
         group: "production",
         viewClass: "view-production"

@@ -122,8 +122,8 @@ export default {
       this.getScheduleEvents();
     },    
     goToProduction(se) {
-      var query = { date: se.scheduleDate, seId: se.id };
-      router.push({ path: "/productionLine/"+se.lineId, query: query } );
+      var query = { date: se.scheduleDate, seId: se.id, lineId: se.lineId };
+      router.push({ path: "/productionOutput", query: query } );
     },    
     paginationChange(page){
       this.pageable.currentPage = page;
