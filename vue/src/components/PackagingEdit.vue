@@ -50,10 +50,14 @@
               <label class="top-label">Pallet Weight:</label>
               <input class="form-control" v-model="packaging.palletWeight">
             </b-col>
-            <b-col cols=3>
+            <b-col cols=2>
               <label class="top-label">Units p/ pallet: {{unitsPerPallet}}</label><br/>
               <label class="top-label">Pallet height: {{palletHeight}}</label><br/>
               <label class="top-label">Cases p/p: {{casesPerPallet}}</label>
+            </b-col>
+            <b-col cols=3>
+              <label class="top-label">Hologram Sticker:</label>
+              <b-select option-value="id" option-text="name" :list="availableHolograms" v-model="hologramKv"></b-select>
             </b-col>
           </b-row>
           <b-row>
@@ -92,6 +96,11 @@ export default {
       ],
       typeKv: {},
       uploadedFile: null,
+      availableHolograms: [
+        {id: "Modelo", name: "Modelo"},
+        {id: "Bud/BudLite", name: "Bud/BudLite"},
+      ],
+      hologramKv: {},
     };
   },
   computed: {
@@ -133,10 +142,12 @@ export default {
       http.get("/packaging/"+id).then(r => {
         this.packaging = r.data;
         this.typeKv = {id: r.data.type};
+        this.hologramKv = {id: r.data.hologram}
       });      
     },
     save(){
       this.packaging.type = this.typeKv.id;
+      this.packaging.hologram = this.hologramKv.id;
       var formData = new FormData();
       formData.append("image", this.uploadedFile);
       formData.append("jsonPackaging", JSON.stringify(this.packaging));

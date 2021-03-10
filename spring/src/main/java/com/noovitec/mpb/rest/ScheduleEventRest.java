@@ -12,7 +12,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -284,9 +283,9 @@ class ScheduleEventRest {
 	        ByteArrayOutputStream baos = new ByteArrayOutputStream();
 	        PdfStamper stamper = new PdfStamper(reader, baos);
 	        //---Stamper---
-			String scheduleDate = scheduleEvent.getDate().format(DateTimeFormatter.ofPattern("dd/MM/yy"));
+			String scheduleDate = scheduleEvent.getDate().format(DateTimeFormatter.ofPattern("MM/dd/yy"));
 			stamper.getAcroFields().setField("scheduleDate", scheduleDate);
-			stamper.getAcroFields().setField("line", String.valueOf(scheduleEvent.getLine().getNumber()));
+			stamper.getAcroFields().setField("line", "LINE: "+String.valueOf(scheduleEvent.getLine().getNumber()));
 			String itemNumber = scheduleEvent.getItemPackaging().getItem().getNumber()+" - "+scheduleEvent.getItemPackaging().getItem().getName();
 			stamper.getAcroFields().setField("itemNumber", itemNumber);
 			stamper.getAcroFields().setField("packagingName", String.valueOf(scheduleEvent.getItemPackaging().getPackaging().getName()));
@@ -300,7 +299,7 @@ class ScheduleEventRest {
 			String palletTag = "No";
 			String priceSticker = "No";
 			String expiration = "";
-			String unitsSold = "(Total Sold: 0)";
+			String unitsSold = "0";
 			if(saleItem != null) {
 				customerSale = scheduleEvent.getSaleItem().getSale().getCustomer().getName()+" - "+scheduleEvent.getSaleItem().getSale().getNumber();
 		        if( scheduleEvent.getSaleItem().getSale().getCustomer().isCartonLabel()) {
@@ -309,9 +308,9 @@ class ScheduleEventRest {
 		        palletTag = scheduleEvent.getSaleItem().getSale().getCustomer().getPalletTagType();
 		        priceSticker = scheduleEvent.getSaleItem().getSale().getCustomer().isPriceTicket()?"Yes":"No";
 		        if(scheduleEvent.getSaleItem().getExpiration()!=null) {
-		        	expiration = scheduleEvent.getSaleItem().getExpiration().format(DateTimeFormatter.ofPattern("dd/MM/yy"));
+		        	expiration = scheduleEvent.getSaleItem().getExpiration().format(DateTimeFormatter.ofPattern("MM/dd/yy"));
 		        }
-		        unitsSold = "(Total Sold: "+scheduleEvent.getSaleItem().getUnits()+")";
+		        unitsSold = String.valueOf(scheduleEvent.getSaleItem().getUnits());
 			}
 			stamper.getAcroFields().setField("customerSale", customerSale);
 			stamper.getAcroFields().setField("cartonLabel", cartonLabel);
@@ -319,7 +318,9 @@ class ScheduleEventRest {
 			stamper.getAcroFields().setField("priceSticker", priceSticker);
 			stamper.getAcroFields().setField("expiration", expiration);
 			stamper.getAcroFields().setField("unitsSold", unitsSold);
-			
+			if(scheduleEvent.getItemPackaging().getPackaging().getHologram()!=null) {
+				stamper.getAcroFields().setField("hologram", "Hologram: "+scheduleEvent.getItemPackaging().getPackaging().getHologram());	
+			}
 			long units = scheduleEvent.getUnitsScheduled();
 			stamper.getAcroFields().setField("units", String.valueOf(units));
 			long cases = (long) Math.ceil((double) units/scheduleEvent.getItemPackaging().getPackaging().getCasePack());
@@ -360,81 +361,5 @@ class ScheduleEventRest {
 	    doc.close();
 	    return mainBaos.toByteArray();
 	}
-	
-	private byte[] generateSchedulePdf(ScheduleEvent scheduleEvent) throws IOException, DocumentException {
-		InputStream bolIn = this.getClass().getClassLoader().getResourceAsStream("pdf/Prod-Schedule.pdf");
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		PdfReader reader = new PdfReader(bolIn);
-		PdfStamper stamper = new PdfStamper(reader, baos);
-		stamper.setFormFlattening(true);
-		String scheduleDate = scheduleEvent.getDate().format(DateTimeFormatter.ofPattern("dd/MM/yy"));
-		stamper.getAcroFields().setField("scheduleDate", scheduleDate);
-		stamper.getAcroFields().setField("line", String.valueOf(scheduleEvent.getLine().getNumber()));
-		String itemNumber = scheduleEvent.getItemPackaging().getItem().getNumber()+" - "+scheduleEvent.getItemPackaging().getItem().getName();
-		stamper.getAcroFields().setField("itemNumber", itemNumber);
-		stamper.getAcroFields().setField("packagingName", String.valueOf(scheduleEvent.getItemPackaging().getPackaging().getName()));
-		String dimensions = scheduleEvent.getItemPackaging().getPackaging().getTi()+" x "+scheduleEvent.getItemPackaging().getPackaging().getHi();
-		stamper.getAcroFields().setField("dimensions", dimensions);
-		String cartonType = Packaging.TYPE.valueOf(scheduleEvent.getItemPackaging().getPackaging().getType()).label();
-		stamper.getAcroFields().setField("cartonType", cartonType);
-		SaleItem saleItem = scheduleEvent.getSaleItem();
-		String customerSale = "None";
-		String cartonLabel = "No";
-		String palletTag = "No";
-		String priceSticker = "No";
-		String expiration = "";
-		if(saleItem != null) {
-			customerSale = scheduleEvent.getSaleItem().getSale().getCustomer().getName()+" - "+scheduleEvent.getSaleItem().getSale().getNumber();
-	        if( scheduleEvent.getSaleItem().getSale().getCustomer().isCartonLabel()) {
-	        	cartonLabel =  scheduleEvent.getSaleItem().getSale().getCustomer().getLabelType();
-	        }
-	        palletTag = scheduleEvent.getSaleItem().getSale().getCustomer().getPalletTagType();
-	        priceSticker = scheduleEvent.getSaleItem().getSale().getCustomer().isPriceTicket()?"Yes":"No";
-	        if(scheduleEvent.getSaleItem().getExpiration()!=null) {
-	        	expiration = scheduleEvent.getSaleItem().getExpiration().format(DateTimeFormatter.ofPattern("dd/MM/yy"));
-	        }
-		}
-		stamper.getAcroFields().setField("customerSale", customerSale);
-		stamper.getAcroFields().setField("cartonLabel", cartonLabel);
-		stamper.getAcroFields().setField("palletTag", palletTag);
-		stamper.getAcroFields().setField("priceSticker", priceSticker);
-		stamper.getAcroFields().setField("expiration", expiration);
-		
-		long units = scheduleEvent.getUnitsScheduled();
-		stamper.getAcroFields().setField("units", String.valueOf(units));
-		long cases = (long) Math.ceil((double) units/scheduleEvent.getItemPackaging().getPackaging().getCasePack());
-		stamper.getAcroFields().setField("cases", String.valueOf(cases));
-		long casesPerPallet = scheduleEvent.getItemPackaging().getPackaging().getHi()*scheduleEvent.getItemPackaging().getPackaging().getTi();
-		stamper.getAcroFields().setField("casesPerPallet", String.valueOf(casesPerPallet));
-		long pallets = (long) Math.ceil((double) cases/casesPerPallet);
-		stamper.getAcroFields().setField("pallets", String.valueOf(pallets));
-		stamper.getAcroFields().setField("casePack", String.valueOf(scheduleEvent.getItemPackaging().getPackaging().getCasePack()));
-		
-		PdfContentByte content = stamper.getOverContent(reader.getNumberOfPages());
-		Attachment itemAttachment = scheduleEvent.getItemPackaging().getItem().getAttachment();
-		if(itemAttachment != null) {
-			Path itemPath = attachmentService.load(itemAttachment.getId());
-			if(itemPath != null) {
-		        Image itemImage = Image.getInstance(Files.readAllBytes(itemPath));
-		        itemImage.setAbsolutePosition(25,568);
-		        itemImage.scaleToFit(165, 165);
-		        content.addImage(itemImage);
-			}
-		}
-		Attachment packagingAttachment = scheduleEvent.getItemPackaging().getPackaging().getAttachment();
-		if(packagingAttachment != null) {
-			Path packagingPath = attachmentService.load(packagingAttachment.getId());
-			if(packagingPath != null) {
-		        Image packagingImage = Image.getInstance(Files.readAllBytes(packagingPath));
-		        packagingImage.setAbsolutePosition(300,588);
-		        packagingImage.scaleToFit(145,145);
-		        content.addImage(packagingImage);
-			}
-		}
-		stamper.close();
-		reader.close();
-		return baos.toByteArray();
-	}
-	
 	
 }

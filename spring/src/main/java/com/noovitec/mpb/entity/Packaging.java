@@ -1,16 +1,11 @@
 package com.noovitec.mpb.entity;
 
 import java.math.BigDecimal;
-import java.util.Collection;
-import java.util.HashSet;
 
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Transient;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -37,6 +32,7 @@ public class Packaging extends BaseEntity {
 	        this.label = label; 
 	    } 
 	}
+	private String hologram;
 	private String name; //Package name
 	private String type; //PDQ, MasterCarton, etc.
 	private int casePack = 1;
